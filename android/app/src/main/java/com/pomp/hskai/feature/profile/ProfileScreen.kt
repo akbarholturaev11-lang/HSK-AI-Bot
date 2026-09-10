@@ -41,9 +41,11 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,10 +62,13 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
 import com.pomp.hskai.core.navigation.PracticeTool
+import com.pomp.hskai.core.settings.AppSettings
+import com.pomp.hskai.core.settings.AppThemeMode
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.feature.hint.SectionHint
+import kotlinx.coroutines.launch
 
 /**
  * Android Profile mirrors the Mini App's profile hierarchy and measurements.
@@ -94,7 +99,11 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
 ) {
     var settingsOpen by remember { mutableStateOf(false) }
+    var appearancePickerOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val appSettings = remember(context) { AppSettings(context) }
+    val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
+    val scope = rememberCoroutineScope()
     val openMistakes = onOpenMistakes ?: {
         val uri = Uri.parse(
             DeepLinkRouter.uriFor(
@@ -199,12 +208,17 @@ fun ProfileScreen(
             account = account,
             state = state,
             settings = settings,
+            themeMode = themeMode,
             dailyGoal = dailyGoal,
             notificationsEnabled = notificationsEnabled,
             onDismiss = { settingsOpen = false },
             onOpenLanguage = {
                 settingsOpen = false
                 onOpenLanguage()
+            },
+            onOpenAppearance = {
+                settingsOpen = false
+                appearancePickerOpen = true
             },
             onToggleNotifications = onToggleNotifications,
             onOpenGoal = {
@@ -223,6 +237,17 @@ fun ProfileScreen(
                 settingsOpen = false
                 onUnlinkDevice()
             },
+        )
+    }
+
+    if (appearancePickerOpen) {
+        AppearancePicker(
+            current = themeMode,
+            onPick = { mode ->
+                scope.launch { appSettings.setThemeMode(mode) }
+                appearancePickerOpen = false
+            },
+            onDismiss = { appearancePickerOpen = false },
         )
     }
 }
@@ -371,10 +396,12 @@ private fun ProfileSettingsSheet(
     account: LinkedAccount,
     state: ProfileUiState,
     settings: ProfileSettingsState,
+    themeMode: AppThemeMode,
     dailyGoal: Int,
     notificationsEnabled: Boolean,
     onDismiss: () -> Unit,
     onOpenLanguage: () -> Unit,
+    onOpenAppearance: () -> Unit,
     onToggleNotifications: (Boolean) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
@@ -419,6 +446,25 @@ private fun ProfileSettingsSheet(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = account.language.backendCode.uppercase(),
+                                color = PompColors.InkDisabled,
+                                fontSize = 13.sp,
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            SettingsChevron()
+                        }
+                    }
+
+                    SettingsDivider()
+
+                    MiniSettingsRow(
+                        icon = Icons.Filled.Settings,
+                        label = stringResource(R.string.profile_appearance),
+                        enabled = true,
+                        onClick = onOpenAppearance,
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(themeMode.labelRes()),
                                 color = PompColors.InkDisabled,
                                 fontSize = 13.sp,
                             )
@@ -564,6 +610,82 @@ private fun MiniSettingsRow(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppearancePicker(
+    current: AppThemeMode,
+    onPick: (AppThemeMode) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.Paper,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .padding(bottom = 20.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.profile_theme_picker_title),
+                color = PompColors.Ink,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(12.dp))
+            AppThemeMode.entries.forEach { mode ->
+                val selected = mode == current
+                Surface(
+                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+                    shape = RoundedCornerShape(14.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = if (selected) PompColors.Cinnabar else PompColors.Divider,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 58.dp)
+                        .padding(vertical = 4.dp)
+                        .clickable { onPick(mode) },
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(mode.labelRes()),
+                                color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = stringResource(mode.descriptionRes()),
+                                color = PompColors.InkSecondary,
+                                fontSize = 12.sp,
+                            )
+                        }
+                        if (selected) {
+                            Text(
+                                text = "✓",
+                                color = PompColors.Cinnabar,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+    }
+}
+
 @Composable
 private fun NotificationExplanation() {
     Column(
@@ -650,4 +772,16 @@ internal fun com.pomp.hskai.core.i18n.AppLanguage.labelRes(): Int = when (this) 
     com.pomp.hskai.core.i18n.AppLanguage.UZBEK -> R.string.language_uz
     com.pomp.hskai.core.i18n.AppLanguage.RUSSIAN -> R.string.language_ru
     com.pomp.hskai.core.i18n.AppLanguage.TAJIK -> R.string.language_tj
+}
+
+private fun AppThemeMode.labelRes(): Int = when (this) {
+    AppThemeMode.LIGHT -> R.string.profile_theme_light
+    AppThemeMode.DARK -> R.string.profile_theme_dark
+    AppThemeMode.SYSTEM -> R.string.profile_theme_system
+}
+
+private fun AppThemeMode.descriptionRes(): Int = when (this) {
+    AppThemeMode.LIGHT -> R.string.profile_theme_light_subtitle
+    AppThemeMode.DARK -> R.string.profile_theme_dark_subtitle
+    AppThemeMode.SYSTEM -> R.string.profile_theme_system_subtitle
 }
