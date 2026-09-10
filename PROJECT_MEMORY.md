@@ -227,6 +227,29 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-11 — Android Telegram-first account linking
+
+Changed:
+- Android auth requests an opaque `android_link_<request_id>` Telegram
+  deep-link. The bot validates the pending Android request, creates a new
+  Telegram user when needed, asks for UZ/RU/TJ language, then asks the user
+  to send the 8-character code shown in Android before explicit confirmation.
+- The display code remains outside the URL so forwarding a Telegram link
+  cannot silently bind another account to the device. Desktop `desktop_link`
+  behavior is unchanged.
+- Android auth copy now says “create or sign in through Telegram”.
+
+Files touched:
+- `app/services/desktop_auth_service.py`, `app/bot/handlers/desktop_auth.py`,
+  `app/bot/fsm/android_auth.py`, `app/api/android_auth.py`
+- Android auth strings and `LinkScreen.kt`; Android auth regression tests.
+
+Risk / follow-up:
+- Auth/linking is security-sensitive. Test on a real Android device with a new
+  Telegram user, an existing user, an expired link, and a forwarded link.
+- Cloud branch remains untouched. Gradle compile was not run in this sandbox;
+  local Mac/CI must run compile, unit tests and launcher flow before release.
+
 ### 2026-09-09 — Public SEO boundary
 
 Changed:
@@ -7865,3 +7888,31 @@ Important decisions:
   settings and are off until the Android user opts in.
 - The launcher only receives explicit package-bound intents; no Telegram or
   Mini App URL is used for widget navigation.
+
+### 2026-09-11 — Native Android limit overlay and panda reactions
+
+Changed:
+- A current lesson marked `PremiumLocked` remains tappable so the native lesson
+  host can perform a fresh server check and show the actionable limit/paywall
+  overlay. The same overlay now covers a limit returned while completing a
+  lesson.
+- Practice limit overlays keep the concrete tool name, including mistake
+  review, so the learner sees which exercise was blocked. Profile now exposes
+  the server-controlled trial card as a second entry point.
+- Widget access/progress mood is separate from panda art: seven reactions are
+  selected in 90-minute slots from 09:00 through 19:00, with neutral art
+  outside that window. There is no morning/evening widget state; the optional
+  20:00 phone reminder remains a separate policy.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/course/CourseScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeViewModel.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/widget/WidgetPolicy.kt`
+- `android/app/src/main/java/com/pomp/hskai/widget/WidgetState.kt`
+- `android/app/src/main/java/com/pomp/hskai/widget/HskAiSmartWidget.kt`
+
+Risk:
+- Android Gradle compilation still needs to run on a machine with writable
+  Gradle wrapper cache and an emulator/launcher. Python API/static suites pass.

@@ -106,8 +106,8 @@ class AuthRepository(
                     ApiResult.Success(false)
                 } else {
                     // Persist first: the server will never return these again.
-                    refreshMutex.withLock {
-                        if (sessionGeneration != generation) return@withLock ApiResult.Success(false)
+                    val accepted = refreshMutex.withLock {
+                        if (sessionGeneration != generation) return@withLock false
                         store.saveRefreshToken(refresh)
                         sessionGeneration++
                         onSessionLinked()
@@ -115,8 +115,9 @@ class AuthRepository(
                             value = access,
                             expiresAtMillis = now() + (body.accessExpiresIn ?: 0) * 1_000L,
                         )
+                        true
                     }
-                    ApiResult.Success(true)
+                    ApiResult.Success(accepted)
                 }
             }
         }

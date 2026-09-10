@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -125,6 +127,23 @@ fun ProfileScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
         ) {
             item { ProfilePill() }
+
+            // The profile is a permanent entry point for the same server-side
+            // trial offered by the limit paywall. Keep the card here so a
+            // learner can start it later without having to hit a limit first.
+            state.trial?.let { trial ->
+                if (trial.active || trial.eligible || state.trialError.isNotBlank()) {
+                    item {
+                        Spacer(Modifier.height(12.dp))
+                        TrialCard(
+                            active = trial.active,
+                            isStarting = state.trialStarting,
+                            error = state.trialError,
+                            onStartTrial = onStartTrial,
+                        )
+                    }
+                }
+            }
 
             if (hints.isNotEmpty()) {
                 item {
@@ -280,6 +299,69 @@ private fun ProfilePill() {
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
             )
+        }
+    }
+}
+
+@Composable
+private fun TrialCard(
+    active: Boolean,
+    isStarting: Boolean,
+    error: String,
+    onStartTrial: () -> Unit,
+) {
+    Surface(
+        color = PompColors.CinnabarSoft,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, PompColors.Cinnabar.copy(alpha = 0.35f)),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            Text(
+                text = stringResource(
+                    if (active) R.string.profile_trial_active_title
+                    else R.string.profile_trial_title,
+                ),
+                color = PompColors.CinnabarDark,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = stringResource(
+                    if (active) R.string.profile_trial_active_body
+                    else R.string.profile_trial_body,
+                ),
+                color = PompColors.InkSecondary,
+                fontSize = 13.sp,
+                lineHeight = 18.sp,
+            )
+            if (!active) {
+                Button(
+                    onClick = onStartTrial,
+                    enabled = !isStarting,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PompColors.Cinnabar,
+                        contentColor = PompColors.Paper,
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 46.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.profile_trial_cta),
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
+            if (error.isNotBlank()) {
+                Text(
+                    text = error,
+                    color = PompColors.CinnabarDark,
+                    fontSize = 12.sp,
+                )
+            }
         }
     }
 }

@@ -69,6 +69,8 @@ import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
 import com.pomp.hskai.domain.model.UnsupportedCard
+import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
 @Composable
 internal fun PrimaryAction(
@@ -131,45 +133,66 @@ fun LessonScreen(
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
+    limit: LimitGate = LimitGate(),
 ) {
     val outcome = state.outcome
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        when {
-            state.isLoading -> Centered { CircularProgressIndicator(color = PompColors.Cinnabar) }
+        Box(Modifier.fillMaxSize()) {
+            when {
+                state.isLoading -> Centered { CircularProgressIndicator(color = PompColors.Cinnabar) }
 
-            state.lesson == null -> Centered {
-                Text(
-                    text = (state.error as? ApiError.LimitReached)?.limitText
-                        ?: stringResource(state.error?.messageRes ?: R.string.error_unknown),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = PompColors.InkSecondary,
-                    textAlign = TextAlign.Center,
+                state.lesson == null -> Centered {
+                    // The server has already decided that this lesson is
+                    // blocked. Keep the fallback copy for ordinary errors;
+                    // the limit itself is rendered as the same paywall used
+                    // by practice and voice below.
+                    Text(
+                        text = stringResource(state.error?.messageRes ?: R.string.error_unknown),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = PompColors.InkSecondary,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    SecondaryAction(stringResource(R.string.action_close), onExit)
+                }
+
+                outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
+
+                outcome is LessonOutcome.Completed -> CompletedBlock(outcome, onExit)
+
+                outcome is LessonOutcome.Failed ->
+                    FailedBlock(outcome, onRetryCompletion, onExit)
+
+                else -> LessonBody(
+                    state = state,
+                    pinyin = pinyin,
+                    onAnswerChoice = onAnswerChoice,
+                    onAnswerBuilder = onAnswerBuilder,
+                    onAnswerPairs = onAnswerPairs,
+                    onAcknowledge = onAcknowledge,
+                    onAdvance = onAdvance,
+                    onPlayAudio = onPlayAudio,
+                    onOpenPinyinSettings = onOpenPinyinSettings,
+                    onOpenWriter = onOpenWriter,
+                    onCloseWriter = onCloseWriter,
+                    onExit = onExit,
                 )
-                Spacer(Modifier.height(16.dp))
-                SecondaryAction(stringResource(R.string.action_close), onExit)
             }
 
-            outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
-
-            outcome is LessonOutcome.Completed -> CompletedBlock(outcome, onExit)
-
-            outcome is LessonOutcome.Failed ->
-                FailedBlock(outcome, onRetryCompletion, onExit)
-
-            else -> LessonBody(
-                state = state,
-                pinyin = pinyin,
-                onAnswerChoice = onAnswerChoice,
-                onAnswerBuilder = onAnswerBuilder,
-                onAnswerPairs = onAnswerPairs,
-                onAcknowledge = onAcknowledge,
-                onAdvance = onAdvance,
-                onPlayAudio = onPlayAudio,
-                onOpenPinyinSettings = onOpenPinyinSettings,
-                onOpenWriter = onOpenWriter,
-                onCloseWriter = onCloseWriter,
-                onExit = onExit,
-            )
+            // A lesson can be refused both while loading and on completion
+            // (for example after a second device consumed the allowance).
+            // In either case the learner must get an actionable limit window,
+            // not a red-looking error line that does nothing.
+            val spent = state.error as? ApiError.LimitReached
+            if (spent != null) {
+                SectionLimitOverlay(
+                    sectionTitle = stringResource(R.string.nav_course),
+                    limit = limit,
+                    reason = spent.limitText ?: stringResource(R.string.limit_lesson_reason),
+                    resetAt = spent.resetAt,
+                    onClose = onExit,
+                )
+            }
         }
     }
 }

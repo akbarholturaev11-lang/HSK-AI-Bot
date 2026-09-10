@@ -24,6 +24,10 @@ from app.services.user_access_state_service import UserAccessStateService
 DISPLAY_CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
 DESKTOP_PLATFORMS = {"macos", "windows"}
 MOBILE_PLATFORMS = {"android"}
+# Telegram deep-link payloads are intentionally opaque. The Android client
+# receives the polling secret separately and the bot only sees this one-time
+# request identifier.
+ANDROID_LINK_PREFIX = "android_link_"
 # Every native client allowed to open a Telegram device link. The desktop-only
 # set stays separate so desktop consumers (downloads, release manifest, admin
 # desktop statistics) keep their current meaning and are not silently widened.
@@ -353,16 +357,118 @@ class DesktopAuthService:
             .lstrip("@")
             or "darsi_chini_bot"
         )
+        bot_start_payload = (
+            f"{ANDROID_LINK_PREFIX}{link_request.id}"
+            if platform == "android"
+            else "desktop_link"
+        )
         return {
             "ok": True,
             "status": "pending",
             "link_request_id": link_request.id,
             "display_code": display_code,
             "polling_secret": polling_secret,
-            # The display code must be typed manually in the private bot chat.
-            # Never place it in a Telegram deep-link, browser history or logs.
-            "bot_deep_link": f"https://t.me/{username}?start=desktop_link",
+            # The display code remains a manual fallback. Never place it in a
+            # Telegram deep-link, browser history or logs.
+            "bot_deep_link": f"https://t.me/{username}?start={bot_start_payload}",
             "expires_in": self._link_ttl(),
+        }
+
+    async def link_request_preview(
+        self,
+        *,
+        link_request_id: str,
+        platform: str | None = None,
+    ) -> dict[str, Any]:
+        """Return safe details for a payload-based Telegram link flow."""
+
+        self._signing_secret()
+        request_id = str(link_request_id or "").strip()
+        if not request_id or len(request_id) > 64:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        result = await self.session.execute(
+            select(DesktopLinkRequest)
+            .where(DesktopLinkRequest.id == request_id)
+            .with_for_update()
+        )
+        link_request = result.scalar_one_or_none()
+        now = _utcnow()
+        if not link_request:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        if platform and link_request.platform != platform:
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        if (_as_utc(link_request.expires_at) or now) <= now:
+            link_request.status = "expired"
+            await self.session.commit()
+            raise DesktopAuthError("desktop_link_expired", status_code=410)
+        if link_request.status != "pending" or link_request.consumed_at is not None:
+            raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        expires_at = _as_utc(link_request.expires_at) or now
+        return {
+            "ok": True,
+            "link_request_id": link_request.id,
+            "platform": link_request.platform,
+            "app_version": link_request.app_version,
+            "expires_in": max(0, int((expires_at - now).total_seconds())),
+        }
+
+    async def link_request_preview_for_code(
+        self,
+        *,
+        link_request_id: str,
+        display_code: str,
+        telegram_id: int,
+    ) -> dict[str, Any]:
+        """Verify the Android request id and its displayed code together."""
+
+        self._signing_secret()
+        request_id = str(link_request_id or "").strip()
+        normalized = str(display_code or "").strip().upper().replace("-", "")
+        if not request_id or len(request_id) > 64 or len(normalized) != 8:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        result = await self.session.execute(
+            select(DesktopLinkRequest)
+            .where(DesktopLinkRequest.id == request_id)
+            .with_for_update()
+        )
+        link_request = result.scalar_one_or_none()
+        now = _utcnow()
+        if not link_request or link_request.platform != "android":
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        if not hmac.compare_digest(
+            str(getattr(link_request, "display_code_hash", "") or ""),
+            self._hash("display-code", normalized),
+        ):
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        if (_as_utc(link_request.expires_at) or now) <= now:
+            link_request.status = "expired"
+            await self.session.commit()
+            raise DesktopAuthError("desktop_link_expired", status_code=410)
+        if link_request.status == "approved":
+            if int(link_request.approved_telegram_id or 0) == int(telegram_id):
+                await self.session.commit()
+                return {
+                    "ok": True,
+                    "duplicate": True,
+                    "platform": link_request.platform,
+                }
+            raise DesktopAuthError("desktop_link_already_approved", status_code=409)
+        if link_request.status != "pending" or link_request.consumed_at is not None:
+            raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        if (
+            link_request.approved_telegram_id is not None
+            and int(link_request.approved_telegram_id) != int(telegram_id)
+        ):
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        link_request.approved_telegram_id = int(telegram_id)
+        await self.session.commit()
+        expires_at = _as_utc(link_request.expires_at) or now
+        return {
+            "ok": True,
+            "display_code": normalized,
+            "platform": link_request.platform,
+            "app_version": link_request.app_version,
+            "expires_in": max(0, int((expires_at - now).total_seconds())),
         }
 
     async def approve_link(

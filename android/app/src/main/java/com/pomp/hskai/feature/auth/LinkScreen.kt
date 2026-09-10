@@ -43,11 +43,10 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 
 /**
- * Telegram device-link screen.
+ * Telegram-first account creation/link screen.
  *
- * The code is displayed, never embedded in the Telegram URL. Opening Telegram
- * only starts the manual-entry conversation, so possessing the link can never
- * reserve or approve a device.
+ * The primary path uses an opaque Android request id in the Telegram URL;
+ * the display code remains visible only as a manual fallback.
  */
 @Composable
 fun LinkScreen(

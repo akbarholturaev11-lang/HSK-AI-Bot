@@ -475,8 +475,14 @@ private fun PathRow(
                 when (val item = row.item) {
                     is PathItem.Lesson -> {
                         val lesson = item.lesson
+                        // The server marks the next lesson as a premium lock
+                        // when the free allowance is spent. It is still the
+                        // learner's current destination, so let the tap open
+                        // the lesson host; that host performs the fresh check
+                        // and shows the actionable limit window.
                         val clickable = lesson.access == LessonAccess.Open ||
-                            lesson.access == LessonAccess.HalfPreview
+                            lesson.access == LessonAccess.HalfPreview ||
+                            (lesson.access == LessonAccess.PremiumLocked && lesson.isCurrent)
                         val lessonDescription = lesson.stateLabel()
                         if (lesson.isCurrent && clickable) CurrentBubble()
                         Box(
@@ -651,6 +657,13 @@ private fun LessonNodeFace(lesson: CourseLesson) {
             NodeContent.Done,
             PompColors.Paper,
             null,
+        )
+        lesson.access == LessonAccess.PremiumLocked && lesson.isCurrent -> NodeStyle(
+            PompColors.CinnabarSoft,
+            PompColors.CinnabarDark,
+            if (checkpoint) NodeContent.Checkpoint else NodeContent.Locked,
+            PompColors.CinnabarDark,
+            BorderStroke(2.dp, PompColors.Cinnabar),
         )
         lesson.access.isPremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
             PompColors.Divider,

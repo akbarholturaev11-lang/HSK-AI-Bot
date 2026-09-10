@@ -21,11 +21,11 @@
     <string name="action_continue">Davom etish</string>
 
     <!-- Onboarding: Telegram linking -->
-    <string name="link_title">Telegram hisobingizni ulang</string>
-    <string name="link_subtitle">Mavjud kursingiz, obunangiz va progressingiz shu yerga sinxronlanadi. Yangi hisob yaratilmaydi.</string>
-    <string name="link_step_1">Quyidagi kodni nusxalang</string>
-    <string name="link_step_2">Telegramni oching va kodni botga yuboring</string>
-    <string name="link_step_3">Botda \"Tasdiqlash\" tugmasini bosing</string>
+    <string name="link_title">Telegram orqali akkaunt oching yoki kiring</string>
+    <string name="link_subtitle">Parol kerak emas. Telegram orqali yangi akkaunt yaratiladi yoki mavjud kursingiz shu qurilmaga ulanadi.</string>
+    <string name="link_step_1">Telegramni oching</string>
+    <string name="link_step_2">Tilni tanlang</string>
+    <string name="link_step_3">Kodni yuboring va Android ulashni tasdiqlang</string>
     <string name="link_code_label">Ulash kodi</string>
     <string name="link_code_copied">Kod nusxalandi</string>
     <string name="link_open_telegram">Telegramni ochish</string>
@@ -35,7 +35,7 @@
     <string name="link_new_code">Yangi kod olish</string>
     <string name="link_success">Hisob ulandi</string>
     <string name="link_telegram_missing">Telegram ilovasi topilmadi. Kodni brauzer orqali yuborishingiz mumkin.</string>
-    <string name="link_security_note">Kod havolaga qo\'shilmaydi. Uni faqat o\'zingiz botga yuborasiz.</string>
+    <string name="link_security_note">Tasdiqlash faqat siz ochgan Android so‘rovi uchun ishlaydi. Kod — zaxira usul.</string>
 
     <!-- Synced account summary -->
     <string name="synced_title">Hisobingiz ulandi</string>
@@ -296,6 +296,7 @@
     <string name="drill_recognition_prompt">To‘g‘ri ieroglifni toping</string>
     <string name="drill_pronunciation_prompt">Eshiting va takrorlang</string>
     <string name="limit_practice_reason">Bu bo‘limdan bepul foydalanishingiz tugadi.</string>
+    <string name="limit_lesson_reason">Bugungi bepul dars limiti tugadi.</string>
     <string name="voice_settings_title">Sozlamalar</string>
     <string name="voice_setting_partner">Suhbatdosh</string>
     <string name="voice_setting_subtitles">Pinyin va tarjima</string>
