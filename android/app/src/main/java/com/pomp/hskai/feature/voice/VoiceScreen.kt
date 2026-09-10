@@ -43,7 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.FontWeight
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -280,6 +280,42 @@ private fun VoiceLimit(state: VoiceUiState) {
             color = PompColors.Ink,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
         )
+    }
+}
+
+@Composable
+private fun RoleCard(
+    role: VoiceRoleSpec,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Row(Modifier.padding(16.dp)) {
+            Text(
+                text = role.glyph,
+                style = PompTextStyles.hanziMedium,
+                color = PompColors.CinnabarDark,
+            )
+            Column(Modifier.padding(start = 14.dp)) {
+                Text(
+                    text = stringResource(role.titleRes),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Ink,
+                )
+                Text(
+                    text = stringResource(role.bodyRes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+            }
+        }
     }
 }
 
