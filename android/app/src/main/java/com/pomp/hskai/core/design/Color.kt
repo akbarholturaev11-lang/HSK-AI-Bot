@@ -39,12 +39,6 @@ internal data class PompPalette(
     val optionDepth: Color,
 )
 
-/**
- * HSK AI brand tokens. The light palette stays value-for-value compatible with
- * the Mini App. Android dark mode uses the HSK AI "Cosmos Learning" system:
- * Cosmos Blue foundation, cyan learning/action, jade success, gold reward and
- * coral only for destructive/error semantics.
- */
 object PompColors {
     val LightPaper = Color(0xFFFDF9F0)
     val LightPaperRaised = Color(0xFFFFFFFF)
@@ -88,8 +82,6 @@ object PompColors {
         ink = Color(0xFFF5FAFD),
         inkSecondary = Color(0xFFB8CDDA),
         inkDisabled = Color(0xFF7FA3B5),
-        // Existing Cinnabar call-sites represent the app's primary action token.
-        // In dark mode that role intentionally becomes cyan.
         cinnabar = Color(0xFF20BCEB),
         cinnabarDark = Color(0xFF1299C4),
         cinnabarSoft = Color(0xFF0B4C66),
@@ -97,7 +89,6 @@ object PompColors {
         jadeSoft = Color(0xFF0A5146),
         gold = Color(0xFFF4C95D),
         goldSoft = Color(0xFF584819),
-        // Flame is the semantic warning/error family in the dark theme.
         flame = Color(0xFFFF6B66),
         flameSoft = Color(0xFF5B3135),
         blue = Color(0xFF20BCEB),
@@ -122,6 +113,7 @@ object PompColors {
     private var activePalette by mutableStateOf(LightPalette)
     internal fun paletteFor(darkTheme: Boolean): PompPalette = if (darkTheme) DarkPalette else LightPalette
     fun useDarkTheme(enabled: Boolean) { activePalette = paletteFor(enabled) }
+    val IsDark: Boolean get() = activePalette === DarkPalette
 
     val Paper: Color get() = activePalette.paper
     val PaperRaised: Color get() = activePalette.paperRaised
