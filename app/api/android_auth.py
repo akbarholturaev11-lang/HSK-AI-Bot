@@ -5,9 +5,10 @@ device-binding and rate-limiting decision stays inside the shared
 ``DesktopAuthService``; nothing security-relevant is duplicated here.
 
 The Android link flow keeps the exact security properties of the desktop flow:
-the 8-character display code is never placed in the Telegram deep link, the
-user types it manually in the private bot chat, approval is explicit, the code
-is single-use, and refresh tokens rotate with reuse detection.
+the 8-character display code and polling secret are never placed in the
+Telegram deep link, the bot receives only an opaque one-time request id,
+approval is explicit, the code remains available as a manual fallback, and
+refresh tokens rotate with reuse detection.
 """
 
 from __future__ import annotations

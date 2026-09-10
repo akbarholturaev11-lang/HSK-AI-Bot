@@ -55,14 +55,27 @@ class HskAiSmartWidget : GlanceAppWidget() {
             val now = remember(session.snapshot) { java.time.ZonedDateTime.now() }
             val dark = theme == AppThemeMode.DARK || (theme == AppThemeMode.SYSTEM &&
                 context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
-            WidgetContent(AppLocale.wrap(context), session, WidgetStateResolver.resolve(session.linked, session.snapshot, now), dark)
+            val mood = WidgetStateResolver.resolve(session.linked, session.snapshot, now)
+            WidgetContent(
+                context = AppLocale.wrap(context),
+                session = session,
+                mood = mood,
+                dark = dark,
+                reaction = WidgetStateResolver.reaction(mood, now),
+            )
         }
     }
 }
 
 /** No scheduling, network calls or access decisions in the view. */
 @Composable
-internal fun WidgetContent(context: Context, session: WidgetSession, mood: WidgetMood, dark: Boolean) {
+internal fun WidgetContent(
+    context: Context,
+    session: WidgetSession,
+    mood: WidgetMood,
+    dark: Boolean,
+    reaction: WidgetReaction = WidgetStateResolver.reaction(mood),
+) {
     val size = LocalSize.current
     val compact = size.height < 110.dp
     val wide = size.width >= 260.dp
@@ -75,11 +88,16 @@ internal fun WidgetContent(context: Context, session: WidgetSession, mood: Widge
         WidgetMood.STREAK -> R.string.widget_streak
         WidgetMood.CONTINUE -> R.string.widget_continue
     })
-    val art = when (mood) {
-        WidgetMood.COMPLETE -> R.drawable.widget_panda_celebrate
-        WidgetMood.STREAK -> R.drawable.widget_panda_streak
-        WidgetMood.CONTINUE, WidgetMood.FOUNDATION -> R.drawable.widget_panda_invite
-        else -> R.drawable.widget_panda_calm
+    val art = when (reaction) {
+        WidgetReaction.CALM -> R.drawable.widget_panda_calm
+        // The original invite art is the panda's friendly wave and remains
+        // the preview image shown by the add-widget sheet.
+        WidgetReaction.WAVE -> R.drawable.widget_panda_invite
+        WidgetReaction.THINKING -> R.drawable.widget_panda_thinking
+        WidgetReaction.FOCUS -> R.drawable.widget_panda_focus
+        WidgetReaction.CHEER -> R.drawable.widget_panda_cheer
+        WidgetReaction.STREAK -> R.drawable.widget_panda_streak
+        WidgetReaction.CELEBRATE -> R.drawable.widget_panda_celebrate
     }
     val fresh = mood != WidgetMood.UNLINKED && mood != WidgetMood.STALE
     val snapshot = session.snapshot

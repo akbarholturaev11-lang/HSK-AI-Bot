@@ -4,11 +4,11 @@
     <string name="onboarding_language_subtitle">Курс, переводы и напоминания будут на этом языке.</string>
     <string name="action_continue">Продолжить</string>
 
-    <string name="link_title">Подключите аккаунт Telegram</string>
-    <string name="link_subtitle">Ваш курс, подписка и прогресс синхронизируются сюда. Новый аккаунт не создаётся.</string>
-    <string name="link_step_1">Скопируйте код ниже</string>
-    <string name="link_step_2">Откройте Telegram и отправьте код боту</string>
-    <string name="link_step_3">Нажмите «Подтвердить» в боте</string>
+    <string name="link_title">Создайте аккаунт или войдите через Telegram</string>
+    <string name="link_subtitle">Пароль не нужен. Новый аккаунт создастся через Telegram, а существующий курс подключится к этому устройству.</string>
+    <string name="link_step_1">Откройте Telegram</string>
+    <string name="link_step_2">Выберите язык</string>
+    <string name="link_step_3">Отправьте код и подтвердите подключение Android</string>
     <string name="link_code_label">Код подключения</string>
     <string name="link_code_copied">Код скопирован</string>
     <string name="link_open_telegram">Открыть Telegram</string>
@@ -18,7 +18,7 @@
     <string name="link_new_code">Получить новый код</string>
     <string name="link_success">Аккаунт подключён</string>
     <string name="link_telegram_missing">Приложение Telegram не найдено. Код можно отправить через браузер.</string>
-    <string name="link_security_note">Код не добавляется в ссылку. Вы отправляете его боту сами.</string>
+    <string name="link_security_note">Подтверждение действует только для начатого вами запроса. Код — запасной способ.</string>
 
     <string name="synced_title">Аккаунт подключён</string>
     <string name="synced_access_paid">Подписка активна</string>
@@ -266,6 +266,7 @@
     <string name="drill_recognition_prompt">Найдите нужный иероглиф</string>
     <string name="drill_pronunciation_prompt">Послушайте и повторите</string>
     <string name="limit_practice_reason">Бесплатное использование этого раздела закончилось.</string>
+    <string name="limit_lesson_reason">Бесплатный лимит уроков на сегодня закончился.</string>
     <string name="voice_settings_title">Настройки</string>
     <string name="voice_setting_partner">Собеседник</string>
     <string name="voice_setting_subtitles">Пиньинь и перевод</string>

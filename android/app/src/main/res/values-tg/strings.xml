@@ -5,11 +5,11 @@
     <string name="onboarding_language_subtitle">Курс, тарҷумаҳо ва ёдоварӣ бо ҳамин забон мешаванд.</string>
     <string name="action_continue">Идома додан</string>
 
-    <string name="link_title">Ҳисоби Telegram-ро пайваст кунед</string>
-    <string name="link_subtitle">Курс, обуна ва пешрафти шумо ба ин ҷо ҳамоҳанг мешавад. Ҳисоби нав сохта намешавад.</string>
-    <string name="link_step_1">Рамзи зеринро нусха бардоред</string>
-    <string name="link_step_2">Telegram-ро кушоед ва рамзро ба бот фиристед</string>
-    <string name="link_step_3">Дар бот тугмаи «Тасдиқ»-ро пахш кунед</string>
+    <string name="link_title">Тавассути Telegram ҳисоб созед ё ворид шавед</string>
+    <string name="link_subtitle">Парол лозим нест. Ҳисоби нав тавассути Telegram сохта мешавад ё курси мавҷуда ба ин дастгоҳ пайваст мегардад.</string>
+    <string name="link_step_1">Telegram-ро кушоед</string>
+    <string name="link_step_2">Забонро интихоб кунед</string>
+    <string name="link_step_3">Рамзро фиристед ва пайвасти Android-ро тасдиқ кунед</string>
     <string name="link_code_label">Рамзи пайвастшавӣ</string>
     <string name="link_code_copied">Рамз нусха шуд</string>
     <string name="link_open_telegram">Кушодани Telegram</string>
@@ -19,7 +19,7 @@
     <string name="link_new_code">Гирифтани рамзи нав</string>
     <string name="link_success">Ҳисоб пайваст шуд</string>
     <string name="link_telegram_missing">Барномаи Telegram ёфт нашуд. Рамзро тавассути браузер фиристода метавонед.</string>
-    <string name="link_security_note">Рамз ба истинод илова намешавад. Шумо онро худатон ба бот мефиристед.</string>
+    <string name="link_security_note">Тасдиқ танҳо барои дархости аз ҷониби шумо оғозшуда амал мекунад. Рамз — роҳи эҳтиётӣ.</string>
 
     <string name="synced_title">Ҳисоб пайваст шуд</string>
     <string name="synced_access_paid">Обуна фаъол</string>
@@ -267,6 +267,7 @@
     <string name="drill_recognition_prompt">Иероглифи дурустро ёбед</string>
     <string name="drill_pronunciation_prompt">Гӯш кунед ва такрор кунед</string>
     <string name="limit_practice_reason">Истифодаи ройгони ин бахш ба анҷом расид.</string>
+    <string name="limit_lesson_reason">Лимити ройгони дарсҳо барои имрӯз тамом шуд.</string>
     <string name="voice_settings_title">Танзимот</string>
     <string name="voice_setting_partner">Ҳамсӯҳбат</string>
     <string name="voice_setting_subtitles">Пинйин ва тарҷума</string>

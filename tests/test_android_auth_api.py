@@ -23,6 +23,8 @@ from sqlalchemy.pool import StaticPool
 
 from app.api.android_auth import AndroidLinkStartRequest, create_android_auth_router
 from app.api.desktop_auth import DesktopLinkStartRequest
+from app.bot.fsm.android_auth import AndroidLinkStates
+from app.bot.fsm.desktop_auth import DesktopLinkStates
 from app.bot.handlers import desktop_auth as desktop_auth_handler
 from app.db.base import Base
 from app.db.models.course_miniapp_event import (
@@ -189,12 +191,60 @@ class AndroidAuthServiceTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             started = await self._start(session, platform="android")
 
-        self.assertEqual(
-            "https://t.me/pomp_test_bot?start=desktop_link",
-            started["bot_deep_link"],
+        self.assertTrue(
+            started["bot_deep_link"].startswith(
+                "https://t.me/pomp_test_bot?start=android_link_"
+            )
         )
+        self.assertIn(started["link_request_id"], started["bot_deep_link"])
         self.assertNotIn(started["display_code"], started["bot_deep_link"])
         self.assertNotIn(started["polling_secret"], started["bot_deep_link"])
+
+    async def test_android_request_payload_still_requires_the_display_code(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, platform="android")
+
+            preview = await service.link_request_preview(
+                link_request_id=started["link_request_id"],
+                platform="android",
+            )
+            self.assertEqual("android", preview["platform"])
+            with self.assertRaises(DesktopAuthError):
+                await service.link_request_preview_for_code(
+                    link_request_id=started["link_request_id"],
+                    display_code="BADCODE1",
+                    telegram_id=1001,
+                )
+            preview_with_code = await service.link_request_preview_for_code(
+                link_request_id=started["link_request_id"],
+                display_code=started["display_code"],
+                telegram_id=1001,
+            )
+            self.assertEqual(started["display_code"], preview_with_code["display_code"])
+            approved = await service.approve_link(
+                display_code=started["display_code"],
+                telegram_id=1001,
+            )
+            self.assertTrue(approved["ok"])
+            linked = await service.poll_link(
+                link_request_id=started["link_request_id"],
+                polling_secret=started["polling_secret"],
+            )
+
+        self.assertEqual("linked", linked["status"])
+
+    async def test_android_request_payload_cannot_preview_desktop_request(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, platform="macos")
+            with self.assertRaises(DesktopAuthError) as rejected:
+                await service.link_request_preview(
+                    link_request_id=started["link_request_id"],
+                    platform="android",
+                )
+
+        self.assertEqual("desktop_link_invalid", rejected.exception.code)
 
     async def test_android_link_emits_android_analytics_only(self):
         async with self.sessions() as session:
@@ -401,6 +451,34 @@ class AndroidBotConfirmationTests(unittest.IsolatedAsyncioTestCase):
         async def answer(self, text, **kwargs):
             self.answers.append((text, kwargs))
 
+    class _AndroidMessage(_Message):
+        def __init__(self, text):
+            super().__init__(text)
+            self.from_user = SimpleNamespace(
+                id=1001,
+                full_name="New learner",
+                username="new_learner",
+            )
+            self.bot = object()
+
+    class _Callback:
+        def __init__(self, data):
+            self.data = data
+            self.from_user = SimpleNamespace(
+                id=1001,
+                full_name="New learner",
+                username="new_learner",
+            )
+            self.bot = object()
+            self.message = SimpleNamespace(
+                edit_text=AsyncMock(),
+                answer=AsyncMock(),
+            )
+            self.answered = []
+
+        async def answer(self, *args, **kwargs):
+            self.answered.append((args, kwargs))
+
     def test_platform_labels_cover_every_native_platform(self):
         for platform in NATIVE_PLATFORMS:
             with self.subTest(platform=platform):
@@ -463,6 +541,64 @@ class AndroidBotConfirmationTests(unittest.IsolatedAsyncioTestCase):
         text = await self._confirmation_text("uz", "macos")
         self.assertIn("Qurilma: <b>Mac</b>", text)
         self.assertNotIn("Android", text)
+
+    async def test_android_start_creates_account_flow_and_asks_for_language(self):
+        state = self._State()
+        message = self._AndroidMessage(
+            "/start android_link_3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+        )
+        user = SimpleNamespace(language="tj", learning_mode="onboard_lang")
+        with patch.object(desktop_auth_handler, "OnboardingService") as onboarding, patch.object(
+            desktop_auth_handler, "DesktopAuthService"
+        ) as service:
+            onboarding.return_value.get_or_create_user = AsyncMock(
+                return_value=(user, True)
+            )
+            service.return_value.link_request_preview = AsyncMock(
+                return_value={
+                    "platform": "android",
+                    "app_version": "1.0.0",
+                }
+            )
+            await desktop_auth_handler.begin_android_link(message, state, object())
+
+        self.assertEqual(state.state, AndroidLinkStates.choosing_language.state)
+        self.assertEqual(
+            state.data["android_link_request_id"],
+            "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+        )
+        self.assertEqual(1, len(message.answers))
+        self.assertIn("Android", message.answers[0][0])
+
+    async def test_android_language_selection_moves_to_confirmation(self):
+        state = self._State()
+        await state.update_data(
+            android_link_request_id="3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+        )
+        await state.set_state(AndroidLinkStates.choosing_language)
+        callback = self._Callback("android_link:lang:uz")
+        user = SimpleNamespace(language="tj", learning_mode="onboard_lang")
+        with patch.object(desktop_auth_handler, "OnboardingService") as onboarding, patch.object(
+            desktop_auth_handler, "DesktopAuthService"
+        ) as service:
+            onboarding.return_value.get_or_create_user = AsyncMock(
+                return_value=(user, False)
+            )
+            service.return_value.link_request_preview = AsyncMock(
+                return_value={
+                    "platform": "android",
+                    "app_version": "1.0.0",
+                }
+            )
+            await desktop_auth_handler.choose_android_link_language(
+                callback,
+                state,
+                SimpleNamespace(commit=AsyncMock()),
+            )
+
+        self.assertEqual(user.language, "uz")
+        self.assertEqual(state.state, DesktopLinkStates.waiting_code.state)
+        callback.message.answer.assert_awaited_once()
 
 
 if __name__ == "__main__":

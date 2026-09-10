@@ -695,6 +695,8 @@ private fun AppRoot(
                     level = courseState.map?.level.orEmpty(),
                     language = state.account.language,
                     pinyin = pinyin,
+                    limit = limitGate,
+                    accessChanged = trialActive,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
                         openLesson = null
@@ -930,6 +932,8 @@ private fun LessonHost(
     level: String,
     language: com.pomp.hskai.core.i18n.AppLanguage,
     pinyin: PinyinVisibility,
+    limit: LimitGate,
+    accessChanged: Boolean,
     /** [completed] says whether the lesson was actually finished and reported. */
     onExit: (completed: Boolean) -> Unit,
 ) {
@@ -956,12 +960,16 @@ private fun LessonHost(
     LaunchedEffect(launch.attemptKey) {
         model.beginAttempt(launch.attemptKey)
     }
+    LaunchedEffect(accessChanged, launch.attemptKey) {
+        if (accessChanged) model.load()
+    }
     DisposableEffect(model, launch.attemptKey) {
         onDispose { model.endAttempt(launch.attemptKey) }
     }
 
     LessonScreen(
         state = lessonState,
+        limit = limit,
         pinyin = pinyin,
         onAnswerChoice = model::answerChoice,
         onAnswerBuilder = model::answerBuilder,

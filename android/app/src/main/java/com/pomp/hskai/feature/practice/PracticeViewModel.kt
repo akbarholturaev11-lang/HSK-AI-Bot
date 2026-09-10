@@ -53,6 +53,14 @@ internal val EXAM_TOOL = PracticeToolSpec(
     glyph = "HSK",
 )
 
+private val MISTAKE_REVIEW_TOOL = PracticeToolSpec(
+    mode = "mistake_review",
+    skill = "",
+    titleRes = R.string.practice_mistakes_title,
+    bodyRes = R.string.practice_mistakes_body,
+    glyph = "!",
+)
+
 data class PracticeUiState(
     val mistakes: MistakesOverviewResponse? = null,
     val isLoadingMistakes: Boolean = false,
@@ -497,6 +505,7 @@ class PracticeViewModel(
                 reviewResult = null,
                 reviewFeedback = null,
                 reviewAnswers = emptyMap(),
+                pendingTool = MISTAKE_REVIEW_TOOL,
             )
         }
         viewModelScope.launch {
