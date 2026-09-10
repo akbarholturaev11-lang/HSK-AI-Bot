@@ -14,6 +14,7 @@ farqni yozadi. Qaror baribir ESKI yo'ldan chiqadi, toki sozlama uni
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from fastapi import APIRouter, Request
@@ -35,6 +36,7 @@ from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 logger = logging.getLogger(__name__)
 
 CLIENT = "miniapp"
+SHADOW_COMPARE_TIMEOUT_SECONDS = 0.25
 
 #: Kunlik darvoza ochadigan bo'limlar. `app/main.py` dagi
 #: `_COURSE_DAILY_GATE_FEATURES` ning aynan o'zi — u yerdan ko'chirildi va
@@ -131,11 +133,22 @@ def create_miniapp_entitlements_router(
             result = await access.consume_daily_use(
                 user, feature_key=feature, ref=ref, lifetime=True
             )
-            # Markaziy dvigatel shu savolga yonma-yon javob beradi va farq
-            # yoziladi. Bu yerda u hech narsani hal qilmaydi.
-            await shadow_compare_gate(
-                session, user=user, feature=feature, legacy=result, client=CLIENT
-            )
+            # Asosiy limit qarori avval saqlanadi. Shadow — faqat diagnostika;
+            # sekin DB yoki yangi dvigatel mashqni boshlashni ushlab turmasin.
+            await session.commit()
+            try:
+                await asyncio.wait_for(
+                    shadow_compare_gate(
+                        session, user=user, feature=feature, legacy=result, client=CLIENT
+                    ),
+                    timeout=SHADOW_COMPARE_TIMEOUT_SECONDS,
+                )
+            except asyncio.TimeoutError:
+                logger.warning(
+                    "Skipping slow entitlement shadow comparison for %s/%s",
+                    telegram_id,
+                    feature,
+                )
 
             if not result.get("allowed"):
                 # Bepul tugadi — endi faqat obuna yoki 7 kunlik trial.
@@ -152,7 +165,6 @@ def create_miniapp_entitlements_router(
                 # o'sha kalitni o'qiydi, va ular yangilanmasidan oldin ham
                 # to'g'ri ishlashi kerak.
                 ad_info = {"available": False, "limited": False}
-                await session.commit()
                 return JSONResponse(
                     status_code=403,
                     content={
@@ -166,7 +178,6 @@ def create_miniapp_entitlements_router(
                         "reset_at": result.get("reset_at"),
                     },
                 )
-            await session.commit()
             return JSONResponse(
                 content={
                     "ok": True,

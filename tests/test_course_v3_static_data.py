@@ -658,6 +658,24 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function paywallHtml(ctx)", html)
         self.assertIn(r"App.startTrial(\'paywall_lesson\')", html)
 
+    def test_practice_limit_status_is_prefetched_without_spending_the_gate(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+
+        self.assertIn("function prefetchPracticeLimitStatus()", html)
+        self.assertIn('"/api/v3/limits/status"', html)
+        prefetch_body = html[
+            html.index("function prefetchPracticeLimitStatus()") : html.index(
+                "window.CourseLimitStatus="
+            )
+        ]
+        self.assertNotIn('"/api/v3/practice/daily-gate"', prefetch_body)
+        self.assertIn("PRACTICE_STATUS_PREFETCHED=true", html)
+        self.assertIn("PRACTICE_LIMIT_STATUS_VERSIONS", html)
+        self.assertIn("window.CourseLimitStatus={get:practiceLimitStatus", html)
+        self.assertIn("statusPromise=window.CourseLimitStatus.get(statusFeature)", ads)
+        self.assertIn("(statusPromise||fetchLimitStatus())", ads)
+
     def test_admin_can_attach_external_cta_to_lesson_end_ad(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
 

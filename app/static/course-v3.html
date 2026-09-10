@@ -1882,6 +1882,7 @@ function navInit(){document.querySelectorAll("#nav button").forEach(function(b){
 /* ---------- Course (hybrid path) ---------- */
 function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[]).forEach(function(l){a.push(l)})});return a}
 var LESSON_DATA_CACHE={},LESSON_DATA_PROMISES={},PRACTICE_PREFETCHED=false;
+var PRACTICE_LIMIT_STATUS_CACHE={},PRACTICE_LIMIT_STATUS_PROMISES={},PRACTICE_LIMIT_STATUS_VERSIONS={},PRACTICE_STATUS_PREFETCHED=false;
 function cloneJson(v){return JSON.parse(JSON.stringify(v))}
 function lessonDataKey(lv,n){return normalizeLevel(lv)+"-"+String(Number(n)||0)}
 function lessonDataUrl(lv,n){return "/course_v3_data/"+normalizeLevel(lv)+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json"}
@@ -1923,6 +1924,53 @@ function prefetchPracticeAssets(){
     try{fetch("course_v3_data/memo.js?v=20260628",{cache:"force-cache"}).then(function(r){return r.ok?r.arrayBuffer():null}).catch(function(){})}catch(e){}
   });
 }
+/* Limit holatini oldindan olish — bu endpoint foydalanishni SARFLAMAYDI.
+   `daily-gate` ni bu yerda chaqirmaymiz: u bepul urinishni real sessiya
+   boshlanganda hisoblaydi. So'rovlar ketma-ket yuboriladi, shunda ilova
+   ochilishi paytida Postgres pooliga birdaniga zarba berilmaydi. */
+function practiceLimitStatus(feature){
+  feature=String(feature||"").trim();
+  if(!feature||!INIT_DATA)return Promise.resolve(null);
+  if(PRACTICE_LIMIT_STATUS_CACHE[feature])return Promise.resolve(PRACTICE_LIMIT_STATUS_CACHE[feature]);
+  if(PRACTICE_LIMIT_STATUS_PROMISES[feature])return PRACTICE_LIMIT_STATUS_PROMISES[feature];
+  var version=PRACTICE_LIMIT_STATUS_VERSIONS[feature]||0;
+  PRACTICE_LIMIT_STATUS_PROMISES[feature]=_apiPost("/api/v3/limits/status",{feature:feature})
+    .then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error("limit_status");return d})})
+    .then(function(d){
+      if((PRACTICE_LIMIT_STATUS_VERSIONS[feature]||0)===version){
+        PRACTICE_LIMIT_STATUS_CACHE[feature]=d;
+        delete PRACTICE_LIMIT_STATUS_PROMISES[feature];
+      }
+      return d;
+    })
+    .catch(function(err){
+      if((PRACTICE_LIMIT_STATUS_VERSIONS[feature]||0)===version)delete PRACTICE_LIMIT_STATUS_PROMISES[feature];
+      throw err;
+    });
+  return PRACTICE_LIMIT_STATUS_PROMISES[feature];
+}
+function invalidatePracticeLimitStatus(feature){
+  feature=String(feature||"").trim();
+  if(feature){
+    PRACTICE_LIMIT_STATUS_VERSIONS[feature]=(PRACTICE_LIMIT_STATUS_VERSIONS[feature]||0)+1;
+    delete PRACTICE_LIMIT_STATUS_CACHE[feature];
+    delete PRACTICE_LIMIT_STATUS_PROMISES[feature];
+  }
+}
+function prefetchPracticeLimitStatus(){
+  if(!INIT_DATA||PRACTICE_STATUS_PREFETCHED)return;
+  PRACTICE_STATUS_PREFETCHED=true;
+  var features=["recognition","memorize","pronunciation","placement","training_test","mistake_review"];
+  idleRun(function(){
+    var i=0;
+    function next(){
+      if(i>=features.length)return;
+      practiceLimitStatus(features[i++]).catch(function(){}).then(function(){setTimeout(next,250)});
+    }
+    next();
+  });
+}
+window.CourseLimitStatus={get:practiceLimitStatus,invalidate:invalidatePracticeLimitStatus};
 function prefetchNearbyLessons(){
   if(!MAP)return;
   var lv=MAP.level||getSelectedLevel();
@@ -1935,6 +1983,7 @@ function prefetchNearbyLessons(){
     if(l&&l.n)idleRun(function(){loadLessonData(lv,l.n).catch(function(){})});
   });
   prefetchPracticeAssets();
+  prefetchPracticeLimitStatus();
 }
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
 function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
@@ -5377,7 +5426,10 @@ var RECOG=(function(){
     return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
       .then(function(r){return r.json().then(function(j){return {status:r.status,j:j}}).catch(function(){return {status:r.status,j:{}}})});
   }
-  function runGate(ref){return post("/api/v3/practice/daily-gate",{initData:INIT_DATA,feature:"recognition",ref:ref})}
+  function runGate(ref){
+    if(window.CourseLimitStatus)CourseLimitStatus.invalidate("recognition");
+    return post("/api/v3/practice/daily-gate",{initData:INIT_DATA,feature:"recognition",ref:ref})
+  }
 
   function premium(){App.goPay("v3_recognition_limit")}
   function close(){closeSection();App.show("mashq")}
@@ -5525,7 +5577,10 @@ var PRON=(function(){
     return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
       .then(function(r){return r.json().then(function(j){return {status:r.status,j:j}}).catch(function(){return {status:r.status,j:{}}})});
   }
-  function runGate(ref){return post("/api/v3/practice/daily-gate",{initData:INIT_DATA,feature:"pronunciation",ref:ref})}
+  function runGate(ref){
+    if(window.CourseLimitStatus)CourseLimitStatus.invalidate("pronunciation");
+    return post("/api/v3/practice/daily-gate",{initData:INIT_DATA,feature:"pronunciation",ref:ref})
+  }
   function premium(){App.goPay("v3_pronunciation_limit")}
 
   /* Bo'limdan chiqishda mikrofon ALBATTA bo'shatiladi — aks holda yozib
@@ -5794,6 +5849,7 @@ var MIST=(function(){
 
   function startReview(adSupported){
     if(busy())return;RV={loading:true};
+    if(window.CourseLimitStatus)CourseLimitStatus.invalidate("mistake_review");
     var ref=accessRef(true);
     fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:ref})})
     .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
@@ -5963,6 +6019,7 @@ var TEST=(function(){
   function gateRef(key,create){var k="hsk_gate_"+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
   function clearGateRef(key){var k="hsk_gate_"+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
   function runGate(feature,ref){
+    if(window.CourseLimitStatus)CourseLimitStatus.invalidate(feature);
     return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,feature:feature,ref:ref})})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
   }

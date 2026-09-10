@@ -7741,3 +7741,33 @@ Follow-up:
 - `tests/test_admin_billing_regressions.py` cannot run locally: `alembic` is
   not installed in `.venv`, and the repo's own `alembic/` directory shadows the
   package name. Pre-existing, unrelated to this change.
+
+### 2026-09-10 — Practice gate latency guard
+
+Changed:
+- `/api/v3/practice/daily-gate` now commits the real legacy allow/deny decision
+  before running entitlement shadow comparison, and caps that diagnostic shadow
+  work at 250ms.
+- `course-v3.html` prefetches non-consuming `/api/v3/limits/status` responses
+  for practice features after the map loads, staggered to avoid a DB burst.
+- `CourseAds.showLimitPromo` reuses that prefetched status when available and
+  falls back to its old status fetch for standalone practice pages.
+
+Why:
+- Railway showed slow/closed Postgres connections while users opened practice
+  and limit screens. Shadow comparison and late limit-status reads must not make
+  the Mini App feel blank or frozen.
+
+Files touched:
+- `app/api/miniapp_entitlements.py`
+- `app/static/course-v3.html`
+- `app/static/course_v3_data/ads.js`
+
+Risk:
+- Low to medium: access rules did not change, but the diagnostic shadow write
+  may be skipped when DB is slow. Actual practice consumption remains committed
+  before the timeout-protected diagnostic work.
+
+Follow-up:
+- Watch Railway logs for `Skipping slow entitlement shadow comparison` and for
+  continued `asyncpg.ConnectionDoesNotExistError` after deploy.
