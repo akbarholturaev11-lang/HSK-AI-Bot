@@ -88,7 +88,6 @@ fun LinkScreen(
                     errorRes = state.error?.messageRes,
                     onRequestCode = onRequestCode,
                 )
-
                 else -> CodeBlock(state = state, context = context)
             }
 
@@ -131,7 +130,7 @@ private fun ExpiredBlock(
             Text(
                 text = stringResource(errorRes),
                 style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
@@ -139,7 +138,7 @@ private fun ExpiredBlock(
             Text(
                 text = stringResource(R.string.link_expired),
                 style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
