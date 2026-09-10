@@ -31,6 +31,12 @@ internal fun ContinuousCourseTrail(
     }
     if (segments.isEmpty()) return
 
+    val dashColor = if (PompColors.IsDark) {
+        PompColors.Ink.copy(alpha = 0.24f)
+    } else {
+        Color.White.copy(alpha = 0.55f)
+    }
+
     Canvas(modifier = modifier) {
         val centerX = size.width / 2f
         val path = Path()
@@ -49,7 +55,7 @@ internal fun ContinuousCourseTrail(
         )
         drawPath(
             path = path,
-            color = Color.White.copy(alpha = 0.55f),
+            color = dashColor,
             style = Stroke(
                 width = 4.dp.toPx(),
                 cap = StrokeCap.Round,
