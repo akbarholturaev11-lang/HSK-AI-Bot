@@ -43,6 +43,21 @@ enum class PinyinVisibility(val wireValue: String) {
     }
 }
 
+/** Android-only appearance preference: the current white theme, Cosmos Blue dark, or system. */
+enum class AppThemeMode(val wireValue: String) {
+    LIGHT("light"),
+    DARK("dark"),
+    SYSTEM("system"),
+    ;
+
+    companion object {
+        val DEFAULT = SYSTEM
+
+        fun fromWireValue(value: String?): AppThemeMode =
+            entries.firstOrNull { it.wireValue == value?.trim()?.lowercase() } ?: DEFAULT
+    }
+}
+
 /**
  * The learner's daily XP target, mirroring the Mini App's `dailyGoal`.
  *
@@ -63,6 +78,9 @@ class AppSettings(context: Context) : LessonResumeStore {
 
     val pinyinVisibility: Flow<PinyinVisibility> = appContext.settingsDataStore.data
         .map { PinyinVisibility.fromWireValue(it[PINYIN_KEY]) }
+
+    val themeMode: Flow<AppThemeMode> = appContext.settingsDataStore.data
+        .map { AppThemeMode.fromWireValue(it[THEME_MODE_KEY]) }
 
     val dailyGoal: Flow<Int> = appContext.settingsDataStore.data
         .map { DailyGoal.sanitize(it[DAILY_GOAL_KEY]) }
@@ -107,6 +125,10 @@ class AppSettings(context: Context) : LessonResumeStore {
 
     suspend fun setPinyinVisibility(value: PinyinVisibility) {
         appContext.settingsDataStore.edit { it[PINYIN_KEY] = value.wireValue }
+    }
+
+    suspend fun setThemeMode(value: AppThemeMode) {
+        appContext.settingsDataStore.edit { it[THEME_MODE_KEY] = value.wireValue }
     }
 
     suspend fun setDailyGoal(value: Int) {
@@ -159,6 +181,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         const val LESSON_RESUME_TTL_MILLIS = 7L * 24 * 60 * 60 * 1000
 
         val PINYIN_KEY = stringPreferencesKey("pinyin_visibility")
+        val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
         val LAST_STUDY_SETUP_ASKED_AT_KEY = longPreferencesKey("hsk_v3_setup_asked")
         val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
