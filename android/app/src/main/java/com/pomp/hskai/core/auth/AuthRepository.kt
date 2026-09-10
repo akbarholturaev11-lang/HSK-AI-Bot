@@ -30,12 +30,16 @@ class AuthRepository(
     private val store: CredentialStore,
     private val appVersion: String,
     private val now: () -> Long = System::currentTimeMillis,
+    private val onSessionCleared: suspend () -> Unit = {},
+    private val onSessionLinked: suspend () -> Unit = {},
+    private val onAuthenticated: suspend () -> Unit = {},
 ) {
 
     private val refreshMutex = Mutex()
 
     @Volatile
     private var accessToken: AccessToken? = null
+    private var sessionGeneration = 0L // Guarded by refreshMutex, including late bootstrap responses.
 
     private val _state = MutableStateFlow<AuthState>(AuthState.Unknown)
     val state: StateFlow<AuthState> = _state.asStateFlow()
@@ -83,6 +87,7 @@ class AuthRepository(
      * function returns.
      */
     suspend fun pollLink(pending: PendingLink): ApiResult<Boolean> {
+        val generation = refreshMutex.withLock { sessionGeneration }
         val result = apiCall {
             api.linkStatus(
                 LinkStatusRequest(
@@ -101,11 +106,16 @@ class AuthRepository(
                     ApiResult.Success(false)
                 } else {
                     // Persist first: the server will never return these again.
-                    store.saveRefreshToken(refresh)
-                    accessToken = AccessToken(
-                        value = access,
-                        expiresAtMillis = now() + (body.accessExpiresIn ?: 0) * 1_000L,
-                    )
+                    refreshMutex.withLock {
+                        if (sessionGeneration != generation) return@withLock ApiResult.Success(false)
+                        store.saveRefreshToken(refresh)
+                        sessionGeneration++
+                        onSessionLinked()
+                        accessToken = AccessToken(
+                            value = access,
+                            expiresAtMillis = now() + (body.accessExpiresIn ?: 0) * 1_000L,
+                        )
+                    }
                     ApiResult.Success(true)
                 }
             }
@@ -129,8 +139,7 @@ class AuthRepository(
             }
             val stored = store.refreshToken()
             if (stored == null) {
-                accessToken = null
-                _state.value = AuthState.Unauthenticated
+                clearLocalSession()
                 return@withLock ApiResult.Failure(ApiError.SessionExpired)
             }
 
@@ -167,9 +176,12 @@ class AuthRepository(
 
     /** Restores the session on cold start and refreshes the canonical account. */
     suspend fun bootstrap(): ApiResult<LinkedAccount> {
-        if (store.refreshToken() == null) {
-            _state.value = AuthState.Unauthenticated
-            return ApiResult.Failure(ApiError.SessionExpired)
+        val generation = refreshMutex.withLock {
+            if (store.refreshToken() == null) {
+                clearLocalSession()
+                return ApiResult.Failure(ApiError.SessionExpired)
+            }
+            sessionGeneration
         }
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> {
@@ -184,33 +196,36 @@ class AuthRepository(
             is ApiResult.Success -> result.value
         }
 
-        return when (
-            val result = apiCall { api.bootstrap("Bearer $token", appVersion) }
-        ) {
-            is ApiResult.Failure -> {
-                if (result.error is ApiError.SessionExpired) {
-                    clearLocalSession()
-                } else {
-                    _state.value = AuthState.BootstrapFailed(result.error)
+        val result = apiCall { api.bootstrap("Bearer $token", appVersion) }
+        return refreshMutex.withLock {
+            if (sessionGeneration != generation) return@withLock ApiResult.Failure(ApiError.SessionExpired)
+            when (result) {
+                is ApiResult.Failure -> {
+                    if (result.error is ApiError.SessionExpired) {
+                        clearLocalSession()
+                    } else {
+                        _state.value = AuthState.BootstrapFailed(result.error)
+                    }
+                    result
                 }
-                result
-            }
 
-            is ApiResult.Success -> {
-                val body = result.value
-                if (!body.authenticated) {
-                    clearLocalSession()
-                    ApiResult.Failure(ApiError.SessionExpired)
-                } else {
-                    val account = LinkedAccount(
-                        displayName = body.user.name,
-                        language = AppLanguage.fromBackendCode(body.user.language),
-                        level = body.user.level,
-                        accessState = body.user.accessState,
-                        isPaid = body.user.isPaid,
-                    )
-                    _state.value = AuthState.Authenticated(account)
-                    ApiResult.Success(account)
+                is ApiResult.Success -> {
+                    val body = result.value
+                    if (!body.authenticated) {
+                        clearLocalSession()
+                        ApiResult.Failure(ApiError.SessionExpired)
+                    } else {
+                        val account = LinkedAccount(
+                            displayName = body.user.name,
+                            language = AppLanguage.fromBackendCode(body.user.language),
+                            level = body.user.level,
+                            accessState = body.user.accessState,
+                            isPaid = body.user.isPaid,
+                        )
+                        onAuthenticated()
+                        _state.value = AuthState.Authenticated(account)
+                        ApiResult.Success(account)
+                    }
                 }
             }
         }
@@ -232,13 +247,9 @@ class AuthRepository(
             // local wipe below still has to happen.
             is ApiResult.Failure -> Unit
         }
-        if (unlinkDevice) {
-            store.clearEverything()
-        } else {
-            store.clearSession()
+        refreshMutex.withLock {
+            clearLocalSession(unlinkDevice)
         }
-        accessToken = null
-        _state.value = AuthState.Unauthenticated
     }
 
     /**
@@ -249,9 +260,11 @@ class AuthRepository(
         refreshMutex.withLock { clearLocalSession() }
     }
 
-    private suspend fun clearLocalSession() {
+    private suspend fun clearLocalSession(unlinkDevice: Boolean = false) {
+        sessionGeneration++
         accessToken = null
-        store.clearSession()
+        if (unlinkDevice) store.clearEverything() else store.clearSession()
+        onSessionCleared()
         _state.value = AuthState.Unauthenticated
     }
 }

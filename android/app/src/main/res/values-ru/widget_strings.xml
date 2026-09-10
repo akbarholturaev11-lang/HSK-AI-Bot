@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_lesson_short">Урок %1$d</string>
+    <string name="widget_name">HSK AI — Панда</string>
+    <string name="widget_description">Урок, XP и серия — на главном экране</string>
+    <string name="widget_unlinked">Подключите аккаунт</string>
+    <string name="widget_stale">Обновим прогресс?</string>
+    <string name="widget_foundation">Начнём с основ</string>
+    <string name="widget_complete">План дня выполнен!</string>
+    <string name="widget_streak">Сохраним серию?</string>
+    <string name="widget_continue">Продолжим урок</string>
+    <string name="widget_stats">%1$d XP · %2$d дн.</string>
+    <string name="widget_lesson">%1$s · Урок %2$d</string>
+    <string name="widget_open">Открыть приложение</string>
+    <string name="widget_setup_title">Панда на главном экране</string>
+    <string name="widget_setup_body">Помните об уроке, не открывая приложение. Панда меняется в течение дня. Нажатие откроет приложение Android.</string>
+    <string name="widget_setup_add">Добавить виджет</string>
+    <string name="widget_setup_later">Не сейчас</string>
+    <string name="widget_setup_done">Готово</string>
+    <string name="widget_setup_pending">Подтвердите добавление в окне телефона.</string>
+    <string name="widget_setup_added">Виджет добавлен на главный экран.</string>
+    <string name="widget_setup_manual">Удерживайте главный экран → Виджеты → HSK AI → Панда. Потяните края, чтобы изменить размер.</string>
+    <string name="widget_setup_reminder">Напоминание на телефоне</string>
+    <string name="widget_setup_reminder_body">Примерно в %1$s, не чаще раза в день. Независимо от напоминаний Telegram.</string>
+    <string name="widget_setup_permission">Разрешите уведомления HSK AI в настройках телефона.</string>
+    <string name="widget_telegram_reminders">Напоминания Telegram</string>
+    <string name="widget_preview_label">Виджет главного экрана</string>
+</resources>

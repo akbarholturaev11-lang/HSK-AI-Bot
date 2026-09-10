@@ -15,13 +15,15 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
+import com.pomp.hskai.core.i18n.AppLocale
+import com.pomp.hskai.widget.WidgetIntents
 
 /**
  * Study reminders shown on the device itself.
  *
  * These are local: nothing is pushed from a server and no notification token
  * leaves the device. The bot keeps sending its own Telegram reminders — this
- * is the same opt-in flag, honoured a second time on the phone.
+ * is a separate opt-in flag; installing a widget never changes the bot setting.
  */
 object StudyNotifications {
 
@@ -55,6 +57,9 @@ object StudyNotifications {
      * off in system settings.
      */
     fun canPost(context: Context): Boolean =
+        NotificationManagerCompat.from(context).areNotificationsEnabled() &&
+        context.getSystemService(NotificationManager::class.java)
+            ?.getNotificationChannel(CHANNEL_ID)?.importance != NotificationManager.IMPORTANCE_NONE &&
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
                 context,
@@ -82,7 +87,8 @@ object StudyNotifications {
         }
         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
 
-        ensureChannel(context)
+        val localized = AppLocale.wrap(context)
+        ensureChannel(localized)
 
         val (titleRes, bodyRes) = when (reminder) {
             Reminder.STREAK_AT_RISK ->
@@ -97,12 +103,8 @@ object StudyNotifications {
         // Tapping opens the lesson the server says is next. Resolving the link
         // is not authorisation: the app still checks entitlement before the
         // lesson renders.
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse(DeepLinkRouter.uriFor(AppDestination.CurrentLesson)),
-        ).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            setPackage(context.packageName)
+        val intent = WidgetIntents.open(context, "notification").apply {
+            putExtra(WidgetIntents.EVENT_ID, java.util.UUID.randomUUID().toString())
         }
         val pending = PendingIntent.getActivity(
             context,
@@ -113,9 +115,9 @@ object StudyNotifications {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(titleRes))
-            .setContentText(context.getString(bodyRes))
-            .setStyle(NotificationCompat.BigTextStyle().bigText(context.getString(bodyRes)))
+            .setContentTitle(localized.getString(titleRes))
+            .setContentText(localized.getString(bodyRes))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(localized.getString(bodyRes)))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setAutoCancel(true)

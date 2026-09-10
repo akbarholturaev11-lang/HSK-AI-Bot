@@ -24,6 +24,13 @@ import com.pomp.hskai.data.repository.OnboardingRepository
 import com.pomp.hskai.data.repository.StudyPreferencesRepository
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import com.pomp.hskai.widget.*
+import com.pomp.hskai.core.notify.StudyReminderScheduler
+import com.pomp.hskai.core.notify.StudyNotifications
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -37,6 +44,28 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  * surface for a single-module app; this stays explicit and easy to follow.
  */
 class HskAiApplication : Application() {
+
+    val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    val widgetStore by lazy { WidgetStore(this) }
+    val widgetCoordinator by lazy { WidgetCoordinator(this, retrofit.create(AndroidEventsApi::class.java)) }
+
+    override fun onCreate() {
+        super.onCreate()
+        applicationScope.launch {
+            if (widgetStore.read().linked) WidgetScheduler.schedule(this@HskAiApplication)
+            // Migrate the old Telegram-coupled reminder: local reminders now default OFF.
+            if (widgetStore.read().reminderEnabled) StudyReminderScheduler.schedule(this@HskAiApplication)
+            else StudyReminderScheduler.cancel(this@HskAiApplication)
+        }
+    }
+
+    private suspend fun clearWidgetSession() {
+        widgetStore.clear()
+        StudyNotifications.cancelReminder(this)
+        applicationScope.launch { widgetCoordinator.render() }
+        WidgetScheduler.cancel(this)
+        StudyReminderScheduler.cancel(this)
+    }
 
     val json: Json by lazy {
         Json {
@@ -79,6 +108,12 @@ class HskAiApplication : Application() {
             api = retrofit.create(AndroidAuthApi::class.java),
             store = credentialStore,
             appVersion = BuildConfig.VERSION_NAME,
+            onSessionCleared = ::clearWidgetSession,
+            onSessionLinked = { widgetStore.linked(newSession = true) },
+            onAuthenticated = {
+                widgetStore.linked()
+                WidgetScheduler.schedule(this)
+            },
         )
     }
 

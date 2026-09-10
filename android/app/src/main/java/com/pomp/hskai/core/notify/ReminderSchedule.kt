@@ -11,7 +11,7 @@ import java.util.Calendar
 object ReminderSchedule {
 
     /** Local hour the reminder aims for; late enough to mean "today is ending". */
-    const val REMINDER_HOUR = 20
+    const val REMINDER_HOUR = com.pomp.hskai.widget.WidgetPolicy.REMINDER_HOUR
 
     /**
      * Minutes from [now] until the next [REMINDER_HOUR] in the device's zone.

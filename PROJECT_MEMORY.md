@@ -7836,3 +7836,32 @@ Risk:
 Follow-up:
 - After deploy, test Telegram Mini App lesson 3 end-to-next transition and one
   intentionally exhausted free-limit account.
+
+### 2026-09-11 — Native Android Smart Widget
+
+Changed:
+- Added a native Glance panda widget with responsive 2x1, 2x2 and 4x2 layouts,
+  four replaceable mood vector assets, and UZ/RU/TJ copy resources.
+- Added `WidgetPolicy`, `WidgetStore` and an epoch-guarded `WidgetCoordinator`
+  for hourly best-effort refresh, stale/day-boundary handling, logout safety,
+  prompt refresh after lesson completion and a separate opt-in local reminder.
+- Added onboarding and Profile setup entry points; widget taps and notification
+  taps open the native Android activity and re-check server access.
+- Added bearer-protected `/api/v3/android/events` with strict event allowlist,
+  authenticated identity and device-scoped dedupe.
+- Added unit, backend and instrumentation coverage plus the widget runbook and
+  unsent release feedback draft.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/widget/`
+- `android/app/src/main/res/drawable/widget_panda_*.xml`
+- `android/app/src/main/res/values*/widget_strings.xml`
+- `app/api/android_events.py`
+- `ANDROID_SMART_WIDGET.md`
+- `RELEASE_FEEDBACK_ANDROID_SMART_WIDGET.md`
+
+Important decisions:
+- Local phone reminders are intentionally independent from Telegram reminder
+  settings and are off until the Android user opts in.
+- The launcher only receives explicit package-bound intents; no Telegram or
+  Mini App URL is used for widget navigation.

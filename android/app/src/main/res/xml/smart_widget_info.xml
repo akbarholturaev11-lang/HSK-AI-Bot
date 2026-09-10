@@ -1,0 +1,9 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="130dp" android:minHeight="110dp"
+    android:minResizeWidth="130dp" android:minResizeHeight="48dp"
+    android:targetCellWidth="2" android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical" android:widgetCategory="home_screen"
+    android:updatePeriodMillis="0" android:initialLayout="@layout/smart_widget_preview"
+    android:previewLayout="@layout/smart_widget_preview"
+    android:previewImage="@drawable/widget_panda_invite"
+    android:description="@string/widget_description" />
