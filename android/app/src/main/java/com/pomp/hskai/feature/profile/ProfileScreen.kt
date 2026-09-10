@@ -106,6 +106,7 @@ fun ProfileScreen(
                 Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName),
             )
         }
+        Unit
     }
 
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
