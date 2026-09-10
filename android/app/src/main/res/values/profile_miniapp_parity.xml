@@ -4,6 +4,11 @@
     <string name="profile_mini_mistakes_subtitle">Zaif joylar ustida ishlash</string>
     <string name="profile_mini_settings">Sozlamalar</string>
     <string name="profile_mini_daily_goal">Kunlik maqsad</string>
+    <string name="profile_mini_today_xp">Bugun %1$d/%2$d XP</string>
+    <string name="profile_mini_total_xp">Umumiy XP</string>
+    <string name="profile_mini_streak">Ketma-ket kun</string>
+    <string name="profile_mini_completed_lessons">Tugallangan dars</string>
+    <string name="profile_mini_level">Daraja</string>
     <string name="profile_mini_notify_head">Bot quyidagi holatlarda xabar yuboradi:</string>
     <string name="profile_mini_notify_rank">Reytingda kimdir sizdan o\'zib ketsa</string>
     <string name="profile_mini_notify_lesson">Kun tugayotganda darsni hali bajarmagan bo\'lsangiz</string>
