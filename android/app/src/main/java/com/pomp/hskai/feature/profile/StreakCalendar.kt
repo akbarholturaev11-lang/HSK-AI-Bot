@@ -37,25 +37,11 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.domain.model.CourseProgress
 
-/** `.cell.ice` — a past day with nothing on it. */
-private val IceFill = Color(0xFFE9F4FA)
-private val IceBorder = Color(0xFFD2E6F0)
-private val IceInk = Color(0xFF78AAC6)
-
-/**
- * Mini App `streakCalHtml`: the current week, one cell per day.
- *
- * A lone streak number says how long the run is but not where it is about to
- * break. The week reads at a glance: a flame for a day that was studied, ice
- * for one that was missed, a gold outline on today.
- */
 @Composable
 internal fun StreakCalendar(progress: CourseProgress?, dailyXp: Int) {
     val days = stringArrayResource(R.array.profile_week_days)
     val meta = weekCalendarMeta(progress)
     val streak = progress?.streak ?: 0
-    // Today does not count as missed until some work is done, so the fallback
-    // window ends yesterday while today is still empty.
     val end = if (dailyXp > 0) meta.todayIndex else meta.todayIndex - 1
 
     Column {
@@ -112,15 +98,18 @@ private fun DayCell(
     isToday: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val iceFill = if (PompColors.IsDark) PompColors.BlueSoft else Color(0xFFE9F4FA)
+    val iceBorder = if (PompColors.IsDark) PompColors.Divider else Color(0xFFD2E6F0)
+    val iceInk = if (PompColors.IsDark) PompColors.TileBlueInk else Color(0xFF78AAC6)
     val fill = when {
         studied -> PompColors.Cinnabar
-        missed -> IceFill
+        missed -> iceFill
         else -> PompColors.Paper
     }
     val border = when {
         isToday -> PompColors.Gold
         studied -> PompColors.Cinnabar
-        missed -> IceBorder
+        missed -> iceBorder
         else -> PompColors.Divider
     }
     Surface(
@@ -137,11 +126,10 @@ private fun DayCell(
                     tint = PompColors.Paper,
                     modifier = Modifier.size(13.dp),
                 )
-
                 missed -> Icon(
                     imageVector = Icons.Filled.AcUnit,
                     contentDescription = null,
-                    tint = IceInk,
+                    tint = iceInk,
                     modifier = Modifier.size(12.dp),
                 )
             }
@@ -149,12 +137,6 @@ private fun DayCell(
     }
 }
 
-/**
- * Mini App `.ach` — three goals with a bar each.
- *
- * They are computed from what the server already reports, so nothing here
- * invents a number the rest of the app cannot back up.
- */
 @Composable
 internal fun Achievements(completedLessons: Int, streak: Int) {
     Column {
@@ -165,11 +147,7 @@ internal fun Achievements(completedLessons: Int, streak: Int) {
                 tint = PompColors.Jade,
                 tintSoft = PompColors.JadeSoft,
                 title = stringResource(R.string.profile_ach_first),
-                detail = if (completedLessons >= 1) {
-                    stringResource(R.string.profile_ach_first_done)
-                } else {
-                    "0 / 1"
-                },
+                detail = if (completedLessons >= 1) stringResource(R.string.profile_ach_first_done) else "0 / 1",
                 fraction = if (completedLessons >= 1) 1f else 0f,
                 barColor = PompColors.Jade,
             )
@@ -268,7 +246,6 @@ private fun AchievementRow(
     }
 }
 
-/** Mini App `.sech` — a quiet label above a block. */
 @Composable
 private fun SectionHeader(title: String, trailing: String? = null) {
     Row(
@@ -303,12 +280,10 @@ private fun SectionHeader(title: String, trailing: String? = null) {
     }
 }
 
-/** Mini App `weekCalendarMeta`. */
 private data class WeekMeta(
     val dates: List<String>,
     val activeDates: Set<String>,
     val todayIndex: Int,
-    /** False when the server sent no week, so the streak window stands in. */
     val fromServer: Boolean,
 )
 
