@@ -50,94 +50,44 @@ import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
 import com.pomp.hskai.domain.model.UnsupportedCard
 
-/**
- * Renderers for every checked-in card type.
- *
- * Pinyin visibility follows the learner's setting: [PinyinVisibility.OFF]
- * hides it everywhere, [PinyinVisibility.NEW_WORDS_ONLY] keeps it only on the
- * new-word card, matching Course v3's `pyoff` / `pynew` classes.
- */
-
 @Composable
 internal fun CardTitle(text: String) {
     if (text.isBlank()) return
-    Text(
-        text = text,
-        style = MaterialTheme.typography.labelLarge,
-        color = PompColors.CinnabarDark,
-    )
+    Text(text = text, style = MaterialTheme.typography.labelLarge, color = PompColors.CinnabarDark)
     Spacer(Modifier.height(8.dp))
 }
 
 @Composable
 internal fun CardPrompt(text: String) {
     if (text.isBlank()) return
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleLarge,
-        color = PompColors.Ink,
-    )
+    Text(text = text, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
     Spacer(Modifier.height(16.dp))
 }
-
-// --------------------------------------------------------------- new word
 
 @Composable
 fun NewWordCardView(card: NewWordCard, pinyin: PinyinVisibility) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = stringResource(R.string.lesson_new_word),
-            style = MaterialTheme.typography.labelLarge,
-            color = PompColors.Gold,
-        )
+        Text(text = stringResource(R.string.lesson_new_word), style = MaterialTheme.typography.labelLarge, color = PompColors.Gold)
         Spacer(Modifier.height(20.dp))
-        Text(
-            text = card.hanzi,
-            style = PompTextStyles.hanziLarge,
-            color = PompColors.Ink,
-        )
-        // The new-word card keeps pinyin unless it is switched off entirely.
+        Text(text = card.hanzi, style = PompTextStyles.hanziLarge, color = PompColors.Ink)
         if (pinyin != PinyinVisibility.OFF) {
-            Text(
-                text = card.pinyin,
-                style = PompTextStyles.pinyin,
-                color = PompColors.CinnabarDark,
-            )
+            Text(text = card.pinyin, style = PompTextStyles.pinyin, color = PompColors.CinnabarDark)
         }
         Spacer(Modifier.height(12.dp))
-        Text(
-            text = card.meaning,
-            style = MaterialTheme.typography.titleMedium,
-            color = PompColors.Ink,
-            textAlign = TextAlign.Center,
-        )
+        Text(text = card.meaning, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
         if (card.partOfSpeech.isNotBlank()) {
-            Text(
-                text = card.partOfSpeech,
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
-            )
+            Text(text = card.partOfSpeech, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
         }
     }
 }
-
-// ---------------------------------------------------------------- grammar
 
 @Composable
 fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
     Column {
         CardTitle(card.titleZh.ifBlank { stringResource(R.string.lesson_grammar) })
-        Text(
-            text = card.title,
-            style = MaterialTheme.typography.titleLarge,
-            color = PompColors.Ink,
-        )
+        Text(text = card.title, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
         Spacer(Modifier.height(12.dp))
-        Text(
-            text = card.rule,
-            style = MaterialTheme.typography.bodyLarge,
-            color = PompColors.InkSecondary,
-        )
+        Text(text = card.rule, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
         if (card.examples.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             card.examples.forEach { example ->
@@ -145,36 +95,20 @@ fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
                     color = PompColors.PaperRaised,
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, PompColors.Divider),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text(
-                            text = example.hanzi,
-                            style = PompTextStyles.hanziMedium,
-                            color = PompColors.Ink,
-                        )
+                        Text(text = example.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
                         if (pinyin == PinyinVisibility.ALL) {
-                            Text(
-                                text = example.pinyin,
-                                style = PompTextStyles.pinyin,
-                                color = PompColors.InkSecondary,
-                            )
+                            Text(text = example.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
                         }
-                        Text(
-                            text = example.translation,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = PompColors.InkSecondary,
-                        )
+                        Text(text = example.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
                     }
                 }
             }
         }
     }
 }
-
-// ---------------------------------------------------------- pronunciation
 
 @Composable
 fun PronunciationCardView(
@@ -186,41 +120,18 @@ fun PronunciationCardView(
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         CardTitle(stringResource(R.string.lesson_repeat_after_teacher))
-        Text(
-            text = card.phrase,
-            style = PompTextStyles.hanziMedium,
-            color = PompColors.Ink,
-            textAlign = TextAlign.Center,
-        )
+        Text(text = card.phrase, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
         if (pinyin == PinyinVisibility.ALL) {
-            Text(
-                text = card.pinyin,
-                style = PompTextStyles.pinyin,
-                color = PompColors.InkSecondary,
-            )
+            Text(text = card.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
         }
         Spacer(Modifier.height(8.dp))
-        Text(
-            text = card.translation,
-            style = MaterialTheme.typography.bodyMedium,
-            color = PompColors.InkSecondary,
-            textAlign = TextAlign.Center,
-        )
+        Text(text = card.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         Spacer(Modifier.height(18.dp))
-        AudioAction(
-            isLoading = isAudioLoading,
-            onClick = { onPlayAudio(card.phrase) },
-        )
+        AudioAction(isLoading = isAudioLoading, onClick = { onPlayAudio(card.phrase) })
         Spacer(Modifier.height(24.dp))
-        // Speaking must never soft-lock a learner who cannot speak right now.
-        SecondaryAction(
-            text = stringResource(R.string.lesson_cannot_speak_now),
-            onClick = onSkip,
-        )
+        SecondaryAction(text = stringResource(R.string.lesson_cannot_speak_now), onClick = onSkip)
     }
 }
-
-// ----------------------------------------------------------------- choice
 
 @Composable
 fun ChoiceCardView(
@@ -234,70 +145,39 @@ fun ChoiceCardView(
 ) {
     Column {
         CardTitle(card.title)
-
         when (card.kind) {
             ChoiceKind.LISTENING -> {
-                Text(
-                    text = stringResource(R.string.lesson_listen_and_choose),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PompColors.Ink,
-                )
+                Text(text = stringResource(R.string.lesson_listen_and_choose), style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
                 val audioPinyin = card.audioPinyin
                 if (pinyin == PinyinVisibility.ALL && !audioPinyin.isNullOrBlank()) {
                     Spacer(Modifier.height(6.dp))
-                    Text(
-                        text = audioPinyin,
-                        style = PompTextStyles.pinyin,
-                        color = PompColors.InkSecondary,
-                    )
+                    Text(text = audioPinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
                 }
                 Spacer(Modifier.height(12.dp))
-                AudioAction(
-                    isLoading = isAudioLoading,
-                    onClick = { onPlayAudio(card.audioText.orEmpty()) },
-                )
+                AudioAction(isLoading = isAudioLoading, onClick = { onPlayAudio(card.audioText.orEmpty()) })
                 Spacer(Modifier.height(16.dp))
             }
-
             ChoiceKind.GAP_FILL -> {
                 CardPrompt(card.prompt)
                 card.sentence?.takeIf { it.isNotBlank() }?.let { sentence ->
-                    Text(
-                        text = sentence,
-                        style = PompTextStyles.hanziMedium,
-                        color = PompColors.Ink,
-                    )
+                    Text(text = sentence, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
                     Spacer(Modifier.height(16.dp))
                 }
             }
-
             ChoiceKind.DIALOG_CLOZE -> {
                 CardPrompt(card.prompt.ifBlank { card.title })
                 card.lines.forEach { line ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                    ) {
-                        Text(
-                            text = "${line.speaker}: ",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = PompColors.InkSecondary,
-                        )
+                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                        Text(text = "${line.speaker}: ", style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
                         Text(
                             text = if (line.isBlank) "＿＿＿" else line.text,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = if (line.isBlank) {
-                                PompColors.CinnabarDark
-                            } else {
-                                PompColors.Ink
-                            },
+                            color = if (line.isBlank) PompColors.CinnabarDark else PompColors.Ink,
                         )
                     }
                 }
                 Spacer(Modifier.height(16.dp))
             }
-
             else -> CardPrompt(card.prompt)
         }
 
@@ -318,23 +198,15 @@ private fun AudioAction(isLoading: Boolean, onClick: () -> Unit) {
     OutlinedButton(
         onClick = onClick,
         enabled = !isLoading,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 48.dp),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
         shape = RoundedCornerShape(14.dp),
     ) {
         if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(18.dp),
-                strokeWidth = 2.dp,
-                color = PompColors.Cinnabar,
-            )
+            CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp, color = PompColors.Cinnabar)
             Spacer(Modifier.size(10.dp))
         }
         Text(
-            text = stringResource(
-                if (isLoading) R.string.lesson_audio_loading else R.string.lesson_play_audio
-            ),
+            text = stringResource(if (isLoading) R.string.lesson_audio_loading else R.string.lesson_play_audio),
             style = MaterialTheme.typography.labelLarge,
             color = PompColors.CinnabarDark,
         )
@@ -343,12 +215,7 @@ private fun AudioAction(isLoading: Boolean, onClick: () -> Unit) {
 
 internal enum class OptionState { IDLE, SELECTED_WRONG, CORRECT }
 
-private fun optionState(
-    index: Int,
-    correctIndex: Int,
-    selectedIndex: Int?,
-    isAnswered: Boolean,
-): OptionState = when {
+private fun optionState(index: Int, correctIndex: Int, selectedIndex: Int?, isAnswered: Boolean): OptionState = when {
     !isAnswered -> OptionState.IDLE
     index == correctIndex -> OptionState.CORRECT
     index == selectedIndex -> OptionState.SELECTED_WRONG
@@ -363,17 +230,15 @@ private fun OptionRow(
     onClick: () -> Unit,
     key: String = "",
 ) {
-    // Correctness is never signalled by colour alone: each state also carries
-    // a glyph and its own content description for screen readers.
     val border = when (state) {
         OptionState.IDLE -> PompColors.Divider
         OptionState.CORRECT -> PompColors.Jade
-        OptionState.SELECTED_WRONG -> PompColors.Cinnabar
+        OptionState.SELECTED_WRONG -> PompColors.Flame
     }
     val background = when (state) {
         OptionState.IDLE -> PompColors.PaperRaised
         OptionState.CORRECT -> PompColors.JadeSoft
-        OptionState.SELECTED_WRONG -> PompColors.CinnabarSoft
+        OptionState.SELECTED_WRONG -> PompColors.FlameSoft
     }
     val glyph = when (state) {
         OptionState.IDLE -> ""
@@ -385,35 +250,21 @@ private fun OptionRow(
         OptionState.CORRECT -> stringResource(R.string.cd_answer_correct, text)
         OptionState.SELECTED_WRONG -> stringResource(R.string.cd_answer_wrong, text)
     }
-
     val ink = when (state) {
         OptionState.IDLE -> PompColors.Ink
         OptionState.CORRECT -> PompColors.Jade
-        OptionState.SELECTED_WRONG -> PompColors.CinnabarDark
+        OptionState.SELECTED_WRONG -> PompColors.Flame
     }
 
-    // Mini App `.opt`: a 2px outline on a 4px ledge. The ledge is what makes
-    // the row feel pressable; a flat Material card does not.
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 9.dp),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 9.dp)) {
         Box(
-            modifier = Modifier
-                .matchParentSize()
-                .offset(y = 4.dp)
-                .clip(RoundedCornerShape(13.dp))
-                .background(PompColors.OptionDepth),
+            modifier = Modifier.matchParentSize().offset(y = 4.dp).clip(RoundedCornerShape(13.dp)).background(PompColors.OptionDepth),
         )
         Surface(
             color = background,
             shape = RoundedCornerShape(13.dp),
             border = BorderStroke(2.dp, border),
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 54.dp)
-                .semantics { contentDescription = description },
+            modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).semantics { contentDescription = description },
             onClick = onClick,
             enabled = enabled,
         ) {
@@ -430,40 +281,21 @@ private fun OptionRow(
                         modifier = Modifier.size(23.dp),
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = key,
-                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
-                                color = PompColors.InkDisabled,
-                            )
+                            Text(text = key, style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp), color = PompColors.InkDisabled)
                         }
                     }
                 }
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
-                    color = ink,
-                    modifier = Modifier.weight(1f),
-                )
+                Text(text = text, style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp), color = ink, modifier = Modifier.weight(1f))
                 if (glyph.isNotEmpty()) {
-                    Text(
-                        text = glyph,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = border,
-                    )
+                    Text(text = glyph, style = MaterialTheme.typography.titleMedium, color = border)
                 }
             }
         }
     }
 }
 
-// ---------------------------------------------------------------- builders
-
 @Composable
-fun SentenceBuilderCardView(
-    card: SentenceBuilderCard,
-    isAnswered: Boolean,
-    onSubmit: (List<String>) -> Unit,
-) {
+fun SentenceBuilderCardView(card: SentenceBuilderCard, isAnswered: Boolean, onSubmit: (List<String>) -> Unit) {
     TokenBuilder(
         title = stringResource(R.string.lesson_build_sentence),
         prompt = card.promptSentence,
@@ -481,17 +313,9 @@ fun ReverseBuilderCardView(
     onSubmit: (List<String>) -> Unit,
 ) {
     Column {
-        Text(
-            text = card.hanzi,
-            style = PompTextStyles.hanziMedium,
-            color = PompColors.Ink,
-        )
+        Text(text = card.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
         if (pinyin == PinyinVisibility.ALL && card.pinyin.isNotBlank()) {
-            Text(
-                text = card.pinyin,
-                style = PompTextStyles.pinyin,
-                color = PompColors.InkSecondary,
-            )
+            Text(text = card.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
         }
         Spacer(Modifier.height(12.dp))
         TokenBuilder(
@@ -504,11 +328,6 @@ fun ReverseBuilderCardView(
     }
 }
 
-/**
- * Shared tile builder. Tiles keep a stable order: tapping a tile moves it to
- * the answer row and tapping it there returns it, so the layout never
- * reshuffles under the learner's finger.
- */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TokenBuilder(
@@ -519,41 +338,27 @@ private fun TokenBuilder(
     onSubmit: (List<String>) -> Unit,
 ) {
     var chosen by remember(tokens) { mutableStateOf(listOf<Int>()) }
-
     Column {
         CardTitle(title)
         if (prompt.isNotBlank()) CardPrompt(prompt)
-
         Surface(
             color = PompColors.PaperRaised,
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 64.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
         ) {
             FlowRow(modifier = Modifier.padding(10.dp)) {
                 chosen.forEach { index ->
-                    Tile(
-                        text = tokens[index],
-                        enabled = !isAnswered,
-                        onClick = { chosen = chosen - index },
-                    )
+                    Tile(text = tokens[index], enabled = !isAnswered, onClick = { chosen = chosen - index })
                 }
             }
         }
-
         Spacer(Modifier.height(16.dp))
         FlowRow {
             tokens.indices.filterNot { it in chosen }.forEach { index ->
-                Tile(
-                    text = tokens[index],
-                    enabled = !isAnswered,
-                    onClick = { chosen = chosen + index },
-                )
+                Tile(text = tokens[index], enabled = !isAnswered, onClick = { chosen = chosen + index })
             }
         }
-
         Spacer(Modifier.height(20.dp))
         PrimaryAction(
             text = stringResource(R.string.lesson_check),
@@ -566,32 +371,19 @@ private fun TokenBuilder(
 @Composable
 private fun Tile(text: String, enabled: Boolean, onClick: () -> Unit) {
     Surface(
-        color = PompColors.Paper,
+        color = if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper,
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, PompColors.Cinnabar),
-        modifier = Modifier
-            .padding(4.dp)
-            .heightIn(min = 48.dp),
+        modifier = Modifier.padding(4.dp).heightIn(min = 48.dp),
         onClick = onClick,
         enabled = enabled,
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            color = PompColors.Ink,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-        )
+        Text(text = text, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink, modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp))
     }
 }
 
-// ------------------------------------------------------------ match pairs
-
 @Composable
-fun MatchPairsCardView(
-    card: MatchPairsCard,
-    isAnswered: Boolean,
-    onFinished: (List<Pair<Int, Int>>) -> Unit,
-) {
+fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (List<Pair<Int, Int>>) -> Unit) {
     val rightOrder = remember(card) { card.pairs.indices.shuffled() }
     var selectedLeft by remember(card) { mutableStateOf<Int?>(null) }
     var matched by remember(card) { mutableStateOf(setOf<Int>()) }
@@ -602,11 +394,7 @@ fun MatchPairsCardView(
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.weight(1f)) {
                 card.pairs.forEachIndexed { index, pair ->
-                    Tile(
-                        text = pair.first,
-                        enabled = !isAnswered && index !in matched,
-                        onClick = { selectedLeft = index },
-                    )
+                    Tile(text = pair.first, enabled = !isAnswered && index !in matched, onClick = { selectedLeft = index })
                 }
             }
             Spacer(Modifier.padding(6.dp))
@@ -620,9 +408,7 @@ fun MatchPairsCardView(
                             if (left != null) {
                                 if (left == index) {
                                     matched = matched + index
-                                    if (matched.size == card.pairs.size) {
-                                        onFinished(wrongAttempts)
-                                    }
+                                    if (matched.size == card.pairs.size) onFinished(wrongAttempts)
                                 } else {
                                     wrongAttempts = wrongAttempts + (left to index)
                                 }
@@ -636,34 +422,13 @@ fun MatchPairsCardView(
     }
 }
 
-// ------------------------------------------------------------- unsupported
-
-/**
- * A card this build cannot render.
- *
- * Shown rather than skipped, and explicitly not graded, so an older client can
- * never mark new content correct by default.
- */
 @Composable
 fun UnsupportedCardView(card: UnsupportedCard, onSkip: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = stringResource(R.string.lesson_card_unsupported),
-            style = MaterialTheme.typography.titleMedium,
-            color = PompColors.Ink,
-            textAlign = TextAlign.Center,
-        )
+        Text(text = stringResource(R.string.lesson_card_unsupported), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
         Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.lesson_card_unsupported_hint),
-            style = MaterialTheme.typography.bodyMedium,
-            color = PompColors.InkSecondary,
-            textAlign = TextAlign.Center,
-        )
+        Text(text = stringResource(R.string.lesson_card_unsupported_hint), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         Spacer(Modifier.height(20.dp))
-        SecondaryAction(
-            text = stringResource(R.string.lesson_skip_card),
-            onClick = onSkip,
-        )
+        SecondaryAction(text = stringResource(R.string.lesson_skip_card), onClick = onSkip)
     }
 }
