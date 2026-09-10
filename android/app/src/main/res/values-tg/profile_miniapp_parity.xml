@@ -4,6 +4,11 @@
     <string name="profile_mini_mistakes_subtitle">Кор бар ҷойҳои заиф</string>
     <string name="profile_mini_settings">Танзимот</string>
     <string name="profile_mini_daily_goal">Ҳадафи рӯзона</string>
+    <string name="profile_mini_today_xp">Имрӯз %1$d/%2$d XP</string>
+    <string name="profile_mini_total_xp">XP-и умумӣ</string>
+    <string name="profile_mini_streak">Рӯзҳои пайдарпай</string>
+    <string name="profile_mini_completed_lessons">Дарсҳои анҷомшуда</string>
+    <string name="profile_mini_level">Сатҳ</string>
     <string name="profile_mini_notify_head">Бот вақте огоҳӣ мефиристад, ки:</string>
     <string name="profile_mini_notify_rank">касе дар рейтинг аз шумо пеш меравад</string>
     <string name="profile_mini_notify_lesson">рӯз ба охир мерасаду дарс иҷро нашудааст</string>
