@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
@@ -80,7 +79,6 @@ fun WordDrillScreen(
                     contentAlignment = Alignment.Center,
                 ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
 
-                // Bo'lim tugagan — tanlov markazda, xira fon ustida.
                 state.limitReached -> SectionLimitOverlay(
                     sectionTitle = stringResource(
                         if (state.mode == DrillMode.RECOGNITION) {
@@ -263,14 +261,14 @@ private fun RecognitionOptions(
                         shape = RoundedCornerShape(13.dp),
                         color = when {
                             isRight -> PompColors.JadeSoft
-                            isWrongPick -> PompColors.CinnabarSoft
+                            isWrongPick -> PompColors.FlameSoft
                             else -> PompColors.PaperRaised
                         },
                         border = BorderStroke(
                             2.dp,
                             when {
                                 isRight -> PompColors.Jade
-                                isWrongPick -> PompColors.Cinnabar
+                                isWrongPick -> PompColors.Flame
                                 else -> PompColors.Divider
                             },
                         ),
@@ -287,7 +285,7 @@ private fun RecognitionOptions(
                                 style = PompTextStyles.hanziMedium,
                                 color = when {
                                     isRight -> PompColors.Jade
-                                    isWrongPick -> PompColors.CinnabarDark
+                                    isWrongPick -> PompColors.Flame
                                     else -> PompColors.Ink
                                 },
                             )
@@ -373,7 +371,7 @@ private fun DrillFeedback(
     onAdvance: () -> Unit,
 ) {
     Surface(
-        color = if (state.wasCorrect) PompColors.JadeSoft else PompColors.CinnabarSoft,
+        color = if (state.wasCorrect) PompColors.JadeSoft else PompColors.FlameSoft,
         shape = RoundedCornerShape(14.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -389,7 +387,7 @@ private fun DrillFeedback(
                 },
                 style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
                 fontWeight = FontWeight.Medium,
-                color = if (state.wasCorrect) PompColors.Jade else PompColors.CinnabarDark,
+                color = if (state.wasCorrect) PompColors.Jade else PompColors.Flame,
             )
             if (!state.wasCorrect) {
                 Text(
@@ -401,7 +399,7 @@ private fun DrillFeedback(
             Spacer(Modifier.height(10.dp))
             Surface(
                 onClick = onAdvance,
-                color = if (state.wasCorrect) PompColors.Jade else PompColors.Cinnabar,
+                color = if (state.wasCorrect) PompColors.Jade else PompColors.Flame,
                 shape = RoundedCornerShape(13.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {

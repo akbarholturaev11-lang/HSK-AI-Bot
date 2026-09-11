@@ -43,10 +43,11 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 
 /**
- * Telegram-first account creation/link screen.
+ * Telegram device-link screen.
  *
- * The primary path uses an opaque Android request id in the Telegram URL;
- * the display code remains visible only as a manual fallback.
+ * The code is displayed, never embedded in the Telegram URL. Opening Telegram
+ * only starts the manual-entry conversation, so possessing the link can never
+ * reserve or approve a device.
  */
 @Composable
 fun LinkScreen(
@@ -87,7 +88,6 @@ fun LinkScreen(
                     errorRes = state.error?.messageRes,
                     onRequestCode = onRequestCode,
                 )
-
                 else -> CodeBlock(state = state, context = context)
             }
 
@@ -130,7 +130,7 @@ private fun ExpiredBlock(
             Text(
                 text = stringResource(errorRes),
                 style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
@@ -138,7 +138,7 @@ private fun ExpiredBlock(
             Text(
                 text = stringResource(R.string.link_expired),
                 style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))

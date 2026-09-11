@@ -42,10 +42,13 @@ internal fun FoundationEntry(
 ) {
     val done = foundation.completed
     val context = LocalContext.current
+    val borderColor = if (PompColors.IsDark) PompColors.Divider else Color(0xFFC2403A).copy(alpha = 0.25f)
+    val gradientStart = if (PompColors.IsDark) PompColors.BlueSoft else Color(0xFFFFF8F1)
+
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, Color(0xFFC2403A).copy(alpha = 0.25f)),
+        border = BorderStroke(1.dp, borderColor),
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 18.dp)
@@ -57,7 +60,7 @@ internal fun FoundationEntry(
             modifier = Modifier.background(
                 Brush.linearGradient(
                     listOf(
-                        Color(0xFFFFF8F1),
+                        gradientStart,
                         PompColors.PaperRaised,
                     ),
                 ),

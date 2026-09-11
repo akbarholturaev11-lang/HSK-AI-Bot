@@ -276,12 +276,20 @@ private fun ChallengeFailed(onRetry: () -> Unit, onClose: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = stringResource(R.string.error_unknown),
-            style = MaterialTheme.typography.bodyLarge,
-            color = PompColors.InkSecondary,
-            textAlign = TextAlign.Center,
-        )
+        Surface(
+            color = PompColors.FlameSoft,
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, PompColors.Flame.copy(alpha = 0.35f)),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                text = stringResource(R.string.error_unknown),
+                style = MaterialTheme.typography.bodyLarge,
+                color = PompColors.Flame,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+            )
+        }
         Spacer(Modifier.height(16.dp))
         Surface(
             onClick = onRetry,
@@ -298,7 +306,7 @@ private fun ChallengeFailed(onRetry: () -> Unit, onClose: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         Surface(
             onClick = onClose,
-            color = PompColors.Paper,
+            color = PompColors.PaperRaised,
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {

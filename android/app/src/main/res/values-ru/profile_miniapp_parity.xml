@@ -4,6 +4,11 @@
     <string name="profile_mini_mistakes_subtitle">Работа над слабыми местами</string>
     <string name="profile_mini_settings">Настройки</string>
     <string name="profile_mini_daily_goal">Дневная цель</string>
+    <string name="profile_mini_today_xp">Сегодня %1$d/%2$d XP</string>
+    <string name="profile_mini_total_xp">Всего XP</string>
+    <string name="profile_mini_streak">Серия дней</string>
+    <string name="profile_mini_completed_lessons">Пройдено уроков</string>
+    <string name="profile_mini_level">Уровень</string>
     <string name="profile_mini_notify_head">Бот пришлёт уведомление, когда:</string>
     <string name="profile_mini_notify_rank">кто-то обгоняет вас в рейтинге</string>
     <string name="profile_mini_notify_lesson">день заканчивается, а урок ещё не пройден</string>

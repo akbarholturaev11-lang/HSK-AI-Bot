@@ -75,7 +75,6 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
-import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.MistakeItemDto
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
@@ -85,15 +84,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.util.Locale
 
 private const val MISTAKES_VISIBLE_PAGE = 30
-private val MistakesXpSoft = Color(0xFFFBF3DF)
 
-/**
- * Native Android rendering of the Mini App's `MIST` overview.
- *
- * Measurements, hierarchy, copy and colours intentionally follow
- * `#mk-root` in `course-v3.html`: dark review CTA, category chips, mistake
- * cards, empty/error states and local 30-item pagination.
- */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun MistakesOverviewScreen(
@@ -140,53 +131,37 @@ internal fun MistakesOverviewScreen(
 
         when {
             state.isLoadingMistakes && overview == null -> item {
-                MistakesState(
-                    icon = null,
-                    text = stringResource(R.string.mistakes_loading),
-                    loading = true,
-                )
+                MistakesState(icon = null, text = stringResource(R.string.mistakes_loading), loading = true)
             }
-
             overview == null -> item {
                 MistakesState(
                     icon = Icons.Filled.WifiOff,
                     text = stringResource(R.string.mistakes_load_error),
                     action = stringResource(R.string.mistakes_retry),
                     onAction = onReload,
+                    destructive = true,
                 )
             }
-
             total <= 0 -> item {
                 MistakesEmpty(
                     onCourse = {
                         val uri = Uri.parse(DeepLinkRouter.uriFor(AppDestination.Course))
                         runCatching {
-                            context.startActivity(
-                                Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName),
-                            )
+                            context.startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName))
                         }
                     },
                 )
             }
-
             else -> {
                 item {
-                    MistakesReviewCta(
-                        total = total,
-                        busy = state.isStarting,
-                        onStartReview = onStartReview,
-                    )
+                    MistakesReviewCta(total = total, busy = state.isStarting, onStartReview = onStartReview)
                     Spacer(Modifier.height(14.dp))
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(7.dp),
                         contentPadding = PaddingValues(bottom = 2.dp),
                     ) {
                         items(availableCategories, key = { it }) { key ->
-                            val count = if (key == "all") {
-                                total
-                            } else {
-                                overview.summary.categories[key] ?: 0
-                            }
+                            val count = if (key == "all") total else overview.summary.categories[key] ?: 0
                             MistakeCategoryChip(
                                 text = "${mistakeCategoryLabel(key)} · $count",
                                 selected = category == key,
@@ -224,8 +199,7 @@ internal fun MistakesOverviewScreen(
                                 .fillMaxWidth()
                                 .padding(top = 2.dp, bottom = 12.dp)
                                 .clickable {
-                                    visibleCount = (visibleCount + MISTAKES_VISIBLE_PAGE)
-                                        .coerceAtMost(filteredItems.size)
+                                    visibleCount = (visibleCount + MISTAKES_VISIBLE_PAGE).coerceAtMost(filteredItems.size)
                                 },
                         ) {
                             Row(
@@ -266,9 +240,7 @@ private fun MistakesHeader(onBack: () -> Unit) {
             color = PompColors.PaperRaised,
             shape = RoundedCornerShape(999.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier
-                .size(32.dp)
-                .clickable(onClick = onBack),
+            modifier = Modifier.size(32.dp).clickable(onClick = onBack),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
@@ -289,14 +261,13 @@ private fun MistakesHeader(onBack: () -> Unit) {
 }
 
 @Composable
-private fun MistakesReviewCta(
-    total: Int,
-    busy: Boolean,
-    onStartReview: () -> Unit,
-) {
+private fun MistakesReviewCta(total: Int, busy: Boolean, onStartReview: () -> Unit) {
+    val foreground = if (PompColors.IsDark) PompColors.Ink else Color.White
+    val surface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
     Surface(
-        color = PompColors.Ink,
+        color = surface,
         shape = RoundedCornerShape(18.dp),
+        border = if (PompColors.IsDark) BorderStroke(1.dp, PompColors.Divider) else null,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Box {
@@ -304,31 +275,24 @@ private fun MistakesReviewCta(
                 text = "错",
                 style = PompTextStyles.hanziMedium,
                 fontSize = 84.sp,
-                color = Color.White.copy(alpha = 0.06f),
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(end = 2.dp, top = 0.dp),
+                color = foreground.copy(alpha = 0.06f),
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 2.dp),
             )
             Column(Modifier.padding(17.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp),
-                    )
+                    Icon(Icons.Filled.Refresh, contentDescription = null, tint = foreground, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.mistakes_review),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.White,
+                        color = foreground,
                     )
                 }
                 Text(
                     text = "$total ${stringResource(R.string.mistakes_review_subtitle)}",
                     fontSize = 13.sp,
-                    color = Color.White.copy(alpha = 0.72f),
+                    color = foreground.copy(alpha = 0.72f),
                     modifier = Modifier.padding(top = 5.dp, bottom = 13.dp),
                 )
                 Button(
@@ -337,7 +301,7 @@ private fun MistakesReviewCta(
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PompColors.Cinnabar,
-                        contentColor = Color.White,
+                        contentColor = PompColors.Paper,
                     ),
                     contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
                 ) {
@@ -345,22 +309,14 @@ private fun MistakesReviewCta(
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
                             strokeWidth = 2.dp,
-                            color = Color.White,
+                            color = PompColors.Paper,
                         )
                     } else {
-                        Icon(
-                            imageVector = Icons.Filled.PlayArrow,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
+                        Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
                     }
                     Spacer(Modifier.width(7.dp))
                     Text(
-                        text = if (busy) {
-                            stringResource(R.string.mistakes_loading)
-                        } else {
-                            stringResource(R.string.mistakes_start)
-                        },
+                        text = if (busy) stringResource(R.string.mistakes_loading) else stringResource(R.string.mistakes_start),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                     )
@@ -371,11 +327,7 @@ private fun MistakesReviewCta(
 }
 
 @Composable
-private fun MistakeCategoryChip(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
+private fun MistakeCategoryChip(text: String, selected: Boolean, onClick: () -> Unit) {
     Surface(
         color = if (selected) PompColors.Cinnabar else PompColors.PaperRaised,
         shape = RoundedCornerShape(18.dp),
@@ -386,7 +338,7 @@ private fun MistakeCategoryChip(
             text = text,
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
-            color = if (selected) Color.White else PompColors.InkSecondary,
+            color = if (selected) PompColors.Paper else PompColors.InkSecondary,
             modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
         )
     }
@@ -407,7 +359,7 @@ private fun MistakeCard(item: MistakeItemDto) {
             modifier = Modifier.padding(13.dp),
         ) {
             Surface(
-                color = PompColors.CinnabarSoft,
+                color = PompColors.FlameSoft,
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.size(44.dp),
             ) {
@@ -415,7 +367,7 @@ private fun MistakeCard(item: MistakeItemDto) {
                     Icon(
                         imageVector = mistakeCategoryIcon(item.category),
                         contentDescription = null,
-                        tint = PompColors.Cinnabar,
+                        tint = PompColors.Flame,
                         modifier = Modifier.size(20.dp),
                     )
                 }
@@ -435,12 +387,7 @@ private fun MistakeCard(item: MistakeItemDto) {
                     }
                 }
 
-                Text(
-                    text = item.question,
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PompColors.Ink,
-                )
+                Text(item.question, fontSize = 17.sp, fontWeight = FontWeight.Bold, color = PompColors.Ink)
                 if (item.sentence.isNotBlank() && item.sentence != item.question) {
                     Text(
                         text = item.sentence,
@@ -455,38 +402,24 @@ private fun MistakeCard(item: MistakeItemDto) {
                     Text(
                         text = item.pinyin,
                         fontSize = 12.sp,
-                        color = PompColors.CinnabarDark,
+                        color = PompColors.Cinnabar,
                         modifier = Modifier.padding(top = 2.dp),
                     )
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.padding(top = 3.dp),
-                ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 3.dp)) {
                     item.userAnswer?.takeIf { it.isNotBlank() }?.let { wrong ->
-                        Text(
-                            text = "✗ $wrong",
-                            fontSize = 12.sp,
-                            color = PompColors.CinnabarDark,
-                        )
+                        Text(text = "✗ $wrong", fontSize = 12.sp, color = PompColors.Flame)
                     }
-                    Text(
-                        text = "✓ ${item.correctAnswer}",
-                        fontSize = 12.sp,
-                        color = PompColors.Jade,
-                    )
+                    Text(text = "✓ ${item.correctAnswer}", fontSize = 12.sp, color = PompColors.Jade)
                 }
             }
 
-            Surface(
-                color = PompColors.CinnabarSoft,
-                shape = RoundedCornerShape(9.dp),
-            ) {
+            Surface(color = PompColors.FlameSoft, shape = RoundedCornerShape(9.dp)) {
                 Text(
                     text = "${maxOf(item.count, 1)}×",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = PompColors.Cinnabar,
+                    color = PompColors.Flame,
                     modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
                 )
             }
@@ -497,7 +430,7 @@ private fun MistakeCard(item: MistakeItemDto) {
 @Composable
 private fun MistakeMetaTag(text: String) {
     Surface(
-        color = PompColors.Paper,
+        color = if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper,
         shape = RoundedCornerShape(7.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
@@ -515,23 +448,11 @@ private fun MistakesEmpty(onCourse: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 420.dp)
-            .padding(horizontal = 24.dp, vertical = 60.dp),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 420.dp).padding(horizontal = 24.dp, vertical = 60.dp),
     ) {
-        Surface(
-            color = PompColors.JadeSoft,
-            shape = RoundedCornerShape(22.dp),
-            modifier = Modifier.size(84.dp),
-        ) {
+        Surface(color = PompColors.JadeSoft, shape = RoundedCornerShape(22.dp), modifier = Modifier.size(84.dp)) {
             Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = null,
-                    tint = PompColors.Jade,
-                    modifier = Modifier.size(38.dp),
-                )
+                Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = PompColors.Jade, modifier = Modifier.size(38.dp))
             }
         }
         Text(
@@ -552,17 +473,10 @@ private fun MistakesEmpty(onCourse: () -> Unit) {
         Button(
             onClick = onCourse,
             shape = RoundedCornerShape(13.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = Color.White,
-            ),
+            colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
             contentPadding = PaddingValues(horizontal = 22.dp, vertical = 13.dp),
         ) {
-            Text(
-                text = stringResource(R.string.mistakes_to_course),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-            )
+            Text(text = stringResource(R.string.mistakes_to_course), fontSize = 14.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -574,43 +488,26 @@ private fun MistakesState(
     loading: Boolean = false,
     action: String? = null,
     onAction: () -> Unit = {},
+    destructive: Boolean = false,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 320.dp),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 320.dp),
     ) {
+        val stateColor = if (destructive) PompColors.Flame else PompColors.Cinnabar
         when {
-            loading -> CircularProgressIndicator(
-                color = PompColors.Cinnabar,
-                modifier = Modifier.size(30.dp),
-                strokeWidth = 2.5.dp,
-            )
-            icon != null -> Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = PompColors.Cinnabar,
-                modifier = Modifier.size(30.dp),
-            )
+            loading -> CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.size(30.dp), strokeWidth = 2.5.dp)
+            icon != null -> Icon(imageVector = icon, contentDescription = null, tint = stateColor, modifier = Modifier.size(30.dp))
         }
         Spacer(Modifier.height(9.dp))
-        Text(
-            text = text,
-            fontSize = 14.sp,
-            color = PompColors.InkSecondary,
-            textAlign = TextAlign.Center,
-        )
+        Text(text = text, fontSize = 14.sp, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         if (action != null) {
             Spacer(Modifier.height(14.dp))
             Button(
                 onClick = onAction,
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = Color.White,
-                ),
+                colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Text(action, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
@@ -619,7 +516,6 @@ private fun MistakesState(
     }
 }
 
-/** Mini App review overlay, including progress, feedback and fixed footer. */
 @Composable
 internal fun MistakesReviewRun(
     state: PracticeUiState,
@@ -631,51 +527,29 @@ internal fun MistakesReviewRun(
     val session = state.reviewSession ?: return
     val question = session.questions.getOrNull(state.reviewIndex) ?: return
     val speaker = rememberMistakeSpeaker()
-    val progress = if (session.questions.isEmpty()) 0f else {
-        state.reviewIndex.toFloat() / session.questions.size.toFloat()
-    }
+    val progress = if (session.questions.isEmpty()) 0f else state.reviewIndex.toFloat() / session.questions.size.toFloat()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(PompColors.Paper),
-    ) {
+    Column(modifier = modifier.fillMaxSize().background(PompColors.Paper)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
         ) {
             Surface(
                 color = PompColors.PaperRaised,
                 shape = RoundedCornerShape(999.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable(onClick = onCancel),
+                modifier = Modifier.size(32.dp).clickable(onClick = onCancel),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(R.string.action_close),
-                        tint = PompColors.InkSecondary,
-                        modifier = Modifier.size(18.dp),
-                    )
+                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close), tint = PompColors.InkSecondary, modifier = Modifier.size(18.dp))
                 }
             }
             Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(7.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(PompColors.Divider),
+                modifier = Modifier.weight(1f).height(7.dp).clip(RoundedCornerShape(4.dp)).background(PompColors.Divider),
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(progress.coerceIn(0f, 1f))
-                        .background(PompColors.Cinnabar),
+                    modifier = Modifier.fillMaxHeight().fillMaxWidth(progress.coerceIn(0f, 1f)).background(PompColors.Cinnabar),
                 )
             }
         }
@@ -701,15 +575,8 @@ internal fun MistakesReviewRun(
                     color = PompColors.Ink,
                     modifier = Modifier.padding(bottom = 20.dp),
                 )
-                if (
-                    question.audioText.isNotBlank() ||
-                    question.sentence.isNotBlank() ||
-                    question.pinyin.isNotBlank()
-                ) {
-                    ReviewMaterial(
-                        question = question,
-                        onSpeak = { speaker(question.audioText) },
-                    )
+                if (question.audioText.isNotBlank() || question.sentence.isNotBlank() || question.pinyin.isNotBlank()) {
+                    ReviewMaterial(question = question, onSpeak = { speaker(question.audioText) })
                     Spacer(Modifier.height(16.dp))
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -723,9 +590,7 @@ internal fun MistakesReviewRun(
                         )
                     }
                 }
-                state.reviewFeedback?.let { feedback ->
-                    MistakeFeedback(feedback = feedback)
-                }
+                state.reviewFeedback?.let { MistakeFeedback(feedback = it) }
             }
         }
 
@@ -735,20 +600,13 @@ internal fun MistakesReviewRun(
                 enabled = !state.isCompleting,
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Ink,
-                    contentColor = Color.White,
+                    containerColor = PompColors.Cinnabar,
+                    contentColor = PompColors.Paper,
                 ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)
-                    .heightIn(min = 54.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp).heightIn(min = 54.dp),
             ) {
                 if (state.isCompleting) {
-                    CircularProgressIndicator(
-                        color = Color.White,
-                        modifier = Modifier.size(18.dp),
-                        strokeWidth = 2.dp,
-                    )
+                    CircularProgressIndicator(color = PompColors.Paper, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.mistakes_loading))
                 } else if (state.reviewIndex >= session.questions.lastIndex) {
@@ -766,35 +624,22 @@ internal fun MistakesReviewRun(
 }
 
 @Composable
-private fun ReviewMaterial(
-    question: MistakeReviewQuestionDto,
-    onSpeak: () -> Unit,
-) {
+private fun ReviewMaterial(question: MistakeReviewQuestionDto, onSpeak: () -> Unit) {
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(14.dp),
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(14.dp)) {
             if (question.audioText.isNotBlank()) {
                 Surface(
                     color = PompColors.CinnabarSoft,
                     shape = RoundedCornerShape(999.dp),
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clickable(onClick = onSpeak),
+                    modifier = Modifier.size(42.dp).clickable(onClick = onSpeak),
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Filled.VolumeUp,
-                            contentDescription = null,
-                            tint = PompColors.Cinnabar,
-                            modifier = Modifier.size(20.dp),
-                        )
+                        Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar, modifier = Modifier.size(20.dp))
                     }
                 }
                 Spacer(Modifier.height(8.dp))
@@ -813,7 +658,7 @@ private fun ReviewMaterial(
                 Text(
                     text = question.pinyin,
                     fontSize = 13.sp,
-                    color = PompColors.CinnabarDark,
+                    color = PompColors.Cinnabar,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 3.dp),
                 )
@@ -835,28 +680,26 @@ private fun MistakeReviewOption(
     val wrong = feedback != null && picked && !correct
     val border = when {
         correct -> PompColors.Jade
-        wrong -> PompColors.Cinnabar
+        wrong -> PompColors.Flame
         else -> PompColors.Divider
     }
     val background = when {
         correct -> PompColors.JadeSoft
-        wrong -> PompColors.CinnabarSoft
+        wrong -> PompColors.FlameSoft
         else -> PompColors.PaperRaised
     }
     val rankBackground = when {
         correct -> PompColors.Jade
-        wrong -> PompColors.Cinnabar
-        else -> PompColors.Paper
+        wrong -> PompColors.Flame
+        else -> if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper
     }
-    val rankColor = if (correct || wrong) Color.White else PompColors.InkSecondary
+    val rankColor = if (correct || wrong) PompColors.Paper else PompColors.InkSecondary
 
     Surface(
         color = background,
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.5.dp, border),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = feedback == null && selectedIndex == null, onClick = onClick),
+        modifier = Modifier.fillMaxWidth().clickable(enabled = feedback == null && selectedIndex == null, onClick = onClick),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -870,20 +713,10 @@ private fun MistakeReviewOption(
                 modifier = Modifier.size(26.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        text = optionRank(index),
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = rankColor,
-                    )
+                    Text(text = optionRank(index), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = rankColor)
                 }
             }
-            Text(
-                text = text,
-                fontSize = 16.sp,
-                color = PompColors.Ink,
-                modifier = Modifier.weight(1f),
-            )
+            Text(text = text, fontSize = 16.sp, color = PompColors.Ink, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -892,18 +725,16 @@ private fun MistakeReviewOption(
 private fun MistakeFeedback(feedback: MistakeReviewAnswerResponse) {
     val correct = feedback.correct
     Surface(
-        color = if (correct) PompColors.JadeSoft else PompColors.CinnabarSoft,
+        color = if (correct) PompColors.JadeSoft else PompColors.FlameSoft,
         shape = RoundedCornerShape(14.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 18.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
     ) {
         Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = if (correct) Icons.Filled.CheckCircle else Icons.Filled.WarningAmber,
                     contentDescription = null,
-                    tint = if (correct) PompColors.Jade else PompColors.CinnabarDark,
+                    tint = if (correct) PompColors.Jade else PompColors.Flame,
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(7.dp))
@@ -911,7 +742,7 @@ private fun MistakeFeedback(feedback: MistakeReviewAnswerResponse) {
                     text = stringResource(if (correct) R.string.mistakes_correct else R.string.mistakes_wrong),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (correct) PompColors.Jade else PompColors.CinnabarDark,
+                    color = if (correct) PompColors.Jade else PompColors.Flame,
                 )
             }
             if (!correct) {
@@ -919,14 +750,11 @@ private fun MistakeFeedback(feedback: MistakeReviewAnswerResponse) {
                     text = "${stringResource(R.string.mistakes_explanation)}: ${feedback.correctAnswer}",
                     fontSize = 14.sp,
                     lineHeight = 21.sp,
-                    color = PompColors.CinnabarDark,
+                    color = PompColors.Flame,
                     modifier = Modifier.padding(top = 4.dp),
                 )
             }
-            if (
-                feedback.explanation.isNotBlank() &&
-                feedback.explanation != feedback.correctAnswer
-            ) {
+            if (feedback.explanation.isNotBlank() && feedback.explanation != feedback.correctAnswer) {
                 Text(
                     text = feedback.explanation,
                     fontSize = 14.sp,
@@ -939,43 +767,23 @@ private fun MistakeFeedback(feedback: MistakeReviewAnswerResponse) {
     }
 }
 
-/** Mini App `renderResult`: trophy, raw score, optional XP and remaining count. */
 @Composable
 internal fun MistakesReviewResult(
     result: MistakeReviewCompleteResponse,
     onDone: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val awardedXp = result.reward
-        ?.get("awarded_xp")
-        ?.jsonPrimitive
-        ?.intOrNull
-        ?: 0
+    val awardedXp = result.reward?.get("awarded_xp")?.jsonPrimitive?.intOrNull ?: 0
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(PompColors.Paper),
-    ) {
+    Column(modifier = modifier.fillMaxSize().background(PompColors.Paper)) {
         Box(Modifier.weight(1f)) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 40.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp),
             ) {
-                Surface(
-                    color = PompColors.JadeSoft,
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier.size(88.dp),
-                ) {
+                Surface(color = PompColors.JadeSoft, shape = RoundedCornerShape(24.dp), modifier = Modifier.size(88.dp)) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Filled.Trophy,
-                            contentDescription = null,
-                            tint = PompColors.Jade,
-                            modifier = Modifier.size(42.dp),
-                        )
+                        Icon(Icons.Filled.Trophy, contentDescription = null, tint = PompColors.Jade, modifier = Modifier.size(42.dp))
                     }
                 }
                 Text(
@@ -992,17 +800,9 @@ internal fun MistakesReviewResult(
                     color = PompColors.Cinnabar,
                     modifier = Modifier.padding(vertical = 4.dp),
                 )
-                Text(
-                    text = stringResource(R.string.mistakes_result_score_label),
-                    fontSize = 13.sp,
-                    color = PompColors.InkSecondary,
-                )
+                Text(text = stringResource(R.string.mistakes_result_score_label), fontSize = 13.sp, color = PompColors.InkSecondary)
                 if (awardedXp > 0) {
-                    Surface(
-                        color = MistakesXpSoft,
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.padding(vertical = 8.dp),
-                    ) {
+                    Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(10.dp), modifier = Modifier.padding(vertical = 8.dp)) {
                         Text(
                             text = "+$awardedXp XP",
                             fontSize = 14.sp,
@@ -1029,22 +829,12 @@ internal fun MistakesReviewResult(
         Button(
             onClick = onDone,
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Ink,
-                contentColor = Color.White,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)
-                .heightIn(min = 54.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp).heightIn(min = 54.dp),
         ) {
             Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
-            Text(
-                text = stringResource(R.string.mistakes_done),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-            )
+            Text(text = stringResource(R.string.mistakes_done), fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -1054,9 +844,7 @@ private fun rememberMistakeSpeaker(): (String) -> Unit {
     val context = LocalContext.current.applicationContext
     var ready by remember { mutableStateOf(false) }
     val tts = remember(context) {
-        TextToSpeech(context) { status ->
-            ready = status == TextToSpeech.SUCCESS
-        }
+        TextToSpeech(context) { status -> ready = status == TextToSpeech.SUCCESS }
     }
     DisposableEffect(tts) {
         onDispose {

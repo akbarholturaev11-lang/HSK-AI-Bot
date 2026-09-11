@@ -748,7 +748,11 @@ private fun ChoiceCard(
         }
     }
     Surface(
-        color = if (selected) Color(0xFFFFF3EF) else PompColors.PaperRaised,
+        color = if (selected) {
+            if (PompColors.IsDark) PompColors.CinnabarSoft else Color(0xFFFFF3EF)
+        } else {
+            PompColors.PaperRaised
+        },
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
         modifier = Modifier
@@ -799,7 +803,7 @@ private fun ChoiceCard(
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         MiniAppOnboardingIcon(
                             kind = OnboardingIconKind.Check,
-                            tint = Color.White,
+                            tint = if (PompColors.IsDark) PompColors.Paper else Color.White,
                             size = 14.dp,
                         )
                     }
@@ -861,6 +865,7 @@ private fun OnboardingFooter(
         label = "onboarding-cta-press",
     )
     val buttonAlpha = if (state.submitting) 0.65f else 1f
+    val ctaContent = if (PompColors.IsDark) PompColors.Paper else Color.White
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -891,7 +896,7 @@ private fun OnboardingFooter(
             if (state.error) {
                 Text(
                     copy.saveError,
-                    color = PompColors.CinnabarDark,
+                    color = PompColors.Flame,
                     fontSize = 13.sp,
                     lineHeight = 19.sp,
                     textAlign = TextAlign.Center,
@@ -940,12 +945,12 @@ private fun OnboardingFooter(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        Text(label, color = ctaContent, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                         if (!state.submitting && state.step > 0) {
                             Spacer(Modifier.width(10.dp))
                             MiniAppOnboardingIcon(
                                 kind = OnboardingIconKind.Arrow,
-                                tint = Color.White,
+                                tint = ctaContent,
                             )
                         }
                     }

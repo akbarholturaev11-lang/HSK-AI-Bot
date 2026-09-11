@@ -285,9 +285,6 @@ private fun FoundationCardBody(
         "speak" -> {
             if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
             Spacer(Modifier.height(14.dp))
-            // The bonus is earned on what was said, so the button records and
-            // asks the server — and there is always a way past for a learner
-            // who cannot speak right now.
             FoundationAction(
                 enabled = !state.isRecording && !state.isScoring,
                 onClick = onCheckPronunciation,
@@ -302,8 +299,7 @@ private fun FoundationCardBody(
                 state.speakingBonus && state.pronunciationMessage.isNotBlank() ->
                     stringResource(R.string.lesson_correct) + " " + state.pronunciationMessage
                 state.pronunciationMessage.isNotBlank() ->
-                    stringResource(R.string.foundation_speak_heard) +
-                        " " + state.pronunciationMessage
+                    stringResource(R.string.foundation_speak_heard) + " " + state.pronunciationMessage
                 else -> ""
             }
             Spacer(Modifier.height(9.dp))
@@ -344,13 +340,13 @@ private fun FoundationCardBody(
     if (state.answerCorrect != null && card.explanation.isNotBlank()) {
         Spacer(Modifier.height(16.dp))
         Surface(
-            color = if (state.answerCorrect == true) PompColors.JadeSoft else PompColors.CinnabarSoft,
+            color = if (state.answerCorrect == true) PompColors.JadeSoft else PompColors.FlameSoft,
             shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
                 text = card.explanation,
-                color = if (state.answerCorrect == true) PompColors.Jade else PompColors.CinnabarDark,
+                color = if (state.answerCorrect == true) PompColors.Jade else PompColors.Flame,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(14.dp),
             )
@@ -400,14 +396,14 @@ private fun AudioButton(onClick: () -> Unit) {
 private fun FoundationOption(text: String, selected: Boolean, correct: Boolean, wrong: Boolean, onClick: () -> Unit) {
     val border = when {
         correct -> PompColors.Jade
-        wrong -> PompColors.Cinnabar
+        wrong -> PompColors.Flame
         selected -> PompColors.Cinnabar
         else -> PompColors.Divider
     }
     Surface(
         color = when {
             correct -> PompColors.JadeSoft
-            wrong -> PompColors.CinnabarSoft
+            wrong -> PompColors.FlameSoft
             else -> PompColors.PaperRaised
         },
         shape = RoundedCornerShape(15.dp),

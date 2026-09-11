@@ -90,8 +90,6 @@ fun RatingScreen(
                 TabSwitch(selected = state.tab, onSelect = onSelectTab)
             }
 
-            // Duels sit above the table: they are waiting on the learner,
-            // and the leaderboard is not.
             if (state.pendingChallenges.isNotEmpty()) {
                 item { ChallengeGroupLabel(stringResource(R.string.challenge_pending_title)) }
                 items(state.pendingChallenges, key = { "pending-${it.id}" }) { duel ->
@@ -389,8 +387,9 @@ private fun LeagueRow(
 ) {
     val name = row.name.ifBlank { row.username.ifBlank { stringResource(R.string.rating_unnamed) } }
     Surface(
-        color = if (row.isCurrentUser) PompColors.CinnabarSoft else PompColors.Paper,
+        color = if (row.isCurrentUser) PompColors.CinnabarSoft else PompColors.PaperRaised,
         shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, if (row.isCurrentUser) PompColors.Cinnabar.copy(alpha = 0.25f) else PompColors.Divider),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
@@ -426,7 +425,6 @@ private fun LeagueRow(
                 style = MaterialTheme.typography.titleSmall,
                 color = PompColors.InkSecondary,
             )
-            // The Mini App lets you challenge anyone you can see on the board.
             if (canChallenge) {
                 Spacer(Modifier.width(8.dp))
                 Surface(
@@ -483,7 +481,7 @@ private fun PendingChallengeRow(
             onClick = { onRespond(duel.id, false) },
             enabled = !busy,
             shape = RoundedCornerShape(11.dp),
-            color = PompColors.Paper,
+            color = PompColors.PaperRaised,
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {
             Text(
@@ -643,21 +641,22 @@ private fun EmptyBlock(text: String) {
 @Composable
 private fun ErrorBlock(text: String, onRetry: () -> Unit) {
     Surface(
-        color = PompColors.CinnabarSoft,
+        color = PompColors.FlameSoft,
         shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, PompColors.Flame.copy(alpha = 0.35f)),
         modifier = Modifier.fillMaxWidth().clickable(onClick = onRetry),
     ) {
         Column(Modifier.padding(14.dp)) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.action_retry),
                 style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
             )
         }
     }

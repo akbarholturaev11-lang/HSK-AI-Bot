@@ -217,9 +217,13 @@ private fun VoiceBox(
     enabled: Boolean,
     onStart: () -> Unit,
 ) {
+    val boxSurface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
+    val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
+    val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
     Surface(
-        color = PompColors.Ink,
+        color = boxSurface,
         shape = RoundedCornerShape(18.dp),
+        border = if (PompColors.IsDark) BorderStroke(1.dp, PompColors.Divider) else null,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
@@ -232,14 +236,14 @@ private fun VoiceBox(
                 text = stringResource(R.string.voice_box_title),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 fontWeight = FontWeight.Medium,
-                color = PompColors.Paper,
+                color = boxInk,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.voice_box_body),
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                color = Color.White.copy(alpha = 0.72f),
+                color = boxMuted,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
@@ -453,7 +457,7 @@ internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
                 Text(
                     text = stringResource(R.string.voice_correction, it),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.CinnabarDark,
+                    color = PompColors.Flame,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
@@ -508,14 +512,14 @@ private fun VoiceResult(
 @Composable
 internal fun ErrorPill(text: String) {
     Surface(
-        color = PompColors.CinnabarSoft,
+        color = PompColors.FlameSoft,
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
-            color = PompColors.CinnabarDark,
+            color = PompColors.Flame,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
         )
     }
