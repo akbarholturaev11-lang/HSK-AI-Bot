@@ -16,6 +16,24 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Detail-screen actions are carried with the state so the old four-argument
+ * DictionaryScreen call site can stay source-compatible while the native
+ * dictionary grows into the Mini App detail flow. This is session-local: the
+ * controller is the DictionaryViewModel that owns this exact state.
+ */
+interface DictionaryController {
+    fun openWord(word: DictionaryWord)
+    fun closeWord()
+    fun previousCharacter()
+    fun nextCharacter()
+    fun previousStroke()
+    fun nextStroke()
+    fun playStrokeOrder()
+    fun pauseStrokeOrder()
+    fun nextWord()
+}
+
 data class DictionaryUiState(
     val isLoading: Boolean = true,
     val query: String = "",
@@ -31,6 +49,7 @@ data class DictionaryUiState(
     val visibleStrokeCount: Int = 0,
     val strokeReplayKey: Int = 0,
     val isStrokePlaying: Boolean = false,
+    val controller: DictionaryController? = null,
 ) {
     val isUnavailable: Boolean get() = !isLoading && total == 0
     val currentCharacter: String? get() = characters.getOrNull(characterIndex)
@@ -42,7 +61,7 @@ data class DictionaryUiState(
 class DictionaryViewModel(
     private val repository: DictionaryRepository,
     private val language: AppLanguage,
-) : ViewModel() {
+) : ViewModel(), DictionaryController {
 
     private val _state = MutableStateFlow(DictionaryUiState())
     val state: StateFlow<DictionaryUiState> = _state.asStateFlow()
@@ -53,6 +72,7 @@ class DictionaryViewModel(
     private var fullWords: List<DictionaryWord> = emptyList()
 
     init {
+        _state.update { it.copy(controller = this) }
         load()
     }
 
@@ -83,7 +103,7 @@ class DictionaryViewModel(
         }
     }
 
-    fun openWord(word: DictionaryWord) {
+    override fun openWord(word: DictionaryWord) {
         val chars = word.hanzi
             .filter { it in '\u4E00'..'\u9FFF' }
             .map { it.toString() }
@@ -102,7 +122,7 @@ class DictionaryViewModel(
         loadCurrentCharacter()
     }
 
-    fun closeWord() {
+    override fun closeWord() {
         strokeJob?.cancel()
         stopPlayback()
         _state.update {
@@ -118,24 +138,24 @@ class DictionaryViewModel(
         }
     }
 
-    fun previousCharacter() = moveCharacter(-1)
-    fun nextCharacter() = moveCharacter(1)
+    override fun previousCharacter() = moveCharacter(-1)
+    override fun nextCharacter() = moveCharacter(1)
 
-    fun previousStroke() {
+    override fun previousStroke() {
         stopPlayback()
         _state.update {
             it.copy(visibleStrokeCount = (it.visibleStrokeCount - 1).coerceAtLeast(0))
         }
     }
 
-    fun nextStroke() {
+    override fun nextStroke() {
         stopPlayback()
         _state.update {
             it.copy(visibleStrokeCount = (it.visibleStrokeCount + 1).coerceAtMost(it.strokes.size))
         }
     }
 
-    fun playStrokeOrder() {
+    override fun playStrokeOrder() {
         val count = _state.value.strokes.size
         if (count == 0) return
         playJob?.cancel()
@@ -157,7 +177,7 @@ class DictionaryViewModel(
         }
     }
 
-    fun pauseStrokeOrder() {
+    override fun pauseStrokeOrder() {
         if (!_state.value.isStrokePlaying) return
         playJob?.cancel()
         // Compose's compact writer animation is all-or-nothing. Pausing returns
@@ -165,7 +185,7 @@ class DictionaryViewModel(
         _state.update { it.copy(isStrokePlaying = false) }
     }
 
-    fun nextWord() {
+    override fun nextWord() {
         val current = _state.value.selectedWord ?: return
         val index = fullWords.indexOfFirst { it.hanzi == current.hanzi }
         if (index >= 0 && index < fullWords.lastIndex) openWord(fullWords[index + 1])
