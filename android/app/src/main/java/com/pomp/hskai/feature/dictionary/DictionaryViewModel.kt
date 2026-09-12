@@ -22,9 +22,21 @@ data class DictionaryUiState(
     val words: List<DictionaryWord> = emptyList(),
     val total: Int = 0,
     val error: ApiError? = null,
+    val selectedWord: DictionaryWord? = null,
+    val characters: List<String> = emptyList(),
+    val characterIndex: Int = 0,
+    val strokes: List<String> = emptyList(),
+    val isStrokeLoading: Boolean = false,
+    val strokeError: ApiError? = null,
+    val visibleStrokeCount: Int = 0,
+    val strokeReplayKey: Int = 0,
+    val isStrokePlaying: Boolean = false,
 ) {
-    /** Nothing stored and nothing to show: the only true empty state. */
     val isUnavailable: Boolean get() = !isLoading && total == 0
+    val currentCharacter: String? get() = characters.getOrNull(characterIndex)
+    val strokeCount: Int get() = strokes.size
+    val hasPreviousCharacter: Boolean get() = characterIndex > 0
+    val hasNextCharacter: Boolean get() = characterIndex < characters.lastIndex
 }
 
 class DictionaryViewModel(
@@ -36,6 +48,9 @@ class DictionaryViewModel(
     val state: StateFlow<DictionaryUiState> = _state.asStateFlow()
 
     private var searchJob: Job? = null
+    private var strokeJob: Job? = null
+    private var playJob: Job? = null
+    private var fullWords: List<DictionaryWord> = emptyList()
 
     init {
         load()
@@ -47,6 +62,7 @@ class DictionaryViewModel(
             when (val result = repository.sync(language)) {
                 is ApiResult.Success -> {
                     _state.update { it.copy(total = result.value) }
+                    fullWords = repository.search("")
                     runSearch(_state.value.query)
                     _state.update { it.copy(isLoading = false) }
                 }
@@ -62,11 +78,145 @@ class DictionaryViewModel(
         _state.update { it.copy(query = query) }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            // Typing a word should not run a query per keystroke against a
-            // 1200-row table; the last keystroke is the one that matters.
             delay(SEARCH_DEBOUNCE_MS)
             runSearch(query)
         }
+    }
+
+    fun openWord(word: DictionaryWord) {
+        val chars = word.hanzi
+            .filter { it in '\u4E00'..'\u9FFF' }
+            .map { it.toString() }
+            .ifEmpty { listOf(word.hanzi) }
+        stopPlayback()
+        _state.update {
+            it.copy(
+                selectedWord = word,
+                characters = chars,
+                characterIndex = 0,
+                strokes = emptyList(),
+                visibleStrokeCount = 0,
+                strokeError = null,
+            )
+        }
+        loadCurrentCharacter()
+    }
+
+    fun closeWord() {
+        strokeJob?.cancel()
+        stopPlayback()
+        _state.update {
+            it.copy(
+                selectedWord = null,
+                characters = emptyList(),
+                characterIndex = 0,
+                strokes = emptyList(),
+                isStrokeLoading = false,
+                strokeError = null,
+                visibleStrokeCount = 0,
+            )
+        }
+    }
+
+    fun previousCharacter() = moveCharacter(-1)
+    fun nextCharacter() = moveCharacter(1)
+
+    fun previousStroke() {
+        stopPlayback()
+        _state.update {
+            it.copy(visibleStrokeCount = (it.visibleStrokeCount - 1).coerceAtLeast(0))
+        }
+    }
+
+    fun nextStroke() {
+        stopPlayback()
+        _state.update {
+            it.copy(visibleStrokeCount = (it.visibleStrokeCount + 1).coerceAtMost(it.strokes.size))
+        }
+    }
+
+    fun playStrokeOrder() {
+        val count = _state.value.strokes.size
+        if (count == 0) return
+        playJob?.cancel()
+        val replay = _state.value.strokeReplayKey + 1
+        _state.update {
+            it.copy(
+                visibleStrokeCount = 0,
+                strokeReplayKey = replay,
+                isStrokePlaying = true,
+            )
+        }
+        playJob = viewModelScope.launch {
+            delay(count * STROKE_STEP_MS + PLAY_END_PADDING_MS)
+            _state.update {
+                if (it.strokeReplayKey == replay) {
+                    it.copy(visibleStrokeCount = it.strokes.size, isStrokePlaying = false)
+                } else it
+            }
+        }
+    }
+
+    fun pauseStrokeOrder() {
+        if (!_state.value.isStrokePlaying) return
+        playJob?.cancel()
+        // Compose's compact writer animation is all-or-nothing. Pausing returns
+        // to the last explicit step instead of inventing a half stroke.
+        _state.update { it.copy(isStrokePlaying = false) }
+    }
+
+    fun nextWord() {
+        val current = _state.value.selectedWord ?: return
+        val index = fullWords.indexOfFirst { it.hanzi == current.hanzi }
+        if (index >= 0 && index < fullWords.lastIndex) openWord(fullWords[index + 1])
+    }
+
+    private fun moveCharacter(delta: Int) {
+        val next = (_state.value.characterIndex + delta)
+        if (next !in _state.value.characters.indices) return
+        stopPlayback()
+        _state.update {
+            it.copy(
+                characterIndex = next,
+                strokes = emptyList(),
+                visibleStrokeCount = 0,
+                strokeError = null,
+            )
+        }
+        loadCurrentCharacter()
+    }
+
+    private fun loadCurrentCharacter() {
+        val char = _state.value.currentCharacter ?: return
+        strokeJob?.cancel()
+        _state.update { it.copy(isStrokeLoading = true, strokeError = null) }
+        strokeJob = viewModelScope.launch {
+            when (val result = repository.strokes(char)) {
+                is ApiResult.Success -> {
+                    _state.update {
+                        if (it.currentCharacter == char) {
+                            it.copy(
+                                strokes = result.value,
+                                isStrokeLoading = false,
+                                visibleStrokeCount = 0,
+                                strokeError = null,
+                            )
+                        } else it
+                    }
+                    playStrokeOrder()
+                }
+                is ApiResult.Failure -> _state.update {
+                    if (it.currentCharacter == char) {
+                        it.copy(isStrokeLoading = false, strokeError = result.error)
+                    } else it
+                }
+            }
+        }
+    }
+
+    private fun stopPlayback() {
+        playJob?.cancel()
+        _state.update { it.copy(isStrokePlaying = false) }
     }
 
     private suspend fun runSearch(query: String) {
@@ -85,5 +235,7 @@ class DictionaryViewModel(
 
     private companion object {
         const val SEARCH_DEBOUNCE_MS = 180L
+        const val STROKE_STEP_MS = 420L
+        const val PLAY_END_PADDING_MS = 80L
     }
 }
