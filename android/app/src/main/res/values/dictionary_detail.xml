@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_new_words_title">Yangi so‘zlar lug‘ati</string>
+    <string name="dictionary_results_count">%1$d natija</string>
+    <string name="dictionary_words_count">HSK 1–4 · %1$d so‘z</string>
+    <string name="dictionary_strokes_count">%1$d chiziq</string>
+    <string name="dictionary_character_position">%1$d / %2$d</string>
+    <string name="dictionary_previous_character">Oldingi belgi</string>
+    <string name="dictionary_next_character">Keyingi belgi</string>
+    <string name="dictionary_previous_stroke">Bir chiziq orqaga</string>
+    <string name="dictionary_next_stroke">Bir chiziq oldinga</string>
+    <string name="dictionary_play_strokes">Yozilishini ko‘rsatish</string>
+    <string name="dictionary_pause_strokes">Pauza</string>
+    <string name="dictionary_listen">Tinglash</string>
+    <string name="dictionary_next_word">Keyingi so‘z</string>
+    <string name="dictionary_writer_unavailable">Yozilish animatsiyasi yuklanmadi</string>
+    <string name="dictionary_practice_title">Mashqlar</string>
+    <string name="dictionary_pronunciation_title">Talaffuzni tekshirish</string>
+    <string name="dictionary_pronunciation_subtitle">Bot bilan ayting</string>
+    <string name="dictionary_recognition_title">O‘xshashlardan ajrating</string>
+    <string name="dictionary_recognition_subtitle">Ieroglifni taning</string>
+</resources>
