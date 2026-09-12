@@ -3,6 +3,7 @@ package com.pomp.hskai.data.repository
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.core.network.toApiError
 import com.pomp.hskai.core.text.PinyinSearch
 import com.pomp.hskai.data.api.AndroidCourseApi
@@ -28,6 +29,10 @@ data class DictionaryWord(
  * from the cache: opening the dictionary must not cost 90 KB every time. A
  * language change invalidates the copy, because the stored meanings are in the
  * previous language.
+ *
+ * Detail writing uses the same authenticated stroke endpoint as lesson cards.
+ * This deliberately avoids a second dictionary/writer data source: Mini App and
+ * native Android both resolve the same hanzi-writer outlines.
  */
 class DictionaryRepository(
     private val api: AndroidCourseApi,
@@ -128,6 +133,25 @@ class DictionaryRepository(
         }
     }
 
+    /** Stroke outlines for exactly one Chinese character. */
+    suspend fun strokes(char: String): ApiResult<List<String>> {
+        val single = char.trim()
+        if (single.codePointCount(0, single.length) != 1) {
+            return ApiResult.Failure(ApiError.Unknown)
+        }
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        return when (val result = apiCall { api.stroke("Bearer $token", single) }) {
+            is ApiResult.Failure -> {
+                if (result.error is ApiError.SessionExpired) onSessionExpired()
+                result
+            }
+            is ApiResult.Success -> ApiResult.Success(result.value.strokes)
+        }
+    }
+
     suspend fun clearCache() = dao.clear()
 
     private suspend fun keepOrFail(error: ApiError, cachedCount: Int): ApiResult<Int> {
@@ -137,6 +161,8 @@ class DictionaryRepository(
 
     private companion object {
         const val NOT_MODIFIED = 304
-        const val SEARCH_LIMIT = 200
+        // Mini App shows the complete HSK 1–4 list. Keep Android from silently
+        // truncating that list to the previous 200-row safety limit.
+        const val SEARCH_LIMIT = 5_000
     }
 }
