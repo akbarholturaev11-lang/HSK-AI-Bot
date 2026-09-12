@@ -2,4 +2,6 @@
 <resources>
     <string name="dictionary_memorize_title">Зуд ёд гирифтан</string>
     <string name="dictionary_memorize_subtitle">Машқи ҳофиза</string>
+    <string name="practice_memorize_title">@string/dictionary_memorize_title</string>
+    <string name="practice_memorize_subtitle">@string/dictionary_memorize_subtitle</string>
 </resources>
