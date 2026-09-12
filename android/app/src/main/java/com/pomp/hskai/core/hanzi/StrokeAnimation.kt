@@ -30,10 +30,6 @@ import com.pomp.hskai.core.design.PompColors
  *
  * The stroke paths are given in a grid whose origin is bottom-left, so the
  * whole set is flipped once and scaled to the canvas.
- *
- * This lives outside any one screen because two of them show the same thing:
- * the lesson's writing sheet and the dictionary entry. One drawing, so a
- * character cannot be written differently depending on where it is opened.
  */
 @Composable
 fun StrokeAnimation(
@@ -54,6 +50,34 @@ fun StrokeAnimation(
         label = "strokeProgress",
     )
 
+    StrokeCanvas(paths = paths, progress = progress, modifier = modifier)
+}
+
+/**
+ * Static sibling used by the dictionary's « / » controls. [visibleStrokeCount]
+ * is the number of completed strokes, so the learner can inspect the order one
+ * stroke at a time exactly like the Mini App writer.
+ */
+@Composable
+fun StrokeSnapshot(
+    strokes: List<String>,
+    visibleStrokeCount: Int,
+    modifier: Modifier = Modifier,
+) {
+    val paths = remember(strokes) { strokes.mapNotNull(::parseStroke) }
+    StrokeCanvas(
+        paths = paths,
+        progress = visibleStrokeCount.coerceIn(0, paths.size).toFloat(),
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun StrokeCanvas(
+    paths: List<Path>,
+    progress: Float,
+    modifier: Modifier,
+) {
     Canvas(
         modifier = modifier
             .fillMaxWidth()
@@ -62,7 +86,6 @@ fun StrokeAnimation(
     ) {
         val scale = size.minDimension / GRID
         val matrix = Matrix().apply {
-            // hanzi-writer's own transform: flip the y axis, then fit the box.
             translate(0f, size.height)
             scale(scale, -scale)
         }
@@ -88,7 +111,6 @@ fun StrokeAnimation(
 private fun parseStroke(data: String): Path? =
     runCatching { PathParser().parsePathString(data).toPath() }.getOrNull()
 
-/** The first [fraction] of a filled stroke, so it appears to be written. */
 private fun partial(path: Path, fraction: Float): Path {
     val measure = PathMeasure().apply { setPath(path, false) }
     val cut = Path()
@@ -96,7 +118,6 @@ private fun partial(path: Path, fraction: Float): Path {
     return cut
 }
 
-private const val MILLIS_PER_STROKE = 420
-
-/** hanzi-writer draws on a 1024 grid. */
+const val STROKE_MILLIS_PER_STROKE = 420L
+private const val MILLIS_PER_STROKE = STROKE_MILLIS_PER_STROKE.toInt()
 private const val GRID = 1024f
