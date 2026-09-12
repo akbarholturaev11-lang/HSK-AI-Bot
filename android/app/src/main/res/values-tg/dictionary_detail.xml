@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_new_words_title">Луғати калимаҳои нав</string>
+    <string name="dictionary_results_count">%1$d натиҷа</string>
+    <string name="dictionary_words_count">HSK 1–4 · %1$d калима</string>
+    <string name="dictionary_strokes_count">%1$d хат</string>
+    <string name="dictionary_character_position">%1$d / %2$d</string>
+    <string name="dictionary_previous_character">Иероглифи пешина</string>
+    <string name="dictionary_next_character">Иероглифи навбатӣ</string>
+    <string name="dictionary_previous_stroke">Як хат ба қафо</string>
+    <string name="dictionary_next_stroke">Як хат ба пеш</string>
+    <string name="dictionary_play_strokes">Навиштанро нишон додан</string>
+    <string name="dictionary_pause_strokes">Таваққуф</string>
+    <string name="dictionary_listen">Шунидан</string>
+    <string name="dictionary_next_word">Калимаи навбатӣ</string>
+    <string name="dictionary_writer_unavailable">Аниматсияи навишт бор нашуд</string>
+    <string name="dictionary_practice_title">Машқҳо</string>
+    <string name="dictionary_pronunciation_title">Санҷиши талаффуз</string>
+    <string name="dictionary_pronunciation_subtitle">Ба бот гӯед</string>
+    <string name="dictionary_recognition_title">Аз байни монандҳо ёбед</string>
+    <string name="dictionary_recognition_subtitle">Шинохти иероглиф</string>
+</resources>
