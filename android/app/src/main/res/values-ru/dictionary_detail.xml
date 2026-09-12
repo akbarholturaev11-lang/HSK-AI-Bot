@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_new_words_title">Словарь новых слов</string>
+    <string name="dictionary_results_count">%1$d результатов</string>
+    <string name="dictionary_words_count">HSK 1–4 · %1$d слов</string>
+    <string name="dictionary_strokes_count">%1$d черт</string>
+    <string name="dictionary_character_position">%1$d / %2$d</string>
+    <string name="dictionary_previous_character">Предыдущий иероглиф</string>
+    <string name="dictionary_next_character">Следующий иероглиф</string>
+    <string name="dictionary_previous_stroke">На одну черту назад</string>
+    <string name="dictionary_next_stroke">На одну черту вперёд</string>
+    <string name="dictionary_play_strokes">Показать написание</string>
+    <string name="dictionary_pause_strokes">Пауза</string>
+    <string name="dictionary_listen">Слушать</string>
+    <string name="dictionary_next_word">Следующее слово</string>
+    <string name="dictionary_writer_unavailable">Анимация написания не загрузилась</string>
+    <string name="dictionary_practice_title">Упражнения</string>
+    <string name="dictionary_pronunciation_title">Проверка произношения</string>
+    <string name="dictionary_pronunciation_subtitle">Скажите боту</string>
+    <string name="dictionary_recognition_title">Найдите среди похожих</string>
+    <string name="dictionary_recognition_subtitle">Распознавание иероглифа</string>
+</resources>
