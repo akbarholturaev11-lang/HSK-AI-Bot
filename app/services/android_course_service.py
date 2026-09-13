@@ -106,13 +106,21 @@ class AndroidCourseService(DesktopCourseService):
         access_ref: str = "",
     ) -> dict[str, Any]:
         await self._require_foundation_complete(access_token)
-        return await super().complete(
+        context = await self._context(access_token)
+        gamification = CourseGamificationService(self.session)
+        before = await gamification.leaderboard(context.user)
+        result = await super().complete(
             access_token,
             lesson_order=lesson_order,
             event_id=event_id,
             mistakes=mistakes,
             access_ref=access_ref,
         )
+        after_context = await self._context(access_token)
+        after = await gamification.leaderboard(after_context.user)
+        result["rank_before"] = int(before.get("rank") or 0)
+        result["rank_after"] = int(after.get("rank") or 0)
+        return result
 
     async def foundation(self, access_token: str) -> dict:
         """Return the checked-in Starter 0 payload used by the Mini App."""
