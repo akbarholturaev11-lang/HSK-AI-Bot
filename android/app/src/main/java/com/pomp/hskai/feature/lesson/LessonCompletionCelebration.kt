@@ -46,28 +46,28 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import kotlinx.coroutines.delay
 
+data class LessonRankUp(
+    val before: Int,
+    val after: Int,
+)
+
 /**
  * Native counterpart of the Mini App's lesson-complete celebration queue.
- *
- * The server snapshot decides which extra scene is meaningful. A normal lesson
- * always gets the completion/XP scene; a real first activity of the day gets
- * the streak scene next. Duplicate completions deliberately skip reward-like
- * emphasis so retrying the same server event cannot celebrate twice.
- *
- * Rank-up is appended in the next parity layer after the same server-side
- * leaderboard before/after check used by the Mini App is wired into the lesson
- * flow. This component intentionally does not infer rank from XP.
+ * Rank is never inferred from XP: [rankUp] only arrives after a server
+ * leaderboard refresh proves that the new rank is numerically better.
  */
 @Composable
 internal fun LessonCompletionCelebration(
     outcome: LessonOutcome.Completed,
+    rankUp: LessonRankUp? = null,
     onExit: () -> Unit,
 ) {
     val gamification = outcome.gamification
-    val scenes = remember(outcome) {
+    val scenes = remember(outcome, rankUp) {
         buildList {
             add(CelebrationScene.COMPLETE)
             if (!outcome.duplicate && gamification.streakUpdated) add(CelebrationScene.STREAK)
+            if (!outcome.duplicate && rankUp != null) add(CelebrationScene.RANK_UP)
         }
     }
     var sceneIndex by remember(outcome) { mutableStateOf(0) }
@@ -88,6 +88,7 @@ internal fun LessonCompletionCelebration(
             seed = when (scene) {
                 CelebrationScene.COMPLETE -> gamification.xp + outcome.correct
                 CelebrationScene.STREAK -> gamification.streak * 31
+                CelebrationScene.RANK_UP -> (rankUp?.before ?: 0) * 37 + (rankUp?.after ?: 0)
             },
             modifier = Modifier.fillMaxSize(),
         )
@@ -104,6 +105,7 @@ internal fun LessonCompletionCelebration(
             when (active) {
                 CelebrationScene.COMPLETE -> CompletionScene(outcome)
                 CelebrationScene.STREAK -> StreakScene(outcome)
+                CelebrationScene.RANK_UP -> rankUp?.let { RankUpScene(it) }
             }
         }
 
@@ -127,7 +129,7 @@ internal fun LessonCompletionCelebration(
     }
 }
 
-private enum class CelebrationScene { COMPLETE, STREAK }
+private enum class CelebrationScene { COMPLETE, STREAK, RANK_UP }
 
 @Composable
 private fun CompletionScene(outcome: LessonOutcome.Completed) {
@@ -192,6 +194,32 @@ private fun StreakScene(outcome: LessonOutcome.Completed) {
             style = MaterialTheme.typography.titleMedium,
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun RankUpScene(rankUp: LessonRankUp) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        CelebrationPanda(
+            drawable = R.drawable.widget_panda_cheer,
+            pulseKey = rankUp.before * 1000 + rankUp.after,
+        )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "🏆 #${rankUp.after}",
+            style = MaterialTheme.typography.headlineMedium,
+            color = PompColors.Gold,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "#${rankUp.before} → #${rankUp.after}",
+            style = MaterialTheme.typography.titleMedium,
+            color = PompColors.Ink,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold,
         )
     }
 }
