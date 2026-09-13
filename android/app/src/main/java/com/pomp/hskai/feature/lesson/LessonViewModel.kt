@@ -8,6 +8,7 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.LessonResumeStore
+import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.domain.model.ChoiceCard
@@ -40,6 +41,8 @@ sealed interface LessonOutcome {
         val correct: Int,
         val graded: Int,
         val duplicate: Boolean,
+        /** Mini App parity signals: XP, streak, league and reward chest state. */
+        val gamification: CourseGamificationDto,
     ) : LessonOutcome
 
     /** The free half-preview ran out. Completion is not possible. */
@@ -375,6 +378,7 @@ class LessonViewModel(
                             correct = current.correctCount,
                             graded = current.gradedAnswered,
                             duplicate = result.value.duplicate,
+                            gamification = result.value.gamification,
                         ),
                     )
 
