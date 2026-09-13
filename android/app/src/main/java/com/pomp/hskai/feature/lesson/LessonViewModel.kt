@@ -43,6 +43,9 @@ sealed interface LessonOutcome {
         val duplicate: Boolean,
         /** Mini App parity signals: XP, streak, league and reward chest state. */
         val gamification: CourseGamificationDto,
+        /** Exact weekly leaderboard positions around this completion. */
+        val rankBefore: Int = 0,
+        val rankAfter: Int = 0,
     ) : LessonOutcome
 
     /** The free half-preview ran out. Completion is not possible. */
@@ -379,6 +382,8 @@ class LessonViewModel(
                             graded = current.gradedAnswered,
                             duplicate = result.value.duplicate,
                             gamification = result.value.gamification,
+                            rankBefore = result.value.rankBefore,
+                            rankAfter = result.value.rankAfter,
                         ),
                     )
 
