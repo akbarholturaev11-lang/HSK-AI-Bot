@@ -11,10 +11,8 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -73,7 +70,7 @@ internal fun LessonCompletionCelebration(
             if (!outcome.duplicate && gamification.streakUpdated) add(CelebrationScene.STREAK)
         }
     }
-    var sceneIndex by remember(outcome) { mutableIntStateOf(0) }
+    var sceneIndex by remember(outcome) { mutableStateOf(0) }
     val scene = scenes[sceneIndex.coerceIn(0, scenes.lastIndex)]
     val haptics = LocalHapticFeedback.current
 
@@ -135,83 +132,85 @@ private enum class CelebrationScene { COMPLETE, STREAK }
 @Composable
 private fun CompletionScene(outcome: LessonOutcome.Completed) {
     val gamification = outcome.gamification
-    CelebrationPanda(
-        drawable = R.drawable.widget_panda_celebrate,
-        pulseKey = gamification.awardedXp,
-    )
-    Spacer(Modifier.height(14.dp))
-    Text(
-        text = stringResource(R.string.lesson_done_title),
-        style = MaterialTheme.typography.headlineMedium,
-        color = PompColors.Jade,
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold,
-    )
-    if (!outcome.duplicate && gamification.awardedXp > 0) {
-        Spacer(Modifier.height(10.dp))
-        RewardPill("+${gamification.awardedXp} XP")
-    }
-    if (outcome.graded > 0) {
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = stringResource(R.string.lesson_done_accuracy, outcome.correct, outcome.graded),
-            style = MaterialTheme.typography.titleMedium,
-            color = PompColors.Ink,
-            textAlign = TextAlign.Center,
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        CelebrationPanda(
+            drawable = R.drawable.widget_panda_celebrate,
+            pulseKey = gamification.awardedXp,
         )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = stringResource(R.string.lesson_done_title),
+            style = MaterialTheme.typography.headlineMedium,
+            color = PompColors.Jade,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+        )
+        if (!outcome.duplicate && gamification.awardedXp > 0) {
+            Spacer(Modifier.height(10.dp))
+            RewardPill("+${gamification.awardedXp} XP")
+        }
+        if (outcome.graded > 0) {
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = stringResource(R.string.lesson_done_accuracy, outcome.correct, outcome.graded),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+                textAlign = TextAlign.Center,
+            )
+        }
+        if (gamification.league.isNotBlank()) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "${gamification.league} · ${gamification.weeklyXp} XP",
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
-    Spacer(Modifier.height(8.dp))
-    Text(
-        text = "${gamification.league} · ${gamification.weeklyXp} XP",
-        style = MaterialTheme.typography.bodyMedium,
-        color = PompColors.InkSecondary,
-        textAlign = TextAlign.Center,
-    )
 }
 
 @Composable
 private fun StreakScene(outcome: LessonOutcome.Completed) {
     val gamification = outcome.gamification
-    CelebrationPanda(
-        drawable = R.drawable.widget_panda_streak,
-        pulseKey = gamification.streak,
-    )
-    Spacer(Modifier.height(14.dp))
-    Text(
-        text = "🔥 ${gamification.streak}",
-        style = MaterialTheme.typography.headlineMedium,
-        color = PompColors.Ink,
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold,
-    )
-    Spacer(Modifier.height(8.dp))
-    Text(
-        text = if (gamification.streakReset) {
-            "Streak restarted"
-        } else {
-            "${gamification.previousStreak} → ${gamification.streak}"
-        },
-        style = MaterialTheme.typography.titleMedium,
-        color = PompColors.InkSecondary,
-        textAlign = TextAlign.Center,
-    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        CelebrationPanda(
+            drawable = R.drawable.widget_panda_streak,
+            pulseKey = gamification.streak,
+        )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "🔥 ${gamification.streak}",
+            style = MaterialTheme.typography.headlineMedium,
+            color = PompColors.Ink,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "${gamification.previousStreak} → ${gamification.streak}",
+            style = MaterialTheme.typography.titleMedium,
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Composable
 private fun CelebrationPanda(drawable: Int, pulseKey: Int) {
-    var entered by remember(drawable, pulseKey) { mutableIntStateOf(0) }
+    var entered by remember(drawable, pulseKey) { mutableStateOf(false) }
     LaunchedEffect(drawable, pulseKey) {
-        entered = 0
+        entered = false
         delay(40)
-        entered = 1
+        entered = true
     }
     val scale by animateFloatAsState(
-        targetValue = if (entered == 1) 1f else 0.68f,
+        targetValue = if (entered) 1f else 0.68f,
         animationSpec = tween(520, easing = FastOutSlowInEasing),
         label = "panda-pop-scale",
     )
     val alpha by animateFloatAsState(
-        targetValue = if (entered == 1) 1f else 0f,
+        targetValue = if (entered) 1f else 0f,
         animationSpec = tween(260),
         label = "panda-pop-alpha",
     )
@@ -248,7 +247,6 @@ private fun ConfettiField(seed: Int, modifier: Modifier = Modifier) {
             ConfettiParticle(
                 x = ((index * 37 + seed * 11) % 100) / 100f,
                 y = ((index * 53 + seed * 7) % 92) / 100f,
-                size = 5 + ((index * 7 + seed) % 7),
                 symbol = CONFETTI_SYMBOLS[(index + seed.absoluteSafe()) % CONFETTI_SYMBOLS.size],
             )
         }
@@ -260,9 +258,10 @@ private fun ConfettiField(seed: Int, modifier: Modifier = Modifier) {
                 color = CONFETTI_COLORS[index % CONFETTI_COLORS.size],
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .fillMaxWidth(particle.x.coerceAtLeast(0.04f))
-                    .offset(y = (particle.y * 620).dp)
-                    .padding(start = (particle.x * 240).dp)
+                    .offset(
+                        x = (particle.x * 280).dp,
+                        y = (particle.y * 620).dp,
+                    )
                     .alpha(0.72f),
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -273,7 +272,6 @@ private fun ConfettiField(seed: Int, modifier: Modifier = Modifier) {
 private data class ConfettiParticle(
     val x: Float,
     val y: Float,
-    val size: Int,
     val symbol: String,
 )
 
