@@ -29,8 +29,14 @@ internal data class PracticeCompletionOutcome(
     val sectionScores: Map<String, ExamSectionScoreDto> = emptyMap(),
     val wrongItems: List<PracticeWrongDto> = emptyList(),
     val gamification: CourseGamificationDto = CourseGamificationDto(),
+    /**
+     * Some completion endpoints carry idempotency at the response level while
+     * reward is the original persisted snapshot. Treat either source as
+     * authoritative so a retry can never replay XP, streak or confetti.
+     */
+    val duplicate: Boolean = false,
 ) {
-    val isDuplicate: Boolean get() = gamification.duplicate
+    val isDuplicate: Boolean get() = duplicate || gamification.duplicate
     val awardedXp: Int get() = if (isDuplicate) 0 else gamification.awardedXp.coerceAtLeast(0)
     val hasStreakEvent: Boolean
         get() = !isDuplicate && gamification.streakUpdated && gamification.streak > 0
@@ -99,6 +105,7 @@ internal fun ExamCompleteResponse.toCompletionOutcome(): PracticeCompletionOutco
         sectionScores = sectionScores,
         wrongItems = wrongItems,
         gamification = reward,
+        duplicate = duplicate,
     )
 
 internal fun drillCompletionOutcome(
