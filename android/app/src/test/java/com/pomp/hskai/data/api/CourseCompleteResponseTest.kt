@@ -17,6 +17,8 @@ class CourseCompleteResponseTest {
               "completed_lesson": 7,
               "next_lesson": 8,
               "completed_lessons_count": 7,
+              "rank_before": 12,
+              "rank_after": 9,
               "gamification": {
                 "xp": 245,
                 "awarded_xp": 25,
@@ -56,5 +58,7 @@ class CourseCompleteResponseTest {
         assertEquals(125, response.gamification.weeklyXp)
         assertEquals(4, response.gamification.energy.current)
         assertTrue(response.gamification.rewardChest?.ready == true)
+        assertEquals(12, response.rankBefore)
+        assertEquals(9, response.rankAfter)
     }
 }
