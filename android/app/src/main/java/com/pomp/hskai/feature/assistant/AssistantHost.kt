@@ -52,11 +52,26 @@ data class VisibleScreen(val context: ScreenContext, val bottomBar: Boolean, val
 class ScreenRegistry {
     private val entries = mutableStateMapOf<Any, VisibleScreen>()
     private val order = mutableListOf<Any>()
-    val current: VisibleScreen? get() = order.mapIndexedNotNull { index, key ->
-        entries[key]?.let { index to it }
-    }.maxWithOrNull(compareBy<Pair<Int, VisibleScreen>> { it.second.priority }.thenBy { it.first })?.second
-    fun put(owner: Any, value: VisibleScreen) { if (owner !in entries) order.add(owner); entries[owner] = value }
-    fun remove(owner: Any) { entries.remove(owner); order.remove(owner) }
+    var current by mutableStateOf<VisibleScreen?>(null)
+        private set
+
+    fun put(owner: Any, value: VisibleScreen) {
+        if (owner !in entries) order.add(owner)
+        entries[owner] = value
+        refreshCurrent()
+    }
+
+    fun remove(owner: Any) {
+        entries.remove(owner)
+        order.remove(owner)
+        refreshCurrent()
+    }
+
+    private fun refreshCurrent() {
+        current = order.mapIndexedNotNull { index, key ->
+            entries[key]?.let { index to it }
+        }.maxWithOrNull(compareBy<Pair<Int, VisibleScreen>> { it.second.priority }.thenBy { it.first })?.second
+    }
 }
 class AssistantBinding(val registry: ScreenRegistry, val controller: AssistantController, val open: () -> Unit)
 val LocalAssistant = staticCompositionLocalOf<AssistantBinding?> { null }
@@ -72,7 +87,6 @@ fun AssistantScreen(context: ScreenContext, bottomBar: Boolean = false, priority
 @Composable
 fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: @Composable () -> Unit) {
     val registry = remember { ScreenRegistry() }
-    val state by app.assistant.state.collectAsStateWithLifecycle()
     val auth by app.authRepository.state.collectAsStateWithLifecycle()
     var open by rememberSaveable { mutableStateOf(false) }
     var destination by remember { mutableStateOf<String?>(null) }

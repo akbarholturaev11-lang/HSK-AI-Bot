@@ -74,6 +74,7 @@ fun MainScaffold(
     val tabs = remember { MainTab.visible }
     val assistant = com.pomp.hskai.feature.assistant.LocalAssistant.current
     val assistantVisible = assistant?.registry?.current != null
+    val assistantShelfHeight = 144.dp
 
     Scaffold(
         containerColor = PompColors.Paper,
@@ -103,7 +104,7 @@ fun MainScaffold(
             }
         },
     ) { insets ->
-        content(selectedTab, Modifier.padding(insets).padding(bottom = if (assistantVisible) 76.dp else 0.dp))
+        content(selectedTab, Modifier.padding(insets).padding(bottom = if (assistantVisible) assistantShelfHeight else 0.dp))
     }
 }
 
