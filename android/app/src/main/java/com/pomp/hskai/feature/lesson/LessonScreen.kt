@@ -501,24 +501,7 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
 
 @Composable
 private fun CompletedBlock(outcome: LessonOutcome.Completed, onExit: () -> Unit) {
-    Centered {
-        Text(
-            text = stringResource(R.string.lesson_done_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Jade,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(12.dp))
-        if (outcome.graded > 0) {
-            Text(
-                text = stringResource(R.string.lesson_done_accuracy, outcome.correct, outcome.graded),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-        }
-        Spacer(Modifier.height(24.dp))
-        PrimaryAction(stringResource(R.string.lesson_back_to_course), onClick = onExit)
-    }
+    LessonCompletionCelebration(outcome = outcome, onExit = onExit)
 }
 
 @Composable
