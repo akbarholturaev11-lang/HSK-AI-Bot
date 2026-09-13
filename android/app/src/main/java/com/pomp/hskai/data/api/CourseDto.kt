@@ -200,6 +200,7 @@ data class CourseCompleteResponse(
     @SerialName("completed_lesson") val completedLesson: Int = 0,
     @SerialName("next_lesson") val nextLesson: Int? = null,
     @SerialName("completed_lessons_count") val completedLessonsCount: Int = 0,
+    @SerialName("gamification") val gamification: CourseGamificationDto = CourseGamificationDto(),
     @SerialName("duplicate") val duplicate: Boolean = false,
 )
 
