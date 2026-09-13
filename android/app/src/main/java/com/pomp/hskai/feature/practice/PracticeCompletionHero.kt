@@ -52,22 +52,22 @@ internal fun PracticeCompletionHero(
     outcome: PracticeCompletionOutcome,
     modifier: Modifier = Modifier,
 ) {
-    val duplicate = outcome.isDuplicate
-    val strongSuccess = when {
-        outcome.passed == false -> false
-        outcome.kind == PracticeCompletionKind.HSK_EXAM && outcome.passed == true -> true
-        else -> outcome.percent >= 90
-    }
     val haptics = LocalHapticFeedback.current
 
-    LaunchedEffect(outcome.kind, outcome.score, outcome.total, duplicate) {
-        if (!duplicate && strongSuccess) {
+    LaunchedEffect(
+        outcome.kind,
+        outcome.score,
+        outcome.total,
+        outcome.isDuplicate,
+        outcome.strongHaptic,
+    ) {
+        if (outcome.strongHaptic) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
 
     Box(modifier = modifier.fillMaxWidth()) {
-        if (!duplicate && strongSuccess) {
+        if (outcome.showConfetti) {
             PracticeConfetti(
                 seed = outcome.score * 31 + outcome.total * 7 + outcome.kind.ordinal,
                 modifier = Modifier.matchParentSize(),
@@ -80,7 +80,7 @@ internal fun PracticeCompletionHero(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CompletionPanda(
-                drawable = pandaFor(outcome),
+                drawable = pandaFor(outcome.reaction),
                 pulseKey = outcome.score * 101 + outcome.total,
             )
             Spacer(Modifier.height(10.dp))
@@ -89,7 +89,8 @@ internal fun PracticeCompletionHero(
                 style = MaterialTheme.typography.headlineMedium,
                 color = when {
                     outcome.passed == false -> PompColors.Ink
-                    outcome.percent >= 70 -> PompColors.Jade
+                    outcome.reaction == PracticeCompletionReaction.CELEBRATE ||
+                        outcome.reaction == PracticeCompletionReaction.CHEER -> PompColors.Jade
                     else -> PompColors.Ink
                 },
                 fontWeight = FontWeight.Bold,
@@ -130,13 +131,11 @@ private fun completionTitle(outcome: PracticeCompletionOutcome): String = when {
     else -> stringResource(R.string.practice_result_title)
 }
 
-private fun pandaFor(outcome: PracticeCompletionOutcome): Int = when {
-    outcome.kind == PracticeCompletionKind.HSK_EXAM && outcome.passed == false ->
-        R.drawable.widget_panda_focus
-    outcome.percent >= 90 -> R.drawable.widget_panda_celebrate
-    outcome.percent >= 70 -> R.drawable.widget_panda_cheer
-    outcome.percent >= 50 -> R.drawable.widget_panda_calm
-    else -> R.drawable.widget_panda_focus
+private fun pandaFor(reaction: PracticeCompletionReaction): Int = when (reaction) {
+    PracticeCompletionReaction.CELEBRATE -> R.drawable.widget_panda_celebrate
+    PracticeCompletionReaction.CHEER -> R.drawable.widget_panda_cheer
+    PracticeCompletionReaction.CALM -> R.drawable.widget_panda_calm
+    PracticeCompletionReaction.FOCUS -> R.drawable.widget_panda_focus
 }
 
 @Composable
