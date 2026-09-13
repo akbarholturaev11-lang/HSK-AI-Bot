@@ -29,6 +29,13 @@ interface AndroidCourseApi {
         @Query("access_ref") accessRef: String = "",
     ): Response<CourseLessonResponse>
 
+    /** Same server-owned leaderboard used by the native rating screen. */
+    @GET("api/v3/android/rating/leaderboard")
+    suspend fun rating(
+        @Header("Authorization") authorization: String,
+        @Query("tz") timezoneOffsetMinutes: Int,
+    ): Response<RatingResponse>
+
     @GET("api/v3/android/stroke")
     suspend fun stroke(
         @Header("Authorization") authorization: String,
