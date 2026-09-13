@@ -79,7 +79,7 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
     val binding = remember { AssistantBinding(registry, app.assistant) { open = true; app.assistant.open() } }
     val scope = rememberCoroutineScope()
     val visible = registry.current
-    val enabled = state.enabled && auth is AuthState.Authenticated && visible != null
+    val availableOnScreen = auth is AuthState.Authenticated && visible != null
     LaunchedEffect(auth) {
         if (auth is AuthState.Authenticated) app.assistant.attach(app.widgetStore.read().epoch.toString())
         else open = false
@@ -87,13 +87,13 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
     CompositionLocalProvider(LocalAssistant provides binding) {
         Box(Modifier.fillMaxSize()) {
             // A dedicated shelf in inner screens keeps the FAB away from answer/next controls.
-            Box(Modifier.fillMaxSize().padding(bottom = if (enabled && visible?.bottomBar == false) 80.dp else 0.dp)) { content() }
-            if (enabled && !open) AssistantButton(
+            Box(Modifier.fillMaxSize().padding(bottom = if (availableOnScreen && visible?.bottomBar == false) 80.dp else 0.dp)) { content() }
+            if (availableOnScreen && !open) AssistantButton(
                 onClick = binding.open,
                 modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = if (visible?.bottomBar == true) 110.dp else 16.dp).navigationBarsPadding(),
             )
         }
-        if (open && enabled) AssistantChat(app, visible!!.context, { open = false }) { action ->
+        if (open && availableOnScreen) AssistantChat(app, visible!!.context, { open = false }) { action ->
             // Native allowlist is independent of model/server output. No external URLs.
             val uri = "${DeepLinkRouter.SCHEME}://${action.destination.replace(':', '/')}"
             if (DeepLinkRouter.resolve(uri) != null) {
