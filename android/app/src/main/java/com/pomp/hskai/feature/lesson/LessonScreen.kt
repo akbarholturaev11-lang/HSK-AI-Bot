@@ -1,8 +1,6 @@
 package com.pomp.hskai.feature.lesson
 
-import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.network.ApiError
-import com.pomp.hskai.core.network.ApiResult
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -51,7 +49,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
@@ -134,35 +131,6 @@ fun LessonScreen(
     @Suppress("UNUSED_VARIABLE")
     val ignoredLimit = limit
     val outcome = state.outcome
-    val context = LocalContext.current
-    val app = remember(context) { context.applicationContext as? HskAiApplication }
-    var rankBefore by remember(state.lesson) { mutableStateOf<Int?>(null) }
-    var rankUp by remember(state.lesson) { mutableStateOf<LessonRankUp?>(null) }
-
-    LaunchedEffect(state.lesson) {
-        rankUp = null
-        if (state.lesson == null) {
-            rankBefore = null
-            return@LaunchedEffect
-        }
-        rankBefore = when (val result = app?.featureRepository?.rating()) {
-            is ApiResult.Success -> result.value.rank.takeIf { it > 0 }
-            else -> null
-        }
-    }
-
-    LaunchedEffect(outcome) {
-        val completed = outcome as? LessonOutcome.Completed ?: return@LaunchedEffect
-        rankUp = null
-        if (completed.duplicate) return@LaunchedEffect
-        val before = rankBefore ?: return@LaunchedEffect
-        val after = when (val result = app?.featureRepository?.rating()) {
-            is ApiResult.Success -> result.value.rank.takeIf { it > 0 }
-            else -> null
-        } ?: return@LaunchedEffect
-        if (after < before) rankUp = LessonRankUp(before = before, after = after)
-    }
-
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
             state.isLoading -> Centered { CircularProgressIndicator(color = PompColors.Cinnabar) }
@@ -178,7 +146,7 @@ fun LessonScreen(
                 SecondaryAction(stringResource(R.string.action_close), onExit)
             }
             outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
-            outcome is LessonOutcome.Completed -> CompletedBlock(outcome, rankUp, onExit)
+            outcome is LessonOutcome.Completed -> CompletedBlock(outcome, onExit)
             outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
             else -> LessonBody(
                 state = state,
@@ -536,12 +504,8 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
 }
 
 @Composable
-private fun CompletedBlock(
-    outcome: LessonOutcome.Completed,
-    rankUp: LessonRankUp?,
-    onExit: () -> Unit,
-) {
-    LessonCompletionCelebration(outcome = outcome, rankUp = rankUp, onExit = onExit)
+private fun CompletedBlock(outcome: LessonOutcome.Completed, onExit: () -> Unit) {
+    LessonCompletionCelebration(outcome = outcome, onExit = onExit)
 }
 
 @Composable
