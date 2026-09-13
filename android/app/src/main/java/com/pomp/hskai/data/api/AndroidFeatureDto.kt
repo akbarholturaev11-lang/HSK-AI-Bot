@@ -529,6 +529,8 @@ data class ChallengeAnswerDto(
 data class ChallengeActionResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("error") val error: String = "",
+    /** True only when Telegram accepted the opponent notification. */
+    @SerialName("notification_sent") val notificationSent: Boolean = false,
 )
 
 @Serializable
@@ -561,7 +563,7 @@ data class RatingEntryDto(
     @SerialName("course_level") val courseLevel: String = "",
     @SerialName("is_paid") val isPaid: Boolean = false,
     @SerialName("is_current_user") val isCurrentUser: Boolean = false,
-    /** Opaque stand-in for this learner, valid only on this leaderboard. */
+    /** Opaque stand-in resolved only against a server-approved visible list. */
     @SerialName("challenge_ref") val challengeRef: String = "",
 )
 
@@ -579,11 +581,16 @@ data class ReferralOverviewResponse(
 
 @Serializable
 data class ReferralItemDto(
+    @SerialName("rank") val rank: Int = 0,
     @SerialName("name") val name: String = "",
+    @SerialName("username") val username: String = "",
     @SerialName("status") val status: String = "",
+    @SerialName("xp") val xp: Int = 0,
+    @SerialName("total_xp") val totalXp: Int = 0,
     @SerialName("course_level") val courseLevel: String = "",
     @SerialName("completed_lessons") val completedLessons: Int = 0,
     @SerialName("is_paid") val isPaid: Boolean = false,
+    @SerialName("challenge_ref") val challengeRef: String = "",
 )
 
 @Serializable

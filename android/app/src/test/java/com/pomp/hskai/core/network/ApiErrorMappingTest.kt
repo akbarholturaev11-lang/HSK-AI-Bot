@@ -61,6 +61,18 @@ class ApiErrorMappingTest {
     }
 
     @Test
+    fun `referral outage has a specific recoverable message`() {
+        val error = failure(
+            503,
+            """{"ok":false,"error":"android_referral_unavailable"}""",
+        ).toApiError()
+
+        assertTrue(error is ApiError.Server)
+        assertEquals("android_referral_unavailable", (error as ApiError.Server).code)
+        assertEquals(com.pomp.hskai.R.string.error_referral_unavailable, error.messageRes)
+    }
+
+    @Test
     fun `a dead session is still recognised before anything else`() {
         val error = failure(401, """{"ok":false,"error":"desktop_session_revoked"}""").toApiError()
         assertEquals(ApiError.SessionExpired, error)

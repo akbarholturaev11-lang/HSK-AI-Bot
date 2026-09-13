@@ -26,6 +26,7 @@ from app.api.desktop_rating import challenge_ref
 from app.api.android_features import (
     _bot_url,
     _invite_link,
+    _public_android_referral_item,
     _service_response,
     _subscription_payload,
     create_android_features_router,
@@ -87,6 +88,118 @@ class AndroidBotUrlTests(unittest.TestCase):
         self.assertEqual("", _bot_url(_settings("")))
         self.assertEqual("", _bot_url(_settings(None)))
         self.assertEqual("", _bot_url(SimpleNamespace()))
+
+
+class AndroidReferralPayloadTests(unittest.TestCase):
+    def test_friend_row_keeps_miniapp_metrics_without_exposing_ids(self):
+        secret = _settings().DESKTOP_AUTH_SIGNING_SECRET
+        row = _public_android_referral_item(
+            {
+                "rank": 2,
+                "name": "Li Friend",
+                "username": "@li_friend",
+                "telegram_id": 778,
+                "user_id": 91,
+                "status": "active",
+                "xp": 45,
+                "total_xp": 320,
+                "course_level": "hsk3",
+                "completed_lessons": 8,
+                "is_paid": True,
+            },
+            secret=secret,
+        )
+
+        self.assertEqual(2, row["rank"])
+        self.assertEqual("li_friend", row["username"])
+        self.assertEqual(45, row["xp"])
+        self.assertEqual(320, row["total_xp"])
+        self.assertEqual(challenge_ref(778, secret), row["challenge_ref"])
+        self.assertNotIn("telegram_id", row)
+        self.assertNotIn("user_id", row)
+
+
+class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add(_user(1, 4242, "Referrer"))
+            await session.commit()
+
+        class FakeUserRepo:
+            async def ensure_referral_code(self, user):
+                user.referral_code = "invite42"
+                return "invite42"
+
+        class FakeReferralService:
+            def __init__(self, session):
+                self.user_repo = FakeUserRepo()
+
+            async def list_miniapp_referrals(self, user, **_kwargs):
+                return [
+                    {
+                        "rank": 1,
+                        "name": "Li Friend",
+                        "username": "li_friend",
+                        "telegram_id": 778,
+                        "status": "active",
+                        "xp": 45,
+                        "total_xp": 320,
+                        "course_level": "hsk3",
+                        "completed_lessons": 8,
+                        "is_paid": True,
+                    }
+                ]
+
+            async def get_trial_activation_progress(self, user):
+                return 1
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=self.sessions,
+                settings_obj=_settings(),
+                referral_service_factory=FakeReferralService,
+            )
+        )
+        self.auth = patch.object(
+            DesktopAuthService,
+            "authenticate",
+            AsyncMock(
+                return_value=SimpleNamespace(user=SimpleNamespace(telegram_id=4242))
+            ),
+        )
+        self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://android.test",
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    async def test_overview_returns_the_invite_and_actionable_friend_rows(self):
+        response = await self.client.get(
+            "/api/v3/android/referral/overview?tz=180",
+            headers={"Authorization": "Bearer token"},
+        )
+
+        self.assertEqual(200, response.status_code)
+        payload = response.json()
+        self.assertEqual("https://t.me/pomp_test_bot?start=invite42", payload["link"])
+        self.assertEqual(1, payload["invited"])
+        self.assertEqual(1, payload["activated"])
+        self.assertEqual("Li Friend", payload["items"][0]["name"])
+        self.assertTrue(payload["items"][0]["challenge_ref"])
+        self.assertNotIn("telegram_id", payload["items"][0])
 
 
 class AndroidInviteLinkTests(unittest.TestCase):
@@ -832,6 +945,19 @@ class AndroidChallengeRouteTests(unittest.IsolatedAsyncioTestCase):
                 outer.calls.append(("submit", telegram_id, challenge_id, answers, duration_seconds))
                 return {"ok": True, "result": {"score": 4}}
 
+        class FakeReferralService:
+            def __init__(self, session):
+                self.session = session
+
+            async def list_miniapp_referrals(self, user, **_kwargs):
+                return [
+                    {
+                        "name": "Invited rival",
+                        "telegram_id": 778,
+                        "status": "active",
+                    }
+                ]
+
         app = FastAPI()
         app.include_router(
             create_android_features_router(
@@ -839,6 +965,7 @@ class AndroidChallengeRouteTests(unittest.IsolatedAsyncioTestCase):
                 settings_obj=_settings(),
                 challenge_service_factory=FakeChallengeService,
                 gamification_service_factory=FakeGamificationService,
+                referral_service_factory=FakeReferralService,
             )
         )
         self.auth = patch.object(
@@ -883,6 +1010,18 @@ class AndroidChallengeRouteTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual([], [call for call in self.calls if call[0] == "create"])
+
+    async def test_an_invited_friend_can_be_challenged_outside_the_leaderboard(self):
+        ref = challenge_ref(778, _settings().DESKTOP_AUTH_SIGNING_SECRET)
+
+        response = await self.client.post(
+            "/api/v3/android/challenges",
+            headers=self._headers(),
+            json={"opponent_ref": ref, "level": "hsk3", "language": "uz"},
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(("create", 4242, 778, "hsk3", "uz"), self.calls[0])
 
     async def test_only_accept_or_decline_are_accepted(self):
         response = await self.client.post(

@@ -1,7 +1,7 @@
 package com.pomp.hskai.core.hanzi
 
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
@@ -40,19 +37,26 @@ fun StrokeAnimation(
     strokes: List<String>,
     modifier: Modifier = Modifier,
     replayKey: Int = 0,
+    /** Null animates every stroke; a value shows exactly that many strokes. */
+    visibleStrokeCount: Int? = null,
 ) {
     val paths = remember(strokes) { strokes.mapNotNull(::parseStroke) }
-    var run by remember(strokes) { mutableStateOf(0) }
-    LaunchedEffect(strokes, replayKey) { run++ }
-
-    val progress by animateFloatAsState(
-        targetValue = if (run > 0) paths.size.toFloat() else 0f,
-        animationSpec = tween(
-            durationMillis = paths.size * MILLIS_PER_STROKE,
-            easing = LinearEasing,
-        ),
-        label = "strokeProgress",
-    )
+    val progress = remember(strokes) { Animatable(0f) }
+    LaunchedEffect(strokes, replayKey, visibleStrokeCount) {
+        val manualCount = visibleStrokeCount
+        if (manualCount != null) {
+            progress.snapTo(manualCount.coerceIn(0, paths.size).toFloat())
+        } else {
+            progress.snapTo(0f)
+            progress.animateTo(
+                targetValue = paths.size.toFloat(),
+                animationSpec = tween(
+                    durationMillis = paths.size * MILLIS_PER_STROKE,
+                    easing = LinearEasing,
+                ),
+            )
+        }
+    }
 
     Canvas(
         modifier = modifier
@@ -75,7 +79,9 @@ fun StrokeAnimation(
                 color = PompColors.Divider,
                 style = Stroke(width = 2f, cap = StrokeCap.Round, join = StrokeJoin.Round),
             )
-            val strokeProgress = (progress - index).coerceIn(0f, 1f)
+            val strokeProgress = visibleStrokeCount?.let { count ->
+                if (index < count.coerceIn(0, paths.size)) 1f else 0f
+            } ?: (progress.value - index).coerceIn(0f, 1f)
             if (strokeProgress <= 0f) return@forEachIndexed
             drawPath(
                 path = if (strokeProgress >= 1f) path else partial(path, strokeProgress),

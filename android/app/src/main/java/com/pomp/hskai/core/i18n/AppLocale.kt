@@ -52,6 +52,17 @@ object AppLocale {
         return current != language
     }
 
+    /** Clears the account override so unauthenticated screens follow the device locale. */
+    fun clear(context: Context): Boolean {
+        val hadOverride = stored(context) != null
+        context
+            .getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .remove(KEY_LANGUAGE)
+            .apply()
+        return hadOverride
+    }
+
     /** The context an activity should run in, in the account's language. */
     fun wrap(context: Context): Context {
         val language = stored(context) ?: return context

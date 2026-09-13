@@ -5,9 +5,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,16 +18,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,42 +60,52 @@ fun LinkScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .padding(horizontal = 24.dp, vertical = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Spacer(Modifier.height(32.dp))
             Text(
-                text = stringResource(R.string.link_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = PompColors.Ink,
-                textAlign = TextAlign.Center,
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.CinnabarDark,
             )
             Spacer(Modifier.height(12.dp))
             Text(
-                text = stringResource(R.string.link_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
+                text = stringResource(R.string.auth_welcome_title),
+                style = MaterialTheme.typography.headlineLarge,
+                color = PompColors.Ink,
                 textAlign = TextAlign.Center,
             )
-
-            Spacer(Modifier.height(28.dp))
-
-            when {
-                state.isRequestingCode -> LoadingBlock()
-                state.pending == null || state.isExpired -> ExpiredBlock(
-                    isExpired = state.isExpired,
-                    errorRes = state.error?.messageRes,
-                    onRequestCode = onRequestCode,
-                )
-                else -> CodeBlock(state = state, context = context)
-            }
-
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.link_security_note),
-                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(R.string.auth_single_subtitle),
+                style = MaterialTheme.typography.bodyLarge,
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,
             )
+            Spacer(Modifier.height(28.dp))
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                color = PompColors.PaperRaised,
+                border = BorderStroke(1.dp, PompColors.Divider),
+                shadowElevation = 8.dp,
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    when {
+                        state.isRequestingCode -> LoadingBlock()
+                        state.pending == null || state.isExpired -> ExpiredBlock(
+                            isExpired = state.isExpired,
+                            errorRes = state.error?.messageRes,
+                            onRequestCode = onRequestCode,
+                        )
+                        else -> CodeBlock(state = state, context = context)
+                    }
+                }
+            }
         }
     }
 }
@@ -172,12 +180,6 @@ private fun ExpiredBlock(
 private fun CodeBlock(state: LinkUiState, context: Context) {
     val copiedLabel = stringResource(R.string.link_code_copied)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        StepRow(1, stringResource(R.string.link_step_1))
-        StepRow(2, stringResource(R.string.link_step_2))
-        StepRow(3, stringResource(R.string.link_step_3))
-
-        Spacer(Modifier.height(24.dp))
-
         Text(
             text = stringResource(R.string.link_code_label),
             style = MaterialTheme.typography.labelLarge,
@@ -201,29 +203,20 @@ private fun CodeBlock(state: LinkUiState, context: Context) {
                 )
             }
         }
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.link_code_instruction),
+            style = MaterialTheme.typography.bodySmall,
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
+        )
 
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(
-            onClick = { copyCode(context, state.displayCode, copiedLabel) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp)
-                .semantics { contentDescription = copiedLabel },
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.cd_copy_code),
-                style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(20.dp))
         Button(
             onClick = { openTelegram(context, state.botDeepLink) },
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 48.dp),
+                .heightIn(min = 52.dp),
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = PompColors.Cinnabar,
@@ -231,8 +224,34 @@ private fun CodeBlock(state: LinkUiState, context: Context) {
             ),
         ) {
             Text(
-                text = stringResource(R.string.link_open_telegram),
+                text = stringResource(R.string.auth_login),
                 style = MaterialTheme.typography.labelLarge,
+            )
+        }
+
+        Spacer(Modifier.height(6.dp))
+        TextButton(
+            onClick = { openTelegram(context, state.botDeepLink) },
+            modifier = Modifier.heightIn(min = 44.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.auth_register),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.CinnabarDark,
+            )
+        }
+
+        Spacer(Modifier.height(2.dp))
+        TextButton(
+            onClick = { copyCode(context, state.displayCode, copiedLabel) },
+            modifier = Modifier
+                .heightIn(min = 44.dp)
+                .semantics { contentDescription = copiedLabel },
+        ) {
+            Text(
+                text = stringResource(R.string.cd_copy_code),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.CinnabarDark,
             )
         }
 
@@ -261,34 +280,12 @@ private fun CodeBlock(state: LinkUiState, context: Context) {
                 color = PompColors.InkSecondary,
             )
         }
-    }
-}
-
-@Composable
-private fun StepRow(index: Int, text: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(26.dp)
-                .background(PompColors.CinnabarSoft, CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = index.toString(),
-                style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
-            )
-        }
-        Spacer(Modifier.size(12.dp))
+        Spacer(Modifier.height(18.dp))
         Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = PompColors.Ink,
+            text = stringResource(R.string.link_security_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
         )
     }
 }

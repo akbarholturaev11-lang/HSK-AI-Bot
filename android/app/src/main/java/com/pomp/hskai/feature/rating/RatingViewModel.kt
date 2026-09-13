@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 /** The two lists the Mini App's Reyting tab switches between. */
 enum class RatingTab { LEAGUE, FRIENDS }
 
+/** The server distinguishes a delivered Telegram invite from an app-only duel. */
+enum class ChallengeDelivery { TELEGRAM_SENT, APP_ONLY }
+
 data class RatingUiState(
     val isLoading: Boolean = true,
     val tab: RatingTab = RatingTab.LEAGUE,
@@ -27,6 +30,9 @@ data class RatingUiState(
     /** Duels this learner is part of: waiting on them, or on the other side. */
     val challenges: List<ChallengeDto> = emptyList(),
     val isChallengeBusy: Boolean = false,
+    val challengeDelivery: ChallengeDelivery? = null,
+    val challengeError: ApiError? = null,
+    val referralError: ApiError? = null,
     val error: ApiError? = null,
 ) {
     val pendingChallenges: List<ChallengeDto>
@@ -52,7 +58,7 @@ class RatingViewModel(
     }
 
     fun load() {
-        _state.update { it.copy(isLoading = true, error = null) }
+        _state.update { it.copy(isLoading = true, referralError = null, error = null) }
         viewModelScope.launch {
             val rating = async { repository.rating() }
             val referral = async { repository.referral() }
@@ -61,11 +67,6 @@ class RatingViewModel(
             val ratingResult = rating.await()
             val referralResult = referral.await()
             val duelResult = duels.await()
-
-            val firstError = listOf(ratingResult, referralResult)
-                .filterIsInstance<ApiResult.Failure>()
-                .firstOrNull()
-                ?.error
 
             _state.update {
                 it.copy(
@@ -76,26 +77,44 @@ class RatingViewModel(
                     // leaderboard; only the rating failure is worth reporting.
                     challenges = (duelResult as? ApiResult.Success)?.value?.items
                         ?: it.challenges,
-                    error = firstError,
+                    referralError = (referralResult as? ApiResult.Failure)?.error,
+                    error = (ratingResult as? ApiResult.Failure)?.error,
                 )
             }
         }
     }
 
-    /** Challenges the learner behind an opaque leaderboard reference. */
+    /** Challenges the learner behind an opaque server-approved reference. */
     fun challenge(opponentRef: String, level: String, language: String) {
         if (opponentRef.isBlank() || _state.value.isChallengeBusy) return
-        _state.update { it.copy(isChallengeBusy = true, error = null) }
+        _state.update {
+            it.copy(
+                isChallengeBusy = true,
+                challengeDelivery = null,
+                challengeError = null,
+            )
+        }
         viewModelScope.launch {
             val result = repository.createChallenge(opponentRef, level, language)
             _state.update {
                 it.copy(
                     isChallengeBusy = false,
-                    error = (result as? ApiResult.Failure)?.error,
+                    challengeDelivery = (result as? ApiResult.Success)?.let { success ->
+                        if (success.value.notificationSent) {
+                            ChallengeDelivery.TELEGRAM_SENT
+                        } else {
+                            ChallengeDelivery.APP_ONLY
+                        }
+                    },
+                    challengeError = (result as? ApiResult.Failure)?.error,
                 )
             }
             if (result is ApiResult.Success) load()
         }
+    }
+
+    fun clearChallengeFeedback() {
+        _state.update { it.copy(challengeDelivery = null, challengeError = null) }
     }
 
     fun respond(challengeId: Int, accept: Boolean) {

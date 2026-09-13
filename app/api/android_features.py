@@ -436,6 +436,22 @@ def _service_response(result: dict[str, Any]) -> JSONResponse:
     )
 
 
+def _public_android_referral_item(entry: dict[str, Any], *, secret: str) -> dict[str, Any]:
+    """Mini App referral row without exposing Telegram or database ids."""
+
+    row = _public_referral_item(entry)
+    row.update(
+        {
+            "rank": int(entry.get("rank") or 0),
+            "username": str(entry.get("username") or "").strip().lstrip("@")[:32],
+            "xp": int(entry.get("xp") or entry.get("league_points") or 0),
+            "total_xp": int(entry.get("total_xp") or 0),
+            "challenge_ref": challenge_ref(entry.get("telegram_id"), secret),
+        }
+    )
+    return row
+
+
 def _bot_url(settings_obj) -> str:
     """Deep link to the bot chat where the subscription Mini App is offered."""
 
@@ -1118,17 +1134,25 @@ def create_android_features_router(
             async with session_factory() as session:
                 user = await _user(session, request)
                 service = referral_service_factory(session)
+                await service.user_repo.ensure_referral_code(user)
                 items = await service.list_miniapp_referrals(
                     user,
                     timezone_offset_minutes=timezone_offset,
                     limit=MAX_REFERRAL_ITEMS,
                 )
                 trial_progress = await service.get_trial_activation_progress(user)
+                secret = str(
+                    getattr(settings_obj, "DESKTOP_AUTH_SIGNING_SECRET", "") or ""
+                )
+                rows = [
+                    _public_android_referral_item(item, secret=secret)
+                    for item in items
+                    if isinstance(item, dict)
+                ]
+                activated = sum(1 for row in rows if row["status"] == "active")
+                code = str(getattr(user, "referral_code", "") or "")
                 await session.commit()
 
-            rows = [_public_referral_item(item) for item in items if isinstance(item, dict)]
-            activated = sum(1 for row in rows if row["status"] == "active")
-            code = str(getattr(user, "referral_code", "") or "")
             return JSONResponse(
                 content={
                     "ok": True,
@@ -1256,9 +1280,9 @@ def create_android_features_router(
             async with session_factory() as session:
                 user = await _user(session, request)
                 telegram_id = int(user.telegram_id)
-                # The reference only means something inside the caller's own
-                # leaderboard, which is exactly who they are allowed to
-                # challenge — the same reach the Mini App gives them.
+                # A reference is resolved only inside the caller's visible
+                # leaderboard or invited-friends list. It cannot identify or
+                # challenge an arbitrary Telegram user.
                 board = await gamification_service_factory(session).leaderboard(
                     user,
                     limit=MAX_LEADERBOARD_ITEMS,
@@ -1273,6 +1297,19 @@ def create_android_features_router(
                     if challenge_ref(row.get("telegram_id"), secret) == payload.opponent_ref:
                         opponent_id = int(row.get("telegram_id") or 0)
                         break
+                if opponent_id <= 0:
+                    referrals = await referral_service_factory(
+                        session
+                    ).list_miniapp_referrals(
+                        user,
+                        limit=MAX_REFERRAL_ITEMS,
+                    )
+                    for row in referrals:
+                        if not isinstance(row, dict):
+                            continue
+                        if challenge_ref(row.get("telegram_id"), secret) == payload.opponent_ref:
+                            opponent_id = int(row.get("telegram_id") or 0)
+                            break
                 if opponent_id <= 0:
                     raise AndroidFeatureError(
                         "challenge_opponent_not_found", status_code=404

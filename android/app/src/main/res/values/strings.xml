@@ -21,21 +21,26 @@
     <string name="action_continue">Davom etish</string>
 
     <!-- Onboarding: Telegram linking -->
+    <string name="auth_welcome_title">HSK yo‘lingiz shu yerdan boshlanadi</string>
+    <string name="auth_single_subtitle">Telegram orqali xavfsiz kiring — parol va ortiqcha qadamlar yo‘q.</string>
+    <string name="auth_login">Kursga kirish</string>
+    <string name="auth_register">Yangi akkaunt ochish</string>
     <string name="link_title">Telegram orqali akkaunt oching yoki kiring</string>
     <string name="link_subtitle">Parol kerak emas. Telegram orqali yangi akkaunt yaratiladi yoki mavjud kursingiz shu qurilmaga ulanadi.</string>
     <string name="link_step_1">Telegramni oching</string>
     <string name="link_step_2">Tilni tanlang</string>
     <string name="link_step_3">Kodni yuboring va Android ulashni tasdiqlang</string>
-    <string name="link_code_label">Ulash kodi</string>
+    <string name="link_code_label">Sizning ulash kodingiz</string>
+    <string name="link_code_instruction">Kodni botga yuboring — kurs shu qurilmada ochiladi.</string>
     <string name="link_code_copied">Kod nusxalandi</string>
     <string name="link_open_telegram">Telegramni ochish</string>
-    <string name="link_waiting">Tasdiqlashni kutmoqdamiz…</string>
-    <string name="link_expires_in">Kod amal qilish muddati: %1$s</string>
-    <string name="link_expired">Kod muddati tugadi. Yangi kod oling.</string>
-    <string name="link_new_code">Yangi kod olish</string>
+    <string name="link_waiting">Telegramdagi tasdiqni kutyapmiz…</string>
+    <string name="link_expires_in">Kod yana %1$s ishlaydi</string>
+    <string name="link_expired">Bu kod eskirdi. Yangisini oling.</string>
+    <string name="link_new_code">Yangi kod yaratish</string>
     <string name="link_success">Hisob ulandi</string>
     <string name="link_telegram_missing">Telegram ilovasi topilmadi. Kodni brauzer orqali yuborishingiz mumkin.</string>
-    <string name="link_security_note">Tasdiqlash faqat siz ochgan Android so‘rovi uchun ishlaydi. Kod — zaxira usul.</string>
+    <string name="link_security_note">Kod faqat shu qurilmani ulash uchun ishlaydi.</string>
 
     <!-- Synced account summary -->
     <string name="synced_title">Hisobingiz ulandi</string>
@@ -82,6 +87,11 @@
     <string name="error_feature_limit">Bepul limit tugadi. Premium bilan davom eting.</string>
     <string name="error_no_mistakes">Hozircha takrorlanadigan xato yo‘q.</string>
     <string name="error_voice_unavailable">AI Voice hozircha ishlamayapti. Keyinroq urinib ko‘ring.</string>
+    <string name="error_challenge_cooldown">Yaqinda chaqiruv yuborgansiz. 15 daqiqadan so‘ng qayta urinib ko‘ring.</string>
+    <string name="error_challenge_opponent">Bu raqibga chaqiruv yuborib bo‘lmadi. Reytingni yangilab qayta urinib ko‘ring.</string>
+    <string name="error_challenge_questions">Bellashuv savollari hozir tayyor emas. Keyinroq urinib ko‘ring.</string>
+    <string name="error_challenge_unavailable">Chaqiruv xizmati vaqtincha ishlamayapti. Keyinroq urinib ko‘ring.</string>
+    <string name="error_referral_unavailable">Do‘stlar ro‘yxati yuklanmadi. Qayta urinib ko‘ring.</string>
 
     <!-- Accessibility -->
     <string name="cd_app_logo">Pomp HSK AI logotipi</string>
@@ -190,10 +200,26 @@
     <string name="rating_promote">Top %1$d yuqoriga chiqadi</string>
     <string name="rating_empty">Reyting hali shakllanmagan.</string>
     <string name="rating_friends_empty">Hozircha taklif qilingan do‘st yo‘q.</string>
+    <string name="rating_friends_invite_body">Sizning havolangizdan kirgan o‘quvchilar shu yerda. Profilini oching, yozing yoki bellashuv yuboring.</string>
+    <string name="rating_friends_invite">Do‘st taklif qilish</string>
+    <string name="rating_friends_joined">kirgan</string>
+    <string name="rating_friends_active_count">faol</string>
+    <string name="rating_friend_details">%1$s · jami XP: %2$d</string>
+    <string name="rating_message_user">Telegramda yozish</string>
     <string name="rating_friend_active">Faol</string>
     <string name="rating_friend_pending">Kutilmoqda</string>
     <string name="rating_unnamed">O‘quvchi</string>
     <string name="rating_premium">Premium</string>
+    <string name="rating_challenges_bell">Bellashuvlar va chaqiruvlar</string>
+    <string name="rating_challenges_title">Bellashuvlar</string>
+    <string name="rating_challenges_empty">Hozircha yangi bellashuv yo‘q.</string>
+    <string name="rating_rank">O‘rin</string>
+    <string name="rating_level">Daraja</string>
+    <string name="rating_weekly_result">Haftalik reyting</string>
+    <string name="rating_you">Siz</string>
+    <string name="rating_xp_ahead">Siz %1$d XP oldindasiz</string>
+    <string name="rating_xp_behind">%1$d XP ortdasiz</string>
+    <string name="rating_xp_tied">Natija teng</string>
     <string name="course_goal_progress">Kunlik maqsad: %1$d / %2$d XP</string>
     <string name="course_lesson_label">%1$d-dars</string>
     <string name="practice_subtitle_short">Mustahkamlash va sinash</string>
@@ -244,6 +270,14 @@
     <string name="dictionary_search_hint">Ieroglif, pinyin yoki ma’no</string>
     <string name="dictionary_no_match">«%1$s» bo‘yicha hech nima topilmadi</string>
     <string name="dictionary_unavailable">Lug‘atni yuklab bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="dictionary_detail_title">Ieroglif yozilishi</string>
+    <string name="dictionary_character_position">%1$d / %2$d iyeroglif</string>
+    <string name="dictionary_stroke_count">%1$d chiziq</string>
+    <string name="dictionary_replay">Qayta ko‘rsatish</string>
+    <string name="dictionary_listen">Talaffuzni eshitish</string>
+    <string name="dictionary_practice_title">Mashq bilan mustahkamlang</string>
+    <string name="dictionary_previous_word">Oldingi so‘z</string>
+    <string name="dictionary_next_word">Keyingi so‘z</string>
     <string name="action_back">Orqaga</string>
     <string name="action_clear">Tozalash</string>
     <string name="ad_title">Reklama</string>
@@ -308,6 +342,13 @@
     <string name="lesson_writer_replay">Yana ko‘rsatish</string>
     <string name="challenge_title">Chaqiriq</string>
     <string name="challenge_invite">Chaqirish</string>
+    <string name="challenge_invite_send">Chaqiruv yuborish</string>
+    <string name="challenge_sending">Yuborilmoqda…</string>
+    <string name="challenge_invite_sent_title">Chaqiruv yuborildi</string>
+    <string name="challenge_invite_sent_body">Raqib Telegram orqali xabar oldi.</string>
+    <string name="challenge_invite_app_only_title">Chaqiruv yaratildi</string>
+    <string name="challenge_invite_app_only_body">Telegram xabarini yuborib bo‘lmadi. Raqib chaqiruvni ilovadagi qo‘ng‘iroqda ko‘radi.</string>
+    <string name="challenge_invite_failed">Chaqiruv yuborilmadi</string>
     <string name="challenge_versus">%1$s bilan bellashuv</string>
     <string name="challenge_finish">Yakunlash</string>
     <string name="challenge_sent">Javoblaringiz yuborildi. %1$s javob bergach natija chiqadi.</string>

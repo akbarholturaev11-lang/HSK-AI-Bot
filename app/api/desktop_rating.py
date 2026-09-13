@@ -69,8 +69,8 @@ def challenge_ref(telegram_id: Any, secret: str) -> str:
     A challenge needs to name its opponent, and the leaderboard deliberately
     does not carry telegram ids. This is derived from the id and the server's
     own secret: it identifies a row without revealing who is behind it, and it
-    is only ever resolved against the caller's own leaderboard, so it cannot be
-    used to reach a stranger.
+    is only ever resolved against a caller-visible leaderboard/referral row, so
+    it cannot be used to reach a stranger.
     """
 
     try:

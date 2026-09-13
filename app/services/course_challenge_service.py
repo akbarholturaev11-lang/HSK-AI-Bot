@@ -289,9 +289,18 @@ class CourseChallengeService:
         )
         self.session.add(challenge)
         await self.session.flush()
-        if bot:
-            await self.notify_invite(bot, challenge, challenger, opponent)
-        return {"ok": True, "challenge": self._challenge_payload(challenge, challenger, {challenger.id: challenger, opponent.id: opponent})}
+        notification_sent = bool(
+            bot and await self.notify_invite(bot, challenge, challenger, opponent)
+        )
+        return {
+            "ok": True,
+            "notification_sent": notification_sent,
+            "challenge": self._challenge_payload(
+                challenge,
+                challenger,
+                {challenger.id: challenger, opponent.id: opponent},
+            ),
+        }
 
     async def get_for_user(self, telegram_id: int, challenge_id: int) -> tuple[User | None, CourseChallenge | None]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
@@ -669,7 +678,13 @@ class CourseChallengeService:
             }.get(lang)
         return f"{text}\n\nLevel: {level}"
 
-    async def notify_invite(self, bot, challenge: CourseChallenge, challenger: User, opponent: User) -> None:
+    async def notify_invite(
+        self,
+        bot,
+        challenge: CourseChallenge,
+        challenger: User,
+        opponent: User,
+    ) -> bool:
         lang = normalize_miniapp_lang(opponent.language)
         try:
             await bot.send_message(
@@ -678,7 +693,8 @@ class CourseChallengeService:
                 reply_markup=self._invite_keyboard(int(challenge.id), lang, challenge.level),
             )
         except Exception:
-            return
+            return False
+        return True
 
     async def notify_response(self, bot, challenge: CourseChallenge, users: dict[int, User], *, accepted: bool) -> None:
         challenger = users.get(int(challenge.challenger_user_id))

@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.practice
 import com.pomp.hskai.data.api.DrillWordDto
 import com.pomp.hskai.data.repository.DictionaryWord
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -104,5 +105,14 @@ class WordDrillTest {
         )
 
         assertTrue(WordDrill.pool(mixed).none { it.hanzi == "你好" })
+    }
+
+    @Test
+    fun `each drill attempt gets a fresh idempotency reference`() {
+        val first = newDrillAccessRef()
+        val second = newDrillAccessRef()
+
+        assertTrue(first.startsWith("drill:"))
+        assertNotEquals(first, second)
     }
 }

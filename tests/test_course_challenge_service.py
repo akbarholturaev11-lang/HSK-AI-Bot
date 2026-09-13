@@ -130,6 +130,57 @@ class CourseChallengeServiceTests(unittest.TestCase):
 
 
 class CourseChallengeRewardTests(unittest.IsolatedAsyncioTestCase):
+    async def test_invite_delivery_reports_the_real_telegram_result(self):
+        service = CourseChallengeService(SimpleNamespace())
+        challenge = CourseChallenge(id=17, level="hsk3")
+        challenger = SimpleNamespace(full_name="Akbar", username="akbar")
+        opponent = SimpleNamespace(telegram_id=1002, language="uz")
+        working_bot = SimpleNamespace(send_message=AsyncMock())
+        failing_bot = SimpleNamespace(
+            send_message=AsyncMock(side_effect=RuntimeError("telegram unavailable"))
+        )
+
+        self.assertTrue(
+            await service.notify_invite(working_bot, challenge, challenger, opponent)
+        )
+        self.assertFalse(
+            await service.notify_invite(failing_bot, challenge, challenger, opponent)
+        )
+        working_bot.send_message.assert_awaited_once()
+        failing_bot.send_message.assert_awaited_once()
+
+    async def test_create_exposes_notification_delivery_to_the_client(self):
+        session = SimpleNamespace(add=Mock(), flush=AsyncMock())
+        service = CourseChallengeService(session)
+        challenger = SimpleNamespace(
+            id=1,
+            telegram_id=1001,
+            level="hsk3",
+            language="uz",
+        )
+        opponent = SimpleNamespace(id=2, telegram_id=1002, language="uz")
+        service.user_repo = SimpleNamespace(
+            get_by_telegram_id=AsyncMock(side_effect=[challenger, opponent])
+        )
+        service._challenge_cooldown_remaining = AsyncMock(return_value=0)
+        service._generate_questions_for = AsyncMock(
+            return_value=challenge_questions(CHALLENGE_QUESTION_COUNT)
+        )
+        service.notify_invite = AsyncMock(return_value=True)
+        service._challenge_payload = Mock(return_value={"id": 17})
+
+        result = await service.create(
+            1001,
+            opponent_telegram_id=1002,
+            level="hsk3",
+            lang="uz",
+            bot=SimpleNamespace(),
+        )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["notification_sent"])
+        service.notify_invite.assert_awaited_once()
+
     async def test_pending_challenge_cannot_be_started_by_either_player(self):
         service = CourseChallengeService(SimpleNamespace())
         challenge = CourseChallenge(

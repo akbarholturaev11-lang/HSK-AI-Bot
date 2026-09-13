@@ -227,6 +227,91 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-13 — Android drill isolation and referral parity
+
+Changed:
+- Every recognition/pronunciation drill opening now owns a unique attempt and
+  ViewModel key. A completed result can no longer survive into another drill
+  type or a later run of the same type.
+- Android referral rows now carry the Mini App's rank, weekly/total XP,
+  username, paid status, and an opaque challenge reference without exposing
+  Telegram/database IDs.
+- Invited friends can open the native rivalry profile, be messaged through
+  Telegram, and be challenged through the same canonical challenge service.
+- Challenge creation reports whether the Telegram notification was actually
+  delivered; app-only delivery is shown honestly when Telegram sending fails.
+
+Important decisions:
+- Opaque opponent references are resolved only against the caller's current
+  leaderboard or invited-friends list, never against arbitrary users.
+- Rating and referral request errors remain independent so one failed service
+  does not replace the other tab with a generic error.
+
+### 2026-09-13 — Android native dictionary detail and writer
+
+Changed:
+- Android dictionary entries now open a native detail view with authenticated
+  stroke-order animation, manual stroke steps, multi-character navigation,
+  pinyin, localized meaning, pronunciation audio, and links to native
+  recognition/pronunciation drills.
+- The existing shared Hanzi renderer now supports deterministic replay and
+  manual visible-stroke counts.
+
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/feature/dictionary/*`
+- `android/app/src/main/java/com/pomp/hskai/core/hanzi/StrokeAnimation.kt`
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+- Android UZ/RU/TJ strings.
+
+Risk:
+- Medium. It reuses existing authenticated stroke/TTS endpoints and drill
+  flows; dictionary cache, course order, quiz, payment, and access logic are unchanged.
+
+### 2026-09-12 — Android rating challenge inbox and learner profile
+
+Changed:
+- Rating challenges no longer occupy the top of the league list. A bell in the
+  rating header opens a dedicated pending/active challenge inbox.
+- Tapping a league learner opens a native full-screen profile matching the Mini
+  App's rivalry view: rank, level, weekly XP comparison, and challenge action.
+- The compact `战` action remains a direct challenge shortcut and does not open
+  the learner profile.
+
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/rating/RatingScreen.kt`
+- Android UZ/RU/TJ strings and rating navigation instrumentation tests.
+
+Risk:
+- Low to medium. Existing challenge APIs and opaque opponent references are
+  unchanged; this only reorganizes navigation and presentation.
+
+### 2026-09-12 — Android single-screen Telegram login and device-language pre-auth
+
+Changed:
+- Android unauthenticated entry now uses one premium Telegram login card with
+  login and registration actions on the same screen and no intermediate page.
+- The secure link code is requested automatically. Telegram creates a new
+  account when needed or links the existing account.
+- Before authentication, Android resources follow the device locale with no
+  manual switcher. After linking, the server account language remains canonical.
+
+Why:
+- Registration and login share the same Telegram flow, so both actions stay on
+  one screen instead of opening separate intermediate pages.
+
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/auth/LinkScreen.kt`
+- Android UZ/RU/TJ string resources.
+
+Risk:
+- Low to medium. Authentication APIs and secure Telegram confirmation are
+  unchanged; only locale override cleanup and how the link request starts changed.
+
+Follow-up:
+- Test Uzbek, Russian, and Tajik device locales and track successful-link conversion.
+
 ### 2026-09-11 — Android Telegram-first account linking
 
 Changed:

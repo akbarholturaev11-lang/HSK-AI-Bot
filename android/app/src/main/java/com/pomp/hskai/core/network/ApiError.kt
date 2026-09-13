@@ -84,6 +84,21 @@ sealed interface ApiError {
 
                 "mistake_review_empty" -> R.string.error_no_mistakes
 
+                "challenge_cooldown" -> R.string.error_challenge_cooldown
+
+                "challenge_opponent_not_found",
+                "challenge_user_not_found",
+                "challenge_self_not_allowed",
+                -> R.string.error_challenge_opponent
+
+                "practice_questions_not_found" -> R.string.error_challenge_questions
+
+                "android_challenge_unavailable" -> R.string.error_challenge_unavailable
+
+                "android_referral_unavailable",
+                "desktop_referral_unavailable",
+                -> R.string.error_referral_unavailable
+
                 "android_subscription_handoff_unavailable",
                 -> R.string.limit_unlock_unavailable
 

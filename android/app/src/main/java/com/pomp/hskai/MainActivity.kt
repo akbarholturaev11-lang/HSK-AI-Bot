@@ -101,10 +101,13 @@ import com.pomp.hskai.feature.hint.HintsViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.data.api.ChallengeDto
+import com.pomp.hskai.data.api.RatingEntryDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
 import com.pomp.hskai.feature.rating.ChallengeRunViewModel
+import com.pomp.hskai.feature.rating.RatingChallengesScreen
 import com.pomp.hskai.feature.rating.RatingScreen
 import com.pomp.hskai.feature.rating.RatingTab
+import com.pomp.hskai.feature.rating.RatingUserScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
 import com.pomp.hskai.feature.voice.VoiceViewModel
@@ -216,15 +219,18 @@ private fun AppRoot(
         }
 
         AuthState.Unauthenticated -> {
-            LaunchedEffect(Unit) { app.clearLocalData() }
             val sessionOwner = rememberSessionViewModelStoreOwner()
             val viewModel: LinkViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = LinkViewModelFactory(authRepository),
             )
             val linkState by viewModel.state.collectAsStateWithLifecycle()
+            val localeHost = LocalContext.current
             LaunchedEffect(Unit) {
-                if (linkState.pending == null && !linkState.isRequestingCode) {
+                app.clearLocalData()
+                if (AppLocale.clear(localeHost)) {
+                    (localeHost as? Activity)?.recreate()
+                } else if (linkState.pending == null && !linkState.isRequestingCode) {
                     viewModel.requestCode()
                 }
             }
@@ -466,8 +472,10 @@ private fun AppRoot(
             LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
-            var openDrill by remember { mutableStateOf<DrillMode?>(null) }
+            var openDrill by remember { mutableStateOf<DrillLaunch?>(null) }
             var openChallenge by remember { mutableStateOf<ChallengeDto?>(null) }
+            var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
+            var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             // Asked at most once per launch. Not a limit — the daily cap is
@@ -483,6 +491,13 @@ private fun AppRoot(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
                 )
+            }
+
+            fun launchDrill(mode: DrillMode) {
+                // A drill is an attempt, not a reusable destination. A fresh
+                // key prevents a completed/result state from surviving into
+                // another mode or into a later run of the same mode.
+                openDrill = DrillLaunch(mode = mode)
             }
 
             // A daily-plan step opens the same screen its Mini App counterpart
@@ -617,10 +632,39 @@ private fun AppRoot(
                     onClose = { adRequest = null },
                     onOpenLink = { url -> openExternal(context, url) },
                 )
+            } else if (ratingChallengesOpen) {
+                RatingChallengesScreen(
+                    state = ratingState,
+                    onRespond = ratingViewModel::respond,
+                    onStartChallenge = { duel ->
+                        ratingChallengesOpen = false
+                        openChallenge = duel
+                    },
+                    onBack = { ratingChallengesOpen = false },
+                )
+            } else if (ratingUserOpen != null) {
+                RatingUserScreen(
+                    user = checkNotNull(ratingUserOpen),
+                    league = ratingState.rating?.league.orEmpty(),
+                    currentWeeklyXp = ratingState.rating?.weeklyXp ?: 0,
+                    isChallengeBusy = ratingState.isChallengeBusy,
+                    challengeDelivery = ratingState.challengeDelivery,
+                    challengeError = ratingState.challengeError,
+                    onChallenge = { ref ->
+                        ratingViewModel.challenge(ref, currentLevel, currentLanguage)
+                    },
+                    onMessage = { username ->
+                        openExternal(context, "https://t.me/${username.trim().lstripAt()}")
+                    },
+                    onBack = {
+                        ratingViewModel.clearChallengeFeedback()
+                        ratingUserOpen = null
+                    },
+                )
             } else if (openChallenge != null) {
                 val duel = openChallenge!!
                 val challengeViewModel: ChallengeRunViewModel = viewModel(
-                    key = "challenge-${'$'}{duel.id}",
+                    key = "challenge-${duel.id}",
                     viewModelStoreOwner = sessionOwner,
                     factory = ChallengeRunViewModel.Factory(
                         repository = app.featureRepository,
@@ -640,9 +684,10 @@ private fun AppRoot(
                     },
                 )
             } else if (openDrill != null) {
-                val mode = openDrill!!
+                val drill = openDrill!!
+                val mode = drill.mode
                 val drillViewModel: WordDrillViewModel = viewModel(
-                    key = "drill-${'$'}{mode.feature}-${'$'}currentLevel",
+                    key = drill.viewModelKey,
                     viewModelStoreOwner = sessionOwner,
                     factory = WordDrillViewModel.Factory(
                         repository = app.featureRepository,
@@ -677,6 +722,8 @@ private fun AppRoot(
                     viewModelStoreOwner = sessionOwner,
                     factory = DictionaryViewModel.Factory(
                         repository = app.dictionaryRepository,
+                        courseRepository = app.courseRepository,
+                        audioPlayer = app.lessonAudioPlayer,
                         language = state.account.language,
                     ),
                 )
@@ -685,6 +732,24 @@ private fun AppRoot(
                     state = dictionaryState,
                     onQueryChange = dictionaryViewModel::onQueryChange,
                     onRetry = dictionaryViewModel::load,
+                    onOpenWord = dictionaryViewModel::openWord,
+                    onCloseWord = dictionaryViewModel::closeWord,
+                    onPreviousCharacter = dictionaryViewModel::previousCharacter,
+                    onNextCharacter = dictionaryViewModel::nextCharacter,
+                    onPreviousStroke = dictionaryViewModel::previousStroke,
+                    onReplayStrokes = dictionaryViewModel::replayStrokes,
+                    onNextStroke = dictionaryViewModel::nextStroke,
+                    onPlayAudio = dictionaryViewModel::playAudio,
+                    onPreviousWord = dictionaryViewModel::previousWord,
+                    onNextWord = dictionaryViewModel::nextWord,
+                    onOpenRecognition = {
+                        dictionaryOpen = false
+                        launchDrill(DrillMode.RECOGNITION)
+                    },
+                    onOpenPronunciation = {
+                        dictionaryOpen = false
+                        launchDrill(DrillMode.PRONUNCIATION)
+                    },
                     onBack = { dictionaryOpen = false },
                 )
             } else if (launch != null) {
@@ -779,7 +844,7 @@ private fun AppRoot(
                             onSelectExamOption = practiceViewModel::selectExamOption,
                             onAdvanceExam = practiceViewModel::advanceExam,
                             onResetExam = practiceViewModel::resetExam,
-                            onOpenDrill = { mode -> openDrill = mode },
+                            onOpenDrill = ::launchDrill,
                             request = practiceRequest,
                             onRequestConsumed = { practiceRequest = null },
                             modifier = contentModifier,
@@ -817,11 +882,15 @@ private fun AppRoot(
                             hints = hints,
                             onDismissHint = hintsViewModel::dismiss,
                             onSelectTab = ratingViewModel::selectTab,
+                            onOpenChallenges = { ratingChallengesOpen = true },
+                            onOpenUser = { user ->
+                                ratingViewModel.clearChallengeFeedback()
+                                ratingUserOpen = user
+                            },
+                            onInviteFriends = { link -> shareText(context, link) },
                             onChallenge = { ref ->
                                 ratingViewModel.challenge(ref, currentLevel, currentLanguage)
                             },
-                            onRespond = ratingViewModel::respond,
-                            onStartChallenge = { duel -> openChallenge = duel },
                             onRetry = ratingViewModel::load,
                             modifier = contentModifier,
                         )
@@ -1243,6 +1312,23 @@ private fun openExternal(context: android.content.Context, url: String): Boolean
     }
 }
 
+private fun shareText(context: Context, text: String): Boolean {
+    if (text.isBlank()) return false
+    return runCatching {
+        val send = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(Intent.createChooser(send, null).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
+        true
+    }.getOrDefault(false)
+}
+
+private fun String.lstripAt(): String = removePrefix("@")
+
 /**
  * How long after the main screen appears the centre ad is asked for.
  *
@@ -1269,6 +1355,15 @@ private data class LessonLaunch(
     val lesson: CourseLesson,
     val attemptKey: String,
 )
+
+internal data class DrillLaunch(
+    val mode: DrillMode,
+    val attemptKey: String = UUID.randomUUID().toString(),
+) {
+    /** Every opening owns a fresh ViewModel, even for the same drill mode. */
+    val viewModelKey: String
+        get() = "drill-$attemptKey"
+}
 
 @Composable
 private fun rememberSessionViewModelStoreOwner(): SessionViewModelStoreOwner {

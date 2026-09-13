@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 /** Which drill is running: pick the character, or say it. */
 enum class DrillMode(val feature: String) {
@@ -74,6 +75,8 @@ class WordDrillViewModel(
 
     private val mistakes = mutableListOf<DrillMistakeDto>()
     private val results = mutableListOf<DrillResultDto>()
+    // Stable across retries in this attempt, fresh for every new ViewModel.
+    private val accessAttemptRef = newDrillAccessRef()
 
     init {
         load()
@@ -95,7 +98,7 @@ class WordDrillViewModel(
             // free learner gets the section once, and an ad reopens it.
             val gate = repository.drillGate(
                 feature = mode.feature,
-                ref = "drill:${'$'}{System.currentTimeMillis()}",
+                ref = accessAttemptRef,
                 accessRef = accessRef,
             )
             if (gate is ApiResult.Failure) {
@@ -282,3 +285,5 @@ class WordDrillViewModel(
         const val PASS_SCORE = 60
     }
 }
+
+internal fun newDrillAccessRef(): String = "drill:${UUID.randomUUID()}"
