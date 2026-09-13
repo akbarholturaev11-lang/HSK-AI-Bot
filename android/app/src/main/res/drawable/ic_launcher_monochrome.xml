@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Single-color HSK AI tone seal for Android themed icons. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M31,25.5 H77 C81.5,25.5 83.5,29 83.5,33.5 V69.5 C83.5,74.5 81,77.5 76.5,77.5 H63 L54,85.5 L55,77.5 H31 C26.5,77.5 24.5,74.5 24.5,69.5 V33.5 C24.5,29 26.5,25.5 31,25.5 Z"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="5" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M35,40 C47,40 60,40 74,40 M35,51 C45,56 57,55 70,44.5 M35,59 C47,58 55,65 64,65 C69,65 73,61 77,57.5 M35,69 C48,69 61,72 75,72.5"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeWidth="4.25" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M76.5,31 A3.25,3.25 0,1 1,76.5,37.5 A3.25,3.25 0,1 1,76.5,31" />
+</vector>

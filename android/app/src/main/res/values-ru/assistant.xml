@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="assistant_open">Открыть AI-помощника</string>
+    <string name="assistant_close">Закрыть</string>
+    <string name="assistant_expand">Развернуть окно</string>
+    <string name="assistant_history">Разговоры</string>
+    <string name="assistant_new">Новый разговор</string>
+    <string name="assistant_context">Использовать контекст экрана</string>
+    <string name="assistant_general">Общий вопрос</string>
+    <string name="assistant_intro">Разберёмся вместе. Что здесь непонятно?</string>
+    <string name="assistant_simple">Объясни проще</string>
+    <string name="assistant_example">Покажи на примере</string>
+    <string name="assistant_mistake">В чём моя ошибка?</string>
+    <string name="assistant_how">Как пользоваться этим разделом?</string>
+    <string name="assistant_older">Предыдущие сообщения</string>
+    <string name="assistant_voice">Голосовой вопрос</string>
+    <string name="assistant_photo">Выбрать фото</string>
+    <string name="assistant_hint">Напишите вопрос…</string>
+    <string name="assistant_send">Отправить</string>
+    <string name="assistant_sending">Отправляется…</string>
+    <string name="assistant_transcribing">Распознаём голос…</string>
+    <string name="assistant_analyzing">Разбираем изображение…</string>
+    <string name="assistant_answering">Готовим ответ…</string>
+    <string name="assistant_listen">Прослушать</string>
+    <string name="assistant_remove">Удалить вложение</string>
+    <string name="assistant_recording">Запись · до 60 секунд</string>
+    <string name="assistant_cancel">Отмена</string>
+    <string name="assistant_stop">Завершить</string>
+    <string name="assistant_retry">Повторить</string>
+    <string name="assistant_mic_denied">Нет доступа к микрофону. Включите его в настройках или напишите вопрос.</string>
+    <string name="assistant_mic_busy">Микрофон занят упражнением. Пока отправьте текст или фото.</string>
+    <string name="assistant_no_speech">Речь не распознана. Запишите ещё раз коротко и чётко.</string>
+    <string name="assistant_bad_photo">Не удалось прочитать файл. Выберите другое, более чёткое фото.</string>
+    <string name="assistant_timeout">Ответ задержался. Повтор сначала проверит уже отправленный запрос.</string>
+    <string name="assistant_limit">Лимит AI исчерпан или доступ ограничен. Проверьте статус в профиле.</string>
+    <string name="assistant_network">Не удалось подключиться. Вопрос сохранён — попробуйте ещё раз.</string>
+    <string name="assistant_leave_title">Выйти из упражнения?</string>
+    <string name="assistant_leave_body">Незавершённая попытка не будет засчитана. Откроется другой раздел.</string>
+    <string name="assistant_continue">Открыть раздел</string>
+    <string name="assistant_stay">Остаться</string>
+</resources>

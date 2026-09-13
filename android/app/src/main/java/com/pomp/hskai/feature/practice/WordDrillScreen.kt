@@ -44,6 +44,8 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.wordDrillAssistantContext
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
@@ -65,6 +67,7 @@ fun WordDrillScreen(
     onRetry: () -> Unit,
     onClose: () -> Unit,
 ) {
+    AssistantScreen(wordDrillAssistantContext(state), bottomBar = false)
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(
             modifier = Modifier

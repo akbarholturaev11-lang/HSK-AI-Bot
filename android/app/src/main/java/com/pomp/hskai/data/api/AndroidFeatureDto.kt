@@ -541,6 +541,7 @@ data class ChallengeStartResponse(
 
 @Serializable
 data class ChallengeSessionDto(
+    @SerialName("id") val id: String = "",
     @SerialName("challenge_id") val challengeId: Int = 0,
     @SerialName("questions") val questions: List<ChallengeQuestionDto> = emptyList(),
 )

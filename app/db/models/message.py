@@ -13,6 +13,9 @@ class Message(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
     telegram_message_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
+    conversation_id: Mapped[Optional[str]] = mapped_column(
+        ForeignKey("assistant_conversations.id", ondelete="CASCADE"), index=True, nullable=True
+    )
 
     role: Mapped[str] = mapped_column(String(16), nullable=False)  # user / assistant / system
     content: Mapped[str] = mapped_column(Text, nullable=False)

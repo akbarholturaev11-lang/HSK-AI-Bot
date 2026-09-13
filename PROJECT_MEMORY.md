@@ -8001,3 +8001,38 @@ Key files:
 Risk:
 - Android Gradle compilation still needs to run on a machine with writable
   Gradle wrapper cache and an emulator/launcher. Python API/static suites pass.
+
+### 2026-09-13 — Native Android context-aware AI assistant
+
+Changed:
+- Added a native Android `AssistantHost` shared by `MainActivity` and
+  `FoundationActivity`, with a fixed 56dp AI FAB, an 80% bottom chat sheet,
+  full-screen expansion, unified native chat history, text/photo/voice input,
+  encrypted retry outbox and account-epoch reset protection.
+- Each main and inner learning surface now registers an explicit
+  `ScreenContext` instead of screenshots: course, lesson cards, dictionary
+  writing, practice, exams, drills, voice, rating, challenges, profile and
+  foundation. Hidden answer keys are excluded until feedback is already shown.
+- Backend added `/api/v3/android/assistant`, assistant conversations,
+  recoverable idempotent requests and active assessment rows. Native assistant
+  reuses the existing AI provider chain, STT/image analysis cost logging and
+  the shared Telegram QA text/photo/voice limits.
+- Active exams and challenges are server-guarded. During an active assessment
+  the assistant returns procedural help without calling an AI provider, and
+  late assessment starts are rechecked before model answering.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/assistant/`
+- `app/api/android_assistant.py`
+- `app/services/assistant_service.py`
+- `app/services/assistant_assessment_service.py`
+- `app/db/models/assistant.py`
+- `alembic/versions/0081_android_assistant.py`
+
+Important decisions:
+- Ordinary app screens do not send screenshots; context is built only from
+  app-owned visible state.
+- Telegram QA history stays separate from native Android assistant history,
+  while quota accounting is shared across both clients.
+- AI suggested actions use a native allowlist only, and lesson access is
+  rechecked when the user taps the action.

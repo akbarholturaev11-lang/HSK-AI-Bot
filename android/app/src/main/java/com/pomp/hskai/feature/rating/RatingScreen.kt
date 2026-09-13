@@ -60,6 +60,10 @@ import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.data.api.RatingEntryDto
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.ReferralItemDto
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.ratingAssistantContext
+import com.pomp.hskai.feature.assistant.ratingChallengesAssistantContext
+import com.pomp.hskai.feature.assistant.ratingUserAssistantContext
 
 /**
  * Weekly league and invited friends, laid out like the Mini App's Reyting tab.
@@ -80,6 +84,7 @@ fun RatingScreen(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(ratingAssistantContext(state), bottomBar = true)
     val rating = state.rating
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -267,6 +272,7 @@ fun RatingChallengesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(ratingChallengesAssistantContext(state), bottomBar = false, priority = 10)
     BackHandler(onBack = onBack)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -319,6 +325,7 @@ fun RatingUserScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(ratingUserAssistantContext(user, league, currentWeeklyXp), bottomBar = false, priority = 10)
     BackHandler(onBack = onBack)
     val name = user.name.ifBlank {
         user.username.ifBlank { stringResource(R.string.rating_unnamed) }

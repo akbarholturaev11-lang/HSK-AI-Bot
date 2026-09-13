@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +73,8 @@ fun MainScaffold(
     content: @Composable (MainTab, Modifier) -> Unit,
 ) {
     val tabs = remember { MainTab.visible }
+    val assistant = com.pomp.hskai.feature.assistant.LocalAssistant.current
+    val assistantState = assistant?.controller?.state?.collectAsState()
 
     Scaffold(
         containerColor = PompColors.Paper,
@@ -101,7 +104,7 @@ fun MainScaffold(
             }
         },
     ) { insets ->
-        content(selectedTab, Modifier.padding(insets))
+        content(selectedTab, Modifier.padding(insets).padding(bottom = if (assistantState?.value?.enabled == true) 76.dp else 0.dp))
     }
 }
 

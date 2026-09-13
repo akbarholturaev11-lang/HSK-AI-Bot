@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -65,6 +64,7 @@ import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.feature.auth.LinkScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
+import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 import com.pomp.hskai.core.navigation.MainScaffold
 import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
@@ -140,11 +140,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             PompHskAiTheme {
                 val destination by requestedDestination.collectAsStateWithLifecycle()
-                AppRoot(
+                com.pomp.hskai.feature.assistant.AssistantHost(app, ::deliverDestination) {
+                  AppRoot(
                     app = app,
                     requestedDestination = destination,
                     onDestinationConsumed = { requestedDestination.value = null },
                 )
+                }
             }
         }
     }
@@ -545,6 +547,13 @@ private fun AppRoot(
                 if (!onboardingState.completed) return@LaunchedEffect
                 val request = requestedDestination ?: return@LaunchedEffect
                 val destination = request.destination
+                // Assistant actions enter through the same server-authorized deep-link path.
+                openLesson = null
+                openDrill = null
+                openChallenge = null
+                ratingChallengesOpen = false
+                ratingUserOpen = null
+                dictionaryOpen = false
                 selectedTab = destination.toTab() ?: selectedTab
                 when (destination) {
                     AppDestination.CurrentLesson,
@@ -1035,6 +1044,12 @@ private fun LessonHost(
     DisposableEffect(model, launch.attemptKey) {
         onDispose { model.endAttempt(launch.attemptKey) }
     }
+
+    com.pomp.hskai.feature.assistant.AssistantScreen(
+        com.pomp.hskai.feature.assistant.lessonAssistantContext(lessonState, launch.attemptKey),
+        bottomBar = false,
+        priority = 10,
+    )
 
     LessonScreen(
         state = lessonState,

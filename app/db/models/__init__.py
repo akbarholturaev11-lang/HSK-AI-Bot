@@ -6,6 +6,7 @@ from .ad_campaign import AdCampaign, AdCampaignDelivery
 from .release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse
 from .bot_feedback import BotFeedback
 from .message import Message
+from .assistant import AssistantConversation, AssistantRequest, AssistantAssessment
 from .ai_usage import AIUsageBudget, AIUsageEvent
 from .portfolio import PortfolioTransaction
 from .bot_setting import BotSetting

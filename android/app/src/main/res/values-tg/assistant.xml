@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="assistant_open">Кушодани ёвари AI</string>
+    <string name="assistant_close">Бастан</string>
+    <string name="assistant_expand">Калон кардани равзана</string>
+    <string name="assistant_history">Суҳбатҳо</string>
+    <string name="assistant_new">Суҳбати нав</string>
+    <string name="assistant_context">Истифодаи муҳтавои экран</string>
+    <string name="assistant_general">Саволи умумӣ</string>
+    <string name="assistant_intro">Якҷоя мефаҳмем. Чӣ нофаҳмост?</string>
+    <string name="assistant_simple">Содатар фаҳмон</string>
+    <string name="assistant_example">Бо мисол нишон деҳ</string>
+    <string name="assistant_mistake">Хатои ман дар чист?</string>
+    <string name="assistant_how">Ин бахшро чӣ тавр истифода барам?</string>
+    <string name="assistant_older">Паёмҳои пешина</string>
+    <string name="assistant_voice">Саволи овозӣ</string>
+    <string name="assistant_photo">Интихоби акс</string>
+    <string name="assistant_hint">Саволатонро нависед…</string>
+    <string name="assistant_send">Фиристодан</string>
+    <string name="assistant_sending">Фиристода мешавад…</string>
+    <string name="assistant_transcribing">Овоз шинохта мешавад…</string>
+    <string name="assistant_analyzing">Расм таҳлил мешавад…</string>
+    <string name="assistant_answering">Ҷавоб омода мешавад…</string>
+    <string name="assistant_listen">Гӯш кардан</string>
+    <string name="assistant_remove">Нест кардани замима</string>
+    <string name="assistant_recording">Сабт · то 60 сония</string>
+    <string name="assistant_cancel">Бекор кардан</string>
+    <string name="assistant_stop">Анҷом додан</string>
+    <string name="assistant_retry">Кӯшиши дубора</string>
+    <string name="assistant_mic_denied">Ба микрофон иҷозат нест. Дар танзимот фаъол кунед ё саволро нависед.</string>
+    <string name="assistant_mic_busy">Микрофон дар машқ фаъол аст. Ҳоло матн ё акс фиристед.</string>
+    <string name="assistant_no_speech">Овоз фаҳмида нашуд. Кӯтоҳ ва равшан дубора сабт кунед.</string>
+    <string name="assistant_bad_photo">Файл хонда нашуд. Акси дигари равшантар интихоб кунед.</string>
+    <string name="assistant_timeout">Ҷавоб дер шуд. Кӯшиши дубора аввал дархости фиристодаро месанҷад.</string>
+    <string name="assistant_limit">Маҳдудияти AI тамом шуд ё дастрасӣ маҳдуд аст. Ҳолатро дар профил санҷед.</string>
+    <string name="assistant_network">Пайваст нашуд. Савол нигоҳ дошта шуд — дубора кӯшиш кунед.</string>
+    <string name="assistant_leave_title">Аз машқ мебароед?</string>
+    <string name="assistant_leave_body">Кӯшиши нотамом ҳисоб намешавад. Бахши дигар кушода мешавад.</string>
+    <string name="assistant_continue">Кушодани бахш</string>
+    <string name="assistant_stay">Мондан</string>
+</resources>

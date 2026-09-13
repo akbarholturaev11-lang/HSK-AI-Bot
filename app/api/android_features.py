@@ -51,6 +51,7 @@ from app.api.desktop_voice import (
     _validated_payload as _validated_voice_payload,
 )
 from app.repositories.user_repo import UserRepository
+from app.services.assistant_assessment_service import assessment_started, assessment_finished, assessment_abandoned
 from app.services.course_ad_service import CourseAdService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_drill_signal_service import CourseDrillSignalService
@@ -533,6 +534,12 @@ def create_android_features_router(
         context = await _context(session, request)
         return int(context.user.telegram_id)
 
+    async def _optional_user(session, request: Request):
+        context = await _context(session, request)
+        return await UserRepository(session).get_by_telegram_id(
+            int(context.user.telegram_id)
+        )
+
     def _ad_channel(request: Request) -> str:
         raw = str(request.query_params.get("channel") or "").strip().lower()
         return raw if raw in ANDROID_AD_TYPES_BY_CHANNEL else ANDROID_DEFAULT_AD_CHANNEL
@@ -945,6 +952,11 @@ def create_android_features_router(
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
                 )
+                user = await _optional_user(session, request)
+                if user:
+                    if await assessment_abandoned(session, user.id, str((result.get("session") or {}).get("id", ""))):
+                        raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
+                    await assessment_started(session, user.id, "exam", result)
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
             return _error_response(exc)
@@ -968,6 +980,9 @@ def create_android_features_router(
             )
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
+                user = await _optional_user(session, request)
+                if user and await assessment_abandoned(session, user.id, payload.session_id):
+                    raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
                 result = await exam_service_factory(session).complete(
                     telegram_id,
                     session_id=payload.session_id,
@@ -984,6 +999,8 @@ def create_android_features_router(
                     level=payload.level or None,
                     lang=payload.language or None,
                 )
+                if result.get("ok") and user:
+                    await assessment_finished(session, user.id, payload.session_id)
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
             return _error_response(exc)
@@ -1358,10 +1375,14 @@ def create_android_features_router(
         try:
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
+                user = await _user(session, request)
+                if await assessment_abandoned(session, user.id, f"challenge:{challenge_id}:{user.id}"):
+                    raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
                 result = await challenge_service_factory(session).start(
                     telegram_id,
                     int(challenge_id),
                 )
+                await assessment_started(session, user.id, "challenge", result)
                 await session.commit()
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1378,6 +1399,9 @@ def create_android_features_router(
             payload = await _validated_payload(request, AndroidChallengeSubmitRequest)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
+                user = await _user(session, request)
+                if await assessment_abandoned(session, user.id, f"challenge:{challenge_id}:{user.id}"):
+                    raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
                 result = await challenge_service_factory(session).submit(
                     telegram_id,
                     int(challenge_id),
@@ -1391,6 +1415,8 @@ def create_android_features_router(
                     duration_seconds=payload.duration_seconds,
                     bot=bot,
                 )
+                if result.get("ok"):
+                    await assessment_finished(session, user.id, f"challenge:{challenge_id}:{user.id}")
                 await session.commit()
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:

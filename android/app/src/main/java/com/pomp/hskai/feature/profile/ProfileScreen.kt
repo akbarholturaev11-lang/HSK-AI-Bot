@@ -38,7 +38,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -77,6 +76,9 @@ import com.pomp.hskai.core.settings.AppThemeMode
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.domain.model.CourseUser
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.profileAssistantContext
+import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 import com.pomp.hskai.feature.course.GoalRing
 import com.pomp.hskai.feature.hint.SectionHint
 import kotlinx.coroutines.launch
@@ -109,6 +111,7 @@ fun ProfileScreen(
     onUnlinkDevice: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(profileAssistantContext(state), bottomBar = true)
     var settingsOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current

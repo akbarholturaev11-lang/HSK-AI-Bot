@@ -53,6 +53,8 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.hanzi.StrokeAnimation
 import com.pomp.hskai.data.repository.DictionaryWord
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.dictionaryAssistantContext
 
 /** Native dictionary backed by the same HSK 1–4 list and writer API as Mini App. */
 @Composable
@@ -75,6 +77,7 @@ fun DictionaryScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(dictionaryAssistantContext(state), bottomBar = false)
     BackHandler(enabled = state.selectedWord != null, onBack = onCloseWord)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         if (state.selectedWord == null) {

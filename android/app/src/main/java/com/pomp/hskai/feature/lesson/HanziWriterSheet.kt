@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,6 +46,9 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.hanzi.StrokeAnimation
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.ScreenContext
+import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 
 /**
  * How a character is written, stroke by stroke.
@@ -67,6 +69,17 @@ internal fun HanziWriterSheet(
     onReplay: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    AssistantScreen(
+        ScreenContext(
+            screen = "writing",
+            title = hanzi,
+            details = "Writing sheet: $hanzi · $pinyin · $meaning. Strokes loaded: ${strokes?.size ?: 0}.",
+            materialRef = hanzi,
+            answerState = if (isLoading) "loading" else "viewing",
+        ),
+        bottomBar = false,
+        priority = 100,
+    )
     val sheetState = rememberModalBottomSheetState()
     ModalBottomSheet(
         onDismissRequest = onDismiss,

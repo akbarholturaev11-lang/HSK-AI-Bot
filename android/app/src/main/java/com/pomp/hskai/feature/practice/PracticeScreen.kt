@@ -64,6 +64,8 @@ import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewQuestionDto
 import com.pomp.hskai.data.api.PracticeQuestionDto
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.practiceAssistantContext
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
@@ -95,6 +97,7 @@ fun PracticeScreen(
     modifier: Modifier = Modifier,
 ) {
     var mistakesOpen by rememberSaveable { mutableStateOf(false) }
+    AssistantScreen(practiceAssistantContext(state, level, mistakesOpen), bottomBar = true)
 
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {

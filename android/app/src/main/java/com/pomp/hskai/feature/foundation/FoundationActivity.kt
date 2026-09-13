@@ -37,11 +37,16 @@ class FoundationActivity : ComponentActivity() {
         val app = application as HskAiApplication
         setContent {
             PompHskAiTheme {
-                FoundationActivityContent(
+                com.pomp.hskai.feature.assistant.AssistantHost(app, { uri ->
+                    startActivity(Intent(this, MainActivity::class.java).setData(android.net.Uri.parse(uri)))
+                    finish()
+                }) {
+                  FoundationActivityContent(
                     app = app,
                     onClose = ::finish,
                     onCompleted = ::returnToFreshCourse,
                 )
+                }
             }
         }
     }

@@ -60,6 +60,7 @@ class HskAiApplication : Application() {
     }
 
     private suspend fun clearWidgetSession() {
+        kotlinx.coroutines.withContext(Dispatchers.Main.immediate) { assistant.reset() }
         widgetStore.clear()
         StudyNotifications.cancelReminder(this)
         applicationScope.launch { widgetCoordinator.render() }
@@ -184,6 +185,19 @@ class HskAiApplication : Application() {
             api = retrofit.create(AndroidFeatureApi::class.java),
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
+        )
+    }
+
+    val assistant by lazy {
+        com.pomp.hskai.feature.assistant.AssistantController(
+            this,
+            com.pomp.hskai.feature.assistant.AssistantRepository(
+                retrofit.create(com.pomp.hskai.feature.assistant.AssistantApi::class.java),
+                authRepository::accessToken,
+                authRepository::invalidateSession,
+                json,
+            ),
+            json,
         )
     }
 

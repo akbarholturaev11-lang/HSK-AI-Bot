@@ -68,6 +68,8 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.courseAssistantContext
 import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
@@ -97,6 +99,7 @@ fun CourseScreen(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(courseAssistantContext(state), bottomBar = true)
     val map = state.map
     Box(modifier = modifier.fillMaxSize()) {
         Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {

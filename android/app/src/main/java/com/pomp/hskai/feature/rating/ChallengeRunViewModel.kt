@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 data class ChallengeRunUiState(
     val isLoading: Boolean = true,
+    val sessionId: String = "",
     val questions: List<ChallengeQuestionDto> = emptyList(),
     val index: Int = 0,
     val selected: Int? = null,
@@ -63,6 +64,7 @@ class ChallengeRunViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            sessionId = result.value.session.id,
                             questions = questions,
                             error = if (questions.isEmpty()) ApiError.Unknown else null,
                         )

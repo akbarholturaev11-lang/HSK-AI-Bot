@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="assistant_open">AI yordamchini ochish</string>
+    <string name="assistant_close">Yopish</string>
+    <string name="assistant_expand">Oynani kengaytirish</string>
+    <string name="assistant_history">Suhbatlar</string>
+    <string name="assistant_new">Yangi suhbat</string>
+    <string name="assistant_context">Ekran kontekstini ulash</string>
+    <string name="assistant_general">Umumiy savol</string>
+    <string name="assistant_intro">Shu joyini birga tushunamiz. Nima qiyin bo‘lyapti?</string>
+    <string name="assistant_simple">Soddaroq tushuntir</string>
+    <string name="assistant_example">Misol bilan ko‘rsat</string>
+    <string name="assistant_mistake">Xatoyim nimada?</string>
+    <string name="assistant_how">Bu bo‘limdan qanday foydalanaman?</string>
+    <string name="assistant_older">Oldingi xabarlar</string>
+    <string name="assistant_voice">Ovozli savol</string>
+    <string name="assistant_photo">Foto tanlash</string>
+    <string name="assistant_hint">Savolingizni yozing…</string>
+    <string name="assistant_send">Yuborish</string>
+    <string name="assistant_sending">Yuborilmoqda…</string>
+    <string name="assistant_transcribing">Ovoz o‘qilmoqda…</string>
+    <string name="assistant_analyzing">Rasm tahlil qilinmoqda…</string>
+    <string name="assistant_answering">Javob tayyorlanmoqda…</string>
+    <string name="assistant_listen">Tinglash</string>
+    <string name="assistant_remove">Biriktirmani olib tashlash</string>
+    <string name="assistant_recording">Yozilmoqda · ko‘pi bilan 60 soniya</string>
+    <string name="assistant_cancel">Bekor qilish</string>
+    <string name="assistant_stop">Tugatish</string>
+    <string name="assistant_retry">Qayta urinish</string>
+    <string name="assistant_mic_denied">Mikrofonga ruxsat berilmagan. Sozlamadan yoqing yoki savolni yozing.</string>
+    <string name="assistant_mic_busy">Mikrofon mashqda ishlayapti. Hozir matn yoki foto yuboring.</string>
+    <string name="assistant_no_speech">Ovoz tushunilmadi. Qisqa va aniq qayta yozing.</string>
+    <string name="assistant_bad_photo">Fayl o‘qilmadi. Boshqa, aniqroq foto tanlang.</string>
+    <string name="assistant_timeout">Javob kechikdi. Qayta urinish avval yuborilgan so‘rovni tekshiradi.</string>
+    <string name="assistant_limit">AI limitingiz tugagan yoki kirish cheklangan. Profil bo‘limida holatni tekshiring.</string>
+    <string name="assistant_network">Hozir ulanish bo‘lmadi. Savolingiz saqlandi; qayta urinib ko‘ring.</string>
+    <string name="assistant_leave_title">Mashqdan chiqasizmi?</string>
+    <string name="assistant_leave_body">Tugallanmagan urinish yakunlanmaydi. Yangi bo‘lim ochiladi.</string>
+    <string name="assistant_continue">Bo‘limni ochish</string>
+    <string name="assistant_stay">Shu yerda qolish</string>
+</resources>

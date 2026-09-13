@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.ScreenContext
 
 @Composable
 internal fun FoundationScreen(
@@ -59,6 +61,7 @@ internal fun FoundationScreen(
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(foundationAssistantContext(state), bottomBar = false, priority = 10)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
             state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -104,6 +107,38 @@ internal fun FoundationScreen(
             }
         }
     }
+}
+
+private fun foundationAssistantContext(state: FoundationUiState): ScreenContext {
+    val card = state.currentCard
+    val details = buildString {
+        appendLine("Starter foundation flow.")
+        appendLine("Step: ${state.cardIndex + 1}/${state.cards.size}. ${state.stepLabel}")
+        if (card == null) {
+            appendLine(if (state.loading) "Foundation content is loading." else "No foundation card is visible.")
+        } else {
+            appendLine("Card type: ${card.type}")
+            if (card.title.isNotBlank()) appendLine("Title: ${card.title}")
+            if (card.text.isNotBlank()) appendLine("Text: ${card.text}")
+            if (card.prompt.isNotBlank()) appendLine("Prompt: ${card.prompt}")
+            if (card.audioText.isNotBlank()) appendLine("Audio: ${card.audioText} · ${card.naturalPinyin}")
+            card.example?.let { appendLine("Example: ${it.zh} · ${it.pinyin} · ${it.translation}") }
+            card.examples.take(2).forEach { appendLine("Example: ${it.zh} · ${it.pinyin} · ${it.translation}") }
+            if (card.options.isNotEmpty()) appendLine("Visible options: ${card.options.joinToString(" | ")}")
+            if (card.tokens.isNotEmpty()) appendLine("Visible tokens: ${card.tokens.joinToString(" ")}")
+            if (state.answerCorrect != null && card.answerTokens.isNotEmpty()) appendLine("Correct builder order shown: ${card.answerTokens.joinToString(" ")}")
+            state.selectedChoice?.let { appendLine("Selected choice index: $it") }
+            state.pronunciationMessage.takeIf { it.isNotBlank() }?.let { appendLine("Pronunciation feedback shown: $it") }
+        }
+    }
+    return ScreenContext(
+        screen = "foundation",
+        title = "Starter 0",
+        details = details.trim(),
+        materialRef = card?.id.orEmpty(),
+        revision = "${state.cardIndex}:${state.answerCorrect}:${state.selectedChoice}:${state.builderTokens.joinToString("")}",
+        answerState = if (state.answerCorrect == null) "viewing" else "checked",
+    )
 }
 
 @Composable

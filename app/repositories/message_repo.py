@@ -39,6 +39,7 @@ class MessageRepository:
         result = await self.session.execute(
             select(Message)
             .where(Message.user_id == user_id)
+            .where(Message.conversation_id.is_(None))
             .order_by(Message.created_at.desc())
             .limit(limit)
         )
@@ -85,6 +86,7 @@ class MessageRepository:
         result = await self.session.execute(
             select(Message)
             .where(Message.user_id == user_id)
+            .where(Message.conversation_id.is_(None))
             .where(Message.role == "assistant")
             .where(Message.content_type == "image_context")
             .order_by(Message.created_at.desc())
@@ -101,6 +103,7 @@ class MessageRepository:
         result = await self.session.execute(
             select(Message)
             .where(Message.user_id == user_id)
+            .where(Message.conversation_id.is_(None))
             .where(Message.content_type == content_type)
             .order_by(desc(Message.created_at))
             .limit(1)
@@ -116,6 +119,7 @@ class MessageRepository:
         result = await self.session.execute(
             select(Message)
             .where(Message.user_id == user_id)
+            .where(Message.conversation_id.is_(None))
             .where(Message.content_type == content_type)
             .order_by(Message.created_at.desc())
             .limit(limit)

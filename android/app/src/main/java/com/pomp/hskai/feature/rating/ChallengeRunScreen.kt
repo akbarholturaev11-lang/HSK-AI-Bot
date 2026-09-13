@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.challengeAssistantContext
 
 /**
  * The duel itself: the same questions the opponent gets, in the same order.
@@ -52,6 +54,7 @@ fun ChallengeRunScreen(
     onRetry: () -> Unit,
     onClose: () -> Unit,
 ) {
+    AssistantScreen(challengeAssistantContext(state, opponentName), bottomBar = false, priority = 10)
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(
             modifier = Modifier

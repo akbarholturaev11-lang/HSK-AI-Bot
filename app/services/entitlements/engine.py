@@ -33,6 +33,7 @@ from datetime import datetime
 
 from sqlalchemy import func, select
 from app.db.models.message import Message
+from app.db.models.assistant import AssistantRequest
 from app.db.models.course_feature_usage import CourseFeatureUsage
 from app.db.models.voice_practice_session import VoicePracticeSession
 
@@ -141,7 +142,15 @@ class EntitlementEngine:
             )
             if since is not None:
                 query = query.where(Message.created_at >= since)
-            return int((await self.session.execute(query)).scalar() or 0)
+            used = int((await self.session.execute(query)).scalar() or 0)
+            from datetime import timezone
+            pending = select(func.count(AssistantRequest.id)).where(
+                AssistantRequest.user_id == user.id,
+                AssistantRequest.kind == {A.AI_TEXT: "text", A.AI_PHOTO: "image", A.AI_VOICE: "voice"}[action],
+                AssistantRequest.status == "processing",
+                AssistantRequest.expires_at > datetime.now(timezone.utc),
+            )
+            return used + int((await self.session.execute(pending)).scalar() or 0)
         if action == A.SPEAKING_SESSION:
             query = select(func.count(VoicePracticeSession.id)).where(
                 VoicePracticeSession.user_telegram_id == user.telegram_id,

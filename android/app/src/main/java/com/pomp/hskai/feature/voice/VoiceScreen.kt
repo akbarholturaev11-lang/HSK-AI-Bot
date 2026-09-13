@@ -31,7 +31,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -62,6 +61,9 @@ import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.feature.assistant.AssistantScreen
+import com.pomp.hskai.feature.assistant.voiceAssistantContext
+import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 
 @Composable
 fun VoiceScreen(
@@ -86,6 +88,7 @@ fun VoiceScreen(
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AssistantScreen(voiceAssistantContext(state, level), bottomBar = true)
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {
         when {
