@@ -49,6 +49,18 @@ class AndroidCourseService(DesktopCourseService):
         if bool(status.get("required")) and not bool(status.get("completed")):
             raise DesktopCourseError(_FOUNDATION_REQUIRED_ERROR, status_code=403)
 
+    async def _safe_rank(self, user) -> int:
+        """Return the current leaderboard rank without breaking completion UX.
+
+        Rank-up is a secondary celebration signal. A leaderboard lookup must
+        never turn an otherwise successful lesson completion into a 5xx.
+        """
+        try:
+            snapshot = await CourseGamificationService(self.session).leaderboard(user)
+        except Exception:
+            return 0
+        return int(snapshot.get("rank") or 0)
+
     async def course_map(
         self,
         access_token: str,
@@ -107,8 +119,7 @@ class AndroidCourseService(DesktopCourseService):
     ) -> dict[str, Any]:
         await self._require_foundation_complete(access_token)
         context = await self._context(access_token)
-        gamification = CourseGamificationService(self.session)
-        before = await gamification.leaderboard(context.user)
+        rank_before = await self._safe_rank(context.user)
         result = await super().complete(
             access_token,
             lesson_order=lesson_order,
@@ -116,10 +127,13 @@ class AndroidCourseService(DesktopCourseService):
             mistakes=mistakes,
             access_ref=access_ref,
         )
-        after_context = await self._context(access_token)
-        after = await gamification.leaderboard(after_context.user)
-        result["rank_before"] = int(before.get("rank") or 0)
-        result["rank_after"] = int(after.get("rank") or 0)
+        if bool(result.get("duplicate")):
+            rank_after = rank_before
+        else:
+            after_context = await self._context(access_token)
+            rank_after = await self._safe_rank(after_context.user)
+        result["rank_before"] = rank_before
+        result["rank_after"] = rank_after
         return result
 
     async def foundation(self, access_token: str) -> dict:
