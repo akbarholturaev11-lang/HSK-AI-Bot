@@ -53,8 +53,8 @@ data class LessonRankUp(
 
 /**
  * Native counterpart of the Mini App's lesson-complete celebration queue.
- * Rank is never inferred from XP: [rankUp] only arrives after a server
- * leaderboard refresh proves that the new rank is numerically better.
+ * Rank is never inferred from XP: it is shown only when the server-provided
+ * before/after weekly leaderboard positions prove a real improvement.
  */
 @Composable
 internal fun LessonCompletionCelebration(
@@ -63,11 +63,30 @@ internal fun LessonCompletionCelebration(
     onExit: () -> Unit,
 ) {
     val gamification = outcome.gamification
-    val scenes = remember(outcome, rankUp) {
+    val verifiedRankUp = rankUp ?: outcome.let {
+        if (
+            !it.duplicate &&
+            it.rankBefore > 0 &&
+            it.rankAfter > 0 &&
+            it.rankAfter < it.rankBefore
+        ) {
+            LessonRankUp(before = it.rankBefore, after = it.rankAfter)
+        } else {
+            null
+        }
+    }
+    val scenes = remember(outcome, verifiedRankUp) {
         buildList {
             add(CelebrationScene.COMPLETE)
-            if (!outcome.duplicate && gamification.streakUpdated) add(CelebrationScene.STREAK)
-            if (!outcome.duplicate && rankUp != null) add(CelebrationScene.RANK_UP)
+            if (
+                !outcome.duplicate &&
+                !gamification.duplicate &&
+                gamification.streakUpdated &&
+                gamification.streak > 0
+            ) {
+                add(CelebrationScene.STREAK)
+            }
+            if (verifiedRankUp != null) add(CelebrationScene.RANK_UP)
         }
     }
     var sceneIndex by remember(outcome) { mutableStateOf(0) }
@@ -88,7 +107,8 @@ internal fun LessonCompletionCelebration(
             seed = when (scene) {
                 CelebrationScene.COMPLETE -> gamification.xp + outcome.correct
                 CelebrationScene.STREAK -> gamification.streak * 31
-                CelebrationScene.RANK_UP -> (rankUp?.before ?: 0) * 37 + (rankUp?.after ?: 0)
+                CelebrationScene.RANK_UP ->
+                    (verifiedRankUp?.before ?: 0) * 37 + (verifiedRankUp?.after ?: 0)
             },
             modifier = Modifier.fillMaxSize(),
         )
@@ -105,7 +125,7 @@ internal fun LessonCompletionCelebration(
             when (active) {
                 CelebrationScene.COMPLETE -> CompletionScene(outcome)
                 CelebrationScene.STREAK -> StreakScene(outcome)
-                CelebrationScene.RANK_UP -> rankUp?.let { RankUpScene(it) }
+                CelebrationScene.RANK_UP -> verifiedRankUp?.let { RankUpScene(it) }
             }
         }
 
