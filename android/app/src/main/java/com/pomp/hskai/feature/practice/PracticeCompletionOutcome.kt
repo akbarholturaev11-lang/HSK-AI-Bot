@@ -51,9 +51,9 @@ private val completionJson = Json {
 }
 
 /**
- * Practice and mistake-review endpoints already return the canonical
- * CourseGamificationService snapshot under `reward`. Decode it into the same
- * DTO used by lesson completion instead of reading individual JSON keys in UI.
+ * Practice and mistake-review endpoints still expose the canonical
+ * CourseGamificationService snapshot as raw JSON. Decode it into the same DTO
+ * used by lesson/exam completion so UI code never reads reward keys itself.
  */
 internal fun JsonObject?.toCourseGamification(): CourseGamificationDto {
     if (this == null) return CourseGamificationDto()
@@ -88,26 +88,18 @@ internal fun MistakeReviewCompleteResponse.toCompletionOutcome(): PracticeComple
         gamification = reward.toCourseGamification(),
     )
 
-/**
- * Exam result data is normalized here now; reward/wrong-items are parameters
- * until the Android exam DTO is widened to retain the fields already returned
- * by CourseHskExamService. Keeping the seam explicit prevents fake client-side
- * gamification in the meantime.
- */
-internal fun ExamCompleteResponse.toCompletionOutcome(
-    gamification: CourseGamificationDto = CourseGamificationDto(),
-    wrongItems: List<PracticeWrongDto> = emptyList(),
-): PracticeCompletionOutcome = PracticeCompletionOutcome(
-    kind = PracticeCompletionKind.HSK_EXAM,
-    score = score,
-    total = total,
-    percent = percent.coerceIn(0, 100),
-    passed = passed,
-    passScore = passScore,
-    sectionScores = sectionScores,
-    wrongItems = wrongItems,
-    gamification = gamification,
-)
+internal fun ExamCompleteResponse.toCompletionOutcome(): PracticeCompletionOutcome =
+    PracticeCompletionOutcome(
+        kind = PracticeCompletionKind.HSK_EXAM,
+        score = score,
+        total = total,
+        percent = percent.coerceIn(0, 100),
+        passed = passed,
+        passScore = passScore,
+        sectionScores = sectionScores,
+        wrongItems = wrongItems,
+        gamification = reward,
+    )
 
 internal fun drillCompletionOutcome(
     kind: PracticeCompletionKind,
