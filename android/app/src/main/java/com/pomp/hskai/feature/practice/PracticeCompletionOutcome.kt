@@ -40,6 +40,24 @@ internal data class PracticeCompletionOutcome(
     val awardedXp: Int get() = if (isDuplicate) 0 else gamification.awardedXp.coerceAtLeast(0)
     val hasStreakEvent: Boolean
         get() = !isDuplicate && gamification.streakUpdated && gamification.streak > 0
+
+    /** One policy for every Android practice result; UI only renders it. */
+    val reaction: PracticeCompletionReaction
+        get() = when {
+            kind == PracticeCompletionKind.HSK_EXAM && passed == true ->
+                PracticeCompletionReaction.CELEBRATE
+            kind == PracticeCompletionKind.HSK_EXAM && passed == false ->
+                PracticeCompletionReaction.FOCUS
+            percent >= 90 -> PracticeCompletionReaction.CELEBRATE
+            percent >= 70 -> PracticeCompletionReaction.CHEER
+            percent >= 50 -> PracticeCompletionReaction.CALM
+            else -> PracticeCompletionReaction.FOCUS
+        }
+
+    val showConfetti: Boolean
+        get() = !isDuplicate && reaction == PracticeCompletionReaction.CELEBRATE
+
+    val strongHaptic: Boolean get() = showConfetti
 }
 
 internal enum class PracticeCompletionKind {
@@ -49,6 +67,13 @@ internal enum class PracticeCompletionKind {
     MISTAKE_REVIEW,
     RECOGNITION,
     PRONUNCIATION,
+}
+
+internal enum class PracticeCompletionReaction {
+    CELEBRATE,
+    CHEER,
+    CALM,
+    FOCUS,
 }
 
 private val completionJson = Json {
