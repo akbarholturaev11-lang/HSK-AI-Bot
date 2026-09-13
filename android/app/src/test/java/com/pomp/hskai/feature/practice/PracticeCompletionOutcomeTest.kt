@@ -1,5 +1,7 @@
 package com.pomp.hskai.feature.practice
 
+import com.pomp.hskai.data.api.CourseGamificationDto
+import com.pomp.hskai.data.api.ExamCompleteResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
 import com.pomp.hskai.data.api.PracticeCompleteResponse
 import kotlinx.serialization.json.Json
@@ -67,6 +69,28 @@ class PracticeCompletionOutcomeTest {
             percent = 100,
             remaining = 0,
             reward = reward,
+        ).toCompletionOutcome()
+
+        assertTrue(outcome.isDuplicate)
+        assertEquals(0, outcome.awardedXp)
+        assertFalse(outcome.hasStreakEvent)
+    }
+
+    @Test
+    fun `top level exam duplicate suppresses persisted reward celebration`() {
+        val outcome = ExamCompleteResponse(
+            ok = true,
+            duplicate = true,
+            score = 11,
+            total = 12,
+            percent = 92,
+            passed = true,
+            reward = CourseGamificationDto(
+                awardedXp = 35,
+                duplicate = false,
+                streak = 5,
+                streakUpdated = true,
+            ),
         ).toCompletionOutcome()
 
         assertTrue(outcome.isDuplicate)
