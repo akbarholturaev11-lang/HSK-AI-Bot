@@ -8036,3 +8036,31 @@ Important decisions:
   while quota accounting is shared across both clients.
 - AI suggested actions use a native allowlist only, and lesson access is
   rechecked when the user taps the action.
+
+### 2026-09-14 — Practice/lesson completion effects + mistake review audio contract
+
+Changed:
+- Merged the cloud branch completion effects into all three branches: lesson
+  celebration flow, verified rank-up scene, unified `PracticeCompletionOutcome`
+  with a shared panda hero, and duplicate-completion suppression so a replayed
+  lesson never re-fires XP, streak or confetti.
+- `CourseMistakeService._review_question` now requires `audio_text` for
+  listening tasks. A `sentence` used to be accepted as sufficient context, so
+  `Xatolarim` could render a listening question with answer options but no
+  audio control — the Mini App only draws the speaker when `audio_text` exists.
+- `_review_session_question` keeps `material_version`, `material_ref`,
+  `format` and `language` in the immutable retry snapshot, so a retry
+  reproduces the same interaction instead of guessing it.
+
+Key files:
+- `app/services/course_mistake_service.py`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeCompletionOutcome.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeCompletionHero.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCompletionCelebration.kt`
+- `tests/test_mistake_review_contract.py`
+
+Risk / follow-up:
+- `.github/workflows/android-ci.yml` runs `tools/check_*.py` (interface fakes,
+  named arguments, flavour parity, string translation, palette parity). Those
+  scripts have never been committed, so the Android CI job fails at that step
+  before it reaches Gradle. They were verified by hand this round.
