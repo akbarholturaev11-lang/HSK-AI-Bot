@@ -442,11 +442,11 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
 private fun ExamSummary(state: PracticeUiState, onDone: () -> Unit) {
     val result = state.examResult ?: return
     val level = state.examLevel.removePrefix("hsk").ifBlank { "1" }
-    SummaryShell(
-        stringResource(if (result.passed) R.string.exam_result_passed else R.string.exam_result_failed),
-        "${result.percent}%",
-        stringResource(if (result.passed) R.string.exam_result_passed_body else R.string.exam_result_failed_body, level),
-        onDone,
+    val outcome = result.toCompletionOutcome()
+    CompletionSummaryShell(
+        outcome = outcome,
+        body = stringResource(if (result.passed) R.string.exam_result_passed_body else R.string.exam_result_failed_body, level),
+        onDone = onDone,
     ) {
         Text(stringResource(R.string.exam_result_score, result.score, result.total), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
         Spacer(Modifier.height(10.dp))
@@ -554,7 +554,12 @@ private fun PrimaryAction(text: String, enabled: Boolean, onClick: () -> Unit) {
 @Composable
 private fun PracticeSummary(state: PracticeUiState, onDone: () -> Unit) {
     val result = state.result ?: return
-    SummaryShell(stringResource(R.string.practice_result_title), "${result.percent}%", stringResource(R.string.practice_result_body, result.score, result.total), onDone) {
+    val outcome = result.toCompletionOutcome(mode = state.session?.mode.orEmpty())
+    CompletionSummaryShell(
+        outcome = outcome,
+        body = stringResource(R.string.practice_result_body, result.score, result.total),
+        onDone = onDone,
+    ) {
         result.wrongItems.take(4).forEach { item ->
             Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(14.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(12.dp)) {
@@ -568,20 +573,19 @@ private fun PracticeSummary(state: PracticeUiState, onDone: () -> Unit) {
 }
 
 @Composable
-private fun ReviewSummary(state: PracticeUiState, onDone: () -> Unit) {
-    val result = state.reviewResult ?: return
-    SummaryShell(stringResource(R.string.practice_review_result_title), "${result.percent}%", stringResource(R.string.practice_review_result_body, result.remaining), onDone)
-}
-
-@Composable
-private fun SummaryShell(title: String, score: String, body: String, onDone: () -> Unit, extra: @Composable ColumnScope.() -> Unit = {}) {
+private fun CompletionSummaryShell(
+    outcome: PracticeCompletionOutcome,
+    body: String,
+    onDone: () -> Unit,
+    extra: @Composable ColumnScope.() -> Unit = {},
+) {
     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp)) {
         item {
-            Text(title, style = MaterialTheme.typography.headlineMedium, color = PompColors.Ink)
-            Spacer(Modifier.height(10.dp))
-            Text(score, style = MaterialTheme.typography.displaySmall, color = PompColors.Cinnabar)
+            PracticeCompletionHero(outcome = outcome)
+            Spacer(Modifier.height(12.dp))
             Text(body, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
-            Spacer(Modifier.height(16.dp)); Column { extra() }
+            Spacer(Modifier.height(16.dp))
+            Column { extra() }
             PrimaryAction(stringResource(R.string.practice_back_to_tools), true, onDone)
         }
     }

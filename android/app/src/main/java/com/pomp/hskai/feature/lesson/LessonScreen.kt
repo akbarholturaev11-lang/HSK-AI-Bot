@@ -69,6 +69,7 @@ import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
 import com.pomp.hskai.domain.model.UnsupportedCard
+import com.pomp.hskai.feature.limit.LimitGate
 
 @Composable
 internal fun PrimaryAction(
@@ -112,6 +113,7 @@ internal fun SecondaryAction(text: String, onClick: () -> Unit) {
 @Composable
 fun LessonScreen(
     state: LessonUiState,
+    limit: LimitGate? = null,
     pinyin: PinyinVisibility,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
     onAnswerBuilder: (LessonCard, List<String>) -> Unit,
@@ -126,6 +128,8 @@ fun LessonScreen(
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    @Suppress("UNUSED_VARIABLE")
+    val ignoredLimit = limit
     val outcome = state.outcome
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
@@ -501,24 +505,7 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
 
 @Composable
 private fun CompletedBlock(outcome: LessonOutcome.Completed, onExit: () -> Unit) {
-    Centered {
-        Text(
-            text = stringResource(R.string.lesson_done_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Jade,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(12.dp))
-        if (outcome.graded > 0) {
-            Text(
-                text = stringResource(R.string.lesson_done_accuracy, outcome.correct, outcome.graded),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-        }
-        Spacer(Modifier.height(24.dp))
-        PrimaryAction(stringResource(R.string.lesson_back_to_course), onClick = onExit)
-    }
+    LessonCompletionCelebration(outcome = outcome, onExit = onExit)
 }
 
 @Composable

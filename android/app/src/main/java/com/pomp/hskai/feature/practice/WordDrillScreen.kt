@@ -97,6 +97,7 @@ fun WordDrillScreen(
                 )
 
                 state.finished -> DrillSummary(
+                    mode = state.mode,
                     correct = state.correctCount,
                     total = state.total,
                     onDone = onClose,
@@ -422,7 +423,16 @@ private fun DrillFeedback(
 }
 
 @Composable
-private fun DrillSummary(correct: Int, total: Int, onDone: () -> Unit) {
+private fun DrillSummary(mode: DrillMode, correct: Int, total: Int, onDone: () -> Unit) {
+    val outcome = drillCompletionOutcome(
+        kind = if (mode == DrillMode.RECOGNITION) {
+            PracticeCompletionKind.RECOGNITION
+        } else {
+            PracticeCompletionKind.PRONUNCIATION
+        },
+        correct = correct,
+        total = total,
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -431,17 +441,7 @@ private fun DrillSummary(correct: Int, total: Int, onDone: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = stringResource(R.string.practice_result_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Ink,
-        )
-        Spacer(Modifier.height(10.dp))
-        Text(
-            text = "$correct / $total",
-            style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Jade,
-        )
+        PracticeCompletionHero(outcome = outcome)
         Spacer(Modifier.height(24.dp))
         Surface(
             onClick = onDone,

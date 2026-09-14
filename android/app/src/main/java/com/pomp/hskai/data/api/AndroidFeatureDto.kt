@@ -289,12 +289,15 @@ data class ExamQuestionDto(
 @Serializable
 data class ExamCompleteResponse(
     @SerialName("ok") val ok: Boolean = false,
+    @SerialName("duplicate") val duplicate: Boolean = false,
     @SerialName("score") val score: Int = 0,
     @SerialName("total") val total: Int = 0,
     @SerialName("percent") val percent: Int = 0,
     @SerialName("pass_score") val passScore: Int = 0,
     @SerialName("passed") val passed: Boolean = false,
     @SerialName("section_scores") val sectionScores: Map<String, ExamSectionScoreDto> = emptyMap(),
+    @SerialName("reward") val reward: CourseGamificationDto = CourseGamificationDto(),
+    @SerialName("wrong_items") val wrongItems: List<PracticeWrongDto> = emptyList(),
 )
 
 @Serializable
