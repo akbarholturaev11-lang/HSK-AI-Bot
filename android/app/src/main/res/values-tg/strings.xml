@@ -102,6 +102,25 @@
     <string name="lesson_wrong">Нодуруст</string>
     <string name="lesson_done_title">Дарс анҷом ёфт</string>
     <string name="lesson_done_accuracy">%1$d / %2$d дуруст</string>
+    <string name="lesson_done_perfect_1">Шумо одам нестед, ҳамин тавр? 🤖</string>
+    <string name="lesson_done_perfect_2">0 хато. Ин аллакай устодӣ аст.</string>
+    <string name="lesson_done_perfect_3">Бенуқсон. Гапи дигар нест.</string>
+    <string name="lesson_done_perfect_sub">Бе ягон хато анҷом додед.</string>
+    <string name="lesson_done_high_1">Аъло пеш меравед!</string>
+    <string name="lesson_done_high_2">Қариб бенуқсон 👏</string>
+    <string name="lesson_done_high_3" formatted="false">Каме мондааст то 100%.</string>
+    <string name="lesson_done_high_sub" formatted="false">Каме машқ — ва 100% аз они шумо.</string>
+    <string name="lesson_done_mid_1">Хатоҳо — беҳтарин устод.</string>
+    <string name="lesson_done_mid_2">Роҳ кушода шуд. Идома медиҳем.</string>
+    <string name="lesson_done_mid_3">Офарин, пеш рафтед.</string>
+    <string name="lesson_done_mid_sub">Хатоҳоро дар машқ такрор мекунем.</string>
+    <string name="lesson_done_low_1">Дарс осон набуд. Оҳиста — вале ба пеш.</string>
+    <string name="lesson_done_low_2">Оғоз кардан душвортарин аст. Тавонистед.</string>
+    <string name="lesson_done_low_3">Ҳеҷ гап не. Боз як бор дида мебароем.</string>
+    <string name="lesson_done_low_sub">Ин дарсро такрор кардан фоидаовар аст.</string>
+    <string name="lesson_stat_xp">ТАҶРИБА</string>
+    <string name="lesson_stat_accuracy">ДАҚИҚӢ</string>
+    <string name="lesson_stat_time">ВАҚТ</string>
     <string name="lesson_back_to_course">Бозгашт ба курс</string>
     <string name="lesson_save_failed">Натиҷа сабт нашуд</string>
     <string name="lesson_preview_over_title">Қисми ройгон анҷом ёфт</string>

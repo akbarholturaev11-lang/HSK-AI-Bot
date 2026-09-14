@@ -101,6 +101,25 @@
     <string name="lesson_wrong">Неверно</string>
     <string name="lesson_done_title">Урок пройден</string>
     <string name="lesson_done_accuracy">%1$d / %2$d верно</string>
+    <string name="lesson_done_perfect_1">Вы же не человек, да? 🤖</string>
+    <string name="lesson_done_perfect_2">0 ошибок. Это уже мастерство.</string>
+    <string name="lesson_done_perfect_3">Идеально. Без комментариев.</string>
+    <string name="lesson_done_perfect_sub">Пройдено без единой ошибки.</string>
+    <string name="lesson_done_high_1">Отлично идёте!</string>
+    <string name="lesson_done_high_2">Почти идеально 👏</string>
+    <string name="lesson_done_high_3" formatted="false">Совсем чуть-чуть до 100%.</string>
+    <string name="lesson_done_high_sub" formatted="false">Ещё немного практики — и будет 100%.</string>
+    <string name="lesson_done_mid_1">Ошибки — лучший учитель.</string>
+    <string name="lesson_done_mid_2">Путь открыт. Продолжаем.</string>
+    <string name="lesson_done_mid_3">Молодец, вы продвинулись.</string>
+    <string name="lesson_done_mid_sub">Повторим ошибки в практике.</string>
+    <string name="lesson_done_low_1">Урок был непростой. Медленно — но вперёд.</string>
+    <string name="lesson_done_low_2">Начать — самое трудное. Вы справились.</string>
+    <string name="lesson_done_low_3">Ничего страшного. Разберём ещё раз.</string>
+    <string name="lesson_done_low_sub">Этот урок стоит повторить.</string>
+    <string name="lesson_stat_xp">ОПЫТ</string>
+    <string name="lesson_stat_accuracy">ТОЧНОСТЬ</string>
+    <string name="lesson_stat_time">ВРЕМЯ</string>
     <string name="lesson_back_to_course">Вернуться к курсу</string>
     <string name="lesson_save_failed">Не удалось сохранить результат</string>
     <string name="lesson_preview_over_title">Бесплатная часть закончилась</string>

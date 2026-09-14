@@ -127,6 +127,25 @@
     <string name="lesson_wrong">Noto\'g\'ri</string>
     <string name="lesson_done_title">Dars tugadi</string>
     <string name="lesson_done_accuracy">%1$d / %2$d to\'g\'ri</string>
+    <string name="lesson_done_perfect_1">Siz odam emassiz, shekilli? 🤖</string>
+    <string name="lesson_done_perfect_2">0 xato. Bu allaqachon ustozlik.</string>
+    <string name="lesson_done_perfect_3">Mukammal. Boshqa gap yo\'q.</string>
+    <string name="lesson_done_perfect_sub">Xatosiz yakunladingiz.</string>
+    <string name="lesson_done_high_1">Zo\'r ketyapsiz!</string>
+    <string name="lesson_done_high_2">Deyarli mukammal 👏</string>
+    <string name="lesson_done_high_3" formatted="false">Kam qoldi — sal sayqal.</string>
+    <string name="lesson_done_high_sub" formatted="false">Yana biroz mashq va 100% sizniki.</string>
+    <string name="lesson_done_mid_1">Xatolar — eng yaxshi ustoz.</string>
+    <string name="lesson_done_mid_2">Yo\'l ochildi. Davom etamiz.</string>
+    <string name="lesson_done_mid_3">Barakalla, oldinga siljidingiz.</string>
+    <string name="lesson_done_mid_sub">Xatolaringizni mashqda takrorlaymiz.</string>
+    <string name="lesson_done_low_1">Qiyin dars edi. Sekin — ammo oldinga.</string>
+    <string name="lesson_done_low_2">Boshlash — eng qiyini. Uddaladingiz.</string>
+    <string name="lesson_done_low_3">Hech qisi yo\'q. Yana bir bor ko\'ramiz.</string>
+    <string name="lesson_done_low_sub">Bu darsni takrorlash foydali bo\'ladi.</string>
+    <string name="lesson_stat_xp">TAJRIBA</string>
+    <string name="lesson_stat_accuracy">ANIQLIK</string>
+    <string name="lesson_stat_time">VAQT</string>
     <string name="lesson_back_to_course">Kursga qaytish</string>
     <string name="lesson_save_failed">Natijani saqlab bo\'lmadi</string>
     <string name="lesson_preview_over_title">Bepul qism tugadi</string>

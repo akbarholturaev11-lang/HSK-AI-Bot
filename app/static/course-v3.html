@@ -385,6 +385,7 @@ button{cursor:pointer}
 .fbar.show{display:block}
 .fbar.ok{background:var(--jadebg)}.fbar.no{background:var(--cinbg)}
 .fmsg{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:500;margin-bottom:10px}
+.fmsg .fpanda{flex:0 0 46px;width:46px;height:46px;display:block}.fmsg .fpanda svg{width:100%;height:100%;display:block}
 .fbar.ok .fmsg{color:var(--jade)}.fbar.no .fmsg{color:var(--cin2)}
 .fmsg small{display:block;font-size:12px;font-weight:400;color:var(--ink2)}
 .fbtn{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:16px;font-weight:500;color:#fff;background:var(--cin)}
@@ -616,6 +617,8 @@ button{cursor:pointer}
 .lu-rewards{display:flex;gap:10px}
 .lu-rw{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:11px 14px;text-align:center;min-width:72px}
 .lu-rw b{display:block;font-size:18px;font-weight:600;color:var(--gold)}.lu-rw small{font-size:11px;color:rgba(255,255,255,.7)}
+.lu-rw.a-jade{border-color:rgba(72,217,154,.45)}.lu-rw.a-jade b{color:#48D99A}
+.lu-rw.a-blue{border-color:rgba(126,221,246,.45)}.lu-rw.a-blue b{color:#7EDDF6}
 .lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:#fff;color:var(--cin2);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
 .lu-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:3}
 .lu-conf.fall{opacity:1;transition:transform 1.7s ease-in,opacity 1.7s}
@@ -1554,13 +1557,20 @@ var App={
     /* Bayram matni shu darsdagi haqiqiy natijaga bog'lanadi (umumiy maqtov emas) */
     var acc=(Flow&&Flow.graded)?Math.round((Flow.correct||0)/Flow.graded*100):0;
     var doneCount=Number((MAP&&MAP.progress&&MAP.progress.completed)||0);
-    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lessonMotivation(acc,doneCount)||lu.lessonP,rw:xpRows},
+    /* XP · aniqlik · vaqt — uch plitka, natijani bir qarashda ko'rsatadi */
+    var statLbl={uz:{xp:"TAJRIBA",acc:"ANIQLIK",time:"VAQT"},ru:{xp:"ОПЫТ",acc:"ТОЧНОСТЬ",time:"ВРЕМЯ"},tj:{xp:"ТАҶРИБА",acc:"ДАҚИҚӢ",time:"ВАҚТ"}}[LANG]||{xp:"XP",acc:"%",time:"⏱"};
+    var spent=Flow&&Flow.startedAt?Math.min(3600,Math.max(0,Math.round((Date.now()-Flow.startedAt)/1000))):0;
+    var spentTxt=Math.floor(spent/60)+":"+String(spent%60).padStart(2,"0");
+    var lessonRows=[[String(awardedXp),statLbl.xp]];
+    if(Flow&&Flow.graded)lessonRows.push([acc+"%",statLbl.acc,"a-jade"]);
+    if(Flow&&Flow.startedAt)lessonRows.push([spentTxt,statLbl.time,"a-blue"]);
+    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lessonHeadline(acc,(Flow&&Flow.correct||0)*31+(Flow&&Flow.graded||0)*7+awardedXp)||lu.lessonH,p:lessonMotivation(acc,doneCount)||lu.lessonP,rw:lessonRows},
       /* checkpoint: HSK darsining yakuniy mustahkamlash qismi tugadi — kattaroq bayram */
       checkpoint:{emb:'<span class="h2 han">胜</span>',h:lu.cpH.replace("{n}",cpSrc),p:lu.cpP,rw:xpRows},
       level:{emb:'<span class="h2 han">二</span>',h:levelCopy.h||lu.levelH,p:levelCopy.p||lu.levelP,rw:levelRows},
       xp:{emb:'<small>'+lu.lvl+'</small><b>5</b>',h:lu.xpH,p:lu.xpP,rw:xpRows}}[type||"lesson"];
     if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#FFC800" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
-    var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>':"";
+    var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw '+(x[2]||"")+'"><b>'+esc(x[0])+'</b><small>'+esc(x[1])+'</small></div>'}).join("")+'</div>':"";
     var t0=type||"lesson";
     /* Avval yaqin kadrda panda osmondan changli qo'nadi — sahna keyin ochiladi */
     cinePanda("land","land",function(){
@@ -2810,7 +2820,7 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[],salesOutcome:null,salesNextOutcome:null};
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,startedAt:0,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[],salesOutcome:null,salesNextOutcome:null};
 var Foundation={active:false,data:null,queue:[],i:0,answered:false,mastery:{},attempts:{},completed:false,speakingBonus:false,required:false,afterComplete:null,finishing:false,_micSession:null,_audioTimer:null,_renderToken:0};
 Foundation.stopAudio=function(){Foundation._renderToken++;if(Foundation._audioTimer)clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null;stopTourAudio();stopSpeak()};
 Foundation.scheduleAudio=function(text,delay){var token=Foundation._renderToken;Foundation._audioTimer=setTimeout(function(){Foundation._audioTimer=null;if(Foundation.active&&token===Foundation._renderToken)foundationSpeak(text)},delay)};
@@ -2908,7 +2918,8 @@ Foundation.grade=function(ok){
   Foundation.save();
 };
 Foundation.feedback=function(ok,sub){
-  var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");$("#f-msg").innerHTML='<i class="ti ti-'+(ok?"check":"x")+'"></i><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
+  var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");/* Panda javob beradi: to'g'rida quvonadi, xatoda tushuntiradi — koyimaydi */
+    $("#f-msg").innerHTML='<span class="fpanda">'+pandaChar(ok?"celebrate":"talk")+'</span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
   beep(ok?[523,659,784]:[220,180]);haptic(ok?"ok":"no");
 };
 Foundation.pick=function(el,k){
@@ -3186,7 +3197,7 @@ function startLesson(idx,opts){
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}).then(function(d){
-    Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
+    Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
     Flow.salesOutcome=d.outcome||null;Flow.salesNextOutcome=d.next_outcome_preview||null;rememberSalesValueContent(d);
     setLessonFlowControls();
     /* Eski levelardagi preview_half serverdan kelsa saqlanadi. HSK1 checkpoint
@@ -3267,7 +3278,8 @@ function buildQueue(d){
 }
 function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length*100)+"%"}
 function hideBar(){$("#f-bar").className="fbar"}
-function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");$("#f-msg").innerHTML='<i class="ti ti-'+(ok?"check":"x")+'"></i><span>'+msg+(sub?'<small>'+sub+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
+function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");/* Panda javob beradi: to'g'rida quvonadi, xatoda tushuntiradi — koyimaydi */
+  $("#f-msg").innerHTML='<span class="fpanda">'+pandaChar(ok?"celebrate":"talk")+'</span><span>'+msg+(sub?'<small>'+sub+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
   setTimeout(function(){try{b.scrollIntoView({block:"end"})}catch(e){}},20);
   Flow.streak=ok?(Flow.streak||0)+1:0;
   edgeGlow(ok?Flow.streak:0);
@@ -3364,6 +3376,28 @@ function streakCopy(n,reset){
 /* Dars tugaganda chiqadigan gap: avval bosib o'tilgan marra (nechanchi dars),
    bo'lmasa shu darsdagi haqiqiy natija bo'yicha. Umumiy maqtov emas —
    o'quvchi aynan nima qilganini aytadi. */
+/* Yakun sarlavhasi natijaga qarab o'zgaradi va har safar boshqa variant chiqadi,
+   shunda "Dars tugadi!" har darsda bir xil takrorlanmaydi. Android bilan bir xil matnlar. */
+function lessonHeadline(acc,seed){
+  var H={
+    uz:{perfect:["Siz odam emassiz, shekilli? 🤖","0 xato. Bu allaqachon ustozlik.","Mukammal. Boshqa gap yo'q."],
+      high:["Zo'r ketyapsiz!","Deyarli mukammal 👏","Kam qoldi — sal sayqal."],
+      mid:["Xatolar — eng yaxshi ustoz.","Yo'l ochildi. Davom etamiz.","Barakalla, oldinga siljidingiz."],
+      low:["Qiyin dars edi. Sekin — ammo oldinga.","Boshlash — eng qiyini. Uddaladingiz.","Hech qisi yo'q. Yana bir bor ko'ramiz."]},
+    ru:{perfect:["Вы же не человек, да? 🤖","0 ошибок. Это уже мастерство.","Идеально. Без комментариев."],
+      high:["Отлично идёте!","Почти идеально 👏","Совсем чуть-чуть до 100%."],
+      mid:["Ошибки — лучший учитель.","Путь открыт. Продолжаем.","Молодец, вы продвинулись."],
+      low:["Урок был непростой. Медленно — но вперёд.","Начать — самое трудное. Вы справились.","Ничего страшного. Разберём ещё раз."]},
+    tj:{perfect:["Шумо одам нестед, ҳамин тавр? 🤖","0 хато. Ин аллакай устодӣ аст.","Бенуқсон. Гапи дигар нест."],
+      high:["Аъло пеш меравед!","Қариб бенуқсон 👏","Каме мондааст то 100%."],
+      mid:["Хатоҳо — беҳтарин устод.","Роҳ кушода шуд. Идома медиҳем.","Офарин, пеш рафтед."],
+      low:["Дарс осон набуд. Оҳиста — вале ба пеш.","Оғоз кардан душвортарин аст. Тавонистед.","Ҳеҷ гап не. Боз як бор дида мебароем."]}
+  }[LANG];
+  if(!H)return "";
+  var band=acc>=100?H.perfect:acc>=80?H.high:acc>=50?H.mid:H.low;
+  return band[Math.abs(Number(seed)||0)%band.length];
+}
+
 function lessonMotivation(acc,completed){
   var C={
     uz:{m1:"Birinchi darsingiz ortda. Eng og'iri — boshlash edi, uni qildingiz.",

@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -60,6 +61,8 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.settings.PinyinVisibility
+import com.pomp.hskai.feature.course.CoursePandaMascot
+import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.GrammarCard
 import com.pomp.hskai.domain.model.LessonCard
@@ -220,12 +223,19 @@ private fun LessonBody(
                 title = state.currentSectionTitle,
             )
 
-            Column(
+            // The card sits in the middle of the free space instead of clinging to
+            // the top-left corner; longer decks still scroll normally.
+            BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+              val viewport = maxHeight
+              Column(
                 modifier = Modifier
-                    .weight(1f)
+                    .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
+                    .heightIn(min = viewport)
                     .padding(horizontal = 18.dp, vertical = 10.dp),
-            ) {
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+              ) {
                 when (card) {
                     is NewWordCard -> NewWordCardView(card, pinyin)
                     is GrammarCard -> GrammarCardView(card, pinyin)
@@ -255,6 +265,7 @@ private fun LessonBody(
                     )
                 }
                 Spacer(Modifier.height(24.dp))
+              }
             }
 
             FooterBar(state = state, card = card, onAcknowledge = onAcknowledge, onAdvance = onAdvance)
@@ -414,14 +425,14 @@ private fun FooterBar(
                 modifier = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 18.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = if (answer.isCorrect) Icons.Filled.CheckCircle else Icons.Filled.Cancel,
-                        contentDescription = null,
-                        tint = if (answer.isCorrect) PompColors.Jade else PompColors.Flame,
-                        modifier = Modifier.size(22.dp),
+                    // The panda answers back: cheering when right, explaining when
+                    // wrong. A wrong answer is never met with a scolding face.
+                    CoursePandaMascot(
+                        mood = if (answer.isCorrect) PandaMood.Celebrate else PandaMood.Talk,
+                        modifier = Modifier.size(54.dp),
                     )
-                    Spacer(Modifier.size(9.dp))
-                    Column {
+                    Spacer(Modifier.size(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = stringResource(if (answer.isCorrect) R.string.lesson_correct else R.string.lesson_wrong),
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),

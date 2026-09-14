@@ -9,10 +9,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -154,6 +157,8 @@ private enum class CelebrationScene { COMPLETE, STREAK, RANK_UP }
 @Composable
 private fun CompletionScene(outcome: LessonOutcome.Completed) {
     val gamification = outcome.gamification
+    val graded = outcome.graded
+    val accuracy = if (graded > 0) outcome.correct * 100 / graded else -1
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         CelebrationPanda(
             drawable = R.drawable.widget_panda_celebrate,
@@ -161,32 +166,129 @@ private fun CompletionScene(outcome: LessonOutcome.Completed) {
         )
         Spacer(Modifier.height(14.dp))
         Text(
-            text = stringResource(R.string.lesson_done_title),
+            text = completionTitle(accuracy, outcome.seed()),
             style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Jade,
+            color = if (accuracy >= 80 || accuracy < 0) PompColors.Jade else PompColors.Ink,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
         )
-        if (!outcome.duplicate && gamification.awardedXp > 0) {
-            Spacer(Modifier.height(10.dp))
-            RewardPill("+${gamification.awardedXp} XP")
-        }
-        if (outcome.graded > 0) {
-            Spacer(Modifier.height(12.dp))
+        completionSubtitle(accuracy)?.let { subtitle ->
+            Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.lesson_done_accuracy, outcome.correct, outcome.graded),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,
             )
         }
+        Spacer(Modifier.height(18.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            StatTile(
+                label = stringResource(R.string.lesson_stat_xp),
+                value = if (outcome.duplicate) "0" else "${gamification.awardedXp}",
+                accent = PompColors.Gold,
+                modifier = Modifier.weight(1f),
+            )
+            if (accuracy >= 0) StatTile(
+                label = stringResource(R.string.lesson_stat_accuracy),
+                value = "$accuracy%",
+                accent = PompColors.Jade,
+                modifier = Modifier.weight(1f),
+            )
+            StatTile(
+                label = stringResource(R.string.lesson_stat_time),
+                value = formatElapsed(outcome.elapsedSeconds),
+                accent = PompColors.Blue,
+                modifier = Modifier.weight(1f),
+            )
+        }
         if (gamification.league.isNotBlank()) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
             Text(
                 text = "${gamification.league} · ${gamification.weeklyXp} XP",
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+/** Stable per completion, so the headline does not reshuffle on recomposition. */
+private fun LessonOutcome.Completed.seed(): Int =
+    correct * 31 + graded * 7 + gamification.awardedXp
+
+@Composable
+private fun completionTitle(accuracy: Int, seed: Int): String {
+    val variants = when {
+        accuracy < 0 -> return stringResource(R.string.lesson_done_title)
+        accuracy >= 100 -> listOf(
+            R.string.lesson_done_perfect_1,
+            R.string.lesson_done_perfect_2,
+            R.string.lesson_done_perfect_3,
+        )
+        accuracy >= 80 -> listOf(
+            R.string.lesson_done_high_1,
+            R.string.lesson_done_high_2,
+            R.string.lesson_done_high_3,
+        )
+        accuracy >= 50 -> listOf(
+            R.string.lesson_done_mid_1,
+            R.string.lesson_done_mid_2,
+            R.string.lesson_done_mid_3,
+        )
+        else -> listOf(
+            R.string.lesson_done_low_1,
+            R.string.lesson_done_low_2,
+            R.string.lesson_done_low_3,
+        )
+    }
+    return stringResource(variants[seed.mod(variants.size)])
+}
+
+@Composable
+private fun completionSubtitle(accuracy: Int): String? = when {
+    accuracy < 0 -> null
+    accuracy >= 100 -> stringResource(R.string.lesson_done_perfect_sub)
+    accuracy >= 80 -> stringResource(R.string.lesson_done_high_sub)
+    accuracy >= 50 -> stringResource(R.string.lesson_done_mid_sub)
+    else -> stringResource(R.string.lesson_done_low_sub)
+}
+
+private fun formatElapsed(seconds: Int): String {
+    val safe = seconds.coerceAtLeast(0)
+    return "${safe / 60}:${(safe % 60).toString().padStart(2, '0')}"
+}
+
+@Composable
+private fun StatTile(label: String, value: String, accent: Color, modifier: Modifier = Modifier) {
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = PompColors.PaperRaised,
+        border = BorderStroke(2.dp, accent),
+        modifier = modifier,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = accent,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(accent.copy(alpha = 0.16f))
+                    .padding(vertical = 5.dp),
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 10.dp),
             )
         }
     }
@@ -270,22 +372,6 @@ private fun CelebrationPanda(drawable: Int, pulseKey: Int) {
             .scale(scale)
             .alpha(alpha),
     )
-}
-
-@Composable
-private fun RewardPill(text: String) {
-    Surface(
-        shape = RoundedCornerShape(999.dp),
-        color = PompColors.Gold.copy(alpha = 0.18f),
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            color = PompColors.Ink,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
-        )
-    }
 }
 
 @Composable

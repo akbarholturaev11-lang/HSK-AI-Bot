@@ -46,6 +46,8 @@ sealed interface LessonOutcome {
         /** Exact weekly leaderboard positions around this completion. */
         val rankBefore: Int = 0,
         val rankAfter: Int = 0,
+        /** Wall-clock seconds spent in the deck, measured on device only. */
+        val elapsedSeconds: Int = 0,
     ) : LessonOutcome
 
     /** The free half-preview ran out. Completion is not possible. */
@@ -167,6 +169,15 @@ class LessonViewModel(
     private var activeAttemptKey: String? = null
     private var eventId: String = ""
     private var loadGeneration: Long = 0
+    /** Set when the deck loads; the completion screen reports how long it took. */
+    private var startedAtMs: Long = 0
+
+    private fun elapsedSeconds(): Int {
+        if (startedAtMs <= 0L) return 0
+        val seconds = (android.os.SystemClock.elapsedRealtime() - startedAtMs) / 1000L
+        // A resumed lesson can span hours of idle time; keep the tile believable.
+        return seconds.coerceIn(0L, 3600L).toInt()
+    }
     private var audioJob: Job? = null
 
     /**
@@ -198,6 +209,7 @@ class LessonViewModel(
     fun load() {
         if (activeAttemptKey == null) return
         val generation = ++loadGeneration
+        startedAtMs = android.os.SystemClock.elapsedRealtime()
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             when (val result = repository.lesson(level, lessonOrder, language, accessRef)) {
@@ -384,6 +396,7 @@ class LessonViewModel(
                             gamification = result.value.gamification,
                             rankBefore = result.value.rankBefore,
                             rankAfter = result.value.rankAfter,
+                            elapsedSeconds = elapsedSeconds(),
                         ),
                     )
 
