@@ -45,11 +45,13 @@ class PracticeCompletionOutcomeTest {
         assertEquals(25, outcome.awardedXp)
         assertEquals(4, outcome.gamification.streak)
         assertTrue(outcome.hasStreakEvent)
+        assertEquals(PracticeCompletionReaction.CELEBRATE, outcome.reaction)
+        assertTrue(outcome.showConfetti)
         assertFalse(outcome.isDuplicate)
     }
 
     @Test
-    fun `duplicate completion never schedules xp or streak celebration`() {
+    fun `duplicate completion never schedules xp streak or confetti`() {
         val reward = json.parseToJsonElement(
             """
             {
@@ -74,6 +76,7 @@ class PracticeCompletionOutcomeTest {
         assertTrue(outcome.isDuplicate)
         assertEquals(0, outcome.awardedXp)
         assertFalse(outcome.hasStreakEvent)
+        assertFalse(outcome.showConfetti)
     }
 
     @Test
@@ -96,6 +99,36 @@ class PracticeCompletionOutcomeTest {
         assertTrue(outcome.isDuplicate)
         assertEquals(0, outcome.awardedXp)
         assertFalse(outcome.hasStreakEvent)
+        assertEquals(PracticeCompletionReaction.CELEBRATE, outcome.reaction)
+        assertFalse(outcome.showConfetti)
+    }
+
+    @Test
+    fun `passed hsk exam celebrates regardless of ordinary score thresholds`() {
+        val outcome = ExamCompleteResponse(
+            ok = true,
+            score = 8,
+            total = 12,
+            percent = 67,
+            passed = true,
+        ).toCompletionOutcome()
+
+        assertEquals(PracticeCompletionReaction.CELEBRATE, outcome.reaction)
+        assertTrue(outcome.showConfetti)
+    }
+
+    @Test
+    fun `failed hsk exam stays focused even with high percentage`() {
+        val outcome = ExamCompleteResponse(
+            ok = true,
+            score = 11,
+            total = 12,
+            percent = 92,
+            passed = false,
+        ).toCompletionOutcome()
+
+        assertEquals(PracticeCompletionReaction.FOCUS, outcome.reaction)
+        assertFalse(outcome.showConfetti)
     }
 
     @Test
@@ -108,6 +141,7 @@ class PracticeCompletionOutcomeTest {
         ).toCompletionOutcome(mode = "placement")
 
         assertEquals(PracticeCompletionKind.PLACEMENT, outcome.kind)
+        assertEquals(PracticeCompletionReaction.CHEER, outcome.reaction)
     }
 
     @Test
@@ -123,5 +157,6 @@ class PracticeCompletionOutcomeTest {
         assertEquals(10, outcome.total)
         assertEquals(0, outcome.awardedXp)
         assertFalse(outcome.hasStreakEvent)
+        assertEquals(PracticeCompletionReaction.CHEER, outcome.reaction)
     }
 }
