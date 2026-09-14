@@ -5,6 +5,7 @@
     <string name="assistant_expand">Oynani kengaytirish</string>
     <string name="assistant_history">Suhbatlar</string>
     <string name="assistant_new">Yangi suhbat</string>
+    <string name="assistant_no_conversations">Hozircha suhbat yo‘q. Birinchi savolingizni yozing.</string>
     <string name="assistant_context">Ekran kontekstini ulash</string>
     <string name="assistant_general">Umumiy savol</string>
     <string name="assistant_intro">Shu joyini birga tushunamiz. Nima qiyin bo‘lyapti?</string>

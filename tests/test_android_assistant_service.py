@@ -1,6 +1,7 @@
 import json
 import unittest
 from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from sqlalchemy import select
@@ -12,7 +13,13 @@ from app.db.base import Base
 from app.db.models.assistant import AssistantAssessment, AssistantRequest
 from app.db.models.message import Message
 from app.db.models.user import User
-from app.services.assistant_service import AssistantInput, AssistantService, ScreenContext
+from app.services.assistant_service import (
+    AssistantInput,
+    AssistantService,
+    ScreenContext,
+    parse_answer,
+    request_payload,
+)
 
 
 def _user(user_id=1, telegram_id=4200) -> User:
@@ -97,3 +104,50 @@ class AndroidAssistantServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([], payload["actions"])
         self.assertIn("imtihon", payload["text"].lower())
         self.assertEqual(["assistant_help", "text"], [msg.content_type for msg in messages])
+
+
+class AssistantAnswerParsingTests(unittest.TestCase):
+    """A cut-off or fenced model reply must never reach the learner as raw JSON."""
+
+    def test_clean_json_object(self):
+        text, actions = parse_answer('{"text": "Salom", "actions": ["profile"]}')
+        self.assertEqual("Salom", text)
+        self.assertEqual(["profile"], actions)
+
+    def test_code_fenced_json(self):
+        text, actions = parse_answer('```json\n{"text": "Misol: 你好", "actions": []}\n```')
+        self.assertEqual("Misol: 你好", text)
+        self.assertEqual([], actions)
+
+    def test_truncated_json_salvages_text(self):
+        raw = '{\n  "text": "\\"Mashq\\" ekrani HSK2 uchun mashq qilishga yordam beradi. Bu yer'
+        text, actions = parse_answer(raw)
+        self.assertEqual('"Mashq" ekrani HSK2 uchun mashq qilishga yordam beradi. Bu yer', text)
+        self.assertEqual([], actions)
+        self.assertNotIn('"text"', text)
+
+    def test_plain_text_passes_through(self):
+        text, _ = parse_answer("Oddiy javob matni")
+        self.assertEqual("Oddiy javob matni", text)
+
+    def test_empty_stays_empty(self):
+        self.assertEqual(("", []), parse_answer(""))
+        self.assertEqual(("", []), parse_answer(None))
+
+    def test_stored_history_wrapper_is_repaired(self):
+        row = SimpleNamespace(
+            client_message_id="c1", conversation_id="v1", status="completed",
+            phase="done", error="", input_text="Soddaroq tushuntir", kind="text",
+            context_json='{"screen": "practice"}',
+            response_json=json.dumps({"text": '{\n  "text": "Mashq ekrani yordam beradi. Bu yer', "actions": []}),
+        )
+        payload = request_payload(row)
+        self.assertEqual("Mashq ekrani yordam beradi. Bu yer", payload["text"])
+
+    def test_stored_history_plain_text_untouched(self):
+        row = SimpleNamespace(
+            client_message_id="c2", conversation_id="v1", status="completed",
+            phase="done", error="", input_text="salom", kind="text",
+            context_json="{}", response_json=json.dumps({"text": "Oddiy javob", "actions": []}),
+        )
+        self.assertEqual("Oddiy javob", request_payload(row)["text"])

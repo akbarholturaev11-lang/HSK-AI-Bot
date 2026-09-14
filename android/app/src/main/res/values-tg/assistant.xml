@@ -5,6 +5,7 @@
     <string name="assistant_expand">Калон кардани равзана</string>
     <string name="assistant_history">Суҳбатҳо</string>
     <string name="assistant_new">Суҳбати нав</string>
+    <string name="assistant_no_conversations">Ҳоло суҳбат нест. Саволи аввалини худро нависед.</string>
     <string name="assistant_context">Истифодаи муҳтавои экран</string>
     <string name="assistant_general">Саволи умумӣ</string>
     <string name="assistant_intro">Якҷоя мефаҳмем. Чӣ нофаҳмост?</string>

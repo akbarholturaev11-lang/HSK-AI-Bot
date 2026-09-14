@@ -100,12 +100,56 @@ def localized(lang, uz, ru, tj):
     return {"uz": uz, "ru": ru, "tj": tj}.get(lang, ru)
 
 
+def parse_answer(content):
+    """Model output -> (text, actions).
+
+    Tolerates code fences and truncated JSON: a reply cut off at the token
+    limit is still valid learning text, so salvage it instead of showing the
+    learner the raw `{"text": ...` wrapper.
+    """
+    raw = (content or "").strip()
+    if raw.startswith("```"):
+        raw = re.sub(r"^```[A-Za-z0-9_]*[ \t]*\r?\n?", "", raw)
+        raw = re.sub(r"\r?\n?```$", "", raw).strip()
+    text, actions = "", []
+    try:
+        parsed = json.loads(raw)
+    except (ValueError, TypeError):
+        parsed = None
+    if isinstance(parsed, dict):
+        text = str(parsed.get("text") or "")
+        if isinstance(parsed.get("actions"), list):
+            actions = parsed["actions"]
+    elif isinstance(parsed, str):
+        text = parsed
+    if text.strip():
+        return text, actions
+    # Truncated or malformed: pull the text field out of whatever arrived.
+    match = re.search(r'"text"\s*:\s*"((?:[^"\\]|\\.)*)', raw)
+    if match:
+        fragment = re.sub(r"\\+$", "", match[1])
+        try:
+            text = json.loads(f'"{fragment}"')
+        except ValueError:
+            text = fragment
+    elif not raw.lstrip().startswith(("{", "[")):
+        text = raw
+    return text, actions
+
+
 def request_payload(row):
+    response = json.loads(row.response_json)
+    stored = str(response.get("text") or "")
+    if stored.lstrip().startswith(("{", "```")):
+        # Answers written before the parser hardening kept the raw JSON wrapper.
+        salvaged, _ = parse_answer(stored)
+        if salvaged.strip():
+            response["text"] = salvaged.strip()
     return {"ok": True, "client_message_id": row.client_message_id,
             "conversation_id": row.conversation_id, "status": row.status,
             "phase": row.phase, "error": row.error,
             "user_text": row.input_text, "kind": row.kind,
-            "context": json.loads(row.context_json), **json.loads(row.response_json)}
+            "context": json.loads(row.context_json), **response}
 
 
 class AssistantService:
@@ -267,16 +311,10 @@ class AssistantService:
                     openai_model="gpt-4o-mini", max_completion_tokens=900,
                     response_format={"type": "json_object"})
                 await self.record_usage(user, usage, "assistant_answer")
-                try:
-                    parsed = json.loads(usage.content)
-                except (ValueError, TypeError):
-                    parsed = {"text": usage.content, "actions": []}
-                if not isinstance(parsed, dict) or not str(parsed.get("text") or "").strip():
+                text, raw_actions = parse_answer(usage.content)
+                text = re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()[:12000]
+                if not text:
                     raise AssistantError("assistant_empty_response", 503)
-                text = re.sub(r"<think>.*?</think>", "", str(parsed["text"]), flags=re.S).strip()[:12000]
-                raw_actions = parsed.get("actions", [])
-                if not isinstance(raw_actions, list):
-                    raw_actions = []
                 actions = [catalog[x] for x in raw_actions if isinstance(x, str) and x in catalog][:2]
                 result = {"text": text, "actions": actions, "sources": sources, "transcript": transcript}
                 stored = {"question": question, "context": ctx.model_dump()}

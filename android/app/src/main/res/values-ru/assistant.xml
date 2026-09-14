@@ -5,6 +5,7 @@
     <string name="assistant_expand">Развернуть окно</string>
     <string name="assistant_history">Разговоры</string>
     <string name="assistant_new">Новый разговор</string>
+    <string name="assistant_no_conversations">Разговоров пока нет. Задайте первый вопрос.</string>
     <string name="assistant_context">Использовать контекст экрана</string>
     <string name="assistant_general">Общий вопрос</string>
     <string name="assistant_intro">Разберёмся вместе. Что здесь непонятно?</string>
