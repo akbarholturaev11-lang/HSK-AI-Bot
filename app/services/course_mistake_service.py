@@ -529,7 +529,12 @@ class CourseMistakeService:
         needs_fill = material_format in {"gap_fill", "dialog_cloze", "dialog_context"} or any(
             key in low_prompt for key in MISTAKE_FILL_PROMPTS
         )
-        if (needs_listen or needs_fill) and not sentence and not audio_text:
+        if needs_listen and not audio_text:
+            # Tinglash savolida gap MATNI audio o'rnini bosa olmaydi: Mini App
+            # ovoz tugmasini faqat `audio_text` bo'lganda chizadi, aks holda
+            # variantlar bor, lekin tinglash uchun hech narsa yo'q.
+            return None
+        if needs_fill and not sentence and not audio_text:
             # Ko'rsatma bor, kontent yo'q — bunday savolga javob berib
             # bo'lmaydi. Uni chiqarmaymiz; o'rniga boshqa xato olinadi.
             return None
@@ -605,6 +610,14 @@ class CourseMistakeService:
             "options": options,
             "answer_index": int(question.get("answer_index")),
             "explanation": cls._text(question.get("explanation"), 600),
+            # Retry o'sha interaksiyani aynan qaytarishi uchun kontrakt
+            # maydonlari ham snapshotda qoladi.
+            "material_version": int(
+                question.get("material_version") or MISTAKE_REVIEW_MATERIAL_VERSION
+            ),
+            "material_ref": cls._text(question.get("material_ref"), 160),
+            "format": cls._text(question.get("format"), 64),
+            "language": cls._language(question.get("language")),
             "sentence": cls._text(question.get("sentence"), 600),
             "audio_text": cls._text(question.get("audio_text"), 600),
             "pinyin": cls._text(question.get("pinyin"), 300),
