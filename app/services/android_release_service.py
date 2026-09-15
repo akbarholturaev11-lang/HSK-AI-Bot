@@ -251,6 +251,8 @@ class ServedRelease:
     file_id: Optional[str]
     download_url: Optional[str]
     source: str
+    #: ISO date the build was published, when whoever published it said so.
+    published_at: Optional[str] = None
 
     @property
     def size_text(self) -> str:
@@ -306,6 +308,7 @@ class AndroidReleaseService:
                 file_id=await self._file_id_for(manifest.version_code, stored),
                 download_url=manifest.download_url,
                 source="manifest",
+                published_at=manifest.published_at or None,
             )
 
         if stored is None:
@@ -318,6 +321,7 @@ class AndroidReleaseService:
             file_id=stored.file_id,
             download_url=stored.update_url,
             source="bot",
+            published_at=stored.published_at.isoformat(),
         )
 
     async def _file_id_for(

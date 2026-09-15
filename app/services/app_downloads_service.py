@@ -37,7 +37,18 @@ def _empty(platform: str) -> dict[str, Any]:
         "download": None,
         "file": None,
         "size": None,
+        "published": None,
     }
+
+
+def _date(value: Any) -> str | None:
+    """Just the day. A release is dated, not timed, to whoever reads this."""
+
+    text = str(value or "").strip()
+    if len(text) < 10:
+        return None
+    day = text[:10]
+    return day if day.count("-") == 2 else None
 
 
 async def app_download_status(
@@ -56,6 +67,17 @@ async def app_download_status(
             release_manifest_service=release_manifest_service,
         )
         status = desktop.public_status_payload()
+        desktop_published = None
+        try:
+            from app.services.desktop_release_manifest_service import (
+                DesktopReleaseManifestService,
+            )
+
+            service = release_manifest_service or DesktopReleaseManifestService(settings_obj)
+            manifest = await service.resolve()
+            desktop_published = _date(getattr(manifest, "published_at", None))
+        except Exception:
+            logger.exception("Desktop release date could not be read")
         for name in ("macos", "windows"):
             if status.get("platforms", {}).get(name) and status.get("downloads", {}).get(name):
                 platforms[name] = {
@@ -66,6 +88,7 @@ async def app_download_status(
                     # The desktop pipeline publishes no size, and inventing one
                     # would be worse than saying nothing.
                     "size": None,
+                    "published": desktop_published,
                 }
     except Exception:
         # A platform whose state cannot be read is reported as unavailable, not
@@ -82,6 +105,7 @@ async def app_download_status(
                 "download": DOWNLOAD_PATHS["android"],
                 "file": release.file_name,
                 "size": release.size or None,
+                "published": _date(release.published_at),
             }
     except Exception:
         logger.exception("Android release status could not be read")

@@ -794,7 +794,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn('element("span", "pdd-seal", "桌")', download)
         self.assertNotIn('element("span", "pdd-laptop-seal", "桌")', download)
         self.assertNotIn("<script>", landing)
-        self.assertIn('"/api/v3/desktop-download/public-status"', landing_js)
+        # The page asks one endpoint for every platform now, not the desktop
+        # pair alone: iOS, macOS, Android and Windows are all offered on it.
+        self.assertIn('"/api/v3/apps/public-status"', landing_js)
         self.assertIn('url.searchParams.set("request", token)', landing_js)
 
         for page in (

@@ -15,8 +15,8 @@
       content="HSK AI ilovasini macOS yoki Windows uchun yuklab oling."
     >
     <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-    <link rel="stylesheet" href="/desktop-download-page.css?v=20260915-1">
-    <script src="/desktop-download-page.js?v=20260915-1" defer></script>
+    <link rel="stylesheet" href="/desktop-download-page.css?v=20260915-6">
+    <script src="/desktop-download-page.js?v=20260915-6" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#download-card" data-i18n="skip">Yuklashga o‘tish</a>
@@ -44,73 +44,61 @@
 
     <main>
       <section class="hero" aria-labelledby="page-title">
-        <div class="hero-copy">
-          <p class="eyebrow" data-i18n="eyebrow">Kurs · progress · AI yordamchi</p>
-          <h1 id="page-title" data-i18n="title">Xitoy tilini katta ekranda davom ettiring.</h1>
-          <p class="hero-lead" data-i18n="lead">
-            Telegramdagi hisobingiz, obunangiz va dars natijalaringiz shu ilovada ham ishlaydi.
-          </p>
+        <h1 id="page-title" data-i18n="title">Yuklab olish</h1>
+        <p class="hero-lead" data-i18n="lead">Qurilmangizni tanlang</p>
 
-          <ul class="feature-list" aria-label="Afzalliklar">
-            <li><span aria-hidden="true">课</span><b data-i18n="featureCourse">Bir xil kurs va progress</b></li>
-            <li><span aria-hidden="true">AI</span><b data-i18n="featureAi">Yon paneldagi AI yordamchi</b></li>
-            <li><span aria-hidden="true">↻</span><b data-i18n="featureUpdate">Avtomatik yangilanish</b></li>
-          </ul>
+        <!--
+          Icons rather than wordmarks on purpose: these are our drawings of a
+          laptop, a phone and a window, not Apple's, Google's or Microsoft's
+          marks. Shipping somebody else's logo to look official is how a
+          download page starts looking like a fake one.
+        -->
+        <div class="platform-picker" role="group" aria-label="Qurilma">
+          <!--
+            iOS has no app of its own yet, and saying so is better than leaving
+            an iPhone owner to wonder. It is kept in the row and leads to the
+            Mini App in Telegram, which works fully there.
+          -->
+          <button type="button" data-platform="ios" aria-pressed="false">
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <rect x="10" y="2" width="12" height="28" rx="3.5"/>
+              <circle cx="16" cy="25.5" r="1.4"/>
+            </svg>
+            <span>iOS</span>
+          </button>
+          <button type="button" data-platform="macos" aria-pressed="false">
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <rect x="4" y="6" width="24" height="16" rx="2.5"/>
+              <path d="M2 25h28l-2.5 2.5H4.5z"/>
+            </svg>
+            <span>macOS</span>
+          </button>
+          <button type="button" data-platform="android" aria-pressed="false">
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <rect x="9" y="3" width="14" height="26" rx="3"/>
+              <line x1="13.5" y1="25.5" x2="18.5" y2="25.5"/>
+            </svg>
+            <span>Android</span>
+          </button>
+          <button type="button" data-platform="windows" aria-pressed="false">
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <rect x="4" y="5" width="10.5" height="10.5" rx="1"/>
+              <rect x="17.5" y="5" width="10.5" height="10.5" rx="1"/>
+              <rect x="4" y="18.5" width="10.5" height="10.5" rx="1"/>
+              <rect x="17.5" y="18.5" width="10.5" height="10.5" rx="1"/>
+            </svg>
+            <span>Windows</span>
+          </button>
         </div>
 
         <section class="download-card" id="download-card" aria-labelledby="download-title">
-          <div class="platform-switch" role="group" aria-label="Operatsion tizim">
-            <button type="button" data-platform="macos" aria-pressed="false">
-              <span aria-hidden="true">●</span>
-              macOS
-            </button>
-            <button type="button" data-platform="windows" aria-pressed="false">
-              <span aria-hidden="true">⊞</span>
-              Windows
-            </button>
-          </div>
-
-          <div class="platform-prompt" data-platform-prompt>
-            <span class="platform-prompt-icon" aria-hidden="true">⌘</span>
-            <div>
-              <strong data-i18n="selectTitle">Mac yoki Windowsni tanlang</strong>
-              <p data-i18n="selectBody">Kompyuteringizdagi tizimni tanlagach, mos DMG yoki EXE ko‘rsatiladi.</p>
-            </div>
-          </div>
-
-          <div class="installer-stage" data-installer-stage="macos" aria-hidden="true">
-            <div class="installer-window">
-              <span class="installer-dots"><i></i><i></i><i></i></span>
-              <div class="installer-app">
-                <img
-                  class="mini-seal"
-                  src="/assets/hsk-ai-avatar.webp"
-                  alt=""
-                  aria-hidden="true"
-                >
-                <small>HSK AI</small>
-              </div>
-              <span class="drag-arrow">→</span>
-              <div class="applications-folder">
-                <span>A</span>
-                <small>Applications</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="download-copy">
-            <p class="card-kicker" data-i18n="readyLabel">Tayyor installer</p>
-            <h2 id="download-title" data-download-title>Mac uchun HSK AI</h2>
-            <p class="release-meta">
-              <span data-version>Versiya tekshirilmoqda…</span>
-              <span aria-hidden="true">·</span>
-              <span data-i18n="freeDownload">Bepul yuklash</span>
-            </p>
-          </div>
+          <h2 id="download-title" data-download-title data-i18n="selectTitle">Qurilmangizni tanlang</h2>
+          <p class="release-version" data-version></p>
+          <p class="release-published" data-published></p>
 
           <a class="download-button" href="#" aria-disabled="true" data-download-button>
-            <span class="download-button-icon" aria-hidden="true">↓</span>
             <span data-download-label data-i18n="loading">Tayyorlanmoqda…</span>
+            <span class="download-button-icon" aria-hidden="true">↓</span>
           </a>
 
           <p class="download-status" role="status" aria-live="polite" data-download-status>

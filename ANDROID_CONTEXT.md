@@ -195,6 +195,23 @@ almashtirgichi uni ham tarjima qiladi. Yangi kalit qo'shsangiz —
 `desktop-download.html` dagi `?v=` ni oshiring, aks holda hech kim yangisini
 ko'rmaydi.
 
+### Sahifa tuzilishi
+
+Yuqorida qurilma tanlash (iOS · macOS · Android · Windows), o'rtada karta
+(nom, versiya, sana, tugma), pastda **tanlangan qurilmaga qarab o'zgaradigan**
+tushuntirishlar va xavfsizlik izohi.
+
+**iOS'da alohida ilova yo'q.** U ro'yxatda qoladi va tugmasi Telegram botni
+ochadi; pastdagi matn buni ochiq aytadi. Qurilma userAgent'dan aniqlanadi —
+Android telefondan kirgan odam darhol APK kartasini ko'radi.
+
+«Linkni kompyuterga yuboring» bloki faqat telefondan macOS/Windows tanlanganda
+chiqadi: APK'ni telefonning o'zi ocha oladi, iOS'da esa uzatadigan fayl yo'q.
+
+Matnlar `desktop-download-page.js` dagi `COPY` da, platforma prefiksi bilan:
+`iosTitle`, `androidSteps`, `macSecurity` va h.k. (`macos` tarixan `mac`).
+Yangi platforma qo'shsangiz — `COPY_KEY` ga ham qo'shing.
+
 ## 5. Qayerga qarash kerak
 
 | Nima | Qayerda |
