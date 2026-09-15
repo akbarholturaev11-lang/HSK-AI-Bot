@@ -81,18 +81,48 @@ jobs:
       - name: Restore the release keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.POMP_ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
         run: |
           set -euo pipefail
-          test -n "$KEYSTORE_BASE64" || {
-            echo "::error::POMP_ANDROID_KEYSTORE_BASE64 is required"
+          for value in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS; do
+            test -n "${!value}" || {
+              echo "::error::POMP_ANDROID_${value#KEYSTORE_} is required"
+              exit 1
+            }
+          done
+
+          # The name of the secret is roughly 28 characters and decodes to a
+          # short run of bytes, so "is it empty" does not catch the easiest
+          # mistake there is: pasting the field's own name into it. A keystore
+          # this small does not exist.
+          if [ "${#KEYSTORE_BASE64}" -lt 1000 ]; then
+            echo "::error::POMP_ANDROID_KEYSTORE_BASE64 is only ${#KEYSTORE_BASE64} characters."
+            echo "::error::Expected a few thousand — the base64 of release.jks, not the secret's name."
+            echo "::error::Re-copy it with: base64 -i release.jks | tr -d '\n' | pbcopy"
             exit 1
-          }
+          fi
+
           # Outside the workspace so no later step can archive it by accident.
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
-          test -s "$RUNNER_TEMP/release.jks" || {
-            echo "::error::The decoded keystore is empty — re-copy the base64 value"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks" || {
+            echo "::error::POMP_ANDROID_KEYSTORE_BASE64 is not valid base64"
             exit 1
           }
+
+          # The only check that actually proves this is the keystore: open it
+          # with the password and alias the build is about to use. Failing here
+          # says which of the three secrets is wrong; failing inside Gradle
+          # says "Keystore was tampered with, or password was incorrect".
+          if ! keytool -list \
+            -keystore "$RUNNER_TEMP/release.jks" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -alias "$KEY_ALIAS" > /dev/null 2>keytool.err; then
+            echo "::error::Could not open the keystore with the configured password and alias."
+            echo "::error::One of POMP_ANDROID_KEYSTORE_BASE64, _KEYSTORE_PASSWORD or _KEY_ALIAS is wrong."
+            sed -E 's/[A-Za-z0-9+\/=]{20,}/[redacted]/g' keytool.err
+            exit 1
+          fi
+          echo "Keystore opened with the configured alias."
 
       - name: Build the signed direct release
         working-directory: android
