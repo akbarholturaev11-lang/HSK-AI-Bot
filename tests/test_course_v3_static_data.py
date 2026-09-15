@@ -870,8 +870,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("/uploads/app_promo/", main)
         self.assertIn("desktop_app_promo", main)
         self.assertIn("daily_limit=3", service)
-        self.assertIn('"android": False', service)
+        # Android chiqarilgan — standart holatda YOQILGAN. iOS'ga alohida ilova
+        # yo'q, shuning uchun o'chiq: o'lik tugma chiqmasligi kerak.
+        self.assertIn('"android": True', service)
         self.assertIn('"ios": False', service)
+        # Admin tanlovini hech kim bekor qilmasin: bu qator har saqlashda
+        # Android'ni o'chirib, chipni ishlamaydigan holga keltirgan edi.
+        self.assertNotIn("platforms.android=false", html)
 
 
 if __name__ == "__main__":

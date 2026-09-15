@@ -1308,7 +1308,10 @@
     function collectAppPromo(){
       const pick=(kind)=>{ const result={}; document.querySelectorAll(`[data-ap-${kind}]`).forEach(el=>{ result[el.dataset["ap"+kind.charAt(0).toUpperCase()+kind.slice(1)]]=el.classList.contains("active"); }); return result; };
       const platforms=pick("platform");
-      platforms.android=false;
+      // Android'ni majburan o'chirish OLIB TASHLANDI: u endi chiqariladi va
+      // admin uni yoqa olishi kerak. Ilgari bu qator har saqlashda admin
+      // tanlovini bekor qilardi — chipni yoqib saqlasa ham qaytib o'chardi.
+      // iOS qoladi: unga alohida ilova yo'q, chipi ham yo'q.
       platforms.ios=false;
       return {
         enabled:Boolean($("apEnabled")&&$("apEnabled").checked),
