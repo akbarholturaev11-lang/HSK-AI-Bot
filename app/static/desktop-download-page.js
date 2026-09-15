@@ -8,6 +8,9 @@
 
   var COPY = {
     uz: {
+      allTitle: "Barcha yuklamalar",
+      allLead: "Har bir qurilma uchun oxirgi versiya.",
+      allUnavailable: "hali chiqarilmagan",
       skip: "Yuklashga o‘tish",
       brandNote: "Kompyuter ilovasi",
       eyebrow: "Kurs · progress · AI yordamchi",
@@ -99,6 +102,9 @@
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
+      allTitle: "Все загрузки",
+      allLead: "Последняя версия для каждого устройства.",
+      allUnavailable: "ещё не выпущено",
       skip: "Перейти к загрузке",
       brandNote: "Приложение для компьютера",
       eyebrow: "Курс · прогресс · AI-помощник",
@@ -190,6 +196,9 @@
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
+      allTitle: "Ҳамаи боргириҳо",
+      allLead: "Версияи охирин барои ҳар дастгоҳ.",
+      allUnavailable: "ҳанӯз нашр нашудааст",
       skip: "Гузаштан ба боргирӣ",
       brandNote: "Барномаи компютерӣ",
       eyebrow: "Курс · пешрафт · ёвари AI",

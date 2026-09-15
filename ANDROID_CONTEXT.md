@@ -171,6 +171,30 @@ topilgan klassga qaraladi. O'chirilgan klassni u qaytara olmaydi. Shuning
 uchun shartsiz `-keep` kerak. `allowobfuscation` nom o'zgarishiga ruxsat
 beradi, ya'ni APK kichik qoladi.
 
+## 4.5 Saytdagi yuklab olish
+
+`/download` (va `/apps`, `/desktop-download` — hammasi bir sahifa). Uchala
+platforma bir joyda.
+
+Sahifa o'zi JS bilan ishlaydi, lekin **server tomonida ham to'ldiriladi**:
+`<!--APP-DOWNLOADS-->` belgisi o'rniga oddiy HTML ro'yxat va JSON-LD
+(`SoftwareApplication` har bir chiqarilgan platforma uchun) qo'yiladi. Sababi:
+qidiruv va AI robotlari JS ishlatmaydi — ular sahifani «Versiya
+tekshirilmoqda…» holida ko'rardi va nima borligini bilmasdi.
+
+Ma'lumot manbai: `GET /api/v3/apps/public-status` →
+`app/services/app_downloads_service.py`. Chiqarilmagan platforma haqida **hech
+narsa da'vo qilinmaydi** — yo'q buildni e'lon qilish, uni topa olmaydigan
+odamga AI takrorlaydigan yolg'on.
+
+Bo'lim matni `data-i18n` bilan belgilangan, ya'ni sahifaning o'z til
+almashtirgichi uni ham tarjima qiladi. Yangi kalit qo'shsangiz —
+`desktop-download-page.js` dagi uchala tilga ham qo'shing.
+
+**CSS/JS keshda bir yil turadi** (`immutable`). O'zgartirsangiz
+`desktop-download.html` dagi `?v=` ni oshiring, aks holda hech kim yangisini
+ko'rmaydi.
+
 ## 5. Qayerga qarash kerak
 
 | Nima | Qayerda |

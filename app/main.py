@@ -1,6 +1,7 @@
 import asyncio
 import contextlib
 import logging
+from pathlib import Path
 import os
 import shutil
 import subprocess
@@ -13,7 +14,7 @@ from html import escape as html_escape
 from aiogram import Bot
 from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from sqlalchemy import func, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
@@ -52,6 +53,13 @@ from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
 from app.api.android_update import create_android_update_router
+from app.api.app_downloads import create_app_downloads_router
+from app.public_site.app_downloads_render import (
+    downloads_section,
+    structured_data as app_downloads_structured_data,
+)
+from app.public_site.render import public_origin
+from app.services.app_downloads_service import app_download_status
 from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, engine, init_db
@@ -654,6 +662,12 @@ app.include_router(
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
 app.include_router(create_android_update_router(session_factory=async_session_maker))
+app.include_router(
+    create_app_downloads_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
 app.include_router(create_android_assistant_router(session_factory=async_session_maker, settings_obj=settings))
 # Android reuses the same DesktopAuthService core; only the transport differs.
 app.include_router(
@@ -1350,13 +1364,50 @@ async def course_v3_miniapp():
     return miniapp_file_response("app/static/course-v3.html")
 
 
+APP_DOWNLOADS_MARKER = "<!--APP-DOWNLOADS-->"
+
+
+async def _rendered_downloads_page() -> Response:
+    """The download page with the release facts already in the HTML.
+
+    The page decides what to offer by fetching its status and rewriting the
+    DOM. A search or AI crawler runs none of that, so it would read
+    "Versiya tekshirilmoqda…" and learn nothing about what exists. The same
+    facts are rendered here, in plain markup and in JSON-LD, before any script
+    has a chance to run.
+
+    Every failure falls back to the file exactly as it is: the page works
+    without this, and a status lookup going wrong must not take the download
+    page down with it.
+    """
+
+    path = "app/static/desktop-download.html"
+    try:
+        html = Path(path).read_text(encoding="utf-8")
+        status = await app_download_status(
+            session_factory=async_session_maker,
+            settings_obj=settings,
+        )
+        origin = public_origin(settings)
+        section = downloads_section(status, origin=origin, language="uz")
+        schema = app_downloads_structured_data(
+            status, origin=origin, page_url="/download"
+        )
+        html = html.replace(APP_DOWNLOADS_MARKER, section, 1)
+        if schema:
+            html = html.replace("</head>", schema + "</head>", 1)
+        return HTMLResponse(content=html, headers=DESKTOP_DOWNLOAD_HTML_HEADERS)
+    except Exception:
+        logger.exception("Download page could not be rendered; serving it plain")
+        return FileResponse(path, headers=DESKTOP_DOWNLOAD_HTML_HEADERS)
+
+
+@app.get("/download")
+@app.get("/apps")
 @app.get("/desktop-download.html")
 @app.get("/desktop-download")
 async def desktop_download_page():
-    return FileResponse(
-        "app/static/desktop-download.html",
-        headers=DESKTOP_DOWNLOAD_HTML_HEADERS,
-    )
+    return await _rendered_downloads_page()
 
 
 @app.get("/desktop-download-page.css")
