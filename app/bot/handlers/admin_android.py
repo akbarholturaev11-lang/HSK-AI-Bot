@@ -16,7 +16,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from app.bot.fsm.admin_android import AdminAndroidStates
-from app.bot.handlers.android_app import send_android_app
+from app.bot.handlers.android_app import reply_chat_id, send_android_app
 from app.config import settings
 from app.services.android_release_service import (
     AndroidRelease,
@@ -209,8 +209,18 @@ async def receive_apk(message: Message, state: FSMContext):
     )
 
 
-@router.message(StateFilter(AdminAndroidStates.waiting_for_apk))
+@router.message(
+    StateFilter(AdminAndroidStates.waiting_for_apk),
+    F.photo | F.video | F.audio | F.voice | F.animation,
+)
 async def not_a_document(message: Message):
+    """A file was sent, but not as a document.
+
+    Deliberately narrow: a catch-all here would swallow the admin's own menu
+    presses and commands and leave them stuck in the upload step with no way
+    out but the cancel button. Text falls through to the normal handlers.
+    """
+
     if not _is_admin(message.from_user.id):
         return
     await message.answer(
@@ -317,10 +327,11 @@ async def preview_apk(callback: CallbackQuery, session):
     await callback.answer()
     await send_android_app(
         callback.bot,
-        callback.message.chat.id,
+        reply_chat_id(callback),
         callback.from_user.id,
         session,
         source="admin_preview",
+        track=False,
     )
 
 

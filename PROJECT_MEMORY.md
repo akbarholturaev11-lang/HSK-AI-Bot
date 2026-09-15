@@ -8380,10 +8380,15 @@ Changed:
   `play` compiles out every external checkout so that learner could never pay,
   and `debug` carries the `.debug` application id so no real release can ever
   update it.
-- Learners reach it with `/android` or the **📱 Android ilova** button in the
-  profile keyboard (uz/ru/tj, five new strings). The button is a plain
-  callback rather than a Mini App button: the file is handed over in this chat,
-  so a web view would only add a step between the learner and the APK.
+- The profile no longer carries a button per device. One **📱 HSK AI ilovalari**
+  button opens a chooser with **📱 Android** and **💻 Kompyuter**; the device
+  choice comes after, so a learner who wants "the app" does not have to know
+  which of our two products they mean before they can press anything. The
+  desktop half is the same Mini App button as before, unchanged, because its
+  installer is downloaded in a browser. Android is a plain callback: the file
+  is handed over in this chat, and a web view would only add a step between the
+  learner and the APK. `/android` still works on its own.
+- Nine new strings across uz/ru/tj.
 - Two funnel events, `android_apk_requested` and `android_apk_sent`. They are
   the only measurement that exists for this channel — nothing of ours serves
   the file and Telegram reports nothing back. A request with nothing published
@@ -8413,9 +8418,9 @@ Key files:
 - `tests/test_android_apk_download.py` (new)
 
 Verified:
-- Backend: 1347 passed, 0 failed (full suite, `tests/` excluding `e2e`,
+- Backend: 1354 passed, 0 failed (full suite, `tests/` excluding `e2e`,
   randomised order).
-- `tests/test_android_apk_download.py`: 38 tests. They cover the refusal of a
+- `tests/test_android_apk_download.py`: 41 tests. They cover the refusal of a
   `play`/`debug` build, a published row missing its `file_id` reading as
   "nothing to give", a `file_id` that has stopped resolving being reported
   rather than swallowed (and not counted as a delivery), the admin flow end to
@@ -8448,6 +8453,24 @@ Not verified:
 - No one has installed the APK on a physical phone. The emulator proves the
   build runs; it does not prove the "unknown sources" flow the install caption
   describes.
+
+Caught in review, before this shipped:
+- The `waiting_for_apk` step had a catch-all that claimed every message, so an
+  admin who entered the upload step and then pressed any menu button got "send
+  it as a document" instead — with no exit but the inline cancel button. It now
+  answers only photos/videos/audio; text and commands fall through.
+- Two handlers read `callback.message.chat.id`. Telegram stops attaching the
+  message to a callback once it is old enough, and the profile keyboard is
+  exactly the message a learner scrolls back to. Both now go through
+  `reply_chat_id`, which falls back to the sender's own id.
+- The admin's "send it to myself" check was recording `android_apk_requested`
+  and `android_apk_sent` — the only two numbers that measure this channel, and
+  there is no server log to check them against. It now passes `track=False`.
+
+Known limitation, left deliberately:
+- The `play`/`debug` refusal reads the file name, so a renamed artifact skips
+  it. The bot never opens the APK, so the name is all it has. It is a guard
+  against a slip, not against intent.
 
 Follow-up:
 - The APK is handed out but never announced. A learner only finds it by opening

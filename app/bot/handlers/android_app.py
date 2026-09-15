@@ -32,23 +32,29 @@ async def send_android_app(
     session,
     *,
     source: str,
+    track: bool = True,
 ) -> bool:
     """Send the published APK, or explain why there is nothing to send.
 
     Returns whether the file actually reached the chat, so that a caller
     answering a callback query can say something truthful about it.
+
+    `track=False` is for the admin checking their own upload. These two events
+    are the only measurement this channel has — nothing of ours serves the
+    file — so an admin testing a release must not show up in it as demand.
     """
 
     user = await UserRepository(session).get_by_telegram_id(telegram_id)
     lang = getattr(user, "language", None) or "ru"
 
     analytics = CourseMiniAppAnalyticsService(session)
-    await analytics.record_server_event(
-        event_name="android_apk_requested",
-        telegram_id=telegram_id,
-        user_id=getattr(user, "id", None),
-        source=source,
-    )
+    if track:
+        await analytics.record_server_event(
+            event_name="android_apk_requested",
+            telegram_id=telegram_id,
+            user_id=getattr(user, "id", None),
+            source=source,
+        )
 
     release = await AndroidReleaseService(session).current()
     if not release:
@@ -87,17 +93,18 @@ async def send_android_app(
         await bot.send_message(chat_id, t("android_app_failed", lang))
         return False
 
-    await analytics.record_server_event(
-        event_name="android_apk_sent",
-        telegram_id=telegram_id,
-        user_id=getattr(user, "id", None),
-        source=source,
-        payload={
-            "version_name": release.version_name,
-            "version_code": release.version_code,
-            "file_size": release.file_size,
-        },
-    )
+    if track:
+        await analytics.record_server_event(
+            event_name="android_apk_sent",
+            telegram_id=telegram_id,
+            user_id=getattr(user, "id", None),
+            source=source,
+            payload={
+                "version_name": release.version_name,
+                "version_code": release.version_code,
+                "file_size": release.file_size,
+            },
+        )
     await session.commit()
     return True
 
@@ -118,8 +125,22 @@ async def android_from_button(callback: CallbackQuery, session):
     await callback.answer()
     await send_android_app(
         callback.bot,
-        callback.message.chat.id,
+        reply_chat_id(callback),
         callback.from_user.id,
         session,
         source="bot_profile",
     )
+
+
+def reply_chat_id(callback: CallbackQuery) -> int:
+    """Where the file should land.
+
+    Telegram stops attaching the message to a callback once it is old enough,
+    and the profile keyboard is exactly the kind of message a learner scrolls
+    back to weeks later. Falling back to their own id keeps the button working
+    instead of failing on an attribute that is simply no longer there.
+    """
+
+    message = callback.message
+    chat = getattr(message, "chat", None) if message is not None else None
+    return getattr(chat, "id", None) or callback.from_user.id

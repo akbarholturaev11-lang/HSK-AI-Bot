@@ -304,6 +304,28 @@ class HandingItToALearnerTests(DatabaseBackedTest):
             # A failed send is not a delivery.
             self.assertEqual(await self._event_names(session), ["android_apk_requested"])
 
+    async def test_the_admin_checking_their_own_upload_is_not_counted(self):
+        """These two events are the only measurement this channel has."""
+
+        from app.bot.handlers.android_app import send_android_app
+
+        async with self.sessions() as session:
+            await self._add_user(session, language="uz")
+            await self._publish(session)
+            bot = FakeBot()
+            sent = await send_android_app(
+                bot,
+                self.CHAT_ID,
+                self.TELEGRAM_ID,
+                session,
+                source="admin_preview",
+                track=False,
+            )
+
+            self.assertTrue(sent)
+            self.assertEqual(len(bot.documents), 1)
+            self.assertEqual(await self._event_names(session), [])
+
     async def test_an_unknown_sender_still_gets_the_file(self):
         """Someone who never pressed /start can still install the app."""
 
@@ -506,6 +528,49 @@ class AdminPublishingFlowTests(DatabaseBackedTest):
             self.assertIsNone(await AndroidReleaseService(session).current())
 
 
+class StaleButtonTests(unittest.TestCase):
+    """The profile keyboard is a message a learner scrolls back to."""
+
+    def test_a_callback_whose_message_is_gone_still_names_a_chat(self):
+        from app.bot.handlers.android_app import reply_chat_id
+
+        callback = SimpleNamespace(message=None, from_user=SimpleNamespace(id=5150))
+        self.assertEqual(reply_chat_id(callback), 5150)
+
+    def test_an_inaccessible_message_still_names_its_chat(self):
+        from app.bot.handlers.android_app import reply_chat_id
+
+        callback = SimpleNamespace(
+            message=SimpleNamespace(chat=SimpleNamespace(id=-100123)),
+            from_user=SimpleNamespace(id=5150),
+        )
+        self.assertEqual(reply_chat_id(callback), -100123)
+
+
+class UploadStepDoesNotTrapTheAdminTests(unittest.TestCase):
+    def test_plain_text_is_left_to_the_normal_handlers(self):
+        """A catch-all here would swallow the admin's own menu presses."""
+
+        from types import SimpleNamespace as NS
+
+        from app.bot.handlers.admin_android import not_a_document, router
+
+        handler = next(
+            h
+            for h in router.observers["message"].handlers
+            if h.callback is not_a_document
+        )
+        content_filter = handler.filters[-1].callback
+
+        typed = NS(photo=None, video=None, audio=None, voice=None, animation=None)
+        self.assertFalse(content_filter(typed))
+
+        sent_a_photo = NS(
+            photo=["x"], video=None, audio=None, voice=None, animation=None
+        )
+        self.assertTrue(sent_a_photo.photo and content_filter(sent_a_photo))
+
+
 class WiringTests(unittest.TestCase):
     def test_the_funnel_events_are_registered(self):
         self.assertIn("android_apk_requested", COURSE_MINIAPP_EVENT_NAMES)
@@ -525,21 +590,50 @@ class WiringTests(unittest.TestCase):
                     self.assertIn(key, TEXTS[language])
                     self.assertTrue(TEXTS[language][key].strip())
 
-    def test_the_profile_keyboard_offers_the_app_in_every_language(self):
+    def test_the_apps_menu_offers_android_in_every_language(self):
         from app.bot.handlers.android_app import ANDROID_APP_CALLBACK
-        from app.bot.handlers.commands import profile_menu_keyboard
+        from app.bot.handlers.commands import (
+            APPS_MENU_CALLBACK,
+            apps_menu_keyboard,
+            profile_menu_keyboard,
+        )
 
         for language in ("uz", "ru", "tj"):
             with self.subTest(language=language):
-                keyboard = profile_menu_keyboard(language)
-                buttons = [
+                # The profile reaches the chooser...
+                profile = [
                     button
-                    for row in keyboard.inline_keyboard
+                    for row in profile_menu_keyboard(language).inline_keyboard
+                    for button in row
+                    if button.callback_data == APPS_MENU_CALLBACK
+                ]
+                self.assertEqual(len(profile), 1)
+
+                # ...and the chooser reaches the APK.
+                android = [
+                    button
+                    for row in apps_menu_keyboard(language).inline_keyboard
                     for button in row
                     if button.callback_data == ANDROID_APP_CALLBACK
                 ]
-                self.assertEqual(len(buttons), 1)
-                self.assertEqual(buttons[0].text, TEXTS[language]["android_app_button"])
+                self.assertEqual(len(android), 1)
+                self.assertEqual(android[0].text, TEXTS[language]["apps_android_button"])
+
+    def test_the_chooser_keeps_both_clients(self):
+        """Android next to the desktop client, not instead of it."""
+
+        from app.bot.handlers.commands import apps_menu_keyboard
+
+        for language in ("uz", "ru", "tj"):
+            with self.subTest(language=language):
+                buttons = [
+                    button
+                    for row in apps_menu_keyboard(language).inline_keyboard
+                    for button in row
+                ]
+                self.assertEqual(len(buttons), 2)
+                self.assertEqual(sum(1 for b in buttons if b.web_app is not None), 1)
+                self.assertEqual(sum(1 for b in buttons if b.callback_data), 1)
 
     def test_the_admin_panel_button_reaches_a_real_handler(self):
         from app.bot.handlers.admin import admin_menu_keyboard
@@ -564,12 +658,12 @@ class WiringTests(unittest.TestCase):
         ]
         self.assertTrue(matched, "the admin panel button has no handler behind it")
 
-    def test_no_earlier_router_swallows_the_android_command(self):
-        """Walk the real dispatcher in real order and see who claims /android.
+    def test_no_earlier_router_swallows_the_new_command_or_buttons(self):
+        """Walk the real dispatcher in real order and see who claims each one.
 
         Router order is the one thing a unit test of the handler cannot check:
         every handler here passes its own tests while an earlier router quietly
-        answers first and the command appears to do nothing.
+        answers first and the button appears to do nothing.
 
         It runs in a subprocess because building a Dispatcher attaches every
         module-level router to it permanently — doing that in this process
@@ -587,7 +681,7 @@ import asyncio
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from aiogram.types import Chat, Message
+from aiogram.types import CallbackQuery, Chat, Message
 from aiogram.types import User as TelegramUser
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -600,24 +694,31 @@ with patch("app.bot.create_bot.async_session_maker", sessions):
         type("S", (), {"BOT_TOKEN": "123456:AAHtest-token-value-here"})
     )
 
-message = Message(
+sender = TelegramUser(id=5150, is_bot=False, first_name="T")
+command = Message(
     message_id=1,
     date=datetime.now(timezone.utc),
     chat=Chat(id=5150, type="private"),
-    from_user=TelegramUser(id=5150, is_bot=False, first_name="T"),
+    from_user=sender,
     text="/android",
 )
 
 
-async def claims(handler):
+def press(data):
+    return CallbackQuery(
+        id="1", from_user=sender, chat_instance="c", data=data, message=command
+    )
+
+
+async def claims(handler, event):
     for handler_filter in handler.filters or ():
         try:
-            result = handler_filter.callback(message)
+            result = handler_filter.callback(event)
             if asyncio.iscoroutine(result):
                 result = await result
         except TypeError:
             try:
-                result = await handler_filter.callback(message, bot=bot)
+                result = await handler_filter.callback(event, bot=bot)
             except Exception:
                 return False
         except Exception:
@@ -627,7 +728,7 @@ async def claims(handler):
     return True
 
 
-async def main():
+async def first(observer_name, event):
     routers = []
 
     def walk(router):
@@ -637,11 +738,16 @@ async def main():
 
     walk(dispatcher)
     for router in routers:
-        for handler in router.observers["message"].handlers:
-            if await claims(handler):
-                print(handler.callback.__name__)
-                return
-    print("NOBODY")
+        for handler in router.observers[observer_name].handlers:
+            if await claims(handler, event):
+                return handler.callback.__name__
+    return "NOBODY"
+
+
+async def main():
+    print(await first("message", command))
+    for data in ("profile_menu:apps", "android_app:get", "adm:android_panel"):
+        print(await first("callback_query", press(data)))
 
 
 asyncio.run(main())
@@ -654,7 +760,15 @@ asyncio.run(main())
             timeout=120,
         )
         self.assertEqual(result.returncode, 0, result.stderr[-2000:])
-        self.assertEqual(result.stdout.strip().splitlines()[-1], "android_command")
+        self.assertEqual(
+            result.stdout.strip().splitlines()[-4:],
+            [
+                "android_command",
+                "profile_menu_apps",
+                "android_from_button",
+                "android_panel",
+            ],
+        )
 
     def test_both_routers_are_wired_into_the_bot(self):
         from app.bot import create_bot as module
