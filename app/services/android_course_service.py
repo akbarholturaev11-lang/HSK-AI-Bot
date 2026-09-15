@@ -256,9 +256,15 @@ class AndroidCourseService(DesktopCourseService):
         goal: str | None = None,
         daily_minutes: int | None = None,
         preferred_focus: str | None = None,
+        daily_goal_xp: int | None = None,
     ) -> dict:
         """Persist the same progressive-personalization answers as Mini App."""
-        if goal is None and daily_minutes is None and preferred_focus is None:
+        if (
+            goal is None
+            and daily_minutes is None
+            and preferred_focus is None
+            and daily_goal_xp is None
+        ):
             raise DesktopCourseError("android_request_invalid", status_code=422)
 
         context = await self._context(access_token)
@@ -280,6 +286,14 @@ class AndroidCourseService(DesktopCourseService):
             )
         except (TypeError, ValueError) as exc:
             raise DesktopCourseError("android_request_invalid", status_code=422) from exc
+
+        if daily_goal_xp is not None:
+            # The same setter the Mini App's preferences endpoint calls, so the
+            # two clients cannot clamp or store it differently.
+            try:
+                await service.set_daily_goal_xp(profile, daily_goal_xp)
+            except (TypeError, ValueError) as exc:
+                raise DesktopCourseError("android_request_invalid", status_code=422) from exc
 
         profile.daily_plan_key = None
         profile.daily_plan_json = None

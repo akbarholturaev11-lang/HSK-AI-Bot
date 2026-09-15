@@ -21,6 +21,13 @@ data class StudyPreferencesRequestDto(
     @SerialName("goal") val goal: String? = null,
     @SerialName("daily_minutes") val dailyMinutes: Int? = null,
     @SerialName("preferred_focus") val preferredFocus: String? = null,
+    /**
+     * The daily XP target, which the server has owned since the Mini App
+     * stopped keeping it in a JS variable. Android used to hold its own copy
+     * in device storage and never send it, so one account read 40 in the Mini
+     * App and 50 here.
+     */
+    @SerialName("daily_goal_xp") val dailyGoalXp: Int? = null,
 )
 
 @Serializable

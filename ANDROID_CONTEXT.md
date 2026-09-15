@@ -74,20 +74,22 @@ Bir foydalanuvchi, bir payt, ikki klient:
 
 Uchta alohida sabab:
 
-**(a) Kunlik maqsad umuman sinxronlanmaydi.** Server profilda `daily_goal_xp`
-saqlaydi; Mini App uni o'qiydi va yozadi (`STUDY_SETUP.daily_goal_xp`,
-`savePreferences({daily_goal_xp:v})`). Android esa uni **faqat telefon ichida**
-saqlaydi — `core/settings/AppSettings.kt`, DataStore kaliti `daily_goal_xp`,
-`DailyGoal.DEFAULT = 50`. `AndroidStudyPreferencesApi` serverga `goal`,
-`daily_minutes`, `preferred_focus` yuboradi — **`daily_goal_xp` ni emas**, va
-Android profil DTO'sida bunday maydon **umuman yo'q**.
+**(a) ~~Kunlik maqsad sinxronlanmaydi~~ — TUZATILDI 2026-09-15.** Server
+profilda `daily_goal_xp` saqlaydi va Mini App uni o'qib-yozardi; Android esa
+faqat telefon ichida saqlardi va hech qachon yubormasdi. Endi:
 
-Ya'ni: Mini App'da 40 tanlansa server 40 ni biladi, Android esa buni hech
-qachon o'qimaydi va o'z lokal 50 sini ko'rsatadi. Teskarisi ham shunday.
-
-Ustiga tanlovlar ham har xil: Mini App `[20,30,40,50,80]`, Android
-`[10,20,30,50]` — ya'ni **40 ni Android'da tanlashning iloji yo'q**. Ikkalasi
-hech qachon kelisha olmaydi.
+- `AndroidStudyPreferencesRequest` va `set_study_preferences` `daily_goal_xp`
+  qabul qiladi va Mini App bilan **bitta setter**ga beradi
+  (`CourseMiniAppProfileService.set_daily_goal_xp`), ya'ni ikkalasi boshqacha
+  qisqartira olmaydi.
+- Android kurs xaritasi kelganda `studySetup.dailyGoalXp` ni lokal
+  DataStore'ga ko'chiradi — lokal qiymat endi manba emas, **oyna**.
+- Maqsad tanlanganda serverga yuboriladi (`chooseDailyGoalXp`).
+- `DailyGoal.CHOICES` Mini App bilan tenglashtirildi: `[20,30,40,50,80]`.
+  Ilgari `[10,20,30,50]` edi — **40 ni tanlashning iloji yo'q edi**.
+- `DailyGoal.sanitize` endi ro'yxat emas, serverning chegarasi (10..500).
+  Ilgari ro'yxatda yo'q qiymatni jimgina 50 ga aylantirardi — muammoning
+  yarmi aynan shu edi.
 
 **(b) ~~«−5 qoldi»~~ — TUZATILDI 2026-09-15.** `course-v3.html:5303` da
 `(dailyGoal-todayXp)` to'g'ridan-to'g'ri chop etilardi. Endi

@@ -67,9 +67,27 @@ enum class AppThemeMode(val wireValue: String) {
  */
 object DailyGoal {
     const val DEFAULT = 50
-    val CHOICES = listOf(10, 20, 30, 50)
 
-    fun sanitize(value: Int?): Int = value?.takeIf { it in CHOICES } ?: DEFAULT
+    /**
+     * What the picker offers, copied from the Mini App's own list
+     * (`course-v3.html`: `opts=[20,30,40,50,80]`). They have to match: a goal
+     * chosen in one product must be selectable in the other, and 40 used not
+     * to be offered here at all.
+     */
+    val CHOICES = listOf(20, 30, 40, 50, 80)
+
+    /** The server's bounds (`miniapp_preferences.py`: ge=10, le=500). */
+    private val RANGE = 10..500
+
+    /**
+     * Accepts anything the server would, not only what the picker offers.
+     *
+     * This used to be an allowlist, which silently rewrote a stored goal the
+     * list did not contain — a learner who chose 40 in the Mini App had it
+     * turned into 50 on the way in, which is precisely how one account showed
+     * two different goals.
+     */
+    fun sanitize(value: Int?): Int = value?.takeIf { it in RANGE } ?: DEFAULT
 }
 
 class AppSettings(context: Context) : LessonResumeStore {

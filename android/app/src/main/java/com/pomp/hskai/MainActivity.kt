@@ -375,6 +375,12 @@ private fun AppRoot(
 
             LaunchedEffect(courseState.map?.studySetup) {
                 studySetupViewModel.sync(courseState.map?.studySetup)
+                // The daily goal belongs to the account, not to the phone. The
+                // local copy is only a mirror so the profile can draw before
+                // the map arrives; the server's answer always wins.
+                courseState.map?.studySetup?.dailyGoalXp
+                    ?.takeIf { it > 0 }
+                    ?.let { app.appSettings.setDailyGoal(it) }
             }
 
             // The blocks arrive with the map, but they belong to every
@@ -1006,7 +1012,11 @@ private fun AppRoot(
                             current = dailyGoal,
                             onPick = { value ->
                                 goalPickerOpen = false
+                                // Written locally at once so the profile does
+                                // not lag behind the tap, and sent on, because
+                                // the Mini App reads the same number.
                                 scope.launch { app.appSettings.setDailyGoal(value) }
+                                studySetupViewModel.chooseDailyGoalXp(value)
                             },
                             onDismiss = { goalPickerOpen = false },
                         )

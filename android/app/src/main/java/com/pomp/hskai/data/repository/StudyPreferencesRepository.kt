@@ -22,6 +22,9 @@ class StudyPreferencesRepository(
     suspend fun setPreferredFocus(focus: String): ApiResult<CourseStudySetup> =
         update(preferredFocus = focus)
 
+    suspend fun setDailyGoalXp(value: Int): ApiResult<CourseStudySetup> =
+        update(dailyGoalXp = value)
+
     suspend fun lastSetupPromptAskedAtMillis(): Long? = try {
         readLastSetupPromptAskedAtMillis()
     } catch (_: Exception) {
@@ -41,6 +44,7 @@ class StudyPreferencesRepository(
         goal: String? = null,
         dailyMinutes: Int? = null,
         preferredFocus: String? = null,
+        dailyGoalXp: Int? = null,
     ): ApiResult<CourseStudySetup> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
@@ -53,6 +57,7 @@ class StudyPreferencesRepository(
                     goal = goal,
                     dailyMinutes = dailyMinutes,
                     preferredFocus = preferredFocus,
+                    dailyGoalXp = dailyGoalXp,
                 ),
             )
         }
