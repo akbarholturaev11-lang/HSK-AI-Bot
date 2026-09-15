@@ -134,6 +134,32 @@ Server side: `app/services/android_release_service.py` (the stored release),
 (handing it over). The published release lives in one `bot_settings` row, so
 there is no migration and withdrawing a bad build is a single write.
 
+## Cutting a release
+
+`.github/workflows/android-release.yml`, run by hand from the Actions tab. It
+runs the same static checks and tests CI does, builds the signed `direct`
+release, and uploads it to the same Cloudflare R2 bucket the desktop
+installers live in, under `android/v<version>/`. The run summary prints the
+public URL to paste into the bot.
+
+It refuses to publish an APK signed by anything but the expected key: the
+certificate SHA-256 is pinned in the workflow, because an APK signed by a
+different key cannot update any app anyone already installed. It also refuses
+to overwrite a published key with different bytes — re-running the same
+release is fine, silently replacing one is not.
+
+Secrets it needs, beyond the `R2_*` ones the desktop release already uses:
+
+| Secret | What it is |
+|---|---|
+| `POMP_ANDROID_KEYSTORE_BASE64` | `base64 -i release.jks` of the keystore |
+| `POMP_ANDROID_KEYSTORE_PASSWORD` | its password |
+| `POMP_ANDROID_KEY_ALIAS` | `pomp-hskai` |
+| `POMP_ANDROID_KEY_PASSWORD` | the key password |
+
+Uploading the APK to the bot is still a manual step — Telegram holds the file
+itself, and only an admin chat can hand it over.
+
 ## In-app updates, and why only one flavour has them
 
 Android cannot update a sideloaded app silently. The system always shows its
