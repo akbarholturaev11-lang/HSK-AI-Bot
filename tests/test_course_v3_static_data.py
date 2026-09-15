@@ -765,7 +765,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function shouldShowAdPromoEntry()", download)
         self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
-        self.assertIn('var APP_PROMO_PLATFORMS = ["macos", "windows"]', download)
+        # Android qo'shildi; iOS'ga alohida ilova yo'q, shuning uchun u yo'q.
+        self.assertIn(
+            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android"]', download
+        )
         self.assertIn("buildOsButton(platform, source)", download)
         self.assertNotIn('buildOsButton("android", source)', download)
         self.assertNotIn('buildOsButton("ios", source)', download)
@@ -858,7 +861,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("App reklamasi", html)
         self.assertIn('appPromoChipHtml("platform","macos","MacBook"', html)
         self.assertIn('appPromoChipHtml("platform","windows","Windows"', html)
-        self.assertNotIn('appPromoChipHtml("platform","android","Android"', html)
+        # Android endi ko'rsatiladi, ya'ni admin uni yoqib-o'chira olishi kerak.
+        self.assertIn('appPromoChipHtml("platform","android","Android"', html)
         self.assertNotIn('appPromoChipHtml("platform","ios","Apple"', html)
         self.assertIn("data-app-promo-media-upload", html)
         self.assertIn("/api/admin-miniapp/desktop-promo/media", html)

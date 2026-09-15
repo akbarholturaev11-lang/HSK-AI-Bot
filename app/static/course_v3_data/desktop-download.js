@@ -30,7 +30,10 @@
   var ENTRY_SOURCES = ["profile"].concat(PROMO_SOURCES);
   var DEFAULT_PROMO_COOLDOWN_DAYS = 14;
   var DEFAULT_HOME_PROMPT_DAILY_LIMIT = 3;
-  var APP_PROMO_PLATFORMS = ["macos", "windows"];
+  var APP_PROMO_PLATFORMS = ["macos", "windows", "android"];
+  // Android's availability comes from the public apps status, not from the
+  // desktop one: it is published by a different pipeline and needs no auth.
+  var APPS_STATUS_ENDPOINT = "/api/v3/apps/public-status";
 
   var COPY = {
     uz: {
@@ -47,9 +50,9 @@
         "Yuklash holatini tekshirib bo‘lmadi. Internetni tekshirib, qayta urining.",
       retryStatus: "Qayta tekshirish",
       checkingStatus: "Tekshirilmoqda…",
-      promoTitle: "Darslarni kompyuterda davom ettiring",
+      promoTitle: "HSK AI ilovasini o‘rnating",
       promoBody:
-        "MacBook yoki Windows ilovasini tanlang. Progress telefon bilan birga saqlanadi.",
+        "Android, MacBook yoki Windows — qurilmangizni tanlang. Progress hamma joyda bir xil.",
       bigScreen: "Katta ekran",
       autoUpdate: "Auto update",
       sharedProgress: "Progress saqlanadi",
@@ -64,8 +67,8 @@
       recommended: "Mos",
       dismiss: "Keyinroq",
       close: "Oynani yopish",
-      adEntry: "Kompyuter ilovasini olish",
-      adEntrySub: "Mac va Windows · progress saqlanadi",
+      adEntry: "HSK AI ilovasini olish",
+      adEntrySub: "Android · Mac · Windows",
       sendingShort: "Tayyorlanmoqda…",
       sending: "Yuklash sayti tayyorlanmoqda…",
       telegramRequired: "Mini Appni bot ichidan qayta oching.",
@@ -121,9 +124,9 @@
         "Не удалось проверить загрузку. Проверьте интернет и повторите.",
       retryStatus: "Проверить снова",
       checkingStatus: "Проверяем…",
-      promoTitle: "Продолжайте уроки на компьютере",
+      promoTitle: "Установите приложение HSK AI",
       promoBody:
-        "Выберите приложение для MacBook или Windows. Прогресс сохранится вместе с телефоном.",
+        "Android, MacBook или Windows — выберите устройство. Прогресс везде один.",
       bigScreen: "Большой экран",
       autoUpdate: "Автообновление",
       sharedProgress: "Общий прогресс",
@@ -138,8 +141,8 @@
       recommended: "Подходит",
       dismiss: "Позже",
       close: "Закрыть окно",
-      adEntry: "Скачать приложение для компьютера",
-      adEntrySub: "Mac и Windows · единый прогресс",
+      adEntry: "Скачать приложение HSK AI",
+      adEntrySub: "Android · Mac · Windows",
       sendingShort: "Готовим…",
       sending: "Готовим страницу загрузки…",
       telegramRequired: "Откройте Mini App заново из бота.",
@@ -195,9 +198,9 @@
         "Ҳолати боргирӣ санҷида нашуд. Интернетро санҷида, боз кӯшиш кунед.",
       retryStatus: "Боз санҷидан",
       checkingStatus: "Санҷида мешавад…",
-      promoTitle: "Дарсҳоро дар компютер идома диҳед",
+      promoTitle: "Барномаи HSK AI-ро насб кунед",
       promoBody:
-        "Барномаи MacBook ё Windows-ро интихоб кунед. Пешрафт бо телефон якҷо нигоҳ дошта мешавад.",
+        "Android, MacBook ё Windows — дастгоҳи худро интихоб кунед. Пешрафт ҳама ҷо як аст.",
       bigScreen: "Экрани калон",
       autoUpdate: "Навсозии автоматӣ",
       sharedProgress: "Пешрафти умумӣ",
@@ -212,8 +215,8 @@
       recommended: "Мувофиқ",
       dismiss: "Баъдтар",
       close: "Пӯшидани равзана",
-      adEntry: "Гирифтани барномаи компютерӣ",
-      adEntrySub: "Mac ва Windows · пешрафти умумӣ",
+      adEntry: "Гирифтани барномаи HSK AI",
+      adEntrySub: "Android · Mac · Windows",
       sendingShort: "Омода мешавад…",
       sending: "Саҳифаи боргирӣ омода мешавад…",
       telegramRequired: "Mini App-ро аз дохили бот аз нав кушоед.",
@@ -263,9 +266,9 @@
     availabilityError: false,
     enabled: false,
     platforms: { macos: false, windows: false, android: false, ios: false },
-    platformTargets: { macos: true, windows: true, android: false, ios: false },
-    transferUrls: { macos: "", windows: "" },
-    runtimeUnavailable: { macos: false, windows: false, android: true, ios: true },
+    platformTargets: { macos: true, windows: true, android: true, ios: false },
+    transferUrls: { macos: "", windows: "", android: "" },
+    runtimeUnavailable: { macos: false, windows: false, android: false, ios: true },
     promoEligible: false,
     promoReason: "",
     promoCooldownDays: 0,
@@ -545,6 +548,11 @@
   }
 
   function isPlatformAvailable(platform) {
+    // Android does not depend on `state.enabled`: that flag gates the desktop
+    // installers, and the APK is published by its own pipeline.
+    if (platform === "android") {
+      return Boolean(state.platforms.android && state.transferUrls.android);
+    }
     return Boolean(
       state.enabled &&
         state.platforms[platform] &&
@@ -556,7 +564,8 @@
   function hasAvailablePlatform() {
     return (
       isPlatformAvailable("macos") ||
-      isPlatformAvailable("windows")
+      isPlatformAvailable("windows") ||
+      isPlatformAvailable("android")
     );
   }
 
@@ -1133,6 +1142,19 @@
         source
       ) < 0
     ) {
+      return;
+    }
+
+    // Android takes the short path deliberately. Everything below — the
+    // request token, the "where shall we open this?" sheet, the transfer to
+    // another device — exists because a DMG or an EXE cannot run on the phone
+    // reading this. An APK can: the learner is already holding the device it
+    // installs on, so the link is simply opened.
+    if (platform === "android") {
+      var androidUrl = state.transferUrls.android;
+      if (!androidUrl) return;
+      track("android_apk_requested", { source: "miniapp_" + source });
+      openTrackedLink(androidUrl);
       return;
     }
     if (!telegramInitData()) {
@@ -1938,7 +1960,31 @@
     }
   }
 
+  function loadAndroidAvailability() {
+    // Public, cached and unauthenticated: it must not be able to fail the
+    // desktop status, which is what the rest of this panel depends on.
+    fetch(APPS_STATUS_ENDPOINT, { headers: { Accept: "application/json" } })
+      .then(function (response) {
+        return response.ok ? response.json() : null;
+      })
+      .then(function (data) {
+        var entry =
+          (data && data.platforms && data.platforms.android) || null;
+        state.platforms.android = Boolean(entry && entry.available);
+        state.transferUrls.android =
+          state.platforms.android && entry.download
+            ? new URL(String(entry.download), window.location.origin).toString()
+            : "";
+        renderProfile();
+      })
+      .catch(function () {
+        state.platforms.android = false;
+        state.transferUrls.android = "";
+      });
+  }
+
   function loadAvailability() {
+    loadAndroidAvailability();
     if (state.availabilityLoading) return;
     if (isDesktop || !telegramInitData()) {
       state.availabilityLoaded = true;
@@ -1969,7 +2015,6 @@
             state.platforms.windows = Boolean(
               data.platforms && data.platforms.windows
             );
-            state.platforms.android = false;
             state.platforms.ios = false;
             state.transferUrls.macos = cleanTransferUrl(
               data.downloads && data.downloads.macos,
@@ -2009,7 +2054,6 @@
             APP_PROMO_PLATFORMS.forEach(function (platform) {
               state.platformTargets[platform] = targets[platform] !== false;
             });
-            state.platformTargets.android = false;
             state.platformTargets.ios = false;
             state.promoMedia.url = safePromoMediaUrl(promo.media_url);
             state.promoMedia.type = state.promoMedia.url
@@ -2033,7 +2077,6 @@
         APP_PROMO_PLATFORMS.forEach(function (platform) {
           state.platformTargets[platform] = true;
         });
-        state.platformTargets.android = false;
         state.platformTargets.ios = false;
         state.promoMedia.url = "";
         state.promoMedia.type = "";

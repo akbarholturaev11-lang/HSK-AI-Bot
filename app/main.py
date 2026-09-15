@@ -2010,6 +2010,20 @@ async def _desktop_auto_download_links() -> dict[str, str]:
             links[platform] = releases.public_transfer_url(platform)
         except Exception:
             continue
+
+    # Android is published by its own pipeline, so it is asked separately and
+    # its absence never costs the desktop buttons theirs.
+    try:
+        status = await app_download_status(
+            session_factory=async_session_maker,
+            settings_obj=settings,
+        )
+        android = status.get("platforms", {}).get("android") or {}
+        base = str(getattr(releases, "public_base_url", "") or "").rstrip("/")
+        if android.get("available") and android.get("download") and base:
+            links["android"] = base + str(android["download"])
+    except Exception:
+        logger.exception("Android auto download link resolve failed")
     return links
 
 

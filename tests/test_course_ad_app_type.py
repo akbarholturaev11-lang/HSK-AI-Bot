@@ -28,18 +28,30 @@ from app.services.course_ad_service import (
 
 
 class CourseAdAppPlatformButtonTests(unittest.TestCase):
-    """Platforma tugmalari: MacBook/Windows ko'rinadi, iPhone/Android hozircha yo'q."""
+    """Platforma tugmalari: havolasi bori ko'rinadi, o'lik tugma chiqmaydi."""
 
-    def test_ios_and_android_are_supported_but_not_visible_yet(self):
-        # Kod ikkalasini ham biladi (keyin yoqish uchun).
+    def test_android_is_visible_now_and_ios_still_is_not(self):
+        # Kod to'rttasini ham biladi.
         self.assertEqual(
             COURSE_AD_APP_PLATFORMS, ("macos", "windows", "ios", "android")
         )
-        # Lekin hozir faqat ikkitasi ko'rsatiladi — iOS/Android uchun tayyor
-        # yuklab olish havolasi yo'q, o'lik tugma chiqmasligi kerak.
-        self.assertEqual(COURSE_AD_APP_VISIBLE_PLATFORMS, ("macos", "windows"))
+        # Android 2026-09-15 dan beri chiqariladi — relizi va `/downloads/android`
+        # havolasi bor.
+        self.assertIn("android", COURSE_AD_APP_VISIBLE_PLATFORMS)
+        # iOS'ga alohida ilova yo'q. O'lik tugma foydalanuvchini chalg'itadi,
+        # shuning uchun u ro'yxatda yo'q.
         self.assertNotIn("ios", COURSE_AD_APP_VISIBLE_PLATFORMS)
-        self.assertNotIn("android", COURSE_AD_APP_VISIBLE_PLATFORMS)
+
+    def test_an_android_button_appears_only_with_a_link_behind_it(self):
+        with_link = CourseAdService.app_platform_buttons(
+            {"platform_links": {}},
+            {"android": "https://cdn.example/downloads/android"},
+        )
+        self.assertEqual([b["platform"] for b in with_link], ["android"])
+
+        # Reliz sozlanmagan bo'lsa tugma umuman chiqmaydi.
+        without_link = CourseAdService.app_platform_buttons({"platform_links": {}}, {})
+        self.assertEqual(without_link, [])
 
     def test_buttons_use_release_links_when_admin_left_them_empty(self):
         buttons = CourseAdService.app_platform_buttons(
@@ -267,9 +279,12 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         self.assertIn("Bo'sh — avtomatik", html)
         self.assertIn('fd.append("link_macos"', html)
         self.assertIn('fd.append("link_windows"', html)
-        # iPhone/Android uchun admin maydoni hozircha qo'shilmaydi.
+        # Android 2026-09-15 dan beri chiqariladi, shuning uchun admin unga
+        # qo'lda havola bera oladi. iPhone'ga alohida ilova yo'q — maydon ham
+        # yo'q, aks holda admin hech qachon ishlamaydigan havola kiritadi.
+        self.assertIn('id="caLinkAndroid"', html)
+        self.assertIn('fd.append("link_android"', html)
         self.assertNotIn('id="caLinkIos"', html)
-        self.assertNotIn('id="caLinkAndroid"', html)
 
     def test_ad_endpoint_attaches_platform_buttons(self):
         # Reklama endpointi `app/main.py` dan `app/api/miniapp_ads.py` ga

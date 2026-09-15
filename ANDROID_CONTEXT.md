@@ -212,6 +212,30 @@ Matnlar `desktop-download-page.js` dagi `COPY` da, platforma prefiksi bilan:
 `iosTitle`, `androidSteps`, `macSecurity` va h.k. (`macos` tarixan `mac`).
 Yangi platforma qo'shsangiz — `COPY_KEY` ga ham qo'shing.
 
+## 4.6 Mini App ichidagi ilova reklamasi
+
+Ikkita joyda Android bor:
+
+**Profildagi promo karta** (`course_v3_data/desktop-download.js`). Android
+`APP_PROMO_PLATFORMS` ga qo'shildi; mavjudligi `/api/v3/apps/public-status`
+dan olinadi — desktop statusidan emas, chunki u boshqa pipeline va
+autentifikatsiya talab qilmaydi. Uning yiqilishi desktop tugmalarini
+o'ldirmaydi.
+
+Android **qisqa yo'ldan** ketadi: havola to'g'ridan-to'g'ri ochiladi. Pastdagi
+butun mashina (request token, «faylni qayerda ochamiz?» oynasi, boshqa
+qurilmaga uzatish) DMG/EXE telefonda ishlamagani uchun qurilgan. APK ishlaydi —
+o'quvchi allaqachon o'rnatadigan qurilmani ushlab turibdi.
+
+**Ekran markazidagi app reklamasi** (`ads.js` + `course_ad_service.py`). Bu
+ma'lumotga bog'liq: server faqat havolasi BOR platformalarni yuboradi.
+`COURSE_AD_APP_VISIBLE_PLATFORMS` ga `android` qo'shildi, havolani
+`_desktop_auto_download_links` beradi. Admin panelda Android chipi va qo'lda
+havola maydoni bor.
+
+**iOS ikkalasida ham yo'q** — unga alohida ilova yo'q, o'lik tugma esa
+foydalanuvchini chalg'itadi. Tayyor bo'lganda ro'yxatlarga qo'shish yetarli.
+
 ## 5. Qayerga qarash kerak
 
 | Nima | Qayerda |

@@ -66,12 +66,12 @@ COURSE_AD_MAX_DAILY_LIMIT = 50
 # `COURSE_AD_APP_PLATFORMS` — kod qo'llab-quvvatlaydigan HAMMA platforma.
 # `COURSE_AD_APP_VISIBLE_PLATFORMS` — foydalanuvchiga HOZIR ko'rinadiganlari.
 #
-# iPhone va Android hozircha KO'RSATILMAYDI: ular uchun tayyor yuklab olish
-# havolasi yo'q (reliz tizimi faqat macOS va Windows'ni biladi), o'lik tugma
-# esa foydalanuvchini chalg'itadi. Reliz tayyor bo'lgach quyidagi ro'yxatga
-# platformani qo'shish yetarli — boshqa hech narsa o'zgartirilmaydi.
+# Android 2026-09-15 da qo'shildi: relizi tayyor va havolasi bor
+# (`/downloads/android`). iPhone hali KO'RSATILMAYDI — unga alohida ilova yo'q,
+# o'lik tugma esa foydalanuvchini chalg'itadi. iOS tayyor bo'lgach quyidagi
+# ro'yxatga qo'shish yetarli; havolani `_desktop_auto_download_links` beradi.
 COURSE_AD_APP_PLATFORMS = ("macos", "windows", "ios", "android")
-COURSE_AD_APP_VISIBLE_PLATFORMS = ("macos", "windows")
+COURSE_AD_APP_VISIBLE_PLATFORMS = ("macos", "windows", "android")
 
 
 def _ad_placements_list(ad) -> list[str]:

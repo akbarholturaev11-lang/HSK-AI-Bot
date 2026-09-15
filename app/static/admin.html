@@ -438,6 +438,7 @@
             <div class="frow two" id="caAppLinksRow" style="display:none">
               <div><label>MacBook havolasi</label><input id="caLinkMacos" class="input" placeholder="Bo'sh — avtomatik"></div>
               <div><label>Windows havolasi</label><input id="caLinkWindows" class="input" placeholder="Bo'sh — avtomatik"></div>
+              <div><label>Android havolasi</label><input id="caLinkAndroid" class="input" placeholder="Bo'sh — avtomatik"></div>
             </div>
             <div class="frow two">
               <div><label id="caLinkLabel">Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
@@ -1289,10 +1290,11 @@
         </div>
         <div class="mcard">
           <h3>Platforma tugmalari</h3>
-          <p>Hozircha faqat MacBook va Windows ko'rinadi. Android va Apple keyin ochiladi.</p>
+          <p>MacBook, Windows va Android ko'rinadi. Apple uchun alohida ilova hali yo'q.</p>
           <div class="chips">
             ${appPromoChipHtml("platform","macos","MacBook",platforms.macos!==false)}
             ${appPromoChipHtml("platform","windows","Windows",platforms.windows!==false)}
+            ${appPromoChipHtml("platform","android","Android",platforms.android!==false)}
           </div>
         </div>
         <button class="btn" data-app-promo-save>Saqlash</button>
@@ -1840,7 +1842,7 @@
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); fd.append("button_text",adType==="odiy"?"":($("caBtnText").value||"")); if(adType==="app"){ fd.append("skip_after_seconds",($("caSkipAfter")&&$("caSkipAfter").value)||"0"); fd.append("daily_limit",($("caDailyLimit")&&$("caDailyLimit").value)||"0"); fd.append("link_macos",($("caLinkMacos")&&$("caLinkMacos").value)||""); fd.append("link_windows",($("caLinkWindows")&&$("caLinkWindows").value)||""); } fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); fd.append("button_text",adType==="odiy"?"":($("caBtnText").value||"")); if(adType==="app"){ fd.append("skip_after_seconds",($("caSkipAfter")&&$("caSkipAfter").value)||"0"); fd.append("daily_limit",($("caDailyLimit")&&$("caDailyLimit").value)||"0"); fd.append("link_macos",($("caLinkMacos")&&$("caLinkMacos").value)||""); fd.append("link_windows",($("caLinkWindows")&&$("caLinkWindows").value)||""); fd.append("link_android",($("caLinkAndroid")&&$("caLinkAndroid").value)||""); } fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }
