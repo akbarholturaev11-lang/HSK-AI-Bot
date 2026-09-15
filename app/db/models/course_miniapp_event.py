@@ -99,6 +99,11 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "android_notification_opened",
     "android_checkout_opened",
     "android_play_purchase_verified",
+    # The APK is handed out from the bot chat, so these two are the only
+    # measurement of that funnel: nothing of ours serves the file, and
+    # Telegram reports nothing back about it.
+    "android_apk_requested",
+    "android_apk_sent",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (

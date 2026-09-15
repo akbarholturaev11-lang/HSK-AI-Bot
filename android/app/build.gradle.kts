@@ -34,6 +34,16 @@ val hasReleaseSigning = releaseStoreFile != null &&
     releaseKeyAlias != null &&
     releaseKeyPassword != null
 
+/**
+ * One version, named once. The bot hands the APK to the learner as a Telegram
+ * document, and the file name is the only place the version survives that
+ * trip: Telegram passes the name through untouched and the bot never opens the
+ * APK. `app-direct-release.apk` would leave the admin typing the version from
+ * memory on every upload, so the artifact carries it instead.
+ */
+val appVersionName = "1.1.0"
+val appVersionCode = 2
+
 val apiOrigin: String = (project.findProperty("POMP_API_ORIGIN") as String?)
     ?.trim()
     ?.trimEnd('/')
@@ -51,8 +61,16 @@ android {
         applicationId = "com.pomp.hskai"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
+
+        // Produces `hsk-ai-<versionName>-<versionCode>-<flavour>-<buildType>.apk`.
+        // `AndroidReleaseService.parse_artifact_name` reads exactly that shape,
+        // which is also how the bot refuses to hand out a `play` or `debug`
+        // build: either one installs cleanly and then strands the learner, the
+        // first with no way to pay and the second with an application id that
+        // no real release can ever update.
+        setProperty("archivesBaseName", "hsk-ai-$appVersionName-$appVersionCode")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

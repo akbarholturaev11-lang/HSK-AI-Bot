@@ -126,6 +126,7 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="🆘 Yordam sozlamalari", callback_data="adm:help_settings")],
         [InlineKeyboardButton(text="✅ Obuna berish", callback_data="adm:giveaccess_info")],
         [InlineKeyboardButton(text="🎵 Audio boshqaruv", callback_data="adm:audio_panel")],
+        [InlineKeyboardButton(text="📱 Android ilova", callback_data="adm:android_panel")],
         [InlineKeyboardButton(text="⬅️ Asosiy menyu", callback_data="adm:entry")],
     ])
 

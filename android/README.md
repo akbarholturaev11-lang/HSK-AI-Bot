@@ -97,6 +97,43 @@ or the environment variables `POMP_ANDROID_KEYSTORE_FILE`,
 When none are present the release build is produced unsigned, so a public
 release stays fail-closed rather than silently shipping an unsignable bundle.
 
+The keystore itself lives outside the repository (`~/.pomp-hskai/`) so that a
+clean checkout or a `git clean -fdx` cannot destroy it. Back it up: every
+future update — through the bot today, through Play later — must be signed with
+the same key, and a direct-install APK signed by a different key will not
+upgrade over the installed one.
+
+## Distribution: the bot hands out the APK
+
+There is no Play listing yet. The whole channel is the Telegram bot: the admin
+uploads one signed `direct` release APK, Telegram keeps the bytes, and every
+learner afterwards receives that same `file_id`. Nothing of ours serves the
+download and there is no second copy to drift out of sync with the first.
+
+```bash
+cd android && ./gradlew assembleDirectRelease
+# → app/build/outputs/apk/direct/release/hsk-ai-<version>-<code>-direct-release.apk
+```
+
+Then, in the bot: **Admin panel → 📱 Android ilova → ⬆️ Yangi APK yuklash**,
+send the file as a *document*, confirm the version, publish. Learners reach it
+with `/android` or the **📱 Android ilova** button in their profile.
+**🚫 Tarqatishni to'xtatish** stops the handout immediately — one settings
+write, no deploy.
+
+The artifact name is load-bearing. `archivesBaseName` makes Gradle emit
+`hsk-ai-<versionName>-<versionCode>-<flavour>-<buildType>.apk`, which is the
+only place the version survives the trip through Telegram — the bot never opens
+the APK. It is also how the upload step refuses a `play` or `debug` build:
+both install perfectly and then strand whoever installed them, the first with
+no way to pay and the second with an application id that no real release can
+ever update.
+
+Server side: `app/services/android_release_service.py` (the stored release),
+`app/bot/handlers/admin_android.py` (publishing), `app/bot/handlers/android_app.py`
+(handing it over). The published release lives in one `bot_settings` row, so
+there is no migration and withdrawing a bad build is a single write.
+
 ## Localisation
 
 Backend language codes are `uz` / `ru` / `tj`. Android resource qualifiers are

@@ -28,6 +28,8 @@ from app.bot.handlers.messages import router as messages_router
 from app.bot.handlers.course import router as course_router
 from app.bot.handlers.admin import router as admin_router
 from app.bot.handlers.admin_audio import router as admin_audio_router
+from app.bot.handlers.admin_android import router as admin_android_router
+from app.bot.handlers.android_app import router as android_app_router
 from app.bot.handlers.partner import router as partner_router
 from app.bot.handlers.admin_partner import router as admin_partner_router
 from app.bot.handlers.challenge import router as challenge_router
@@ -60,6 +62,7 @@ def create_bot(settings):
     dp.include_router(admin_ads_router)
     dp.include_router(release_feedback_router)
     dp.include_router(admin_audio_router)   # admin FSM flows must stay before generic text/photo handlers
+    dp.include_router(admin_android_router)  # same reason: the APK upload step reads a raw document
     dp.include_router(admin_partner_router)
     dp.include_router(feedback_router)
     dp.include_router(subscription_churn_router)
@@ -70,6 +73,7 @@ def create_bot(settings):
     dp.include_router(menu_router)
     dp.include_router(payments_router)
     dp.include_router(admin_payments_router)
+    dp.include_router(android_app_router)
     dp.include_router(course_router)
     dp.include_router(admin_router)
     dp.include_router(messages_router)

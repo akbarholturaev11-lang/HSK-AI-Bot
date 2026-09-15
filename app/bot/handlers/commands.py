@@ -25,6 +25,7 @@ from app.bot.keyboards.subscription import (
     subscription_miniapp_keyboard,
 )
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
+from app.bot.handlers.android_app import ANDROID_APP_CALLBACK
 from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
@@ -393,6 +394,15 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
                         focus_desktop_download=True,
                     )
                 ),
+            ),
+        ],
+        [
+            # Android is a plain callback, not a Mini App button: the APK is
+            # handed over inside this chat, so sending the learner into a web
+            # view first would only add a step between them and the file.
+            InlineKeyboardButton(
+                text=t("android_app_button", lang),
+                callback_data=ANDROID_APP_CALLBACK,
             ),
         ],
         [

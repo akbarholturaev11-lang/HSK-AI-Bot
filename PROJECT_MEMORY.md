@@ -8064,3 +8064,393 @@ Risk / follow-up:
   named arguments, flavour parity, string translation, palette parity). Those
   scripts have never been committed, so the Android CI job fails at that step
   before it reaches Gradle. They were verified by hand this round.
+
+### 2026-09-14 — One Chinese voice on Android, and it is cached
+
+Changed:
+- `Xatolarim` review was the one Android screen still speaking through the
+  phone's own `android.speech.tts.TextToSpeech`. Most phones sold in Uzbekistan
+  and Tajikistan carry no Chinese voice, so the speaker on a listening question
+  was simply silent — an unanswerable question. It now goes through
+  `CourseRepository.ttsAudio` → `/api/v3/android/tts`, the same server voice the
+  lesson, dictionary, Voice and Foundation screens already use.
+- `PracticeViewModel` gained `courseRepository` and `audioPlayer`, plus
+  `playReviewAudio`, `isReviewAudioLoading` and `reviewAudioError`. The audio
+  error is deliberately separate from `PracticeUiState.error`: that field drives
+  the section limit overlay and the practice-home error pill, so a failed MP3
+  download must not raise a paywall or leave a notice behind.
+- Added `TtsCache` / `DiskTtsCache` — a size-capped (24 MB) LRU on disk under
+  `cacheDir/tts`, keyed by rate + phrase. `ttsAudio` reads it before asking for
+  a token and writes every fetch, so a replayed phrase is instant and survives a
+  dropped network. `clearCache()` now drops the audio as well.
+- The review speaker carries a content description (the existing
+  `dictionary_listen` string, so uz/ru/tg were already covered) and shows the
+  dictionary's spinner while fetching.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/core/audio/TtsCache.kt` (new)
+- `android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeViewModel.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/MistakesScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt`
+- `android/app/src/test/java/com/pomp/hskai/core/audio/DiskTtsCacheTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/feature/practice/MistakeReviewAudioTest.kt` (new)
+
+Important decision:
+- Cached audio is served before the access token is asked for. The phrase is
+  already drawn on the screen that wants to hear it, so replaying our own copy
+  opens nothing a session would have gated — and it is what makes the second tap
+  instant offline. Cache reads never stand in for authentication anywhere else.
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 208 passed, 0 failed.
+- `connectedDirectDebugAndroidTest` on the Pixel_8 emulator: 17 passed,
+  1 skipped (the pre-existing `WidgetLayoutTest.launcherFixture`), 0 failed.
+- `lintDirectDebug` and `assembleDirectDebug` clean; the only warning left on
+  the touched files is the pre-existing `Icons.Filled.VolumeUp` deprecation.
+
+Follow-up:
+- The exam screen renders `audioText` as written text instead of playing it
+  (`PracticeScreen.kt:432,488,506`), so an HSK listening question shows its own
+  script. Untouched here — decide whether that is deliberate.
+- `pomp-hsk-ai://practice/memorize` resolves but opens nothing: `PracticeTool`
+  has `MEMORIZE`, `PracticeRequest` has no branch for it and there is no screen.
+- `FeatureFlags` (`PRACTICE_ENABLED`, `VOICE_ENABLED`, `SUBSCRIPTION_ENABLED`)
+  is read nowhere; the screens open regardless. Use it or delete it.
+
+### 2026-09-14 — Practice deep links reach the tool they name
+
+Changed:
+- `pomp-hsk-ai://practice` resolved to nothing at all: `AppDestination.Practice`
+  required a tool, so bare `practice` failed the arity check and the app stayed
+  exactly where it was. `RELEASE_FEEDBACK_ANDROID_ASSISTANT.md` hands users that
+  exact link as its "Sinab ko'rish" button. `tool` is now nullable and the bare
+  link opens the section home.
+- Worse, `practice/<tool>` parsed the tool, validated it against the allowlist,
+  carried it into `MainActivity` — and then fell into the `else` branch, which
+  consumed the request and dropped it. Every practice link landed on the section
+  home: `practice/mistakes`, `practice/recognition`, `practice/pronunciation`,
+  `practice/tests` alike. Profile's own `Xatolarim` entry point goes through
+  that link (`ProfileScreen.kt:122`), so it was opening the wrong screen for
+  anyone reaching it outside `MainActivity`'s direct callback.
+  `MainActivity` now has an `is AppDestination.Practice` branch that sets
+  `practiceRequest` from the tool, using a new `PracticeTool.toRequest()`.
+  The old branch's `deepLinkRefreshGate.reset()` is kept, so a later lesson link
+  can still claim the gate.
+- Deleted `core/config/FeatureFlags.kt`. `PRACTICE_ENABLED`, `VOICE_ENABLED` and
+  `SUBSCRIPTION_ENABLED` were all `false` while the screens opened anyway — the
+  object was read from nowhere in the whole module. It described a shipped app
+  as unbuilt, which is worse than no flag.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+- `android/app/src/test/java/com/pomp/hskai/feature/practice/PracticeToolRequestTest.kt` (new)
+- `android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt`
+
+Important decision:
+- `PracticeTool.MEMORIZE` maps to a null request on purpose, so the link opens
+  the practice home instead of being rejected. Rejecting it would ignore the
+  link entirely and leave the app where it was — the exact failure just fixed.
+  `PracticeToolRequestTest` asserts every other tool reaches a screen, so a new
+  tool cannot be added without deciding where it opens.
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 213 passed, 0 failed.
+- `connectedDirectDebugAndroidTest` on the Pixel_8 emulator: 17 passed,
+  1 skipped (pre-existing `WidgetLayoutTest.launcherFixture`), 0 failed.
+- `lintDirectDebug` and `assembleDirectDebug` clean.
+- On the emulator, all four of `practice`, `practice/mistakes`,
+  `practice/memorize` and `practice/unknown-tool` were delivered to a resumed
+  `MainActivity` with no crash. The screen behind them could NOT be checked:
+  the build has no linked Telegram account, so it stops at the link screen. The
+  tool-to-screen step is covered by unit tests only.
+
+Follow-up:
+- Still open from the entry above: the exam screen renders `audioText` as
+  written text (`PracticeScreen.kt:432,488,506`), so an HSK listening question
+  shows its own script.
+- Android has no `Yodlash` screen. The Mini App's is a stroke and radical
+  exercise (`memo.js`), not an MCQ, so it is a real screen to build, not a
+  mapping to add.
+
+### 2026-09-14 — A lesson you already opened reopens without a network
+
+Finding that changed the plan:
+- The intended work was a background prefetch of the next few lessons. It must
+  never be built. `desktop_course_service.lesson()` calls
+  `LessonAccessService.status(..., consume=True)`, so **fetching a lesson IS
+  opening it** — a silent read-ahead would burn a free learner's daily lesson
+  allowance on lessons they never asked for. Any future prefetch needs a
+  non-consuming content endpoint first; it is not a client-side decision.
+
+Changed:
+- `CourseRepository.lesson()` had no cache at all. A learner interrupted
+  mid-lesson whose app restarted came back to a lesson that would not load —
+  after the slot for it was already spent. It now stores the validated envelope
+  and serves it back when the request never reached the server.
+- New `course_lesson_cache` table (`LessonCacheEntity` / `LessonCacheDao`),
+  database version 2 → 3. Only a lesson the learner actually opened is ever
+  written, and only after the server said yes and the payload parsed.
+- The whole `CourseLessonResponse` is stored, not the parsed lesson, and the
+  new private `snapshotOf()` validates fresh and cached envelopes through one
+  path — so a cached lesson can never come out more permissive than the server
+  last made it, and it re-parses in whatever language is current.
+- `LessonSnapshot.isStale` / `LessonUiState.isStale` carry the marker, and the
+  lesson screen shows the Kurs map's existing offline banner
+  (`R.string.today_stale`, already uz/ru/tg). No new text, no new component
+  shape — the same banner the course map already uses.
+
+Important decision — the fallback is deliberately narrower than the map's:
+- Only `ApiError.Offline` and `ApiError.Timeout` open a cached lesson. The map's
+  `cached()` serves on any error except `SessionExpired`; a lesson may not. If
+  the server answered at all — spent allowance, lesson no longer unlocked,
+  expired session — that answer stands and the disk copy must not talk over it.
+  Otherwise yesterday's download becomes a way around today's limit.
+- Serving a cached lesson grants nothing: the slot was spent on the original
+  GET, and reopening a lesson has never cost a second slot.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/data/local/LessonCache.kt` (new)
+- `android/app/src/main/java/com/pomp/hskai/data/local/CourseCache.kt`
+- `android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonViewModel.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt`
+- `android/app/src/androidTest/java/com/pomp/hskai/data/local/LessonCacheDaoTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/data/local/DatabaseUpgradeTest.kt` (new)
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 220 passed, 0 failed.
+- `connectedDirectDebugAndroidTest` on the Pixel_8 emulator: 22 passed,
+  1 skipped (pre-existing `WidgetLayoutTest.launcherFixture`), 0 failed.
+- The 2 → 3 upgrade is covered on device: `DatabaseUpgradeTest` writes a real
+  version 2 file and opens the current database on top of it, so the
+  destructive fallback is proven rather than assumed.
+- Unit tests cover the access rules directly: a cached preview stays a preview,
+  a refused lesson is never served from disk, an expired session never opens
+  one, a lesson never opened never reaches the cache, and one lesson number
+  never answers for another.
+- `lintDirectDebug` and `assembleDirectDebug` clean.
+
+Not verified:
+- The offline banner has not been seen on a real screen. The build has no
+  linked Telegram account, so nothing past the link screen can be reached by
+  hand here.
+
+Follow-up:
+- Completing a lesson still needs a connection. Offline it fails into the
+  existing retry CTA; a queued completion that replays when the network returns
+  is the obvious next step and does not exist.
+- Still open: the exam screen renders `audioText` as written text
+  (`PracticeScreen.kt:432,488,506`); Android has no `Yodlash` screen.
+
+### 2026-09-14 — New-word card and pair matching copied from the Mini App
+
+Changed:
+- `NewWordCardView` was four stacked `Text`s; the Mini App's `cardWord` is a
+  celebration. Rebuilt to `.nw*` in `course-v3.html`: a white plate with a 3px
+  cinnabar edge and a flat 6px cinnabar-dark depth, popping in over 500ms on
+  `cubic-bezier(.34,1.56,.64,1)` from `scale(.3) rotate(-6deg)`; three gold
+  sparkles fading in oversized at 300/450/600ms and drifting up; the label
+  rising under it; then at 400ms the word is spoken and at 900ms the pinyin,
+  part-of-speech chip, meaning and `Tinglash` button slide up. The footer CTA
+  stays hidden until that reveal, as `cardWord` keeps `#f-cta` hidden.
+- The label was gold; `.nw-label` is `--cin`. It is cinnabar now.
+- `MatchPairsCardView` never showed a selection. `Tile` was given neither
+  `selectedLeft` nor `matched`, so tapping a hanzi changed nothing on screen and
+  there was no way to tell what the second tap would be matched against. New
+  `PairCell` carries `.pcell` / `.sel` / `.ok`: neutral edge, cinnabar when
+  picked, jade at `opacity:.7` when solved. A right cell tapped first does
+  nothing, matching `window._mR`'s bail on `selL === null`.
+- The section heading was cinnabar `CardTitle`; `.qq` is a quiet `--ink2`
+  instruction line. Changed to match.
+- Added `lesson_listen` in uz/ru/tg, copied verbatim from the Mini App's own
+  `T().listen` ("Tinglash" / "Послушать" / "Гӯш кардан").
+
+On colours:
+- No hex was hardcoded. The Android light palette already holds the Mini App's
+  `:root` values exactly, so the cards reach for `PompColors.Cinnabar` and paint
+  `--cin`. New `MiniAppPaletteTest` pins all thirteen shared tokens to the hex
+  in `course-v3.html`, so the two products cannot drift by someone nudging one.
+  Using tokens also keeps dark mode working, which a hardcoded copy would break.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCards.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt`
+- `android/app/src/test/java/com/pomp/hskai/core/design/MiniAppPaletteTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/feature/lesson/MatchPairsSelectionTest.kt` (new)
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 221 passed, 0 failed.
+- `connectedDirectDebugAndroidTest`: 27 passed, 1 skipped (pre-existing), 0 failed.
+- The new-word card was seen on the emulator against a live account: plate,
+  depth, cinnabar label, pinyin, `n.` chip, meaning, `Tinglash`, and the CTA
+  appearing only after the reveal.
+- `MatchPairsSelectionTest` reads the fill back out of the rendered pixels.
+  Note for whoever touches it: a tapped cell keeps Material's focus state layer,
+  which darkens the fill by a few percent, so an exact-hex assertion passes on
+  an untouched cell and fails on every tapped one. The test asserts the tint
+  (neutral / red / green) instead, which is what a learner actually reads and is
+  immune to that overlay; exact hex is pinned in `MiniAppPaletteTest`.
+
+Not verified:
+- The pair-matching screen was never reached by hand. It sits at card 11 of 18,
+  and `connectedAndroidTest` uninstalls and reinstalls the app on every run
+  (the uid moved from 10214 to 10226), which clears the Keystore credentials —
+  so the emulator lost its linked session and had to be re-linked. Drive that
+  screen before release, or expect to re-link after any on-device test run.
+
+Follow-up:
+- `cardWord` also plays `beep([784,1046])`. Android has no tone helper at all,
+  so the audible half of the effect is missing on every card, not just this one.
+  Adding one is a product call: it needs audio-focus handling and a silent-mode
+  rule, and it would be the app's first synthesized sound.
+
+### 2026-09-14 — `Gapni tuzing` became a gap fill, on Android only
+
+Changed:
+- The sentence builder made the learner lay every tile of a sentence they had
+  just been shown — nine taps for a seven-token HSK 2 sentence. The card now
+  arrives already built except for one or two words, and the bank holds only
+  those words plus the card's own distractors. Four tiles instead of nine, and
+  the choice is the grammar point rather than the word order.
+- Two gaps once the answer is five tokens or longer, otherwise one. Positions
+  are seeded from `materialRef`, so they hold still across recomposition and a
+  reopened lesson but differ from card to card.
+- The bank is the card's tile list minus one instance of every answer token that
+  stays visible, so what is left is exactly the hidden tokens plus the author's
+  distractors. `planGaps` returns null when the tiles cannot account for the
+  answer, and the old build-it-all card is used instead — broken data must not
+  produce a gap that nothing can fill.
+- `Tile` now dims when it cannot be tapped. With both gaps full the bank is
+  inert until a slot is freed, and it used to keep looking tappable.
+- Added `lesson_fill_gaps` in uz/ru/tg.
+
+Grading is untouched:
+- The submitted answer is still the whole sentence — the visible tokens with the
+  chosen ones slotted in — so `SentenceBuilderCard.isCorrect`, the XP path and
+  the mistake record never learn that the card changed shape.
+
+This is a deliberate divergence:
+- The Mini App's `cardBuilder` still builds the whole sentence. This was not a
+  parity fix; it is a new design, asked for after seeing the Android screen, and
+  it is not in `course-v3.html`. Mirroring it there is a separate decision and
+  needs its own approval.
+- It is also a real trade-off: word order is no longer practised on this card.
+  If that matters, the honest answer is to keep both — gap fill early in a unit,
+  full build at the checkpoint — which is a course-data decision, not a client one.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCards.kt`
+- `android/app/src/test/java/com/pomp/hskai/feature/lesson/SentenceGapPlanTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/feature/lesson/SentenceGapBuilderTest.kt` (new)
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 233 passed, 0 failed.
+- `connectedDirectDebugAndroidTest`: 31 passed, 1 skipped (pre-existing), 0 failed.
+- `lintDirectDebug` and `assembleDirectDebug` clean.
+- The card was rendered on the emulator and the pixels inspected, empty and
+  filled. The live lesson could not be driven to it: the emulator has no linked
+  session, because `connectedAndroidTest` uninstalls the app on every run.
+
+Note for whoever needs a picture of a screen the app cannot be driven to:
+- Install both APKs by hand and run `adb shell am instrument` directly, rather
+  than through Gradle. Gradle's `connectedAndroidTest` uninstalls both packages
+  when it finishes, which takes the app's files with it, so anything a test
+  wrote to `cacheDir` is gone before it can be pulled.
+
+### 2026-09-15 — The bot hands out the Android APK
+
+Changed:
+- The Android client had no way to reach anyone. There is no Play listing and
+  no download page, so the bot is now the whole distribution channel: the admin
+  uploads one signed `direct` release APK, Telegram keeps the bytes, and every
+  learner afterwards receives that same `file_id`. Nothing of ours serves the
+  download, there is no hosting bill, and the file lands in the chat the
+  learner is already reading.
+- New `bot_settings` row `android_apk_release` holds the published release as
+  one JSON value (`file_id`, name, size, version, who published it, when). No
+  migration, and withdrawing a bad build is a single write rather than a
+  deploy — which is the property that matters when a broken APK is being
+  handed to everyone who asks.
+- Admin panel gained **📱 Android ilova** (`adm:android_panel`): upload,
+  send-it-to-myself, withdraw. The upload step **refuses** a `play` or `debug`
+  build. Both install perfectly and only fail later, in the learner's hands —
+  `play` compiles out every external checkout so that learner could never pay,
+  and `debug` carries the `.debug` application id so no real release can ever
+  update it.
+- Learners reach it with `/android` or the **📱 Android ilova** button in the
+  profile keyboard (uz/ru/tj, five new strings). The button is a plain
+  callback rather than a Mini App button: the file is handed over in this chat,
+  so a web view would only add a step between the learner and the APK.
+- Two funnel events, `android_apk_requested` and `android_apk_sent`. They are
+  the only measurement that exists for this channel — nothing of ours serves
+  the file and Telegram reports nothing back. A request with nothing published
+  is still counted: it is the only measure of demand for an app that is not out
+  yet.
+- `archivesBaseName` now makes Gradle emit
+  `hsk-ai-<versionName>-<versionCode>-<flavour>-<buildType>.apk`. The file name
+  is the only place the version survives the trip through Telegram, because the
+  bot never opens the APK; it is also what the `play`/`debug` refusal reads.
+
+Release signing now exists:
+- A 4096-bit RSA keystore was generated at `~/.pomp-hskai/pomp-hskai-release.jks`
+  (alias `pomp-hskai`, valid 10 000 days), with `android/keystore.properties`
+  pointing at it. Both are outside Git and outside the working tree, so a clean
+  checkout cannot destroy them. **It must be backed up**: every future update,
+  through the bot now and through Play later, has to be signed with the same
+  key, and an APK signed by a different key will not upgrade over the installed
+  one.
+
+Key files:
+- `app/services/android_release_service.py` (new)
+- `app/bot/handlers/admin_android.py` (new), `app/bot/fsm/admin_android.py` (new)
+- `app/bot/handlers/android_app.py` (new)
+- `app/bot/utils/i18n.py`, `app/bot/handlers/commands.py`, `app/bot/handlers/admin.py`,
+  `app/bot/create_bot.py`, `app/db/models/course_miniapp_event.py`
+- `android/app/build.gradle.kts`, `android/README.md`
+- `tests/test_android_apk_download.py` (new)
+
+Verified:
+- Backend: 1347 passed, 0 failed (full suite, `tests/` excluding `e2e`,
+  randomised order).
+- `tests/test_android_apk_download.py`: 38 tests. They cover the refusal of a
+  `play`/`debug` build, a published row missing its `file_id` reading as
+  "nothing to give", a `file_id` that has stopped resolving being reported
+  rather than swallowed (and not counted as a delivery), the admin flow end to
+  end, and the three languages.
+- Router order is checked by walking the real dispatcher and asking who claims
+  `/android`. That is the one thing a handler unit test cannot see: every
+  handler passes its own tests while an earlier router quietly answers first.
+  Note for whoever writes the next one of these: that check runs in a
+  subprocess on purpose. Building a Dispatcher attaches every module-level
+  router to it permanently, so doing it in the test process makes the next
+  `create_bot()` anywhere in the suite raise "Router is already attached" —
+  which is exactly how it first showed up, as two unrelated failures in
+  `test_main_imports.py`.
+- Android: the five static checks, 233 + 226 unit tests, `lintDirectDebug`,
+  `lintPlayDebug`, `assembleDirectDebug`, and 31 instrumented tests on the
+  Pixel_8 emulator (30 passed, 1 pre-existing skip) — all clean before and
+  after the Gradle change.
+- The signed release APK is real and works: 3.77 MB, `apksigner` verifies it
+  (v2, `CN=Pomp HSK AI`), it installs on the emulator, launches, and reached
+  the live backend — the link screen showed a code issued by
+  `/api/v3/android-auth/link/start`. That last part is what proves R8 did not
+  break serialisation or networking, which is the real risk in a minified
+  release build.
+
+Not verified:
+- Nothing has been sent through the real Telegram Bot API. The upload and the
+  handout were driven against fakes and an in-memory database, never against
+  the production bot, so the first real upload is still the first real test of
+  the `file_id` round trip.
+- No one has installed the APK on a physical phone. The emulator proves the
+  build runs; it does not prove the "unknown sources" flow the install caption
+  describes.
+
+Follow-up:
+- The APK is handed out but never announced. A learner only finds it by opening
+  the profile or typing `/android`.
+- Nothing tells an installed app that a newer APK exists. Until Play is live,
+  an update reaches people only if they ask for the file again.
