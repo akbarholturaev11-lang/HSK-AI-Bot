@@ -89,8 +89,9 @@ Ustiga tanlovlar ham har xil: Mini App `[20,30,40,50,80]`, Android
 `[10,20,30,50]` — ya'ni **40 ni Android'da tanlashning iloji yo'q**. Ikkalasi
 hech qachon kelisha olmaydi.
 
-**(b) «−5 qoldi» — Mini App xatosi.** `goal - xp` noldan pastga tushishi
-cheklanmagan: 45 − 40 = −5. Android'da bunday emas.
+**(b) ~~«−5 qoldi»~~ — TUZATILDI 2026-09-15.** `course-v3.html:5303` da
+`(dailyGoal-todayXp)` to'g'ridan-to'g'ri chop etilardi. Endi
+`Math.max(0,...)`. `tests/test_miniapp_daily_goal_left.py` mixlab qo'ydi.
 
 **(c) Liga nomi — Mini App qattiq yozib qo'yilgan.** Server haqiqiy pog'ona
 nomlarini beradi (`app/services/course_gamification_service.py`: `Bronze`,
