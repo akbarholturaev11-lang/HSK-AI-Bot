@@ -13,6 +13,7 @@ page — so everything that can strand a learner happens here:
   waiting, and the send must not be counted as a delivery.
 """
 
+import contextlib
 import unittest
 import unittest.mock
 from types import SimpleNamespace
@@ -567,11 +568,29 @@ class ManifestHandoutTests(DatabaseBackedTest):
             .encode()
         )
 
-    def _patched(self, manifest):
-        return unittest.mock.patch(
+    def setUp(self):
+        self.fetched = []
+
+    @contextlib.contextmanager
+    def _patched(self, manifest, apk=b"APK-BYTES"):
+        """Both halves of the manifest path: the release, and reading its file.
+
+        The bot downloads the APK itself now. Asking Telegram to fetch the URL
+        put one more network between a learner and the file, and when that
+        failed the only evidence was a log line that had already rotated.
+        """
+
+        async def fake_fetch(url, expected_size):
+            self.fetched.append((url, expected_size))
+            return apk
+
+        with unittest.mock.patch(
             "app.services.android_release_service.AndroidReleaseService._manifest",
             lambda _self: self.FakeManifest(manifest),
-        )
+        ), unittest.mock.patch(
+            "app.bot.handlers.android_app._fetch_apk", fake_fetch
+        ):
+            yield
 
     async def test_the_first_learner_is_served_straight_from_storage(self):
         from app.bot.handlers.android_app import send_android_app
@@ -585,8 +604,12 @@ class ManifestHandoutTests(DatabaseBackedTest):
                 )
 
             self.assertTrue(sent)
-            # Nothing was uploaded to the bot by hand; Telegram is handed the URL.
-            self.assertTrue(bot.documents[0][1].startswith("https://"))
+            # Nothing was uploaded by hand: the bot read the file itself and
+            # sent the bytes, so Telegram never has to reach object storage.
+            self.assertEqual(len(self.fetched), 1)
+            self.assertTrue(self.fetched[0][0].endswith(".apk"))
+            self.assertEqual(bot.documents[0][1].filename,
+                             "hsk-ai-1.2.0-3-direct-release.apk")
             self.assertIn("1.2.0 (3)", bot.messages[0][1])
             self.assertIn("3.6 MB", bot.messages[0][1])
 
@@ -606,7 +629,8 @@ class ManifestHandoutTests(DatabaseBackedTest):
                     second, self.CHAT_ID, self.TELEGRAM_ID, session, source="bot_command"
                 )
 
-                self.assertTrue(first.documents[0][1].startswith("https://"))
+                # The first learner costs one download; nobody after them does.
+                self.assertEqual(len(self.fetched), 1)
                 self.assertEqual(second.documents[0][1], "TELEGRAM_COPY_OF_1")
 
                 served = await AndroidReleaseService(session).serve()

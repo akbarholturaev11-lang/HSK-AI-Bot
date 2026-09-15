@@ -9,9 +9,10 @@ drifting out of sync with the first.
 
 import logging
 
+import httpx
 from aiogram import Bot, F, Router
 from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import BufferedInputFile, CallbackQuery, Message
 
 from app.bot.utils.i18n import t
 from app.repositories.user_repo import UserRepository
@@ -23,6 +24,60 @@ logger = logging.getLogger(__name__)
 router = Router()
 
 ANDROID_APP_CALLBACK = "android_app:get"
+
+#: Telegram refuses documents larger than this from a bot, so there is no point
+#: pulling more than this into memory either.
+MAX_APK_BYTES = 50 * 1024 * 1024
+APK_FETCH_TIMEOUT_SECONDS = 60.0
+
+
+async def _fetch_apk(url: str, expected_size: int) -> bytes | None:
+    """Read the APK ourselves rather than asking Telegram to fetch it.
+
+    Telegram will download a URL given to `sendDocument`, and that is one more
+    party that has to be able to reach object storage — behind Cloudflare, from
+    their network, with their client. When it cannot, the learner sees only
+    "the file could not be sent" and the reason lives in a log that has already
+    rotated. Reading it here costs one download per release, after which the
+    file_id is cached and nobody fetches anything again.
+    """
+
+    try:
+        async with httpx.AsyncClient(
+            timeout=httpx.Timeout(APK_FETCH_TIMEOUT_SECONDS),
+            follow_redirects=True,
+        ) as client:
+            async with client.stream("GET", url) as response:
+                if response.status_code != 200:
+                    logger.warning(
+                        "APK fetch returned HTTP %s for %s",
+                        response.status_code,
+                        url,
+                    )
+                    return None
+                body = bytearray()
+                async for chunk in response.aiter_bytes():
+                    body.extend(chunk)
+                    if len(body) > MAX_APK_BYTES:
+                        logger.warning("APK at %s is larger than we will send", url)
+                        return None
+    except Exception:
+        logger.exception("APK could not be fetched from %s", url)
+        return None
+
+    if not body:
+        return None
+    if expected_size and len(body) != expected_size:
+        # The published release and the stored one disagree. Sending it anyway
+        # would hand out a build nobody measured.
+        logger.warning(
+            "APK at %s is %s bytes, the release says %s",
+            url,
+            len(body),
+            expected_size,
+        )
+        return None
+    return bytes(body)
 
 
 async def send_android_app(
@@ -78,12 +133,26 @@ async def send_android_app(
         parse_mode="HTML",
     )
 
-    # A file_id when Telegram already holds this build, the storage URL when it
-    # does not. The second case happens exactly once per release — Telegram
-    # fetches it, and what comes back is cached below, so the release workflow
-    # never has to know this chat exists.
-    document_source = release.file_id or release.download_url
-    if not document_source:
+    # A file_id when Telegram already holds this build; otherwise the bytes,
+    # read here. That second case happens exactly once per release — what
+    # Telegram gives back is cached below, so the release workflow never has to
+    # know this chat exists.
+    if release.file_id:
+        document = release.file_id
+    elif release.download_url:
+        # Logged at INFO on purpose: this should happen once per release. If
+        # it appears for every learner, the file_id is not being cached and
+        # each of them is costing an upload.
+        logger.info(
+            "Reading the Android APK once for version %s", release.version_text
+        )
+        blob = await _fetch_apk(release.download_url, release.size)
+        if blob is None:
+            await session.commit()
+            await bot.send_message(chat_id, t("android_app_failed", lang))
+            return False
+        document = BufferedInputFile(blob, filename=release.file_name)
+    else:
         await session.commit()
         await bot.send_message(chat_id, t("android_app_failed", lang))
         return False
@@ -91,14 +160,13 @@ async def send_android_app(
     try:
         sent = await bot.send_document(
             chat_id,
-            document_source,
+            document,
             caption=t("android_app_caption", lang),
             parse_mode="HTML",
         )
     except Exception:
-        # A stored file_id can stop resolving, and Telegram can fail to fetch a
-        # URL. The learner must not be left staring at an intro with no file
-        # under it either way.
+        # A stored file_id can stop resolving. The learner must not be left
+        # staring at an intro with no file under it.
         logger.exception("Failed to send the Android APK to %s", telegram_id)
         await session.commit()
         await bot.send_message(chat_id, t("android_app_failed", lang))
@@ -107,10 +175,14 @@ async def send_android_app(
     if not release.file_id and release.version_code is not None:
         new_file_id = getattr(getattr(sent, "document", None), "file_id", None)
         if new_file_id:
-            await releases.remember_file_id(
-                version_code=release.version_code,
-                file_id=str(new_file_id),
-            )
+            try:
+                await releases.remember_file_id(
+                    version_code=release.version_code,
+                    file_id=str(new_file_id),
+                )
+            except Exception:
+                # The learner has their file; only the next one pays for this.
+                logger.exception("Telegram's copy of the APK could not be cached")
 
     if track:
         await analytics.record_server_event(

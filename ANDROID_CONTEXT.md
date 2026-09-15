@@ -236,6 +236,28 @@ havola maydoni bor.
 **iOS ikkalasida ham yo'q** — unga alohida ilova yo'q, o'lik tugma esa
 foydalanuvchini chalg'itadi. Tayyor bo'lganda ro'yxatlarga qo'shish yetarli.
 
+## 4.7 Botga fayl qanday yetib boradi (va nima turadi)
+
+Bot APK'ni **o'zi o'qiydi** va baytlarini yuboradi. Ilgari Telegramga URL
+berilardi — ya'ni faylga yetib borishi kerak bo'lgan yana bitta tomon bor edi,
+va u yiqilganda foydalanuvchi faqat «fayl yuborilmadi» ni ko'rardi, sabab esa
+allaqachon aylanib ketgan logda qolardi. 2026-09-15 da aynan shunday bo'ldi.
+
+**Narxi: har release uchun bir marta 3.7 MB.** Foydalanuvchi boshiga emas —
+birinchi so'ragandan keyin Telegram bergan `file_id` saqlanadi va qolganlarga
+Telegram serverlaridan ketadi, biz orqali hech narsa o'tmaydi.
+R2'dan chiqish bepul, Railway'ga kirish ham. Hisob: ~$0.0002 bir release,
+yiliga 12 ta release ≈ yarim sentdan kam.
+
+**Kuzatish kerak bo'lgan yagona narsa:** logdagi
+`Reading the Android APK once for version …` qatori. U har release'da BIR
+MARTA chiqishi kerak. Har foydalanuvchida chiqsa — `file_id` saqlanmayapti va
+har biri yuklab olishga tushyapti.
+
+Yuklab olishda hajm manifestdagi bilan solishtiriladi: mos kelmasa fayl
+yuborilmaydi. Hech kim o'lchamagan buildni tarqatgandan ko'ra yubormaslik
+yaxshi.
+
 ## 5. Qayerga qarash kerak
 
 | Nima | Qayerda |
