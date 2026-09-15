@@ -46,6 +46,23 @@ MISTAKE_FILL_PROMPTS = (
     "пурра кунед", "мувофиқро интихоб", "ҷойи холӣ",
 )
 
+# Faqat aynan qayta ijro qila oladigan interaction formatlari review'ga chiqadi.
+# Builder serverda token ketma-ketligi bilan baholanadi; ovoz/matching esa
+# alohida interaction renderer bo'lmaguncha generic MCQ ga aylantirilmaydi.
+MISTAKE_BUILDER_FORMATS = {
+    "sentence_builder",
+    "sentence_reorder",
+    "word_order",
+    "reorder",
+}
+MISTAKE_UNSUPPORTED_EXACT_FORMATS = {
+    "pronunciation_correction",
+    "voice_pronunciation",
+    "match_pairs",
+    "pair_match",
+    "matching",
+}
+
 # "Ishonchli" = xato SERVERDA aniqlangan, mijozning so'zi bilan emas. Faqat
 # shu manbalardagi xatoni tuzatish takrorlash sessiyasiga XP beradi (5 XP,
 # sessiyaga bir marta). `pronunciation` — talaffuz balli serverda hisoblanadi
@@ -454,22 +471,93 @@ class CourseMistakeService:
         material = cls._stored_material(item)
         correct_answer = cls._text(item.correct_answer)
         user_answer = cls._text(item.user_answer)
-        material_options = material.get("options") if isinstance(material.get("options"), list) else []
+        lesson_order = getattr(item, "lesson_order", None)
+        try:
+            lesson_order = int(lesson_order) if lesson_order is not None else None
+        except (TypeError, ValueError):
+            lesson_order = None
+        category = cls._text(getattr(item, "category", None), 24).lower() or "word"
+        source = material.get("source") if isinstance(material.get("source"), dict) else {}
+        source = {
+            **source,
+            "kind": cls._text(getattr(item, "source", None), 32) or source.get("kind") or "unknown",
+            "level": cls._text(getattr(item, "level", None), 32) or source.get("level") or None,
+            "lesson": lesson_order if lesson_order is not None else source.get("lesson"),
+        }
+        prompt_text = cls._text(material.get("prompt")) or item.prompt or ""
+        material_format = cls._text(material.get("format"), 64) or MISTAKE_REVIEW_FORMATS.get(
+            category, "word_choice"
+        )
+        sentence = cls._text(material.get("sentence"))
+        audio_text = cls._text(material.get("audio_text"))
+        pinyin = cls._text(material.get("pinyin"), 500)
 
-        # Variantlar MA'NO bo'yicha takrorlanmasligi kerak, matn bo'yicha emas.
-        #
-        # Bu jonli chiqdi va ekranda shunday ko'rindi: ikkala variant ham
-        # "салом навишта мешавад nǐ hǎo", farqi faqat birinchi harfning katta
-        # yozilishi. Bunday savolga javob berib bo'lmaydi — qaysi tugmani
-        # bosmasin, foydalanuvchi xato qilishi mumkin.
-        #
-        # Sabab: chalg'ituvchi variantlar SHU toifadagi boshqa xatolarning
-        # javoblaridan olinadi, va ular boshqa manbadan kelgani uchun bosh
-        # harfi yoki tinish belgisi bilan farq qilishi mumkin.
-        #
-        # To'g'ri javob BIRINCHI qo'shiladi: takrorlanish topilganda aynan u
-        # saqlanib qolishi shart, aks holda `options.index(correct_answer)`
-        # yiqiladi.
+        if cls._answer_key(prompt_text) == cls._answer_key(correct_answer):
+            return None
+        if material_format in MISTAKE_UNSUPPORTED_EXACT_FORMATS:
+            # Interactionni aynan qaytara olmaymiz. Generic MCQ yasash
+            # foydalanuvchiga boshqa mashq ko'rsatadi, shuning uchun skip.
+            return None
+
+        low_prompt = prompt_text.casefold()
+        needs_listen = material_format == "listening_choice" or any(
+            key in low_prompt for key in MISTAKE_LISTEN_PROMPTS
+        )
+        needs_fill = material_format in {"gap_fill", "dialog_cloze", "dialog_context"} or any(
+            key in low_prompt for key in MISTAKE_FILL_PROMPTS
+        )
+        if needs_listen and not audio_text:
+            return None
+        if needs_fill and not sentence and not audio_text:
+            return None
+        if needs_listen:
+            pinyin = ""
+
+        if material_format in MISTAKE_BUILDER_FORMATS:
+            tokens = [
+                cls._text(value, 200)
+                for value in (material.get("tokens") or [])[:30]
+                if cls._text(value, 200)
+            ]
+            answer_tokens = [
+                cls._text(value, 200)
+                for value in (material.get("answer_tokens") or [])[:30]
+                if cls._text(value, 200)
+            ]
+            if (
+                len(tokens) < 2
+                or len(tokens) != len(answer_tokens)
+                or sorted(tokens) != sorted(answer_tokens)
+            ):
+                return None
+            # Builderda to'g'ri gapni material sifatida oldindan ko'rsatish
+            # javobni ochib beradi. Context boshqa bo'lsa saqlanadi.
+            joined_answer = "".join(answer_tokens)
+            if sentence and cls._answer_key(sentence) in {
+                cls._answer_key(joined_answer),
+                cls._answer_key(correct_answer),
+            }:
+                sentence = ""
+            return {
+                "id": f"mistake:{item.id}",
+                "category": category,
+                "prompt": prompt_text,
+                "options": [],
+                "explanation": item.explanation or item.correct_answer,
+                "material_version": MISTAKE_REVIEW_MATERIAL_VERSION,
+                "material_ref": cls._text(material.get("material_ref"), 160),
+                "format": material_format,
+                "language": cls._language(material.get("language")),
+                "source": source,
+                "sentence": sentence,
+                "audio_text": audio_text,
+                "pinyin": pinyin,
+                "tokens": tokens,
+                "answer_tokens": answer_tokens,
+                "correct_answer": correct_answer or joined_answer,
+            }
+
+        material_options = material.get("options") if isinstance(material.get("options"), list) else []
         seen: set[str] = set()
         options: list[str] = []
 
@@ -495,54 +583,6 @@ class CourseMistakeService:
             ).digest()
         )
 
-        lesson_order = getattr(item, "lesson_order", None)
-        try:
-            lesson_order = int(lesson_order) if lesson_order is not None else None
-        except (TypeError, ValueError):
-            lesson_order = None
-        category = cls._text(getattr(item, "category", None), 24).lower() or "word"
-        source = material.get("source") if isinstance(material.get("source"), dict) else {}
-        source = {
-            **source,
-            "kind": cls._text(getattr(item, "source", None), 32) or source.get("kind") or "unknown",
-            "level": cls._text(getattr(item, "level", None), 32) or source.get("level") or None,
-            "lesson": lesson_order if lesson_order is not None else source.get("lesson"),
-        }
-        prompt_text = cls._text(material.get("prompt")) or item.prompt or ""
-        material_format = cls._text(material.get("format"), 64) or MISTAKE_REVIEW_FORMATS.get(
-            category, "word_choice"
-        )
-        sentence = cls._text(material.get("sentence"))
-        audio_text = cls._text(material.get("audio_text"))
-        pinyin = cls._text(material.get("pinyin"), 500)
-
-        if cls._answer_key(prompt_text) == cls._answer_key(correct_answer):
-            # Savolning o'zi javob bilan bir xil. Bu savol emas — ko'chirish.
-            # Shu holat ham jonli chiqdi: `sentence_builder` kartasining
-            # tarjimasi ham savol matni, ham variant bo'lib qolgandi.
-            return None
-
-        low_prompt = prompt_text.casefold()
-        needs_listen = material_format == "listening_choice" or any(
-            key in low_prompt for key in MISTAKE_LISTEN_PROMPTS
-        )
-        needs_fill = material_format in {"gap_fill", "dialog_cloze", "dialog_context"} or any(
-            key in low_prompt for key in MISTAKE_FILL_PROMPTS
-        )
-        if needs_listen and not audio_text:
-            # Tinglash savolida gap MATNI audio o'rnini bosa olmaydi: Mini App
-            # ovoz tugmasini faqat `audio_text` bo'lganda chizadi, aks holda
-            # variantlar bor, lekin tinglash uchun hech narsa yo'q.
-            return None
-        if needs_fill and not sentence and not audio_text:
-            # Ko'rsatma bor, kontent yo'q — bunday savolga javob berib
-            # bo'lmaydi. Uni chiqarmaymiz; o'rniga boshqa xato olinadi.
-            return None
-        if needs_listen:
-            # Tinglash savolida pinyin javobni ochib beradi — tinglashning
-            # ma'nosi qolmaydi. Pinyin javobdan keyingi izohda ko'rinadi.
-            pinyin = ""
-
         return {
             "id": f"mistake:{item.id}",
             "category": category,
@@ -555,8 +595,6 @@ class CourseMistakeService:
             "format": material_format,
             "language": cls._language(material.get("language")),
             "source": source,
-            # DIQQAT: `CourseMistake` modelida sentence/audio_text/pinyin
-            # ustunlari YO'Q — yagona manba `material_json`.
             "sentence": sentence,
             "audio_text": audio_text,
             "pinyin": pinyin,
@@ -595,33 +633,50 @@ class CourseMistakeService:
 
     @classmethod
     def _review_session_question(cls, question: dict) -> dict:
-        """Compact one issued question for the immutable event snapshot.
+        """Compact one issued question for the immutable event snapshot."""
 
-        Analytics events are capped at 8 KB. The browser only needs these
-        render/grading fields on a retry; source metadata remains in
-        ``course_mistakes.material_json``.
-        """
-
-        options = [cls._text(value, 700) for value in (question.get("options") or [])[:4]]
-        return {
+        material_format = cls._text(question.get("format"), 64)
+        base = {
             "id": cls._text(question.get("id"), 160),
             "category": cls._text(question.get("category"), 24),
             "prompt": cls._text(question.get("prompt"), 600),
-            "options": options,
-            "answer_index": int(question.get("answer_index")),
             "explanation": cls._text(question.get("explanation"), 600),
-            # Retry o'sha interaksiyani aynan qaytarishi uchun kontrakt
-            # maydonlari ham snapshotda qoladi.
             "material_version": int(
                 question.get("material_version") or MISTAKE_REVIEW_MATERIAL_VERSION
             ),
             "material_ref": cls._text(question.get("material_ref"), 160),
-            "format": cls._text(question.get("format"), 64),
+            "format": material_format,
             "language": cls._language(question.get("language")),
             "sentence": cls._text(question.get("sentence"), 600),
             "audio_text": cls._text(question.get("audio_text"), 600),
             "pinyin": cls._text(question.get("pinyin"), 300),
         }
+        if material_format in MISTAKE_BUILDER_FORMATS:
+            base.update(
+                {
+                    "options": [],
+                    "tokens": [
+                        cls._text(value, 200)
+                        for value in (question.get("tokens") or [])[:30]
+                        if cls._text(value, 200)
+                    ],
+                    "answer_tokens": [
+                        cls._text(value, 200)
+                        for value in (question.get("answer_tokens") or [])[:30]
+                        if cls._text(value, 200)
+                    ],
+                    "correct_answer": cls._text(question.get("correct_answer"), 700),
+                }
+            )
+            return base
+        options = [cls._text(value, 700) for value in (question.get("options") or [])[:4]]
+        base.update(
+            {
+                "options": options,
+                "answer_index": int(question.get("answer_index")),
+            }
+        )
+        return base
 
     @staticmethod
     def _review_started_payload_size(payload: dict) -> int:
@@ -634,7 +689,7 @@ class CourseMistakeService:
         return {
             key: value
             for key, value in question.items()
-            if key not in {"answer_index", "explanation"}
+            if key not in {"answer_index", "answer_tokens", "correct_answer", "explanation"}
         }
 
     @staticmethod
@@ -793,13 +848,30 @@ class CourseMistakeService:
     @classmethod
     def _answer_feedback_from_event(cls, event) -> dict | None:
         payload = cls._json_dict(getattr(event, "payload_json", None))
+        question_id = cls._text(payload.get("question_id"), 160)
+        if not question_id:
+            return None
+        if payload.get("answer_type") == "tokens":
+            selected_tokens = payload.get("selected_tokens")
+            if not isinstance(selected_tokens, list):
+                return None
+            selected_tokens = [cls._text(value, 200) for value in selected_tokens]
+            if not selected_tokens or any(not value for value in selected_tokens):
+                return None
+            return {
+                "ok": True,
+                "question_id": question_id,
+                "selected_tokens": selected_tokens,
+                "correct": payload.get("correct") is True,
+                "correct_answer": cls._text(payload.get("correct_answer"), 700),
+                "explanation": cls._text(payload.get("explanation"), 600),
+            }
         try:
             selected_index = int(payload.get("selected_index"))
             correct_index = int(payload.get("correct_index"))
         except (TypeError, ValueError):
             return None
-        question_id = cls._text(payload.get("question_id"), 160)
-        if not question_id or selected_index < 0 or correct_index < 0:
+        if selected_index < 0 or correct_index < 0:
             return None
         return {
             "ok": True,
@@ -819,7 +891,7 @@ class CourseMistakeService:
         question_id: str,
         selected_index,
     ) -> dict:
-        """Commit one choice before revealing its answer and explanation."""
+        """Commit one exact interaction answer before revealing feedback."""
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -828,10 +900,7 @@ class CourseMistakeService:
         if not session_id.startswith(expected_prefix) or len(session_id) > 80:
             return {"ok": False, "error": "invalid_mistake_review_session"}
         question_id = self._text(question_id, 160)
-        try:
-            selected_index = int(selected_index)
-        except (TypeError, ValueError):
-            return {"ok": False, "error": "mistake_review_answer_invalid"}
+        raw_answer = selected_index
 
         await self.session.execute(select(User.id).where(User.id == user.id).with_for_update())
         started_result = await self.session.execute(
@@ -868,17 +937,55 @@ class CourseMistakeService:
         )
         if not question:
             return {"ok": False, "error": "mistake_review_answer_invalid"}
-        options = question.get("options")
-        try:
-            correct_index = int(question.get("answer_index"))
-        except (TypeError, ValueError):
-            return {"ok": False, "error": "invalid_mistake_review_session"}
-        if (
-            not isinstance(options, list)
-            or not 0 <= selected_index < len(options)
-            or not 0 <= correct_index < len(options)
-        ):
-            return {"ok": False, "error": "mistake_review_answer_invalid"}
+
+        material_format = self._text(question.get("format"), 64)
+        if material_format in MISTAKE_BUILDER_FORMATS:
+            if not isinstance(raw_answer, list):
+                return {"ok": False, "error": "mistake_review_answer_invalid"}
+            selected_tokens = [self._text(value, 200) for value in raw_answer[:30]]
+            tokens = [self._text(value, 200) for value in (question.get("tokens") or [])[:30]]
+            answer_tokens = [
+                self._text(value, 200) for value in (question.get("answer_tokens") or [])[:30]
+            ]
+            if (
+                not selected_tokens
+                or any(not value for value in selected_tokens)
+                or len(selected_tokens) != len(tokens)
+                or len(answer_tokens) != len(tokens)
+                or sorted(selected_tokens) != sorted(tokens)
+                or sorted(answer_tokens) != sorted(tokens)
+            ):
+                return {"ok": False, "error": "mistake_review_answer_invalid"}
+            correct = selected_tokens == answer_tokens
+            answer_payload = {
+                "question_id": question_id,
+                "answer_type": "tokens",
+                "selected_tokens": selected_tokens,
+                "correct": correct,
+                "correct_answer": self._text(question.get("correct_answer"), 700)
+                or "".join(answer_tokens),
+                "explanation": self._text(question.get("explanation"), 600),
+            }
+        else:
+            options = question.get("options")
+            try:
+                selected_value = int(raw_answer)
+                correct_index = int(question.get("answer_index"))
+            except (TypeError, ValueError):
+                return {"ok": False, "error": "mistake_review_answer_invalid"}
+            if (
+                not isinstance(options, list)
+                or not 0 <= selected_value < len(options)
+                or not 0 <= correct_index < len(options)
+            ):
+                return {"ok": False, "error": "mistake_review_answer_invalid"}
+            answer_payload = {
+                "question_id": question_id,
+                "selected_index": selected_value,
+                "correct_index": correct_index,
+                "correct_answer": self._text(options[correct_index], 700),
+                "explanation": self._text(question.get("explanation"), 600),
+            }
 
         answer_digest = hashlib.sha256(question_id.encode("utf-8")).hexdigest()[:12]
         dedupe_key = f"{session_id}:answer:{answer_digest}"
@@ -897,20 +1004,13 @@ class CourseMistakeService:
                 return {"ok": False, "error": "invalid_mistake_review_session"}
             return {**feedback, "duplicate": True}
 
-        payload = {
-            "question_id": question_id,
-            "selected_index": selected_index,
-            "correct_index": correct_index,
-            "correct_answer": self._text(options[correct_index], 700),
-            "explanation": self._text(question.get("explanation"), 600),
-        }
         event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name="mistake_review_answered",
             telegram_id=telegram_id,
             user_id=user.id,
             session_id=session_id,
             dedupe_key=dedupe_key,
-            payload=payload,
+            payload=answer_payload,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "mistake_review_answer_write_failed"}
@@ -930,14 +1030,23 @@ class CourseMistakeService:
             return {**feedback, "duplicate": True}
 
         await self.session.commit()
+        if answer_payload.get("answer_type") == "tokens":
+            return {
+                "ok": True,
+                "question_id": question_id,
+                "selected_tokens": answer_payload["selected_tokens"],
+                "correct": bool(answer_payload["correct"]),
+                "correct_answer": answer_payload["correct_answer"],
+                "explanation": answer_payload["explanation"],
+            }
         return {
             "ok": True,
             "question_id": question_id,
-            "selected_index": selected_index,
-            "correct": selected_index == correct_index,
-            "correct_index": correct_index,
-            "correct_answer": payload["correct_answer"],
-            "explanation": payload["explanation"],
+            "selected_index": answer_payload["selected_index"],
+            "correct": answer_payload["selected_index"] == answer_payload["correct_index"],
+            "correct_index": answer_payload["correct_index"],
+            "correct_answer": answer_payload["correct_answer"],
+            "explanation": answer_payload["explanation"],
         }
 
     async def complete_review(self, telegram_id: int, *, session_id: str, answers: list) -> dict:
@@ -991,24 +1100,38 @@ class CourseMistakeService:
                 if not isinstance(raw, dict):
                     return {"ok": False, "error": "invalid_mistake_review_session"}
                 question_id = str(raw.get("id") or "")
-                options = raw.get("options")
-                try:
-                    answer_index = int(raw.get("answer_index"))
-                except (TypeError, ValueError):
+                if not question_id or question_id in questions:
                     return {"ok": False, "error": "invalid_mistake_review_session"}
-                if (
-                    not question_id
-                    or question_id in questions
-                    or not isinstance(options, list)
-                    or not 0 <= answer_index < len(options)
-                ):
-                    return {"ok": False, "error": "invalid_mistake_review_session"}
-                questions[question_id] = {**raw, "answer_index": answer_index}
+                material_format = self._text(raw.get("format"), 64)
+                if material_format in MISTAKE_BUILDER_FORMATS:
+                    tokens = [self._text(value, 200) for value in (raw.get("tokens") or [])[:30]]
+                    answer_tokens = [
+                        self._text(value, 200) for value in (raw.get("answer_tokens") or [])[:30]
+                    ]
+                    if (
+                        len(tokens) < 2
+                        or any(not value for value in tokens + answer_tokens)
+                        or len(tokens) != len(answer_tokens)
+                        or sorted(tokens) != sorted(answer_tokens)
+                    ):
+                        return {"ok": False, "error": "invalid_mistake_review_session"}
+                    questions[question_id] = {
+                        **raw,
+                        "tokens": tokens,
+                        "answer_tokens": answer_tokens,
+                    }
+                else:
+                    options = raw.get("options")
+                    try:
+                        answer_index = int(raw.get("answer_index"))
+                    except (TypeError, ValueError):
+                        return {"ok": False, "error": "invalid_mistake_review_session"}
+                    if not isinstance(options, list) or not 0 <= answer_index < len(options):
+                        return {"ok": False, "error": "invalid_mistake_review_session"}
+                    questions[question_id] = {**raw, "answer_index": answer_index}
             if set(questions) != {f"mistake:{item_id}" for item_id in mistake_ids}:
                 return {"ok": False, "error": "invalid_mistake_review_session"}
         else:
-            # Legacy sessions stored only mistake_ids. Rebuild the already-issued
-            # v1 question exactly; new sessions never use this filler/cross-category path.
             distractors = [item.correct_answer for item in items]
             questions = {
                 question["id"]: question
@@ -1026,18 +1149,34 @@ class CourseMistakeService:
             for event in answered_result.scalars().all():
                 answer_payload = self._json_dict(getattr(event, "payload_json", None))
                 question_id = self._text(answer_payload.get("question_id"), 160)
-                try:
-                    selected_index = int(answer_payload.get("selected_index"))
-                except (TypeError, ValueError):
+                if not question_id or question_id in submitted or question_id not in questions:
                     return {"ok": False, "error": "invalid_mistake_review_session"}
-                if not question_id or question_id in submitted:
-                    return {"ok": False, "error": "invalid_mistake_review_session"}
-                submitted[question_id] = {
-                    "question_id": question_id,
-                    "selected_index": selected_index,
-                }
+                question = questions[question_id]
+                if self._text(question.get("format"), 64) in MISTAKE_BUILDER_FORMATS:
+                    selected_tokens = answer_payload.get("selected_tokens")
+                    if not isinstance(selected_tokens, list):
+                        return {"ok": False, "error": "invalid_mistake_review_session"}
+                    selected_tokens = [self._text(value, 200) for value in selected_tokens]
+                    if (
+                        len(selected_tokens) != len(question["tokens"])
+                        or any(not value for value in selected_tokens)
+                        or sorted(selected_tokens) != sorted(question["tokens"])
+                    ):
+                        return {"ok": False, "error": "invalid_mistake_review_session"}
+                    submitted[question_id] = {
+                        "question_id": question_id,
+                        "selected_tokens": selected_tokens,
+                    }
+                else:
+                    try:
+                        selected_value = int(answer_payload.get("selected_index"))
+                    except (TypeError, ValueError):
+                        return {"ok": False, "error": "invalid_mistake_review_session"}
+                    submitted[question_id] = {
+                        "question_id": question_id,
+                        "selected_index": selected_value,
+                    }
         else:
-            # Legacy in-flight clients submitted all answers at completion.
             submitted = {
                 str(item.get("question_id") or ""): item
                 for item in answers if isinstance(item, dict) and item.get("question_id")
@@ -1051,11 +1190,17 @@ class CourseMistakeService:
         reward_eligible_resolved = 0
         for item in items:
             question = questions[f"mistake:{item.id}"]
-            try:
-                selected = int(submitted[question["id"]].get("selected_index"))
-            except (TypeError, ValueError):
-                return {"ok": False, "error": "mistake_review_answer_invalid"}
-            correct = selected == int(question["answer_index"])
+            if self._text(question.get("format"), 64) in MISTAKE_BUILDER_FORMATS:
+                selected_tokens = submitted[question["id"]].get("selected_tokens")
+                if not isinstance(selected_tokens, list):
+                    return {"ok": False, "error": "mistake_review_answer_invalid"}
+                correct = selected_tokens == question["answer_tokens"]
+            else:
+                try:
+                    selected_value = int(submitted[question["id"]].get("selected_index"))
+                except (TypeError, ValueError):
+                    return {"ok": False, "error": "mistake_review_answer_invalid"}
+                correct = selected_value == int(question["answer_index"])
             score += int(correct)
             item.review_count = int(item.review_count or 0) + 1
             if correct:
