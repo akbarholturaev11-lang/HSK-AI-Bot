@@ -8477,3 +8477,81 @@ Follow-up:
   the profile or typing `/android`.
 - Nothing tells an installed app that a newer APK exists. Until Play is live,
   an update reaches people only if they ask for the file again.
+
+### 2026-09-15 — The direct build can update itself, the Play build cannot
+
+Changed:
+- An installed APK had no way to learn that a newer one existed; the only
+  route was asking the bot for the file again. The `direct` build now checks
+  `GET /api/v3/android-update/check?version_code=N` when the profile opens and
+  shows one card there if something newer is published.
+- **Android cannot do this silently.** The system always shows its own install
+  confirmation for a sideloaded app, so this is one tap and then that dialog —
+  not the background swap the Tauri desktop client performs. Do not describe it
+  to a learner as automatic. The thing that actually updates silently is Google
+  Play, and that is the argument for finishing the Play listing.
+- The card lives in the profile and nowhere else. It was offered on the course
+  screen and refused: an update is not urgent enough to stand between someone
+  and the lesson they opened the app for.
+- The Play build has a composable that renders nothing in its place. Play
+  forbids an app it distributes from updating itself by any other route, so
+  this is a source set, not a flag: `REQUEST_INSTALL_PACKAGES` and the
+  `FileProvider` are declared in `src/direct/AndroidManifest.xml` and are
+  **absent from the Play APK** — verified with `aapt2 dump badging`.
+- The download link lives on the same `bot_settings` row as the Telegram file,
+  set from the same admin panel. Publishing a new APK **clears** it. That is
+  the whole point of one row: a new version must never be advertised with the
+  previous file behind it, and two rows would let exactly that drift in.
+- `/downloads/android` mirrors `/downloads/macos` and `/downloads/windows`.
+
+On what is checked, and where:
+- The server refuses anything that is not a plain https `.apk` with no
+  credential in it, on the way in and on the way back out — a stored row
+  outlives the code that wrote it.
+- The client checks the same things again. It is the side that writes a file to
+  disk and opens an install dialog over it; it must not do that merely because
+  an answer said so. It also re-checks the version code, because a card that
+  never goes away is a card people learn to ignore.
+- The real defence is neither: Android refuses an update signed by a different
+  key. The size check exists for the one failure that cannot catch — a release
+  uploaded to the bot and to storage as two different builds, both signed by us.
+
+Key files:
+- `app/api/android_update.py` (new), `app/services/android_release_service.py`
+- `app/bot/handlers/admin_android.py`, `app/bot/fsm/admin_android.py`, `app/main.py`
+- `android/app/src/direct/java/com/pomp/hskai/feature/update/` (new, two files)
+- `android/app/src/play/java/com/pomp/hskai/feature/update/AppUpdateCard.kt` (new, no-op)
+- `android/app/src/direct/AndroidManifest.xml` (new), `direct/res/xml/update_paths.xml` (new)
+- `android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt`
+- `tests/test_android_update_api.py` (new), `android/.../testDirect/.../AppUpdateTest.kt` (new),
+  `android/.../androidTest/.../UpdateCardStatesTest.kt` (new)
+
+Verified:
+- Backend: full suite green; 16 new tests cover the link validation, the
+  refusals, every reason the check says nothing, and that publishing again
+  drops the previous link.
+- Android: the five static checks pass (flavour parity now covers three shared
+  declarations), 244 direct and 226 play unit tests — the 18 difference is the
+  update code, which the Play flavour does not compile. `lintDirectDebug` and
+  `lintPlayDebug` clean, both release APKs build.
+- 36 instrumented tests on the Pixel_8 emulator (35 passed, 1 pre-existing
+  skip). Five of them read each card state off a rendered screen, including the
+  one that is easy to get wrong: with no install permission the card asks for
+  the permission instead of announcing a version it cannot install.
+- `aapt2 dump badging` on both release APKs: `REQUEST_INSTALL_PACKAGES` and the
+  `updates` provider are in `direct` and absent from `play`.
+
+Not verified:
+- No APK has been downloaded and installed by this code on any device. The
+  check URL is compiled in and points at production, which has nothing
+  published yet, so the positive path could not be driven end to end here. The
+  parsing, validation and every card state are covered; the HTTP fetch, the
+  file write and the install intent are not.
+- Nobody has seen the system install dialog this produces.
+
+Follow-up:
+- `versionCode` is still hand-written in `build.gradle.kts`. Nothing compares
+  version names, so forgetting to raise it ships an update no installed app can
+  see — and nothing currently catches that.
+- The check runs on every profile open. Harmless at this size (a 204), worth
+  caching if the profile ever becomes a hot screen.

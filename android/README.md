@@ -134,6 +134,45 @@ Server side: `app/services/android_release_service.py` (the stored release),
 (handing it over). The published release lives in one `bot_settings` row, so
 there is no migration and withdrawing a bad build is a single write.
 
+## In-app updates, and why only one flavour has them
+
+Android cannot update a sideloaded app silently. The system always shows its
+own install confirmation, so the `direct` build's update is one tap and then
+that dialog — never a background swap the way the Tauri desktop client does it.
+
+The Play build has none of it. Google Play forbids an app it distributes from
+updating itself by any other route, so this is a source set rather than a
+runtime flag: `src/direct` holds the card, the downloader,
+`REQUEST_INSTALL_PACKAGES` and the `FileProvider`, and `src/play` holds a
+composable that renders nothing. The permission and the provider are simply
+not in the Play APK — check with
+`aapt2 dump badging <apk> | grep REQUEST_INSTALL_PACKAGES`.
+
+How it works:
+
+1. The profile screen asks `GET /api/v3/android-update/check?version_code=N`.
+   The answer is 204 unless a newer build with a download link is published —
+   no release, no link, no version code, or a caller already current all
+   collapse to the same empty answer.
+2. A card appears in the profile, and nowhere else: an update is not urgent
+   enough to stand between someone and the lesson they opened the app for.
+3. Tapping downloads the APK to `cacheDir/updates/update.apk`, checks the size
+   against what the server announced, and opens the system installer.
+
+Android refuses an update signed by a different key, so a swapped file cannot
+replace the app with something else. The size check catches the one thing that
+signature check cannot: a release uploaded to the bot and to storage as two
+different builds.
+
+Publishing an update is the same panel as the APK itself: **Admin panel → 📱
+Android ilova → 🔗 Yangilanish havolasi**, pasting the https link to the APK in
+storage. Publishing a new APK **clears** the previous link on purpose — a new
+version must never be advertised with the old file behind it.
+
+Every release must raise `versionCode` in `android/app/build.gradle.kts`.
+Nothing compares version names; an update nobody's app can see is the failure
+mode of forgetting.
+
 ## Localisation
 
 Backend language codes are `uz` / `ru` / `tj`. Android resource qualifiers are

@@ -67,6 +67,7 @@ import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.feature.update.AppUpdateCard
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
 import com.pomp.hskai.core.navigation.PracticeTool
@@ -190,6 +191,9 @@ fun ProfileScreen(
             item { TrialCard(state = state, onStart = onStartTrial) }
             item { SubscriptionCard(state) }
             item { ReferralCard(state) }
+            // Compiled only into the `direct` build; the Play flavour has a
+            // no-op here, because Play updates the app itself.
+            item { AppUpdateCard() }
             item { SettingsEntryCard(onClick = { settingsOpen = true }) }
 
             state.error?.let { error ->
@@ -371,8 +375,11 @@ private fun StatCard(label: String, value: String, modifier: Modifier = Modifier
 }
 
 @Composable
-private fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTint: Color, title: String, subtitle: String?, onClick: () -> Unit) {
-    Surface(onClick = onClick, color = PompColors.PaperRaised, shape = RoundedCornerShape(16.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+// Not private: the update card is compiled per flavour and reaches for this
+// so that it looks like every other row here rather than inventing a
+// second visual language for one message.
+internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTint: Color, title: String, subtitle: String?, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(onClick = onClick, color = PompColors.PaperRaised, shape = RoundedCornerShape(16.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp)) {
             Surface(color = iconBackground, shape = RoundedCornerShape(13.dp), modifier = Modifier.size(46.dp)) {
                 Box(contentAlignment = Alignment.Center) { Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(22.dp)) }

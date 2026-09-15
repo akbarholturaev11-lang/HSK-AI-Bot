@@ -16,9 +16,10 @@ within seconds, not within a deploy.
 import json
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 from app.repositories.bot_setting_repo import BotSettingRepository
 
@@ -63,6 +64,21 @@ class AndroidRelease:
     version_code: Optional[int]
     published_at: datetime
     published_by: Optional[int]
+    # Where an installed app can fetch this same build. It lives on the same
+    # row as the Telegram file on purpose: the updater must never be able to
+    # offer a different version from the one the bot hands out, and two rows
+    # would let exactly that drift in unnoticed.
+    update_url: Optional[str] = None
+
+    @property
+    def can_self_update(self) -> bool:
+        """An installed app can only be offered an update it can identify.
+
+        Without a version code there is nothing to compare against what is
+        installed, so the app would either re-offer the build it is already
+        running or never offer anything.
+        """
+        return bool(self.update_url) and self.version_code is not None
 
     @property
     def size_text(self) -> str:
@@ -85,6 +101,7 @@ class AndroidRelease:
                 "version_code": self.version_code,
                 "published_at": self.published_at.isoformat(),
                 "published_by": self.published_by,
+                "update_url": self.update_url,
             },
             ensure_ascii=False,
             separators=(",", ":"),
@@ -120,6 +137,7 @@ class AndroidRelease:
             version_code=_as_int(data.get("version_code")),
             published_at=published_at,
             published_by=_as_int(data.get("published_by")),
+            update_url=_https_apk_url(data.get("update_url")),
         )
 
 
@@ -128,6 +146,31 @@ def _as_int(value: Any) -> Optional[int]:
         return int(value)
     except (TypeError, ValueError):
         return None
+
+
+def _https_apk_url(value: Any) -> Optional[str]:
+    """An update URL the app is allowed to download from, or nothing.
+
+    Validated on the way in and on the way out, because a stored row outlives
+    the code that wrote it: anything that is not a plain https `.apk` link is
+    treated as absent rather than handed to a client that would then fetch it.
+    """
+
+    url = str(value or "").strip()
+    if not url or len(url) > 2048:
+        return None
+    try:
+        parsed = urlsplit(url)
+    except ValueError:
+        return None
+    if parsed.scheme != "https" or not parsed.netloc:
+        return None
+    if parsed.username or parsed.password:
+        # A credential in the link would be handed to every installed app.
+        return None
+    if not parsed.path.lower().endswith(".apk"):
+        return None
+    return url
 
 
 def format_size(size_bytes: int) -> str:
@@ -206,6 +249,7 @@ class AndroidReleaseService:
         version_name: str,
         version_code: Optional[int],
         published_by: Optional[int] = None,
+        update_url: Optional[str] = None,
     ) -> AndroidRelease:
         release = AndroidRelease(
             file_id=_require(file_id, "Fayl identifikatori yo'q."),
@@ -216,10 +260,51 @@ class AndroidReleaseService:
             version_code=version_code,
             published_at=datetime.now(timezone.utc),
             published_by=published_by,
+            update_url=_https_apk_url(update_url),
         )
         await self.settings_repo.set(ANDROID_RELEASE_KEY, release.to_json())
         await self.session.commit()
         return release
+
+    async def set_update_url(self, url: str) -> AndroidRelease:
+        """Point installed apps at this same build.
+
+        Refuses when nothing is published: an update link with no release
+        behind it would offer a file the bot cannot even name, and the version
+        the app compares against would be missing.
+        """
+
+        current = await self.current()
+        if current is None:
+            raise AndroidReleaseError(
+                "Avval APK chiqaring — yangilanish havolasi shunga bog'lanadi."
+            )
+        validated = _https_apk_url(url)
+        if not validated:
+            raise AndroidReleaseError(
+                "Havola <code>https://</code> bilan boshlanib, <code>.apk</code> "
+                "bilan tugashi kerak, va ichida parol bo'lmasligi kerak."
+            )
+        if current.version_code is None:
+            raise AndroidReleaseError(
+                "Bu release'da versiya kodi yo'q — ilova nimani solishtirishni "
+                "bilmaydi. APK'ni versiya kodi bilan qayta chiqaring."
+            )
+        updated = replace(current, update_url=validated)
+        await self.settings_repo.set(ANDROID_RELEASE_KEY, updated.to_json())
+        await self.session.commit()
+        return updated
+
+    async def clear_update_url(self) -> AndroidRelease | None:
+        """Stop offering in-app updates without withdrawing the file itself."""
+
+        current = await self.current()
+        if current is None or current.update_url is None:
+            return current
+        updated = replace(current, update_url=None)
+        await self.settings_repo.set(ANDROID_RELEASE_KEY, updated.to_json())
+        await self.session.commit()
+        return updated
 
     async def withdraw(self) -> None:
         """Stop handing out the APK without losing what was published.

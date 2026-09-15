@@ -46,6 +46,27 @@ def _panel_keyboard(release: AndroidRelease | None) -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="📤 O'zimga yuborib ko'rish", callback_data="adm_android:preview")]
         )
         rows.append(
+            [
+                InlineKeyboardButton(
+                    text=(
+                        "🔗 Yangilanish havolasini almashtirish"
+                        if release.update_url
+                        else "🔗 Yangilanish havolasini qo'shish"
+                    ),
+                    callback_data="adm_android:set_update_url",
+                )
+            ]
+        )
+        if release.update_url:
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text="🔕 Ichki yangilanishni o'chirish",
+                        callback_data="adm_android:clear_update_url",
+                    )
+                ]
+            )
+        rows.append(
             [InlineKeyboardButton(text="🚫 Tarqatishni to'xtatish", callback_data="adm_android:withdraw")]
         )
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
@@ -86,6 +107,22 @@ def _panel_text(release: AndroidRelease | None) -> str:
             "Signed <b>direct release</b> APK yuklang."
         )
     published = release.published_at.strftime("%Y-%m-%d %H:%M UTC")
+    if release.can_self_update:
+        update_line = (
+            "\n\n🔗 <b>Ichki yangilanish yoqilgan</b>\n"
+            f"<code>{html.escape(release.update_url)}</code>\n"
+            "O'rnatilgan ilovalar profilda «yangi versiya bor» kartasini ko'radi."
+        )
+    elif release.version_code is None:
+        update_line = (
+            "\n\n🔕 Ichki yangilanish yo'q — bu release'da versiya kodi yo'q, "
+            "ya'ni ilova nimani solishtirishni bilmaydi."
+        )
+    else:
+        update_line = (
+            "\n\n🔕 Ichki yangilanish yo'q — o'rnatilgan ilovalar yangi versiyadan "
+            "xabar topmaydi. Havola qo'shsangiz, profilda karta chiqadi."
+        )
     return (
         "📱 <b>Android ilova</b>\n\n"
         "<blockquote>"
@@ -95,6 +132,7 @@ def _panel_text(release: AndroidRelease | None) -> str:
         f"Chiqarilgan: {published}"
         "</blockquote>\n\n"
         "Shu fayl <code>/android</code> so'raganlarning hammasiga yuboriladi."
+        + update_line
     )
 
 
@@ -332,6 +370,56 @@ async def preview_apk(callback: CallbackQuery, session):
         session,
         source="admin_preview",
         track=False,
+    )
+
+
+@router.callback_query(F.data == "adm_android:set_update_url")
+async def ask_for_update_url(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    await callback.answer()
+    await state.set_state(AdminAndroidStates.waiting_for_update_url)
+    await callback.message.edit_text(
+        "🔗 <b>Yangilanish havolasini yuboring</b>\n\n"
+        "<blockquote>Bu — APK turgan to'g'ridan-to'g'ri <code>https://</code> havola "
+        "(desktop o'rnatuvchilari turgan R2 bucket'ining o'zi bo'lishi mumkin).\n\n"
+        "Aynan shu yerga yuklagan fayl bo'lishi shart — ilova solishtiradigan "
+        "versiya shu release'dan olinadi.</blockquote>",
+        reply_markup=_cancel_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.message(StateFilter(AdminAndroidStates.waiting_for_update_url), F.text)
+async def receive_update_url(message: Message, session, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+    try:
+        release = await AndroidReleaseService(session).set_update_url(message.text)
+    except AndroidReleaseError as error:
+        await message.answer(f"❌ {error}", reply_markup=_cancel_keyboard(), parse_mode="HTML")
+        return
+    await state.clear()
+    await message.answer(
+        "✅ <b>Havola saqlandi</b>\n\n" + _panel_text(release),
+        reply_markup=_panel_keyboard(release),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data == "adm_android:clear_update_url")
+async def clear_update_url(callback: CallbackQuery, session, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    release = await AndroidReleaseService(session).clear_update_url()
+    await callback.answer("O'chirildi")
+    await state.clear()
+    await callback.message.edit_text(
+        "🔕 <b>Ichki yangilanish o'chirildi</b>\n\n" + _panel_text(release),
+        reply_markup=_panel_keyboard(release),
+        parse_mode="HTML",
     )
 
 

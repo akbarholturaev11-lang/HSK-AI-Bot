@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Additions the `direct` channel needs and the Play build must not have.
+
+    Google Play forbids an app it distributes from updating itself by any
+    route other than Play, so the permission and the provider that make an
+    in-app update possible are declared here rather than in `src/main` —
+    the Play build does not merely hide them, it does not contain them.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Asking the system to install a downloaded APK. Android still shows its
+        own confirmation, and still refuses anything not signed by our release
+        key, so this cannot be used to replace the app with something else.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <application>
+        <!--
+            The installer runs in another process and cannot read our cache
+            directory, so the downloaded file is handed over as a content URI
+            with a one-shot read grant instead.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.updates"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/update_paths" />
+        </provider>
+    </application>
+</manifest>

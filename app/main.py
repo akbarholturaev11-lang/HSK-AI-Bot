@@ -51,6 +51,7 @@ from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
+from app.api.android_update import create_android_update_router
 from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, engine, init_db
@@ -652,6 +653,7 @@ app.include_router(
     )
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
+app.include_router(create_android_update_router(session_factory=async_session_maker))
 app.include_router(create_android_assistant_router(session_factory=async_session_maker, settings_obj=settings))
 # Android reuses the same DesktopAuthService core; only the transport differs.
 app.include_router(

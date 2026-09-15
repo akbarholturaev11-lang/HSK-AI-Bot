@@ -9,4 +9,16 @@
     <string name="limit_unlock_button">Учиться без лимита</string>
     <string name="limit_unlock_hint">Кнопка откроет Telegram-бот. Подписка оформляется там, после этого здесь откроется всё.</string>
     <string name="limit_unlock_unavailable">Не удалось открыть Telegram-бот. Зайдите в бот вручную или попробуйте позже.</string>
+
+    <!--
+        In-app updating. Only this channel may do it: Google Play
+        forbids an app it distributes from updating itself by any
+        other route, so the Play build has none of this.
+    -->
+    <string name="update_card_title">Новая версия %1$s</string>
+    <string name="update_card_subtitle">%1$s · нажмите, чтобы обновить</string>
+    <string name="update_card_downloading">Загрузка…</string>
+    <string name="update_card_failed">Не удалось загрузить — попробуйте ещё раз</string>
+    <string name="update_card_permission">Разрешите установку</string>
+    <string name="update_card_permission_hint">Откроются настройки Android</string>
 </resources>

@@ -6,3 +6,4 @@ class AdminAndroidStates(StatesGroup):
 
     waiting_for_apk = State()
     waiting_for_version = State()
+    waiting_for_update_url = State()
