@@ -1,0 +1,8 @@
+# Downloaded third-party materials stay local; documentation can be versioned.
+*.pdf
+*.wav
+*.zip
+*.png
+*.jpg
+*.jpeg
+
