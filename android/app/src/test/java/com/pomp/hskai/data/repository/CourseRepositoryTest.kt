@@ -94,10 +94,14 @@ private open class FakeCourseApi : AndroidCourseApi {
     var lastAuthorization: String? = null
     var lastTimezoneOffset: Int? = null
 
+    /** Counted so a cache read can be proven to touch nothing. */
+    var mapCalls = 0
+
     override suspend fun courseMap(
         authorization: String,
         timezoneOffsetMinutes: Int,
     ): Response<CourseMapDto> {
+        mapCalls++
         lastAuthorization = authorization
         lastTimezoneOffset = timezoneOffsetMinutes
         return Response.success(sampleMap())
@@ -178,6 +182,41 @@ private fun sampleMap(completed: Int = 2) = CourseMapDto(
 class CourseRepositoryTest {
 
     private val json = Json { ignoreUnknownKeys = true }
+
+    /**
+     * The cache used to be reachable only after a request had failed, so every
+     * open waited out a full round trip with a copy of the same screen already
+     * on disk. These two pin the read that makes the app draw first.
+     */
+    @Test
+    fun `the map on disk is returned without asking the network`() = runTest {
+        val dao = FakeCourseMapDao()
+        val api = FakeCourseApi()
+        val repo = repository(api, dao)
+
+        // Fill the cache the only way anything ever does: one good response.
+        repo.courseMap()
+        val callsAfterWarmUp = api.mapCalls
+
+        val cached = repo.cachedCourseMap()
+
+        assertEquals(callsAfterWarmUp, api.mapCalls)
+        assertEquals(false, cached == null)
+        // Not stale: a refresh has not failed, it has not been attempted.
+        assertFalse(cached!!.isStale)
+        assertNull(cached.refreshError)
+    }
+
+    @Test
+    fun `an empty cache asks for nothing and promises nothing`() = runTest {
+        val dao = FakeCourseMapDao()
+        val api = FakeCourseApi()
+
+        val cached = repository(api, dao).cachedCourseMap()
+
+        assertNull(cached)
+        assertEquals(0, api.mapCalls)
+    }
 
     private fun repository(
         api: AndroidCourseApi,

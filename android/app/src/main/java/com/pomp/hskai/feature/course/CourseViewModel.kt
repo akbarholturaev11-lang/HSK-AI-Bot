@@ -48,6 +48,17 @@ class CourseViewModel(
             )
         }
         viewModelScope.launch {
+            // Draw the previous map first when there is nothing on screen yet.
+            // The refresh below replaces it a moment later; the point is that
+            // the learner is looking at their course while it happens instead
+            // of at an empty screen.
+            if (_state.value.snapshot == null) {
+                repository.cachedCourseMap()?.let { cached ->
+                    _state.update {
+                        if (it.snapshot == null) it.copy(isLoading = false, snapshot = cached) else it
+                    }
+                }
+            }
             when (val result = repository.courseMap()) {
                 is ApiResult.Success -> _state.update {
                     it.copy(

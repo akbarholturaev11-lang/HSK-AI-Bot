@@ -68,6 +68,31 @@ class CourseRepository(
     },
 ) {
 
+    /**
+     * The map already on disk, with nothing asked of the network.
+     *
+     * The cache used to be reachable only after a request had failed, so every
+     * single open waited out a full round trip before anything was drawn —
+     * with a perfectly good copy of the same screen sitting on disk. On a 4G
+     * connection that is seconds of empty screen, every time, for data that
+     * had not changed.
+     *
+     * It is not marked stale here. "Stale" means the refresh failed, and while
+     * one is still in flight nobody knows that yet; the failure path below
+     * still marks it, which is when the banner belongs on screen.
+     */
+    suspend fun cachedCourseMap(): CourseMapSnapshot? {
+        val entity = dao.findMostRecent() ?: return null
+        val dto = runCatching {
+            json.decodeFromString(CourseMapDto.serializer(), entity.payloadJson)
+        }.getOrNull() ?: return null
+        return CourseMapSnapshot(
+            map = CourseMapper.toDomain(dto),
+            isStale = false,
+            fetchedAtMillis = entity.fetchedAtMillis,
+        )
+    }
+
     suspend fun courseMap(): ApiResult<CourseMapSnapshot> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> {

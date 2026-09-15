@@ -105,10 +105,25 @@ Qaysi biri to'g'ri ekani — mahsulot qarori. Agar 朱雀 brend bo'lsa, Android
 ham shuni ko'rsatishi kerak; agar pog'ona nomi bo'lsa, Mini App serverdan
 o'qishi kerak. Hozir ikkalasi bir-biriga zid.
 
-### 3.3 Ilova sekin ochiladi
+### 3.3 ~~Ilova sekin ochiladi~~ — TUZATILDI 2026-09-15
 
-Foydalanuvchi aytgan, hali o'lchanmagan. `LessonCache` va `CourseCache` bor,
-lekin ochilishdagi kechikish sababi aniqlanmagan.
+Sababi birinchi kadr emas edi: sovuq ishga tushish emulyatorda 460–530 ms,
+ya'ni normal. Kechikish undan **keyin** edi.
+
+`CourseRepository.courseMap()` diskdagi keshni **faqat tarmoq yiqilganda**
+o'qirdi. Ya'ni har ochilishda ilova to'liq borib-kelishni kutardi — aynan o'sha
+ekranning tayyor nusxasi diskda turgani holda. O'lchov: production API'ga
+borib-kelish 0.9–3.5 s (tez internetda, autentifikatsiyasiz; telefonda 4G'da
+sekinroq). Shuncha vaqt bo'sh ekran.
+
+Endi `cachedCourseMap()` bor: kesh darhol chiziladi, yangilanish orqadan
+keladi. Kesh «stale» deb belgilanmaydi — «stale» degani *yangilash yiqildi*,
+yangilash hali ketayotganda buni hech kim bilmaydi. Yiqilsa, eski
+`cached(error)` yo'li uni baribir belgilaydi va banner chiqadi.
+
+**Diqqat:** bu faqat kurs xaritasiga tegishli. `FeatureRepository` da kesh
+hali ham yo'q — profil, mashq, testlar, reyting har ochilishda tarmoqni
+kutadi.
 
 ### 3.4 Boshqa ochiqlar
 
