@@ -137,6 +137,11 @@ class FakeBot:
         if self.document_fails:
             raise RuntimeError("wrong file identifier/HTTP URL specified")
         self.documents.append((chat_id, file_id, caption or ""))
+        # Telegram answers with the message it created, and that is where a
+        # freshly fetched URL turns into a reusable file_id.
+        return SimpleNamespace(
+            document=SimpleNamespace(file_id=f"TELEGRAM_COPY_OF_{len(self.documents)}")
+        )
 
 
 class DatabaseBackedTest(unittest.IsolatedAsyncioTestCase):
@@ -526,6 +531,105 @@ class AdminPublishingFlowTests(DatabaseBackedTest):
             callback = FakeCallback(user_id=999, data="adm_android:publish")
             await publish_apk(callback, session, state)
             self.assertIsNone(await AndroidReleaseService(session).current())
+
+
+class ManifestHandoutTests(DatabaseBackedTest):
+    """A release published by the workflow, handed out with nobody pasting it."""
+
+    class FakeManifest:
+        def __init__(self, manifest):
+            self.manifest = manifest
+
+        async def resolve(self):
+            return self.manifest
+
+    def _manifest(self):
+        from app.services.android_release_manifest_service import (
+            parse_android_release_manifest,
+        )
+
+        return parse_android_release_manifest(
+            __import__("json")
+            .dumps(
+                {
+                    "schema_version": 1,
+                    "version_name": "1.2.0",
+                    "version_code": 3,
+                    "download_url": (
+                        "https://pub-example.r2.dev/android/v1.2.0/"
+                        "hsk-ai-1.2.0-3-direct-release.apk"
+                    ),
+                    "size": 3_784_820,
+                    "sha256": "a" * 64,
+                    "published_at": "2026-09-15T12:00:00Z",
+                }
+            )
+            .encode()
+        )
+
+    def _patched(self, manifest):
+        return unittest.mock.patch(
+            "app.services.android_release_service.AndroidReleaseService._manifest",
+            lambda _self: self.FakeManifest(manifest),
+        )
+
+    async def test_the_first_learner_is_served_straight_from_storage(self):
+        from app.bot.handlers.android_app import send_android_app
+
+        async with self.sessions() as session:
+            await self._add_user(session, language="uz")
+            bot = FakeBot()
+            with self._patched(self._manifest()):
+                sent = await send_android_app(
+                    bot, self.CHAT_ID, self.TELEGRAM_ID, session, source="bot_command"
+                )
+
+            self.assertTrue(sent)
+            # Nothing was uploaded to the bot by hand; Telegram is handed the URL.
+            self.assertTrue(bot.documents[0][1].startswith("https://"))
+            self.assertIn("1.2.0 (3)", bot.messages[0][1])
+            self.assertIn("3.6 MB", bot.messages[0][1])
+
+    async def test_telegrams_copy_is_kept_so_the_next_one_is_instant(self):
+        from app.bot.handlers.android_app import send_android_app
+        from app.services.android_release_service import AndroidReleaseService
+
+        async with self.sessions() as session:
+            await self._add_user(session, language="uz")
+            with self._patched(self._manifest()):
+                first = FakeBot()
+                await send_android_app(
+                    first, self.CHAT_ID, self.TELEGRAM_ID, session, source="bot_command"
+                )
+                second = FakeBot()
+                await send_android_app(
+                    second, self.CHAT_ID, self.TELEGRAM_ID, session, source="bot_command"
+                )
+
+                self.assertTrue(first.documents[0][1].startswith("https://"))
+                self.assertEqual(second.documents[0][1], "TELEGRAM_COPY_OF_1")
+
+                served = await AndroidReleaseService(session).serve()
+                self.assertEqual(served.file_id, "TELEGRAM_COPY_OF_1")
+
+    async def test_the_request_source_is_still_the_chat_not_the_file(self):
+        """`source` is the funnel field; it once got overwritten by the URL."""
+
+        from app.bot.handlers.android_app import send_android_app
+
+        async with self.sessions() as session:
+            await self._add_user(session, language="uz")
+            with self._patched(self._manifest()):
+                await send_android_app(
+                    FakeBot(), self.CHAT_ID, self.TELEGRAM_ID, session, source="bot_profile"
+                )
+
+            rows = await session.execute(
+                select(CourseMiniAppEvent.source).where(
+                    CourseMiniAppEvent.event_name == "android_apk_sent"
+                )
+            )
+            self.assertEqual(list(rows.scalars()), ["bot_profile"])
 
 
 class StaleButtonTests(unittest.TestCase):

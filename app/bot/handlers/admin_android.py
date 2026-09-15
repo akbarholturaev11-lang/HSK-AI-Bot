@@ -98,13 +98,39 @@ def _confirm_keyboard() -> InlineKeyboardMarkup:
     )
 
 
-def _panel_text(release: AndroidRelease | None) -> str:
+async def _panel_state(session):
+    """The stored row and what is actually being handed out right now.
+
+    They differ whenever a release manifest is configured, and the admin needs
+    to see that before wondering why a link they pasted changed nothing.
+    """
+
+    service = AndroidReleaseService(session)
+    return await service.current(), await service.serve()
+
+
+def _served_line(served) -> str:
+    if served is None:
+        return ""
+    if served.source != "manifest":
+        return ""
+    return (
+        "\n\n🤖 <b>Avtomat rejim yoqilgan</b>\n"
+        f"Hozir tarqatilayotgani: <b>{html.escape(served.version_text)}</b> "
+        f"({served.size_text})\n"
+        "Buni GitHub workflow o'zi chiqargan. Qo'lda qo'yilgan havola "
+        "e'tiborga olinmaydi."
+    )
+
+
+def _panel_text(release: AndroidRelease | None, served=None) -> str:
     if not release:
         return (
             "📱 <b>Android ilova</b>\n\n"
             "<blockquote>Hozircha hech narsa chiqarilmagan — "
             "<code>/android</code> so'ragan odam «tayyor emas» xabarini oladi.</blockquote>\n\n"
             "Signed <b>direct release</b> APK yuklang."
+            + _served_line(served)
         )
     published = release.published_at.strftime("%Y-%m-%d %H:%M UTC")
     if release.can_self_update:
@@ -133,14 +159,15 @@ def _panel_text(release: AndroidRelease | None) -> str:
         "</blockquote>\n\n"
         "Shu fayl <code>/android</code> so'raganlarning hammasiga yuboriladi."
         + update_line
+        + _served_line(served)
     )
 
 
 async def _show_panel(callback: CallbackQuery, session, state: FSMContext) -> None:
     await state.clear()
-    release = await AndroidReleaseService(session).current()
+    release, served = await _panel_state(session)
     await callback.message.edit_text(
-        _panel_text(release),
+        _panel_text(release, served),
         reply_markup=_panel_keyboard(release),
         parse_mode="HTML",
     )
@@ -151,9 +178,9 @@ async def android_panel_command(message: Message, session, state: FSMContext):
     if not _is_admin(message.from_user.id):
         return
     await state.clear()
-    release = await AndroidReleaseService(session).current()
+    release, served = await _panel_state(session)
     await message.answer(
-        _panel_text(release),
+        _panel_text(release, served),
         reply_markup=_panel_keyboard(release),
         parse_mode="HTML",
     )

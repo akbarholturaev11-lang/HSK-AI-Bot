@@ -8555,3 +8555,65 @@ Follow-up:
   see — and nothing currently catches that.
 - The check runs on every profile open. Harmless at this size (a 204), worth
   caching if the profile ever becomes a hot screen.
+
+### 2026-09-15 — An Android release publishes itself, like the desktop one
+
+Changed:
+- Cutting an Android release meant pasting a link into the bot every time.
+  macOS and Windows have not worked that way since they shipped: the release
+  workflow writes `desktop/latest.json` to R2 and the server reads it. Android
+  now has the same arrangement — `android/latest.json`, written by
+  `.github/workflows/android-release.yml`, read through
+  `ANDROID_RELEASE_MANIFEST_URL`.
+- `AndroidReleaseManifestService` reuses the desktop resolver's URL and text
+  rules rather than restating them; the threat is identical, since the server
+  fetches whatever that setting points at. It keeps the same three refusals:
+  a manifest that cannot be read never un-publishes a release (last-known-good
+  survives), a manifest that goes backwards is refused, and the same version
+  pointing at a different artifact is refused.
+- `AndroidReleaseService.serve()` is now the one place that answers "which
+  build do we hand out". The manifest wins when configured; the bot-panel row
+  is the fallback and remains the only path when it is not. Both the update
+  check and the bot go through it.
+- **Telegram's copy follows on its own.** The bot sends the APK by URL the
+  first time somebody asks after a release, and stores the `file_id` Telegram
+  hands back against that version code. Everyone after gets the `file_id`. A
+  `file_id` from an older build is never attached to a newer version — that
+  would announce 1.2.0 and deliver 1.1.0, and it is the failure that would have
+  looked completely fine.
+- The admin panel says when the manifest is in charge, so a pasted link that
+  changes nothing is explained rather than mysterious.
+
+Caught while writing it:
+- `send_android_app` grew a local `source` holding the file_id-or-URL, which
+  shadowed the `source` parameter that names where the request came from. The
+  funnel would have recorded a URL instead of `bot_command`. Renamed, and there
+  is now a test that reads the recorded source back out of the database.
+
+Key files:
+- `app/services/android_release_manifest_service.py` (new)
+- `app/services/android_release_service.py` (`ServedRelease`, `serve`,
+  `remember_file_id`)
+- `app/api/android_update.py`, `app/bot/handlers/android_app.py`,
+  `app/bot/handlers/admin_android.py`, `app/config.py`, `.env.example`
+- `.github/workflows/android-release.yml`
+- `tests/test_android_release_manifest.py` (new), `tests/test_android_apk_download.py`
+
+Verified:
+- The workflow's `jq` output was run through the server's parser: what CI
+  writes is what the server reads.
+- 21 new manifest tests and 3 new handout tests, plus the existing suite.
+- The live production endpoints were checked against the real published 1.1.0
+  before this change: an older caller got the update, a current one got 204,
+  and `/downloads/android` redirected to R2.
+
+Not verified:
+- The workflow has never run. No GitHub secret is set yet, so the build, the
+  signature check and the R2 upload have only been exercised by reading them.
+- `ANDROID_RELEASE_MANIFEST_URL` is not set anywhere, so the manifest path has
+  only ever run against fakes.
+
+Follow-up:
+- `versionCode` is still hand-written. The workflow refuses a downgrade, but
+  nothing refuses a release that forgot to raise it at all — it just publishes
+  a build no installed app can see.

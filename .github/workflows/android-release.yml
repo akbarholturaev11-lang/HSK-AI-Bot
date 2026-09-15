@@ -126,13 +126,17 @@ jobs:
 
           name="$(basename "$apk")"
           version="$(echo "$name" | sed -E 's/^hsk-ai-(.+)-[0-9]+-direct-release\.apk$/\1/')"
-          test "$version" != "$name" || {
+          code="$(echo "$name" | sed -E 's/^hsk-ai-.+-([0-9]+)-direct-release\.apk$/\1/')"
+          test "$version" != "$name" && test "$code" != "$name" || {
             echo "::error::Unexpected artifact name: $name"
             exit 1
           }
           echo "path=$apk" >> "$GITHUB_OUTPUT"
           echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "size=$(stat -c%s "$apk")" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "$apk" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -152,6 +156,9 @@ jobs:
           APK_PATH: ${{ steps.apk.outputs.path }}
           APK_NAME: ${{ steps.apk.outputs.name }}
           APK_VERSION: ${{ steps.apk.outputs.version }}
+          APK_CODE: ${{ steps.apk.outputs.code }}
+          APK_SIZE: ${{ steps.apk.outputs.size }}
+          APK_SHA256: ${{ steps.apk.outputs.sha256 }}
         run: |
           set -euo pipefail
           for value in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY R2_ACCOUNT_ID R2_BUCKET R2_PUBLIC_BASE_URL; do
@@ -192,14 +199,63 @@ jobs:
           fi
 
           url="${R2_PUBLIC_BASE_URL%/}/${key}"
+
+          # The manifest is the only mutable object here, and it is what makes
+          # a release take effect without anyone pasting anything. Refuse to
+          # move it backwards: the server rejects a downgrade too, but a run
+          # that fails is far easier to notice than a manifest quietly ignored.
+          previous_code=0
+          manifest_error="$(mktemp)"
+          if aws s3api head-object --bucket "$R2_BUCKET" --key "android/latest.json" \
+            --endpoint-url "$endpoint" >/dev/null 2>"$manifest_error"; then
+            previous="$(mktemp)"
+            aws s3 cp "s3://${R2_BUCKET}/android/latest.json" "$previous" \
+              --endpoint-url "$endpoint" --only-show-errors
+            previous_code="$(jq -er '.version_code' "$previous")"
+          elif ! grep -Eq '404|Not Found|NoSuchKey' "$manifest_error"; then
+            echo "::error::Could not read the existing Android manifest"
+            cat "$manifest_error"
+            exit 1
+          fi
+          if [ "$APK_CODE" -lt "$previous_code" ]; then
+            echo "::error::versionCode $APK_CODE is older than the published $previous_code"
+            exit 1
+          fi
+
+          manifest="$(mktemp)"
+          jq -n \
+            --arg version_name "$APK_VERSION" \
+            --argjson version_code "$APK_CODE" \
+            --arg download_url "$url" \
+            --argjson size "$APK_SIZE" \
+            --arg sha256 "$APK_SHA256" \
+            --arg published_at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            '{
+              schema_version: 1,
+              version_name: $version_name,
+              version_code: $version_code,
+              download_url: $download_url,
+              size: $size,
+              sha256: $sha256,
+              published_at: $published_at
+            }' > "$manifest"
+          cat "$manifest"
+
+          aws s3 cp "$manifest" "s3://${R2_BUCKET}/android/latest.json" \
+            --endpoint-url "$endpoint" \
+            --content-type application/json \
+            --cache-control "public, max-age=60" \
+            --only-show-errors
+
           {
-            echo "### Android ${APK_VERSION} published"
+            echo "### Android ${APK_VERSION} (${APK_CODE}) published"
             echo
-            echo "Paste this into the bot — **Admin panel → 📱 Android ilova → 🔗 Yangilanish havolasi**:"
+            echo "The server reads \`android/latest.json\`, so this release is live"
+            echo "without anyone pasting anything. Installed apps will see it within a minute."
             echo
-            echo '```'
-            echo "$url"
-            echo '```'
+            echo "APK: \`$url\`"
             echo
-            echo "Then upload the APK itself to the bot from the artifact attached to this run."
+            echo "Still manual: handing the file to the bot chat. The bot fetches it"
+            echo "from the URL above the first time somebody asks, and caches what"
+            echo "Telegram gives back — so normally there is nothing left to do."
           } >> "$GITHUB_STEP_SUMMARY"

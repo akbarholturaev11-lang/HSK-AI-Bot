@@ -27,6 +27,11 @@ from app.repositories.bot_setting_repo import BotSettingRepository
 logger = logging.getLogger(__name__)
 
 ANDROID_RELEASE_KEY = "android_apk_release"
+# Telegram's own copy of whatever the manifest currently points at. The bot
+# fetches the APK by URL once, Telegram hands back a file_id, and every learner
+# after that gets it at CDN speed without the release workflow ever needing to
+# know this chat exists.
+ANDROID_MANIFEST_FILE_KEY = "android_apk_manifest_file"
 
 # Telegram refuses documents larger than this from a bot, so an APK above it
 # could be stored and then never delivered. Rejecting at upload turns a silent
@@ -228,10 +233,129 @@ def parse_version_text(text: str) -> tuple[str, Optional[int]]:
     return match.group("version_name"), int(version_code) if version_code else None
 
 
+@dataclass(frozen=True)
+class ServedRelease:
+    """What the bot and the update check actually hand out.
+
+    One shape for both sources. When a manifest is configured it wins, because
+    the release workflow writes it and nobody has to remember to copy anything;
+    the bot panel remains the fallback and the only path when it is not.
+    """
+
+    version_name: str
+    version_code: Optional[int]
+    size: int
+    file_name: str
+    #: Absent when Telegram has not been given this build yet — the bot then
+    #: sends it by URL once and stores what Telegram gives back.
+    file_id: Optional[str]
+    download_url: Optional[str]
+    source: str
+
+    @property
+    def size_text(self) -> str:
+        return format_size(self.size)
+
+    @property
+    def version_text(self) -> str:
+        if self.version_code is None:
+            return self.version_name
+        return f"{self.version_name} ({self.version_code})"
+
+    @property
+    def can_self_update(self) -> bool:
+        return bool(self.download_url) and self.version_code is not None
+
+
 class AndroidReleaseService:
-    def __init__(self, session):
+    def __init__(self, session, *, manifest_service=None):
         self.session = session
         self.settings_repo = BotSettingRepository(session)
+        self._manifest_service = manifest_service
+
+    def _manifest(self):
+        if self._manifest_service is not None:
+            return self._manifest_service
+        from app.config import settings as settings_obj
+        from app.services.android_release_manifest_service import (
+            AndroidReleaseManifestService,
+        )
+
+        self._manifest_service = AndroidReleaseManifestService(settings_obj)
+        return self._manifest_service
+
+    async def serve(self) -> Optional["ServedRelease"]:
+        """The build to hand out right now, whatever published it."""
+
+        manifest = None
+        try:
+            manifest = await self._manifest().resolve()
+        except Exception:
+            # The manifest is an optimisation over the manual flow, never a
+            # reason for the bot to stop handing out the APK it already has.
+            logger.exception("Android release manifest could not be resolved")
+
+        stored = await self.current()
+
+        if manifest is not None:
+            return ServedRelease(
+                version_name=manifest.version_name,
+                version_code=manifest.version_code,
+                size=manifest.size,
+                file_name=manifest.download_url.rsplit("/", 1)[-1],
+                file_id=await self._file_id_for(manifest.version_code, stored),
+                download_url=manifest.download_url,
+                source="manifest",
+            )
+
+        if stored is None:
+            return None
+        return ServedRelease(
+            version_name=stored.version_name,
+            version_code=stored.version_code,
+            size=stored.file_size,
+            file_name=stored.file_name,
+            file_id=stored.file_id,
+            download_url=stored.update_url,
+            source="bot",
+        )
+
+    async def _file_id_for(
+        self,
+        version_code: int,
+        stored: Optional[AndroidRelease],
+    ) -> Optional[str]:
+        """Telegram's copy of this exact build, if it has one.
+
+        A file_id from a different version is worse than none at all: the bot
+        would announce the new version and attach the old APK.
+        """
+
+        raw = await self.settings_repo.get(ANDROID_MANIFEST_FILE_KEY)
+        if raw:
+            try:
+                cached = json.loads(raw)
+                if _as_int(cached.get("version_code")) == version_code:
+                    file_id = str(cached.get("file_id") or "").strip()
+                    if file_id:
+                        return file_id
+            except (TypeError, ValueError):
+                logger.warning("Stored Android file_id cache is not valid JSON")
+        if stored is not None and stored.version_code == version_code:
+            return stored.file_id
+        return None
+
+    async def remember_file_id(self, *, version_code: int, file_id: str) -> None:
+        """Keep what Telegram gave back, so the next learner waits for nothing."""
+
+        await self.settings_repo.set(
+            ANDROID_MANIFEST_FILE_KEY,
+            json.dumps(
+                {"version_code": int(version_code), "file_id": str(file_id)},
+                separators=(",", ":"),
+            ),
+        )
+        await self.session.commit()
 
     async def current(self) -> Optional[AndroidRelease]:
         raw = await self.settings_repo.get(ANDROID_RELEASE_KEY)

@@ -39,7 +39,7 @@ def create_android_update_router(*, session_factory) -> APIRouter:
 
         try:
             async with session_factory() as session:
-                release = await AndroidReleaseService(session).current()
+                release = await AndroidReleaseService(session).serve()
         except Exception:
             logger.exception("Android update check failed")
             # Fail closed. An app that cannot reach us must keep working, not
@@ -55,8 +55,8 @@ def create_android_update_router(*, session_factory) -> APIRouter:
             content={
                 "version_name": release.version_name,
                 "version_code": release.version_code,
-                "url": release.update_url,
-                "size": release.file_size,
+                "url": release.download_url,
+                "size": release.size,
             },
             headers=_NO_STORE,
         )
@@ -72,19 +72,19 @@ def create_android_update_router(*, session_factory) -> APIRouter:
 
         try:
             async with session_factory() as session:
-                release = await AndroidReleaseService(session).current()
+                release = await AndroidReleaseService(session).serve()
         except Exception:
             logger.exception("Android download redirect failed")
             release = None
 
-        if release is None or not release.update_url:
+        if release is None or not release.download_url:
             return JSONResponse(
                 status_code=404,
                 content={"ok": False, "error": "android_download_unavailable"},
                 headers=_NO_STORE,
             )
         return RedirectResponse(
-            url=release.update_url,
+            url=release.download_url,
             status_code=307,
             headers={
                 **_NO_STORE,

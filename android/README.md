@@ -138,9 +138,21 @@ there is no migration and withdrawing a bad build is a single write.
 
 `.github/workflows/android-release.yml`, run by hand from the Actions tab. It
 runs the same static checks and tests CI does, builds the signed `direct`
-release, and uploads it to the same Cloudflare R2 bucket the desktop
-installers live in, under `android/v<version>/`. The run summary prints the
-public URL to paste into the bot.
+release, uploads it to the same Cloudflare R2 bucket the desktop installers
+live in under `android/v<version>/`, and rewrites `android/latest.json`.
+
+That manifest is what makes a release take effect. With
+`ANDROID_RELEASE_MANIFEST_URL` set, the server reads the current build from it
+and nobody pastes a link per release — the same arrangement `desktop/latest.json`
+has had since the desktop client shipped. Leave the setting blank and the
+manual bot-panel flow is used instead; it still works and is the fallback
+whenever the manifest cannot be read.
+
+Telegram's copy of the APK follows on its own. The first learner who asks after
+a release is served straight from storage, and what Telegram hands back is
+cached against that version code, so everyone after them gets a `file_id`. A
+`file_id` from an older build is never attached to a newer version — that would
+announce 1.2.0 and deliver 1.1.0.
 
 It refuses to publish an APK signed by anything but the expected key: the
 certificate SHA-256 is pinned in the workflow, because an APK signed by a
@@ -179,7 +191,8 @@ How it works:
 1. The profile screen asks `GET /api/v3/android-update/check?version_code=N`.
    The answer is 204 unless a newer build with a download link is published —
    no release, no link, no version code, or a caller already current all
-   collapse to the same empty answer.
+   collapse to the same empty answer. The release comes from the manifest when
+   one is configured, and from the bot panel otherwise.
 2. A card appears in the profile, and nowhere else: an update is not urgent
    enough to stand between someone and the lesson they opened the app for.
 3. Tapping downloads the APK to `cacheDir/updates/update.apk`, checks the size

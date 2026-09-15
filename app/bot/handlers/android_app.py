@@ -56,7 +56,8 @@ async def send_android_app(
             source=source,
         )
 
-    release = await AndroidReleaseService(session).current()
+    releases = AndroidReleaseService(session)
+    release = await releases.serve()
     if not release:
         await session.commit()
         await bot.send_message(
@@ -77,21 +78,39 @@ async def send_android_app(
         parse_mode="HTML",
     )
 
+    # A file_id when Telegram already holds this build, the storage URL when it
+    # does not. The second case happens exactly once per release — Telegram
+    # fetches it, and what comes back is cached below, so the release workflow
+    # never has to know this chat exists.
+    document_source = release.file_id or release.download_url
+    if not document_source:
+        await session.commit()
+        await bot.send_message(chat_id, t("android_app_failed", lang))
+        return False
+
     try:
-        await bot.send_document(
+        sent = await bot.send_document(
             chat_id,
-            release.file_id,
+            document_source,
             caption=t("android_app_caption", lang),
             parse_mode="HTML",
         )
     except Exception:
-        # A stored file_id can stop resolving — the upload was deleted, or the
-        # bot token changed. The learner must not be left staring at an intro
-        # with no file under it.
+        # A stored file_id can stop resolving, and Telegram can fail to fetch a
+        # URL. The learner must not be left staring at an intro with no file
+        # under it either way.
         logger.exception("Failed to send the Android APK to %s", telegram_id)
         await session.commit()
         await bot.send_message(chat_id, t("android_app_failed", lang))
         return False
+
+    if not release.file_id and release.version_code is not None:
+        new_file_id = getattr(getattr(sent, "document", None), "file_id", None)
+        if new_file_id:
+            await releases.remember_file_id(
+                version_code=release.version_code,
+                file_id=str(new_file_id),
+            )
 
     if track:
         await analytics.record_server_event(
@@ -102,7 +121,8 @@ async def send_android_app(
             payload={
                 "version_name": release.version_name,
                 "version_code": release.version_code,
-                "file_size": release.file_size,
+                "file_size": release.size,
+                "release_source": release.source,
             },
         )
     await session.commit()

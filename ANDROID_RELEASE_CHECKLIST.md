@@ -35,6 +35,8 @@ Qolgan:
 
 ## 1. HAR SAFAR yangi versiya chiqarganda
 
+Ikki yo'l bor. Avtomat yoqilgan bo'lsa (2-bo'limga qarang) — faqat 1.1 va 1.2.
+
 ### 1.1 Versiya raqamini oshiring — BU ENG KO'P UNUTILADIGANI
 
 `android/app/build.gradle.kts` faylida, tepada:
@@ -45,51 +47,54 @@ val appVersionCode = 3         // ← BUNI HAR SAFAR +1 QILING
 ```
 
 **`appVersionCode` oshmasa, hech kim yangilanishni ko'rmaydi.** Ilova faqat shu
-raqamni solishtiradi, nomni emas. Hozircha buni eslatadigan hech narsa yo'q.
+raqamni solishtiradi, nomni emas.
 
-### 1.2 Yig'ish
+### 1.2 AVTOMAT: GitHub'da tugmani bosing
+
+**Actions → Android release → Run workflow.**
+
+Bo'ldi. U o'zi: testlardan o'tkazadi, imzolaydi, R2'ga qo'yadi va
+`android/latest.json` ni yangilaydi. Server bir daqiqada yangi versiyani
+ko'radi. **Havolani hech qayerga tashlash kerak emas.**
+
+Botdagi fayl ham o'zi yangilanadi: birinchi odam `/android` so'raganda bot
+faylni R2'dan olib yuboradi, Telegram nusxasini saqlab qo'yadi, keyingilarga
+bir zumda ketadi.
+
+---
+
+### QO'LDA (avtomat yoqilmagan bo'lsa)
+
+**Yig'ish:**
 
 ```bash
 cd "/Users/kaijimima1234/Projects/HSK AI bot/android" && ./gradlew assembleDirectRelease
 ```
 
-Fayl shu yerda paydo bo'ladi:
-`android/app/build/outputs/apk/direct/release/hsk-ai-<versiya>-<kod>-direct-release.apk`
+Fayl: `android/app/build/outputs/apk/direct/release/hsk-ai-<versiya>-<kod>-direct-release.apk`
 
-**Fayl nomini o'zgartirmang** — bot nomdan versiyani o'qiydi, va `play` yoki
+**Fayl nomini o'zgartirmang** — bot nomdan versiyani o'qiydi va `play` yoki
 `debug` build'ni shu nom orqali rad etadi.
 
-### 1.3 R2'ga qo'yish
-
-`dash.cloudflare.com` → R2 → `hsk-ai-releases` bucket → `android/` papkasi →
+**R2'ga qo'yish:** `dash.cloudflare.com` → R2 → `hsk-ai-releases` → `android/` →
 **Добавить папку** → `v1.2.0` → ichiga kirib **Upload**.
-
-Havolasi shunday bo'ladi:
-
-```
-https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev/android/v1.2.0/hsk-ai-1.2.0-3-direct-release.apk
-```
-
-Brauzerda ochib tekshiring — yuklana boshlashi kerak.
 
 > Safari sahifani tarjima qilsa, fayl nomi ekranda rus tilida ko'rinishi mumkin
 > (`прямой-релиз`). Bu faqat ko'rinish — haqiqiy fayl to'g'ri nom bilan turadi.
 
-### 1.4 Botga berish
+**Botga berish:**
 
 1. **Admin panel → 📱 Android ilova → ⬆️ Yangi APK yuklash** → faylni yuboring
 2. **🔗 Yangilanish havolasini qo'shish** → R2 havolasini tashlang
 
-⚠️ Yangi APK chiqarganingizda eski havola **avtomatik o'chadi**. Bu ataylab —
-yangi versiya eski fayl bilan reklama qilinib qolmasin. Ya'ni havolani
-**har safar qaytadan** qo'yish kerak.
+⚠️ Yangi APK chiqarganingizda eski havola **avtomatik o'chadi** — yangi versiya
+eski fayl bilan reklama qilinib qolmasin. Ya'ni havolani **har safar qaytadan**
+qo'yish kerak.
 
-### 1.5 Tekshirish
+### 1.3 Tekshirish
 
-- [ ] **📤 O'zimga yuborib ko'rish** — fayl keldimi?
+- [ ] **📤 O'zimga yuborib ko'rish** — fayl keldimi, versiyasi to'g'rimi?
 - [ ] Eski versiyali telefonda Profilga kiring — «Yangi versiya» kartasi chiqdimi?
-
----
 
 ## 2. BIR MARTA: GitHub avtomatini yoqish
 
@@ -110,6 +115,16 @@ Birinchisi uchun (natija clipboard'ga tushadi):
 ```bash
 base64 -i ~/.pomp-hskai/pomp-hskai-release.jks | tr -d '\n' | pbcopy
 ```
+
+Keyin serverga manifest qayerdaligini ayting. Railway → Variables:
+
+```
+ANDROID_RELEASE_MANIFEST_URL=https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev/android/latest.json
+```
+
+⚠️ Bu qiymatni **workflow birinchi marta muvaffaqiyatli o'tgandan keyin** qo'ying —
+aks holda server yo'q faylni so'rab turadi. (Zarari yo'q: manifest topilmasa
+server eski qo'lda qo'yilgan yo'lga qaytadi.)
 
 Keyin: GitHub → **Actions → Android release → Run workflow**.
 
