@@ -32,7 +32,11 @@ sealed interface AppDestination {
     data object Rating : AppDestination
     data object Profile : AppDestination
     data object WidgetSetup : AppDestination
-    data class Practice(val tool: PracticeTool) : AppDestination
+    /**
+     * Mashq. A null [tool] is the section's own home — `practice` with no tail,
+     * which is the link the release-feedback "try it" button sends.
+     */
+    data class Practice(val tool: PracticeTool? = null) : AppDestination
 }
 
 enum class PracticeTool(val slug: String) {
@@ -107,9 +111,10 @@ object DeepLinkRouter {
             }
 
             "practice" -> when {
-                tail.size != 1 -> null
-                else -> PracticeTool.fromSlug(tail[0])
+                tail.isEmpty() -> AppDestination.Practice()
+                tail.size == 1 -> PracticeTool.fromSlug(tail[0])
                     ?.let { AppDestination.Practice(it) }
+                else -> null
             }
 
             else -> null
@@ -125,7 +130,9 @@ object DeepLinkRouter {
         AppDestination.Profile -> "$SCHEME://profile"
         AppDestination.WidgetSetup -> "$SCHEME://profile/widget"
         is AppDestination.Lesson -> "$SCHEME://lesson/${destination.order}"
-        is AppDestination.Practice -> "$SCHEME://practice/${destination.tool.slug}"
+        is AppDestination.Practice -> destination.tool
+            ?.let { "$SCHEME://practice/${it.slug}" }
+            ?: "$SCHEME://practice"
     }
 
     private fun lessonOrder(segment: String): Int? =

@@ -169,6 +169,27 @@ fun LessonScreen(
     }
 }
 
+/**
+ * Same banner, same words the Kurs map shows when it is running on the phone's
+ * own copy. A lesson opened offline can be read but not finished, so saying so
+ * once at the top beats letting the completion button fail unexplained.
+ */
+@Composable
+private fun StaleBanner() {
+    Surface(
+        color = PompColors.GoldSoft,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+    ) {
+        Text(
+            stringResource(R.string.today_stale),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.Ink,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        )
+    }
+}
+
 @Composable
 private fun Centered(content: @Composable () -> Unit) {
     Column(
@@ -208,6 +229,10 @@ private fun LessonBody(
         }
     }
 
+    // The new-word card hides the CTA until it has opened, the way `cardWord`
+    // keeps `#f-cta` hidden for its first 900ms. Reset per card.
+    var newWordOpen by remember(state.cardIndex) { mutableStateOf(false) }
+
     val writeTarget = state.writeTarget
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -222,6 +247,7 @@ private fun LessonBody(
                 total = state.totalCards,
                 title = state.currentSectionTitle,
             )
+            if (state.isStale) StaleBanner()
 
             // The card sits in the middle of the free space instead of clinging to
             // the top-left corner; longer decks still scroll normally.
@@ -237,7 +263,13 @@ private fun LessonBody(
                 verticalArrangement = Arrangement.Center,
               ) {
                 when (card) {
-                    is NewWordCard -> NewWordCardView(card, pinyin)
+                    is NewWordCard -> NewWordCardView(
+                        card = card,
+                        pinyin = pinyin,
+                        isAudioLoading = state.isAudioLoading,
+                        onPlayAudio = onPlayAudio,
+                        onRevealed = { newWordOpen = true },
+                    )
                     is GrammarCard -> GrammarCardView(card, pinyin)
                     is PronunciationCard -> PronunciationCardView(card, pinyin, state.isAudioLoading, onPlayAudio, onAcknowledge)
                     is ChoiceCard -> ChoiceCardView(
@@ -268,7 +300,13 @@ private fun LessonBody(
               }
             }
 
-            FooterBar(state = state, card = card, onAcknowledge = onAcknowledge, onAdvance = onAdvance)
+            FooterBar(
+                state = state,
+                card = card,
+                acknowledgeReady = card !is NewWordCard || newWordOpen,
+                onAcknowledge = onAcknowledge,
+                onAdvance = onAdvance,
+            )
         }
 
         if (writeTarget != null) {
@@ -412,6 +450,7 @@ private fun LessonStageLine(index: Int, total: Int, title: String) {
 private fun FooterBar(
     state: LessonUiState,
     card: LessonCard,
+    acknowledgeReady: Boolean,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
 ) {
@@ -460,7 +499,7 @@ private fun FooterBar(
     }
 
     val needsAcknowledge = card is NewWordCard || card is GrammarCard
-    if (needsAcknowledge) {
+    if (needsAcknowledge && acknowledgeReady) {
         Box(
             modifier = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         ) {

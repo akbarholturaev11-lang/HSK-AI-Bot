@@ -66,6 +66,7 @@ import com.pomp.hskai.data.api.MistakeReviewQuestionDto
 import com.pomp.hskai.data.api.PracticeQuestionDto
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.practiceAssistantContext
+import com.pomp.hskai.core.navigation.PracticeTool
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
@@ -87,6 +88,7 @@ fun PracticeScreen(
     onAnswerReview: (Int) -> Unit,
     onAdvanceReview: () -> Unit,
     onResetReview: () -> Unit,
+    onSpeakReview: (String) -> Unit,
     onStartExam: (String) -> Unit,
     onOpenDrill: (DrillMode) -> Unit,
     onSelectExamOption: (Int) -> Unit,
@@ -124,6 +126,7 @@ fun PracticeScreen(
                 onSelect = onAnswerReview,
                 onAdvance = onAdvanceReview,
                 onCancel = onResetReview,
+                onSpeak = onSpeakReview,
             )
             mistakesOpen -> MistakesOverviewScreen(
                 state = state,
@@ -165,6 +168,22 @@ fun PracticeScreen(
 
 private enum class PracticeGroup { TEST }
 enum class PracticeRequest { MISTAKES, RECOGNITION, PRONUNCIATION, TESTS }
+
+/**
+ * The screen a deep-linked tool opens, or null to stop on the section home.
+ *
+ * [PracticeTool.MEMORIZE] is the null: the Mini App's `Yodlash` is a stroke and
+ * radical exercise with no Android counterpart yet, and landing on the practice
+ * home is a better answer than ignoring the link and leaving the app where it
+ * was. Give it a request the day the screen exists.
+ */
+fun PracticeTool.toRequest(): PracticeRequest? = when (this) {
+    PracticeTool.MISTAKES -> PracticeRequest.MISTAKES
+    PracticeTool.RECOGNITION -> PracticeRequest.RECOGNITION
+    PracticeTool.PRONUNCIATION -> PracticeRequest.PRONUNCIATION
+    PracticeTool.TESTS -> PracticeRequest.TESTS
+    PracticeTool.MEMORIZE -> null
+}
 private data class RowTint(val background: Color, val foreground: Color)
 private val TintAmber = RowTint(PompColors.TileAmberSoft, PompColors.TileAmberInk)
 private val TintBlue = RowTint(PompColors.TileBlueSoft, PompColors.TileBlueInk)

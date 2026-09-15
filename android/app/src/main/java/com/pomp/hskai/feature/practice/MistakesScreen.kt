@@ -2,7 +2,6 @@ package com.pomp.hskai.feature.practice
 
 import android.content.Intent
 import android.net.Uri
-import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,8 +50,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -71,6 +68,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
+import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.AppDestination
@@ -81,7 +79,6 @@ import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
 import com.pomp.hskai.data.api.MistakeReviewQuestionDto
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
-import java.util.Locale
 
 private const val MISTAKES_VISIBLE_PAGE = 30
 
@@ -522,11 +519,11 @@ internal fun MistakesReviewRun(
     onSelect: (Int) -> Unit,
     onAdvance: () -> Unit,
     onCancel: () -> Unit,
+    onSpeak: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val session = state.reviewSession ?: return
     val question = session.questions.getOrNull(state.reviewIndex) ?: return
-    val speaker = rememberMistakeSpeaker()
     val progress = if (session.questions.isEmpty()) 0f else state.reviewIndex.toFloat() / session.questions.size.toFloat()
 
     Column(modifier = modifier.fillMaxSize().background(PompColors.Paper)) {
@@ -576,7 +573,12 @@ internal fun MistakesReviewRun(
                     modifier = Modifier.padding(bottom = 20.dp),
                 )
                 if (question.audioText.isNotBlank() || question.sentence.isNotBlank() || question.pinyin.isNotBlank()) {
-                    ReviewMaterial(question = question, onSpeak = { speaker(question.audioText) })
+                    ReviewMaterial(
+                        question = question,
+                        isAudioLoading = state.isReviewAudioLoading,
+                        audioError = state.reviewAudioError,
+                        onSpeak = { onSpeak(question.audioText) },
+                    )
                     Spacer(Modifier.height(16.dp))
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -624,7 +626,12 @@ internal fun MistakesReviewRun(
 }
 
 @Composable
-private fun ReviewMaterial(question: MistakeReviewQuestionDto, onSpeak: () -> Unit) {
+private fun ReviewMaterial(
+    question: MistakeReviewQuestionDto,
+    isAudioLoading: Boolean,
+    audioError: ApiError?,
+    onSpeak: () -> Unit,
+) {
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(14.dp),
@@ -636,11 +643,29 @@ private fun ReviewMaterial(question: MistakeReviewQuestionDto, onSpeak: () -> Un
                 Surface(
                     color = PompColors.CinnabarSoft,
                     shape = RoundedCornerShape(999.dp),
-                    modifier = Modifier.size(42.dp).clickable(onClick = onSpeak),
+                    modifier = Modifier.size(42.dp).clickable(enabled = !isAudioLoading, onClick = onSpeak),
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar, modifier = Modifier.size(20.dp))
+                        if (isAudioLoading) {
+                            CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                        } else {
+                            Icon(
+                                Icons.Filled.VolumeUp,
+                                contentDescription = stringResource(R.string.dictionary_listen),
+                                tint = PompColors.Cinnabar,
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
                     }
+                }
+                if (audioError != null) {
+                    Text(
+                        text = stringResource(audioError.messageRes),
+                        fontSize = 12.sp,
+                        color = PompColors.Flame,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 6.dp),
+                    )
                 }
                 Spacer(Modifier.height(8.dp))
             }
@@ -835,34 +860,6 @@ internal fun MistakesReviewResult(
             Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
             Text(text = stringResource(R.string.mistakes_done), fontSize = 16.sp, fontWeight = FontWeight.Medium)
-        }
-    }
-}
-
-@Composable
-private fun rememberMistakeSpeaker(): (String) -> Unit {
-    val context = LocalContext.current.applicationContext
-    var ready by remember { mutableStateOf(false) }
-    val tts = remember(context) {
-        TextToSpeech(context) { status -> ready = status == TextToSpeech.SUCCESS }
-    }
-    DisposableEffect(tts) {
-        onDispose {
-            tts.stop()
-            tts.shutdown()
-        }
-    }
-    LaunchedEffect(ready) {
-        if (ready) {
-            tts.language = Locale.SIMPLIFIED_CHINESE
-            tts.setSpeechRate(0.9f)
-        }
-    }
-    return remember(tts, ready) {
-        { text: String ->
-            if (ready && text.isNotBlank()) {
-                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "mistake-review")
-            }
         }
     }
 }

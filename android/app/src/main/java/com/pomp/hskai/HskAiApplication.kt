@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.room.Room
 import com.pomp.hskai.core.audio.AndroidLessonAudioPlayer
 import com.pomp.hskai.core.audio.AndroidVoiceRecorder
+import com.pomp.hskai.core.audio.DiskTtsCache
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.network.OriginGuardInterceptor
@@ -22,6 +24,7 @@ import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.data.repository.OnboardingRepository
 import com.pomp.hskai.data.repository.StudyPreferencesRepository
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.CoroutineScope
@@ -102,6 +105,8 @@ class HskAiApplication : Application() {
 
     val lessonAudioPlayer: LessonAudioPlayer by lazy { AndroidLessonAudioPlayer(this) }
 
+    val ttsCache: TtsCache by lazy { DiskTtsCache(File(cacheDir, "tts")) }
+
     val voiceRecorder: VoiceRecorder by lazy { AndroidVoiceRecorder(this) }
 
     val authRepository: AuthRepository by lazy {
@@ -145,9 +150,11 @@ class HskAiApplication : Application() {
             api = courseApi,
             accessToken = authRepository::accessToken,
             dao = database.courseMapDao(),
+            lessonDao = database.lessonCacheDao(),
             json = json,
             foundationApi = foundationApi,
             onSessionExpired = authRepository::invalidateSession,
+            ttsCache = ttsCache,
         )
     }
 

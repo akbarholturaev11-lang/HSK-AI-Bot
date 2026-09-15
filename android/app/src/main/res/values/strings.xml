@@ -112,6 +112,7 @@
 
     <!-- Dars oqimi -->
     <string name="lesson_new_word">YANGI SO\'Z</string>
+    <string name="lesson_listen">Tinglash</string>
     <string name="lesson_grammar">Grammatika</string>
     <string name="lesson_repeat_after_teacher">Ustozdan keyin takrorlang</string>
     <string name="lesson_cannot_speak_now">Hozir gapira olmayman</string>
@@ -119,6 +120,7 @@
     <string name="lesson_audio_loading">Ovoz yuklanmoqda</string>
     <string name="lesson_listen_and_choose">Eshitganingizni tanlang</string>
     <string name="lesson_build_sentence">Gapni tuzing</string>
+    <string name="lesson_fill_gaps">Gapni to‘ldiring</string>
     <string name="lesson_build_translation">Tarjimani tuzing</string>
     <string name="lesson_match_pairs">Juftlarni moslang</string>
     <string name="lesson_check">Tekshirish</string>

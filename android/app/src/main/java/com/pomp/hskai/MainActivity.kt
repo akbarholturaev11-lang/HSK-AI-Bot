@@ -81,6 +81,7 @@ import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
 import com.pomp.hskai.feature.practice.DrillMode
 import com.pomp.hskai.feature.practice.PracticeRequest
+import com.pomp.hskai.feature.practice.toRequest
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
 import com.pomp.hskai.feature.practice.WordDrillScreen
@@ -273,7 +274,11 @@ private fun AppRoot(
                 .collectAsStateWithLifecycle(initialValue = PinyinVisibility.DEFAULT)
             val practiceViewModel: PracticeViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
-                factory = PracticeViewModel.Factory(app.featureRepository),
+                factory = PracticeViewModel.Factory(
+                    repository = app.featureRepository,
+                    courseRepository = app.courseRepository,
+                    audioPlayer = app.lessonAudioPlayer,
+                ),
             )
             val practiceState by practiceViewModel.state.collectAsStateWithLifecycle()
             val voiceViewModel: VoiceViewModel = viewModel(
@@ -589,6 +594,15 @@ private fun AppRoot(
                         widgetSetupOpen = true
                         onDestinationConsumed()
                     }
+                    // `toTab()` above has already moved to Mashq; this opens the
+                    // named tool inside it, which the link used to lose.
+                    is AppDestination.Practice -> {
+                        // Reset kept from the `else` branch this used to fall
+                        // into, so a later lesson link can still claim the gate.
+                        deepLinkRefreshGate.reset()
+                        practiceRequest = destination.tool?.toRequest()
+                        onDestinationConsumed()
+                    }
                     else -> {
                         deepLinkRefreshGate.reset()
                         onDestinationConsumed()
@@ -847,6 +861,7 @@ private fun AppRoot(
                             onAnswerReview = practiceViewModel::answerReview,
                             onAdvanceReview = practiceViewModel::advanceReview,
                             onResetReview = practiceViewModel::resetReview,
+                            onSpeakReview = practiceViewModel::playReviewAudio,
                             onStartExam = { examLevel ->
                                 practiceViewModel.startExam(examLevel, currentLanguage)
                             },

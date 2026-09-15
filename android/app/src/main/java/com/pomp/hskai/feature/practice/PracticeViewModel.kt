@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.R
+import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.ExamCompleteResponse
@@ -16,7 +17,9 @@ import com.pomp.hskai.data.api.MistakeSummaryDto
 import com.pomp.hskai.data.api.MistakesOverviewResponse
 import com.pomp.hskai.data.api.PracticeCompleteResponse
 import com.pomp.hskai.data.api.PracticeSessionDto
+import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.FeatureRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,6 +80,14 @@ data class PracticeUiState(
     val reviewFeedback: MistakeReviewAnswerResponse? = null,
     val reviewAnswers: Map<String, Int> = emptyMap(),
     val reviewResult: MistakeReviewCompleteResponse? = null,
+    /** A listening question is waiting for its audio from the server. */
+    val isReviewAudioLoading: Boolean = false,
+    /**
+     * Kept apart from [error]: a speaker that failed to download is not a
+     * refused section, and it must not leave a notice behind on the practice
+     * home once the learner walks out of the review.
+     */
+    val reviewAudioError: ApiError? = null,
     /**
      * The HSK exam the test centre opens — the Mini App's exam, kept apart
      * from [session] because it is a different service with its own material,
@@ -107,10 +118,14 @@ data class PracticeUiState(
 
 class PracticeViewModel(
     private val repository: FeatureRepository,
+    private val courseRepository: CourseRepository,
+    private val audioPlayer: LessonAudioPlayer,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PracticeUiState())
     val state: StateFlow<PracticeUiState> = _state.asStateFlow()
+
+    private var reviewAudioJob: Job? = null
 
     init {
         loadMistakes()
@@ -497,6 +512,7 @@ class PracticeViewModel(
 
     fun startMistakeReview() {
         if (_state.value.isStarting) return
+        stopReviewAudio()
         _state.update {
             it.copy(
                 isStarting = true,
@@ -560,6 +576,8 @@ class PracticeViewModel(
         val current = _state.value
         val session = current.reviewSession ?: return
         if (current.reviewFeedback == null) return
+        // The previous question's audio must not carry into the next one.
+        stopReviewAudio()
         val last = current.reviewIndex >= session.questions.lastIndex
         if (!last) {
             _state.update {
@@ -591,6 +609,7 @@ class PracticeViewModel(
     }
 
     fun resetReview() {
+        stopReviewAudio()
         _state.update {
             it.copy(
                 reviewSession = null,
@@ -605,12 +624,60 @@ class PracticeViewModel(
         loadMistakes()
     }
 
+    /**
+     * Speaks a listening question with the same server voice the lesson and the
+     * dictionary use.
+     *
+     * This screen used to drive the phone's own `TextToSpeech`. Most phones sold
+     * in Uzbekistan and Tajikistan ship no Chinese voice, so the speaker was
+     * simply silent — a listening question with no audio is unanswerable.
+     */
+    fun playReviewAudio(text: String) {
+        val phrase = text.trim()
+        if (phrase.isEmpty() || _state.value.isReviewAudioLoading) return
+        reviewAudioJob?.cancel()
+        _state.update { it.copy(isReviewAudioLoading = true, reviewAudioError = null) }
+        reviewAudioJob = viewModelScope.launch {
+            when (val result = courseRepository.ttsAudio(phrase)) {
+                is ApiResult.Failure -> _state.update {
+                    it.copy(isReviewAudioLoading = false, reviewAudioError = result.error)
+                }
+
+                is ApiResult.Success -> {
+                    val played = runCatching { audioPlayer.play(result.value) }
+                    _state.update {
+                        it.copy(
+                            isReviewAudioLoading = false,
+                            reviewAudioError = if (played.isFailure) ApiError.Unknown else null,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun stopReviewAudio() {
+        reviewAudioJob?.cancel()
+        reviewAudioJob = null
+        audioPlayer.release()
+        if (_state.value.isReviewAudioLoading || _state.value.reviewAudioError != null) {
+            _state.update { it.copy(isReviewAudioLoading = false, reviewAudioError = null) }
+        }
+    }
+
+    override fun onCleared() {
+        stopReviewAudio()
+        super.onCleared()
+    }
+
     class Factory(
         private val repository: FeatureRepository,
+        private val courseRepository: CourseRepository,
+        private val audioPlayer: LessonAudioPlayer,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            PracticeViewModel(repository) as T
+            PracticeViewModel(repository, courseRepository, audioPlayer) as T
     }
 
     private companion object {
