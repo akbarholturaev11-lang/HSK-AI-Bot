@@ -70,23 +70,46 @@ savol turiga qarab boshqacha bo'lishi kerak: tinglashda `audioText` **hech
 qachon** ko'rsatilmasligi va **chalinishi** kerak; bo'shliq savolida gap
 yo'q bo'lsa savolning o'zi yaroqsiz.
 
-### 3.2 Kunlik maqsad bir daqiqada o'zgarib ketadi
+### 3.2 Mini App va ilova bitta akkauntda boshqa-boshqa narsa ko'rsatadi
 
-Bir foydalanuvchi, 18:09 va 18:10:
+Bir foydalanuvchi, bir payt, ikki klient:
 
-| | 18:09 | 18:10 |
+| | Mini App | Android |
 |---|---|---|
-| Maqsad | 45 / **40** XP | 45 / **50** XP |
+| Kunlik maqsad | 45 / **40** XP | 45 / **50** XP |
 | Qoldi | **−5** | 5 |
-| Bajarildi | 100% | 90% |
-| Liga | 朱雀 | Bronze |
+| Liga | **朱雀** | **Bronze** |
+| Holat | Sayohat | Bepul rejim |
 
-Ikki muammo: maqsadning o'zi o'zgaryapti, va oshib ketganda «**−5 qoldi**»
-degan manfiy son chiqyapti (0 yoki «bajarildi» bo'lishi kerak).
+Uchta alohida sabab:
 
-Tegishli joylar: `app/services/course_daily_window.py`,
-`COURSE_DAILY_RESET_HOUR_LOCAL`, `feature/course/TodayPlanCard.kt`,
-`feature/profile/ProfileScreen.kt`.
+**(a) Kunlik maqsad umuman sinxronlanmaydi.** Server profilda `daily_goal_xp`
+saqlaydi; Mini App uni o'qiydi va yozadi (`STUDY_SETUP.daily_goal_xp`,
+`savePreferences({daily_goal_xp:v})`). Android esa uni **faqat telefon ichida**
+saqlaydi — `core/settings/AppSettings.kt`, DataStore kaliti `daily_goal_xp`,
+`DailyGoal.DEFAULT = 50`. `AndroidStudyPreferencesApi` serverga `goal`,
+`daily_minutes`, `preferred_focus` yuboradi — **`daily_goal_xp` ni emas**, va
+Android profil DTO'sida bunday maydon **umuman yo'q**.
+
+Ya'ni: Mini App'da 40 tanlansa server 40 ni biladi, Android esa buni hech
+qachon o'qimaydi va o'z lokal 50 sini ko'rsatadi. Teskarisi ham shunday.
+
+Ustiga tanlovlar ham har xil: Mini App `[20,30,40,50,80]`, Android
+`[10,20,30,50]` — ya'ni **40 ni Android'da tanlashning iloji yo'q**. Ikkalasi
+hech qachon kelisha olmaydi.
+
+**(b) «−5 qoldi» — Mini App xatosi.** `goal - xp` noldan pastga tushishi
+cheklanmagan: 45 − 40 = −5. Android'da bunday emas.
+
+**(c) Liga nomi — Mini App qattiq yozib qo'yilgan.** Server haqiqiy pog'ona
+nomlarini beradi (`app/services/course_gamification_service.py`: `Bronze`,
+...). Android o'shani ko'rsatadi. Mini App esa serverникini e'tiborsiz
+qoldirib, i18n ichidagi `league:"朱雀 ligasi"` ni va `course-v3.html:5132`
+dagi qattiq `朱雀` nishonini chiqaradi.
+
+Qaysi biri to'g'ri ekani — mahsulot qarori. Agar 朱雀 brend bo'lsa, Android
+ham shuni ko'rsatishi kerak; agar pog'ona nomi bo'lsa, Mini App serverdan
+o'qishi kerak. Hozir ikkalasi bir-biriga zid.
 
 ### 3.3 Ilova sekin ochiladi
 
