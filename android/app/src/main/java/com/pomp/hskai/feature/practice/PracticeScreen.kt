@@ -28,6 +28,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.WarningAmber
@@ -113,6 +114,7 @@ fun PracticeScreen(
                 onSelect = onSelectExamOption,
                 onAdvance = onAdvanceExam,
                 onCancel = onResetExam,
+                onSpeak = onSpeakReview,
             )
             state.isPracticeRunning -> PracticeRun(
                 state = state,
@@ -120,6 +122,7 @@ fun PracticeScreen(
                 onSelect = onSelectPracticeOption,
                 onAdvance = onAdvancePractice,
                 onCancel = onResetPractice,
+                onSpeak = onSpeakReview,
             )
             state.isReviewRunning -> MistakesReviewRun(
                 state = state,
@@ -422,33 +425,45 @@ private fun ToolRow(
 }
 
 @Composable
-private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int) -> Unit, onAdvance: (String) -> Unit, onCancel: () -> Unit) {
+private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int) -> Unit, onAdvance: (String) -> Unit, onCancel: () -> Unit, onSpeak: (String) -> Unit) {
     val session = state.session ?: return
     val question = session.questions.getOrNull(state.questionIndex) ?: return
+    // A listening question that has to be asked for is half a question. The
+    // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
+    // does this; advancing stops the previous one in the view model.
+    LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.questionIndex + 1, session.questions.size), onCancel) {
-        PracticeQuestionCard(question, state.selectedIndex, onSelect)
+        PracticeQuestionCard(question, state.selectedIndex, state.isReviewAudioLoading, onSpeak, onSelect)
         PrimaryAction(if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.selectedIndex != null && !state.isCompleting) { onAdvance(language) }
     }
 }
 
 @Composable
-private fun ReviewRun(state: PracticeUiState, onSelect: (Int) -> Unit, onAdvance: () -> Unit, onCancel: () -> Unit) {
+private fun ReviewRun(state: PracticeUiState, onSelect: (Int) -> Unit, onAdvance: () -> Unit, onCancel: () -> Unit, onSpeak: (String) -> Unit) {
     val session = state.reviewSession ?: return
     val question = session.questions.getOrNull(state.reviewIndex) ?: return
+    // A listening question that has to be asked for is half a question. The
+    // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
+    // does this; advancing stops the previous one in the view model.
+    LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.reviewIndex + 1, session.questions.size), onCancel) {
-        ReviewQuestionCard(question, state.reviewSelectedIndex, state.reviewFeedback, onSelect)
+        ReviewQuestionCard(question, state.reviewSelectedIndex, state.reviewFeedback, state.isReviewAudioLoading, onSpeak, onSelect)
         PrimaryAction(if (state.reviewIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.reviewFeedback != null && !state.isCompleting, onAdvance)
     }
 }
 
 @Composable
-private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) -> Unit, onAdvance: (String) -> Unit, onCancel: () -> Unit) {
+private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) -> Unit, onAdvance: (String) -> Unit, onCancel: () -> Unit, onSpeak: (String) -> Unit) {
     val session = state.examSession ?: return
     val question = session.questions.getOrNull(state.examIndex) ?: return
+    // A listening question that has to be asked for is half a question. The
+    // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
+    // does this; advancing stops the previous one in the view model.
+    LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.examIndex + 1, session.questions.size), onCancel) {
         Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(18.dp)) {
-                QuestionText(question.prompt, question.sentence.ifBlank { question.audioText }, "")
+                QuestionText(question.prompt, question.sentence, "", question.audioText, state.isReviewAudioLoading, onSpeak)
                 Spacer(Modifier.height(14.dp))
                 question.options.forEachIndexed { index, option -> OptionRow(option, state.examSelectedIndex == index, false, false, state.examSelectedIndex == null) { onSelect(index) } }
             }
@@ -501,10 +516,10 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
 }
 
 @Composable
-private fun PracticeQuestionCard(question: PracticeQuestionDto, selectedIndex: Int?, onSelect: (Int) -> Unit) {
+private fun PracticeQuestionCard(question: PracticeQuestionDto, selectedIndex: Int?, isAudioLoading: Boolean, onSpeak: (String) -> Unit, onSelect: (Int) -> Unit) {
     Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(18.dp)) {
-            QuestionText(question.prompt, question.sentence.ifBlank { question.audioText }, question.pinyin)
+            QuestionText(question.prompt, question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
             Spacer(Modifier.height(14.dp))
             question.options.forEachIndexed { index, option ->
                 val isPicked = selectedIndex == index
@@ -519,10 +534,10 @@ private fun PracticeQuestionCard(question: PracticeQuestionDto, selectedIndex: I
 }
 
 @Composable
-private fun ReviewQuestionCard(question: MistakeReviewQuestionDto, selectedIndex: Int?, feedback: MistakeReviewAnswerResponse?, onSelect: (Int) -> Unit) {
+private fun ReviewQuestionCard(question: MistakeReviewQuestionDto, selectedIndex: Int?, feedback: MistakeReviewAnswerResponse?, isAudioLoading: Boolean, onSpeak: (String) -> Unit, onSelect: (Int) -> Unit) {
     Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(18.dp)) {
-            QuestionText(question.prompt, question.sentence.ifBlank { question.audioText }, question.pinyin)
+            QuestionText(question.prompt, question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
             Spacer(Modifier.height(14.dp))
             question.options.forEachIndexed { index, option ->
                 val isPicked = selectedIndex == index
@@ -538,9 +553,50 @@ private fun ReviewQuestionCard(question: MistakeReviewQuestionDto, selectedIndex
     }
 }
 
+/**
+ * The body of a question: the instruction, the sentence, and — when the
+ * question is a listening one — a speaker instead of the words.
+ *
+ * `audioText` is what the learner is meant to HEAR. It used to be printed when
+ * `sentence` was empty, which is exactly when it must not be: "Eshiting va
+ * to'g'ri javobni tanlang" with 您 written above the options is not a listening
+ * question, it is the answer. The same fallback left a gap-fill with no
+ * sentence showing nothing at all.
+ *
+ * The Mini App's rule, which this now matches: a question with `audio_text` is
+ * a listening question — speak it, never show it (`course-v3.html:4014`).
+ */
 @Composable
-private fun QuestionText(prompt: String, sentence: String, pinyin: String) {
+private fun QuestionText(
+    prompt: String,
+    sentence: String,
+    pinyin: String,
+    audioText: String = "",
+    isAudioLoading: Boolean = false,
+    onSpeak: ((String) -> Unit)? = null,
+) {
     if (prompt.isNotBlank()) Text(prompt, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink, fontWeight = FontWeight.SemiBold)
+    if (audioText.isNotBlank() && onSpeak != null) {
+        Spacer(Modifier.height(10.dp))
+        Surface(
+            color = PompColors.CinnabarSoft,
+            shape = RoundedCornerShape(999.dp),
+            modifier = Modifier.size(46.dp).clickable(enabled = !isAudioLoading) { onSpeak(audioText) },
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (isAudioLoading) {
+                    CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    Icon(
+                        Icons.Filled.VolumeUp,
+                        contentDescription = stringResource(R.string.dictionary_listen),
+                        tint = PompColors.Cinnabar,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+            }
+        }
+    }
     if (sentence.isNotBlank()) { Spacer(Modifier.height(8.dp)); Text(sentence, style = PompTextStyles.hanziMedium, color = PompColors.Ink) }
     if (pinyin.isNotBlank()) Text(pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
 }

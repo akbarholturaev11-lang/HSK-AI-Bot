@@ -46,29 +46,20 @@ build'da ekanini bilmay chaqiradi.
 
 ## 3. HOZIR OCHIQ MUAMMOLAR
 
-### 3.1 Mashq savollari buzuq — bitta qator, ikkita xato
+### 3.1 ~~Mashq savollari buzuq~~ — TUZATILDI 2026-09-15
 
-`feature/practice/PracticeScreen.kt` uch joyda (451, 507, 525):
+`PracticeScreen.kt` uch joyda `question.sentence.ifBlank { question.audioText }`
+yozardi. Ya'ni tinglash savolida javob ekranga chiqardi («Eshiting va to'g'ri
+javobni tanlang» + 您 yozilgan holda), gapsiz savolda esa hech nima chiqmasdi.
 
-```kotlin
-QuestionText(question.prompt, question.sentence.ifBlank { question.audioText }, ...)
-```
+Endi Mini App qoidasi qo'llanadi (`course-v3.html:4014, 4979`): **`audio_text`
+bo'lsa — bu tinglash savoli**, karnaycha ko'rsatiladi va ovoz avtomatik
+chalinadi, matn **hech qachon** ko'rsatilmaydi. Server ovozi ishlatiladi
+(`playReviewAudio` → `/api/v3/android/tts`), chunki UZ/TJ telefonlarida xitoy
+ovozi ko'pincha yo'q.
 
-Bu bitta fallback ikkita ko'rinadigan xatoni keltirib chiqaradi:
-
-- **Tinglash savoli javobni ko'rsatib qo'yadi.** «Eshiting va to'g'ri javobni
-  tanlang» deydi, lekin `sentence` bo'sh bo'lgani uchun `audioText` ekranga
-  chiqadi — ya'ni 您 yozib qo'yiladi va tanlash ma'nosiz bo'ladi. Ovoz
-  umuman chalinmaydi.
-- **Bo'shliq savolida gap yo'q.** Ikkalasi ham bo'sh bo'lsa hech nima
-  chiqmaydi — ekranda faqat `___` chizig'i qoladi.
-
-Telefonda 2026-09-15 da ikkalasi ham ko'rilgan (skrinshot bor edi).
-
-`PROJECT_MEMORY.md` da bu 2026-09-14 dan beri «ochiq» deb turibdi. Tuzatish
-savol turiga qarab boshqacha bo'lishi kerak: tinglashda `audioText` **hech
-qachon** ko'rsatilmasligi va **chalinishi** kerak; bo'shliq savolida gap
-yo'q bo'lsa savolning o'zi yaroqsiz.
+`ListeningQuestionTest` buni mixlab qo'ydi: 您 ekranda faqat bitta variant
+sifatida uchraydi, ikkita bo'lsa — xato qaytgan.
 
 ### 3.2 Mini App va ilova bitta akkauntda boshqa-boshqa narsa ko'rsatadi
 
