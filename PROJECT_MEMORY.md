@@ -8801,3 +8801,29 @@ Verified:
 - Brauzerda: kalitni bosish `caPlacementsValue()` ni to'g'ri o'zgartiradi
   (`lesson_end` → `lesson_end,screen_center` → `screen_center`), ikkalasini
   ham o'chirsa ogohlantirish chiqadi va qiymat `lesson_end` ga tushadi.
+
+### 2026-09-16 — Android promo tugmasi: muammoning qolgan yarmi
+
+Foydalanuvchi "Android xalyam chiqmayapti" degan edi. Admin paneldagi
+saqlash xatosi tuzatilgandan keyin ham chiqmasligining sababi topildi:
+
+`DesktopDownloadService.status()` javobidagi `platform_targets` da
+`"android": False` QATTIQ yozilgan edi (Android relizi yo'q paytdan
+qolgan). Klient (`desktop-download.js`, `buildActions` →
+`isPlatformTargeted`) aynan shu qiymatga qarab tugmani chizadi yoki
+tashlab ketadi — ya'ni admin chipni yoqsa ham Mini App promosida Android
+tugmasi umuman paydo bo'lmasdi.
+
+Endi `bool(promo_settings.platforms.get("android"))` — admin tanloviga
+bo'ysunadi. iOS o'chiqligicha qoladi (alohida ilova yo'q).
+
+Eski test buni "kutilgan xatti-harakat" deb qotirib qo'ygan edi:
+`assertFalse(payload["promo"]["platform_targets"]["android"])`, ustiga
+sozlamaga `"android": True` berib turib. Qayta yozildi va chipni
+o'chirganda tugma yo'qolishini tekshiradigan yangi test qo'shildi.
+
+Key files:
+- `app/services/desktop_download_service.py`
+- `tests/test_desktop_download_api.py`
+
+Verified: 1434 passed, 78259 subtests.

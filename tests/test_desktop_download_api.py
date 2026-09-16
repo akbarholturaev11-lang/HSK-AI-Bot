@@ -146,8 +146,46 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(payload["promo"]["placements"]["home_prompt"])
             self.assertFalse(payload["promo"]["placements"]["lesson_end_promo"])
             self.assertTrue(payload["promo"]["placements"]["ad_promo"])
-            self.assertFalse(payload["promo"]["platform_targets"]["android"])
+            # Android relizi chiqdi: promo admin tanloviga bo'ysunadi.
+            # Ilgari bu yerda `False` qattiq yozilgan edi va admin chipni
+            # yoqsa ham Mini App'da Android tugmasi chizilmasdi.
+            self.assertTrue(payload["promo"]["platform_targets"]["android"])
+            # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
+
+    async def test_turning_a_platform_off_removes_its_promo_button(self):
+        """Chip o'chirilsa tugma ham yo'qoladi — ikkala tomonda ham.
+
+        Klient `platform_targets` ni o'qib tugmani chizadimi-yo'qmi hal
+        qiladi, shuning uchun bu yerdagi qiymat adminning tanlovi bo'lishi
+        shart, qattiq yozilgan qiymat emas."""
+        async with self.sessions() as session:
+            await save_desktop_app_promo_settings(
+                session,
+                {
+                    "enabled": True,
+                    "daily_limit": 3,
+                    "placements": {
+                        "home_prompt": True,
+                        "lesson_end_promo": True,
+                        "ad_promo": True,
+                    },
+                    "platforms": {
+                        "macos": True,
+                        "windows": True,
+                        "android": False,
+                        "ios": False,
+                    },
+                },
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            payload = await DesktopDownloadService(session, _settings()).status(1001)
+            targets = payload["promo"]["platform_targets"]
+            self.assertTrue(targets["macos"])
+            self.assertTrue(targets["windows"])
+            self.assertFalse(targets["android"])
 
     async def test_request_returns_tracked_download_page_and_safe_filename(self):
         async with self.sessions() as session:

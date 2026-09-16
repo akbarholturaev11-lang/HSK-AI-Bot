@@ -437,10 +437,15 @@ class DesktopDownloadService:
             if promo_payload.get("media_available")
             else None
         )
+        # Android admin tanloviga BO'YSUNADI. Ilgari bu yerda qattiq `False`
+        # turardi (relizi yo'q edi), shuning uchun admin chipni yoqsa ham
+        # Mini App promosida Android tugmasi umuman chizilmasdi: klient
+        # `platform_targets` ni o'qib tugmani tashlab ketardi.
+        # iOS o'chiqligicha qoladi — unga alohida ilova yo'q.
         platform_targets = {
             "macos": bool(promo_settings.platforms.get("macos")),
             "windows": bool(promo_settings.platforms.get("windows")),
-            "android": False,
+            "android": bool(promo_settings.platforms.get("android")),
             "ios": False,
         }
         return {
