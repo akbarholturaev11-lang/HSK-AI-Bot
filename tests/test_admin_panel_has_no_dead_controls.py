@@ -135,3 +135,69 @@ class TheLimitPanelCoversEveryEnforcedActionTests(unittest.TestCase):
         # to'xtardi.
         self.assertIn("function limitRule(rules,action)", ADMIN)
         self.assertIn("limitRow(plan,action,label,limitRule(rules,action))", ADMIN)
+
+
+class EveryAdControlLivesInOneSectionTests(unittest.TestCase):
+    """Reklama to'rt joyga bo'linib ketgan edi.
+
+    Foydalanuvchi buni aniq aytdi: "admin panelda 3 ta reklama degan joy bor,
+    bu meni chalg'itadi". Modul ro'yxatida `Реклама жойлари`, `App рекламаси`
+    va `Реклама кампанияси` alohida tugma edi, roliklar formasi esa
+    sozlamalar ichida to'rtinchi joyda turardi — nomlari o'xshash, vazifalari
+    boshqa. Endi bitta bo'lim, ichida to'rt tanlov.
+    """
+
+    def test_the_menu_offers_exactly_one_ads_entry(self):
+        self.assertIn('"key": "ads_hub"', MODULES)
+        for gone in ('"key": "ad_placements"', '"key": "app_promo"', '"key": "ads"'):
+            with self.subTest(module=gone):
+                self.assertNotIn(gone, MODULES)
+
+    def test_the_section_holds_all_four_choices(self):
+        for key in ("roliklar", "joylar", "ilova", "bot"):
+            with self.subTest(choice=key):
+                self.assertIn(f'data-adhub="{key}"', ADMIN)
+        for pane in ("adPaneRoliklar", "adPaneJoylar", "adPaneIlova", "adPaneBot"):
+            with self.subTest(pane=pane):
+                self.assertIn(f'id="{pane}"', ADMIN)
+
+    def test_the_panels_are_not_written_a_second_time(self):
+        # Joylar, ilova promosi va kampaniya panellari drawer uchun yozilgan
+        # funksiyalarni qayta ishlatadi: `showPanel` ularni bo'lim ichiga
+        # chizadi. Ikki nusxa bo'lsa, biri eskirib qolardi.
+        self.assertIn("function showPanel(title,sub,html)", ADMIN)
+        self.assertIn("panelTarget=cfg.pane", ADMIN)
+        self.assertIn("renderAdPlacements(d)", ADMIN)
+        self.assertIn("renderAppPromo(d)", ADMIN)
+        self.assertIn('renderCampaign(d,"ad")', ADMIN)
+
+
+class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
+    """Tanlangan turga aloqasi yo'q maydon ko'rinmasin.
+
+    Forma barcha kataklarni birdan ko'rsatardi: "App reklamasi" tanlanmagan
+    bo'lsa ham MacBook/Windows/Android havolalari, "X paydo bo'lishi" va
+    "Kuniga necha marta" o'sha yerda turardi, "Knopka nomi" esa o'chirilgan
+    holda — admin uni ko'rar, lekin nega to'ldira olmasligini bilmasdi.
+    """
+
+    def test_the_field_list_is_declared_in_one_place(self):
+        self.assertIn("const CA_TYPE_SPEC={", ADMIN)
+        for field in ("button", "link", "appLimits", "appLinks"):
+            with self.subTest(field=field):
+                self.assertIn(f'data-ca-field="{field}"', ADMIN)
+
+    def test_a_field_outside_the_list_is_really_hidden(self):
+        # `.frow` grid: brauzerning `[hidden]{display:none}` qoidasi unga
+        # yetmaydi, shuning uchun o'z qoidamiz bo'lishi shart.
+        self.assertIn("[data-ca-field][hidden]", ADMIN)
+        self.assertIn("el.hidden=on.indexOf(el.dataset.caField)<0", ADMIN)
+
+    def test_a_hidden_field_is_not_submitted_anyway(self):
+        self.assertIn('caFields.indexOf("button")<0?""', ADMIN)
+
+    def test_the_chosen_placement_chip_looks_chosen(self):
+        # `ca-place` chiplari `on` klassini qo'shardi, lekin uni hech qanday
+        # CSS qoidasi bo'yamasdi: admin joyni tanlaydi, ekranda esa hech
+        # nima o'zgarmasdi.
+        self.assertIn(".chip.active,.chip.on{", ADMIN)

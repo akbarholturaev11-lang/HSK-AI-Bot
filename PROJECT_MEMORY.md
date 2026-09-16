@@ -8617,3 +8617,50 @@ Follow-up:
 - `versionCode` is still hand-written. The workflow refuses a downgrade, but
   nothing refuses a release that forgot to raise it at all — it just publishes
   a build no installed app can see.
+
+### 2026-09-16 — Reklama boshqaruvi bitta bo'limga yig'ildi
+
+Changed:
+- Admin panelida reklama TO'RT joyga bo'lingan edi: modul ro'yxatida
+  `Реклама жойлари`, `App рекламаси` va `Реклама кампанияси` alohida tugma,
+  roliklar formasi esa sozlamalar ichida to'rtinchi joyda. Nomlari o'xshash,
+  vazifalari boshqa. Endi bitta `📣 Реклама` moduli va sozlamalar ichida
+  bitta `📣 Reklama` bo'limi — ichida to'rt tanlov: roliklar, qayerda chiqadi,
+  ilova reklamasi, botdagi kampaniya.
+- Joylar/ilova/kampaniya panellari qayta yozilmadi: `showPanel()` drawer uchun
+  mavjud `renderAdPlacements` / `renderAppPromo` / `renderCampaign` ni bo'lim
+  ichiga chizadi. Profildan ochilgan chegirma hamon drawer'da ochiladi.
+- Rolik formasi endi tanlangan turga qarab o'zgaradi. Qaysi turga qaysi maydon
+  kerakligi `CA_TYPE_SPEC` da — ro'yxatda yo'q maydon yashiriladi va yuborilmaydi
+  ham. Ilgari hammasi birdan ko'rinardi, `Knopka nomi` esa `odiy` turda
+  o'chirilgan holda turardi.
+- `App reklamasi` turida `Zaxira havola` endi platforma havolalaridan keyin
+  turadi: u aynan o'shalar topilmaganda ishlatiladi.
+
+Fixed:
+- `.chip.on` ni hech qanday CSS qoidasi bo'yamasdi. `Qayerda chiqsin`
+  chiplari `on` klassini qo'shardi — admin joy tanlaydi, ekranda esa hech nima
+  o'zgarmasdi. Endi `.chip.active` bilan bir qatorda.
+- `collectAppPromo()` har saqlashda `platforms.android=false` yozardi, ya'ni
+  admin Android chipini yoqib saqlasa ham u qaytib o'chardi. Olib tashlandi,
+  saqlangan standart qiymat ham `android: True` ga o'tdi. iOS o'chiqligicha
+  qoladi — unga alohida ilova yo'q.
+
+Key files:
+- `app/static/admin.html`
+- `app/services/admin_miniapp_service.py` (`_modules()`)
+- `app/services/desktop_app_promo_settings_service.py`
+- `tests/test_admin_panel_has_no_dead_controls.py` (ikkita yangi klass),
+  `tests/test_course_v3_static_data.py`, `tests/test_course_ad_app_type.py`
+
+Verified:
+- Butun test to'plami: 1430 passed, 78255 subtests.
+- Panel haqiqiy brauzerda ishga tushirildi (fixture bilan stub qilingan
+  nusxada): to'rt tanlov ham chiziladi, har bir tur uchun ko'rinadigan
+  maydonlar to'g'ri (`odiy` → faqat havola; `app` → knopka, limitlar,
+  platforma havolalari, zaxira havola), `collectAppPromo()` endi
+  `android: true` qaytaradi, joy chipi ko'k bo'lib yonadi.
+
+Not verified:
+- Saqlash (`/api/admin-miniapp/...`) haqiqiy serverga qarshi bosilmadi —
+  brauzer nusxasida tarmoq stub edi. Endpointlar o'zgarmagan.

@@ -716,10 +716,17 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # ko'rinishini belgilaydi (obuna tugmasi bilanmi), joyni esa
         # alohida maydon belgilaydi.
         self.assertIn('value="dars_yakuni">👑 Obuna taklifi bilan', html)
-        self.assertIn('noBtn=t==="odiy"', html)
-        self.assertIn('t==="dars_yakuni"?"Tashqi link knopkasi"', html)
-        self.assertIn('t==="dars_yakuni" ? "Tashqi havola (ixtiyoriy)"', html)
-        self.assertIn('fd.append("button_text",adType==="odiy"?"":', html)
+        # Qaysi turga qaysi maydon kerakligi endi bitta jadvalda turadi va
+        # ro'yxatda yo'q maydon formadan butunlay yo'qoladi. Ilgari u
+        # o'chirilgan holda ko'rinib turardi — admin uni ko'rar, lekin nega
+        # to'ldira olmasligini tushunmasdi.
+        self.assertIn("const CA_TYPE_SPEC={", html)
+        self.assertIn('buttonLabel:"Tashqi link knopkasi"', html)
+        self.assertIn('linkLabel:"Tashqi havola (ixtiyoriy)"', html)
+        self.assertIn("el.hidden=on.indexOf(el.dataset.caField)<0", html)
+        # Yashiringan maydon yuborilmaydi ham: ko'rinmaydigan katak jimgina
+        # saqlanib ketmasin.
+        self.assertIn('caFields.indexOf("button")<0?""', html)
 
     def test_desktop_installer_flow_is_direct_and_available_on_all_ad_surfaces(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")

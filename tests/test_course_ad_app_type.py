@@ -267,13 +267,17 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         # App uchun ikkita alohida sozlama maydoni bor.
         self.assertIn('id="caSkipAfter"', html)
         self.assertIn('id="caDailyLimit"', html)
-        # Maydonlar faqat "app" turi tanlanganda ko'rinadi.
-        self.assertIn('id="caAppRow"', html)
-        self.assertIn('appRow.style.display = t==="app" ? "" : "none"', html)
+        # Maydonlar faqat "app" turi tanlanganda ko'rinadi. Qaysi turga
+        # qaysi maydon kerakligi `CA_TYPE_SPEC` da yozilgan; ro'yxatda yo'q
+        # maydon yashiriladi, "o'chirilgan holda ko'rinib turish" emas.
+        self.assertIn('data-ca-field="appLimits"', html)
+        self.assertIn('fields:["button","appLimits","appLinks","link"]', html)
+        self.assertIn("el.hidden=on.indexOf(el.dataset.caField)<0", html)
         # Yuklashda ikkala qiymat ham yuboriladi.
         self.assertIn('fd.append("skip_after_seconds"', html)
         self.assertIn('fd.append("daily_limit"', html)
         # Qo'lda havola maydonlari — bo'sh qolsa avtomatik ishlatiladi.
+        self.assertIn('data-ca-field="appLinks"', html)
         self.assertIn('id="caLinkMacos"', html)
         self.assertIn('id="caLinkWindows"', html)
         self.assertIn("Bo'sh — avtomatik", html)
