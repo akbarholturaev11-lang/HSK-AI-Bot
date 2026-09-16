@@ -137,39 +137,60 @@ class TheLimitPanelCoversEveryEnforcedActionTests(unittest.TestCase):
         self.assertIn("limitRow(plan,action,label,limitRule(rules,action))", ADMIN)
 
 
-class EveryAdControlLivesInOneSectionTests(unittest.TestCase):
-    """Reklama to'rt joyga bo'linib ketgan edi.
+class MiniAppAdvertisingLivesInOneSectionTests(unittest.TestCase):
+    """Mini App reklamasi to'rt joyga bo'linib ketgan edi.
 
     Foydalanuvchi buni aniq aytdi: "admin panelda 3 ta reklama degan joy bor,
     bu meni chalg'itadi". Modul ro'yxatida `Реклама жойлари`, `App рекламаси`
     va `Реклама кампанияси` alohida tugma edi, roliklar formasi esa
-    sozlamalar ichida to'rtinchi joyda turardi — nomlari o'xshash, vazifalari
-    boshqa. Endi bitta bo'lim, ichida to'rt tanlov.
+    sozlamalar ichida to'rtinchi joyda turardi.
+
+    Endi bitta bo'lim, ichida ikkita tanlov. Rolik va uning joyi BIR ekranda:
+    ular bir-birisiz ishlamaydi (rolik `placements` deydi, joy qoidasi esa
+    chiqishini hal qiladi), shuning uchun ularni ikki tanlovga bo'lish
+    admin uchun ortiqcha qadam edi.
     """
 
-    def test_the_menu_offers_exactly_one_ads_entry(self):
+    def test_the_menu_offers_one_mini_app_ads_entry(self):
         self.assertIn('"key": "ads_hub"', MODULES)
-        for gone in ('"key": "ad_placements"', '"key": "app_promo"', '"key": "ads"'):
+        for gone in ('"key": "ad_placements"', '"key": "app_promo"'):
             with self.subTest(module=gone):
                 self.assertNotIn(gone, MODULES)
 
-    def test_the_section_holds_all_four_choices(self):
-        for key in ("roliklar", "joylar", "ilova", "bot"):
+    def test_the_bot_message_campaign_sits_next_to_the_broadcast_instead(self):
+        """Botdagi reklama xabari Mini App reklamasi EMAS.
+
+        Boshqa jadval, boshqa kanal (bot chati), boshqa endpoint — rolik
+        tizimi bilan bitta satr ham umumiy kodi yo'q. U reklama bo'limiga
+        faqat nomidagi "reklama" so'zi tufayli tushgan edi."""
+        broadcast = MODULES.index('"key": "broadcast"')
+        campaign = MODULES.index('"key": "ads"')
+        self.assertLess(broadcast, campaign)
+        self.assertLess(campaign - broadcast, 400, "ikkisi yonma-yon turishi kerak")
+        # Nomi qaysi kanalda ishlashini aytadi.
+        self.assertIn("Ботдаги реклама хабари", MODULES)
+
+    def test_the_section_holds_both_choices(self):
+        for key in ("kurs", "ilova"):
             with self.subTest(choice=key):
                 self.assertIn(f'data-adhub="{key}"', ADMIN)
-        for pane in ("adPaneRoliklar", "adPaneJoylar", "adPaneIlova", "adPaneBot"):
+        for pane in ("adPaneKurs", "adPaneIlova"):
             with self.subTest(pane=pane):
                 self.assertIn(f'id="{pane}"', ADMIN)
 
+    def test_the_reel_and_its_placement_share_one_screen(self):
+        # Joy sozlamasi rolik formasi bilan bir panelda chiziladi.
+        self.assertIn('id="adPlacementsBox"', ADMIN)
+        self.assertIn('panelTarget=host.id', ADMIN)
+        self.assertIn('state.adHub==="kurs"', ADMIN)
+
     def test_the_panels_are_not_written_a_second_time(self):
-        # Joylar, ilova promosi va kampaniya panellari drawer uchun yozilgan
-        # funksiyalarni qayta ishlatadi: `showPanel` ularni bo'lim ichiga
-        # chizadi. Ikki nusxa bo'lsa, biri eskirib qolardi.
+        # Joy va ilova promosi panellari drawer uchun yozilgan funksiyalarni
+        # qayta ishlatadi: `showPanel` ularni bo'lim ichiga chizadi. Ikki
+        # nusxa bo'lsa, biri eskirib qolardi.
         self.assertIn("function showPanel(title,sub,html)", ADMIN)
-        self.assertIn("panelTarget=cfg.pane", ADMIN)
         self.assertIn("renderAdPlacements(d)", ADMIN)
         self.assertIn("renderAppPromo(d)", ADMIN)
-        self.assertIn('renderCampaign(d,"ad")', ADMIN)
 
 
 class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
@@ -183,9 +204,11 @@ class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
 
     def test_the_field_list_is_declared_in_one_place(self):
         self.assertIn("const CA_TYPE_SPEC={", ADMIN)
-        for field in ("button", "link", "appLinks"):
+        for field in ("button", "link"):
             with self.subTest(field=field):
                 self.assertIn(f'data-ca-field="{field}"', ADMIN)
+        # `appLinks` `app` turi bilan birga ketdi.
+        self.assertNotIn('data-ca-field="appLinks"', ADMIN)
 
     def test_a_field_outside_the_list_is_really_hidden(self):
         # `.frow` grid: brauzerning `[hidden]{display:none}` qoidasi unga

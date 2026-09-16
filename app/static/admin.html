@@ -427,34 +427,33 @@
              bo'lingan edi (roliklar, "Reklama joylari", "App reklamasi") va
              yana to'rtinchisi modul ro'yxatida turardi — admin qaysi biri
              nimani boshqarishini chalkashtirardi. -->
+        <!-- Mini App reklamasiga oid HAMMA narsa shu bo'limda. Rolik va uning
+             joyi bitta ekranda: ikkalasi bir-birisiz ishlamaydi, ya'ni ikki
+             tanlovga bo'lish admin uchun ortiqcha qadam edi. Botdagi
+             reklama xabari bu yerdan CHIQARILDI — u Mini App rekalamasi
+             emas, oммавий хабарнинг ukasi. -->
         <div class="sec" id="adHub">
-          <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Avval nima qilmoqchi ekaningizni tanlang — keyin faqat shunga tegishli maydonlar chiqadi</div></div></div>
+          <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklama. Avval nima qilmoqchi ekaningizni tanlang</div></div></div>
           <div class="chips" id="adHubTabs" style="margin-bottom:9px">
-            <button class="chip active" data-adhub="roliklar">🎬 Reklama roliklari</button>
-            <button class="chip" data-adhub="joylar">📺 Qayerda chiqadi</button>
+            <button class="chip active" data-adhub="kurs">🎬 Kurs reklamasi</button>
             <button class="chip" data-adhub="ilova">💻 Ilova reklamasi</button>
-            <button class="chip" data-adhub="bot">📨 Botdagi kampaniya</button>
           </div>
           <div class="hint" id="adHubNote" style="margin:0 2px 11px"></div>
 
-          <div id="adPaneRoliklar" data-adhub-pane>
+          <div id="adPaneKurs" data-adhub-pane>
             <div class="mcard" style="margin-bottom:11px">
+              <h3>➕ Yangi rolik</h3>
               <div class="frow two">
                 <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
                 <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Videoda — ko'rish vaqti, suratda — ekranda turish vaqti"></div>
               </div>
               <div class="frow two">
-                <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option><option value="app">📱 App reklamasi</option></select></div>
+                <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option></select></div>
                 <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
               </div>
               <div class="hint" id="caTypeNote" style="margin:-4px 2px 4px"></div>
 
               <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
-              <div class="frow two" data-ca-field="appLinks">
-                <div><label>MacBook havolasi</label><input id="caLinkMacos" class="input" placeholder="Bo'sh — avtomatik"></div>
-                <div><label>Windows havolasi</label><input id="caLinkWindows" class="input" placeholder="Bo'sh — avtomatik"></div>
-                <div><label>Android havolasi</label><input id="caLinkAndroid" class="input" placeholder="Bo'sh — avtomatik"></div>
-              </div>
               <div class="frow" data-ca-field="link"><label id="caLinkLabel">Havola</label><input id="caLink" class="input" placeholder="https://..."><div class="hint" id="caLinkNote"></div></div>
               <div class="frow">
                 <label>Qayerda chiqsin</label>
@@ -462,18 +461,21 @@
                   <button class="chip on" id="caPlaceLessonEnd" data-act="ca-place" data-place="lesson_end">🎓 Dars yakuni</button>
                   <button class="chip" id="caPlaceScreenCenter" data-act="ca-place" data-place="screen_center">🎯 Ekran markazi</button>
                 </div>
-                <div class="hint">Kamida bittasi tanlansin. Joyning o'zi yoqilgan-yoqilmagani va kunlik chegarasi «📺 Qayerda chiqadi» bo'limida.</div>
+                <div class="hint">Kamida bittasi tanlansin. Joyning o'zi yoqilgan-yoqilmagani, kimga chiqishi va kunlik chegarasi pastda.</div>
               </div>
               <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
               <input id="caFile" type="file" accept="video/*,image/*" hidden>
             </div>
+
+            <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📺 Qayerda chiqadi va necha marta</div><div class="sec-note">Aynan ikkita joy, har biri alohida. Chegara serverda sanaladi — qurilma almashtirish uni aylanib o'tmaydi</div></div></div>
+            <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
+
+            <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Yuklangan roliklar</div></div></div>
             <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
             <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
           </div>
 
-          <div id="adPaneJoylar" data-adhub-pane hidden></div>
           <div id="adPaneIlova" data-adhub-pane hidden></div>
-          <div id="adPaneBot" data-adhub-pane hidden></div>
         </div>
       </section>
     </main>
@@ -501,7 +503,7 @@
       // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
       drawerBack:null, activeUser:null,
       // «📣 Reklama» bo'limining ichida qaysi tanlov ochiq turibdi.
-      adHub:"roliklar"
+      adHub:"kurs"
     };
 
     /* ---------- Telegram full-screen ---------- */
@@ -1309,7 +1311,7 @@
           <div class="frow"><label>Qayerda chiqsin</label><div class="chips">
             ${appPromoChipHtml("placement","home_prompt","Mini App ochilganda",placements.home_prompt!==false)}
             ${appPromoChipHtml("placement","lesson_end_promo","Dars yakunida",placements.lesson_end_promo!==false)}
-            ${appPromoChipHtml("placement","ad_promo","Reklama oynasi ichida",placements.ad_promo!==false)}
+            ${appPromoChipHtml("placement","ad_promo","Reklama oynasida (dars yakunida)",placements.ad_promo!==false)}
           </div></div>
         </div>
         <div class="mcard">
@@ -1732,7 +1734,7 @@
       /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
          o'sha yerda qayta chizamiz, aks holda admin saqlab bo'lib eski
          qiymatlarga qarab turardi. */
-      else if(hub && hub!=="roliklar") await openAdHub(hub);
+      else if(hub) await openAdHub(hub);
       toast(msg||"Saqlandi");
     }
 
@@ -1806,7 +1808,7 @@
 
     /* ---------- course ads ---------- */
     const CA_LANGS={all:"Barcha tillar",uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
-    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"],dars_yakuni:["👑 Obuna taklifi",""],app:["📱 App","blue"]};
+    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"],dars_yakuni:["👑 Obuna taklifi",""]};
     function caLangLabel(l){ return CA_LANGS[l]||CA_LANGS.all; }
     function caTypeMeta(t){ return CA_TYPES[t]||CA_TYPES.odiy; }
     let caItems=[], caFilter="all";
@@ -1828,10 +1830,7 @@
       const placeNames={lesson_end:"🎓 Dars yakuni",screen_center:"🎯 Ekran markazi"};
       const places=(i.placements&&i.placements.length?i.placements:["screen_center"])
         .map(k=>placeNames[k]||k).join(" · ");
-      const slotLine=`<div class="ncnote">${places}</div>`
-        +(i.ad_type==="app"
-          ? `<div class="ncnote">💻 MacBook: ${(i.platform_links&&i.platform_links.macos)?"qo'lda":"avtomatik"} · Windows: ${(i.platform_links&&i.platform_links.windows)?"qo'lda":"avtomatik"}</div>`
-          : "");
+      const slotLine=`<div class="ncnote">${places}</div>`;
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s ${isPhoto?"ekranda turadi":"majburiy ko'rish"} · ${esc(i.created_at||"—")}</div>
           ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}${slotLine}</div>
@@ -1903,14 +1902,6 @@
         linkNote:"Bo'sh qoldirsangiz faqat obuna taklifi ko'rinadi.",
         buttonLabel:"Tashqi link knopkasi",
         buttonPlaceholder:"Masalan: Batafsil ko'rish"
-      },
-      app:{
-        fields:["button","appLinks","link"],
-        note:"Ilova reklamasi: rolik ostida MacBook, Windows va Android tugmalari chiqadi. Yopish vaqti va kunlik chegara «📺 Qayerda chiqadi» bo'limida.",
-        linkLabel:"Zaxira havola (ixtiyoriy)",
-        linkNote:"Faqat birorta platforma havolasi topilmaganda ishlatiladi.",
-        buttonLabel:"Knopka nomi",
-        buttonPlaceholder:"Masalan: Ilovani yuklab olish"
       }
     };
     function caSpec(){ return CA_TYPE_SPEC[($("caType")&&$("caType").value)||"odiy"]||CA_TYPE_SPEC.odiy; }
@@ -1935,41 +1926,41 @@
        ro'yxatidagi «Reklama joylari» va «App reklamasi», plus «Reklama
        kampaniyasi»). Endi bitta bo'lim, ichida to'rt tanlov. */
     const AD_HUB={
-      roliklar:{pane:"adPaneRoliklar",note:"Foydalanuvchi ko'radigan rolik shu yerda yuklanadi. Pastda — yuklanganlar ro'yxati."},
-      joylar:{pane:"adPaneJoylar",note:"Reklama qaysi joyda chiqishi, kimga ko'rinishi va kuniga necha marta chiqishi. Chegara serverda sanaladi — qurilma almashtirish uni aylanib o'tmaydi."},
-      ilova:{pane:"adPaneIlova",note:"HSK AI ilovasini yuklab olishga chaqiruvchi promo: Mini App ochilganda va reklama oynasida chiqadi. Media, joylar va platforma tugmalari shu yerda."},
-      bot:{pane:"adPaneBot",note:"Bot chatida segmentga yuboriladigan matnli reklama kampaniyasi — Mini App ichidagi rolikka aloqasi yo'q."}
+      kurs:{pane:"adPaneKurs",note:"Foydalanuvchi ko'radigan rolik va u qaysi joyda chiqishi — ikkalasi shu yerda. Rolik joysiz, joy roliksiz ishlamaydi."},
+      ilova:{pane:"adPaneIlova",note:"HSK AI ilovasini yuklab olishga chaqiruvchi promo: Mini App ochilganda va dars yakunida chiqadi. Media va platforma tugmalari shu yerda."}
     };
     async function openAdHub(key){
-      state.adHub=AD_HUB[key]?key:"roliklar";
+      state.adHub=AD_HUB[key]?key:"kurs";
       const cfg=AD_HUB[state.adHub];
       Object.keys(AD_HUB).forEach(k=>{ const el=$(AD_HUB[k].pane); if(el) el.hidden=(k!==state.adHub); });
       document.querySelectorAll("[data-adhub]").forEach(b=>b.classList.toggle("active",b.dataset.adhub===state.adHub));
       const note=$("adHubNote"); if(note) note.textContent=cfg.note;
-      if(state.adHub==="roliklar") return caTypeUI();
-      const host=$(cfg.pane); if(!host) return;
+      /* Joy sozlamasi endi rolik formasi bilan BIR ekranda: u shu paneldagi
+         alohida qutiga chiziladi, drawer'ga emas. */
+      const host=state.adHub==="kurs" ? $("adPlacementsBox") : $(cfg.pane);
+      if(state.adHub==="kurs") caTypeUI();
+      if(!host) return;
       host.innerHTML="<p class='empty'>Yuklanmoqda…</p>";
       let d;
       try{ d=await loadManagement(false); }
       catch(e){ host.innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      panelTarget=cfg.pane;
+      panelTarget=host.id;
       try{
-        if(state.adHub==="joylar") renderAdPlacements(d);
-        else if(state.adHub==="ilova") renderAppPromo(d);
-        else renderCampaign(d,"ad");
+        if(state.adHub==="kurs") renderAdPlacements(d);
+        else renderAppPromo(d);
       } finally { panelTarget=null; }
     }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); const caFields=(CA_TYPE_SPEC[adType]||CA_TYPE_SPEC.odiy).fields; fd.append("button_text",caFields.indexOf("button")<0?"":($("caBtnText").value||"")); /* "X paydo bo'lishi" va "Kuniga necha marta" bu yerdan OLIB
-         TASHLANDI: ikkalasi ham yozilardi-yu, hech qachon ishlamasdi.
-         Yopish tugmasi vaqtini server har doim joy qoidasidan oladi
-         (`payload["skip_after_seconds"] = rule.skip_after_seconds`), rolik
-         bo'yicha kunlik chegarani esa hech kim tekshirmasdi. Ikkalasi ham
-         «Qayerda chiqadi» bo'limida boshqariladi. */
-      if(adType==="app"){ fd.append("link_macos",($("caLinkMacos")&&$("caLinkMacos").value)||""); fd.append("link_windows",($("caLinkWindows")&&$("caLinkWindows").value)||""); fd.append("link_android",($("caLinkAndroid")&&$("caLinkAndroid").value)||""); } fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); const caFields=(CA_TYPE_SPEC[adType]||CA_TYPE_SPEC.odiy).fields; fd.append("button_text",caFields.indexOf("button")<0?"":($("caBtnText").value||"")); /* Yopish vaqti, kunlik chegara va platforma havolalari bu yerdan
+         OLIB TASHLANDI. Birinchi ikkitasi hech qachon ishlamasdi (server
+         yopish vaqtini joy qoidasidan oladi, rolik chegarasini esa hech kim
+         tekshirmasdi), platforma havolalari esa `app` turi bilan birga
+         ketdi — ilovani endi faqat «Ilova reklamasi» promosi reklama
+         qiladi. */
+      fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }
@@ -2112,7 +2103,7 @@
     $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
     $("caFile").addEventListener("change",submitCourseAd);
     if($("caType")) $("caType").addEventListener("change",caTypeUI);
-    openAdHub("roliklar");
+    openAdHub("kurs");
     document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeDrawer(); });
 
     async function saveChannel(payload,btn){ if(btn) btn.disabled=true; try{ await apiPost("/api/admin-miniapp/channels/save",payload); await afterModule("Kanal sozlamasi saqlandi"); }catch(e){ toast(apiErr(e,"Kanal saqlanmadi")); if(btn) btn.disabled=false; } }

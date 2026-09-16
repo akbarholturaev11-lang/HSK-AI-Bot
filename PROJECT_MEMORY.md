@@ -8700,3 +8700,63 @@ Verified:
 - 1434 passed, 78254 subtests.
 - Brauzerda: `app` turida endi `button, appLinks, link` chiqadi (ilgari
   `appLimits` ham bor edi), `caSkipAfter`/`caDailyLimit` DOM'da yo'q.
+
+### 2026-09-16 — Ilovani reklama qilishning ikkinchi yo'li olib tashlandi
+
+Muammo: foydalanuvchi "yarmi u yerda, yarmi bu yerda" dedi va haq edi.
+Ilovani reklama qilishning IKKITA mustaqil yo'li bor edi va ular bir-birini
+bilmasdi:
+
+* `app` turidagi kurs rolik — o'z media, o'z MacBook/Windows/Android
+  havolalari, havolani to'g'ridan-to'g'ri reliz tizimidan olardi;
+* `desktop_app_promo` — o'z media, o'z platforma chiplari.
+
+Ya'ni `App reklamasi` da Android chipini o'chirsangiz ham `app` turidagi
+rolik baribir Android tugmasini chiqarardi.
+
+Changed:
+- **`app` reklama turi butunlay olib tashlandi.** Ilovani endi FAQAT
+  `desktop_app_promo` reklama qiladi. Birga ketganlar: `COURSE_AD_APP_TYPE`,
+  `COURSE_AD_APP_PLATFORMS`, `COURSE_AD_APP_VISIBLE_PLATFORMS`,
+  `normalize_platform_links`, `platform_links_storage_value`,
+  `app_platform_buttons`, `app_open` sloti, `_attach_platform_buttons`
+  (miniapp_ads), `_desktop_auto_download_links` (main), klientdagi
+  `APP_PLATFORM_META` / `renderAppPlatforms` / `renderAppAdButtons` va
+  `.caa-app-plat*` CSS.
+  Eski `ad_type="app"` qatorlari `normalize_ad_type` orqali `odiy` ga
+  tushadi — ko'rsatilaveradi, faqat platforma tugmalarisiz.
+- **Reklama bo'limi endi ikki tanlov**: `🎬 Kurs reklamasi` (rolik formasi +
+  joy qoidalari + yuklanganlar ro'yxati BIR ekranda) va `💻 Ilova
+  reklamasi`. Rolik `placements` deydi, joy qoidasi chiqishini hal qiladi —
+  ikkalasi bir-birisiz ishlamaydi, shuning uchun ularni ikki tanlovga
+  bo'lish ortiqcha qadam edi.
+- **Botdagi reklama xabari reklama bo'limidan chiqarildi** va `📢 Оммавий
+  хабар` yoniga qaytdi, nomi `📨 Ботдаги реклама хабари`. U boshqa jadval,
+  boshqa kanal, boshqa endpoint — rolik tizimi bilan bitta satr ham umumiy
+  kodi yo'q edi.
+- **O'lik tarmoq olib tashlandi**: `ads.js` da reklama oynasi ichidagi
+  yuklab olish bloki `isLessonEnd()?"lesson_end_ad":"screen_center_ad"` deb
+  hisoblanardi, lekin butun blok `if(isLessonEnd())` ichida turardi —
+  `screen_center_ad` hech qachon ishlamasdi. Endi to'g'ridan-to'g'ri
+  `"lesson_end_ad"`. Admin chipining nomi ham shunga moslandi:
+  «Reklama oynasida (dars yakunida)».
+
+Key files:
+- `app/static/admin.html`, `app/static/course_v3_data/ads.js`
+- `app/services/course_ad_service.py`, `app/db/models/course_ad.py`
+- `app/api/miniapp_ads.py`, `app/main.py`,
+  `app/services/admin_miniapp_service.py`
+- `tests/test_course_ad_app_type.py` → `tests/test_course_ad_types.py`
+  (butunlay qayta yozildi), `tests/test_admin_panel_has_no_dead_controls.py`,
+  `tests/test_course_ad_photo_media.py`, `tests/test_course_v3_static_data.py`
+
+Verified:
+- 1427 passed, 78259 subtests.
+- Brauzerda: ikkita tanlov, rolik turlari endi to'rtta (`app` yo'q), joy
+  qoidalari rolik formasi bilan bir panelda chiziladi, `Ilova reklamasi`
+  chiplari va saqlash tugmasi joyida.
+
+Diqqat:
+- Produkshnda `ad_type="app"` rolik bo'lsa, u endi oddiy reklama bo'lib
+  ko'rinadi (platforma tugmalarisiz, faqat o'z `link_url` i bilan). Kerak
+  bo'lmasa adminda o'chirib tashlash mumkin.

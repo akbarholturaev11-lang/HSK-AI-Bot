@@ -761,7 +761,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Desktop promosi endi dars yakunidagi modalda.
         self.assertIn("mountAdPromoTrigger", ads)
         self.assertIn('<div class="caa-desktop" hidden></div>', ads)
-        self.assertIn('var desktopPlacement=isLessonEnd()?"lesson_end_ad"', ads)
+        # Joy shart bilan hisoblanmaydi: blok `if(isLessonEnd())` ning
+        # ichida, ya'ni `screen_center_ad` ga tushadigan tarmoq hech qachon
+        # ishlamasdi va olib tashlandi.
+        self.assertIn(
+            'mountAdPromoTrigger(e.promo,{placement:"lesson_end_ad"})', ads
+        )
+        self.assertNotIn("screen_center_ad\"", ads)
         self.assertNotIn('<button class="caa-desktop"', ads)
         self.assertLess(ads.index('caa-pay"></button>'), ads.index('caa-cont"></button>'))
         self.assertLess(

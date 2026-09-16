@@ -102,7 +102,6 @@ from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import access_expires_at, resolve_state
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
-from app.services.desktop_download_service import DesktopReleaseConfig
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -645,7 +644,6 @@ app.include_router(
         session_factory=async_session_maker,
         settings_obj=settings,
         # Kech bog'lanish: bu yordamchi ham pastroqda e'lon qilingan.
-        download_links_resolver=lambda: _desktop_auto_download_links(),
     )
 )
 app.include_router(
@@ -1991,40 +1989,6 @@ async def v3_set_language(request: Request):
         user.language = resolved_lang
         await session.commit()
         return JSONResponse(content={"ok": True, "language": resolved_lang})
-
-
-async def _desktop_auto_download_links() -> dict[str, str]:
-    """Reliz tizimidagi joriy yuklab olish havolalari (public, tokensiz).
-
-    App reklamasidagi platforma tugmalari uchun. Reliz sozlanmagan yoki
-    vaqtincha ishlamayotgan bo'lsa bo'sh lug'at qaytadi — bunday holda tugma
-    faqat admin qo'lda havola kiritgan bo'lsa chiqadi, o'lik tugma emas."""
-    try:
-        releases = await DesktopReleaseConfig.resolve(settings)
-    except Exception:
-        logger.exception("Desktop auto download links resolve failed")
-        return {}
-    links: dict[str, str] = {}
-    for platform in ("macos", "windows"):
-        try:
-            links[platform] = releases.public_transfer_url(platform)
-        except Exception:
-            continue
-
-    # Android is published by its own pipeline, so it is asked separately and
-    # its absence never costs the desktop buttons theirs.
-    try:
-        status = await app_download_status(
-            session_factory=async_session_maker,
-            settings_obj=settings,
-        )
-        android = status.get("platforms", {}).get("android") or {}
-        base = str(getattr(releases, "public_base_url", "") or "").rstrip("/")
-        if android.get("available") and android.get("download") and base:
-            links["android"] = base + str(android["download"])
-    except Exception:
-        logger.exception("Android auto download link resolve failed")
-    return links
 
 
 # Darvoza bo'limlari endi `app/api/miniapp_entitlements.py` da — reklama
@@ -3928,14 +3892,8 @@ async def admin_miniapp_course_ads_upload(request: Request):
     # yakuni reklamasi") joy deb o'ylash oson, lekin u faqat reklamaning
     # ko'rinishini belgilaydi.
     placements = normalize_ad_placements(form.get("placements"))
-    # Platforma havolalari — QO'LDA kiritilgani (ixtiyoriy). Bo'sh qoldirilsa
-    # havola reliz tizimidan avtomatik olinadi.
-    platform_links = {
-        "macos": form.get("link_macos"),
-        "windows": form.get("link_windows"),
-        "ios": form.get("link_ios"),
-        "android": form.get("link_android"),
-    }
+    # Platforma havolalari ham OLIB TASHLANDI: ilovani endi faqat `App
+    # reklamasi` promosi reklama qiladi, kurs roliklari emas.
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
@@ -3945,7 +3903,6 @@ async def admin_miniapp_course_ads_upload(request: Request):
             language=language,
             ad_type=ad_type,
             button_text=button_text,
-            platform_links=platform_links,
             media_type=media_type,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,

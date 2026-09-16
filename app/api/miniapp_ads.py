@@ -45,25 +45,8 @@ async def _body(request: Request) -> dict:
     return payload if isinstance(payload, dict) else {}
 
 
-async def _attach_platform_buttons(ad: dict | None, download_links_resolver) -> None:
-    """`app` turidagi reklamaga platforma tugmalarini qo'shadi.
-
-    Tugmalar JOYGA emas, TURGA bog'langan: desktop ilova reklamasi ikkala
-    joyda ham platforma tugmalari bilan chiqishi kerak. Reliz tizimi
-    ishlamasa endpoint yiqilmaydi — qo'lda kiritilgan havolalar zaxira yo'l.
-    """
-    if not ad or ad.get("ad_type") != "app" or download_links_resolver is None:
-        return
-    auto_links = {}
-    try:
-        auto_links = await download_links_resolver()
-    except Exception:  # noqa: BLE001
-        logger.warning("Desktop auto download links resolve failed", exc_info=True)
-    ad["app_buttons"] = CourseAdService.app_platform_buttons(ad, auto_links)
-
-
 def create_miniapp_ads_router(
-    *, session_factory, settings_obj, download_links_resolver=None
+    *, session_factory, settings_obj
 ) -> APIRouter:
     router = APIRouter()
 
@@ -112,7 +95,6 @@ def create_miniapp_ads_router(
             )
             status = await service.status(user, placement=placement, client=CLIENT)
 
-        await _attach_platform_buttons(ad, download_links_resolver)
         return JSONResponse(
             content={"ok": True, "ad": ad, "placement": placement, "status": status}
         )

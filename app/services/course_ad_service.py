@@ -1,6 +1,5 @@
 import contextlib
 import hashlib
-import json
 import os
 
 from sqlalchemy import distinct, or_, select
@@ -40,38 +39,29 @@ COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
 COURSE_AD_ALL_LANGUAGES = "all"
 # Reklama turlari: odiy (oddiy), hamkorlik (reklama qabul qilish/hamkorlik),
 # bot (o'z botlarini reklama qilish), dars_yakuni (dars tugagach bepul userga
-# ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA),
-# app (desktop ilova reklamasi).
+# ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA).
 # Odiy — hozirgi xatti-harakat.
-COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni", "app")
+#
+# `app` turi OLIB TASHLANDI. Ilovani reklama qilishning ikkita mustaqil yo'li
+# bor edi: shu tur (o'z media va platforma havolalari bilan) va `App
+# reklamasi` sozlamasi (o'z media va platforma chiplari bilan). Ular
+# bir-birini bilmasdi — masalan promoda Android o'chirilsa ham bu tur baribir
+# Android tugmasini chiqarardi. Endi ilovani FAQAT `desktop_app_promo`
+# reklama qiladi. Eski `app` yozuvlari `normalize_ad_type` orqali `odiy` ga
+# tushadi: ular ko'rsatilaveradi, lekin platforma tugmalarisiz.
+COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni")
 COURSE_AD_DEFAULT_TYPE = "odiy"
 COURSE_AD_LESSON_END_TYPE = "dars_yakuni"
-COURSE_AD_APP_TYPE = "app"
-# Mashq slotidan (practice) CHIQARIB TASHLANADIGAN turlar.
-#
-# `dars_yakuni` shu yerda qoladi: u dars tugagach obuna taklifi bilan birga
-# chiqadigan alohida blok, mashq oqimida ma'nosi yo'q.
-#
-# `app` esa ATAYIN chiqarilmagan — desktop ilova reklamasi Mini App ochilganda
-# markazda ham, mashq bo'limlarida ham (boshi/o'rtasi/oxiri), "obuna majburiy
-# emas" rejimida esa darslarda ham chiqishi kerak. `app_open` sloti baribir
-# faqat `app` turini qaytaradi, shuning uchun markazdagi karta o'zgarmaydi.
+# Mashq slotidan (practice) CHIQARIB TASHLANADIGAN turlar: `dars_yakuni` dars
+# tugagach obuna taklifi bilan chiqadigan alohida blok, mashq oqimida
+# ma'nosi yo'q.
 COURSE_AD_EXCLUSIVE_TYPES = (COURSE_AD_LESSON_END_TYPE,)
-COURSE_AD_SLOTS = ("practice", "lesson_end", "app_open")
+COURSE_AD_SLOTS = ("practice", "lesson_end")
 COURSE_AD_DEFAULT_SLOT = "practice"
-# App reklamasi sozlamalari chegaralari.
+# Eski ustunlar uchun chegaralar. Ikkalasi ham endi hech narsani boshqarmaydi
+# (qarang: `payload`), lekin `create_video` ularni hamon normallashtiradi.
 COURSE_AD_MAX_SKIP_SECONDS = 60
 COURSE_AD_MAX_DAILY_LIMIT = 50
-# App reklamasidagi platforma tugmalari.
-# `COURSE_AD_APP_PLATFORMS` — kod qo'llab-quvvatlaydigan HAMMA platforma.
-# `COURSE_AD_APP_VISIBLE_PLATFORMS` — foydalanuvchiga HOZIR ko'rinadiganlari.
-#
-# Android 2026-09-15 da qo'shildi: relizi tayyor va havolasi bor
-# (`/downloads/android`). iPhone hali KO'RSATILMAYDI — unga alohida ilova yo'q,
-# o'lik tugma esa foydalanuvchini chalg'itadi. iOS tayyor bo'lgach quyidagi
-# ro'yxatga qo'shish yetarli; havolani `_desktop_auto_download_links` beradi.
-COURSE_AD_APP_PLATFORMS = ("macos", "windows", "ios", "android")
-COURSE_AD_APP_VISIBLE_PLATFORMS = ("macos", "windows", "android")
 
 
 def _ad_placements_list(ad) -> list[str]:
@@ -161,8 +151,7 @@ class CourseAdService:
 
     @staticmethod
     def normalize_slot(value) -> str:
-        """Reklama sloti: "lesson_end" (dars yakuni), "app_open" (Mini App
-        ochilganda) yoki "practice" (qolgan hammasi)."""
+        """Reklama sloti: "lesson_end" (dars yakuni) yoki "practice"."""
         slot = str(value or "").strip().lower()
         return slot if slot in COURSE_AD_SLOTS else COURSE_AD_DEFAULT_SLOT
 
@@ -189,63 +178,6 @@ class CourseAdService:
         except (TypeError, ValueError):
             limit = 0
         return min(max(limit, 0), COURSE_AD_MAX_DAILY_LIMIT)
-
-    @classmethod
-    def normalize_platform_links(cls, value) -> dict[str, str]:
-        """Qo'lda kiritilgan platforma havolalari: {"macos": url, ...}.
-
-        Faqat tanilgan platformalar qoladi, havolalar `normalize_link` orqali
-        o'tadi (http/https majburiy). Bo'sh qiymatlar tashlab yuboriladi."""
-        data = value
-        if isinstance(data, (str, bytes)):
-            try:
-                data = json.loads(data or "{}")
-            except (TypeError, ValueError):
-                return {}
-        if not isinstance(data, dict):
-            return {}
-        links: dict[str, str] = {}
-        for platform in COURSE_AD_APP_PLATFORMS:
-            link = cls.normalize_link(data.get(platform))
-            if link:
-                links[platform] = link
-        return links
-
-    @classmethod
-    def platform_links_storage_value(cls, value) -> str | None:
-        links = cls.normalize_platform_links(value)
-        if not links:
-            return None
-        return json.dumps(links, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-
-    @classmethod
-    def app_platform_buttons(
-        cls,
-        ad_payload: dict,
-        auto_links: dict[str, str] | None = None,
-    ) -> list[dict]:
-        """App reklamasi uchun platforma tugmalari ro'yxati.
-
-        Havola manbai: adminning qo'lda kiritgani BIRINCHI, bo'lmasa reliz
-        tizimidan avtomatik olingani. Ikkalasi ham bo'lmasa — tugma umuman
-        chiqmaydi (o'lik tugma ko'rsatilmaydi).
-
-        Faqat `COURSE_AD_APP_VISIBLE_PLATFORMS` dagilar qaytadi."""
-        manual = cls.normalize_platform_links(ad_payload.get("platform_links"))
-        auto = auto_links or {}
-        buttons = []
-        for platform in COURSE_AD_APP_VISIBLE_PLATFORMS:
-            url = manual.get(platform) or cls.normalize_link(auto.get(platform))
-            if not url:
-                continue
-            buttons.append(
-                {
-                    "platform": platform,
-                    "url": url,
-                    "source": "manual" if manual.get(platform) else "auto",
-                }
-            )
-        return buttons
 
     @staticmethod
     def normalize_button_text(value) -> str | None:
@@ -452,9 +384,6 @@ class CourseAdService:
             # esa `course_ad_views` qatorlaridan sanaydi. Ustunlar bazada eski
             # yozuvlar uchun qoldi, lekin ular hech narsani boshqarmaydi va bu
             # yerdan chiqsa "boshqaradi" degan taassurot berardi.
-            "platform_links": cls.normalize_platform_links(
-                getattr(ad, "platform_links", None)
-            ),
             "is_active": bool(ad.is_active),
             "media_available": media_available,
             "media_restored": False,
@@ -485,7 +414,6 @@ class CourseAdService:
         button_text: str | None = None,
         skip_after_seconds=None,
         daily_limit=None,
-        platform_links=None,
         media_type: str = COURSE_AD_DEFAULT_MEDIA_TYPE,
         media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
@@ -514,7 +442,6 @@ class CourseAdService:
             # `ad_type` endi joyni belgilamaydi (u reklamaning TURI:
             # obuna tugmasi bilanmi, hamkorlikmi, ilova promosimi).
             placements=_normalize_ad_placements(placements),
-            platform_links=self.platform_links_storage_value(platform_links),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,
         )
@@ -553,16 +480,13 @@ class CourseAdService:
         """Slot bo'yicha tur filtri — eksklyuziv turlar boshqalariga aralashmasin.
 
         `lesson_end` — FAQAT `dars_yakuni` turidagi reklamalar.
-        `app_open` — FAQAT `app` turidagi reklamalar.
-        `practice` (default) — eksklyuziv turlardan (`dars_yakuni`, `app`)
-        TASHQARI hammasi (eski yozuvlarda `ad_type` NULL bo'lishi mumkin —
-        ular ham kiradi).
+        `practice` (default) — eksklyuziv turdan (`dars_yakuni`) TASHQARI
+        hammasi (eski yozuvlarda `ad_type` NULL bo'lishi mumkin — ular ham
+        kiradi; `app` turi olib tashlangani uchun ular ham shu yerga tushadi).
         """
         normalized = cls.normalize_slot(slot)
         if normalized == "lesson_end":
             return CourseAdCreative.ad_type == COURSE_AD_LESSON_END_TYPE
-        if normalized == "app_open":
-            return CourseAdCreative.ad_type == COURSE_AD_APP_TYPE
         return or_(
             CourseAdCreative.ad_type.is_(None),
             CourseAdCreative.ad_type.notin_(COURSE_AD_EXCLUSIVE_TYPES),

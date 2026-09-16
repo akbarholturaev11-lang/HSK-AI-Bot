@@ -117,17 +117,17 @@ class CourseAdPhotoStorageTests(unittest.IsolatedAsyncioTestCase):
         async with self.session_maker() as session:
             service = CourseAdService(session)
             await service.create_video(
-                title="app surat",
-                media_path=self._write_media("app.png"),
-                ad_type="app",
+                title="hamkor surat",
+                media_path=self._write_media("hamkor.png"),
+                ad_type="hamkorlik",
                 media_type="photo",
             )
             await session.commit()
 
-            ads = await service.list_active_payloads(language="uz", slot="app_open")
+            ads = await service.list_active_payloads(language="uz", slot="practice")
             self.assertEqual(len(ads), 1)
             self.assertEqual(ads[0]["media_type"], "photo")
-            self.assertEqual(ads[0]["ad_type"], "app")
+            self.assertEqual(ads[0]["ad_type"], "hamkorlik")
 
     async def test_media_blob_is_deferred_from_default_queries_and_payload(self):
         data = b"small-photo-backup"
