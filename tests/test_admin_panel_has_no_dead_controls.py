@@ -60,8 +60,11 @@ class TheAdsModeIsGoneTests(unittest.TestCase):
 
 class TheUploadFormAsksWhereTheAdGoesTests(unittest.TestCase):
     def test_the_form_offers_both_placements(self):
-        self.assertIn('data-place="lesson_end"', ADMIN)
-        self.assertIn('data-place="screen_center"', ADMIN)
+        # Tanlov endi joy kartasining ichida: `AD_PLACEMENTS` dagi har bir
+        # joy o'z kartasini va o'z kalitini oladi.
+        self.assertIn('["lesson_end"', ADMIN)
+        self.assertIn('["screen_center"', ADMIN)
+        self.assertIn('data-ca-place="${esc(key)}"', ADMIN)
 
     def test_the_placement_is_sent_with_the_upload(self):
         self.assertIn('fd.append("placements"', ADMIN)
@@ -267,3 +270,59 @@ class TheAdVideoDoesNotOwnTimingOrLimitsTests(unittest.TestCase):
         # Kunlik chegara esa ko'rilgan qatorlardan sanaladi.
         self.assertIn("if rule.daily_cap:", self.PLACEMENTS)
         self.assertIn("used >= rule.daily_cap", self.PLACEMENTS)
+
+
+class EachPlacementIsOneBlockTests(unittest.TestCase):
+    """Joy haqidagi hamma narsa BITTA kartada.
+
+    Ilgari joy ikki marta so'ralardi va ekranning ikki joyida turardi:
+    yuqorida "Qayerda chiqsin" chiplari (bu rolik uchun), pastda esa
+    "Qayerda chiqadi va necha marta" kartalari (joyning o'zi uchun).
+    Nomlari deyarli bir xil edi va foydalanuvchi ularni bitta savolning
+    takrori deb o'ylardi.
+
+    Ikkalasi ham kerak — birini ikkinchisidan chiqarib bo'lmaydi: rolik
+    joyni tanlaydi, joy esa hamma roliklar uchun bitta qoidaga bo'ysunadi.
+    Shuning uchun ular qo'shilmadi, balki BIR kartaga yig'ildi: kalit
+    yuqorida, joyning qoidasi ostida.
+    """
+
+    def test_the_switch_and_the_rules_share_one_card(self):
+        card = ADMIN.split("function adPlacementCard(", 1)[1].split("\n    }", 1)[0]
+        self.assertIn('data-ca-place="${esc(key)}"', card)
+        self.assertIn("Yangi rolik shu joyga qo'yilsin", card)
+        self.assertIn('id="adOn_${id}"', card)
+        self.assertIn('id="adCap_${id}"', card)
+
+    def test_each_control_says_who_it_applies_to(self):
+        self.assertIn("Yangi rolik shu joyga qo'yilsin", ADMIN)
+        self.assertIn("joyning O'ZI uchun", ADMIN)
+        self.assertIn("hamma roliklarga birdan tegishli", ADMIN)
+
+    def test_there_is_no_second_placement_question_left(self):
+        self.assertNotIn("Qayerda chiqadi va necha marta", ADMIN)
+        self.assertNotIn("Joylarning o'z sozlamasi", ADMIN)
+        self.assertNotIn('id="caPlaceLessonEnd"', ADMIN)
+
+    def test_the_choice_survives_the_card_being_redrawn(self):
+        """Karta joy sozlamasi bilan birga qayta chiziladi.
+
+        Tanlov faqat DOM'da tursa, saqlashdan keyin jimgina nolga
+        qaytardi — shuning uchun qiymat alohida saqlanadi."""
+        self.assertIn("const caPlaceChosen={lesson_end:true,screen_center:false}", ADMIN)
+        self.assertIn("caPlaceChosen[el.dataset.caPlace]=el.checked", ADMIN)
+
+    def test_choosing_a_switched_off_placement_is_not_silent(self):
+        """O'chirilgan joyni tanlash jimgina hech narsa qilmaydi.
+
+        Rolik `placements` da o'sha joyni olib yuradi, lekin joy qoidasi
+        o'chiq bo'lsa server uni hech qachon bermaydi."""
+        self.assertIn("function caPlaceWarnUI()", ADMIN)
+        self.assertIn('data-ca-place-warn="${esc(key)}"', ADMIN)
+        self.assertIn("caPlaceRules=((d.ad_placements||{}).placements)||{}", ADMIN)
+
+    def test_choosing_nothing_says_where_the_reel_actually_lands(self):
+        # Hech biri tanlanmasa server uni dars yakuniga tushiradi — admin
+        # buni ekranda ko'rsin, keyin "qayerga ketdi?" deb qidirmasin.
+        self.assertIn('id="caPlaceNone"', ADMIN)
+        self.assertIn('return (on.length?on:["lesson_end"]).join(",")', ADMIN)

@@ -160,6 +160,11 @@
     .srow{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;width:100%}
     .srow h3{font-size:14px;font-weight:850}
     .srow p{margin-top:3px;color:var(--muted);font-size:11.5px;line-height:1.35}
+    /* `.hint` panel bo'ylab izoh uchun ishlatilardi, lekin uni HECH QANDAY
+       qoida bo'yamasdi: izohlar asosiy matn kattaligida, oq rangda
+       chiqardi va muhim narsadan farq qilmasdi. */
+    .hint{font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.45}
+    .hint b{color:var(--ink)}
     .danger-note{border:1px solid rgba(251,113,133,.35);background:var(--red-soft);color:#fecdd3;border-radius:11px;padding:11px 13px;font-size:12px;font-weight:700;line-height:1.45}
     /* Drawer */
     .scrim{position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s}
@@ -174,6 +179,9 @@
     .dbody{overflow:auto;padding:14px 16px calc(18px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
     .panel{display:grid;gap:11px}
     .mcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px;display:grid;gap:9px}
+    /* Joy kartalari rolik formasining ICHIDA turadi — ikki qavat "karta"
+       og'ir ko'rinadi, shuning uchun ichkisi yengilroq. */
+    .mcard .mcard{background:var(--bg-soft);padding:11px}
     .mcard h3{font-size:13.5px;font-weight:850}
     .mcard p{color:var(--muted);font-size:12px;line-height:1.45}
     .kv{display:grid;grid-template-columns:minmax(110px,.85fr) 1fr;gap:6px 10px;font-size:13px}
@@ -455,20 +463,15 @@
 
               <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
               <div class="frow" data-ca-field="link"><label id="caLinkLabel">Havola</label><input id="caLink" class="input" placeholder="https://..."><div class="hint" id="caLinkNote"></div></div>
-              <div class="frow">
-                <label>Qayerda chiqsin</label>
-                <div class="chips">
-                  <button class="chip on" id="caPlaceLessonEnd" data-act="ca-place" data-place="lesson_end">🎓 Dars yakuni</button>
-                  <button class="chip" id="caPlaceScreenCenter" data-act="ca-place" data-place="screen_center">🎯 Ekran markazi</button>
-                </div>
-                <div class="hint">Kamida bittasi tanlansin. Joyning o'zi yoqilgan-yoqilmagani, kimga chiqishi va kunlik chegarasi pastda.</div>
+              <div class="frow" style="margin-bottom:6px">
+                <label>📺 Qayerda chiqsin</label>
+                <div class="hint">Har bir joy o'z kartasida. Kartaning YUQORISIDAGI kalit — shu rolik uchun; qolgani joyning O'ZI uchun va hamma roliklarga birdan tegishli.</div>
               </div>
+              <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
+              <div class="danger-note" id="caPlaceNone" hidden>Hech bir joy tanlanmagan — rolik dars yakuniga qo'yiladi.</div>
               <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
               <input id="caFile" type="file" accept="video/*,image/*" hidden>
             </div>
-
-            <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📺 Qayerda chiqadi va necha marta</div><div class="sec-note">Aynan ikkita joy, har biri alohida. Chegara serverda sanaladi — qurilma almashtirish uni aylanib o'tmaydi</div></div></div>
-            <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
 
             <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Yuklangan roliklar</div></div></div>
             <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
@@ -1216,16 +1219,24 @@
     /* Reklama joylari — aynan ikkita, har biri ALOHIDA boshqariladi.
        Birini o'chirish ikkinchisiga tegmaydi. */
     const AD_PLACEMENTS=[
-      ["lesson_end","Dars yakuni","Dars tugagach chiqadi"],
-      ["screen_center","Ekran markazi","Qaysi bo'limda bo'lishidan qat'i nazar"]
+      ["lesson_end","🎓 Dars yakuni","Dars tugagach chiqadi"],
+      ["screen_center","🎯 Ekran markazi","Qaysi bo'limda bo'lishidan qat'i nazar"]
     ];
     function adPlacementCard(key,label,note,rule){
       const r=rule||{};
       const id=key.replace(/[^A-Za-z0-9]/g,"_");
+      /* Joy haqidagi HAMMA narsa bitta kartada: yangi rolik shu yerga
+         qo'yiladimi (bu — faqat shu rolik uchun) va joyning o'z qoidasi
+         (bu — hamma roliklarga birdan). Ilgari ikkisi ekranning ikki
+         joyida turardi va bir xil savolning takroriga o'xshardi. */
+      const chosen=!!caPlaceChosen[key];
       return `<div class="mcard" data-adplace data-key="${esc(key)}">
         <h3>${esc(label)}</h3>
         <p>${esc(note)}</p>
-        <div class="frow"><label><input type="checkbox" id="adOn_${id}"${r.enabled?" checked":""}> Yoqilgan</label></div>
+        <label class="ncsw"><input type="checkbox" data-ca-place="${esc(key)}"${chosen?" checked":""}> <b>Yangi rolik shu joyga qo'yilsin</b></label>
+        <div class="danger-note" data-ca-place-warn="${esc(key)}"${(chosen&&r.enabled===false)?"":" hidden"}>Bu joy hozir o'chirilgan — quyidagi «Joy yoqilgan» kalitini yoqib saqlamasangiz, rolik bu yerda chiqmaydi.</div>
+        <div class="hint">Quyidagilar joyning O'ZI uchun — hamma roliklarga birdan tegishli.</div>
+        <div class="frow"><label><input type="checkbox" id="adOn_${id}"${r.enabled?" checked":""}> Joy yoqilgan</label></div>
         <div class="frow"><label>Kimga ko'rsatiladi</label><select id="adAud_${id}" class="select">
           <option value="free_only"${r.audience!=="everyone"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
           <option value="everyone"${r.audience==="everyone"?" selected":""}>Hammaga</option>
@@ -1241,7 +1252,7 @@
       const body=AD_PLACEMENTS.map(([k,l,n])=>adPlacementCard(k,l,n,cfg[k])).join("");
       showPanel("📺 Reklama joylari","Aynan ikkita joy. Kunlik chegara serverda — qurilma almashtirish uni aylanib o'tmaydi.",`<div class="panel">
         ${body}
-        <button class="btn" data-adplacesave>Saqlash</button>
+        <button class="btn sec" data-adplacesave>💾 Joy sozlamalarini saqlash</button>
       </div>`);
     }
     function salesExperimentStartedText(value){
@@ -1857,16 +1868,28 @@
         renderCaLangFilter(); renderCourseAds(); }
       catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
     }
-    /* Reklama qaysi joy(lar)da chiqishi. Kamida bittasi tanlangan bo'lishi
-       shart — hech biri tanlanmasa server uni ekran markaziga tushiradi va
-       admin "dars yakuniga qo'ydim" deb o'ylab qolardi. */
+    /* Yangi rolik qaysi joy(lar)ga qo'yiladi. Tanlov joy kartasining ichida
+       yashaydi, lekin QIYMAT shu yerda saqlanadi: karta joy sozlamasi bilan
+       birga qayta chizilaveradi va adminning tanlovi shunda ham yo'qolmasin.
+
+       Hech biri tanlanmasa server uni ekran markaziga tushirardi va admin
+       "dars yakuniga qo'ydim" deb o'ylab qolardi — shuning uchun bu yerda
+       dars yakuniga tushadi va ekranda ogohlantirish chiqadi. */
+    const caPlaceChosen={lesson_end:true,screen_center:false};
+    let caPlaceRules={};
     function caPlacementsValue(){
-      const keys=["lesson_end","screen_center"];
-      const on=keys.filter(k=>{
-        const b=document.querySelector('[data-act="ca-place"][data-place="'+k+'"]');
-        return b&&b.classList.contains("on");
-      });
+      const on=Object.keys(caPlaceChosen).filter(k=>caPlaceChosen[k]);
       return (on.length?on:["lesson_end"]).join(",");
+    }
+    function caPlaceWarnUI(){
+      let anyChosen=false;
+      Object.keys(caPlaceChosen).forEach(k=>{
+        const chosen=!!caPlaceChosen[k];
+        if(chosen) anyChosen=true;
+        const warn=document.querySelector('[data-ca-place-warn="'+k+'"]');
+        if(warn) warn.hidden=!(chosen&&caPlaceRules[k]&&caPlaceRules[k].enabled===false);
+      });
+      const none=$("caPlaceNone"); if(none) none.hidden=anyChosen;
     }
     /* Har bir reklama turi uchun QAYSI maydonlar kerakligi shu yerda — bitta
        joyda. Ro'yxatda yo'q maydon formadan butunlay yo'qoladi: tanlangan
@@ -1949,6 +1972,10 @@
         if(state.adHub==="kurs") renderAdPlacements(d);
         else renderAppPromo(d);
       } finally { panelTarget=null; }
+      if(state.adHub==="kurs"){
+        caPlaceRules=((d.ad_placements||{}).placements)||{};
+        caPlaceWarnUI();
+      }
     }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
@@ -2086,14 +2113,6 @@
         if(n==="reload") return loadData();
         if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; renderUsers(); return; }
         if(n==="copy-report") return copyReport();
-        if(n==="ca-place"){
-          /* Ikkalasini ham o'chirib qo'yib bo'lmaydi: oxirgi yoqilganini
-             bosish hech narsani o'zgartirmaydi. */
-          const others=[...document.querySelectorAll('[data-act="ca-place"].on')];
-          if(el.classList.contains("on")&&others.length<2) return;
-          el.classList.toggle("on");
-          return;
-        }
         if(n==="upload-ca"){ $("caFile").click(); return; }
         if(n==="close-drawer") return closeDrawer();
         if(n==="drawer-back") return drawerBack();
@@ -2102,6 +2121,14 @@
 
     $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
     $("caFile").addEventListener("change",submitCourseAd);
+    /* Joy kaliti kartaning ichida va karta qayta chizilaveradi, shuning
+       uchun ishlovchi hujjatga bog'lanadi, tugmaning o'ziga emas. */
+    document.addEventListener("change",(e)=>{
+      const el=e.target&&e.target.closest?e.target.closest("[data-ca-place]"):null;
+      if(!el) return;
+      caPlaceChosen[el.dataset.caPlace]=el.checked;
+      caPlaceWarnUI();
+    });
     if($("caType")) $("caType").addEventListener("change",caTypeUI);
     openAdHub("kurs");
     document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeDrawer(); });

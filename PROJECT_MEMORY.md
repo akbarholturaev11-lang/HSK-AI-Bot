@@ -8760,3 +8760,44 @@ Diqqat:
 - Produkshnda `ad_type="app"` rolik bo'lsa, u endi oddiy reklama bo'lib
   ko'rinadi (platforma tugmalarisiz, faqat o'z `link_url` i bilan). Kerak
   bo'lmasa adminda o'chirib tashlash mumkin.
+
+### 2026-09-16 — Joy bir marta so'raladi: kalit va qoida bitta kartada
+
+Muammo: foydalanuvchi "nega 2 ta joyda so'ralyapti?" dedi. Ekranda joy
+ikki marta chiqardi — yuqorida «Qayerda chiqsin» chiplari (shu rolik uchun),
+pastda «Qayerda chiqadi va necha marta» kartalari (joyning o'zi uchun).
+Nomlari deyarli bir xil edi, shuning uchun takrorga o'xshardi.
+
+Ikkalasi ham kerak va birini ikkinchisidan chiqarib bo'lmaydi: rolik joyni
+tanlaydi (`course_ad_creatives.placements`), joy esa hamma roliklar uchun
+bitta qoidaga bo'ysunadi (`ad_placements_v1`). Shuning uchun ular
+qo'shilmadi — BIR kartaga yig'ildi.
+
+Changed:
+- `adPlacementCard()` endi joy haqidagi hamma narsani chizadi: yuqorida
+  «Yangi rolik shu joyga qo'yilsin» kaliti (faqat shu rolik uchun), ostida
+  joyning o'z qoidasi (yoqiqmi, kimga, kuniga nechta, X qachon). Ikkita
+  karta, ikkita joy — boshqa hech qayerda joy so'ralmaydi.
+- Chiplar (`data-act="ca-place"`) va ularning ishlovchisi olib tashlandi.
+  Tanlov `caPlaceChosen` obyektida saqlanadi: karta joy sozlamasi bilan
+  birga qayta chizilaveradi va faqat DOM'da turgan tanlov saqlashdan keyin
+  jimgina nolga qaytardi.
+- Tanlangan joy o'chirilgan bo'lsa, o'sha kartaning ichida ogohlantirish
+  chiqadi. Hech biri tanlanmasa — «rolik dars yakuniga qo'yiladi» deyiladi
+  (server aynan shunday qiladi).
+
+Fixed:
+- `.hint` klassini HECH QANDAY CSS qoidasi bo'yamasdi. Butun admin panel
+  bo'ylab izohlar asosiy matn kattaligida, oq rangda chiqardi va muhim
+  narsadan farq qilmasdi. Endi kichik va muted.
+
+Key files:
+- `app/static/admin.html`
+- `tests/test_admin_panel_has_no_dead_controls.py`
+  (`EachPlacementIsOneBlockTests`)
+
+Verified:
+- 1433 passed, 78259 subtests.
+- Brauzerda: kalitni bosish `caPlacementsValue()` ni to'g'ri o'zgartiradi
+  (`lesson_end` → `lesson_end,screen_center` → `screen_center`), ikkalasini
+  ham o'chirsa ogohlantirish chiqadi va qiymat `lesson_end` ga tushadi.
