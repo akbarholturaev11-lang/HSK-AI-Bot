@@ -14,6 +14,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
 from app.services import course_daily_window
+from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.limit_notification_service import LimitNotificationService
 from app.services.user_access_state_service import UserAccessStateService
 
@@ -159,13 +160,20 @@ class CourseMiniAppAccessService:
 
     @classmethod
     def has_unlimited_course_access(cls, user) -> bool:
-        """Kurs darslari uchun limitsizlik: obunachi YOKI vaqtinchalik bonus.
+        """Kontent ochiqmi — markaziy dvigatel javobi.
 
         Otziv uchun beriladigan 30 daqiqa `status="active"` qo'yadi, lekin
         `payment_status` ni o'zgartirmaydi — `is_paid_user()` unga `False`
         qaytaradi. Dars gate'i shu sababli bonusni ko'rmasdi.
+
+        7 kunlik Pro trial esa `status` ga UMUMAN tegmaydi (alohida
+        ustunlarda yashaydi), ya'ni eski klassifikator uni ko'rmasdi: trial
+        faol paytda ham Mini App foydalanuvchini "to'lamagan" deb bilar,
+        unga reklama va "Pro oling" tugmasini ko'rsatardi. Desktop allaqachon
+        `has_full_access(resolve_state(user))` ga o'tgan — bu yer ham o'sha
+        yagona predikatga qaraydi.
         """
-        return UserAccessStateService.has_unlimited_course_access(user)
+        return has_full_access(resolve_state(user))
 
     @classmethod
     def is_free_user(cls, user) -> bool:

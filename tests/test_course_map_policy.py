@@ -42,6 +42,9 @@ TEMP_ACCESS = _user(status="active", end_date=datetime.now(timezone.utc) + timed
 FREE = _user()
 EXPIRED = _user(status="active", payment_status="approved", end_date=None)
 BLOCKED = _user(status="blocked")
+#: 7 kunlik Pro trial `status` ga TEGMAYDI — u alohida ustunlarda yashaydi.
+TRIAL = _user(pro_trial_ends_at=datetime.now(timezone.utc) + timedelta(days=3))
+TRIAL_OVER = _user(pro_trial_ends_at=datetime.now(timezone.utc) - timedelta(days=1))
 
 
 class OnePredicateForContentTests(unittest.TestCase):
@@ -54,10 +57,30 @@ class OnePredicateForContentTests(unittest.TestCase):
         # Yangi predikat kengrog'ini tanlaydi — kontent ochiq.
         self.assertTrue(has_full_access(resolve_state(TEMP_ACCESS)))
 
+    def test_the_trial_user_is_the_one_that_differed_next(self):
+        """Trial faol paytda Mini App uni "to'lamagan" deb bilardi.
+
+        Natijasi ko'rinib turardi: trial ochilgan bo'lsa ham reklama chiqar,
+        profilda "HSK AI Pro oling" tugmasi turar edi. Reklama servisi
+        allaqachon markaziy dvigatelga qaraydi — endi bu predikat ham.
+        """
+        self.assertFalse(CourseMiniAppAccessService.is_paid_user(TRIAL))
+        self.assertTrue(CourseMiniAppAccessService.has_unlimited_course_access(TRIAL))
+        self.assertEqual(EntitlementState.TRIAL_ACTIVE, resolve_state(TRIAL))
+
+    def test_the_trial_closes_when_it_runs_out(self):
+        """Muddat o'tgach hech qanday fon vazifasini kutmasdan yopiladi."""
+        self.assertFalse(
+            CourseMiniAppAccessService.has_unlimited_course_access(TRIAL_OVER)
+        )
+        self.assertFalse(StudyMiniAppService.has_unlimited_course_access(TRIAL_OVER))
+
     def test_every_user_shape_gets_one_answer(self):
         expected = {
             "paid": (PAID, True),
             "temp_access": (TEMP_ACCESS, True),
+            "trial": (TRIAL, True),
+            "trial_over": (TRIAL_OVER, False),
             "free": (FREE, False),
             "expired": (EXPIRED, False),
             "blocked": (BLOCKED, False),
@@ -68,7 +91,7 @@ class OnePredicateForContentTests(unittest.TestCase):
 
     def test_the_new_predicate_matches_the_wide_legacy_one(self):
         # Mini App bugungi xatti-harakatini SAQLAYDI — u kengini ishlatardi.
-        for user in (PAID, TEMP_ACCESS, FREE, EXPIRED, BLOCKED):
+        for user in (PAID, TEMP_ACCESS, TRIAL, TRIAL_OVER, FREE, EXPIRED, BLOCKED):
             with self.subTest(user=user.status):
                 self.assertEqual(
                     CourseMiniAppAccessService.has_unlimited_course_access(user),
@@ -76,7 +99,7 @@ class OnePredicateForContentTests(unittest.TestCase):
                 )
 
     def test_the_study_mini_app_agrees_too(self):
-        for user in (PAID, TEMP_ACCESS, FREE):
+        for user in (PAID, TEMP_ACCESS, TRIAL, TRIAL_OVER, FREE):
             with self.subTest(user=user.status):
                 self.assertEqual(
                     StudyMiniAppService.has_unlimited_course_access(user),
