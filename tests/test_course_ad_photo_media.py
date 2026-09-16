@@ -121,7 +121,6 @@ class CourseAdPhotoStorageTests(unittest.IsolatedAsyncioTestCase):
                 media_path=self._write_media("app.png"),
                 ad_type="app",
                 media_type="photo",
-                skip_after_seconds=3,
             )
             await session.commit()
 

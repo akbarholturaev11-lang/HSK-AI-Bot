@@ -450,10 +450,6 @@
               <div class="hint" id="caTypeNote" style="margin:-4px 2px 4px"></div>
 
               <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
-              <div class="frow two" data-ca-field="appLimits">
-                <div><label>X paydo bo'lishi (s)</label><input id="caSkipAfter" class="input" type="number" min="0" max="60" value="5"></div>
-                <div><label>Kuniga necha marta</label><input id="caDailyLimit" class="input" type="number" min="0" max="50" value="1" placeholder="0 — cheklovsiz"></div>
-              </div>
               <div class="frow two" data-ca-field="appLinks">
                 <div><label>MacBook havolasi</label><input id="caLinkMacos" class="input" placeholder="Bo'sh — avtomatik"></div>
                 <div><label>Windows havolasi</label><input id="caLinkWindows" class="input" placeholder="Bo'sh — avtomatik"></div>
@@ -1909,8 +1905,8 @@
         buttonPlaceholder:"Masalan: Batafsil ko'rish"
       },
       app:{
-        fields:["button","appLimits","appLinks","link"],
-        note:"Ilova reklamasi: rolik ostida MacBook, Windows va Android tugmalari chiqadi.",
+        fields:["button","appLinks","link"],
+        note:"Ilova reklamasi: rolik ostida MacBook, Windows va Android tugmalari chiqadi. Yopish vaqti va kunlik chegara «📺 Qayerda chiqadi» bo'limida.",
         linkLabel:"Zaxira havola (ixtiyoriy)",
         linkNote:"Faqat birorta platforma havolasi topilmaganda ishlatiladi.",
         buttonLabel:"Knopka nomi",
@@ -1967,7 +1963,13 @@
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); const caFields=(CA_TYPE_SPEC[adType]||CA_TYPE_SPEC.odiy).fields; fd.append("button_text",caFields.indexOf("button")<0?"":($("caBtnText").value||"")); if(adType==="app"){ fd.append("skip_after_seconds",($("caSkipAfter")&&$("caSkipAfter").value)||"0"); fd.append("daily_limit",($("caDailyLimit")&&$("caDailyLimit").value)||"0"); fd.append("link_macos",($("caLinkMacos")&&$("caLinkMacos").value)||""); fd.append("link_windows",($("caLinkWindows")&&$("caLinkWindows").value)||""); fd.append("link_android",($("caLinkAndroid")&&$("caLinkAndroid").value)||""); } fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); const caFields=(CA_TYPE_SPEC[adType]||CA_TYPE_SPEC.odiy).fields; fd.append("button_text",caFields.indexOf("button")<0?"":($("caBtnText").value||"")); /* "X paydo bo'lishi" va "Kuniga necha marta" bu yerdan OLIB
+         TASHLANDI: ikkalasi ham yozilardi-yu, hech qachon ishlamasdi.
+         Yopish tugmasi vaqtini server har doim joy qoidasidan oladi
+         (`payload["skip_after_seconds"] = rule.skip_after_seconds`), rolik
+         bo'yicha kunlik chegarani esa hech kim tekshirmasdi. Ikkalasi ham
+         «Qayerda chiqadi» bo'limida boshqariladi. */
+      if(adType==="app"){ fd.append("link_macos",($("caLinkMacos")&&$("caLinkMacos").value)||""); fd.append("link_windows",($("caLinkWindows")&&$("caLinkWindows").value)||""); fd.append("link_android",($("caLinkAndroid")&&$("caLinkAndroid").value)||""); } fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }

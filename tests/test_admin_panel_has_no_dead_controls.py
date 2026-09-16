@@ -183,7 +183,7 @@ class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
 
     def test_the_field_list_is_declared_in_one_place(self):
         self.assertIn("const CA_TYPE_SPEC={", ADMIN)
-        for field in ("button", "link", "appLimits", "appLinks"):
+        for field in ("button", "link", "appLinks"):
             with self.subTest(field=field):
                 self.assertIn(f'data-ca-field="{field}"', ADMIN)
 
@@ -201,3 +201,46 @@ class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
         # CSS qoidasi bo'yamasdi: admin joyni tanlaydi, ekranda esa hech
         # nima o'zgarmasdi.
         self.assertIn(".chip.active,.chip.on{", ADMIN)
+
+
+class TheAdVideoDoesNotOwnTimingOrLimitsTests(unittest.TestCase):
+    """Rolik yopish vaqtini ham, kunlik chegarani ham belgilamaydi.
+
+    Forma ikkalasini so'rardi va baza ikkalasini saqlardi, lekin ikkalasi
+    ham hech qachon ishlamasdi: reklamani beruvchi ikkala yo'l ham
+    `skip_after_seconds` ni joy qoidasidan qayta yozadi, rolik bo'yicha
+    kunlik chegarani esa na server, na Mini App, na Android tekshirardi.
+    Admin to'ldirar, "qildim" deb o'ylardi, hech nima o'zgarmasdi.
+    """
+
+    UPLOAD = Path("app/main.py").read_text(encoding="utf-8")
+    ADS = Path("app/services/course_ad_service.py").read_text(encoding="utf-8")
+    PLACEMENTS = Path("app/services/ad_placement_service.py").read_text(
+        encoding="utf-8"
+    )
+    ANDROID = Path("app/api/android_features.py").read_text(encoding="utf-8")
+
+    def test_the_form_no_longer_asks_for_them(self):
+        self.assertNotIn('id="caSkipAfter"', ADMIN)
+        self.assertNotIn('id="caDailyLimit"', ADMIN)
+        self.assertNotIn('data-ca-field="appLimits"', ADMIN)
+
+    def test_the_upload_endpoint_no_longer_stores_them(self):
+        self.assertNotIn('form.get("skip_after_seconds")', self.UPLOAD)
+        self.assertNotIn('form.get("daily_limit")', self.UPLOAD)
+
+    def test_the_payload_does_not_claim_to_own_them(self):
+        self.assertNotIn('"skip_after_seconds": cls.normalize_skip_after', self.ADS)
+        self.assertNotIn('"daily_limit": cls.normalize_daily_limit', self.ADS)
+
+    def test_the_placement_rule_is_the_only_source(self):
+        # Ikkala beruvchi yo'l ham yopish vaqtini joy qoidasidan qo'yadi.
+        self.assertIn(
+            'payload["skip_after_seconds"] = rule.skip_after_seconds', self.PLACEMENTS
+        )
+        self.assertIn(
+            'payload["skip_after_seconds"] = rule.skip_after_seconds', self.ANDROID
+        )
+        # Kunlik chegara esa ko'rilgan qatorlardan sanaladi.
+        self.assertIn("if rule.daily_cap:", self.PLACEMENTS)
+        self.assertIn("used >= rule.daily_cap", self.PLACEMENTS)

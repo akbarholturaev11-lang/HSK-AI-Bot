@@ -199,8 +199,6 @@ class CourseAdSlotIsolationTests(unittest.IsolatedAsyncioTestCase):
                 duration_seconds=15,
                 language="all",
                 ad_type=ad_type,
-                skip_after_seconds=5 if ad_type == "app" else 0,
-                daily_limit=2 if ad_type == "app" else 0,
             )
         await session.commit()
 
@@ -225,7 +223,14 @@ class CourseAdSlotIsolationTests(unittest.IsolatedAsyncioTestCase):
             app_open = await service.list_active(language="uz", slot="app_open")
             self.assertEqual({ad.ad_type for ad in app_open}, {"app"})
 
-    async def test_app_ad_payload_carries_skip_and_limit(self):
+    async def test_the_ad_payload_does_not_claim_to_own_skip_or_limit(self):
+        """Rolik yopish vaqtini ham, kunlik chegarani ham belgilamaydi.
+
+        Ilgari forma ikkalasini ham so'rardi va payload ularni qaytarardi,
+        lekin hech biri ishlamasdi: reklamani beruvchi ikkala yo'l ham
+        `skip_after_seconds` ni joy qoidasidan qayta yozadi, rolik bo'yicha
+        kunlik chegarani esa hech kim tekshirmasdi. Payload endi bilmagan
+        narsasini da'vo qilmaydi."""
         async with self.session_maker() as session:
             await self._seed(session)
             service = CourseAdService(session)
@@ -233,8 +238,8 @@ class CourseAdSlotIsolationTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(ads), 1)
             payload = ads[0]
             self.assertEqual(payload["ad_type"], "app")
-            self.assertEqual(payload["skip_after_seconds"], 5)
-            self.assertEqual(payload["daily_limit"], 2)
+            self.assertNotIn("skip_after_seconds", payload)
+            self.assertNotIn("daily_limit", payload)
 
     async def test_default_ad_type_is_odiy_so_new_ads_stay_in_practice(self):
         """Tur ko'rsatilmasa reklama "odiy" bo'ladi va mashq slotida qoladi."""
@@ -264,18 +269,19 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
         # Yangi tur mavjud ochiluvchi ro'yxatga qo'shilgan.
         self.assertIn('<option value="app">📱 App reklamasi</option>', html)
-        # App uchun ikkita alohida sozlama maydoni bor.
-        self.assertIn('id="caSkipAfter"', html)
-        self.assertIn('id="caDailyLimit"', html)
         # Maydonlar faqat "app" turi tanlanganda ko'rinadi. Qaysi turga
         # qaysi maydon kerakligi `CA_TYPE_SPEC` da yozilgan; ro'yxatda yo'q
         # maydon yashiriladi, "o'chirilgan holda ko'rinib turish" emas.
-        self.assertIn('data-ca-field="appLimits"', html)
-        self.assertIn('fields:["button","appLimits","appLinks","link"]', html)
+        self.assertIn('fields:["button","appLinks","link"]', html)
         self.assertIn("el.hidden=on.indexOf(el.dataset.caField)<0", html)
-        # Yuklashda ikkala qiymat ham yuboriladi.
-        self.assertIn('fd.append("skip_after_seconds"', html)
-        self.assertIn('fd.append("daily_limit"', html)
+        # Yopish vaqti va kunlik chegara forma orqali YUBORILMAYDI: ikkalasi
+        # ham «Qayerda chiqadi» joy sozlamasida boshqariladi. Forma ularni
+        # so'raganda admin to'ldirardi, lekin server baribir joy qoidasini
+        # qo'llardi.
+        self.assertNotIn('id="caSkipAfter"', html)
+        self.assertNotIn('id="caDailyLimit"', html)
+        self.assertNotIn('fd.append("skip_after_seconds"', html)
+        self.assertNotIn('fd.append("daily_limit"', html)
         # Qo'lda havola maydonlari — bo'sh qolsa avtomatik ishlatiladi.
         self.assertIn('data-ca-field="appLinks"', html)
         self.assertIn('id="caLinkMacos"', html)
@@ -311,10 +317,18 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         # Tugmalar bo'lsa umumiy CTA takrorlanmaydi.
         self.assertIn("hasPlatforms", ads)
 
-    def test_upload_endpoint_normalizes_new_app_fields(self):
+    def test_upload_endpoint_no_longer_stores_timing_or_limits(self):
+        """Yopish vaqti va kunlik chegara rolikka tegishli emas.
+
+        Endpoint ularni forma'dan o'qirdi va bazaga yozardi, lekin ikkalasi
+        ham ishlamasdi: server reklamani berishdan oldin `skip_after_seconds`
+        ni joy qoidasidan qayta yozadi, rolik bo'yicha kunlik chegarani esa
+        hech kim tekshirmasdi. Yagona manba — «Qayerda chiqadi» sozlamasi."""
         main = Path("app/main.py").read_text(encoding="utf-8")
-        self.assertIn("CourseAdService.normalize_skip_after(", main)
-        self.assertIn("CourseAdService.normalize_daily_limit(", main)
+        self.assertNotIn('form.get("skip_after_seconds")', main)
+        self.assertNotIn('form.get("daily_limit")', main)
+        # Platforma havolalari esa rolikka tegishli bo'lib qoladi.
+        self.assertIn('form.get("link_android")', main)
 
     def test_ads_js_exposes_the_centre_flow_in_all_three_languages(self):
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")

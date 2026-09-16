@@ -446,11 +446,12 @@ class CourseAdService:
             "placements": _ad_placements_list(ad),
             "button_text": getattr(ad, "button_text", None) or None,
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
-            "skip_after_seconds": cls.normalize_skip_after(
-                getattr(ad, "skip_after_seconds", None),
-                ad.duration_seconds,
-            ),
-            "daily_limit": cls.normalize_daily_limit(getattr(ad, "daily_limit", None)),
+            # `skip_after_seconds` va `daily_limit` ATAYLAB yo'q. Reklamani
+            # beruvchi ikkala yo'l ham (`AdPlacementService.next_ad` va Android
+            # endpointi) yopish vaqtini joy qoidasidan qo'yadi, kunlik chegarani
+            # esa `course_ad_views` qatorlaridan sanaydi. Ustunlar bazada eski
+            # yozuvlar uchun qoldi, lekin ular hech narsani boshqarmaydi va bu
+            # yerdan chiqsa "boshqaradi" degan taassurot berardi.
             "platform_links": cls.normalize_platform_links(
                 getattr(ad, "platform_links", None)
             ),

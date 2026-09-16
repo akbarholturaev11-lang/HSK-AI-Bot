@@ -8664,3 +8664,39 @@ Verified:
 Not verified:
 - Saqlash (`/api/admin-miniapp/...`) haqiqiy serverga qarshi bosilmadi —
   brauzer nusxasida tarmoq stub edi. Endpointlar o'zgarmagan.
+
+### 2026-09-16 — Rolik endi yopish vaqtini ham, kunlik chegarani ham belgilamaydi
+
+Changed:
+- `App reklamasi` formasidagi `X paydo bo'lishi (s)` va `Kuniga necha marta`
+  maydonlari olib tashlandi. Ikkalasi ham to'ldirilar, bazaga yozilar, lekin
+  HECH QACHON ishlamasdi:
+  - `AdPlacementService.next_ad()` va Android endpointi reklamani berishdan
+    oldin `payload["skip_after_seconds"] = rule.skip_after_seconds` qiladi —
+    rolikning o'z qiymati har doim ustidan yozilardi;
+  - rolik bo'yicha `daily_limit` ni na server, na `ads.js`, na Android
+    o'qirdi. Yagona ishlaydigan chegara — joy qoidasining `daily_cap` i,
+    u `course_ad_views` qatorlaridan Telegram akkaunt bo'yicha sanaladi.
+- `/api/admin-miniapp/course-ads/upload` endi bu ikki qiymatni forma'dan
+  o'qimaydi va `create_video` ga uzatmaydi.
+- `CourseAdService.payload()` dan `skip_after_seconds` va `daily_limit`
+  kalitlari olib tashlandi: reklamani beruvchi ikkala yo'l ham yopish vaqtini
+  o'zi qo'yadi, payload esa bilmagan narsasini da'vo qilmasin.
+- Formadagi izoh endi qayerda boshqarilishini aytadi: «Yopish vaqti va kunlik
+  chegara «📺 Qayerda chiqadi» bo'limida».
+
+Not changed:
+- `course_ad_creatives.skip_after_seconds` va `.daily_limit` ustunlari bazada
+  qoldi (eski yozuvlar), `create_video` parametrlari ham. Ular endi faqat
+  o'qilmaydigan meros — migratsiya qilishga arzimaydi.
+
+Key files:
+- `app/static/admin.html`, `app/main.py`, `app/services/course_ad_service.py`
+- `tests/test_admin_panel_has_no_dead_controls.py`
+  (`TheAdVideoDoesNotOwnTimingOrLimitsTests`), `tests/test_course_ad_app_type.py`,
+  `tests/test_course_ad_photo_media.py`
+
+Verified:
+- 1434 passed, 78254 subtests.
+- Brauzerda: `app` turida endi `button, appLinks, link` chiqadi (ilgari
+  `appLimits` ham bor edi), `caSkipAfter`/`caDailyLimit` DOM'da yo'q.

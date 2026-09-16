@@ -3916,10 +3916,12 @@ async def admin_miniapp_course_ads_upload(request: Request):
     language = CourseAdService.normalize_language(form.get("language"))
     ad_type = CourseAdService.normalize_ad_type(form.get("ad_type"))
     button_text = CourseAdService.normalize_button_text(form.get("button_text"))
-    skip_after_seconds = CourseAdService.normalize_skip_after(
-        form.get("skip_after_seconds"), duration_seconds
-    )
-    daily_limit = CourseAdService.normalize_daily_limit(form.get("daily_limit"))
+    # Yopish tugmasi vaqti va kunlik chegara bu yerdan OLIB TASHLANDI. Forma
+    # ularni so'rardi, baza saqlardi, lekin ikkalasi ham hech qachon
+    # ishlamasdi: reklama berilishidan oldin server `skip_after_seconds` ni
+    # joy qoidasidan qayta yozadi, rolik bo'yicha kunlik chegarani esa na
+    # server, na Mini App, na Android tekshirardi. Yagona manba —
+    # `ad_placements_v1` sozlamasi.
     # Reklama QAYERDA chiqishi. Ilgari bu forma umuman so'ramasdi va har bir
     # yangi reklama bazadagi standart qiymatga — ekran markaziga — tushardi,
     # ya'ni dars yakuniga reklama qo'yishning ILOJI YO'Q edi. Turni ("dars
@@ -3943,8 +3945,6 @@ async def admin_miniapp_course_ads_upload(request: Request):
             language=language,
             ad_type=ad_type,
             button_text=button_text,
-            skip_after_seconds=skip_after_seconds,
-            daily_limit=daily_limit,
             platform_links=platform_links,
             media_type=media_type,
             media_blob=media_backup,
