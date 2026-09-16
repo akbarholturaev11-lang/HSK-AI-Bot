@@ -8827,3 +8827,43 @@ Key files:
 - `tests/test_desktop_download_api.py`
 
 Verified: 1434 passed, 78259 subtests.
+
+### 2026-09-16 — Dars yakunidagi ilova promosi hech qachon chiqmasdi
+
+Foydalanuvchi "dars oxirida chiqishini tekshir, xozir ishlamayapti" dedi.
+Sabab topildi va u sozlama emas, mantiq xatosi edi.
+
+Sovish muddati (14 kun) JOYDAN QAT'I NAZAR bitta hisoblagichdan olinardi:
+
+* klientda bitta `promo_seen` localStorage kaliti bor edi va uni
+  `showPromo()` har qanday joy uchun yozardi;
+* serverda `promo_cooldown_remaining` `desktop_promo_seen` eventining
+  joydan qat'i nazar `max(created_at)` idan hisoblanardi.
+
+Uch joydan ikkitasi (`home_prompt`, `ad_promo`) bu sovishni ATAYLAB
+e'tiborsiz qoldirardi, `lesson_end_promo` esa unga bo'ysunardi. "Mini App
+ochilganda" promosi kuniga 3 martagacha chiqadi va har safar sovishni
+yangilab turardi — natijada dars yakunidagi promo 14 kunlik oynadan hech
+qachon chiqa olmasdi. Admin uni yoqib qo'ysa ham amalda hech qachon
+ko'rinmasdi.
+
+Changed:
+- Server `desktop_promo_seen` ni `group_by(source)` bilan oladi va
+  `lesson_end_promo` faqat O'Z `lesson_end_cooldown_remaining` iga
+  qaraydi. `reason == "cooldown"` ham shunga o'tdi.
+- Klientda kalit joy nomini olib yuradi: `promo_seen:<source>`.
+  `hasLocalPromoCooldown(source)` endi parametr qabul qiladi.
+  `download_requested` UMUMIY qoladi: odam yuklab olishni allaqachon
+  so'ragan bo'lsa, hech qayerda qayta bezovta qilinmaydi.
+- Eski `promo_seen` kaliti eski o'rnatishlar uchun yozilaveradi, lekin
+  sovish endi undan hisoblanmaydi.
+
+Key files:
+- `app/services/desktop_download_service.py`
+- `app/static/course_v3_data/desktop-download.js`
+- `tests/test_desktop_download_api.py`,
+  `tests/test_course_v3_static_data.py`
+
+Verified: 1439 passed, 78259 subtests. Yangi testlar: bir soat oldin
+`home_prompt` ko'rgan odam dars yakunidagi promoni oladi; `lesson_end_promo`
+ni ko'rgan odam esa o'z sovishini kutadi va qolgan ikki joy ochiq qoladi.

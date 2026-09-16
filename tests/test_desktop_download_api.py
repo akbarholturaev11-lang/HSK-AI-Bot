@@ -153,6 +153,51 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
 
+    async def test_the_home_prompt_no_longer_starves_the_lesson_end_promo(self):
+        """Har joyning sovish muddati O'ZINIKI.
+
+        Ilgari `desktop_promo_seen` joydan qat'i nazar bitta `max()` bilan
+        olinardi. "Mini App ochilganda" promosi kuniga 3 martagacha chiqadi,
+        ya'ni u 14 kunlik sovishni doim yangilab turardi va dars yakunidagi
+        promo hech qachon ochilmasdi — admin uni yoqib qo'ysa ham."""
+        async with self.sessions() as session:
+            session.add(
+                CourseMiniAppEvent(
+                    telegram_id=1001,
+                    event_name="desktop_promo_seen",
+                    source="home_prompt",
+                    created_at=datetime.now(timezone.utc) - timedelta(hours=1),
+                )
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            promo = (await DesktopDownloadService(session, _settings()).status(1001))[
+                "promo"
+            ]
+            self.assertTrue(promo["placements"]["lesson_end_promo"])
+
+    async def test_the_lesson_end_promo_still_waits_out_its_own_cooldown(self):
+        async with self.sessions() as session:
+            session.add(
+                CourseMiniAppEvent(
+                    telegram_id=1001,
+                    event_name="desktop_promo_seen",
+                    source="lesson_end_promo",
+                    created_at=datetime.now(timezone.utc) - timedelta(days=1),
+                )
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            promo = (await DesktopDownloadService(session, _settings()).status(1001))[
+                "promo"
+            ]
+            self.assertFalse(promo["placements"]["lesson_end_promo"])
+            # Qolgan ikkisi o'z yo'lida qolaveradi.
+            self.assertTrue(promo["placements"]["home_prompt"])
+            self.assertTrue(promo["placements"]["ad_promo"])
+
     async def test_turning_a_platform_off_removes_its_promo_button(self):
         """Chip o'chirilsa tugma ham yo'qoladi — ikkala tomonda ham.
 

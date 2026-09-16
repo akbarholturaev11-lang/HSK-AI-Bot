@@ -892,5 +892,31 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn("platforms.android=false", html)
 
 
+class DesktopPromoCooldownIsPerPlacementTests(unittest.TestCase):
+    """Bir joyning promosi boshqasining navbatini yeb qo'ymasin.
+
+    Klientda bitta `promo_seen` kaliti bor edi va uni HAR QANDAY promo
+    yozardi. "Mini App ochilganda" kuniga 3 martagacha chiqadi, ya'ni u
+    kalitni doim yangilab turardi va dars yakunidagi promo 14 kunlik
+    sovishdan hech qachon chiqa olmasdi.
+    """
+
+    def setUp(self):
+        self.js = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+
+    def test_the_cooldown_key_carries_the_placement(self):
+        self.assertIn('storeNumber("promo_seen:" + source, Date.now())', self.js)
+        self.assertIn('keys.push("promo_seen:" + source)', self.js)
+
+    def test_the_check_is_told_which_placement_it_is_for(self):
+        self.assertIn("function hasLocalPromoCooldown(source)", self.js)
+        self.assertIn("hasLocalPromoCooldown(source)", self.js)
+
+    def test_an_answered_download_still_silences_every_placement(self):
+        # Odam yuklab olishni allaqachon so'ragan bo'lsa, uni hech qayerda
+        # qayta bezovta qilmaymiz — bu kalit UMUMIY qoladi.
+        self.assertIn('var keys = ["download_requested"];', self.js)
+
+
 if __name__ == "__main__":
     unittest.main()

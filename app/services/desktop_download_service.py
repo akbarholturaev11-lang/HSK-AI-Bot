@@ -352,15 +352,31 @@ class DesktopDownloadService:
         )
         has_desktop_first_open = first_open_result.scalar_one_or_none() is not None
 
+        # Oxirgi ko'rish HAR JOY UCHUN alohida. Ilgari bu yerda joydan
+        # qat'i nazar bitta `max()` olinardi va u dars yakunidagi promoni
+        # o'ldirardi: "Mini App ochilganda" promosi kuniga 3 martagacha
+        # chiqib, 14 kunlik sovishni doim yangilab turardi.
         last_seen_result = await self.session.execute(
-            select(func.max(CourseMiniAppEvent.created_at)).where(
+            select(
+                CourseMiniAppEvent.source,
+                func.max(CourseMiniAppEvent.created_at),
+            )
+            .where(
                 CourseMiniAppEvent.telegram_id == telegram_id,
                 CourseMiniAppEvent.event_name == "desktop_promo_seen",
             )
+            .group_by(CourseMiniAppEvent.source)
         )
-        last_seen = last_seen_result.scalar_one_or_none()
-        if last_seen is not None and last_seen.tzinfo is None:
-            last_seen = last_seen.replace(tzinfo=timezone.utc)
+        last_seen_by_source: dict[str, datetime] = {}
+        last_seen = None
+        for source_name, seen_at in last_seen_result.all():
+            if seen_at is None:
+                continue
+            if seen_at.tzinfo is None:
+                seen_at = seen_at.replace(tzinfo=timezone.utc)
+            last_seen_by_source[str(source_name or "")] = seen_at
+            if last_seen is None or seen_at > last_seen:
+                last_seen = seen_at
 
         last_request_result = await self.session.execute(
             select(func.max(CourseMiniAppEvent.created_at)).where(
@@ -377,6 +393,12 @@ class DesktopDownloadService:
         promo_cooldown_remaining = (
             max(0, int((last_seen + cooldown - now).total_seconds()))
             if last_seen is not None
+            else 0
+        )
+        lesson_end_last_seen = last_seen_by_source.get("lesson_end_promo")
+        lesson_end_cooldown_remaining = (
+            max(0, int((lesson_end_last_seen + cooldown - now).total_seconds()))
+            if lesson_end_last_seen is not None
             else 0
         )
         request_cooldown_remaining = (
@@ -407,7 +429,7 @@ class DesktopDownloadService:
         elif request_cooldown_remaining > 0:
             reason = "recent_request"
         elif (
-            promo_cooldown_remaining > 0
+            lesson_end_cooldown_remaining > 0
             and not promo_settings.placements.get("home_prompt")
             and not promo_settings.placements.get("ad_promo")
         ):
@@ -425,7 +447,8 @@ class DesktopDownloadService:
         home_prompt = base_eligible and promo_settings.placements.get("home_prompt", True)
         lesson_end_promo = (
             base_eligible
-            and promo_cooldown_remaining <= 0
+            # O'Z sovishi, boshqa joylarniki emas.
+            and lesson_end_cooldown_remaining <= 0
             and promo_settings.placements.get("lesson_end_promo", True)
         )
         ad_promo = base_eligible and promo_settings.placements.get("ad_promo", True)

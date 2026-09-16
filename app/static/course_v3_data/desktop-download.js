@@ -1598,10 +1598,21 @@
     return Math.max(1, Math.min(90, days)) * 24 * 60 * 60 * 1000;
   }
 
-  function hasLocalPromoCooldown() {
+  /* Sovish muddati HAR JOY UCHUN ALOHIDA sanaladi.
+     Ilgari bitta `promo_seen` kaliti bor edi va uni HAR QANDAY promo
+     yozardi. "Mini App ochilganda" promosi kuniga 3 martagacha chiqadi,
+     ya'ni u shu kalitni doim yangilab turardi va dars yakunidagi promo
+     14 kunlik sovishdan hech qachon chiqa olmasdi — admin uni yoqib
+     qo'ysa ham amalda hech qachon ko'rinmasdi.
+
+     `download_requested` esa UMUMIY qoladi: odam yuklab olishni allaqachon
+     so'ragan bo'lsa, uni hech qayerda qayta bezovta qilmaymiz. */
+  function hasLocalPromoCooldown(source) {
     var cutoff = promoCooldownMs();
     var now = Date.now();
-    return ["promo_seen", "download_requested"].some(function (name) {
+    var keys = ["download_requested"];
+    if (PROMO_SOURCES.indexOf(source) >= 0) keys.push("promo_seen:" + source);
+    return keys.some(function (name) {
       var timestamp = readStoredNumber(name);
       return timestamp > 0 && now - timestamp < cutoff;
     });
@@ -1631,7 +1642,7 @@
       state.promoOpen ||
       (source === "home_prompt"
         ? homePromptDailyLimitReached()
-        : hasLocalPromoCooldown())
+        : hasLocalPromoCooldown(source))
     ) {
       return false;
     }
@@ -1788,7 +1799,10 @@
     state.activePromoMeta = promoMeta(meta);
     state.previousFocus = document.activeElement;
     if (source === "home_prompt") incrementHomePromptDailyCount();
+    /* Umumiy kalit eski o'rnatishlar bilan moslik uchun qoladi, lekin
+       sovish endi joyning O'Z kalitidan hisoblanadi. */
     storeNumber("promo_seen", Date.now());
+    storeNumber("promo_seen:" + source, Date.now());
     trackEntrySeen(source, state.activePromoMeta);
     track("desktop_promo_seen", promoPayload(source, state.activePromoMeta));
 
