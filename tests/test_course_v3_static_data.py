@@ -824,10 +824,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260812-3", html, page
+                "/course_v3_data/desktop-download.css?v=20260918-1", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260812-3", html, page
+                "/course_v3_data/desktop-download.js?v=20260918-1", html, page
             )
             # ads.js `immutable` cache bilan beriladi — surat reklamasi
             # qo'shilganda versiya ko'tarildi, aks holda eski pleyer keshda qoladi.
@@ -845,7 +845,18 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertLess(goal_position, desktop_position)
         self.assertLess(desktop_position, calendar_position)
 
-        self.assertEqual(download.count("mobileCardHint:"), 3)
+        # The card is no longer the desktop client's alone: one button under
+        # the platform pair opens the page that carries every client and picks
+        # the device itself. The AirDrop hint went with the old framing — the
+        # destination sheet still explains the transfer where it matters.
+        self.assertEqual(download.count("appsPage:"), 3)
+        self.assertNotIn("mobileCardHint", download)
+        self.assertNotIn("pdd-mobile-hint", download)
+        self.assertIn("actions.appendChild(buildAppsPageButton())", download)
+        self.assertIn('new URL("/desktop-download", window.location.origin)', download)
+        self.assertIn('url.searchParams.set("lang", language())', download)
+        # No platform is pinned: the page reads the device it was opened on.
+        self.assertNotIn('searchParams.set("platform"', download)
         self.assertEqual(download.count("previewTranslation:"), 3)
         self.assertIn('main.appendChild(buildProductPreview("card"))', download)
         self.assertIn("main.appendChild(buildBenefits(true))", download)

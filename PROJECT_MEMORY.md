@@ -8934,3 +8934,49 @@ Not verified:
   sinov.
 - Prod'da Android relizi nashr qilinganmi, tekshirilmadi. Nashr yo'q bo'lsa
   sahifa Android tugmasini o'chiq ko'rsatadi (bu to'g'ri xatti-harakat).
+
+### 2026-09-18 — Mini App profilidagi karta endi hamma ilovalarga eshik
+
+Foydalanuvchi: profildagi «Kompyuter ilovasi» kartasiga yuklab olish tugmasi
+qo'shilsin, u sahifani ochsin va sahifa qurilmaga mos variantni o'zi tanlasin.
+
+Changed:
+- Karta «HSK AI ilovalari» bo'ldi: eyebrow, sarlavha va tavsif uz/ru/tj da
+  yangilandi (endi Android ham qamrab olinadi).
+- MacBook/Windows tugmalari **tegilmadi** — token oqimi (`/request` →
+  `download_page_url`) va «qayerga ochamiz?» oynasi (AirDrop / linkni
+  nusxalash) avvalgidek ishlaydi.
+- Ularning ostida bitta to'liq enli tugma: «Ilovalarni yuklab olish» →
+  `/desktop-download?lang=<til>`, `Telegram.WebApp.openLink` orqali.
+  `platform` **yozilmaydi**: karta faqat telefonda chiqadi, sahifa esa
+  qurilmani user-agent bo'yicha o'zi tanlaydi — iPhone iOS tabini, Android
+  Android tabini oladi.
+- «Telefondasiz: AirDrop/ulashish…» yozuvi olib tashlandi (`mobileCardHint`
+  uz/ru/tj + `.pdd-mobile-hint` CSS). U eski ramkaga tegishli edi; ko'chirish
+  yo'li MacBook/Windows bosilganda chiqadigan oynada baribir tushuntiriladi.
+- `course_v3_data/desktop-download.{js,css}` versiyasi `20260918-1` ga
+  ko'tarildi (6 ta HTML). Bu fayllar `immutable` cache bilan beriladi —
+  ko'tarilmasa hech kim yangi kartani ko'rmasdi.
+
+Bilib turib qilinmagani:
+- Bu tugmaga alohida analitika eventi qo'shilmadi. Klient eventlari
+  `CLIENT_COURSE_MINIAPP_EVENT_NAMES` ro'yxatidan o'tadi, yangi nom qo'shish
+  server tomonini ham talab qiladi — so'ralmagan, shuning uchun qilinmadi.
+  Ya'ni bu kirish nuqtasi hozircha o'lchanmaydi.
+- Kartadagi preview rasmi hali ham kompyuter oynasi. Sarlavha kengaydi,
+  rasm esa eski — o'zgartirish Mini App dizayniga tegadi, so'ralmagan.
+
+Key files:
+- `app/static/course_v3_data/desktop-download.js`,
+  `app/static/course_v3_data/desktop-download.css`,
+  `app/static/course-v3.html` + 5 ta course sahifasi (versiya),
+- `tests/test_course_v3_static_data.py`, `tests/e2e/test_miniapp_smoke.py`
+
+Verified:
+- Backend: 1449 passed, 78262 subtests.
+- E2E (Playwright, static route bilan): profil kartasiga tegishli 5 test
+  o'tdi; tugma matni «Ilovalarni yuklab olish», bosilganda
+  `openLink('/desktop-download?lang=uz')` chaqiriladi (ekranda ham ko'rildi).
+- To'liq `tests/e2e`: 65 passed, 21 failed — **o'sha 21 tasi `origin/main` da
+  ham aynan shunday yiqiladi** (baseline worktree'da tekshirildi), ya'ni bu
+  o'zgarishlardan emas, muhitdan (Playwright 1.63 + eski chromium build).

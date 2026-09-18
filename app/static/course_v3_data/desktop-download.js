@@ -37,12 +37,11 @@
 
   var COPY = {
     uz: {
-      eyebrow: "HSK AI · kompyuter",
-      cardTitle: "Kompyuter ilovasi",
+      eyebrow: "HSK AI · ilovalar",
+      cardTitle: "HSK AI ilovalari",
       cardBody:
-        "Kompyuterda qulayroq o‘qing. MacBook yoki Windowsni tanlang.",
-      mobileCardHint:
-        "Telefondasiz: AirDrop/ulashish yoki linkni kompyuterga yuboring.",
+        "Android, MacBook yoki Windows — obuna va progress hamma joyda bir xil.",
+      appsPage: "Ilovalarni yuklab olish",
       previewTranslation: "o‘rganmoq",
       preparing:
         "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
@@ -111,12 +110,11 @@
       successAction: "Tushunarli"
     },
     ru: {
-      eyebrow: "HSK AI · компьютер",
-      cardTitle: "Приложение для компьютера",
+      eyebrow: "HSK AI · приложения",
+      cardTitle: "Приложения HSK AI",
       cardBody:
-        "Учиться удобнее на компьютере. Выберите MacBook или Windows.",
-      mobileCardHint:
-        "Вы на телефоне: отправьте ссылку через AirDrop или системное меню.",
+        "Android, MacBook или Windows — подписка и прогресс везде одни и те же.",
+      appsPage: "Скачать приложения",
       previewTranslation: "учиться",
       preparing:
         "Файлы загрузки готовятся. Кнопки станут активны в ближайшее время.",
@@ -185,12 +183,11 @@
       successAction: "Понятно"
     },
     tj: {
-      eyebrow: "HSK AI · компютер",
-      cardTitle: "Барномаи компютерӣ",
+      eyebrow: "HSK AI · барномаҳо",
+      cardTitle: "Барномаҳои HSK AI",
       cardBody:
-        "Дар компютер хондан қулайтар аст. MacBook ё Windows-ро интихоб кунед.",
-      mobileCardHint:
-        "Шумо дар телефонед: бо AirDrop ё фиристодан пайвандро ба компютер гузаронед.",
+        "Android, MacBook ё Windows — обуна ва пешрафт дар ҳама ҷо як аст.",
+      appsPage: "Боргирии барномаҳо",
       previewTranslation: "омӯхтан",
       preparing:
         "Файлҳои боргирӣ омода мешаванд. Тугмаҳо ба наздикӣ фаъол мешаванд.",
@@ -704,6 +701,27 @@
     return actions;
   }
 
+  function appsPageUrl() {
+    // No platform is pinned: this Mini App runs on a phone, the page reads the
+    // device it was opened on, and answering for it would send an iPhone to a
+    // tab built for something else.
+    var url = new URL("/desktop-download", window.location.origin);
+    url.searchParams.set("lang", language());
+    return url.toString();
+  }
+
+  function buildAppsPageButton() {
+    var button = element("button", "pdd-os-button pdd-apps-button");
+    button.type = "button";
+    button.dataset.pddApps = "true";
+    button.appendChild(icon("download"));
+    button.appendChild(element("span", "", text().appsPage));
+    button.addEventListener("click", function () {
+      openTrackedLink(appsPageUrl());
+    });
+    return button;
+  }
+
   function buildInlineStatus() {
     var status = element("div", "pdd-inline-status");
     status.dataset.pddStatus = "true";
@@ -745,13 +763,12 @@
     main.appendChild(head);
     main.appendChild(buildProductPreview("card"));
     main.appendChild(buildBenefits(true));
-    if (isMobileDevice()) {
-      var mobileHint = element("div", "pdd-mobile-hint");
-      mobileHint.appendChild(icon("devices-share"));
-      mobileHint.appendChild(element("span", "", copy.mobileCardHint));
-      main.appendChild(mobileHint);
-    }
-    main.appendChild(buildActions("profile"));
+    var actions = buildActions("profile");
+    // The page behind this one reads the device and opens its tab, which is
+    // the part the two buttons above cannot do: they name a platform, and the
+    // learner holding a phone is not on either of them.
+    actions.appendChild(buildAppsPageButton());
+    main.appendChild(actions);
     if (!hasAvailablePlatform()) {
       var availability = element(
         "div",

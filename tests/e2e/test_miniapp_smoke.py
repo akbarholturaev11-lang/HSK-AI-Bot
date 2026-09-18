@@ -2780,7 +2780,7 @@ def test_desktop_ad_block_ignores_modal_promo_cooldown(page):
     expect(host.locator('[data-pdd-platform="windows"]')).to_be_visible()
 
 
-def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
+def test_desktop_profile_card_is_discoverable_and_reaches_every_client(page):
     mock_telegram_desktop_download(page, platform="android")
     _open_course_profile_with_desktop_release(page)
 
@@ -2800,9 +2800,10 @@ def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
     expect(card.locator(".pdd-preview-word")).to_contain_text("学习")
     expect(card.locator(".pdd-preview-word")).to_contain_text("xuéxí · o‘rganmoq")
     expect(card.locator(".pdd-benefit")).to_have_count(3)
-    expect(card.locator(".pdd-mobile-hint")).to_contain_text(
-        "AirDrop/ulashish"
-    )
+    # The way out to every client, including the one this phone can install.
+    apps = card.locator(".pdd-apps-button")
+    expect(apps).to_be_visible()
+    expect(apps).to_contain_text("Ilovalarni yuklab olish")
 
     goal_box = goal.bounding_box()
     card_box = card.bounding_box()
@@ -2930,7 +2931,7 @@ def test_desktop_profile_preview_is_localized_and_fits(page, lang, expected):
 
     card = page.locator("#pomp-desktop-profile-root .pdd-card")
     expect(card.locator(".pdd-product-preview")).to_contain_text(expected)
-    expect(card.locator(".pdd-mobile-hint")).to_be_visible()
+    expect(card.locator(".pdd-apps-button")).to_be_visible()
     assert card.evaluate("node => node.scrollWidth <= node.clientWidth + 1")
 
 
