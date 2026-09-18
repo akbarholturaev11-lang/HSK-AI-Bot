@@ -8868,6 +8868,97 @@ Verified: 1439 passed, 78259 subtests. Yangi testlar: bir soat oldin
 `home_prompt` ko'rgan odam dars yakunidagi promoni oladi; `lesson_end_promo`
 ni ko'rgan odam esa o'z sovishini kutadi va qolgan ikki joy ochiq qoladi.
 
+### 2026-09-18 — App reklamasi: uchta sabab, uchtasi ham boshqa qatlamda
+
+Foydalanuvchi "app reklamasi ishlamayapti, markazdagi reklama va profilda
+faqat chiqyapti, Android umuman yo'q, dars oxirida deganiyam chiqmayapti"
+dedi va screenshot yubordi. Uchta MUSTAQIL sabab topildi — 09-16 dagi
+tuzatishlar to'g'ri edi, lekin ulardan ikkitasi hech kimga yetib bormagan.
+
+**1. `?v=` hech qachon ko'tarilmagan — asosiy sabab.**
+
+`ads.js` va `desktop-download.js` `immutable`, bir yillik cache bilan
+beriladi (`app/main.py`, `STATIC_ASSET_HEADERS`). Fayllar 09-15 va 09-16
+da o'zgardi, `?v=` esa `20260812-3` / `20260812-5` bo'lib qoldi. Ya'ni
+brauzerda hali ham AVGUSTDAGI skript ishlayapti, undagi:
+
+    var APP_PROMO_PLATFORMS = ["macos", "windows"];
+
+Screenshotdagi manzara aynan shu: Android tugmasi umuman chizilmagan,
+hatto "Android — tez orada" ham yo'q. Server tomondagi `a471395`
+(`platform_targets.android`) va `0723009` (joyga ajratilgan sovish)
+tuzatishlari ham shu devorga urilib qolgan edi.
+
+Endi ikkalasi `?v=20260918-1`. `course-v3.html` ham versiya testiga
+qo'shildi — ilgari test faqat beshta ichki sahifani tekshirardi, asosiy
+ekranni emas.
+
+**2. `ads.js` da mavjud bo'lmagan global.**
+
+Reklama oynasi ichidagi ilova bloki `window.DesktopDownloadPromo` orqali
+o'rnatilardi. Bunday global YO'Q — `desktop-download.js` o'zini
+`window.PompDesktopDownload` deb e'lon qiladi. Shart hech qachon
+bajarilmagan, ya'ni "Reklama oynasida (dars yakunida)" joyi admin panelda
+yoqilgan bo'lsa ham hech qachon chiqmagan.
+
+Eski test buni ko'rmagan: u faqat `mountAdPromoTrigger(e.promo,{...})`
+qismini tekshirardi, obyekt nomini emas.
+
+**3. `promoSeenInSession` — bitta umumiy bayroq.**
+
+`showPromo()` uni HAR QANDAY joy uchun `true` qilardi va u qayta
+tiklanmasdi. "Mini App ochilganda" promosi har ochilishda birinchi bo'lib
+chiqadi, dars yakunidagisi esa odam darsni tugatgandan KEYIN — ya'ni
+birinchisi ikkinchisining navbatini doim yeb qo'yardi. `0723009` sovish
+muddatini joyga ajratgan edi, lekin sessiya bayrog'i ajratilmagan qolgan.
+
+Foydalanuvchi ikki variantdan ikkinchisini tanladi: sessiyada bitta promo
+qolsin, lekin dars yakuni ustun bo'lsin. Shunday qilindi:
+
+- `state.promoSeenInSession` → `state.sessionPromoSource` (qaysi joy
+  o'rinni egallagani yodda qoladi).
+- `sessionSlotAllows(source)`: o'rin bo'sh bo'lsa — ha; band bo'lsa faqat
+  `lesson_end_promo` uni bir marta egallay oladi.
+- `lesson_end_promo` chiqqandan keyin sessiya yopiladi — shu sababdan
+  ikkinchi shart (`sessionPromoSource !== PROMO_PRIORITY_SOURCE`) bor.
+
+Ya'ni eng yomon holat: bitta sessiyada "ochilganda" + "dars yakunida",
+har biri bir martadan. Undan keyin jimlik. `home_prompt` ning kunlik
+chegarasi va 14 kunlik sovish o'zgarmadi.
+
+Fixed (kichik):
+- Admin paneldagi "Joriy holat" tegi `home_prompt` va `ad_promo` ni
+  ko'rsatib, `lesson_end_promo` ni ko'rsatmasdi — endi uchalasi ham bor.
+- `ANDROID_CONTEXT.md` §4.6 hali ham `COURSE_AD_APP_VISIBLE_PLATFORMS` va
+  `_desktop_auto_download_links` haqida gapirardi; ular `645111c` da
+  o'chirilgan edi.
+
+Key files:
+- `app/static/course_v3_data/ads.js`,
+  `app/static/course_v3_data/desktop-download.js`
+- `app/static/course-v3.html` + beshta ichki sahifa (`?v=`)
+- `app/static/admin.html`
+- `tests/test_course_v3_static_data.py`, `tests/test_course_ad_types.py`
+- `ANDROID_CONTEXT.md`
+
+Verified: 1446 passed, 78267 subtests. Yangi testlar:
+`ImmutableScriptsCarryTheirVersionTests` ikkala skriptning hash'ini
+qotirib qo'yadi — endi faylni o'zgartirib `?v=` ni unutib bo'lmaydi, test
+yiqiladi va nima qilish kerakligini aytadi;
+`SessionSlotGoesToTheLessonEndPromoTests` sessiya o'rni qoidasini
+tekshiradi; `ads.js` global nomi ham testga bog'landi.
+
+E2E: `test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt`
+brauzerda aynan foydalanuvchi ko'rgan ketma-ketlikni bosib o'tadi —
+ochilgandagi promo chiqadi, yopiladi, keyin dars yakunidagi promo CHIQADI,
+undan keyin sessiya yopiladi. Eski kodda bu test aynan ikkinchi qadamda
+yiqiladi (tekshirildi).
+
+Diqqat: `tests/e2e/test_miniapp_smoke.py` dagi beshta test shu ishdan
+OLDIN ham yiqilardi (`branded_download_page*` va
+`admin_control_renders_real_api_payload_without_demo_data`) — bu
+o'zgarishga aloqasi yo'q, toza `main` da ham xuddi shunday.
+
 ### 2026-09-18 — Profildagi «HSK AI ilovalari» endi yuklab olish sahifasini ochadi
 
 > **QAYTARIB OLINDI o'sha kuni.** Bot profili va sahifa eski holiga

@@ -1,3 +1,4 @@
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -827,7 +828,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('"/api/v3/apps/public-status"', landing_js)
         self.assertIn('url.searchParams.set("request", token)', landing_js)
 
+        # `course-v3.html` ham shu ro'yxatda: versiyasi qolgan sahifalardan
+        # orqada qolsa, aynan asosiy ekranda eski skript keshda qolardi.
         for page in (
+            "course-v3.html",
             "course_v3_memorize.html",
             "course_v3_mistakes.html",
             "course_v3_pronunciation.html",
@@ -838,12 +842,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
             self.assertIn(
                 "/course_v3_data/desktop-download.css?v=20260918-2", html, page
             )
+            # Ikkala skript `immutable`, bir yillik cache bilan beriladi
+            # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
+            # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
                 "/course_v3_data/desktop-download.js?v=20260918-2", html, page
             )
-            # ads.js `immutable` cache bilan beriladi — surat reklamasi
-            # qo'shilganda versiya ko'tarildi, aks holda eski pleyer keshda qoladi.
-            self.assertIn("/course_v3_data/ads.js?v=20260812-5", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260918-1", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -953,6 +958,71 @@ class DesktopPromoCooldownIsPerPlacementTests(unittest.TestCase):
         # Odam yuklab olishni allaqachon so'ragan bo'lsa, uni hech qayerda
         # qayta bezovta qilmaymiz — bu kalit UMUMIY qoladi.
         self.assertIn('var keys = ["download_requested"];', self.js)
+
+
+class SessionSlotGoesToTheLessonEndPromoTests(unittest.TestCase):
+    """Sessiyada bitta promo — lekin dars yakuni o'z navbatini oladi.
+
+    `promoSeenInSession` bitta umumiy bayroq edi va uni HAR QANDAY promo
+    yoqardi. "Mini App ochilganda" promosi har ochilishda birinchi bo'lib
+    chiqadi, ya'ni dars yakunidagi promo o'sha sessiyada hech qachon
+    chiqmasdi — sovish muddati joyga ajratilgandan keyin ham.
+    """
+
+    def setUp(self):
+        self.js = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+
+    def test_the_old_shared_flag_is_gone(self):
+        self.assertNotIn("promoSeenInSession", self.js)
+
+    def test_the_slot_remembers_which_placement_took_it(self):
+        self.assertIn("sessionPromoSource: \"\",", self.js)
+        self.assertIn("state.sessionPromoSource = source;", self.js)
+
+    def test_the_lesson_end_promo_may_take_an_occupied_slot_once(self):
+        self.assertIn(
+            'var PROMO_PRIORITY_SOURCE = "lesson_end_promo";', self.js
+        )
+        self.assertIn("function sessionSlotAllows(source)", self.js)
+        self.assertIn("!sessionSlotAllows(source) ||", self.js)
+        # O'zi chiqqandan keyin sessiya yopiladi: shu shart bo'lmasa dars
+        # yakunidagi promo bitta sessiyada qayta-qayta chiqaverardi.
+        self.assertIn(
+            "state.sessionPromoSource !== PROMO_PRIORITY_SOURCE", self.js
+        )
+
+
+class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
+    """`?v=` ko'tarilmasa, o'zgarish foydalanuvchiga YETIB BORMAYDI.
+
+    `ads.js` va `desktop-download.js` `immutable`, bir yillik cache bilan
+    beriladi (`app/main.py`, STATIC_ASSET_HEADERS). 2026-09-15/16 dagi
+    Android va promo tuzatishlari aynan shu sababdan hech kimga
+    ko'rinmadi: fayllar o'zgardi, `?v=` esa avgustdagicha qoldi.
+
+    Shuning uchun fayl mazmuni shu yerga bog'lab qo'yilgan. Bu test
+    yiqilsa — skript o'zgargan: HTML'lardagi `?v=` ni ko'taring va
+    quyidagi hash'ni yangilang.
+    """
+
+    EXPECTED = {
+        "desktop-download.js": "18b31acfeec04ae5",
+        "ads.js": "7e793b5069ada727",
+    }
+
+    def test_a_changed_script_forces_a_new_version(self):
+        for name, digest in self.EXPECTED.items():
+            with self.subTest(script=name):
+                actual = hashlib.sha256(
+                    (BASE / name).read_bytes()
+                ).hexdigest()[:16]
+                self.assertEqual(
+                    actual,
+                    digest,
+                    f"{name} o'zgargan: app/static/*.html dagi `?v=` ni "
+                    "ko'taring va shu hash'ni yangilang, aks holda "
+                    "o'zgarish keshdagi eski nusxa ostida qoladi.",
+                )
 
 
 if __name__ == "__main__":

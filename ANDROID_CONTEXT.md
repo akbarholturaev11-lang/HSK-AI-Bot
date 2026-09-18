@@ -234,14 +234,22 @@ butun mashina (request token, «faylni qayerda ochamiz?» oynasi, boshqa
 qurilmaga uzatish) DMG/EXE telefonda ishlamagani uchun qurilgan. APK ishlaydi —
 o'quvchi allaqachon o'rnatadigan qurilmani ushlab turibdi.
 
-**Ekran markazidagi app reklamasi** (`ads.js` + `course_ad_service.py`). Bu
-ma'lumotga bog'liq: server faqat havolasi BOR platformalarni yuboradi.
-`COURSE_AD_APP_VISIBLE_PLATFORMS` ga `android` qo'shildi, havolani
-`_desktop_auto_download_links` beradi. Admin panelda Android chipi va qo'lda
-havola maydoni bor.
+**Dars yakunidagi reklama oynasi ichidagi ilova bloki** (`ads.js` →
+`PompDesktopDownload.mountAdPromoTrigger`). 2026-09-16 da `app` reklama turi
+olib tashlandi: ilovani endi FAQAT `desktop_app_promo` reklama qiladi, ya'ni
+bu blok ham profil kartasi bilan bir xil platforma chiplari va bir xil
+`platform_targets` javobiga bo'ysunadi. `COURSE_AD_APP_VISIBLE_PLATFORMS`,
+`_desktop_auto_download_links` va roliknining o'z platforma havolalari endi
+yo'q.
 
 **iOS ikkalasida ham yo'q** — unga alohida ilova yo'q, o'lik tugma esa
 foydalanuvchini chalg'itadi. Tayyor bo'lganda ro'yxatlarga qo'shish yetarli.
+
+**Diqqat — kesh.** `ads.js` va `desktop-download.js` `immutable`, bir yillik
+cache bilan beriladi (`app/main.py`, `STATIC_ASSET_HEADERS`). Bu fayllarni
+o'zgartirsangiz, `app/static/*.html` dagi `?v=` ni HAM ko'taring, aks holda
+o'zgarish eski keshdagi nusxa ostida qoladi va hech kimga yetib bormaydi.
+`tests/test_course_v3_static_data.py` dagi hash testi buni ushlaydi.
 
 ## 4.7 Botga fayl qanday yetib boradi (va nima turadi)
 
