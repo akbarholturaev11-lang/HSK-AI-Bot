@@ -189,6 +189,12 @@ async def _start_first_available_course_lesson(
     )
 
 
+#: What the download page sends a learner back here with. Its Android button
+#: opens this chat instead of downloading anything, because the APK is handed
+#: over from here — see `app/bot/handlers/android_app.py`.
+ANDROID_START_PAYLOAD = "android"
+
+
 @router.message(CommandStart())
 async def cmd_start(
     message: Message,
@@ -196,10 +202,54 @@ async def cmd_start(
     session,
     command: CommandObject,
 ):
+    payload = command.args.strip() if command and command.args else None
+    wants_android = bool(payload) and payload.lower() == ANDROID_START_PAYLOAD
+
+    if wants_android:
+        # Someone who has already been through onboarding pressed "get the
+        # app", not "start over": the file is the whole answer, and the start
+        # card underneath it would only push it up the chat.
+        existing = await UserRepository(session).get_by_telegram_id(
+            message.from_user.id
+        )
+        if existing and existing.language and existing.level and not onboarding_stage(existing):
+            await state.clear()
+            await _send_android_app(message, session)
+            return
+
+    # `android` is a destination, never a referral code: handing it to the
+    # referral lookup would make every APK request look like an invite.
+    await _start_conversation(
+        message,
+        state,
+        session,
+        referral_code=None if wants_android else payload,
+    )
+    if wants_android:
+        await _send_android_app(message, session)
+
+
+async def _send_android_app(message: Message, session) -> None:
+    from app.bot.handlers.android_app import send_android_app
+
+    await send_android_app(
+        message.bot,
+        message.chat.id,
+        message.from_user.id,
+        session,
+        source="download_page",
+    )
+
+
+async def _start_conversation(
+    message: Message,
+    state: FSMContext,
+    session,
+    *,
+    referral_code: str | None,
+):
     service = OnboardingService(session)
     first_name = message.from_user.first_name if message.from_user and message.from_user.first_name else "Friend"
-
-    referral_code = command.args.strip() if command and command.args else None
 
     user, created = await service.get_or_create_user(
         telegram_id=message.from_user.id,

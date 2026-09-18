@@ -7,6 +7,10 @@
   // iOS has no build of its own. It is offered because an iPhone owner
   // deserves an answer, and the answer is the Mini App inside Telegram.
   var BOT_URL = "https://t.me/darsi_chini_bot";
+  // The APK is handed over inside the chat, not served from this origin.
+  // `?start=android` is what makes the bot send it — see
+  // `app/bot/handlers/start.py`.
+  var ANDROID_CHAT_URL = BOT_URL + "?start=android";
   // The copy keys are prefixed per platform; `macos` is historically "mac".
   var COPY_KEY = { ios: "ios", macos: "mac", android: "android", windows: "windows" };
 
@@ -31,10 +35,11 @@
         ["Alohida ilova kutmang", "iOS uchun ilova tayyor bo‘lganda shu sahifada paydo bo‘ladi."],
       ],
       androidTitle: "Android uchun HSK AI",
-      androidDownload: "APK yuklab olish",
+      androidDownload: "Telegramda faylni olish",
+      androidStatus: "Tugma botni ochadi — APK fayl o‘sha chatga tushadi.",
       androidSecurity: "Android «noma’lum manbalar» haqida ogohlantirishi mumkin: ruxsat bering va davom eting. Bu — bizning rasmiy faylimiz.",
       androidSteps: [
-        ["APK faylni yuklang", "Yuqoridagi tugma faylni telefoningizga saqlaydi."],
+        ["Faylni botdan oling", "Yuqoridagi tugma botni ochadi, APK chatga tushadi."],
         ["Faylni oching va o‘rnating", "Yuklangan faylni bosing → «O‘rnatish»."],
         ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."],
       ],
@@ -145,10 +150,11 @@
         ["Отдельного приложения ждать не нужно", "Когда приложение для iOS будет готово, оно появится на этой странице."],
       ],
       androidTitle: "HSK AI для Android",
-      androidDownload: "Скачать APK",
+      androidDownload: "Получить файл в Telegram",
+      androidStatus: "Кнопка откроет бота — APK придёт в этот чат.",
       androidSecurity: "Android может предупредить о «неизвестных источниках»: разрешите и продолжите. Это наш официальный файл.",
       androidSteps: [
-        ["Скачайте APK", "Кнопка выше сохранит файл на телефон."],
+        ["Получите файл у бота", "Кнопка выше откроет бота, APK придёт в чат."],
         ["Откройте файл и установите", "Нажмите на скачанный файл → «Установить»."],
         ["Подключите аккаунт Telegram", "Подтвердите код из приложения через Telegram. Подписка и прогресс придут автоматически."],
       ],
@@ -259,10 +265,11 @@
         ["Барномаи алоҳидаро интизор нашавед", "Вақте барнома барои iOS тайёр шавад, дар ҳамин саҳифа пайдо мешавад."],
       ],
       androidTitle: "HSK AI барои Android",
-      androidDownload: "APK-ро боргирӣ кунед",
+      androidDownload: "Файлро дар Telegram гиред",
+      androidStatus: "Тугма ботро мекушояд — APK ба ҳамон чат меояд.",
       androidSecurity: "Android метавонад дар бораи «манбаъҳои номаълум» огоҳӣ диҳад: иҷозат диҳед ва идома диҳед. Ин файли расмии мост.",
       androidSteps: [
-        ["APK-ро боргирӣ кунед", "Тугмаи боло файлро ба телефони шумо мегузорад."],
+        ["Файлро аз бот гиред", "Тугмаи боло ботро мекушояд, APK ба чат меояд."],
         ["Файлро кушоед ва насб кунед", "Файли боргиришударо пахш кунед → «Насб кардан»."],
         ["Ҳисоби Telegram-ро пайваст кунед", "Рамзи барномаро тавассути Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."],
       ],
@@ -666,6 +673,28 @@
       return;
     }
 
+    // Android goes back to the bot: it holds the file, Telegram carries it at
+    // CDN speed, and nothing of ours has to serve it. The button still waits
+    // for a published release — saying "not released yet" here is truer than
+    // sending someone to the bot to be told the same thing.
+    if (state.platform === "android") {
+      if (!entry || !entry.available) {
+        button.href = "#";
+        button.setAttribute("aria-disabled", "true");
+        status.dataset.state = state.release ? "error" : "checking";
+        status.lastElementChild.textContent = state.release
+          ? localized.unavailable
+          : localized.checking;
+        return;
+      }
+      button.href = ANDROID_CHAT_URL;
+      button.removeAttribute("aria-disabled");
+      button.dataset.action = "open";
+      status.dataset.state = "ready";
+      status.lastElementChild.textContent = localized.androidStatus;
+      return;
+    }
+
     var url = downloadUrl(state.platform);
     if (!url) {
       button.href = "#";
@@ -840,6 +869,11 @@
           event.preventDefault();
           return;
         }
+        // Only a real file download gets the "opening…/download again" dance
+        // and the installer guide. Android and iOS open Telegram instead:
+        // calling that "download again" would describe something that never
+        // happened, and the guide has no steps for either of them.
+        if (downloadButton.dataset.action !== "download") return;
         var startedPlatform = state.platform;
         setText("[data-download-label]", copy().opening);
         openQuickGuide();

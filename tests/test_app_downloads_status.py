@@ -99,6 +99,32 @@ class StatusTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(mac["version"], "1.4.2")
         self.assertEqual(mac["download"], "/downloads/macos")
 
+    async def test_an_apk_with_no_public_url_is_still_offered(self):
+        """The bot is the channel; a link of ours is not required.
+
+        The admin publishes the file to the bot first and sets the storage URL
+        afterwards, if at all. In between, the APK can be handed over inside
+        the chat — so the download page must offer it, while the crawler list
+        and the JSON-LD, which need a real file to point at, must not claim a
+        link that does not exist.
+        """
+
+        async with self.sessions() as session:
+            await AndroidReleaseService(session).publish(
+                file_id="F",
+                file_unique_id="U",
+                file_name="hsk-ai-1.1.1-3-direct-release.apk",
+                file_size=3_850_356,
+                version_name="1.1.1",
+                version_code=3,
+            )
+
+        android = (await self._status())["platforms"]["android"]
+
+        self.assertTrue(android["available"])
+        self.assertEqual(android["version"], "1.1.1 (3)")
+        self.assertIsNone(android["download"])
+
     async def test_an_unpublished_platform_is_plainly_unavailable(self):
         # Nothing published for Android at all.
         status = await self._status()

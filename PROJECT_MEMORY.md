@@ -8867,3 +8867,70 @@ Key files:
 Verified: 1439 passed, 78259 subtests. Yangi testlar: bir soat oldin
 `home_prompt` ko'rgan odam dars yakunidagi promoni oladi; `lesson_end_promo`
 ni ko'rgan odam esa o'z sovishini kutadi va qolgan ikki joy ochiq qoladi.
+
+### 2026-09-18 — Profildagi «HSK AI ilovalari» endi yuklab olish sahifasini ochadi
+
+Foydalanuvchi: profildagi tugma o'rniga `/desktop-download` linki tursin va
+sahifadagi Android tugmasi bosilganda APK **chatga** tushsin.
+
+Changed:
+- Profildagi «📱 HSK AI ilovalari» endi chooser chiqarmaydi (Android +
+  Kompyuter callback'lari olib tashlandi), balki to'g'ridan-to'g'ri
+  `/desktop-download?lang=<til>` ni ochadigan `url` tugma. `platform` ataylab
+  yozilmaydi: bot foydalanuvchining qurilmasini ko'rmaydi, sahifa esa
+  user-agent bo'yicha o'zi tanlaydi — `platform=android` ni majburlash
+  iPhone'dagi odamga o'rnata olmaydigan APK ni ko'rsatardi.
+- Base URL noto'g'ri sozlangan bo'lsa (https emas), tugma o'lik qolmaydi:
+  eski Android callback'iga tushadi, ya'ni fayl baribir bir bosishda.
+- Sahifadagi Android tugmasi endi hech nima yuklab olmaydi —
+  `t.me/<bot>?start=android` ga olib boradi. Faylni bot beradi (Telegram
+  bytes'ni ushlab turadi, biz hech nima serve qilmaymiz).
+- `/start android` — yangi deep-link. Onboarding'dan o'tgan odam faqat faylni
+  oladi (start kartasi qayta chiqmaydi); yangi odam avval odatdagi onboarding,
+  keyin fayl. `android` **hech qachon** referral kod sifatida o'qilmaydi,
+  aks holda har bir APK so'rovi taklif bo'lib ko'rinardi.
+- `app_download_status`: Android relizi endi public URL'siz ham `available`
+  bo'ladi (bot file_id bilan bera oladi), lekin `download` shundagina
+  to'ldiriladi. Ya'ni crawler ro'yxati va JSON-LD yo'q havolani da'vo qilmaydi.
+  Admin faylni botga yuklab, R2 linkini keyin qo'yadigan oraliqda sahifa
+  «hali chiqarilmagan» deb yolg'on gapirmaydi.
+- Sahifa matni 3 tilda yangilandi: `androidDownload` («Telegramda faylni
+  olish»), yangi `androidStatus`, 1-qadam matni.
+- Yo'l-yo'lakay tuzatildi: yuklab olish tugmasi bosilganda `opening…` /
+  «Qayta yuklash» va installer qo'llanmasi endi faqat haqiqiy fayl yuklashda
+  ishlaydi. Android va iOS'da bo'sh modal ochilar va tugma «Qayta yuklash»ga
+  aylanardi — ikkalasi ham bo'lmagan narsani tasvirlardi.
+- O'lik qatorlar olib tashlandi: `apps_menu_text`, `apps_android_button`,
+  `apps_desktop_button` (uz/ru/tj).
+
+Nima o'zgarmadi:
+- `request` tokeni va Mini App ichidagi desktop yuklash oqimi (foydalanuvchi
+  aniq shuni so'radi). Bot profilidan desktop endi sahifa orqali boradi,
+  Mini App profilidagi promo esa avvalgidek ishlaydi.
+- `/android` buyrug'i, admin paneli, `android_apk_requested/sent` eventlari.
+
+Key files:
+- `app/bot/handlers/commands.py`, `app/bot/handlers/start.py`,
+  `app/bot/utils/course_miniapp.py` (`apps_download_page_url`),
+  `app/bot/utils/i18n.py`, `app/services/app_downloads_service.py`,
+  `app/static/desktop-download-page.js`
+- `tests/test_bot_profile_desktop_cta.py` (qayta yozildi),
+  `tests/test_android_apk_download.py`, `tests/test_app_downloads_status.py`
+
+Verified:
+- Backend: 1449 passed, 78262 subtests (`tests/`, e2e'siz).
+- Sahifa haqiqiy brauzerda (Chromium/Playwright) tekshirildi: uz/ru/tj
+  Android tabida tugma `https://t.me/darsi_chini_bot?start=android`,
+  `data-action="open"`; Android user-agent `platform` yozilmagan holda ham
+  Android tabiga tushadi; iPhone iOS tabini oladi; macOS avvalgidek to'g'ridan
+  yuklaydi; hech narsa nashr qilinmagan holda tugma o'chiq va «hali
+  chiqarilmagan» deb turadi; bosilganda bo'sh modal ochilmaydi.
+- Router tartibi subprocess'da tekshirildi: `/start android` ni `cmd_start`
+  oladi, oldingi routerlardan hech biri yeb qo'ymaydi.
+
+Not verified:
+- Haqiqiy Telegram orqali o'tilmagan: deep-link ham, fayl ham fake bot va
+  in-memory bazada tekshirildi. Prod'da birinchi bosish — birinchi haqiqiy
+  sinov.
+- Prod'da Android relizi nashr qilinganmi, tekshirilmadi. Nashr yo'q bo'lsa
+  sahifa Android tugmasini o'chiq ko'rsatadi (bu to'g'ri xatti-harakat).

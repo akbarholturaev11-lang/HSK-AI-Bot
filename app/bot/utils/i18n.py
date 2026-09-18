@@ -1635,13 +1635,9 @@ for _lang, _texts in CONVERSION_I18N.items():
 # sees that warning without being told to expect it simply stops.
 ANDROID_APP_I18N = {
     "uz": {
-        # One door for both clients. A learner who wants "the app" should not
-        # have to know which of our two products they are looking at before
-        # they can press anything.
+        # One door for every client. What sits behind it is the download
+        # page, which picks the device itself.
         "apps_menu_button": "📱 HSK AI ilovalari",
-        "apps_menu_text": "📱 <b>HSK AI ilovalari</b>\n\nQaysi qurilma uchun kerak?",
-        "apps_android_button": "📱 Android",
-        "apps_desktop_button": "💻 Kompyuter",
         "android_app_button": "📱 Android ilova",
         "android_app_intro": (
             "📱 <b>HSK AI — Android ilova</b>\n\n"
@@ -1667,9 +1663,6 @@ ANDROID_APP_I18N = {
     },
     "ru": {
         "apps_menu_button": "📱 Приложения HSK AI",
-        "apps_menu_text": "📱 <b>Приложения HSK AI</b>\n\nДля какого устройства?",
-        "apps_android_button": "📱 Android",
-        "apps_desktop_button": "💻 Компьютер",
         "android_app_button": "📱 Приложение Android",
         "android_app_intro": (
             "📱 <b>HSK AI — приложение для Android</b>\n\n"
@@ -1695,9 +1688,6 @@ ANDROID_APP_I18N = {
     },
     "tj": {
         "apps_menu_button": "📱 Барномаҳои HSK AI",
-        "apps_menu_text": "📱 <b>Барномаҳои HSK AI</b>\n\nБарои кадом дастгоҳ?",
-        "apps_android_button": "📱 Android",
-        "apps_desktop_button": "💻 Компютер",
         "android_app_button": "📱 Барномаи Android",
         "android_app_intro": (
             "📱 <b>HSK AI — барномаи Android</b>\n\n"
