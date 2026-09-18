@@ -4759,6 +4759,25 @@ async def miniapp_event(request: Request):
             sent = await study_service.send_subscription_menu(bot, telegram_id)
             return {"ok": bool(sent)}
 
+        if event == "android_apk_to_chat":
+            # The APK is handed over in the chat and nowhere else, so the Mini
+            # App cannot deliver it itself — it asks the bot to, and closes.
+            # `send_android_app` writes its own reason into the chat when it
+            # returns False; the Mini App is told too, so it can stay open
+            # rather than close over a message that never arrived.
+            from app.bot.handlers.android_app import send_android_app
+
+            sent = await send_android_app(
+                bot,
+                telegram_id,
+                telegram_id,
+                session,
+                source="miniapp_profile",
+            )
+            if sent:
+                return {"ok": True}
+            return {"ok": False, "error": "android_apk_send_failed"}
+
         if event == "quiz_ai_discuss_clicked":
             _track_study_ai_task(
                 asyncio.create_task(_send_study_quiz_ai_discussion(telegram_id, payload))

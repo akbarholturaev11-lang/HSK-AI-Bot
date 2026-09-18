@@ -70,6 +70,8 @@
       adEntrySub: "Android · Mac · Windows",
       sendingShort: "Tayyorlanmoqda…",
       sending: "Yuklash sayti tayyorlanmoqda…",
+      sendingToChat: "Fayl chatga yuborilmoqda…",
+      chatSendFailed: "Faylni chatga yuborib bo‘lmadi. Qayta urinib ko‘ring.",
       telegramRequired: "Mini Appni bot ichidan qayta oching.",
       releaseUnavailable: "Bu platforma uchun yuklash hozircha mavjud emas.",
       rateLimited: "Ko‘p urinish bo‘ldi. Birozdan keyin qayta urinib ko‘ring.",
@@ -143,6 +145,8 @@
       adEntrySub: "Android · Mac · Windows",
       sendingShort: "Готовим…",
       sending: "Готовим страницу загрузки…",
+      sendingToChat: "Отправляем файл в чат…",
+      chatSendFailed: "Не удалось отправить файл в чат. Попробуйте ещё раз.",
       telegramRequired: "Откройте Mini App заново из бота.",
       releaseUnavailable: "Загрузка для этой платформы пока недоступна.",
       rateLimited: "Слишком много попыток. Попробуйте немного позже.",
@@ -216,6 +220,8 @@
       adEntrySub: "Android · Mac · Windows",
       sendingShort: "Омода мешавад…",
       sending: "Саҳифаи боргирӣ омода мешавад…",
+      sendingToChat: "Файл ба чат фиристода мешавад…",
+      chatSendFailed: "Файл ба чат фиристода нашуд. Боз кӯшиш кунед.",
       telegramRequired: "Mini App-ро аз дохили бот аз нав кушоед.",
       releaseUnavailable: "Боргирӣ барои ин платформа ҳоло дастрас нест.",
       rateLimited: "Кӯшишҳо зиёд шуданд. Каме баъд боз санҷед.",
@@ -264,7 +270,7 @@
     enabled: false,
     platforms: { macos: false, windows: false, android: false, ios: false },
     platformTargets: { macos: true, windows: true, android: true, ios: false },
-    transferUrls: { macos: "", windows: "", android: "" },
+    transferUrls: { macos: "", windows: "" },
     runtimeUnavailable: { macos: false, windows: false, android: false, ios: true },
     promoEligible: false,
     promoReason: "",
@@ -548,7 +554,10 @@
     // Android does not depend on `state.enabled`: that flag gates the desktop
     // installers, and the APK is published by its own pipeline.
     if (platform === "android") {
-      return Boolean(state.platforms.android && state.transferUrls.android);
+      // No transfer URL is required any more: the APK is not opened from
+      // here, it is asked for and arrives in the chat. A release the bot can
+      // send is a release this button can offer.
+      return Boolean(state.platforms.android);
     }
     return Boolean(
       state.enabled &&
@@ -587,6 +596,8 @@
       desktop_download_timeout: copy.requestTimeout,
       invalid_success_response: copy.invalidDownload,
       desktop_download_open_failed: copy.messageFailed,
+      android_release_unavailable: copy.releaseUnavailable,
+      android_apk_send_failed: copy.chatSendFailed,
       network_error: copy.networkError
     }[code] || copy.networkError;
   }
@@ -693,11 +704,14 @@
 
   function buildActions(source) {
     var actions = element("div", "pdd-actions");
+    var shown = 0;
     APP_PROMO_PLATFORMS.forEach(function (platform) {
       if (isPlatformTargeted(platform)) {
         actions.appendChild(buildOsButton(platform, source));
+        shown += 1;
       }
     });
+    actions.dataset.pddColumns = String(shown || 1);
     return actions;
   }
 
@@ -1088,7 +1102,9 @@
       }
       if (label) {
         label.textContent = state.pendingPlatform
-          ? copy.sending
+          ? state.pendingPlatform === "android"
+            ? copy.sendingToChat
+            : copy.sending
           : errorText(state.errorCode);
       }
     });
@@ -1162,16 +1178,14 @@
       return;
     }
 
-    // Android takes the short path deliberately. Everything below — the
-    // request token, the "where shall we open this?" sheet, the transfer to
-    // another device — exists because a DMG or an EXE cannot run on the phone
-    // reading this. An APK can: the learner is already holding the device it
-    // installs on, so the link is simply opened.
+    // Android takes its own path deliberately. Everything below — the request
+    // token, the "where shall we open this?" sheet, the transfer to another
+    // device — exists because a DMG or an EXE cannot run on the phone reading
+    // this. An APK can, and it is not served from here at all: the bot holds
+    // the file, so the Mini App asks for it, closes, and the learner finds it
+    // in the chat they came from.
     if (platform === "android") {
-      var androidUrl = state.transferUrls.android;
-      if (!androidUrl) return;
-      track("android_apk_requested", { source: "miniapp_" + source });
-      openTrackedLink(androidUrl);
+      sendAndroidToChat(source);
       return;
     }
     if (!telegramInitData()) {
@@ -1180,6 +1194,59 @@
       return;
     }
     showDestinationChooser(platform, source, document.activeElement);
+  }
+
+  function closeMiniApp() {
+    var app = telegramWebApp();
+    try {
+      if (app && typeof app.close === "function") app.close();
+    } catch (error) {}
+  }
+
+  function sendAndroidToChat(source) {
+    if (!telegramInitData()) {
+      state.errorCode = "invalid_telegram_init_data";
+      syncControls();
+      return;
+    }
+    state.pendingPlatform = "android";
+    state.errorCode = "";
+    syncControls();
+    fetch("/api/miniapp/event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify({
+        event: "android_apk_to_chat",
+        source: "miniapp_" + source
+      })
+    })
+      .then(function (response) {
+        return response.json().catch(function () {
+          return null;
+        });
+      })
+      .then(function (data) {
+        state.pendingPlatform = "";
+        if (data && data.ok === true) {
+          // The file is in the chat now, and this Mini App is sitting on top
+          // of it. Staying open would hide the thing that was just sent.
+          closeMiniApp();
+          return;
+        }
+        state.errorCode =
+          data && typeof data.error === "string"
+            ? data.error
+            : "android_apk_send_failed";
+        syncControls();
+      })
+      .catch(function () {
+        state.pendingPlatform = "";
+        state.errorCode = "network_error";
+        syncControls();
+      });
   }
 
   function cleanTransferUrl(value, platform) {
@@ -2002,15 +2069,10 @@
         var entry =
           (data && data.platforms && data.platforms.android) || null;
         state.platforms.android = Boolean(entry && entry.available);
-        state.transferUrls.android =
-          state.platforms.android && entry.download
-            ? new URL(String(entry.download), window.location.origin).toString()
-            : "";
         renderProfile();
       })
       .catch(function () {
         state.platforms.android = false;
-        state.transferUrls.android = "";
       });
   }
 

@@ -98,11 +98,16 @@ async def app_download_status(
     try:
         async with session_factory() as session:
             release = await AndroidReleaseService(session).serve()
-        if release is not None and release.download_url:
+        # The bot can hand the APK over from the chat with nothing but a
+        # `file_id`, so a release with no storage URL is still installable —
+        # the Mini App asks the bot for it. Only the link stays conditional,
+        # which keeps the download page, the crawler list and the JSON-LD
+        # pointing at a file that really is served from this origin.
+        if release is not None and (release.download_url or release.file_id):
             platforms["android"] = {
                 "available": True,
                 "version": release.version_text,
-                "download": DOWNLOAD_PATHS["android"],
+                "download": DOWNLOAD_PATHS["android"] if release.download_url else None,
                 "file": release.file_name,
                 "size": release.size or None,
                 "published": _date(release.published_at),

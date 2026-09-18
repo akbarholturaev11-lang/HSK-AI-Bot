@@ -2780,6 +2780,69 @@ def test_desktop_ad_block_ignores_modal_promo_cooldown(page):
     expect(host.locator('[data-pdd-platform="windows"]')).to_be_visible()
 
 
+def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
+    """Android is the one platform the Mini App cannot deliver itself.
+
+    Nothing of ours serves the APK: the bot holds it. So the chip asks the bot
+    to send it and closes, because staying open would cover the chat the file
+    just landed in.
+    """
+
+    mock_telegram_desktop_download(page, platform="android")
+    page.route(
+        "**/api/v3/apps/public-status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "platforms": {
+                    "macos": {"available": False, "download": None},
+                    "windows": {"available": False, "download": None},
+                    # Published to the bot, no storage URL behind it: exactly
+                    # the state the chat hand-off exists for.
+                    "android": {
+                        "available": True,
+                        "version": "1.1.1 (3)",
+                        "download": None,
+                    },
+                },
+                "any": True,
+            },
+        ),
+    )
+
+    requests = []
+    def capture_event(route):
+        try:
+            requests.append(route.request.post_data_json)
+        except Exception:
+            requests.append(None)
+        json_response(route, {"ok": True})
+
+    _open_course_profile_with_desktop_release(page, status_handler=None)
+    page.route("**/api/miniapp/event", capture_event)
+
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    android = card.locator('[data-pdd-platform="android"]')
+    expect(android).to_be_visible()
+    expect(android).to_be_enabled()
+    # Every offered platform on one line.
+    expect(card.locator(".pdd-actions")).to_have_attribute("data-pdd-columns", "3")
+
+    android.click()
+    page.wait_for_function("() => window.__closed === true", timeout=5000)
+
+    asked = [
+        request
+        for request in requests
+        if request and request.get("event") == "android_apk_to_chat"
+    ]
+    assert asked, requests
+    assert asked[0]["source"] == "miniapp_profile"
+    # The link the chip used to open is gone: nothing is opened for Android.
+    assert page.evaluate("window.__openedLink") is None
+
+
 def test_desktop_profile_card_is_discoverable_and_reaches_every_client(page):
     mock_telegram_desktop_download(page, platform="android")
     _open_course_profile_with_desktop_release(page)

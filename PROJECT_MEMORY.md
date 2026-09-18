@@ -9020,3 +9020,50 @@ holida).
 Verified: backend 1449 passed, 78262 subtests; profil kartasiga tegishli 5 ta
 Playwright testi o'tdi; `git diff 48f3aa5` faqat Mini App kartasi va
 xotira/hujjat fayllarini ko'rsatadi.
+
+### 2026-09-18 — Kartadagi platformalar bir qatorda, Android fayli chatga
+
+Foydalanuvchi: karta g'alati ko'rinyapti (ikkita tugma, ostida yolg'iz
+«Android — tez orada»), bitta universal blok bo'lsin; Android bosilganda
+Mini App yopilsin va ilova fayli chat orqali tashlansin.
+
+Changed:
+- `buildActions` endi nechta platforma chizilganini `data-pdd-columns` ga
+  yozadi, CSS esa uchtasini teng kenglikda bitta qatorga tizadi (uchta
+  bo'lganda ikona yorliq tepasiga chiqadi, shrift kichrayadi). Ikkita
+  platforma bo'lsa avvalgidek ikki ustun. «Ilovalarni yuklab olish» tugmasi
+  ostida to'liq enli qolaveradi.
+- Mini App'dagi Android chipi endi hech nima ochmaydi:
+  `POST /api/miniapp/event` → `{"event": "android_apk_to_chat"}`, server
+  `send_android_app` bilan APK ni chatga yuboradi, klient esa muvaffaqiyatda
+  `Telegram.WebApp.close()` qiladi. Xato bo'lsa Mini App **yopilmaydi** —
+  kartadagi status qatorida sabab chiqadi.
+- `isPlatformAvailable("android")` endi public URL talab qilmaydi, chunki
+  hech qanday havola ochilmaydi. `app_download_status` ham: bot bera oladigan
+  reliz (`file_id`) `available` bo'ladi, `download` esa faqat R2 linki
+  bo'lgandagina to'ldiriladi — sahifa, crawler ro'yxati va JSON-LD avvalgidek
+  faqat haqiqiy fayl havolasini ko'rsatadi. **Ayni shu sababli bu ish kerak
+  edi:** prodda APK botga yuklangan, R2 linki qo'yilmagan, shuning uchun
+  kartada «Android — tez orada» turardi.
+- O'lik holat olib tashlandi: `state.transferUrls.android` (endi o'quvchisi
+  yo'q). Uch tilda ikkita yangi qator: `sendingToChat`, `chatSendFailed`.
+- `desktop-download.{js,css}` versiyasi `20260918-2`.
+
+Key files:
+- `app/static/course_v3_data/desktop-download.js` / `.css`, `app/main.py`,
+  `app/services/app_downloads_service.py`, 6 ta course HTML
+- `tests/test_course_v3_static_data.py`, `tests/e2e/test_miniapp_smoke.py`
+  (yangi test: `test_android_chip_sends_the_apk_to_the_chat_and_closes`)
+
+Verified:
+- Backend: to'liq suite yashil.
+- Playwright: yangi test chipni bosadi va `window.__closed === true` bo'lguncha
+  kutadi; `/api/miniapp/event` ga ketgan tana `android_apk_to_chat` +
+  `miniapp_profile` ekani tekshiriladi va hech qanday havola ochilmagani
+  (`window.__openedLink === null`) ham. Karta ikkala holatda (Android bor /
+  «tez orada») ekranda ko'rildi: uchta chip bitta qatorda.
+
+Eslatma:
+- Server tomoni `main.py` dagi `/api/miniapp/event` ichida, `subscribe_clicked`
+  yonida. Loyihada bu endpoint uchun HTTP-test yo'q, shuning uchun mavjud
+  uslubga ergashildi: `main.py` matni ustidan static assert + e2e.

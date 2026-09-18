@@ -40,6 +40,11 @@ build'da ekanini bilmay chaqiradi.
 - Tarqatish: bot orqali (APK chatga tushadi) + R2 dagi fayl.
   `hsk-ai-releases` bucket, `android/v<versiya>/`, public base
   `https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev`.
+- Ikkita joydan so'raladi, ikkalasi ham faylni CHATGA beradi: bot profilidagi
+  «📱 HSK AI ilovalari» → «📱 Android», va Mini App profilidagi kartadagi
+  Android chipi (`POST /api/miniapp/event` → `android_apk_to_chat`, keyin Mini
+  App yopiladi). Saytdagi (`/desktop-download`) Android tugmasi esa faylni
+  to'g'ridan-to'g'ri yuklaydi — u R2 linkini talab qiladi.
 - Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
   tushiriladi). Hali **bir marta ham ishlamagan**.
 - Play Market: yo'q. Akkaunt ham ochilmagan.

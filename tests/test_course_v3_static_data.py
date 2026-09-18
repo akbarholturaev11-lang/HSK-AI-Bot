@@ -753,7 +753,19 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("cleanTransferUrl", download)
         self.assertNotIn("message_sent", download)
         self.assertNotIn("close_mini_app", download)
-        self.assertNotIn("app.close()", download)
+        # The desktop installers still never close the Mini App: the file is
+        # downloaded in a browser and the learner stays where they were. The
+        # single close belongs to Android, whose file lands in the chat this
+        # Mini App is sitting on top of.
+        self.assertEqual(download.count("app.close()"), 1)
+        self.assertEqual(download.count("closeMiniApp();"), 1)
+        self.assertIn("function closeMiniApp()", download)
+        self.assertIn("sendAndroidToChat(source);", download)
+        self.assertIn('event: "android_apk_to_chat"', download)
+        # Nothing is opened for Android any more, so the transfer URL that fed
+        # that link is gone along with the requirement for one.
+        self.assertNotIn("transferUrls.android", download)
+        self.assertIn("return Boolean(state.platforms.android);", download)
 
         self.assertIn('id="pomp-desktop-profile-root"', course)
         self.assertIn('id="ad-desktop"', course)
@@ -824,10 +836,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260918-1", html, page
+                "/course_v3_data/desktop-download.css?v=20260918-2", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260918-1", html, page
+                "/course_v3_data/desktop-download.js?v=20260918-2", html, page
             )
             # ads.js `immutable` cache bilan beriladi — surat reklamasi
             # qo'shilganda versiya ko'tarildi, aks holda eski pleyer keshda qoladi.
@@ -836,6 +848,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         download = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+        download_css = (BASE / "desktop-download.css").read_text(encoding="utf-8")
+        main = Path("app/main.py").read_text(encoding="utf-8")
 
         goal_position = course.index("+'<div class=\"pgoal\"")
         desktop_position = course.index(
@@ -853,6 +867,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn("mobileCardHint", download)
         self.assertNotIn("pdd-mobile-hint", download)
         self.assertIn("actions.appendChild(buildAppsPageButton())", download)
+        # Every offered platform on one line; the count drives the grid.
+        self.assertIn('actions.dataset.pddColumns = String(shown || 1)', download)
+        self.assertIn('.pdd-actions[data-pdd-columns="3"]', download_css)
         self.assertIn('new URL("/desktop-download", window.location.origin)', download)
         self.assertIn('url.searchParams.set("lang", language())', download)
         # No platform is pinned: the page reads the device it was opened on.
@@ -874,6 +891,15 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertEqual(download.count("retryStatus:"), 3)
         self.assertIn('state.availabilityError ? " is-error" : ""', download)
         self.assertIn("loadAvailability();", download)
+
+        # Android is the one platform whose file never leaves Telegram: the
+        # Mini App asks the bot for it rather than opening anything, so the
+        # server side of that request has to exist.
+        self.assertIn('if event == "android_apk_to_chat":', main)
+        self.assertIn("sent = await send_android_app(", main)
+        self.assertIn('return {"ok": False, "error": "android_apk_send_failed"}', main)
+        self.assertEqual(download.count("sendingToChat:"), 3)
+        self.assertEqual(download.count("chatSendFailed:"), 3)
 
     def test_admin_has_app_promo_controls(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
