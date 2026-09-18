@@ -3669,6 +3669,53 @@ def test_desktop_promo_fits_short_360x640_viewport(page):
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="windows"]')).to_be_visible()
 
 
+def test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt(page):
+    """Sessiyada bitta promo — lekin dars yakuni ustun.
+
+    `promoSeenInSession` bitta umumiy bayroq edi: "Mini App ochilganda"
+    promosi har ochilishda birinchi bo'lib chiqib uni yoqardi va dars
+    yakunidagi promo o'sha sessiyada hech qachon chiqmasdi. Bu yerda
+    aynan o'sha ketma-ketlik tekshiriladi, chunki foydalanuvchi uni
+    shunday ko'rgan edi.
+    """
+    mock_telegram_desktop_download(page, platform="tdesktop", native_download=True)
+    # Sozlamada uchala joy ham yoqilgan (mock'ning default javobi).
+    _open_course_profile_with_desktop_release(page)
+    page.locator('#nav button[data-s="course"]').click()
+
+    def dismiss_open_promo():
+        later = page.locator(".pdd-promo-dismiss")
+        if later.count() and later.is_visible():
+            later.click()
+        expect(page.locator(".pdd-promo-shell")).to_have_count(0)
+
+    # 1. Ochilgandagi promo o'rinni egallaydi. U boot paytida o'zi chiqib
+    #    ulgurgan bo'lishi ham mumkin, shuning uchun natija emas, HOLAT
+    #    tekshiriladi: ikkinchi urinish rad etilishi kerak.
+    page.evaluate("PompDesktopDownload.queuePromo('home_prompt',{})")
+    dismiss_open_promo()
+    assert not page.evaluate("PompDesktopDownload.queuePromo('home_prompt',{})")
+
+    # 2. Dars yakunidagi promo SHU sessiyada baribir chiqadi — regressiya
+    #    aynan shu qadamda edi.
+    assert page.evaluate(
+        "PompDesktopDownload.queuePromo('lesson_end_promo',{lesson_id:1})"
+    )
+    expect(
+        page.locator(
+            '#pomp-desktop-promo-root[data-source="lesson_end_promo"] .pdd-promo-shell'
+        )
+    ).to_be_visible()
+    dismiss_open_promo()
+
+    # 3. Undan keyin sessiya yopiq: na dars yakuni, na ochilgandagi promo.
+    assert not page.evaluate(
+        "PompDesktopDownload.queuePromo('lesson_end_promo',{lesson_id:2})"
+    )
+    assert not page.evaluate("PompDesktopDownload.queuePromo('home_prompt',{})")
+    expect(page.locator(".pdd-promo-shell")).to_have_count(0)
+
+
 def _mock_voice_environment(page, *, start=None, message=None, end=None, remaining=1):
     """AI Voice uchun server javoblari. Mikrofon KERAK EMAS — klaviatura yo'li."""
     start_bodies = []

@@ -612,12 +612,16 @@
          endi ko'rsatilmaydigan elementga yozardi. */
       /* Desktop ilova promosi — ilgari reklama overlayining oxirida edi. */
       try{
-        if(window.DesktopDownloadPromo&&typeof window.DesktopDownloadPromo.mountAdPromoTrigger==="function"){
+        /* Global nomi `PompDesktopDownload` — `desktop-download.js` aynan
+           shuni e'lon qiladi. Bu yerda `DesktopDownloadPromo` deb yozilgani
+           uchun shart hech qachon bajarilmasdi va reklama oynasidagi ilova
+           bloki umuman chiqmasdi. */
+        if(window.PompDesktopDownload&&typeof window.PompDesktopDownload.mountAdPromoTrigger==="function"){
           /* Bu blok `if(isLessonEnd())` ning ICHIDA — ya'ni joy har doim
              dars yakuni. Ilgari bu yerda `screen_center_ad` ga tushadigan
              tarmoq bor edi, u hech qachon ishlamasdi. */
           e.promo.hidden=false;
-          window.DesktopDownloadPromo.mountAdPromoTrigger(e.promo,{placement:"lesson_end_ad"});
+          window.PompDesktopDownload.mountAdPromoTrigger(e.promo,{placement:"lesson_end_ad"});
         }
       }catch(err){}
     }else{

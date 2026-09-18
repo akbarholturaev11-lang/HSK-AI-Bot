@@ -30,6 +30,14 @@
   var ENTRY_SOURCES = ["profile"].concat(PROMO_SOURCES);
   var DEFAULT_PROMO_COOLDOWN_DAYS = 14;
   var DEFAULT_HOME_PROMPT_DAILY_LIMIT = 3;
+  /* Bitta sessiyada bitta promo — lekin dars yakuni ustun.
+     "Mini App ochilganda" promosi har ochilishda, dars yakunidagisi esa
+     odam darsni tugatgandan KEYIN chiqadi, ya'ni har doim kechroq. Bitta
+     umumiy "ko'rildi" bayrog'i bilan birinchisi ikkinchisining navbatini
+     doim yeb qo'yardi va dars yakunidagi promo amalda hech qachon
+     ko'rinmasdi. Shuning uchun sessiya o'rni SHU joyga bo'shatiladi: u
+     o'rinni bir marta egallay oladi, undan keyin sessiya yopiladi. */
+  var PROMO_PRIORITY_SOURCE = "lesson_end_promo";
   var APP_PROMO_PLATFORMS = ["macos", "windows", "android"];
   // Android's availability comes from the public apps status, not from the
   // desktop one: it is published by a different pipeline and needs no auth.
@@ -283,7 +291,7 @@
     pendingEventIds: {},
     errorCode: "",
     promoOpen: false,
-    promoSeenInSession: false,
+    sessionPromoSource: "",
     promoTimer: 0,
     queuedPromo: null,
     queuedPromoTimer: 0,
@@ -1631,6 +1639,17 @@
     );
   }
 
+  /* Sessiyada bitta promo. Yagona istisno — dars yakuni: o'rin band
+     bo'lsa ham u bir marta o'z navbatini oladi. O'zi chiqqandan keyin
+     sessiyada boshqa promo chiqmaydi. */
+  function sessionSlotAllows(source) {
+    if (!state.sessionPromoSource) return true;
+    return (
+      source === PROMO_PRIORITY_SOURCE &&
+      state.sessionPromoSource !== PROMO_PRIORITY_SOURCE
+    );
+  }
+
   function shouldShowPromo(source) {
     if (
       isDesktop ||
@@ -1638,7 +1657,7 @@
       !state.availabilityLoaded ||
       !hasAvailablePlatform() ||
       !promoPlacementAllowed(source) ||
-      state.promoSeenInSession ||
+      !sessionSlotAllows(source) ||
       state.promoOpen ||
       (source === "home_prompt"
         ? homePromptDailyLimitReached()
@@ -1794,7 +1813,7 @@
     state.queuedPromoTimer = 0;
     state.queuedPromo = null;
     state.promoOpen = true;
-    state.promoSeenInSession = true;
+    state.sessionPromoSource = source;
     state.activePromoSource = source;
     state.activePromoMeta = promoMeta(meta);
     state.previousFocus = document.activeElement;

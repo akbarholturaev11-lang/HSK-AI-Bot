@@ -236,6 +236,23 @@ class CentreAdFlowTests(unittest.TestCase):
         self.assertNotIn("screen_center_ad\"", ADS_JS)
         self.assertIn('mountAdPromoTrigger(e.promo,{placement:"lesson_end_ad"})', ADS_JS)
 
+    def test_the_block_is_mounted_through_the_global_that_actually_exists(self):
+        """Nomi `desktop-download.js` e'lon qilgan global bilan bir xil.
+
+        Bu yerda `window.DesktopDownloadPromo` deb yozilgan edi — bunday
+        global umuman yo'q, ya'ni shart hech qachon bajarilmasdi va
+        reklama oynasidagi ilova bloki chiqmasdi. Eski test faqat
+        `mountAdPromoTrigger(...)` qismini tekshirgani uchun buni
+        ko'rmagan."""
+        download = Path(
+            "app/static/course_v3_data/desktop-download.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("window.PompDesktopDownload = {", download)
+        self.assertNotIn("window.DesktopDownloadPromo", ADS_JS)
+        self.assertIn(
+            "window.PompDesktopDownload.mountAdPromoTrigger(e.promo,", ADS_JS
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
