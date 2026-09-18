@@ -8870,6 +8870,10 @@ ni ko'rgan odam esa o'z sovishini kutadi va qolgan ikki joy ochiq qoladi.
 
 ### 2026-09-18 — Profildagi «HSK AI ilovalari» endi yuklab olish sahifasini ochadi
 
+> **QAYTARIB OLINDI o'sha kuni.** Bot profili va sahifa eski holiga
+> tiklandi — sababi pastdagi «Bot profili va sahifa eski holiga qaytarildi»
+> yozuvida. Quyidagilar tarix uchun qoldirilgan.
+
 Foydalanuvchi: profildagi tugma o'rniga `/desktop-download` linki tursin va
 sahifadagi Android tugmasi bosilganda APK **chatga** tushsin.
 
@@ -8980,3 +8984,39 @@ Verified:
 - To'liq `tests/e2e`: 65 passed, 21 failed — **o'sha 21 tasi `origin/main` da
   ham aynan shunday yiqiladi** (baseline worktree'da tekshirildi), ya'ni bu
   o'zgarishlardan emas, muhitdan (Playwright 1.63 + eski chromium build).
+
+### 2026-09-18 — Bot profili va sahifa eski holiga qaytarildi
+
+Foydalanuvchi ko'rib chiqib qaror qildi: sahifaga tegilmasin — u yerdan APK
+to'g'ridan-to'g'ri yuklab olinaversin; bot profilidagi tugma esa link
+bo'lmasin, faylni to'g'ridan-to'g'ri chatga yuborsin.
+
+Changed (aynan shu kundagi oldingi yozuv bekor qilindi):
+- `commands.py`, `start.py`, `course_miniapp.py`, `i18n.py`,
+  `app_downloads_service.py`, `desktop-download-page.js`,
+  `desktop-download.html` va ularning uchta test fayli `48f3aa5` dagi holatga
+  qaytarildi. Ya'ni:
+  - profilda yana «📱 HSK AI ilovalari» → [📱 Android] [💻 Kompyuter]
+    chooseri; Android — callback, fayl darhol chatga; Kompyuter — Mini App;
+  - sahifadagi Android tugmasi yana `/downloads/android` ni yuklaydi;
+  - `/start android` deep-link olib tashlandi (uni faqat sahifa ishlatardi);
+  - `apps_download_page_url()` helperi olib tashlandi;
+  - `app_download_status` yana Android uchun public URL talab qiladi.
+- Mini App profilidagi karta **qoldi** (oldingi yozuvga qarang): sarlavha
+  «HSK AI ilovalari», MacBook/Windows tugmalari o'z joyida, ostida
+  «Ilovalarni yuklab olish» → `/desktop-download`. Sahifa endi yana to'g'ridan
+  yuklaydigan bo'lgani uchun bu tugma mantiqan mos.
+
+Nima bilib turib qilinmadi:
+- Sahifadagi yuklash tugmasi bosilganda iOS/Android'da bo'sh «installer
+  qo'llanmasi» modali ochilishi va tugma «Qayta yuklash»ga aylanishi —
+  haqiqiy, eskidan bor kamchilik. Oldingi o'zgarishda yo'l-yo'lakay
+  tuzatilgandi, «saytga tegma» qarori bilan u ham qaytarildi. Alohida
+  so'ralsa, bir qatorlik tuzatish.
+
+Key files: yuqoridagi ro'yxat + `ANDROID_CONTEXT.md` (tarqatish qatori eski
+holida).
+
+Verified: backend 1449 passed, 78262 subtests; profil kartasiga tegishli 5 ta
+Playwright testi o'tdi; `git diff 48f3aa5` faqat Mini App kartasi va
+xotira/hujjat fayllarini ko'rsatadi.

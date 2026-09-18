@@ -40,10 +40,6 @@ build'da ekanini bilmay chaqiradi.
 - Tarqatish: bot orqali (APK chatga tushadi) + R2 dagi fayl.
   `hsk-ai-releases` bucket, `android/v<versiya>/`, public base
   `https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev`.
-- Yo'l: bot profilidagi «📱 HSK AI ilovalari» → `/desktop-download` sahifasi
-  (qurilmani o'zi aniqlaydi) → Android tugmasi `t.me/<bot>?start=android` ga
-  qaytaradi → bot APK ni chatga yuboradi. Sahifa APK ni o'zi bermaydi.
-  `/android` buyrug'i ham ishlaydi.
 - Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
   tushiriladi). Hali **bir marta ham ishlamagan**.
 - Play Market: yo'q. Akkaunt ham ochilmagan.

@@ -98,16 +98,11 @@ async def app_download_status(
     try:
         async with session_factory() as session:
             release = await AndroidReleaseService(session).serve()
-        # A published APK the bot can hand over is available even with no
-        # public URL behind it: the chat is the channel. Only the link is
-        # conditional, so the crawler list and the JSON-LD — both of which
-        # need a real file to point at — keep describing exactly what can be
-        # downloaded from this origin.
-        if release is not None and (release.download_url or release.file_id):
+        if release is not None and release.download_url:
             platforms["android"] = {
                 "available": True,
                 "version": release.version_text,
-                "download": DOWNLOAD_PATHS["android"] if release.download_url else None,
+                "download": DOWNLOAD_PATHS["android"],
                 "file": release.file_name,
                 "size": release.size or None,
                 "published": _date(release.published_at),

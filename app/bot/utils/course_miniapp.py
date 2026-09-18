@@ -201,21 +201,6 @@ def course_v3_miniapp_url(
     return f"{base_url}{separator}{urlencode(params)}"
 
 
-def apps_download_page_url(lang: str | None = None) -> str:
-    """The public download page, where every client is offered at once.
-
-    No platform is pinned on purpose. The bot cannot see which device the
-    learner is holding; the page can, and it selects the tab from the user
-    agent. A forced `platform=android` would show an iPhone an APK it has no
-    way to install.
-    """
-
-    base_url = _miniapp_base_url_for_file("desktop-download")
-    separator = "&" if "?" in base_url else "?"
-    params = {"lang": normalize_miniapp_lang(lang)}
-    return f"{base_url}{separator}{urlencode(params)}"
-
-
 def admin_miniapp_url() -> str:
     base_url = _miniapp_base_url_for_file("admin.html")
     separator = "&" if "?" in base_url else "?"

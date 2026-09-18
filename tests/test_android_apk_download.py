@@ -16,7 +16,6 @@ page — so everything that can strand a learner happens here:
 import contextlib
 import unittest
 import unittest.mock
-from pathlib import Path
 from types import SimpleNamespace
 
 from sqlalchemy import select
@@ -390,110 +389,6 @@ def _document(file_name: str, *, file_size: int = 3_766_687):
     )
 
 
-class FakeState:
-    """Only what `/start` touches."""
-
-    def __init__(self):
-        self.cleared = 0
-        self.data = {}
-        self.state = None
-
-    async def clear(self):
-        self.cleared += 1
-
-    async def update_data(self, **values):
-        self.data.update(values)
-
-    async def set_state(self, state):
-        self.state = state
-
-
-class DownloadPageDeepLinkTests(DatabaseBackedTest):
-    """`/start android` — the page's Android button, from this side.
-
-    The page serves nothing: it sends the learner back here, and the file has
-    to arrive. The payload also travels the path a referral code travels, so
-    the thing worth pinning is that it never gets read as one — every APK
-    request would otherwise look like an invite.
-    """
-
-    def _command(self, args):
-        from aiogram.filters import CommandObject
-
-        return CommandObject(prefix="/", command="start", args=args)
-
-    async def _run_start(self, session, args, *, bot=None):
-        from app.bot.handlers import start as start_handlers
-
-        message = FakeMessage(user_id=self.TELEGRAM_ID, chat_id=self.CHAT_ID)
-        message.bot = bot or FakeBot()
-        with unittest.mock.patch.object(
-            start_handlers,
-            "_start_conversation",
-            new=unittest.mock.AsyncMock(),
-        ) as conversation:
-            await start_handlers.cmd_start(
-                message, FakeState(), session, self._command(args)
-            )
-        return message.bot, conversation
-
-    async def _onboarded_user(self, session):
-        user = await self._add_user(session, language="uz")
-        user.level = "hsk2"
-        user.learning_mode = "qa"
-        await session.commit()
-        return user
-
-    async def test_the_learner_gets_the_file_and_not_the_start_card(self):
-        async with self.sessions() as session:
-            await self._onboarded_user(session)
-            await self._publish(session)
-
-            bot, conversation = await self._run_start(session, "android")
-
-            conversation.assert_not_awaited()
-            self.assertEqual(len(bot.documents), 1)
-            self.assertEqual(bot.documents[0][1], "BQACAgIAAx")
-            self.assertCountEqual(
-                await self._event_names(session),
-                ["android_apk_requested", "android_apk_sent"],
-            )
-
-    async def test_someone_new_is_onboarded_first_and_still_gets_the_file(self):
-        async with self.sessions() as session:
-            await self._publish(session)
-
-            bot, conversation = await self._run_start(session, "android")
-
-            conversation.assert_awaited_once()
-            self.assertIsNone(conversation.await_args.kwargs["referral_code"])
-            self.assertEqual(len(bot.documents), 1)
-
-    async def test_android_is_never_credited_as_a_referral(self):
-        async with self.sessions() as session:
-            await self._onboarded_user(session)
-            await self._publish(session)
-
-            bot, conversation = await self._run_start(session, "ANDROID")
-
-            # Case is the page's business, not the learner's.
-            conversation.assert_not_awaited()
-            self.assertEqual(len(bot.documents), 1)
-
-    async def test_a_real_referral_code_still_reaches_onboarding(self):
-        async with self.sessions() as session:
-            await self._onboarded_user(session)
-            await self._publish(session)
-
-            bot, conversation = await self._run_start(session, "AB12CD")
-
-            conversation.assert_awaited_once()
-            self.assertEqual(
-                conversation.await_args.kwargs["referral_code"], "AB12CD"
-            )
-            self.assertEqual(bot.documents, [])
-
-
 class AdminPublishingFlowTests(DatabaseBackedTest):
     """The panel, driven the way an admin drives it."""
 
@@ -823,50 +718,50 @@ class WiringTests(unittest.TestCase):
                     self.assertIn(key, TEXTS[language])
                     self.assertTrue(TEXTS[language][key].strip())
 
-    def test_the_profile_reaches_the_download_page_in_every_language(self):
-        from app.bot.handlers.commands import profile_menu_keyboard
+    def test_the_apps_menu_offers_android_in_every_language(self):
+        from app.bot.handlers.android_app import ANDROID_APP_CALLBACK
+        from app.bot.handlers.commands import (
+            APPS_MENU_CALLBACK,
+            apps_menu_keyboard,
+            profile_menu_keyboard,
+        )
+
+        for language in ("uz", "ru", "tj"):
+            with self.subTest(language=language):
+                # The profile reaches the chooser...
+                profile = [
+                    button
+                    for row in profile_menu_keyboard(language).inline_keyboard
+                    for button in row
+                    if button.callback_data == APPS_MENU_CALLBACK
+                ]
+                self.assertEqual(len(profile), 1)
+
+                # ...and the chooser reaches the APK.
+                android = [
+                    button
+                    for row in apps_menu_keyboard(language).inline_keyboard
+                    for button in row
+                    if button.callback_data == ANDROID_APP_CALLBACK
+                ]
+                self.assertEqual(len(android), 1)
+                self.assertEqual(android[0].text, TEXTS[language]["apps_android_button"])
+
+    def test_the_chooser_keeps_both_clients(self):
+        """Android next to the desktop client, not instead of it."""
+
+        from app.bot.handlers.commands import apps_menu_keyboard
 
         for language in ("uz", "ru", "tj"):
             with self.subTest(language=language):
                 buttons = [
                     button
-                    for row in profile_menu_keyboard(language).inline_keyboard
+                    for row in apps_menu_keyboard(language).inline_keyboard
                     for button in row
-                    if button.text == TEXTS[language]["apps_menu_button"]
                 ]
-                self.assertEqual(len(buttons), 1)
-                self.assertIn("/desktop-download", str(buttons[0].url))
-
-    def test_the_page_sends_android_back_to_this_chat(self):
-        """The page must not try to serve the APK itself.
-
-        Nothing of ours holds the file: the bot does, and Telegram carries it.
-        The page's Android button is a deep link into this chat, and the bot
-        side of that link is the payload below.
-        """
-
-        from app.bot.handlers.start import ANDROID_START_PAYLOAD
-
-        script = Path("app/static/desktop-download-page.js").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn(
-            'var ANDROID_CHAT_URL = BOT_URL + "?start=' + ANDROID_START_PAYLOAD + '"',
-            script,
-        )
-        self.assertIn("button.href = ANDROID_CHAT_URL;", script)
-
-    def test_the_page_says_where_the_android_file_arrives_in_every_language(self):
-        script = Path("app/static/desktop-download-page.js").read_text(
-            encoding="utf-8"
-        )
-        # One `androidStatus` per language block; a missing one would leave
-        # that language with `undefined` under the button, and the button now
-        # does something the old "downloading from our server" line does not
-        # describe.
-        self.assertEqual(script.count("androidStatus:"), 3)
-        self.assertEqual(script.count("androidDownload:"), 3)
-        self.assertNotIn('androidDownload: "APK yuklab olish"', script)
+                self.assertEqual(len(buttons), 2)
+                self.assertEqual(sum(1 for b in buttons if b.web_app is not None), 1)
+                self.assertEqual(sum(1 for b in buttons if b.callback_data), 1)
 
     def test_the_admin_panel_button_reaches_a_real_handler(self):
         from app.bot.handlers.admin import admin_menu_keyboard
@@ -935,13 +830,6 @@ command = Message(
     from_user=sender,
     text="/android",
 )
-deep_link = Message(
-    message_id=2,
-    date=datetime.now(timezone.utc),
-    chat=Chat(id=5150, type="private"),
-    from_user=sender,
-    text="/start android",
-)
 
 
 def press(data):
@@ -986,8 +874,7 @@ async def first(observer_name, event):
 
 async def main():
     print(await first("message", command))
-    print(await first("message", deep_link))
-    for data in ("android_app:get", "adm:android_panel"):
+    for data in ("profile_menu:apps", "android_app:get", "adm:android_panel"):
         print(await first("callback_query", press(data)))
 
 
@@ -1005,7 +892,7 @@ asyncio.run(main())
             result.stdout.strip().splitlines()[-4:],
             [
                 "android_command",
-                "cmd_start",
+                "profile_menu_apps",
                 "android_from_button",
                 "android_panel",
             ],
