@@ -718,50 +718,39 @@ class WiringTests(unittest.TestCase):
                     self.assertIn(key, TEXTS[language])
                     self.assertTrue(TEXTS[language][key].strip())
 
-    def test_the_apps_menu_offers_android_in_every_language(self):
-        from app.bot.handlers.android_app import ANDROID_APP_CALLBACK
-        from app.bot.handlers.commands import (
-            APPS_MENU_CALLBACK,
-            apps_menu_keyboard,
-            profile_menu_keyboard,
-        )
+    def test_the_profile_opens_the_card_that_carries_android(self):
+        """The bot's own entry point is one Mini App button now.
 
-        for language in ("uz", "ru", "tj"):
-            with self.subTest(language=language):
-                # The profile reaches the chooser...
-                profile = [
-                    button
-                    for row in profile_menu_keyboard(language).inline_keyboard
-                    for button in row
-                    if button.callback_data == APPS_MENU_CALLBACK
-                ]
-                self.assertEqual(len(profile), 1)
+        The APK is still handed over in this chat — the card's Android chip
+        asks the bot for it and closes — so what the bot has to get right is
+        landing the learner on that card.
+        """
 
-                # ...and the chooser reaches the APK.
-                android = [
-                    button
-                    for row in apps_menu_keyboard(language).inline_keyboard
-                    for button in row
-                    if button.callback_data == ANDROID_APP_CALLBACK
-                ]
-                self.assertEqual(len(android), 1)
-                self.assertEqual(android[0].text, TEXTS[language]["apps_android_button"])
-
-    def test_the_chooser_keeps_both_clients(self):
-        """Android next to the desktop client, not instead of it."""
-
-        from app.bot.handlers.commands import apps_menu_keyboard
+        from app.bot.handlers.commands import profile_menu_keyboard
 
         for language in ("uz", "ru", "tj"):
             with self.subTest(language=language):
                 buttons = [
                     button
-                    for row in apps_menu_keyboard(language).inline_keyboard
+                    for row in profile_menu_keyboard(language).inline_keyboard
                     for button in row
+                    if button.text == TEXTS[language]["apps_menu_button"]
                 ]
-                self.assertEqual(len(buttons), 2)
-                self.assertEqual(sum(1 for b in buttons if b.web_app is not None), 1)
-                self.assertEqual(sum(1 for b in buttons if b.callback_data), 1)
+                self.assertEqual(len(buttons), 1)
+                self.assertIsNotNone(buttons[0].web_app)
+                self.assertIn("desktop_download=1", str(buttons[0].web_app.url))
+
+    def test_the_apk_is_still_one_press_away_from_an_old_keyboard(self):
+        """`/android` and the old chip keep working after the rename."""
+
+        from app.bot.handlers.android_app import ANDROID_APP_CALLBACK, router
+
+        claimed = [
+            handler.callback.__name__
+            for handler in router.observers["callback_query"].handlers
+        ]
+        self.assertIn("android_from_button", claimed)
+        self.assertEqual(ANDROID_APP_CALLBACK, "android_app:get")
 
     def test_the_admin_panel_button_reaches_a_real_handler(self):
         from app.bot.handlers.admin import admin_menu_keyboard

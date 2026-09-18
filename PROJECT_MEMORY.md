@@ -9067,3 +9067,33 @@ Eslatma:
 - Server tomoni `main.py` dagi `/api/miniapp/event` ichida, `subscribe_clicked`
   yonida. Loyihada bu endpoint uchun HTTP-test yo'q, shuning uchun mavjud
   uslubga ergashildi: `main.py` matni ustidan static assert + e2e.
+
+### 2026-09-18 — Bot profilidagi tugma Mini App kartasini ochadi
+
+Foydalanuvchi: chat ichidagi profildagi «ilovalar» tugmasi Mini App'dagi shu
+blok turgan joyni ochsin.
+
+Changed:
+- `profile_menu_keyboard` dagi «📱 HSK AI ilovalari» endi chooser callback
+  emas, **Mini App tugmasi**: `?tab=profile&desktop_download=1` — profil tabi
+  ochiladi va karta fokuslanadi (`focusProfileDownload` mexanizmi allaqachon
+  bor edi, uni eski «💻 Kompyuter» tugmasi ishlatardi).
+- Chooser (`[📱 Android] [💻 Kompyuter]`) olib tashlandi: qurilma tanlash endi
+  kartaning o'zida — uchta chip bir qatorda, Android bosilsa Mini App yopilib
+  fayl chatga tushadi.
+- `APPS_MENU_CALLBACK` handleri **ataylab qoldirildi**: eski profil
+  xabarlaridagi tugma hali ham bosiladi va endi bitta Mini App tugmasi bilan
+  javob beradi (`apps_menu_keyboard` ham shunga qisqardi). `apps_menu_text`
+  uch tilda yangilandi — «qaysi qurilma?» degan savol endi o'rinsiz.
+- `apps_android_button` / `apps_desktop_button` (uz/ru/tj) o'chirildi.
+- `/android` buyrug'i va `android_app:get` callbacki tegilmadi.
+
+Key files:
+- `app/bot/handlers/commands.py`, `app/bot/utils/i18n.py`
+- `tests/test_bot_profile_desktop_cta.py` (qayta yozildi),
+  `tests/test_android_apk_download.py`
+
+Verified:
+- Backend: 1442 passed, 78265 subtests.
+- Playwright: deep-link fokus testi + karta testlari (8 ta) yashil — tugma
+  yuboradigan URL kartani haqiqatan ochadi va fokuslaydi.
