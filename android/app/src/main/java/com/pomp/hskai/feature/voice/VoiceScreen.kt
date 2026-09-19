@@ -395,50 +395,65 @@ internal fun partnerTitleRes(role: String): Int =
 @Composable
 internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
     val isUser = line.speaker == VoiceSpeaker.USER
-    Surface(
-        color = if (isUser) PompColors.CinnabarSoft else PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, if (isUser) PompColors.Cinnabar else PompColors.Divider),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(16.dp)) {
+    if (isUser) {
+        Surface(
+            color = PompColors.CinnabarSoft,
+            shape = RoundedCornerShape(18.dp),
+            border = BorderStroke(1.dp, PompColors.Cinnabar),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            VoiceBubbleBody(line = line, isUser = true, subtitlesOn = subtitlesOn)
+        }
+    } else {
+        HskGlassSurface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            shadowElevation = 5.dp,
+        ) {
+            VoiceBubbleBody(line = line, isUser = false, subtitlesOn = subtitlesOn)
+        }
+    }
+}
+
+@Composable
+private fun VoiceBubbleBody(line: VoiceLine, isUser: Boolean, subtitlesOn: Boolean) {
+    Column(Modifier.padding(16.dp)) {
+        Text(
+            text = if (isUser) stringResource(R.string.voice_you) else stringResource(R.string.voice_ai),
+            style = MaterialTheme.typography.labelLarge,
+            color = if (isUser) PompColors.CinnabarDark else PompColors.Jade,
+        )
+        if (line.hanzi.isNotBlank()) {
             Text(
-                text = if (isUser) stringResource(R.string.voice_you) else stringResource(R.string.voice_ai),
-                style = MaterialTheme.typography.labelLarge,
-                color = if (isUser) PompColors.CinnabarDark else PompColors.Jade,
+                text = line.hanzi,
+                style = PompTextStyles.hanziMedium,
+                color = PompColors.Ink,
             )
-            if (line.hanzi.isNotBlank()) {
-                Text(
-                    text = line.hanzi,
-                    style = PompTextStyles.hanziMedium,
-                    color = PompColors.Ink,
-                )
-            }
-            // Subtitles off means the Chinese stands alone — the learner
-            // is listening, not reading along.
-            if (subtitlesOn && line.pinyin.isNotBlank()) {
-                Text(
-                    text = line.pinyin,
-                    style = PompTextStyles.pinyin,
-                    color = PompColors.InkSecondary,
-                )
-            }
-            if (subtitlesOn || line.hanzi.isBlank()) {
-                Text(
-                    text = line.text.ifBlank { line.translation },
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = PompColors.Ink,
-                )
-            }
-            line.correction?.takeIf { it.isNotBlank() }?.let {
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.voice_correction, it),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.Flame,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
+        }
+        // Subtitles off means the Chinese stands alone — the learner
+        // is listening, not reading along.
+        if (subtitlesOn && line.pinyin.isNotBlank()) {
+            Text(
+                text = line.pinyin,
+                style = PompTextStyles.pinyin,
+                color = PompColors.InkSecondary,
+            )
+        }
+        if (subtitlesOn || line.hanzi.isBlank()) {
+            Text(
+                text = line.text.ifBlank { line.translation },
+                style = MaterialTheme.typography.bodyLarge,
+                color = PompColors.Ink,
+            )
+        }
+        line.correction?.takeIf { it.isNotBlank() }?.let {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.voice_correction, it),
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.Flame,
+                fontWeight = FontWeight.SemiBold,
+            )
         }
     }
 }
