@@ -37,7 +37,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,6 +57,9 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
@@ -406,7 +408,13 @@ private fun ToolRow(
     busy: Boolean = false,
     onClick: () -> Unit,
 ) {
-    Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(16.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth().heightIn(min = 68.dp).clickable(enabled = enabled, onClick = onClick)) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth().heightIn(min = 68.dp),
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 6.dp,
+        onClick = onClick,
+        enabled = enabled,
+    ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Surface(color = tint.background, shape = RoundedCornerShape(13.dp), modifier = Modifier.size(46.dp)) {
                 Box(contentAlignment = Alignment.Center) {
@@ -461,7 +469,11 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.examIndex + 1, session.questions.size), onCancel) {
-        Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+        HskGlassSurface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            shadowElevation = 7.dp,
+        ) {
             Column(Modifier.padding(18.dp)) {
                 QuestionText(question.prompt, question.sentence, "", question.audioText, state.isReviewAudioLoading, onSpeak)
                 Spacer(Modifier.height(14.dp))
@@ -486,7 +498,11 @@ private fun ExamSummary(state: PracticeUiState, onDone: () -> Unit) {
         Spacer(Modifier.height(10.dp))
         result.sectionScores.forEach { (section, score) ->
             if (score.total > 0) {
-                Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(14.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+                HskGlassSurface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    shadowElevation = 4.dp,
+                ) {
                     Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(stringResource(examSectionLabel(section)), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, modifier = Modifier.weight(1f))
                         Text("${score.score}/${score.total}", style = MaterialTheme.typography.bodyMedium, color = PompColors.Ink)
@@ -509,7 +525,10 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
     Column(Modifier.fillMaxSize().padding(20.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
-            OutlinedButton(onClick = onCancel, shape = RoundedCornerShape(12.dp)) { Text(stringResource(R.string.action_close)) }
+            HskGlassButton(
+                text = stringResource(R.string.action_close),
+                onClick = onCancel,
+            )
         }
         Spacer(Modifier.height(16.dp)); content()
     }
@@ -517,7 +536,11 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
 
 @Composable
 private fun PracticeQuestionCard(question: PracticeQuestionDto, selectedIndex: Int?, isAudioLoading: Boolean, onSpeak: (String) -> Unit, onSelect: (Int) -> Unit) {
-    Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 7.dp,
+    ) {
         Column(Modifier.padding(18.dp)) {
             QuestionText(question.prompt, question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
             Spacer(Modifier.height(14.dp))
@@ -535,7 +558,11 @@ private fun PracticeQuestionCard(question: PracticeQuestionDto, selectedIndex: I
 
 @Composable
 private fun ReviewQuestionCard(question: MistakeReviewQuestionDto, selectedIndex: Int?, feedback: MistakeReviewAnswerResponse?, isAudioLoading: Boolean, onSpeak: (String) -> Unit, onSelect: (Int) -> Unit) {
-    Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 7.dp,
+    ) {
         Column(Modifier.padding(18.dp)) {
             QuestionText(question.prompt, question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
             Spacer(Modifier.height(14.dp))
@@ -623,7 +650,12 @@ private fun OptionRow(text: String, selected: Boolean, correct: Boolean, wrong: 
 @Composable
 private fun PrimaryAction(text: String, enabled: Boolean, onClick: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp), shape = RoundedCornerShape(14.dp), colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper)) { Text(text) }
+    HskPrimaryButton(
+        text = text,
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
@@ -636,7 +668,11 @@ private fun PracticeSummary(state: PracticeUiState, onDone: () -> Unit) {
         onDone = onDone,
     ) {
         result.wrongItems.take(4).forEach { item ->
-            Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(14.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+            HskGlassSurface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                shadowElevation = 4.dp,
+            ) {
                 Column(Modifier.padding(12.dp)) {
                     Text(item.question, style = MaterialTheme.typography.bodyMedium, color = PompColors.Ink)
                     Text("✓ ${item.correctAnswer}", style = MaterialTheme.typography.bodyMedium, color = PompColors.Jade)
