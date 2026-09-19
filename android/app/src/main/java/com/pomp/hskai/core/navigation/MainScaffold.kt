@@ -1,6 +1,7 @@
 package com.pomp.hskai.core.navigation
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Map
@@ -28,6 +30,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -36,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.feature.update.AppUpdateBanner
 
 enum class MainTab(val labelRes: Int, val icon: ImageVector) {
@@ -79,29 +85,37 @@ fun MainScaffold(
         bottomBar = {
             Column {
                 // An install two releases behind is told so here: above the
-                // tabs, on every main screen, and never inside a lesson. The
-                // direct channel draws it; the Play build draws nothing.
-                AppUpdateBanner()
-                Surface(
-                    color = PompColors.PaperRaised,
-                    border = BorderStroke(1.dp, PompColors.Divider),
+                // tabs, on every main screen, and never inside a lesson. It
+                // takes the pill's own margin so the two read as one block.
+                // The direct channel draws it; the Play build draws nothing.
+                AppUpdateBanner(modifier = Modifier.padding(horizontal = 12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(94.dp)
-                            .padding(horizontal = 4.dp, vertical = 8.dp)
-                            .navigationBarsPadding(),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    HskGlassSurface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(28.dp),
+                        shadowElevation = 14.dp,
                     ) {
-                        tabs.forEach { tab ->
-                            NavItem(
-                                tab = tab,
-                                selected = selectedTab == tab,
-                                onClick = { onTabSelected(tab) },
-                                modifier = Modifier.weight(1f),
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(82.dp)
+                                .padding(horizontal = 6.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                        ) {
+                            tabs.forEach { tab ->
+                                NavItem(
+                                    tab = tab,
+                                    selected = selectedTab == tab,
+                                    onClick = { onTabSelected(tab) },
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
                     }
                 }
@@ -121,32 +135,66 @@ private fun NavItem(
 ) {
     val label = stringResource(tab.labelRes)
     val tint = if (selected) PompColors.Cinnabar else PompColors.InkDisabled
+    val itemShape = RoundedCornerShape(18.dp)
+    val selectedBackground = if (selected && !tab.isCentre) {
+        PompColors.CinnabarSoft.copy(alpha = if (PompColors.IsDark) 0.72f else 0.78f)
+    } else {
+        Color.Transparent
+    }
 
     Column(
         modifier = modifier
+            .then(if (tab.isCentre) Modifier.offset(y = (-8).dp) else Modifier)
+            .padding(horizontal = 2.dp)
+            .clip(itemShape)
+            .background(selectedBackground)
             .selectable(
                 selected = selected,
                 role = Role.Tab,
                 onClick = onClick,
             )
-            .then(if (tab.isCentre) Modifier.offset(y = (-8).dp) else Modifier),
+            .padding(vertical = if (tab.isCentre) 0.dp else 7.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Center,
     ) {
         if (tab.isCentre) {
-            Surface(
-                modifier = Modifier.size(58.dp),
-                shape = CircleShape,
-                color = PompColors.Cinnabar,
-                border = BorderStroke(4.dp, PompColors.PaperRaised),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = tab.icon,
-                        contentDescription = null,
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(24.dp),
-                    )
+            Box(contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .size(62.dp)
+                        .background(
+                            color = PompColors.Cinnabar.copy(alpha = 0.12f),
+                            shape = CircleShape,
+                        ),
+                )
+                Surface(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .shadow(
+                            elevation = 10.dp,
+                            shape = CircleShape,
+                            ambientColor = PompColors.Cinnabar.copy(alpha = 0.20f),
+                            spotColor = PompColors.Cinnabar.copy(alpha = 0.30f),
+                        ),
+                    shape = CircleShape,
+                    color = PompColors.Cinnabar,
+                    border = BorderStroke(
+                        3.dp,
+                        if (PompColors.IsDark) {
+                            PompColors.PaperRaised.copy(alpha = 0.92f)
+                        } else {
+                            Color.White.copy(alpha = 0.90f)
+                        },
+                    ),
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = tab.icon,
+                            contentDescription = null,
+                            tint = PompColors.Paper,
+                            modifier = Modifier.size(23.dp),
+                        )
+                    }
                 }
             }
             Text(
@@ -156,19 +204,19 @@ private fun NavItem(
                 color = PompColors.Cinnabar,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 1.dp),
             )
         } else {
             Icon(
                 imageVector = tab.icon,
                 contentDescription = null,
                 tint = tint,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(21.dp),
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                fontSize = 11.sp,
+                fontSize = 10.5.sp,
                 color = tint,
                 maxLines = 1,
                 textAlign = TextAlign.Center,

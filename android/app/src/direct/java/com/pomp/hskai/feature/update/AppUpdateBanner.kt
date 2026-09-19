@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.Icon
@@ -134,6 +135,10 @@ internal fun UpdateBannerContent(
     Surface(
         onClick = onClick,
         color = PompColors.CinnabarSoft,
+        // Rounded like the tab pill it sits above, and inset by the same
+        // margin, so the two read as one block rather than a strip glued to
+        // a floating bar.
+        shape = RoundedCornerShape(20.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = modifier.fillMaxWidth(),
     ) {

@@ -4,7 +4,6 @@ import com.pomp.hskai.core.network.ApiError
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,12 +31,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,6 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassIconButton
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
@@ -80,37 +79,21 @@ internal fun PrimaryAction(
     onClick: () -> Unit,
     enabled: Boolean = true,
 ) {
-    Button(
+    HskPrimaryButton(
+        text = text,
         onClick = onClick,
         enabled = enabled,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 52.dp),
-        shape = RoundedCornerShape(14.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = PompColors.Cinnabar,
-            contentColor = PompColors.Paper,
-        ),
-    ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
-    }
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
 internal fun SecondaryAction(text: String, onClick: () -> Unit) {
-    OutlinedButton(
+    HskGlassButton(
+        text = text,
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 48.dp),
-        shape = RoundedCornerShape(14.dp),
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelLarge,
-            color = PompColors.InkSecondary,
-        )
-    }
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
@@ -136,7 +119,7 @@ fun LessonScreen(
     val outcome = state.outcome
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
-            state.isLoading -> Centered { CircularProgressIndicator(color = PompColors.Cinnabar) }
+            state.isLoading -> Centered { HskBrandLoader() }
             state.lesson == null -> Centered {
                 Text(
                     text = (state.error as? ApiError.LimitReached)?.limitText
@@ -377,17 +360,14 @@ private fun LessonTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(11.dp),
     ) {
-        Surface(
+        HskGlassIconButton(
+            icon = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.action_close),
             onClick = onExit,
-            shape = CircleShape,
-            color = PompColors.PaperRaised,
-            border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier.size(30.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Close, stringResource(R.string.action_close), tint = PompColors.InkSecondary, modifier = Modifier.size(17.dp))
-            }
-        }
+            size = 30.dp,
+            iconSize = 17.dp,
+            tint = PompColors.InkSecondary,
+        )
 
         val animatedProgress by animateFloatAsState(
             targetValue = progress.coerceIn(0f, 1f),
@@ -402,11 +382,14 @@ private fun LessonTopBar(
             )
         }
 
-        Surface(onClick = onOpenPinyinSettings, shape = CircleShape, color = Color.Transparent, modifier = Modifier.size(30.dp)) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Settings, stringResource(R.string.lesson_pinyin_title), tint = PompColors.InkDisabled, modifier = Modifier.size(17.dp))
-            }
-        }
+        HskGlassIconButton(
+            icon = Icons.Filled.Settings,
+            contentDescription = stringResource(R.string.lesson_pinyin_title),
+            onClick = onOpenPinyinSettings,
+            size = 30.dp,
+            iconSize = 17.dp,
+            tint = PompColors.InkDisabled,
+        )
 
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
             Icon(Icons.Filled.Favorite, contentDescription = null, tint = heartColor, modifier = Modifier.size(15.dp))

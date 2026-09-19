@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.WorkspacePremium
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -53,6 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskContentSkeleton
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.hint.SectionHint
@@ -127,25 +129,24 @@ fun RatingScreen(
                 }
             }
 
-            if (state.tab == RatingTab.LEAGUE) {
+            if (state.tab == RatingTab.LEAGUE && rating != null) {
                 item {
                     LeagueCard(
-                        league = rating?.league.orEmpty(),
-                        memberCount = rating?.leagueSize ?: 0,
-                        resetSeconds = rating?.weeklyResetSeconds ?: 0,
+                        league = rating.league,
+                        memberCount = rating.leagueSize,
+                        resetSeconds = rating.weeklyResetSeconds,
                     )
                 }
-                item { LeagueLadder(rating?.league.orEmpty()) }
+                item { LeagueLadder(rating.league) }
             }
 
             if (state.isLoading) {
                 item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator(color = PompColors.Cinnabar)
-                    }
+                    HskContentSkeleton(
+                        rows = 4,
+                        compact = true,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    )
                 }
             }
 
@@ -226,12 +227,11 @@ fun RatingScreen(
 @Composable
 private fun ChallengeBell(pendingCount: Int, onClick: () -> Unit) {
     Box {
-        Surface(
-            onClick = onClick,
-            shape = CircleShape,
-            color = PompColors.PaperRaised,
-            border = BorderStroke(1.dp, PompColors.Divider),
+        HskGlassSurface(
             modifier = Modifier.size(44.dp),
+            shape = CircleShape,
+            shadowElevation = 5.dp,
+            onClick = onClick,
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
@@ -383,11 +383,10 @@ fun RatingUserScreen(
                 }
             }
             item {
-                Surface(
-                    color = PompColors.PaperRaised,
-                    shape = RoundedCornerShape(18.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
+                HskGlassSurface(
                     modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    shadowElevation = 8.dp,
                 ) {
                     Row(modifier = Modifier.padding(vertical = 16.dp)) {
                         ProfileMetric(
@@ -441,11 +440,7 @@ fun RatingUserScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         if (isChallengeBusy) {
-                                            CircularProgressIndicator(
-                                                color = PompColors.Cinnabar,
-                                                strokeWidth = 2.dp,
-                                                modifier = Modifier.size(18.dp),
-                                            )
+                                            HskBrandLoader(compact = true)
                                             Spacer(Modifier.width(9.dp))
                                         }
                                         Text(
@@ -462,13 +457,11 @@ fun RatingUserScreen(
                                 }
                             }
                             if (user.username.isNotBlank()) {
-                                Surface(
-                                    onClick = { onMessage(user.username) },
+                                HskGlassSurface(
                                     modifier = Modifier.size(52.dp),
                                     shape = RoundedCornerShape(14.dp),
-                                    color = PompColors.PaperRaised,
-                                    contentColor = PompColors.Ink,
-                                    border = BorderStroke(1.dp, PompColors.Divider),
+                                    shadowElevation = 5.dp,
+                                    onClick = { onMessage(user.username) },
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
                                         Icon(
@@ -503,12 +496,11 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            onClick = onBack,
-            shape = CircleShape,
-            color = PompColors.PaperRaised,
-            border = BorderStroke(1.dp, PompColors.Divider),
+        HskGlassSurface(
             modifier = Modifier.size(44.dp),
+            shape = CircleShape,
+            shadowElevation = 5.dp,
+            onClick = onBack,
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
@@ -739,11 +731,10 @@ private fun SectionPill(
 
 @Composable
 private fun TabSwitch(selected: RatingTab, onSelect: (RatingTab) -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        shadowElevation = 5.dp,
     ) {
         Row(modifier = Modifier.padding(4.dp)) {
             TabButton(
@@ -788,11 +779,10 @@ private fun TabButton(
 
 @Composable
 private fun LeagueCard(league: String, memberCount: Int, resetSeconds: Long) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 7.dp,
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -1060,11 +1050,10 @@ private fun ActiveChallengeRow(duel: ChallengeDto, onStart: (ChallengeDto) -> Un
 
 @Composable
 private fun ChallengeCard(name: String, actions: @Composable RowScope.() -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        shadowElevation = 5.dp,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
@@ -1151,11 +1140,10 @@ private fun FriendStats(invited: Int, activated: Int, required: Int) {
 
 @Composable
 private fun RowScope.FriendStat(value: String, label: String) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(13.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.weight(1f),
+        shape = RoundedCornerShape(13.dp),
+        shadowElevation = 4.dp,
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 10.dp),
@@ -1313,11 +1301,10 @@ private fun InitialsAvatar(name: String) {
 
 @Composable
 private fun EmptyBlock(text: String) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 5.dp,
     ) {
         Text(
             text = text,

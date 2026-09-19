@@ -1,9 +1,7 @@
 package com.pomp.hskai.feature.dictionary
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -31,11 +28,9 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -50,6 +45,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskContentSkeleton
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.hanzi.StrokeAnimation
 import com.pomp.hskai.data.repository.DictionaryWord
@@ -135,7 +134,7 @@ private fun DictionaryList(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
         )
         when {
-            state.isLoading && state.words.isEmpty() -> LoadingBox()
+            state.isLoading && state.words.isEmpty() -> DictionarySkeleton()
             state.isUnavailable -> DictionaryMessage(
                 stringResource(state.error?.messageRes ?: R.string.dictionary_unavailable),
                 onRetry,
@@ -181,17 +180,15 @@ private fun DictionaryDetail(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Surface(
-                    color = PompColors.PaperRaised,
-                    shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
+                HskGlassSurface(
                     modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    shadowElevation = 8.dp,
                 ) {
                     Box(Modifier.fillMaxWidth().aspectRatio(1f)) {
                         WriterGrid(Modifier.fillMaxSize())
                         when {
-                            state.isStrokeLoading -> CircularProgressIndicator(
-                                color = PompColors.Cinnabar,
+                            state.isStrokeLoading -> HskBrandLoader(
                                 modifier = Modifier.align(Alignment.Center),
                             )
                             state.strokes.isNotEmpty() -> StrokeAnimation(
@@ -215,7 +212,11 @@ private fun DictionaryDetail(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        OutlinedButton(onClick = onPreviousCharacter, enabled = state.characterIndex > 0) { Text("‹") }
+                        HskGlassButton(
+                            text = "‹",
+                            onClick = onPreviousCharacter,
+                            enabled = state.characterIndex > 0,
+                        )
                         Text(
                             stringResource(
                                 R.string.dictionary_character_position,
@@ -224,10 +225,11 @@ private fun DictionaryDetail(
                             ),
                             color = PompColors.InkSecondary,
                         )
-                        OutlinedButton(
+                        HskGlassButton(
+                            text = "›",
                             onClick = onNextCharacter,
                             enabled = state.characterIndex < state.characters.lastIndex,
-                        ) { Text("›") }
+                        )
                     }
                 }
                 Row(
@@ -264,7 +266,7 @@ private fun DictionaryDetail(
                     Surface(color = PompColors.CinnabarSoft, shape = CircleShape) {
                         IconButton(onClick = onPlayAudio, enabled = !state.isAudioLoading) {
                             if (state.isAudioLoading) {
-                                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = PompColors.CinnabarDark)
+                                HskBrandLoader(compact = true)
                             } else {
                                 Icon(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.dictionary_listen), tint = PompColors.CinnabarDark)
                             }
@@ -287,16 +289,18 @@ private fun DictionaryDetail(
                 PracticeRow(Icons.Filled.Mic, stringResource(R.string.practice_pronunciation_row_title), onOpenPronunciation)
                 Spacer(Modifier.height(18.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    OutlinedButton(
+                    HskGlassButton(
+                        text = stringResource(R.string.dictionary_previous_word),
                         onClick = onPreviousWord,
                         enabled = state.words.indexOfFirst { it.hanzi == word.hanzi } > 0,
-                        modifier = Modifier.weight(1f).heightIn(min = 48.dp),
-                    ) { Text(stringResource(R.string.dictionary_previous_word)) }
-                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                    )
+                    HskGlassButton(
+                        text = stringResource(R.string.dictionary_next_word),
                         onClick = onNextWord,
                         enabled = state.words.indexOfFirst { it.hanzi == word.hanzi } in 0 until state.words.lastIndex,
-                        modifier = Modifier.weight(1f).heightIn(min = 48.dp),
-                    ) { Text(stringResource(R.string.dictionary_next_word)) }
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         }
@@ -316,11 +320,11 @@ private fun WriterGrid(modifier: Modifier = Modifier) {
 
 @Composable
 private fun PracticeRow(icon: ImageVector, title: String, onClick: () -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        shadowElevation = 5.dp,
+        onClick = onClick,
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, null, tint = PompColors.CinnabarDark)
@@ -346,11 +350,11 @@ private fun DictionaryHeader(onBack: () -> Unit, title: String, total: Int) {
 
 @Composable
 private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        shadowElevation = 5.dp,
+        onClick = onClick,
     ) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(word.hanzi, style = PompTextStyles.hanziSmall, color = PompColors.Ink)
@@ -369,8 +373,14 @@ private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
 }
 
 @Composable
-private fun LoadingBox() = Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    CircularProgressIndicator(color = PompColors.Cinnabar)
+private fun DictionarySkeleton() {
+    HskContentSkeleton(
+        rows = 6,
+        compact = true,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+    )
 }
 
 @Composable
@@ -383,9 +393,10 @@ private fun DictionaryMessage(text: String, onRetry: (() -> Unit)?) {
         Text(text, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         if (onRetry != null) {
             Spacer(Modifier.height(16.dp))
-            OutlinedButton(onClick = onRetry, modifier = Modifier.heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-                Text(stringResource(R.string.action_retry), color = PompColors.CinnabarDark)
-            }
+            HskGlassButton(
+                text = stringResource(R.string.action_retry),
+                onClick = onRetry,
+            )
         }
     }
 }

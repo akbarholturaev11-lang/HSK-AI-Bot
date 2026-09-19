@@ -71,6 +71,8 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.design.components.HskGlassIconButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 import com.pomp.hskai.data.api.VoiceSuggestionDto
 import com.pomp.hskai.data.api.VoiceWordDto
@@ -317,11 +319,15 @@ private fun CallChat(
     LaunchedEffect(state.lines.size) {
         if (state.lines.isNotEmpty()) listState.animateScrollToItem(state.lines.lastIndex)
     }
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = modifier.padding(top = 6.dp),
+        shape = RoundedCornerShape(
+            topStart = 22.dp,
+            topEnd = 22.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp,
+        ),
+        shadowElevation = 7.dp,
     ) {
         if (state.lines.isEmpty()) {
             Box(
@@ -334,7 +340,7 @@ private fun CallChat(
                     color = PompColors.InkDisabled,
                 )
             }
-            return@Surface
+            return@HskGlassSurface
         }
         LazyColumn(
             state = listState,
@@ -364,10 +370,15 @@ private fun CallDock(
     onMic: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    Surface(
-        color = PompColors.PaperRaised,
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(
+            topStart = 20.dp,
+            topEnd = 20.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp,
+        ),
+        shadowElevation = 10.dp,
     ) {
         Column(
             modifier = Modifier
@@ -625,14 +636,13 @@ private fun HintRow(
     meaning: String,
     onClick: () -> Unit,
 ) {
-    Surface(
-        onClick = onClick,
-        shape = RoundedCornerShape(14.dp),
-        color = PompColors.Paper,
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp),
+        shape = RoundedCornerShape(14.dp),
+        shadowElevation = 4.dp,
+        onClick = onClick,
     ) {
         Column(modifier = Modifier.padding(horizontal = 13.dp, vertical = 11.dp)) {
             Text(
@@ -716,14 +726,13 @@ private fun CallSettingsSheet(
 
 @Composable
 private fun CallSettingRow(label: String, value: String, onClick: () -> Unit) {
-    Surface(
-        onClick = onClick,
-        color = PompColors.Paper,
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(14.dp),
+        shadowElevation = 4.dp,
+        onClick = onClick,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),

@@ -66,6 +66,8 @@ import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.navigation.DeepLinkRouter
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -255,10 +257,21 @@ fun AssistantModalBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
-    containerColor: Color = PompColors.Paper,
+    containerColor: Color = PompColors.PaperRaised.copy(
+        alpha = if (PompColors.IsDark) 0.92f else 0.86f,
+    ),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    ModalBottomSheet(onDismissRequest, modifier, sheetState = sheetState, containerColor = containerColor) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        sheetState = sheetState,
+        containerColor = containerColor,
+        scrimColor = PompColors.Overlay.copy(alpha = if (PompColors.IsDark) 0.42f else 0.28f),
+        tonalElevation = 0.dp,
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        dragHandle = { AssistantDragHandle() },
+    ) {
         content()
         val binding = LocalAssistant.current
         val state = binding?.controller?.state?.collectAsStateWithLifecycle()?.value
@@ -372,7 +385,11 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
         // Full screen must still stop below the clock and the camera cutout.
         modifier = Modifier.statusBarsPadding(),
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = PompColors.Paper,
+        containerColor = PompColors.PaperRaised.copy(
+            alpha = if (PompColors.IsDark) 0.92f else 0.86f,
+        ),
+        scrimColor = PompColors.Overlay.copy(alpha = if (PompColors.IsDark) 0.42f else 0.28f),
+        tonalElevation = 0.dp,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         // A real handle is what makes the swipe-down-to-close gesture reachable.
         dragHandle = { AssistantDragHandle() },
@@ -420,10 +437,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                             tint = if (inspect) PompColors.Cinnabar else PompColors.InkDisabled)
                     }
                 }
-                if (inspect) Surface(
-                    color = PompColors.PaperRaised, shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
+                if (inspect) HskGlassSurface(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    shadowElevation = 4.dp,
                 ) {
                     Text(screen.details.ifBlank { screen.title },
                         Modifier.heightIn(max = 132.dp).verticalScroll(rememberScrollState()).padding(12.dp),
@@ -556,9 +573,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Surface(
-                    shape = RoundedCornerShape(24.dp), color = PompColors.PaperRaised,
-                    border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.weight(1f),
+                HskGlassSurface(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(24.dp),
+                    shadowElevation = 4.dp,
                 ) {
                     Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
                         IconButton(
@@ -595,7 +613,7 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                     modifier = Modifier.size(46.dp),
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        if (state.busy || preparing) CircularProgressIndicator(Modifier.size(19.dp), color = PompColors.InkSecondary, strokeWidth = 2.dp)
+                        if (state.busy || preparing) HskBrandLoader(compact = true)
                         else Icon(Icons.AutoMirrored.Filled.Send, stringResource(R.string.assistant_send), Modifier.size(19.dp),
                             tint = if (canSend) PompColors.Paper else PompColors.InkDisabled)
                     }
@@ -687,12 +705,10 @@ private fun AssistantAnswerFrame(content: @Composable ColumnScope.() -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
         AssistantAvatar(28.dp)
         Spacer(Modifier.width(8.dp))
-        Surface(
-            color = PompColors.PaperRaised,
-            contentColor = PompColors.Ink,
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 20.dp, bottomStart = 6.dp),
-            border = BorderStroke(1.dp, PompColors.Divider),
+        HskGlassSurface(
             modifier = Modifier.widthIn(max = bubbleMaxWidth()),
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 20.dp, bottomStart = 6.dp),
+            shadowElevation = 4.dp,
         ) {
             Column(Modifier.padding(horizontal = 14.dp, vertical = 11.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
         }

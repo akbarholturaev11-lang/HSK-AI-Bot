@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -67,6 +66,8 @@ import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.feature.update.AppUpdateCard
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -202,7 +203,7 @@ fun ProfileScreen(
             if (state.isLoading) {
                 item {
                     Box(Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = PompColors.Cinnabar, strokeWidth = 2.dp)
+                        HskBrandLoader(compact = true)
                     }
                 }
             }
@@ -258,11 +259,10 @@ private fun ProfilePill() {
 private fun ProfileHero(account: LinkedAccount, state: ProfileUiState, courseUser: CourseUser?) {
     val profile = state.profile
     var avatarNoteOpen by remember { mutableStateOf(false) }
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = 10.dp,
     ) {
         Row(modifier = Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
             val photo = courseUser?.avatarUrl?.let { MediaUrl.resolve(it, BuildConfig.API_ORIGIN) }
@@ -328,11 +328,10 @@ private fun AvatarNoteSheet(onDismiss: () -> Unit) {
 private fun DailyGoalCard(dailyXp: Int, dailyGoal: Int, streak: Int, onOpenGoal: () -> Unit) {
     val remaining = (dailyGoal - dailyXp).coerceAtLeast(0)
     val percent = if (dailyGoal > 0) ((dailyXp.toFloat() / dailyGoal) * 100).toInt().coerceIn(0, 100) else 0
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 8.dp,
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             GoalRing(dailyXp = dailyXp, dailyGoal = dailyGoal, onClick = onOpenGoal, size = 58.dp)
@@ -366,7 +365,11 @@ private fun StatsGrid(state: ProfileUiState) {
 
 @Composable
 private fun StatCard(label: String, value: String, modifier: Modifier = Modifier) {
-    Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(16.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = modifier) {
+    HskGlassSurface(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 6.dp,
+    ) {
         Column(Modifier.padding(14.dp)) {
             Text(value, style = MaterialTheme.typography.headlineSmall, color = PompColors.Ink)
             Text(label, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
@@ -379,7 +382,12 @@ private fun StatCard(label: String, value: String, modifier: Modifier = Modifier
 // so that it looks like every other row here rather than inventing a
 // second visual language for one message.
 internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTint: Color, title: String, subtitle: String?, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(onClick = onClick, color = PompColors.PaperRaised, shape = RoundedCornerShape(16.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = modifier.fillMaxWidth()) {
+    HskGlassSurface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 7.dp,
+        onClick = onClick,
+    ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp)) {
             Surface(color = iconBackground, shape = RoundedCornerShape(13.dp), modifier = Modifier.size(46.dp)) {
                 Box(contentAlignment = Alignment.Center) { Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(22.dp)) }
@@ -423,7 +431,11 @@ private fun SubscriptionCard(state: ProfileUiState) {
 @Composable
 private fun ReferralCard(state: ProfileUiState) {
     val referral = state.referral
-    Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.fillMaxWidth()) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 8.dp,
+    ) {
         Column(Modifier.padding(16.dp)) {
             Text(stringResource(R.string.profile_referral_title), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
             Text(stringResource(R.string.profile_referral_progress, referral?.activated ?: 0, referral?.trialRequired ?: 0), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)

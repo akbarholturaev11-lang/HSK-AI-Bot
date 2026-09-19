@@ -36,7 +36,6 @@ import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.TrackChanges
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -67,6 +66,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.courseAssistantContext
@@ -107,7 +110,7 @@ fun CourseScreen(
                 state.isLoading && map == null -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
-                ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
+                ) { HskBrandLoader() }
 
                 map == null -> CourseErrorBlock(
                     messageRes = state.error?.messageRes ?: R.string.error_unknown,
@@ -269,10 +272,9 @@ private fun StatChip(
     value: String,
     label: String,
 ) {
-    Surface(
-        color = PompColors.PaperRaised,
+    HskGlassSurface(
         shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+        shadowElevation = 4.dp,
     ) {
         Row(
             modifier = Modifier
@@ -379,33 +381,47 @@ private fun UnitHeader(unit: CourseUnit) {
                 shape = shape,
             )
         )
-    Surface(
-        color = if (unit.isLocked) PompColors.PaperRaised else Color.Transparent,
-        shape = shape,
-        border = if (unit.isLocked) BorderStroke(1.dp, PompColors.Divider) else null,
-        modifier = bannerModifier,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
-            verticalAlignment = Alignment.CenterVertically,
+    if (unit.isLocked) {
+        HskGlassSurface(
+            modifier = bannerModifier,
+            shape = shape,
+            shadowElevation = 5.dp,
         ) {
-            Text(
-                text = unit.title.ifBlank { unit.number.toString() },
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 15.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                color = foreground,
-                modifier = Modifier.weight(1f),
-                maxLines = 2,
-            )
-            MiniAppNodeIcon(
-                kind = if (unit.isLocked) CourseNodeIconKind.Lock else CourseNodeIconKind.Book2,
-                tint = foreground.copy(alpha = 0.85f),
-                size = 18.dp,
-            )
+            UnitHeaderBody(unit = unit, foreground = foreground)
         }
+    } else {
+        Surface(
+            color = Color.Transparent,
+            shape = shape,
+            modifier = bannerModifier,
+        ) {
+            UnitHeaderBody(unit = unit, foreground = foreground)
+        }
+    }
+}
+
+@Composable
+private fun UnitHeaderBody(unit: CourseUnit, foreground: Color) {
+    Row(
+        modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = unit.title.ifBlank { unit.number.toString() },
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontSize = 15.sp,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+            ),
+            color = foreground,
+            modifier = Modifier.weight(1f),
+            maxLines = 2,
+        )
+        MiniAppNodeIcon(
+            kind = if (unit.isLocked) CourseNodeIconKind.Lock else CourseNodeIconKind.Book2,
+            tint = foreground.copy(alpha = 0.85f),
+            size = 18.dp,
+        )
     }
 }
 
@@ -568,6 +584,11 @@ private fun PathRow(
 
 @Composable
 private fun CurrentBubble() {
+    val bubbleFill = if (PompColors.IsDark) {
+        PompColors.PaperRaised.copy(alpha = 0.88f)
+    } else {
+        Color.White.copy(alpha = 0.72f)
+    }
     Box(
         // `unbounded` ATAYLAB: pufakcha tugun qutisidan (76dp) kengroq va usiz
         // matn ikki qatorga bo'linib kesiladi. Mini App'da `white-space:nowrap`
@@ -577,10 +598,10 @@ private fun CurrentBubble() {
             .wrapContentSize(unbounded = true),
         contentAlignment = Alignment.Center,
     ) {
-        Surface(
-            color = PompColors.PaperRaised,
+        HskGlassSurface(
             shape = RoundedCornerShape(20.dp),
-            border = BorderStroke(1.dp, PompColors.Cinnabar),
+            shadowElevation = 5.dp,
+            borderColor = PompColors.Cinnabar,
         ) {
             Text(
                 text = stringResource(R.string.today_continue).uppercase(),
@@ -603,7 +624,7 @@ private fun CurrentBubble() {
                 lineTo(size.width, 0f)
                 close()
             }
-            drawPath(path, color = PompColors.PaperRaised)
+            drawPath(path, color = bubbleFill)
             drawLine(
                 color = PompColors.Cinnabar,
                 start = Offset(0f, 0f),
@@ -767,11 +788,7 @@ private fun ChestNodeFace(opening: Boolean) {
         ) {
             Box(contentAlignment = Alignment.Center) {
                 if (opening) {
-                    CircularProgressIndicator(
-                        color = PompColors.Gold,
-                        strokeWidth = 3.dp,
-                        modifier = Modifier.size(26.dp),
-                    )
+                    HskBrandLoader(compact = true)
                 } else {
                     MiniAppLessonNodeIcon(
                         kind = CourseNodeIconKind.Gift,
@@ -847,6 +864,11 @@ private fun PathPanda(
     animationDelayMillis: Int,
     modifier: Modifier = Modifier,
 ) {
+    val bubbleFill = if (PompColors.IsDark) {
+        PompColors.PaperRaised.copy(alpha = 0.88f)
+    } else {
+        Color.White.copy(alpha = 0.72f)
+    }
     Box(modifier = modifier.size(72.dp), contentAlignment = Alignment.Center) {
         CoursePandaMascot(
             modifier = Modifier.size(72.dp),
@@ -857,10 +879,9 @@ private fun PathPanda(
                 .align(if (leftBubble) Alignment.TopStart else Alignment.TopEnd)
                 .offset(y = (-28).dp),
         ) {
-            Surface(
-                color = PompColors.PaperRaised,
+            HskGlassSurface(
                 shape = RoundedCornerShape(14.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
+                shadowElevation = 4.dp,
             ) {
                 Text(
                     text = text,
@@ -890,7 +911,7 @@ private fun PathPanda(
                     lineTo(size.width, size.height / 2f)
                     close()
                 }
-                drawPath(path, color = PompColors.PaperRaised)
+                drawPath(path, color = bubbleFill)
                 drawLine(
                     PompColors.Divider,
                     Offset(size.width / 2f, size.height),
@@ -915,10 +936,10 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Surface(
-                color = PompColors.Paper,
-                shape = RoundedCornerShape(22.dp),
+            HskGlassSurface(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp),
+                shape = RoundedCornerShape(22.dp),
+                shadowElevation = 16.dp,
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 22.dp, vertical = 24.dp),
@@ -935,23 +956,11 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
                         fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.height(18.dp))
-                    Surface(
-                        color = PompColors.Cinnabar,
-                        shape = RoundedCornerShape(14.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 50.dp)
-                            .clickable(onClick = onContinue),
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = stringResource(R.string.action_continue),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = PompColors.Paper,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                        }
-                    }
+                    HskPrimaryButton(
+                        text = stringResource(R.string.action_continue),
+                        onClick = onContinue,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
         }
@@ -972,17 +981,10 @@ private fun CourseErrorBlock(messageRes: Int, onRetry: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(16.dp))
-        androidx.compose.material3.OutlinedButton(
+        HskGlassButton(
+            text = stringResource(R.string.action_retry),
             onClick = onRetry,
-            modifier = Modifier.heightIn(min = 48.dp),
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(
-                stringResource(R.string.action_retry),
-                style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
-            )
-        }
+        )
     }
 }
 

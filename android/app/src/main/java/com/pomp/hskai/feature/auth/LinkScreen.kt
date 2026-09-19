@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,9 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,6 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
 
 /**
@@ -84,12 +83,10 @@ fun LinkScreen(
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(28.dp))
-            Surface(
+            HskGlassSurface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
-                color = PompColors.PaperRaised,
-                border = BorderStroke(1.dp, PompColors.Divider),
-                shadowElevation = 8.dp,
+                shadowElevation = 12.dp,
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
@@ -117,7 +114,7 @@ private fun LoadingBlock() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        CircularProgressIndicator(color = PompColors.Cinnabar)
+        HskBrandLoader()
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.state_loading),
@@ -151,28 +148,17 @@ private fun ExpiredBlock(
             )
             Spacer(Modifier.height(16.dp))
         }
-        Button(
-            onClick = onRequestCode,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = PompColors.Paper,
+        HskPrimaryButton(
+            text = stringResource(
+                if (isExpired || errorRes != null) {
+                    R.string.link_new_code
+                } else {
+                    R.string.action_continue
+                }
             ),
-        ) {
-            Text(
-                text = stringResource(
-                    if (isExpired || errorRes != null) {
-                        R.string.link_new_code
-                    } else {
-                        R.string.action_continue
-                    }
-                ),
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
+            onClick = onRequestCode,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -212,22 +198,11 @@ private fun CodeBlock(state: LinkUiState, context: Context) {
         )
 
         Spacer(Modifier.height(20.dp))
-        Button(
+        HskPrimaryButton(
+            text = stringResource(R.string.auth_login),
             onClick = { openTelegram(context, state.botDeepLink) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 52.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = PompColors.Paper,
-            ),
-        ) {
-            Text(
-                text = stringResource(R.string.auth_login),
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         Spacer(Modifier.height(6.dp))
         TextButton(
@@ -258,11 +233,7 @@ private fun CodeBlock(state: LinkUiState, context: Context) {
         if (state.isWaitingForApproval) {
             Spacer(Modifier.height(20.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(18.dp),
-                    strokeWidth = 2.dp,
-                    color = PompColors.Jade,
-                )
+                HskBrandLoader(compact = true)
                 Spacer(Modifier.size(10.dp))
                 Text(
                     text = stringResource(R.string.link_waiting),
