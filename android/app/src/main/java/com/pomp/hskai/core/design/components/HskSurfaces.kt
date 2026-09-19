@@ -27,6 +27,8 @@ fun HskGlassSurface(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(20.dp),
     shadowElevation: Dp = 12.dp,
+    onClick: (() -> Unit)? = null,
+    enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val surface = if (PompColors.IsDark) {
@@ -44,31 +46,55 @@ fun HskGlassSurface(
     } else {
         Color.White.copy(alpha = 0.30f)
     }
-
-    Surface(
-        modifier = modifier.shadow(
-            elevation = shadowElevation,
-            shape = shape,
-            clip = false,
-            ambientColor = PompColors.Shadow.copy(alpha = 0.14f),
-            spotColor = PompColors.Shadow.copy(alpha = 0.18f),
-        ),
+    val decoratedModifier = modifier.shadow(
+        elevation = shadowElevation,
         shape = shape,
-        color = surface,
-        border = BorderStroke(1.dp, border),
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
-    ) {
-        Box(
-            modifier = Modifier.background(
-                Brush.verticalGradient(
-                    0f to topWash,
-                    0.34f to Color.Transparent,
-                    1f to Color.Transparent,
-                ),
-            ),
+        clip = false,
+        ambientColor = PompColors.Shadow.copy(alpha = 0.14f),
+        spotColor = PompColors.Shadow.copy(alpha = 0.18f),
+    )
+
+    if (onClick == null) {
+        Surface(
+            modifier = decoratedModifier,
+            shape = shape,
+            color = surface,
+            border = BorderStroke(1.dp, border),
+            tonalElevation = 0.dp,
+            shadowElevation = 0.dp,
         ) {
-            content()
+            GlassWash(topWash = topWash, content = content)
         }
+    } else {
+        Surface(
+            onClick = onClick,
+            modifier = decoratedModifier,
+            enabled = enabled,
+            shape = shape,
+            color = surface,
+            border = BorderStroke(1.dp, border),
+            tonalElevation = 0.dp,
+            shadowElevation = 0.dp,
+        ) {
+            GlassWash(topWash = topWash, content = content)
+        }
+    }
+}
+
+@Composable
+private fun GlassWash(
+    topWash: Color,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        modifier = Modifier.background(
+            Brush.verticalGradient(
+                0f to topWash,
+                0.34f to Color.Transparent,
+                1f to Color.Transparent,
+            ),
+        ),
+    ) {
+        content()
     }
 }
