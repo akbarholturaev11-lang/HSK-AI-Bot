@@ -150,22 +150,16 @@ private fun ExpiredBlock(
             Spacer(Modifier.height(16.dp))
         }
         HskPrimaryButton(
-            text = stringResource(R.string.link_get_code),
+            text = stringResource(
+                if (isExpired || errorRes != null) {
+                    R.string.link_new_code
+                } else {
+                    R.string.action_continue
+                }
+            ),
             onClick = onRequestCode,
             modifier = Modifier.fillMaxWidth(),
         )
-        /* migrated legacy request label */ /*
-            Text(
-                text = stringResource(
-                    if (isExpired || errorRes != null) {
-                        R.string.link_new_code
-                    } else {
-                        R.string.action_continue
-                    }
-                ),
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
     }
 }
 
