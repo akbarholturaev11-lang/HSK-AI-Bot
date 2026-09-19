@@ -26,12 +26,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
@@ -54,6 +51,7 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
@@ -250,28 +248,12 @@ private fun VoiceBox(
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
-            Surface(
+            HskPrimaryButton(
+                text = stringResource(R.string.voice_start),
                 onClick = onStart,
-                enabled = enabled && !isStarting,
-                color = PompColors.Cinnabar,
-                shape = RoundedCornerShape(13.dp),
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 26.dp, vertical = 14.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isStarting) {
-                        HskBrandLoader(compact = true)
-                    } else {
-                        Text(
-                            text = stringResource(R.string.voice_start),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
-                            fontWeight = FontWeight.Medium,
-                            color = PompColors.Paper,
-                        )
-                    }
-                }
-            }
+                enabled = enabled,
+                loading = isStarting,
+            )
         }
     }
 }
@@ -349,7 +331,9 @@ internal fun PartnerPicker(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = PompColors.PaperRaised,
+        containerColor = PompColors.PaperRaised.copy(
+            alpha = if (PompColors.IsDark) 0.98f else 0.94f,
+        ),
     ) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
@@ -492,19 +476,11 @@ private fun VoiceResult(
             color = PompColors.InkSecondary,
         )
         Spacer(Modifier.height(18.dp))
-        Button(
+        HskPrimaryButton(
+            text = stringResource(R.string.voice_again),
             onClick = onDone,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 52.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = PompColors.Paper,
-            ),
-        ) {
-            Text(stringResource(R.string.voice_again))
-        }
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
