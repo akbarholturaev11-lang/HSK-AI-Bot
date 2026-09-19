@@ -258,7 +258,7 @@ fun AssistantModalBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     containerColor: Color = PompColors.PaperRaised.copy(
-        alpha = if (PompColors.IsDark) 0.98f else 0.94f,
+        alpha = if (PompColors.IsDark) 0.92f else 0.86f,
     ),
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -267,6 +267,8 @@ fun AssistantModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         containerColor = containerColor,
+        scrimColor = PompColors.Overlay.copy(alpha = if (PompColors.IsDark) 0.42f else 0.28f),
+        tonalElevation = 0.dp,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         dragHandle = { AssistantDragHandle() },
     ) {
@@ -384,8 +386,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
         modifier = Modifier.statusBarsPadding(),
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = PompColors.PaperRaised.copy(
-            alpha = if (PompColors.IsDark) 0.98f else 0.94f,
+            alpha = if (PompColors.IsDark) 0.92f else 0.86f,
         ),
+        scrimColor = PompColors.Overlay.copy(alpha = if (PompColors.IsDark) 0.42f else 0.28f),
+        tonalElevation = 0.dp,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         // A real handle is what makes the swipe-down-to-close gesture reachable.
         dragHandle = { AssistantDragHandle() },
@@ -433,10 +437,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                             tint = if (inspect) PompColors.Cinnabar else PompColors.InkDisabled)
                     }
                 }
-                if (inspect) Surface(
-                    color = PompColors.PaperRaised, shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
+                if (inspect) HskGlassSurface(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    shadowElevation = 4.dp,
                 ) {
                     Text(screen.details.ifBlank { screen.title },
                         Modifier.heightIn(max = 132.dp).verticalScroll(rememberScrollState()).padding(12.dp),
@@ -701,12 +705,10 @@ private fun AssistantAnswerFrame(content: @Composable ColumnScope.() -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
         AssistantAvatar(28.dp)
         Spacer(Modifier.width(8.dp))
-        Surface(
-            color = PompColors.PaperRaised,
-            contentColor = PompColors.Ink,
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 20.dp, bottomStart = 6.dp),
-            border = BorderStroke(1.dp, PompColors.Divider),
+        HskGlassSurface(
             modifier = Modifier.widthIn(max = bubbleMaxWidth()),
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 20.dp, bottomStart = 6.dp),
+            shadowElevation = 4.dp,
         ) {
             Column(Modifier.padding(horizontal = 14.dp, vertical = 11.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
         }
