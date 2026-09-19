@@ -67,10 +67,10 @@ fun HskBrandLoader(
         label = "halo-alpha",
     )
 
-    val boxSize = if (compact) 34.dp else 92.dp
-    val haloSize = if (compact) 32.dp else 82.dp
-    val sealSize = if (compact) 26.dp else 58.dp
-    val sealCorner = if (compact) 8.dp else 18.dp
+    val boxSize = if (compact) 24.dp else 92.dp
+    val haloSize = if (compact) 24.dp else 82.dp
+    val sealSize = if (compact) 20.dp else 58.dp
+    val sealCorner = if (compact) 6.dp else 18.dp
 
     Box(
         modifier = modifier
