@@ -36,7 +36,6 @@ import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.TrackChanges
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -67,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.courseAssistantContext
@@ -107,7 +107,7 @@ fun CourseScreen(
                 state.isLoading && map == null -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
-                ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
+                ) { HskBrandLoader() }
 
                 map == null -> CourseErrorBlock(
                     messageRes = state.error?.messageRes ?: R.string.error_unknown,
@@ -767,11 +767,7 @@ private fun ChestNodeFace(opening: Boolean) {
         ) {
             Box(contentAlignment = Alignment.Center) {
                 if (opening) {
-                    CircularProgressIndicator(
-                        color = PompColors.Gold,
-                        strokeWidth = 3.dp,
-                        modifier = Modifier.size(26.dp),
-                    )
+                    HskBrandLoader(compact = true)
                 } else {
                     MiniAppLessonNodeIcon(
                         kind = CourseNodeIconKind.Gift,
