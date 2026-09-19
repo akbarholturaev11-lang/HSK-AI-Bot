@@ -96,8 +96,8 @@ fun MainScaffold(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(72.dp)
-                            .padding(horizontal = 6.dp, vertical = 7.dp),
+                            .height(82.dp)
+                            .padding(horizontal = 6.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
@@ -136,7 +136,7 @@ private fun NavItem(
 
     Column(
         modifier = modifier
-            .then(if (tab.isCentre) Modifier.offset(y = (-10).dp) else Modifier)
+            .then(if (tab.isCentre) Modifier.offset(y = (-8).dp) else Modifier)
             .padding(horizontal = 2.dp)
             .clip(itemShape)
             .background(selectedBackground)
@@ -153,7 +153,7 @@ private fun NavItem(
             Box(contentAlignment = Alignment.Center) {
                 Box(
                     modifier = Modifier
-                        .size(66.dp)
+                        .size(62.dp)
                         .background(
                             color = PompColors.Cinnabar.copy(alpha = 0.12f),
                             shape = CircleShape,
@@ -161,7 +161,7 @@ private fun NavItem(
                 )
                 Surface(
                     modifier = Modifier
-                        .size(56.dp)
+                        .size(52.dp)
                         .shadow(
                             elevation = 10.dp,
                             shape = CircleShape,
