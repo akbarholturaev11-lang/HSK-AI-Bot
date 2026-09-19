@@ -15,12 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +36,9 @@ import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 
 /**
  * One ad, in the centre of the screen, over whatever the learner was doing.
@@ -74,10 +73,10 @@ fun AdScreen(
         when {
             state.isLoading || state.unavailable || mediaUrl == null -> Unit
 
-            else -> Surface(
-                color = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Paper,
-                shape = RoundedCornerShape(20.dp),
+            else -> HskGlassSurface(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                shadowElevation = 8.dp,
             ) {
                 AdContent(
                     state = state,
@@ -168,18 +167,11 @@ private fun AdContent(
 
         if (link != null) {
             Spacer(Modifier.height(10.dp))
-            OutlinedButton(
+            HskGlassButton(
+                text = linkLabel ?: stringResource(R.string.ad_learn_more),
                 onClick = { onOpenLink(link) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
-                shape = RoundedCornerShape(14.dp),
-            ) {
-                Text(
-                    text = linkLabel ?: stringResource(R.string.ad_learn_more),
-                    color = PompColors.CinnabarDark,
-                )
-            }
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
 
         Spacer(Modifier.height(14.dp))
