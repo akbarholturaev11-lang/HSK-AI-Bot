@@ -584,6 +584,11 @@ private fun PathRow(
 
 @Composable
 private fun CurrentBubble() {
+    val bubbleFill = if (PompColors.IsDark) {
+        PompColors.PaperRaised.copy(alpha = 0.88f)
+    } else {
+        Color.White.copy(alpha = 0.72f)
+    }
     Box(
         // `unbounded` ATAYLAB: pufakcha tugun qutisidan (76dp) kengroq va usiz
         // matn ikki qatorga bo'linib kesiladi. Mini App'da `white-space:nowrap`
@@ -619,7 +624,7 @@ private fun CurrentBubble() {
                 lineTo(size.width, 0f)
                 close()
             }
-            drawPath(path, color = PompColors.PaperRaised)
+            drawPath(path, color = bubbleFill)
             drawLine(
                 color = PompColors.Cinnabar,
                 start = Offset(0f, 0f),
