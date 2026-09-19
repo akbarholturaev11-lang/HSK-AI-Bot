@@ -383,11 +383,10 @@ private fun StatCard(label: String, value: String, modifier: Modifier = Modifier
 // second visual language for one message.
 internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTint: Color, title: String, subtitle: String?, onClick: () -> Unit, modifier: Modifier = Modifier) {
     HskGlassSurface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         shadowElevation = 7.dp,
+        onClick = onClick,
     ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp)) {
             Surface(color = iconBackground, shape = RoundedCornerShape(13.dp), modifier = Modifier.size(46.dp)) {
