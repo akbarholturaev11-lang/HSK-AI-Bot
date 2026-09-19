@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.VolumeUp
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +41,9 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassIconButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.ScreenContext
 
@@ -65,7 +67,7 @@ internal fun FoundationScreen(
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
             state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = PompColors.Cinnabar)
+                HskBrandLoader()
             }
             state.cards.isEmpty() -> FoundationFailure(onRetry)
             else -> Column(
@@ -150,15 +152,14 @@ private fun FoundationTopBar(progress: Float, required: Boolean, onClose: () -> 
         if (required) {
             Spacer(Modifier.size(42.dp))
         } else {
-            Surface(
-                color = Color.Transparent,
-                shape = CircleShape,
-                modifier = Modifier.size(42.dp).clickable(onClick = onClose),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Filled.Close, contentDescription = null, tint = PompColors.InkSecondary)
-                }
-            }
+            HskGlassIconButton(
+                icon = Icons.Filled.Close,
+                contentDescription = null,
+                onClick = onClose,
+                size = 42.dp,
+                iconSize = 20.dp,
+                tint = PompColors.InkSecondary,
+            )
         }
         Spacer(Modifier.width(10.dp))
         LinearProgressIndicator(
@@ -265,11 +266,10 @@ private fun FoundationCardBody(
             }
         }
         "builder" -> {
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
+            HskGlassSurface(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 76.dp),
+                shape = RoundedCornerShape(16.dp),
+                shadowElevation = 5.dp,
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
@@ -391,11 +391,10 @@ private fun FoundationCardBody(
 
 @Composable
 private fun FoundationExampleCard(example: FoundationExample, audio: Boolean, onPlayAudio: () -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 6.dp,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
@@ -435,39 +434,61 @@ private fun FoundationOption(text: String, selected: Boolean, correct: Boolean, 
         selected -> PompColors.Cinnabar
         else -> PompColors.Divider
     }
-    Surface(
-        color = when {
-            correct -> PompColors.JadeSoft
-            wrong -> PompColors.FlameSoft
-            else -> PompColors.PaperRaised
-        },
-        shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(if (selected) 2.dp else 1.dp, border),
-        modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
-    ) {
-        Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(text, modifier = Modifier.weight(1f), color = PompColors.Ink)
-            if (correct) Icon(Icons.Filled.Check, contentDescription = null, tint = PompColors.Jade)
+    if (correct || wrong) {
+        Surface(
+            color = if (correct) PompColors.JadeSoft else PompColors.FlameSoft,
+            shape = RoundedCornerShape(15.dp),
+            border = BorderStroke(if (selected) 2.dp else 1.dp, border),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
+        ) {
+            FoundationOptionBody(text = text, correct = correct)
+        }
+    } else {
+        HskGlassSurface(
+            modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp),
+            shape = RoundedCornerShape(15.dp),
+            shadowElevation = 4.dp,
+            borderColor = if (selected) PompColors.Cinnabar else null,
+            onClick = onClick,
+        ) {
+            FoundationOptionBody(text = text, correct = false)
         }
     }
 }
 
 @Composable
-private fun HanziToken(text: String, onClick: () -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.size(54.dp).clickable(onClick = onClick),
+private fun FoundationOptionBody(text: String, correct: Boolean) {
+    Row(
+        modifier = Modifier.padding(horizontal = 15.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(contentAlignment = Alignment.Center) { Text(text, style = PompTextStyles.hanziSmall.copy(fontSize = 22.sp), color = PompColors.Ink) }
+        Text(text, modifier = Modifier.weight(1f), color = PompColors.Ink)
+        if (correct) Icon(Icons.Filled.Check, contentDescription = null, tint = PompColors.Jade)
+    }
+}
+
+@Composable
+private fun HanziToken(text: String, onClick: () -> Unit) {
+    HskGlassSurface(
+        modifier = Modifier.size(54.dp),
+        shape = RoundedCornerShape(12.dp),
+        shadowElevation = 4.dp,
+        onClick = onClick,
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(text, style = PompTextStyles.hanziSmall.copy(fontSize = 22.sp), color = PompColors.Ink)
+        }
     }
 }
 
 @Composable
 private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onAdvance: () -> Unit, onRetry: () -> Unit) {
     val interactiveBlocked = card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true
-    Surface(color = PompColors.PaperRaised, shadowElevation = 8.dp) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        shadowElevation = 10.dp,
+    ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
             if (state.error != null) {
                 FoundationAction(enabled = !state.saving, onClick = onRetry, text = stringResource(R.string.action_retry), secondary = true, leadingRefresh = true)
@@ -509,7 +530,7 @@ private fun FoundationAction(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (loading) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = PompColors.Paper)
+                HskBrandLoader(compact = true)
             } else {
                 if (leadingRefresh) {
                     Icon(Icons.Filled.Refresh, contentDescription = null, tint = PompColors.CinnabarDark)
