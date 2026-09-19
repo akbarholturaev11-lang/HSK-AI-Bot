@@ -4,15 +4,14 @@ import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,7 +46,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.Lifecycle
@@ -272,55 +270,68 @@ private fun WidgetHeader() {
 @Composable
 private fun WidgetPreviewCard() {
     val previewShape = RoundedCornerShape(24.dp)
-    Box(
+    HskGlassSurface(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1.72f)
-            .background(
-                brush = Brush.linearGradient(
-                    colors = if (PompColors.IsDark) {
-                        listOf(PompColors.PaperRaised, PompColors.OptionDepth)
-                    } else {
-                        listOf(Color.White, PompColors.CinnabarSoft.copy(alpha = 0.72f))
-                    },
-                ),
-                shape = previewShape,
-            )
-            .padding(18.dp),
+            .aspectRatio(1.72f),
+        shape = previewShape,
+        shadowElevation = 10.dp,
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth(0.68f)
-                .align(Alignment.CenterStart),
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = if (PompColors.IsDark) {
+                            listOf(
+                                PompColors.PaperRaised.copy(alpha = 0.72f),
+                                PompColors.OptionDepth.copy(alpha = 0.78f),
+                            )
+                        } else {
+                            listOf(
+                                Color.White.copy(alpha = 0.58f),
+                                PompColors.CinnabarSoft.copy(alpha = 0.66f),
+                            )
+                        },
+                    ),
+                    shape = previewShape,
+                )
+                .padding(18.dp),
         ) {
-            Text(
-                text = "HSK AI",
-                style = MaterialTheme.typography.labelLarge,
-                color = PompColors.Cinnabar,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.widget_continue),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Spacer(Modifier.height(5.dp))
-            Text(
-                text = stringResource(R.string.widget_description),
-                style = MaterialTheme.typography.bodySmall,
-                color = PompColors.InkSecondary,
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.68f)
+                    .align(Alignment.CenterStart),
+            ) {
+                Text(
+                    text = "HSK AI",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PompColors.Cinnabar,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.widget_continue),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Ink,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    text = stringResource(R.string.widget_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.InkSecondary,
+                )
+            }
+
+            Image(
+                painter = painterResource(R.drawable.widget_panda_focus),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(88.dp)
+                    .align(Alignment.CenterEnd),
             )
         }
-
-        Image(
-            painter = painterResource(R.drawable.widget_panda_focus),
-            contentDescription = null,
-            modifier = Modifier
-                .size(88.dp)
-                .align(Alignment.CenterEnd),
-        )
     }
 }
 
