@@ -486,7 +486,12 @@ private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onA
     val interactiveBlocked = card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true
     HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        shape = RoundedCornerShape(
+            topStart = 20.dp,
+            topEnd = 20.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp,
+        ),
         shadowElevation = 10.dp,
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
