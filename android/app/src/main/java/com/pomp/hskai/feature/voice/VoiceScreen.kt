@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,7 +49,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
-import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
