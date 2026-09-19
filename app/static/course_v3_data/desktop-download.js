@@ -30,16 +30,26 @@
   var ENTRY_SOURCES = ["profile"].concat(PROMO_SOURCES);
   var DEFAULT_PROMO_COOLDOWN_DAYS = 14;
   var DEFAULT_HOME_PROMPT_DAILY_LIMIT = 3;
-  var APP_PROMO_PLATFORMS = ["macos", "windows"];
+  /* Bitta sessiyada bitta promo — lekin dars yakuni ustun.
+     "Mini App ochilganda" promosi har ochilishda, dars yakunidagisi esa
+     odam darsni tugatgandan KEYIN chiqadi, ya'ni har doim kechroq. Bitta
+     umumiy "ko'rildi" bayrog'i bilan birinchisi ikkinchisining navbatini
+     doim yeb qo'yardi va dars yakunidagi promo amalda hech qachon
+     ko'rinmasdi. Shuning uchun sessiya o'rni SHU joyga bo'shatiladi: u
+     o'rinni bir marta egallay oladi, undan keyin sessiya yopiladi. */
+  var PROMO_PRIORITY_SOURCE = "lesson_end_promo";
+  var APP_PROMO_PLATFORMS = ["macos", "windows", "android"];
+  // Android's availability comes from the public apps status, not from the
+  // desktop one: it is published by a different pipeline and needs no auth.
+  var APPS_STATUS_ENDPOINT = "/api/v3/apps/public-status";
 
   var COPY = {
     uz: {
-      eyebrow: "HSK AI · kompyuter",
-      cardTitle: "Kompyuter ilovasi",
+      eyebrow: "HSK AI · ilovalar",
+      cardTitle: "HSK AI ilovalari",
       cardBody:
-        "Kompyuterda qulayroq o‘qing. MacBook yoki Windowsni tanlang.",
-      mobileCardHint:
-        "Telefondasiz: AirDrop/ulashish yoki linkni kompyuterga yuboring.",
+        "Android, MacBook yoki Windows — obuna va progress hamma joyda bir xil.",
+      appsPage: "Ilovalarni yuklab olish",
       previewTranslation: "o‘rganmoq",
       preparing:
         "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
@@ -47,9 +57,9 @@
         "Yuklash holatini tekshirib bo‘lmadi. Internetni tekshirib, qayta urining.",
       retryStatus: "Qayta tekshirish",
       checkingStatus: "Tekshirilmoqda…",
-      promoTitle: "Darslarni kompyuterda davom ettiring",
+      promoTitle: "HSK AI ilovasini o‘rnating",
       promoBody:
-        "MacBook yoki Windows ilovasini tanlang. Progress telefon bilan birga saqlanadi.",
+        "Android, MacBook yoki Windows — qurilmangizni tanlang. Progress hamma joyda bir xil.",
       bigScreen: "Katta ekran",
       autoUpdate: "Auto update",
       sharedProgress: "Progress saqlanadi",
@@ -64,10 +74,12 @@
       recommended: "Mos",
       dismiss: "Keyinroq",
       close: "Oynani yopish",
-      adEntry: "Kompyuter ilovasini olish",
-      adEntrySub: "Mac va Windows · progress saqlanadi",
+      adEntry: "HSK AI ilovasini olish",
+      adEntrySub: "Android · Mac · Windows",
       sendingShort: "Tayyorlanmoqda…",
       sending: "Yuklash sayti tayyorlanmoqda…",
+      sendingToChat: "Fayl chatga yuborilmoqda…",
+      chatSendFailed: "Faylni chatga yuborib bo‘lmadi. Qayta urinib ko‘ring.",
       telegramRequired: "Mini Appni bot ichidan qayta oching.",
       releaseUnavailable: "Bu platforma uchun yuklash hozircha mavjud emas.",
       rateLimited: "Ko‘p urinish bo‘ldi. Birozdan keyin qayta urinib ko‘ring.",
@@ -108,12 +120,11 @@
       successAction: "Tushunarli"
     },
     ru: {
-      eyebrow: "HSK AI · компьютер",
-      cardTitle: "Приложение для компьютера",
+      eyebrow: "HSK AI · приложения",
+      cardTitle: "Приложения HSK AI",
       cardBody:
-        "Учиться удобнее на компьютере. Выберите MacBook или Windows.",
-      mobileCardHint:
-        "Вы на телефоне: отправьте ссылку через AirDrop или системное меню.",
+        "Android, MacBook или Windows — подписка и прогресс везде одни и те же.",
+      appsPage: "Скачать приложения",
       previewTranslation: "учиться",
       preparing:
         "Файлы загрузки готовятся. Кнопки станут активны в ближайшее время.",
@@ -121,9 +132,9 @@
         "Не удалось проверить загрузку. Проверьте интернет и повторите.",
       retryStatus: "Проверить снова",
       checkingStatus: "Проверяем…",
-      promoTitle: "Продолжайте уроки на компьютере",
+      promoTitle: "Установите приложение HSK AI",
       promoBody:
-        "Выберите приложение для MacBook или Windows. Прогресс сохранится вместе с телефоном.",
+        "Android, MacBook или Windows — выберите устройство. Прогресс везде один.",
       bigScreen: "Большой экран",
       autoUpdate: "Автообновление",
       sharedProgress: "Общий прогресс",
@@ -138,10 +149,12 @@
       recommended: "Подходит",
       dismiss: "Позже",
       close: "Закрыть окно",
-      adEntry: "Скачать приложение для компьютера",
-      adEntrySub: "Mac и Windows · единый прогресс",
+      adEntry: "Скачать приложение HSK AI",
+      adEntrySub: "Android · Mac · Windows",
       sendingShort: "Готовим…",
       sending: "Готовим страницу загрузки…",
+      sendingToChat: "Отправляем файл в чат…",
+      chatSendFailed: "Не удалось отправить файл в чат. Попробуйте ещё раз.",
       telegramRequired: "Откройте Mini App заново из бота.",
       releaseUnavailable: "Загрузка для этой платформы пока недоступна.",
       rateLimited: "Слишком много попыток. Попробуйте немного позже.",
@@ -182,12 +195,11 @@
       successAction: "Понятно"
     },
     tj: {
-      eyebrow: "HSK AI · компютер",
-      cardTitle: "Барномаи компютерӣ",
+      eyebrow: "HSK AI · барномаҳо",
+      cardTitle: "Барномаҳои HSK AI",
       cardBody:
-        "Дар компютер хондан қулайтар аст. MacBook ё Windows-ро интихоб кунед.",
-      mobileCardHint:
-        "Шумо дар телефонед: бо AirDrop ё фиристодан пайвандро ба компютер гузаронед.",
+        "Android, MacBook ё Windows — обуна ва пешрафт дар ҳама ҷо як аст.",
+      appsPage: "Боргирии барномаҳо",
       previewTranslation: "омӯхтан",
       preparing:
         "Файлҳои боргирӣ омода мешаванд. Тугмаҳо ба наздикӣ фаъол мешаванд.",
@@ -195,9 +207,9 @@
         "Ҳолати боргирӣ санҷида нашуд. Интернетро санҷида, боз кӯшиш кунед.",
       retryStatus: "Боз санҷидан",
       checkingStatus: "Санҷида мешавад…",
-      promoTitle: "Дарсҳоро дар компютер идома диҳед",
+      promoTitle: "Барномаи HSK AI-ро насб кунед",
       promoBody:
-        "Барномаи MacBook ё Windows-ро интихоб кунед. Пешрафт бо телефон якҷо нигоҳ дошта мешавад.",
+        "Android, MacBook ё Windows — дастгоҳи худро интихоб кунед. Пешрафт ҳама ҷо як аст.",
       bigScreen: "Экрани калон",
       autoUpdate: "Навсозии автоматӣ",
       sharedProgress: "Пешрафти умумӣ",
@@ -212,10 +224,12 @@
       recommended: "Мувофиқ",
       dismiss: "Баъдтар",
       close: "Пӯшидани равзана",
-      adEntry: "Гирифтани барномаи компютерӣ",
-      adEntrySub: "Mac ва Windows · пешрафти умумӣ",
+      adEntry: "Гирифтани барномаи HSK AI",
+      adEntrySub: "Android · Mac · Windows",
       sendingShort: "Омода мешавад…",
       sending: "Саҳифаи боргирӣ омода мешавад…",
+      sendingToChat: "Файл ба чат фиристода мешавад…",
+      chatSendFailed: "Файл ба чат фиристода нашуд. Боз кӯшиш кунед.",
       telegramRequired: "Mini App-ро аз дохили бот аз нав кушоед.",
       releaseUnavailable: "Боргирӣ барои ин платформа ҳоло дастрас нест.",
       rateLimited: "Кӯшишҳо зиёд шуданд. Каме баъд боз санҷед.",
@@ -263,9 +277,9 @@
     availabilityError: false,
     enabled: false,
     platforms: { macos: false, windows: false, android: false, ios: false },
-    platformTargets: { macos: true, windows: true, android: false, ios: false },
+    platformTargets: { macos: true, windows: true, android: true, ios: false },
     transferUrls: { macos: "", windows: "" },
-    runtimeUnavailable: { macos: false, windows: false, android: true, ios: true },
+    runtimeUnavailable: { macos: false, windows: false, android: false, ios: true },
     promoEligible: false,
     promoReason: "",
     promoCooldownDays: 0,
@@ -280,7 +294,7 @@
     pendingEventIds: {},
     errorCode: "",
     promoOpen: false,
-    promoSeenInSession: false,
+    sessionPromoSource: "",
     promoTimer: 0,
     queuedPromo: null,
     queuedPromoTimer: 0,
@@ -545,6 +559,14 @@
   }
 
   function isPlatformAvailable(platform) {
+    // Android does not depend on `state.enabled`: that flag gates the desktop
+    // installers, and the APK is published by its own pipeline.
+    if (platform === "android") {
+      // No transfer URL is required any more: the APK is not opened from
+      // here, it is asked for and arrives in the chat. A release the bot can
+      // send is a release this button can offer.
+      return Boolean(state.platforms.android);
+    }
     return Boolean(
       state.enabled &&
         state.platforms[platform] &&
@@ -556,7 +578,8 @@
   function hasAvailablePlatform() {
     return (
       isPlatformAvailable("macos") ||
-      isPlatformAvailable("windows")
+      isPlatformAvailable("windows") ||
+      isPlatformAvailable("android")
     );
   }
 
@@ -581,6 +604,8 @@
       desktop_download_timeout: copy.requestTimeout,
       invalid_success_response: copy.invalidDownload,
       desktop_download_open_failed: copy.messageFailed,
+      android_release_unavailable: copy.releaseUnavailable,
+      android_apk_send_failed: copy.chatSendFailed,
       network_error: copy.networkError
     }[code] || copy.networkError;
   }
@@ -687,12 +712,36 @@
 
   function buildActions(source) {
     var actions = element("div", "pdd-actions");
+    var shown = 0;
     APP_PROMO_PLATFORMS.forEach(function (platform) {
       if (isPlatformTargeted(platform)) {
         actions.appendChild(buildOsButton(platform, source));
+        shown += 1;
       }
     });
+    actions.dataset.pddColumns = String(shown || 1);
     return actions;
+  }
+
+  function appsPageUrl() {
+    // No platform is pinned: this Mini App runs on a phone, the page reads the
+    // device it was opened on, and answering for it would send an iPhone to a
+    // tab built for something else.
+    var url = new URL("/desktop-download", window.location.origin);
+    url.searchParams.set("lang", language());
+    return url.toString();
+  }
+
+  function buildAppsPageButton() {
+    var button = element("button", "pdd-os-button pdd-apps-button");
+    button.type = "button";
+    button.dataset.pddApps = "true";
+    button.appendChild(icon("download"));
+    button.appendChild(element("span", "", text().appsPage));
+    button.addEventListener("click", function () {
+      openTrackedLink(appsPageUrl());
+    });
+    return button;
   }
 
   function buildInlineStatus() {
@@ -736,13 +785,12 @@
     main.appendChild(head);
     main.appendChild(buildProductPreview("card"));
     main.appendChild(buildBenefits(true));
-    if (isMobileDevice()) {
-      var mobileHint = element("div", "pdd-mobile-hint");
-      mobileHint.appendChild(icon("devices-share"));
-      mobileHint.appendChild(element("span", "", copy.mobileCardHint));
-      main.appendChild(mobileHint);
-    }
-    main.appendChild(buildActions("profile"));
+    var actions = buildActions("profile");
+    // The page behind this one reads the device and opens its tab, which is
+    // the part the two buttons above cannot do: they name a platform, and the
+    // learner holding a phone is not on either of them.
+    actions.appendChild(buildAppsPageButton());
+    main.appendChild(actions);
     if (!hasAvailablePlatform()) {
       var availability = element(
         "div",
@@ -1062,7 +1110,9 @@
       }
       if (label) {
         label.textContent = state.pendingPlatform
-          ? copy.sending
+          ? state.pendingPlatform === "android"
+            ? copy.sendingToChat
+            : copy.sending
           : errorText(state.errorCode);
       }
     });
@@ -1135,12 +1185,76 @@
     ) {
       return;
     }
+
+    // Android takes its own path deliberately. Everything below — the request
+    // token, the "where shall we open this?" sheet, the transfer to another
+    // device — exists because a DMG or an EXE cannot run on the phone reading
+    // this. An APK can, and it is not served from here at all: the bot holds
+    // the file, so the Mini App asks for it, closes, and the learner finds it
+    // in the chat they came from.
+    if (platform === "android") {
+      sendAndroidToChat(source);
+      return;
+    }
     if (!telegramInitData()) {
       state.errorCode = "invalid_telegram_init_data";
       syncControls();
       return;
     }
     showDestinationChooser(platform, source, document.activeElement);
+  }
+
+  function closeMiniApp() {
+    var app = telegramWebApp();
+    try {
+      if (app && typeof app.close === "function") app.close();
+    } catch (error) {}
+  }
+
+  function sendAndroidToChat(source) {
+    if (!telegramInitData()) {
+      state.errorCode = "invalid_telegram_init_data";
+      syncControls();
+      return;
+    }
+    state.pendingPlatform = "android";
+    state.errorCode = "";
+    syncControls();
+    fetch("/api/miniapp/event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify({
+        event: "android_apk_to_chat",
+        source: "miniapp_" + source
+      })
+    })
+      .then(function (response) {
+        return response.json().catch(function () {
+          return null;
+        });
+      })
+      .then(function (data) {
+        state.pendingPlatform = "";
+        if (data && data.ok === true) {
+          // The file is in the chat now, and this Mini App is sitting on top
+          // of it. Staying open would hide the thing that was just sent.
+          closeMiniApp();
+          return;
+        }
+        state.errorCode =
+          data && typeof data.error === "string"
+            ? data.error
+            : "android_apk_send_failed";
+        syncControls();
+      })
+      .catch(function () {
+        state.pendingPlatform = "";
+        state.errorCode = "network_error";
+        syncControls();
+      });
   }
 
   function cleanTransferUrl(value, platform) {
@@ -1576,10 +1690,21 @@
     return Math.max(1, Math.min(90, days)) * 24 * 60 * 60 * 1000;
   }
 
-  function hasLocalPromoCooldown() {
+  /* Sovish muddati HAR JOY UCHUN ALOHIDA sanaladi.
+     Ilgari bitta `promo_seen` kaliti bor edi va uni HAR QANDAY promo
+     yozardi. "Mini App ochilganda" promosi kuniga 3 martagacha chiqadi,
+     ya'ni u shu kalitni doim yangilab turardi va dars yakunidagi promo
+     14 kunlik sovishdan hech qachon chiqa olmasdi — admin uni yoqib
+     qo'ysa ham amalda hech qachon ko'rinmasdi.
+
+     `download_requested` esa UMUMIY qoladi: odam yuklab olishni allaqachon
+     so'ragan bo'lsa, uni hech qayerda qayta bezovta qilmaymiz. */
+  function hasLocalPromoCooldown(source) {
     var cutoff = promoCooldownMs();
     var now = Date.now();
-    return ["promo_seen", "download_requested"].some(function (name) {
+    var keys = ["download_requested"];
+    if (PROMO_SOURCES.indexOf(source) >= 0) keys.push("promo_seen:" + source);
+    return keys.some(function (name) {
       var timestamp = readStoredNumber(name);
       return timestamp > 0 && now - timestamp < cutoff;
     });
@@ -1598,6 +1723,17 @@
     );
   }
 
+  /* Sessiyada bitta promo. Yagona istisno — dars yakuni: o'rin band
+     bo'lsa ham u bir marta o'z navbatini oladi. O'zi chiqqandan keyin
+     sessiyada boshqa promo chiqmaydi. */
+  function sessionSlotAllows(source) {
+    if (!state.sessionPromoSource) return true;
+    return (
+      source === PROMO_PRIORITY_SOURCE &&
+      state.sessionPromoSource !== PROMO_PRIORITY_SOURCE
+    );
+  }
+
   function shouldShowPromo(source) {
     if (
       isDesktop ||
@@ -1605,11 +1741,11 @@
       !state.availabilityLoaded ||
       !hasAvailablePlatform() ||
       !promoPlacementAllowed(source) ||
-      state.promoSeenInSession ||
+      !sessionSlotAllows(source) ||
       state.promoOpen ||
       (source === "home_prompt"
         ? homePromptDailyLimitReached()
-        : hasLocalPromoCooldown())
+        : hasLocalPromoCooldown(source))
     ) {
       return false;
     }
@@ -1761,12 +1897,15 @@
     state.queuedPromoTimer = 0;
     state.queuedPromo = null;
     state.promoOpen = true;
-    state.promoSeenInSession = true;
+    state.sessionPromoSource = source;
     state.activePromoSource = source;
     state.activePromoMeta = promoMeta(meta);
     state.previousFocus = document.activeElement;
     if (source === "home_prompt") incrementHomePromptDailyCount();
+    /* Umumiy kalit eski o'rnatishlar bilan moslik uchun qoladi, lekin
+       sovish endi joyning O'Z kalitidan hisoblanadi. */
     storeNumber("promo_seen", Date.now());
+    storeNumber("promo_seen:" + source, Date.now());
     trackEntrySeen(source, state.activePromoMeta);
     track("desktop_promo_seen", promoPayload(source, state.activePromoMeta));
 
@@ -1938,7 +2077,26 @@
     }
   }
 
+  function loadAndroidAvailability() {
+    // Public, cached and unauthenticated: it must not be able to fail the
+    // desktop status, which is what the rest of this panel depends on.
+    fetch(APPS_STATUS_ENDPOINT, { headers: { Accept: "application/json" } })
+      .then(function (response) {
+        return response.ok ? response.json() : null;
+      })
+      .then(function (data) {
+        var entry =
+          (data && data.platforms && data.platforms.android) || null;
+        state.platforms.android = Boolean(entry && entry.available);
+        renderProfile();
+      })
+      .catch(function () {
+        state.platforms.android = false;
+      });
+  }
+
   function loadAvailability() {
+    loadAndroidAvailability();
     if (state.availabilityLoading) return;
     if (isDesktop || !telegramInitData()) {
       state.availabilityLoaded = true;
@@ -1969,7 +2127,6 @@
             state.platforms.windows = Boolean(
               data.platforms && data.platforms.windows
             );
-            state.platforms.android = false;
             state.platforms.ios = false;
             state.transferUrls.macos = cleanTransferUrl(
               data.downloads && data.downloads.macos,
@@ -2009,7 +2166,6 @@
             APP_PROMO_PLATFORMS.forEach(function (platform) {
               state.platformTargets[platform] = targets[platform] !== false;
             });
-            state.platformTargets.android = false;
             state.platformTargets.ios = false;
             state.promoMedia.url = safePromoMediaUrl(promo.media_url);
             state.promoMedia.type = state.promoMedia.url
@@ -2033,7 +2189,6 @@
         APP_PROMO_PLATFORMS.forEach(function (platform) {
           state.platformTargets[platform] = true;
         });
-        state.platformTargets.android = false;
         state.platformTargets.ios = false;
         state.promoMedia.url = "";
         state.promoMedia.type = "";

@@ -274,26 +274,6 @@
   font-size: 5px;
 }
 
-.pdd-mobile-hint {
-  display: grid;
-  margin-top: 10px;
-  padding: 9px 10px;
-  align-items: start;
-  grid-template-columns: 17px minmax(0, 1fr);
-  gap: 7px;
-  border-radius: 11px;
-  background: rgba(47, 138, 100, 0.09);
-  color: var(--jade, #2f8a64);
-  font-size: 10.5px;
-  font-weight: 650;
-  line-height: 1.42;
-}
-
-.pdd-mobile-hint i {
-  margin-top: 1px;
-  font-size: 15px;
-}
-
 .pdd-availability-note {
   display: grid;
   align-items: flex-start;
@@ -371,6 +351,33 @@
   margin-top: 14px;
 }
 
+/* Every offered platform on one line. With three of them the chips are narrow,
+   so the icon moves above its label instead of fighting it for width. */
+.pdd-actions[data-pdd-columns="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pdd-actions[data-pdd-columns="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.pdd-actions[data-pdd-columns="3"] .pdd-os-button {
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 5px;
+  font-size: 11.5px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.pdd-actions[data-pdd-columns="3"] .pdd-apps-button {
+  flex-direction: row;
+  gap: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
 .pdd-os-button,
 .pdd-promo-dismiss,
 .pdd-promo-close,
@@ -405,6 +412,12 @@
 
 .pdd-os-button i {
   font-size: 19px;
+}
+
+/* One row of its own under the two platform buttons: it is not a third
+   platform, it is the way out to all of them. */
+.pdd-apps-button {
+  grid-column: 1 / -1;
 }
 
 .pdd-os-button[data-recommended="true"] {

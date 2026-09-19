@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Exactly one directory is shared, and only the downloaded update lives in
+    it. Widening this to the whole cache would expose the lesson and TTS
+    caches to any app that could be persuaded to read a URI from us.
+-->
+<paths>
+    <cache-path name="updates" path="updates/" />
+</paths>

@@ -10,4 +10,16 @@
     <string name="limit_unlock_button">Limitsiz o‘qish</string>
     <string name="limit_unlock_hint">Tugma Telegram botni ochadi. Obuna o‘sha yerda rasmiylashtiriladi, keyin bu yerda hammasi ochiladi.</string>
     <string name="limit_unlock_unavailable">Telegram botni ochib bo‘lmadi. Botga o‘zingiz kiring yoki keyinroq urinib ko‘ring.</string>
+
+    <!--
+        In-app updating. Only this channel may do it: Google Play
+        forbids an app it distributes from updating itself by any
+        other route, so the Play build has none of this.
+    -->
+    <string name="update_card_title">Yangi versiya %1$s</string>
+    <string name="update_card_subtitle">%1$s · yangilash uchun bosing</string>
+    <string name="update_card_downloading">Yuklanmoqda…</string>
+    <string name="update_card_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
+    <string name="update_card_permission">O‘rnatishga ruxsat bering</string>
+    <string name="update_card_permission_hint">Android sozlamalari ochiladi</string>
 </resources>

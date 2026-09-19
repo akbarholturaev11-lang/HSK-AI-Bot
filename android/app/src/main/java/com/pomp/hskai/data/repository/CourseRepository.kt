@@ -1,5 +1,6 @@
 package com.pomp.hskai.data.repository
 
+import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -8,6 +9,7 @@ import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
+import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.FoundationCompleteRequest
@@ -20,6 +22,8 @@ import com.pomp.hskai.data.api.RewardChestOpenResponse
 import com.pomp.hskai.data.lesson.LessonParser
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
+import com.pomp.hskai.data.local.LessonCacheDao
+import com.pomp.hskai.data.local.LessonCacheEntity
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.Lesson
 import java.io.ByteArrayOutputStream
@@ -44,21 +48,50 @@ data class LessonSnapshot(
     val previewCardLimit: Int,
     val completionAllowed: Boolean,
     val completionError: String?,
+    /** Read from disk because the request never reached the server. */
+    val isStale: Boolean = false,
 )
 
 class CourseRepository(
     private val api: AndroidCourseApi,
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: CourseMapDao,
+    private val lessonDao: LessonCacheDao? = null,
     private val json: Json,
     private val foundationApi: AndroidFoundationApi? = null,
     private val onSessionExpired: suspend () -> Unit = {},
+    private val ttsCache: TtsCache? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val now: () -> Long = System::currentTimeMillis,
     private val timezoneOffsetMinutes: () -> Int = {
         TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000
     },
 ) {
+
+    /**
+     * The map already on disk, with nothing asked of the network.
+     *
+     * The cache used to be reachable only after a request had failed, so every
+     * single open waited out a full round trip before anything was drawn —
+     * with a perfectly good copy of the same screen sitting on disk. On a 4G
+     * connection that is seconds of empty screen, every time, for data that
+     * had not changed.
+     *
+     * It is not marked stale here. "Stale" means the refresh failed, and while
+     * one is still in flight nobody knows that yet; the failure path below
+     * still marks it, which is when the banner belongs on screen.
+     */
+    suspend fun cachedCourseMap(): CourseMapSnapshot? {
+        val entity = dao.findMostRecent() ?: return null
+        val dto = runCatching {
+            json.decodeFromString(CourseMapDto.serializer(), entity.payloadJson)
+        }.getOrNull() ?: return null
+        return CourseMapSnapshot(
+            map = CourseMapper.toDomain(dto),
+            isStale = false,
+            fetchedAtMillis = entity.fetchedAtMillis,
+        )
+    }
 
     suspend fun courseMap(): ApiResult<CourseMapSnapshot> {
         val token = when (val result = accessToken()) {
@@ -159,7 +192,7 @@ class CourseRepository(
         accessRef: String = "",
     ): ApiResult<LessonSnapshot> {
         val token = when (val result = accessToken()) {
-            is ApiResult.Failure -> return result
+            is ApiResult.Failure -> return cachedLesson(level, lessonOrder, language, result.error)
             is ApiResult.Success -> result.value
         }
         return when (
@@ -167,54 +200,115 @@ class CourseRepository(
         ) {
             is ApiResult.Failure -> {
                 notifySessionExpired(result.error)
-                result
+                cachedLesson(level, lessonOrder, language, result.error)
             }
             is ApiResult.Success -> {
                 val envelope = result.value
-                val requestedLevel = level.trim().lowercase()
-                val responseLevel = envelope.level.trim().lowercase()
-                if (
-                    !envelope.ok ||
-                    envelope.lessonOrder != lessonOrder ||
-                    responseLevel != requestedLevel ||
-                    envelope.previewHalf == envelope.completionAllowed
-                ) {
-                    return ApiResult.Failure(ApiError.Unknown)
-                }
-                val parsed = runCatching {
-                    LessonParser.parse(
-                        payload = envelope.lesson,
-                        level = responseLevel,
+                val snapshot = snapshotOf(envelope, level, lessonOrder, language)
+                    ?: return ApiResult.Failure(ApiError.Unknown)
+                // Written only now, after the server said yes and the payload
+                // parsed. A malformed or refused lesson is never stored.
+                lessonDao?.upsert(
+                    LessonCacheEntity(
+                        level = level.trim().lowercase(),
                         lessonOrder = lessonOrder,
-                        language = language,
+                        envelopeJson = json.encodeToString(
+                            CourseLessonResponse.serializer(),
+                            envelope,
+                        ),
+                        fetchedAtMillis = now(),
                     )
-                }.getOrNull()
-                val cardCount = parsed?.cards?.size ?: 0
-                if (
-                    parsed == null ||
-                    cardCount <= 0 ||
-                    envelope.totalCards != cardCount ||
-                    envelope.previewCardLimit !in 1..cardCount
-                ) {
-                    ApiResult.Failure(ApiError.Unknown)
-                } else {
-                    val limit = if (envelope.completionAllowed) {
-                        cardCount
-                    } else {
-                        envelope.previewCardLimit.coerceIn(1, cardCount)
-                    }
-                    ApiResult.Success(
-                        LessonSnapshot(
-                            lesson = parsed,
-                            isHalfPreview = envelope.previewHalf,
-                            previewCardLimit = limit,
-                            completionAllowed = envelope.completionAllowed,
-                            completionError = envelope.completionError,
-                        )
-                    )
-                }
+                )
+                ApiResult.Success(snapshot)
             }
         }
+    }
+
+    /**
+     * Builds the snapshot, or null when the envelope does not agree with what
+     * was asked for.
+     *
+     * One path for fresh and cached envelopes alike, so a lesson off the disk
+     * can never come out more permissive than the server last made it.
+     */
+    private fun snapshotOf(
+        envelope: CourseLessonResponse,
+        level: String,
+        lessonOrder: Int,
+        language: AppLanguage,
+        isStale: Boolean = false,
+    ): LessonSnapshot? {
+        val requestedLevel = level.trim().lowercase()
+        val responseLevel = envelope.level.trim().lowercase()
+        if (
+            !envelope.ok ||
+            envelope.lessonOrder != lessonOrder ||
+            responseLevel != requestedLevel ||
+            envelope.previewHalf == envelope.completionAllowed
+        ) {
+            return null
+        }
+        val parsed = runCatching {
+            LessonParser.parse(
+                payload = envelope.lesson,
+                level = responseLevel,
+                lessonOrder = lessonOrder,
+                language = language,
+            )
+        }.getOrNull()
+        val cardCount = parsed?.cards?.size ?: 0
+        if (
+            parsed == null ||
+            cardCount <= 0 ||
+            envelope.totalCards != cardCount ||
+            envelope.previewCardLimit !in 1..cardCount
+        ) {
+            return null
+        }
+        val limit = if (envelope.completionAllowed) {
+            cardCount
+        } else {
+            envelope.previewCardLimit.coerceIn(1, cardCount)
+        }
+        return LessonSnapshot(
+            lesson = parsed,
+            isHalfPreview = envelope.previewHalf,
+            previewCardLimit = limit,
+            completionAllowed = envelope.completionAllowed,
+            completionError = envelope.completionError,
+            isStale = isStale,
+        )
+    }
+
+    /**
+     * The lesson as it was last served, for a request that never got an answer.
+     *
+     * Deliberately narrower than the course map's fallback: only [ApiError.Offline]
+     * and [ApiError.Timeout] qualify. If the server answered at all — a spent
+     * allowance, a lesson that is no longer unlocked, an expired session — that
+     * answer stands, and the disk copy must not talk over it.
+     *
+     * Serving it grants nothing new. The backend spends the daily slot on the
+     * GET itself, so every row in this table is a lesson already paid for, and
+     * reopening one has never cost a second slot.
+     */
+    private suspend fun cachedLesson(
+        level: String,
+        lessonOrder: Int,
+        language: AppLanguage,
+        error: ApiError,
+    ): ApiResult<LessonSnapshot> {
+        if (error !is ApiError.Offline && error !is ApiError.Timeout) {
+            return ApiResult.Failure(error)
+        }
+        val row = lessonDao?.find(level.trim().lowercase(), lessonOrder)
+            ?: return ApiResult.Failure(error)
+        val envelope = runCatching {
+            json.decodeFromString(CourseLessonResponse.serializer(), row.envelopeJson)
+        }.getOrNull() ?: return ApiResult.Failure(error)
+        val snapshot = snapshotOf(envelope, level, lessonOrder, language, isStale = true)
+            ?: return ApiResult.Failure(error)
+        return ApiResult.Success(snapshot)
     }
 
     /** Stroke outlines for one character; the server proxies and caches them. */
@@ -236,6 +330,12 @@ class CourseRepository(
         if (phrase.isEmpty() || phrase.length > MAX_TTS_TEXT_LENGTH || !CJK.containsMatchIn(phrase)) {
             return ApiResult.Failure(ApiError.Unknown)
         }
+        // Served before the token is asked for, and deliberately so: the phrase
+        // is already drawn on the screen that is asking to hear it, so replaying
+        // our own copy of its audio opens nothing a session would have gated.
+        // It also makes the second tap instant and survives a dropped network.
+        val cacheKey = ttsCacheKey(phrase)
+        ttsCache?.read(cacheKey)?.let { return ApiResult.Success(it) }
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
@@ -276,12 +376,18 @@ class CourseRepository(
                             ?: throw IllegalStateException("Empty TTS response")
                     }
                 }.fold(
-                    onSuccess = { ApiResult.Success(it) },
+                    onSuccess = {
+                        ttsCache?.write(cacheKey, it)
+                        ApiResult.Success(it)
+                    },
                     onFailure = { ApiResult.Failure(ApiError.Unknown) },
                 )
             }
         }
     }
+
+    /** Rate is part of the key: the same phrase sounds different slowed down. */
+    private fun ttsCacheKey(phrase: String): String = "$DEFAULT_TTS_RATE|$phrase"
 
     suspend fun completeLesson(
         lessonOrder: Int,
@@ -343,7 +449,11 @@ class CourseRepository(
         return result
     }
 
-    suspend fun clearCache() = dao.clear()
+    suspend fun clearCache() {
+        dao.clear()
+        lessonDao?.clear()
+        ttsCache?.clear()
+    }
 
     private suspend fun cached(error: ApiError): ApiResult<CourseMapSnapshot> {
         if (error is ApiError.SessionExpired) return ApiResult.Failure(error)

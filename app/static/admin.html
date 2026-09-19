@@ -102,7 +102,7 @@
     /* Segment chips */
     .chips{display:flex;gap:7px;overflow:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch}
     .chip{flex:none;height:34px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 13px;color:var(--muted);font-size:12px;font-weight:800;white-space:nowrap}
-    .chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .chip.active,.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
     /* Source table */
     .tbl{width:100%;border-collapse:collapse;font-size:12.5px}
     .tbl th{text-align:left;color:var(--muted);font-weight:800;padding:7px 8px;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
@@ -147,6 +147,9 @@
     .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .frow{display:grid;gap:7px;margin-bottom:11px}
     .frow.two{grid-template-columns:1fr 1fr}
+    /* Tanlangan turga aloqasi yo'q maydon YASHIRINADI. `.frow` grid
+       bo'lgani uchun brauzerning `[hidden]` qoidasi unga yetmaydi. */
+    [data-ca-field][hidden],[data-adhub-pane][hidden]{display:none}
     .frow label{font-size:11px;font-weight:850;color:var(--muted)}
     .duration-presets{display:flex;gap:7px;flex-wrap:wrap}
     .duration-presets .chip{height:32px;padding:0 12px}
@@ -157,6 +160,11 @@
     .srow{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;width:100%}
     .srow h3{font-size:14px;font-weight:850}
     .srow p{margin-top:3px;color:var(--muted);font-size:11.5px;line-height:1.35}
+    /* `.hint` panel bo'ylab izoh uchun ishlatilardi, lekin uni HECH QANDAY
+       qoida bo'yamasdi: izohlar asosiy matn kattaligida, oq rangda
+       chiqardi va muhim narsadan farq qilmasdi. */
+    .hint{font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.45}
+    .hint b{color:var(--ink)}
     .danger-note{border:1px solid rgba(251,113,133,.35);background:var(--red-soft);color:#fecdd3;border-radius:11px;padding:11px 13px;font-size:12px;font-weight:700;line-height:1.45}
     /* Drawer */
     .scrim{position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s}
@@ -171,6 +179,9 @@
     .dbody{overflow:auto;padding:14px 16px calc(18px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
     .panel{display:grid;gap:11px}
     .mcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px;display:grid;gap:9px}
+    /* Joy kartalari rolik formasining ICHIDA turadi — ikki qavat "karta"
+       og'ir ko'rinadi, shuning uchun ichkisi yengilroq. */
+    .mcard .mcard{background:var(--bg-soft);padding:11px}
     .mcard h3{font-size:13.5px;font-weight:850}
     .mcard p{color:var(--muted);font-size:12px;line-height:1.45}
     .kv{display:grid;grid-template-columns:minmax(110px,.85fr) 1fr;gap:6px 10px;font-size:13px}
@@ -420,42 +431,54 @@
           <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
           <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
         </div>
-        <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🎬 Kurs reklama videolari</div><div class="sec-note">Bepul foydalanuvchiga. Qayerda chiqishi «📺 Reklama joylari» da tanlanadi: dars yakuni va/yoki ekran markazi</div></div></div>
-          <div class="mcard" style="margin-bottom:11px">
-            <div class="frow two">
-              <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
-              <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Videoda — ko'rish vaqti, suratda — ekranda turish vaqti"></div>
-            </div>
-            <div class="frow two">
-              <div><label>Reklama turi <span class="hint" style="font-weight:400">— ko'rinishi, joyi emas</span></label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option><option value="app">📱 App reklamasi</option></select></div>
-              <div><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64" placeholder="Oddiy reklamada shart emas" disabled></div>
-            </div>
-            <div class="frow two" id="caAppRow" style="display:none">
-              <div><label>X paydo bo'lishi (s)</label><input id="caSkipAfter" class="input" type="number" min="0" max="60" value="5"></div>
-              <div><label>Kuniga necha marta</label><input id="caDailyLimit" class="input" type="number" min="0" max="50" value="1" placeholder="0 — cheklovsiz"></div>
-            </div>
-            <div class="frow two" id="caAppLinksRow" style="display:none">
-              <div><label>MacBook havolasi</label><input id="caLinkMacos" class="input" placeholder="Bo'sh — avtomatik"></div>
-              <div><label>Windows havolasi</label><input id="caLinkWindows" class="input" placeholder="Bo'sh — avtomatik"></div>
-            </div>
-            <div class="frow two">
-              <div><label id="caLinkLabel">Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
-              <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
-            </div>
-            <div class="frow">
-              <label>Qayerda chiqsin</label>
-              <div class="chips">
-                <button class="chip on" id="caPlaceLessonEnd" data-act="ca-place" data-place="lesson_end">🎓 Dars yakuni</button>
-                <button class="chip" id="caPlaceScreenCenter" data-act="ca-place" data-place="screen_center">🎯 Ekran markazi</button>
-              </div>
-              <div class="hint">Kamida bittasi tanlansin. Joyning o'zi (yoqilgan/kunlik chegara) «📺 Reklama joylari» da boshqariladi.</div>
-            </div>
-            <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
-            <input id="caFile" type="file" accept="video/*,image/*" hidden>
+        <!-- Reklamaga oid HAMMA narsa shu bitta bo'limda. Ilgari u uchga
+             bo'lingan edi (roliklar, "Reklama joylari", "App reklamasi") va
+             yana to'rtinchisi modul ro'yxatida turardi — admin qaysi biri
+             nimani boshqarishini chalkashtirardi. -->
+        <!-- Mini App reklamasiga oid HAMMA narsa shu bo'limda. Rolik va uning
+             joyi bitta ekranda: ikkalasi bir-birisiz ishlamaydi, ya'ni ikki
+             tanlovga bo'lish admin uchun ortiqcha qadam edi. Botdagi
+             reklama xabari bu yerdan CHIQARILDI — u Mini App rekalamasi
+             emas, oммавий хабарнинг ukasi. -->
+        <div class="sec" id="adHub">
+          <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklama. Avval nima qilmoqchi ekaningizni tanlang</div></div></div>
+          <div class="chips" id="adHubTabs" style="margin-bottom:9px">
+            <button class="chip active" data-adhub="kurs">🎬 Kurs reklamasi</button>
+            <button class="chip" data-adhub="ilova">💻 Ilova reklamasi</button>
           </div>
-          <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
-          <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
+          <div class="hint" id="adHubNote" style="margin:0 2px 11px"></div>
+
+          <div id="adPaneKurs" data-adhub-pane>
+            <div class="mcard" style="margin-bottom:11px">
+              <h3>➕ Yangi rolik</h3>
+              <div class="frow two">
+                <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
+                <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Videoda — ko'rish vaqti, suratda — ekranda turish vaqti"></div>
+              </div>
+              <div class="frow two">
+                <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option></select></div>
+                <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
+              </div>
+              <div class="hint" id="caTypeNote" style="margin:-4px 2px 4px"></div>
+
+              <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
+              <div class="frow" data-ca-field="link"><label id="caLinkLabel">Havola</label><input id="caLink" class="input" placeholder="https://..."><div class="hint" id="caLinkNote"></div></div>
+              <div class="frow" style="margin-bottom:6px">
+                <label>📺 Qayerda chiqsin</label>
+                <div class="hint">Har bir joy o'z kartasida. Kartaning YUQORISIDAGI kalit — shu rolik uchun; qolgani joyning O'ZI uchun va hamma roliklarga birdan tegishli.</div>
+              </div>
+              <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
+              <div class="danger-note" id="caPlaceNone" hidden>Hech bir joy tanlanmagan — rolik dars yakuniga qo'yiladi.</div>
+              <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
+              <input id="caFile" type="file" accept="video/*,image/*" hidden>
+            </div>
+
+            <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Yuklangan roliklar</div></div></div>
+            <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
+            <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
+          </div>
+
+          <div id="adPaneIlova" data-adhub-pane hidden></div>
         </div>
       </section>
     </main>
@@ -481,7 +504,9 @@
       overview:null, finance:null, financeError:false, management:null, remoteUsers:null, activeModule:null,
       desktopStats:{}, desktopStatsLoading:{},
       // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
-      drawerBack:null, activeUser:null
+      drawerBack:null, activeUser:null,
+      // «📣 Reklama» bo'limining ichida qaysi tanlov ochiq turibdi.
+      adHub:"kurs"
     };
 
     /* ---------- Telegram full-screen ---------- */
@@ -948,6 +973,17 @@
     function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
+    /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Reklama»
+       bo'limining ichida. `panelTarget` bo'sh bo'lsa — eski yo'l, drawer.
+       Shu tufayli reklama panellari ikki nusxada yozilmaydi. */
+    let panelTarget=null;
+    function showPanel(title,sub,html){
+      if(!panelTarget) return openDrawer(title,sub,html);
+      const host=$(panelTarget); if(!host) return;
+      /* Izoh bo'lim tepasida bir marta yozilgan — panel uni takrorlamaydi. */
+      host.innerHTML=html;
+    }
+
     function durationControlHtml(inputId){
       return `<div class="frow"><label for="${inputId}">Muddat (kun)</label>
         <input id="${inputId}" class="input" type="number" inputmode="numeric" min="1" max="36500" step="1" value="30">
@@ -1041,6 +1077,8 @@
       state.activeModule=key;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
+      /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
+      if(key==="ads_hub"){ closeDrawer(); switchTab("settings"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
@@ -1181,16 +1219,24 @@
     /* Reklama joylari — aynan ikkita, har biri ALOHIDA boshqariladi.
        Birini o'chirish ikkinchisiga tegmaydi. */
     const AD_PLACEMENTS=[
-      ["lesson_end","Dars yakuni","Dars tugagach chiqadi"],
-      ["screen_center","Ekran markazi","Qaysi bo'limda bo'lishidan qat'i nazar"]
+      ["lesson_end","🎓 Dars yakuni","Dars tugagach chiqadi"],
+      ["screen_center","🎯 Ekran markazi","Qaysi bo'limda bo'lishidan qat'i nazar"]
     ];
     function adPlacementCard(key,label,note,rule){
       const r=rule||{};
       const id=key.replace(/[^A-Za-z0-9]/g,"_");
+      /* Joy haqidagi HAMMA narsa bitta kartada: yangi rolik shu yerga
+         qo'yiladimi (bu — faqat shu rolik uchun) va joyning o'z qoidasi
+         (bu — hamma roliklarga birdan). Ilgari ikkisi ekranning ikki
+         joyida turardi va bir xil savolning takroriga o'xshardi. */
+      const chosen=!!caPlaceChosen[key];
       return `<div class="mcard" data-adplace data-key="${esc(key)}">
         <h3>${esc(label)}</h3>
         <p>${esc(note)}</p>
-        <div class="frow"><label><input type="checkbox" id="adOn_${id}"${r.enabled?" checked":""}> Yoqilgan</label></div>
+        <label class="ncsw"><input type="checkbox" data-ca-place="${esc(key)}"${chosen?" checked":""}> <b>Yangi rolik shu joyga qo'yilsin</b></label>
+        <div class="danger-note" data-ca-place-warn="${esc(key)}"${(chosen&&r.enabled===false)?"":" hidden"}>Bu joy hozir o'chirilgan — quyidagi «Joy yoqilgan» kalitini yoqib saqlamasangiz, rolik bu yerda chiqmaydi.</div>
+        <div class="hint">Quyidagilar joyning O'ZI uchun — hamma roliklarga birdan tegishli.</div>
+        <div class="frow"><label><input type="checkbox" id="adOn_${id}"${r.enabled?" checked":""}> Joy yoqilgan</label></div>
         <div class="frow"><label>Kimga ko'rsatiladi</label><select id="adAud_${id}" class="select">
           <option value="free_only"${r.audience!=="everyone"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
           <option value="everyone"${r.audience==="everyone"?" selected":""}>Hammaga</option>
@@ -1204,9 +1250,9 @@
     function renderAdPlacements(d){
       const cfg=(d.ad_placements||{}).placements||{};
       const body=AD_PLACEMENTS.map(([k,l,n])=>adPlacementCard(k,l,n,cfg[k])).join("");
-      openDrawer("📺 Reklama joylari","Aynan ikkita joy. Kunlik chegara serverda — qurilma almashtirish uni aylanib o'tmaydi.",`<div class="panel">
+      showPanel("📺 Reklama joylari","Aynan ikkita joy. Kunlik chegara serverda — qurilma almashtirish uni aylanib o'tmaydi.",`<div class="panel">
         ${body}
-        <button class="btn" data-adplacesave>Saqlash</button>
+        <button class="btn sec" data-adplacesave>💾 Joy sozlamalarini saqlash</button>
       </div>`);
     }
     function salesExperimentStartedText(value){
@@ -1257,11 +1303,11 @@
       const platforms=ap.platforms||{};
       const daily=Number(ap.daily_limit||3);
       const enabled=ap.enabled!==false;
-      openDrawer("💻 App reklamasi","Mini App ochilganda va reklama joylarida ilova promosi",`<div class="panel">
+      showPanel("💻 App reklamasi","Mini App ochilganda va reklama joylarida ilova promosi",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
           <p>Ochilishi: ${enabled?"yoqilgan":"o'chirilgan"} · Kunlik limit: ${daily} marta</p>
-          <div class="tags">${tag(enabled?"faol":"o'chirilgan",enabled?"green":"red")}${tag((placements.home_prompt!==false)?"ochilganda":"ochilganda yo'q",(placements.home_prompt!==false)?"blue":"")}${tag((placements.ad_promo!==false)?"reklama oynasida":"reklama oynasida yo'q",(placements.ad_promo!==false)?"amber":"")}${tag(ap.media_url?"media bor":"media yo'q",ap.media_url?"green":"")}</div>
+          <div class="tags">${tag(enabled?"faol":"o'chirilgan",enabled?"green":"red")}${tag((placements.home_prompt!==false)?"ochilganda":"ochilganda yo'q",(placements.home_prompt!==false)?"blue":"")}${tag((placements.lesson_end_promo!==false)?"dars yakunida":"dars yakunida yo'q",(placements.lesson_end_promo!==false)?"blue":"")}${tag((placements.ad_promo!==false)?"reklama oynasida":"reklama oynasida yo'q",(placements.ad_promo!==false)?"amber":"")}${tag(ap.media_url?"media bor":"media yo'q",ap.media_url?"green":"")}</div>
         </div>
         <div class="mcard">
           <h3>Ko'rsatish sozlamasi</h3>
@@ -1276,7 +1322,7 @@
           <div class="frow"><label>Qayerda chiqsin</label><div class="chips">
             ${appPromoChipHtml("placement","home_prompt","Mini App ochilganda",placements.home_prompt!==false)}
             ${appPromoChipHtml("placement","lesson_end_promo","Dars yakunida",placements.lesson_end_promo!==false)}
-            ${appPromoChipHtml("placement","ad_promo","Reklama oynasi ichida",placements.ad_promo!==false)}
+            ${appPromoChipHtml("placement","ad_promo","Reklama oynasida (dars yakunida)",placements.ad_promo!==false)}
           </div></div>
         </div>
         <div class="mcard">
@@ -1289,10 +1335,11 @@
         </div>
         <div class="mcard">
           <h3>Platforma tugmalari</h3>
-          <p>Hozircha faqat MacBook va Windows ko'rinadi. Android va Apple keyin ochiladi.</p>
+          <p>MacBook, Windows va Android ko'rinadi. Apple uchun alohida ilova hali yo'q.</p>
           <div class="chips">
             ${appPromoChipHtml("platform","macos","MacBook",platforms.macos!==false)}
             ${appPromoChipHtml("platform","windows","Windows",platforms.windows!==false)}
+            ${appPromoChipHtml("platform","android","Android",platforms.android!==false)}
           </div>
         </div>
         <button class="btn" data-app-promo-save>Saqlash</button>
@@ -1306,7 +1353,10 @@
     function collectAppPromo(){
       const pick=(kind)=>{ const result={}; document.querySelectorAll(`[data-ap-${kind}]`).forEach(el=>{ result[el.dataset["ap"+kind.charAt(0).toUpperCase()+kind.slice(1)]]=el.classList.contains("active"); }); return result; };
       const platforms=pick("platform");
-      platforms.android=false;
+      // Android'ni majburan o'chirish OLIB TASHLANDI: u endi chiqariladi va
+      // admin uni yoqa olishi kerak. Ilgari bu qator har saqlashda admin
+      // tanlovini bekor qilardi — chipni yoqib saqlasa ham qaytib o'chardi.
+      // iOS qoladi: unga alohida ilova yo'q, chipi ham yo'q.
       platforms.ios=false;
       return {
         enabled:Boolean($("apEnabled")&&$("apEnabled").checked),
@@ -1570,7 +1620,7 @@
           <div class="frow two"><div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div>
             <div><label>Xususiyat kaliti</label><input id="cmFeature" class="input" value="general"></div></div>`;
       }
-      openDrawer(cfg[0],targetId?moduleSub(cfg[2]):cfg[2],`<div class="panel">
+      showPanel(cfg[0],targetId?moduleSub(cfg[2]):cfg[2],`<div class="panel">
         <div class="mcard"><h3>➕ ${targetId?"Shu foydalanuvchiga chegirma":"Yangi "+(kind==="discount"?"chegirma":kind==="ad"?"reklama":"kampaniya")}</h3>${form}
           <button class="btn" data-cmcreate="${kind}">Yaratish</button></div>
         ${rows.map(i=>campaignCard(i,kind)).join("")||"<p class='empty'>Hali yozuv yo'q.</p>"}</div>`);
@@ -1687,7 +1737,17 @@
     }
 
     /* ---------- module actions ---------- */
-    async function afterModule(msg){ const m=state.activeModule; state.management=null; await loadData(); if(m && $("drawer").classList.contains("open")) await openModule(m); toast(msg||"Saqlandi"); }
+    async function afterModule(msg){
+      const m=state.activeModule, hub=state.adHub;
+      state.management=null;
+      await loadData();
+      if(m && $("drawer").classList.contains("open")) await openModule(m);
+      /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
+         o'sha yerda qayta chizamiz, aks holda admin saqlab bo'lib eski
+         qiymatlarga qarab turardi. */
+      else if(hub) await openAdHub(hub);
+      toast(msg||"Saqlandi");
+    }
 
     function validDurationDays(value){
       const raw=String(value==null?"":value).trim();
@@ -1759,7 +1819,7 @@
 
     /* ---------- course ads ---------- */
     const CA_LANGS={all:"Barcha tillar",uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
-    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"],dars_yakuni:["👑 Obuna taklifi",""],app:["📱 App","blue"]};
+    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"],dars_yakuni:["👑 Obuna taklifi",""]};
     function caLangLabel(l){ return CA_LANGS[l]||CA_LANGS.all; }
     function caTypeMeta(t){ return CA_TYPES[t]||CA_TYPES.odiy; }
     let caItems=[], caFilter="all";
@@ -1781,10 +1841,7 @@
       const placeNames={lesson_end:"🎓 Dars yakuni",screen_center:"🎯 Ekran markazi"};
       const places=(i.placements&&i.placements.length?i.placements:["screen_center"])
         .map(k=>placeNames[k]||k).join(" · ");
-      const slotLine=`<div class="ncnote">${places}</div>`
-        +(i.ad_type==="app"
-          ? `<div class="ncnote">💻 MacBook: ${(i.platform_links&&i.platform_links.macos)?"qo'lda":"avtomatik"} · Windows: ${(i.platform_links&&i.platform_links.windows)?"qo'lda":"avtomatik"}</div>`
-          : "");
+      const slotLine=`<div class="ncnote">${places}</div>`;
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s ${isPhoto?"ekranda turadi":"majburiy ko'rish"} · ${esc(i.created_at||"—")}</div>
           ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}${slotLine}</div>
@@ -1811,36 +1868,126 @@
         renderCaLangFilter(); renderCourseAds(); }
       catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
     }
-    /* Reklama qaysi joy(lar)da chiqishi. Kamida bittasi tanlangan bo'lishi
-       shart — hech biri tanlanmasa server uni ekran markaziga tushiradi va
-       admin "dars yakuniga qo'ydim" deb o'ylab qolardi. */
+    /* Yangi rolik qaysi joy(lar)ga qo'yiladi. Tanlov joy kartasining ichida
+       yashaydi, lekin QIYMAT shu yerda saqlanadi: karta joy sozlamasi bilan
+       birga qayta chizilaveradi va adminning tanlovi shunda ham yo'qolmasin.
+
+       Hech biri tanlanmasa server uni ekran markaziga tushirardi va admin
+       "dars yakuniga qo'ydim" deb o'ylab qolardi — shuning uchun bu yerda
+       dars yakuniga tushadi va ekranda ogohlantirish chiqadi. */
+    const caPlaceChosen={lesson_end:true,screen_center:false};
+    let caPlaceRules={};
     function caPlacementsValue(){
-      const keys=["lesson_end","screen_center"];
-      const on=keys.filter(k=>{
-        const b=document.querySelector('[data-act="ca-place"][data-place="'+k+'"]');
-        return b&&b.classList.contains("on");
-      });
+      const on=Object.keys(caPlaceChosen).filter(k=>caPlaceChosen[k]);
       return (on.length?on:["lesson_end"]).join(",");
     }
+    function caPlaceWarnUI(){
+      let anyChosen=false;
+      Object.keys(caPlaceChosen).forEach(k=>{
+        const chosen=!!caPlaceChosen[k];
+        if(chosen) anyChosen=true;
+        const warn=document.querySelector('[data-ca-place-warn="'+k+'"]');
+        if(warn) warn.hidden=!(chosen&&caPlaceRules[k]&&caPlaceRules[k].enabled===false);
+      });
+      const none=$("caPlaceNone"); if(none) none.hidden=anyChosen;
+    }
+    /* Har bir reklama turi uchun QAYSI maydonlar kerakligi shu yerda — bitta
+       joyda. Ro'yxatda yo'q maydon formadan butunlay yo'qoladi: tanlangan
+       turga aloqasi bo'lmagan katak faqat chalg'itadi, o'chirilgan holda
+       turgani ham yordam bermasdi. */
+    const CA_TYPE_SPEC={
+      odiy:{
+        fields:["link"],
+        note:"Faqat rolik ko'rsatiladi, ichida tugma yo'q.",
+        linkLabel:"Havola (ixtiyoriy)",
+        linkNote:"Dars yakuniga qo'ysangiz, shu havola bilan bitta tugma qo'shiladi. Bo'sh qoldirsangiz reklama hech qayerga olib bormaydi."
+      },
+      hamkorlik:{
+        fields:["link","button"],
+        note:"Hamkor reklamasi: rolik ostida bitta tashqi havola tugmasi chiqadi.",
+        linkLabel:"Havola / Instagram",
+        linkNote:"@username yozsangiz ham bo'ladi — t.me havolasiga aylantiriladi.",
+        buttonLabel:"Knopka nomi",
+        buttonPlaceholder:"Masalan: Hamkorlik uchun yozing"
+      },
+      bot:{
+        fields:["link","button"],
+        note:"Bot reklamasi: ochish, nusxalash va ulashish tugmalari chiqadi.",
+        linkLabel:"Bot havolasi",
+        linkNote:"Masalan @darsi_chini_bot yoki to'liq t.me havolasi.",
+        buttonLabel:"Knopka nomi",
+        buttonPlaceholder:"Masalan: Botni sinab ko'r"
+      },
+      dars_yakuni:{
+        fields:["link","button"],
+        note:"Dars yakunidagi obuna taklifi bilan birga chiqadi.",
+        linkLabel:"Tashqi havola (ixtiyoriy)",
+        linkNote:"Bo'sh qoldirsangiz faqat obuna taklifi ko'rinadi.",
+        buttonLabel:"Tashqi link knopkasi",
+        buttonPlaceholder:"Masalan: Batafsil ko'rish"
+      }
+    };
+    function caSpec(){ return CA_TYPE_SPEC[($("caType")&&$("caType").value)||"odiy"]||CA_TYPE_SPEC.odiy; }
     function caTypeUI(){
-      const t=($("caType")&&$("caType").value)||"odiy", noBtn=t==="odiy";
-      const bt=$("caBtnText"), lbl=$("caLinkLabel"), btnLbl=$("caBtnLabel");
-      bt.disabled=noBtn;
-      if(noBtn){ bt.value=""; bt.placeholder="Oddiy reklamada shart emas"; }
-      else if(t==="dars_yakuni"){ bt.placeholder="Masalan: Batafsil ko'rish"; }
-      else if(t==="hamkorlik"){ bt.placeholder="Masalan: Hamkorlik uchun yozing"; }
-      else { bt.placeholder="Masalan: Botni sinab ko'r"; }
-      if(btnLbl) btnLbl.textContent=t==="dars_yakuni"?"Tashqi link knopkasi":"Knopka nomi";
-      if(lbl) lbl.textContent = t==="hamkorlik" ? "Havola / Instagram" : (t==="bot" ? "Bot havolasi" : (t==="dars_yakuni" ? "Tashqi havola (ixtiyoriy)" : (t==="app" ? "Yuklab olish havolasi" : "Havola (ixtiyoriy)")));
-      const appRow=$("caAppRow"); if(appRow) appRow.style.display = t==="app" ? "" : "none";
-      const appLinks=$("caAppLinksRow"); if(appLinks) appLinks.style.display = t==="app" ? "" : "none";
-      if(t==="app") bt.placeholder="Masalan: Ilovani yuklab olish";
+      const spec=caSpec(), on=spec.fields;
+      document.querySelectorAll("[data-ca-field]").forEach(el=>{ el.hidden=on.indexOf(el.dataset.caField)<0; });
+      const set=(id,text)=>{ const el=$(id); if(el) el.textContent=text||""; };
+      set("caTypeNote",spec.note);
+      set("caLinkLabel",spec.linkLabel);
+      set("caLinkNote",spec.linkNote);
+      set("caBtnLabel",spec.buttonLabel||"Knopka nomi");
+      const bt=$("caBtnText");
+      if(bt){ bt.placeholder=spec.buttonPlaceholder||""; }
+      /* Yashiringan katakning qiymati qolib ketmasin — aks holda ko'rinmaydigan
+         maydon jimgina yuborilib ketardi. */
+      if(on.indexOf("button")<0&&bt) bt.value="";
+      if(on.indexOf("link")<0){ const l=$("caLink"); if(l) l.value=""; }
+    }
+
+    /* ---------- «📣 Reklama» bo'limi: hammasi bitta joyda ----------
+       Ilgari bular uch xil joyda edi (sozlamalardagi roliklar formasi, modul
+       ro'yxatidagi «Reklama joylari» va «App reklamasi», plus «Reklama
+       kampaniyasi»). Endi bitta bo'lim, ichida to'rt tanlov. */
+    const AD_HUB={
+      kurs:{pane:"adPaneKurs",note:"Foydalanuvchi ko'radigan rolik va u qaysi joyda chiqishi — ikkalasi shu yerda. Rolik joysiz, joy roliksiz ishlamaydi."},
+      ilova:{pane:"adPaneIlova",note:"HSK AI ilovasini yuklab olishga chaqiruvchi promo: Mini App ochilganda va dars yakunida chiqadi. Media va platforma tugmalari shu yerda."}
+    };
+    async function openAdHub(key){
+      state.adHub=AD_HUB[key]?key:"kurs";
+      const cfg=AD_HUB[state.adHub];
+      Object.keys(AD_HUB).forEach(k=>{ const el=$(AD_HUB[k].pane); if(el) el.hidden=(k!==state.adHub); });
+      document.querySelectorAll("[data-adhub]").forEach(b=>b.classList.toggle("active",b.dataset.adhub===state.adHub));
+      const note=$("adHubNote"); if(note) note.textContent=cfg.note;
+      /* Joy sozlamasi endi rolik formasi bilan BIR ekranda: u shu paneldagi
+         alohida qutiga chiziladi, drawer'ga emas. */
+      const host=state.adHub==="kurs" ? $("adPlacementsBox") : $(cfg.pane);
+      if(state.adHub==="kurs") caTypeUI();
+      if(!host) return;
+      host.innerHTML="<p class='empty'>Yuklanmoqda…</p>";
+      let d;
+      try{ d=await loadManagement(false); }
+      catch(e){ host.innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
+      panelTarget=host.id;
+      try{
+        if(state.adHub==="kurs") renderAdPlacements(d);
+        else renderAppPromo(d);
+      } finally { panelTarget=null; }
+      if(state.adHub==="kurs"){
+        caPlaceRules=((d.ad_placements||{}).placements)||{};
+        caPlaceWarnUI();
+      }
     }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); fd.append("button_text",adType==="odiy"?"":($("caBtnText").value||"")); if(adType==="app"){ fd.append("skip_after_seconds",($("caSkipAfter")&&$("caSkipAfter").value)||"0"); fd.append("daily_limit",($("caDailyLimit")&&$("caDailyLimit").value)||"0"); fd.append("link_macos",($("caLinkMacos")&&$("caLinkMacos").value)||""); fd.append("link_windows",($("caLinkWindows")&&$("caLinkWindows").value)||""); } fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); const caFields=(CA_TYPE_SPEC[adType]||CA_TYPE_SPEC.odiy).fields; fd.append("button_text",caFields.indexOf("button")<0?"":($("caBtnText").value||"")); /* Yopish vaqti, kunlik chegara va platforma havolalari bu yerdan
+         OLIB TASHLANDI. Birinchi ikkitasi hech qachon ishlamasdi (server
+         yopish vaqtini joy qoidasidan oladi, rolik chegarasini esa hech kim
+         tekshirmasdi), platforma havolalari esa `app` turi bilan birga
+         ketdi — ilovani endi faqat «Ilova reklamasi» promosi reklama
+         qiladi. */
+      fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }
@@ -1883,6 +2030,7 @@
       if((el=T("[data-umsg]"))){ state.drawerBack=(()=>openUser(el.dataset.umsg)); return renderUserMessage(el.dataset.umsg,el.dataset.uname); }
       if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Matn juda qisqa"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{telegram_id:Number(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Xabar yuborildi");}).catch(x=>{toast(apiErr(x,"Xabar yuborilmadi"));el.disabled=false;}); }
       if((el=T("[data-uchat]"))) return openUserChat(el.dataset.uchat);
+      if((el=T("[data-adhub]"))) return openAdHub(el.dataset.adhub);
       if((el=T("[data-module]"))){
         // `data-uback` bo'lsa bo'lim profil kontekstida ochiladi va orqaga
         // qaytish tugmasi o'sha profilga olib boradi.
@@ -1965,14 +2113,6 @@
         if(n==="reload") return loadData();
         if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; renderUsers(); return; }
         if(n==="copy-report") return copyReport();
-        if(n==="ca-place"){
-          /* Ikkalasini ham o'chirib qo'yib bo'lmaydi: oxirgi yoqilganini
-             bosish hech narsani o'zgartirmaydi. */
-          const others=[...document.querySelectorAll('[data-act="ca-place"].on')];
-          if(el.classList.contains("on")&&others.length<2) return;
-          el.classList.toggle("on");
-          return;
-        }
         if(n==="upload-ca"){ $("caFile").click(); return; }
         if(n==="close-drawer") return closeDrawer();
         if(n==="drawer-back") return drawerBack();
@@ -1981,7 +2121,16 @@
 
     $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
     $("caFile").addEventListener("change",submitCourseAd);
+    /* Joy kaliti kartaning ichida va karta qayta chizilaveradi, shuning
+       uchun ishlovchi hujjatga bog'lanadi, tugmaning o'ziga emas. */
+    document.addEventListener("change",(e)=>{
+      const el=e.target&&e.target.closest?e.target.closest("[data-ca-place]"):null;
+      if(!el) return;
+      caPlaceChosen[el.dataset.caPlace]=el.checked;
+      caPlaceWarnUI();
+    });
     if($("caType")) $("caType").addEventListener("change",caTypeUI);
+    openAdHub("kurs");
     document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeDrawer(); });
 
     async function saveChannel(payload,btn){ if(btn) btn.disabled=true; try{ await apiPost("/api/admin-miniapp/channels/save",payload); await afterModule("Kanal sozlamasi saqlandi"); }catch(e){ toast(apiErr(e,"Kanal saqlanmadi")); if(btn) btn.disabled=false; } }

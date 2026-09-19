@@ -1,6 +1,7 @@
 import asyncio
 import contextlib
 import logging
+from pathlib import Path
 import os
 import shutil
 import subprocess
@@ -13,7 +14,7 @@ from html import escape as html_escape
 from aiogram import Bot
 from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from sqlalchemy import func, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
@@ -51,6 +52,14 @@ from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
+from app.api.android_update import create_android_update_router
+from app.api.app_downloads import create_app_downloads_router
+from app.public_site.app_downloads_render import (
+    downloads_section,
+    structured_data as app_downloads_structured_data,
+)
+from app.public_site.render import public_origin
+from app.services.app_downloads_service import app_download_status
 from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, engine, init_db
@@ -93,7 +102,6 @@ from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import access_expires_at, resolve_state
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
-from app.services.desktop_download_service import DesktopReleaseConfig
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -636,7 +644,6 @@ app.include_router(
         session_factory=async_session_maker,
         settings_obj=settings,
         # Kech bog'lanish: bu yordamchi ham pastroqda e'lon qilingan.
-        download_links_resolver=lambda: _desktop_auto_download_links(),
     )
 )
 app.include_router(
@@ -652,6 +659,13 @@ app.include_router(
     )
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
+app.include_router(create_android_update_router(session_factory=async_session_maker))
+app.include_router(
+    create_app_downloads_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
 app.include_router(create_android_assistant_router(session_factory=async_session_maker, settings_obj=settings))
 # Android reuses the same DesktopAuthService core; only the transport differs.
 app.include_router(
@@ -1348,13 +1362,50 @@ async def course_v3_miniapp():
     return miniapp_file_response("app/static/course-v3.html")
 
 
+APP_DOWNLOADS_MARKER = "<!--APP-DOWNLOADS-->"
+
+
+async def _rendered_downloads_page() -> Response:
+    """The download page with the release facts already in the HTML.
+
+    The page decides what to offer by fetching its status and rewriting the
+    DOM. A search or AI crawler runs none of that, so it would read
+    "Versiya tekshirilmoqda…" and learn nothing about what exists. The same
+    facts are rendered here, in plain markup and in JSON-LD, before any script
+    has a chance to run.
+
+    Every failure falls back to the file exactly as it is: the page works
+    without this, and a status lookup going wrong must not take the download
+    page down with it.
+    """
+
+    path = "app/static/desktop-download.html"
+    try:
+        html = Path(path).read_text(encoding="utf-8")
+        status = await app_download_status(
+            session_factory=async_session_maker,
+            settings_obj=settings,
+        )
+        origin = public_origin(settings)
+        section = downloads_section(status, origin=origin, language="uz")
+        schema = app_downloads_structured_data(
+            status, origin=origin, page_url="/download"
+        )
+        html = html.replace(APP_DOWNLOADS_MARKER, section, 1)
+        if schema:
+            html = html.replace("</head>", schema + "</head>", 1)
+        return HTMLResponse(content=html, headers=DESKTOP_DOWNLOAD_HTML_HEADERS)
+    except Exception:
+        logger.exception("Download page could not be rendered; serving it plain")
+        return FileResponse(path, headers=DESKTOP_DOWNLOAD_HTML_HEADERS)
+
+
+@app.get("/download")
+@app.get("/apps")
 @app.get("/desktop-download.html")
 @app.get("/desktop-download")
 async def desktop_download_page():
-    return FileResponse(
-        "app/static/desktop-download.html",
-        headers=DESKTOP_DOWNLOAD_HTML_HEADERS,
-    )
+    return await _rendered_downloads_page()
 
 
 @app.get("/desktop-download-page.css")
@@ -1938,26 +1989,6 @@ async def v3_set_language(request: Request):
         user.language = resolved_lang
         await session.commit()
         return JSONResponse(content={"ok": True, "language": resolved_lang})
-
-
-async def _desktop_auto_download_links() -> dict[str, str]:
-    """Reliz tizimidagi joriy yuklab olish havolalari (public, tokensiz).
-
-    App reklamasidagi platforma tugmalari uchun. Reliz sozlanmagan yoki
-    vaqtincha ishlamayotgan bo'lsa bo'sh lug'at qaytadi — bunday holda tugma
-    faqat admin qo'lda havola kiritgan bo'lsa chiqadi, o'lik tugma emas."""
-    try:
-        releases = await DesktopReleaseConfig.resolve(settings)
-    except Exception:
-        logger.exception("Desktop auto download links resolve failed")
-        return {}
-    links: dict[str, str] = {}
-    for platform in ("macos", "windows"):
-        try:
-            links[platform] = releases.public_transfer_url(platform)
-        except Exception:
-            continue
-    return links
 
 
 # Darvoza bo'limlari endi `app/api/miniapp_entitlements.py` da — reklama
@@ -3849,24 +3880,20 @@ async def admin_miniapp_course_ads_upload(request: Request):
     language = CourseAdService.normalize_language(form.get("language"))
     ad_type = CourseAdService.normalize_ad_type(form.get("ad_type"))
     button_text = CourseAdService.normalize_button_text(form.get("button_text"))
-    skip_after_seconds = CourseAdService.normalize_skip_after(
-        form.get("skip_after_seconds"), duration_seconds
-    )
-    daily_limit = CourseAdService.normalize_daily_limit(form.get("daily_limit"))
+    # Yopish tugmasi vaqti va kunlik chegara bu yerdan OLIB TASHLANDI. Forma
+    # ularni so'rardi, baza saqlardi, lekin ikkalasi ham hech qachon
+    # ishlamasdi: reklama berilishidan oldin server `skip_after_seconds` ni
+    # joy qoidasidan qayta yozadi, rolik bo'yicha kunlik chegarani esa na
+    # server, na Mini App, na Android tekshirardi. Yagona manba —
+    # `ad_placements_v1` sozlamasi.
     # Reklama QAYERDA chiqishi. Ilgari bu forma umuman so'ramasdi va har bir
     # yangi reklama bazadagi standart qiymatga — ekran markaziga — tushardi,
     # ya'ni dars yakuniga reklama qo'yishning ILOJI YO'Q edi. Turni ("dars
     # yakuni reklamasi") joy deb o'ylash oson, lekin u faqat reklamaning
     # ko'rinishini belgilaydi.
     placements = normalize_ad_placements(form.get("placements"))
-    # Platforma havolalari — QO'LDA kiritilgani (ixtiyoriy). Bo'sh qoldirilsa
-    # havola reliz tizimidan avtomatik olinadi.
-    platform_links = {
-        "macos": form.get("link_macos"),
-        "windows": form.get("link_windows"),
-        "ios": form.get("link_ios"),
-        "android": form.get("link_android"),
-    }
+    # Platforma havolalari ham OLIB TASHLANDI: ilovani endi faqat `App
+    # reklamasi` promosi reklama qiladi, kurs roliklari emas.
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
@@ -3876,9 +3903,6 @@ async def admin_miniapp_course_ads_upload(request: Request):
             language=language,
             ad_type=ad_type,
             button_text=button_text,
-            skip_after_seconds=skip_after_seconds,
-            daily_limit=daily_limit,
-            platform_links=platform_links,
             media_type=media_type,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
@@ -4734,6 +4758,25 @@ async def miniapp_event(request: Request):
         if event == "subscribe_clicked":
             sent = await study_service.send_subscription_menu(bot, telegram_id)
             return {"ok": bool(sent)}
+
+        if event == "android_apk_to_chat":
+            # The APK is handed over in the chat and nowhere else, so the Mini
+            # App cannot deliver it itself — it asks the bot to, and closes.
+            # `send_android_app` writes its own reason into the chat when it
+            # returns False; the Mini App is told too, so it can stay open
+            # rather than close over a message that never arrived.
+            from app.bot.handlers.android_app import send_android_app
+
+            sent = await send_android_app(
+                bot,
+                telegram_id,
+                telegram_id,
+                session,
+                source="miniapp_profile",
+            )
+            if sent:
+                return {"ok": True}
+            return {"ok": False, "error": "android_apk_send_failed"}
 
         if event == "quiz_ai_discuss_clicked":
             _track_study_ai_task(

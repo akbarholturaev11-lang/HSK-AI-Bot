@@ -74,6 +74,14 @@ class Settings(BaseSettings):
     DESKTOP_WINDOWS_UPDATER_URL: str = ""
     DESKTOP_WINDOWS_UPDATER_SIGNATURE: str = ""
     DESKTOP_WINDOWS_UPDATER_NOTES: str = ""
+    # The Android release manifest is the same idea as the desktop one: the
+    # release workflow writes it, the server reads it, and nobody pastes a
+    # link per release. Blank keeps the manual bot-panel flow, which is what
+    # ran before this existed and still works.
+    ANDROID_RELEASE_MANIFEST_URL: str = ""
+    ANDROID_RELEASE_MANIFEST_CACHE_TTL_SECONDS: int = 60
+    ANDROID_RELEASE_MANIFEST_TIMEOUT_SECONDS: float = 5.0
+    ANDROID_RELEASE_MANIFEST_MAX_BYTES: int = 16384
     DESKTOP_DOWNLOAD_RATE_LIMIT_COUNT: int = 3
     DESKTOP_DOWNLOAD_RATE_LIMIT_WINDOW_SECONDS: int = 900
     # Opaque request tokens only attribute the installer funnel. They remain

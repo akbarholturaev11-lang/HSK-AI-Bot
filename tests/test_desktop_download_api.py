@@ -146,8 +146,91 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(payload["promo"]["placements"]["home_prompt"])
             self.assertFalse(payload["promo"]["placements"]["lesson_end_promo"])
             self.assertTrue(payload["promo"]["placements"]["ad_promo"])
-            self.assertFalse(payload["promo"]["platform_targets"]["android"])
+            # Android relizi chiqdi: promo admin tanloviga bo'ysunadi.
+            # Ilgari bu yerda `False` qattiq yozilgan edi va admin chipni
+            # yoqsa ham Mini App'da Android tugmasi chizilmasdi.
+            self.assertTrue(payload["promo"]["platform_targets"]["android"])
+            # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
+
+    async def test_the_home_prompt_no_longer_starves_the_lesson_end_promo(self):
+        """Har joyning sovish muddati O'ZINIKI.
+
+        Ilgari `desktop_promo_seen` joydan qat'i nazar bitta `max()` bilan
+        olinardi. "Mini App ochilganda" promosi kuniga 3 martagacha chiqadi,
+        ya'ni u 14 kunlik sovishni doim yangilab turardi va dars yakunidagi
+        promo hech qachon ochilmasdi — admin uni yoqib qo'ysa ham."""
+        async with self.sessions() as session:
+            session.add(
+                CourseMiniAppEvent(
+                    telegram_id=1001,
+                    event_name="desktop_promo_seen",
+                    source="home_prompt",
+                    created_at=datetime.now(timezone.utc) - timedelta(hours=1),
+                )
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            promo = (await DesktopDownloadService(session, _settings()).status(1001))[
+                "promo"
+            ]
+            self.assertTrue(promo["placements"]["lesson_end_promo"])
+
+    async def test_the_lesson_end_promo_still_waits_out_its_own_cooldown(self):
+        async with self.sessions() as session:
+            session.add(
+                CourseMiniAppEvent(
+                    telegram_id=1001,
+                    event_name="desktop_promo_seen",
+                    source="lesson_end_promo",
+                    created_at=datetime.now(timezone.utc) - timedelta(days=1),
+                )
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            promo = (await DesktopDownloadService(session, _settings()).status(1001))[
+                "promo"
+            ]
+            self.assertFalse(promo["placements"]["lesson_end_promo"])
+            # Qolgan ikkisi o'z yo'lida qolaveradi.
+            self.assertTrue(promo["placements"]["home_prompt"])
+            self.assertTrue(promo["placements"]["ad_promo"])
+
+    async def test_turning_a_platform_off_removes_its_promo_button(self):
+        """Chip o'chirilsa tugma ham yo'qoladi — ikkala tomonda ham.
+
+        Klient `platform_targets` ni o'qib tugmani chizadimi-yo'qmi hal
+        qiladi, shuning uchun bu yerdagi qiymat adminning tanlovi bo'lishi
+        shart, qattiq yozilgan qiymat emas."""
+        async with self.sessions() as session:
+            await save_desktop_app_promo_settings(
+                session,
+                {
+                    "enabled": True,
+                    "daily_limit": 3,
+                    "placements": {
+                        "home_prompt": True,
+                        "lesson_end_promo": True,
+                        "ad_promo": True,
+                    },
+                    "platforms": {
+                        "macos": True,
+                        "windows": True,
+                        "android": False,
+                        "ios": False,
+                    },
+                },
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            payload = await DesktopDownloadService(session, _settings()).status(1001)
+            targets = payload["promo"]["platform_targets"]
+            self.assertTrue(targets["macos"])
+            self.assertTrue(targets["windows"])
+            self.assertFalse(targets["android"])
 
     async def test_request_returns_tracked_download_page_and_safe_filename(self):
         async with self.sessions() as session:

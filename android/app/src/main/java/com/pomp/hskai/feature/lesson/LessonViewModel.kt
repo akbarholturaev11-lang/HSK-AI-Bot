@@ -67,6 +67,12 @@ data class LessonUiState(
     val previewCardLimit: Int = 0,
     val completionAllowed: Boolean = false,
     val completionError: String? = null,
+    /**
+     * Opened from the phone's own copy because the request never reached the
+     * server. The cards are the ones already paid for; completing still needs a
+     * connection, and fails into the existing retry CTA until it comes back.
+     */
+    val isStale: Boolean = false,
     val isAudioLoading: Boolean = false,
     val audioError: ApiError? = null,
     val outcome: LessonOutcome = LessonOutcome.InProgress,
@@ -227,6 +233,7 @@ class LessonViewModel(
                         previewCardLimit = snapshot.previewCardLimit,
                         completionAllowed = snapshot.completionAllowed,
                         completionError = snapshot.completionError,
+                        isStale = snapshot.isStale,
                     )
                 }
 

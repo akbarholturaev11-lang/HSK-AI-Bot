@@ -1627,3 +1627,94 @@ CONVERSION_I18N = {
 
 for _lang, _texts in CONVERSION_I18N.items():
     TEXTS.setdefault(_lang, {}).update(_texts)
+
+
+# The Android APK is handed out from this chat and nowhere else: there is no
+# Play listing yet and no download page. That is why the copy says where the
+# file comes from and what the "unknown sources" warning means — a learner who
+# sees that warning without being told to expect it simply stops.
+ANDROID_APP_I18N = {
+    "uz": {
+        # One door for every client: the button opens the Mini App profile on
+        # the card that carries them all.
+        "apps_menu_button": "📱 HSK AI ilovalari",
+        "apps_menu_text": "📱 <b>HSK AI ilovalari</b>\n\nAndroid, MacBook va Windows — hammasi bitta oynada.",
+        "android_app_button": "📱 Android ilova",
+        "android_app_intro": (
+            "📱 <b>HSK AI — Android ilova</b>\n\n"
+            "<blockquote>Telegramdagi obunangiz va progressingiz bilan bir xil ishlaydi — "
+            "qaytadan ro'yxatdan o'tish shart emas.\n\n"
+            "Versiya {version} · {size}</blockquote>\n\n"
+            "Fayl quyida."
+        ),
+        "android_app_caption": (
+            "⬇️ <b>Qanday o'rnatiladi</b>\n\n"
+            "<blockquote>1. Faylni bosing → «O'rnatish».\n"
+            "2. «Noma'lum manbalar» haqida ogohlantirish chiqsa — ruxsat bering "
+            "va davom eting.\n"
+            "3. Ilovani oching va undagi kodni shu botga yuboring.</blockquote>\n\n"
+            "Play Market'da hali yo'q — hozircha faqat shu yerdan tarqatiladi."
+        ),
+        "android_app_unavailable": (
+            "📱 <b>Android ilova</b>\n\n"
+            "<blockquote>Ilova hali tarqatishga tayyor emas. "
+            "Tayyor bo'lgach shu yerda e'lon qilamiz.</blockquote>"
+        ),
+        "android_app_failed": "⚠️ Faylni yuborib bo'lmadi. Birozdan keyin qayta urinib ko'ring.",
+    },
+    "ru": {
+        "apps_menu_button": "📱 Приложения HSK AI",
+        "apps_menu_text": "📱 <b>Приложения HSK AI</b>\n\nAndroid, MacBook и Windows — всё в одном окне.",
+        "android_app_button": "📱 Приложение Android",
+        "android_app_intro": (
+            "📱 <b>HSK AI — приложение для Android</b>\n\n"
+            "<blockquote>Работает с той же подпиской и тем же прогрессом, что и в "
+            "Telegram — регистрироваться заново не нужно.\n\n"
+            "Версия {version} · {size}</blockquote>\n\n"
+            "Файл ниже."
+        ),
+        "android_app_caption": (
+            "⬇️ <b>Как установить</b>\n\n"
+            "<blockquote>1. Нажмите на файл → «Установить».\n"
+            "2. Если появится предупреждение о «неизвестных источниках» — "
+            "разрешите и продолжите.\n"
+            "3. Откройте приложение и отправьте код из него этому боту.</blockquote>\n\n"
+            "В Play Market пока нет — сейчас раздаём только отсюда."
+        ),
+        "android_app_unavailable": (
+            "📱 <b>Приложение для Android</b>\n\n"
+            "<blockquote>Приложение пока не готово к раздаче. "
+            "Как только будет готово — объявим здесь.</blockquote>"
+        ),
+        "android_app_failed": "⚠️ Не удалось отправить файл. Попробуйте позже.",
+    },
+    "tj": {
+        "apps_menu_button": "📱 Барномаҳои HSK AI",
+        "apps_menu_text": "📱 <b>Барномаҳои HSK AI</b>\n\nAndroid, MacBook ва Windows — ҳама дар як тиреза.",
+        "android_app_button": "📱 Барномаи Android",
+        "android_app_intro": (
+            "📱 <b>HSK AI — барномаи Android</b>\n\n"
+            "<blockquote>Бо ҳамон обуна ва ҳамон пешрафте кор мекунад, ки дар "
+            "Telegram доред — аз нав сабти ном лозим нест.\n\n"
+            "Версия {version} · {size}</blockquote>\n\n"
+            "Файл дар поён."
+        ),
+        "android_app_caption": (
+            "⬇️ <b>Тарзи насб</b>\n\n"
+            "<blockquote>1. Файлро пахш кунед → «Насб кардан».\n"
+            "2. Агар огоҳӣ дар бораи «манбаъҳои номаълум» пайдо шавад — "
+            "иҷозат диҳед ва идома диҳед.\n"
+            "3. Барномаро кушоед ва рамзи онро ба ҳамин бот фиристед.</blockquote>\n\n"
+            "Дар Play Market ҳанӯз нест — ҳоло танҳо аз ин ҷо дода мешавад."
+        ),
+        "android_app_unavailable": (
+            "📱 <b>Барномаи Android</b>\n\n"
+            "<blockquote>Барнома ҳанӯз барои паҳн кардан тайёр нест. "
+            "Вақте тайёр шуд, дар ҳамин ҷо эълон мекунем.</blockquote>"
+        ),
+        "android_app_failed": "⚠️ Файл фиристода нашуд. Каме баъдтар боз кӯшиш кунед.",
+    },
+}
+
+for _lang, _texts in ANDROID_APP_I18N.items():
+    TEXTS.setdefault(_lang, {}).update(_texts)

@@ -25,6 +25,7 @@ from app.bot.keyboards.subscription import (
     subscription_miniapp_keyboard,
 )
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
+from app.bot.handlers.android_app import reply_chat_id
 from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
@@ -347,25 +348,54 @@ async def _profile_referral_count(session, user) -> int:
     return await referral_repo.count_by_referrer(user.telegram_id)
 
 
+APPS_MENU_CALLBACK = "profile_menu:apps"
+
+
+def apps_button(lang: str) -> InlineKeyboardButton:
+    """One button, and the Mini App card behind it does the rest.
+
+    The chooser that used to sit here asked the learner to name their device
+    before they had seen anything, and then handed each device off a different
+    way. The card in the Mini App profile already carries every client —
+    macOS, Windows and Android side by side — and Android is still handed over
+    in this chat: pressing it there closes the Mini App and the APK lands in
+    the chat the learner came from.
+    """
+
+    return InlineKeyboardButton(
+        text=t("apps_menu_button", lang),
+        web_app=WebAppInfo(
+            url=course_v3_miniapp_url(
+                lang=lang,
+                tab="profile",
+                focus_desktop_download=True,
+            )
+        ),
+    )
+
+
+def apps_menu_keyboard(lang: str) -> InlineKeyboardMarkup:
+    """The same card, for an older profile message that still points here."""
+
+    return InlineKeyboardMarkup(inline_keyboard=[[apps_button(lang)]])
+
+
 def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
     labels = {
         "tj": {
             "subscription": "💎 Обуна",
             "language": "🌐 Забон",
             "level": "📊 Дараҷа",
-            "desktop": "💻 Барномаи компютерӣ",
         },
         "uz": {
             "subscription": "💎 Obuna",
             "language": "🌐 Til",
             "level": "📊 Daraja",
-            "desktop": "💻 Kompyuter ilovasi",
         },
         "ru": {
             "subscription": "💎 Подписка",
             "language": "🌐 Язык",
             "level": "📊 Уровень",
-            "desktop": "💻 Приложение для компьютера",
         },
     }
     l = labels.get(lang, labels["ru"])
@@ -384,16 +414,7 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
         ],
         [
-            InlineKeyboardButton(
-                text=l["desktop"],
-                web_app=WebAppInfo(
-                    url=course_v3_miniapp_url(
-                        lang=lang,
-                        tab="profile",
-                        focus_desktop_download=True,
-                    )
-                ),
-            ),
+            apps_button(lang),
         ],
         [
             # Profil ostidagi tugma kursni BIR bosishda ochadi (oraliq xabar
@@ -971,6 +992,30 @@ async def profile_menu_language(callback: CallbackQuery, state: FSMContext, sess
         t("choose_language", lang),
         reply_markup=command_language_keyboard(),
     )
+
+@router.callback_query(F.data == APPS_MENU_CALLBACK)
+async def profile_menu_apps(callback: CallbackQuery, state: FSMContext, session):
+    """Nothing produces this callback any more — an old profile still does.
+
+    The profile keyboard is exactly the kind of message a learner scrolls back
+    to weeks later, and the button there is now a Mini App button. This keeps
+    the old one working instead of leaving it to spin and do nothing.
+    """
+
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    await _clear_voice_mode(user, session, state)
+    await callback.answer()
+    # Not `callback.message.answer`: the profile keyboard is exactly the kind
+    # of message a learner scrolls back to weeks later, and Telegram stops
+    # attaching a message to the callback once it is old enough.
+    await callback.bot.send_message(
+        reply_chat_id(callback),
+        t("apps_menu_text", lang),
+        reply_markup=apps_menu_keyboard(lang),
+        parse_mode="HTML",
+    )
+
 
 @router.callback_query(F.data == "profile_menu:level")
 async def profile_menu_level(callback: CallbackQuery, state: FSMContext, session):

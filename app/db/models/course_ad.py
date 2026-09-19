@@ -22,17 +22,21 @@ class CourseAdCreative(Base):
     link_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     # Reklama turi: "odiy" (oddiy reklama), "hamkorlik" (hamkorlik uchun),
     # "bot" (boshqa botni reklama qilish), "dars_yakuni" (dars tugagach bepul
-    # userga ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA,
-    # mashq bo'limlarida CHIQMAYDI), "app" (desktop ilova reklamasi — Mini App
-    # ochilganda markazda chiqadi, mashq bo'limlarida CHIQMAYDI).
-    # Turga qarab mini app'da knopka va slot farq qiladi.
+    # userga ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi
+    # CTA, mashq bo'limlarida CHIQMAYDI).
+    # Turga qarab mini app'da knopka farq qiladi.
+    #
+    # ESKI QIYMAT: "app" (ilova reklamasi) olib tashlangan. Ilovani endi faqat
+    # `desktop_app_promo` reklama qiladi. Bazadagi eski "app" qatorlari
+    # `normalize_ad_type` orqali "odiy" ga tushadi — ko'rsatilaveradi, lekin
+    # platforma tugmalarisiz.
     ad_type: Mapped[str] = mapped_column(String(16), default="odiy", nullable=False)
     # Reklama QAYERDA chiqadi. Vergul bilan ajratilgan to'plam, chunki bitta
     # reklama ikkala joyda ham bo'lishi mumkin.
     #
     # Ilgari joyni `ad_type` ning O'ZI belgilardi (`dars_yakuni` faqat dars
-    # oxirida, `app` faqat ochilishda, qolgani mashqlarda). Endi tur va joy
-    # ajratilgan: admin turini bir marta, joyini alohida tanlaydi.
+    # oxirida, qolgani mashqlarda). Endi tur va joy ajratilgan: admin turini
+    # bir marta, joyini alohida tanlaydi.
     placements: Mapped[str] = mapped_column(
         String(64), default="screen_center", nullable=False
     )
@@ -40,16 +44,18 @@ class CourseAdCreative(Base):
     # Bo'sh bo'lsa — turga mos default nom.
     button_text: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=7, nullable=False)
-    # Faqat "app" turi uchun: yopish (X) tugmasi necha soniyadan keyin chiqadi.
-    # NULL/0 — X darrov chiqadi. Boshqa turlar bu maydonni ishlatmaydi.
+    # ESKIRGAN uchta ustun — hech narsani boshqarmaydi, eski qatorlar uchun
+    # qoldi. Ularni hech kim yozmaydi ham, o'qimaydi ham:
+    #
+    # * `skip_after_seconds` — yopish (X) tugmasi vaqti. Server reklamani
+    #   berishdan oldin uni joy qoidasidan (`ad_placements_v1`) qo'yadi, ya'ni
+    #   bu yerdagi qiymat har doim ustidan yozilardi.
+    # * `daily_limit` — rolik bo'yicha kunlik chegara. Na server, na Mini App,
+    #   na Android uni tekshirardi; ishlaydigan chegara joy qoidasiniki.
+    # * `platform_links` — `app` turidagi platforma tugmalari. Tur olib
+    #   tashlandi.
     skip_after_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    # Faqat "app" turi uchun: bir foydalanuvchiga kuniga necha marta ko'rsatiladi.
-    # NULL yoki 0 — cheklovsiz (har ochilganda).
     daily_limit: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    # Faqat "app" turi uchun: platforma tugmalarining QO'LDA kiritilgan havolalari.
-    # JSON: {"macos": "https://...", "windows": "https://..."}.
-    # Bo'sh bo'lsa — havola reliz tizimidan avtomatik olinadi. Qiymat bo'lsa,
-    # u avtomatik havolani bosib o'tadi (reliz buzilganda zaxira yo'l).
     platform_links: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True, nullable=False)
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)

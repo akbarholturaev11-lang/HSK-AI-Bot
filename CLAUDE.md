@@ -14,6 +14,11 @@ Required first-read files:
 - README.md if present
 - relevant docs or rules files inside the project
 
+When the work touches the Android app, read these first:
+- ANDROID_CONTEXT.md — current state, open bugs, where things live
+- ANDROID_RELEASE_CHECKLIST.md — how a release is cut
+- android/README.md — flavours, signing, in-app updates
+
 Do not start editing code until these guidance files are checked.
 
 When working on a specific feature, first identify and read the related existing files, services, handlers, models, migrations, tests, and frontend files.

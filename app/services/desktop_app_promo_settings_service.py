@@ -101,7 +101,9 @@ class DesktopAppPromoSettings:
             platforms={
                 "macos": True,
                 "windows": True,
-                "android": False,
+                # Android 2026-09-16 dan beri chiqariladi. iOS'ga alohida
+                # ilova yo'q — o'lik tugma chiqmasligi uchun o'chiq.
+                "android": True,
                 "ios": False,
             },
         )

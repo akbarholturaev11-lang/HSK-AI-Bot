@@ -8064,3 +8064,1127 @@ Risk / follow-up:
   named arguments, flavour parity, string translation, palette parity). Those
   scripts have never been committed, so the Android CI job fails at that step
   before it reaches Gradle. They were verified by hand this round.
+
+### 2026-09-14 — One Chinese voice on Android, and it is cached
+
+Changed:
+- `Xatolarim` review was the one Android screen still speaking through the
+  phone's own `android.speech.tts.TextToSpeech`. Most phones sold in Uzbekistan
+  and Tajikistan carry no Chinese voice, so the speaker on a listening question
+  was simply silent — an unanswerable question. It now goes through
+  `CourseRepository.ttsAudio` → `/api/v3/android/tts`, the same server voice the
+  lesson, dictionary, Voice and Foundation screens already use.
+- `PracticeViewModel` gained `courseRepository` and `audioPlayer`, plus
+  `playReviewAudio`, `isReviewAudioLoading` and `reviewAudioError`. The audio
+  error is deliberately separate from `PracticeUiState.error`: that field drives
+  the section limit overlay and the practice-home error pill, so a failed MP3
+  download must not raise a paywall or leave a notice behind.
+- Added `TtsCache` / `DiskTtsCache` — a size-capped (24 MB) LRU on disk under
+  `cacheDir/tts`, keyed by rate + phrase. `ttsAudio` reads it before asking for
+  a token and writes every fetch, so a replayed phrase is instant and survives a
+  dropped network. `clearCache()` now drops the audio as well.
+- The review speaker carries a content description (the existing
+  `dictionary_listen` string, so uz/ru/tg were already covered) and shows the
+  dictionary's spinner while fetching.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/core/audio/TtsCache.kt` (new)
+- `android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeViewModel.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/MistakesScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt`
+- `android/app/src/test/java/com/pomp/hskai/core/audio/DiskTtsCacheTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/feature/practice/MistakeReviewAudioTest.kt` (new)
+
+Important decision:
+- Cached audio is served before the access token is asked for. The phrase is
+  already drawn on the screen that wants to hear it, so replaying our own copy
+  opens nothing a session would have gated — and it is what makes the second tap
+  instant offline. Cache reads never stand in for authentication anywhere else.
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 208 passed, 0 failed.
+- `connectedDirectDebugAndroidTest` on the Pixel_8 emulator: 17 passed,
+  1 skipped (the pre-existing `WidgetLayoutTest.launcherFixture`), 0 failed.
+- `lintDirectDebug` and `assembleDirectDebug` clean; the only warning left on
+  the touched files is the pre-existing `Icons.Filled.VolumeUp` deprecation.
+
+Follow-up:
+- The exam screen renders `audioText` as written text instead of playing it
+  (`PracticeScreen.kt:432,488,506`), so an HSK listening question shows its own
+  script. Untouched here — decide whether that is deliberate.
+- `pomp-hsk-ai://practice/memorize` resolves but opens nothing: `PracticeTool`
+  has `MEMORIZE`, `PracticeRequest` has no branch for it and there is no screen.
+- `FeatureFlags` (`PRACTICE_ENABLED`, `VOICE_ENABLED`, `SUBSCRIPTION_ENABLED`)
+  is read nowhere; the screens open regardless. Use it or delete it.
+
+### 2026-09-14 — Practice deep links reach the tool they name
+
+Changed:
+- `pomp-hsk-ai://practice` resolved to nothing at all: `AppDestination.Practice`
+  required a tool, so bare `practice` failed the arity check and the app stayed
+  exactly where it was. `RELEASE_FEEDBACK_ANDROID_ASSISTANT.md` hands users that
+  exact link as its "Sinab ko'rish" button. `tool` is now nullable and the bare
+  link opens the section home.
+- Worse, `practice/<tool>` parsed the tool, validated it against the allowlist,
+  carried it into `MainActivity` — and then fell into the `else` branch, which
+  consumed the request and dropped it. Every practice link landed on the section
+  home: `practice/mistakes`, `practice/recognition`, `practice/pronunciation`,
+  `practice/tests` alike. Profile's own `Xatolarim` entry point goes through
+  that link (`ProfileScreen.kt:122`), so it was opening the wrong screen for
+  anyone reaching it outside `MainActivity`'s direct callback.
+  `MainActivity` now has an `is AppDestination.Practice` branch that sets
+  `practiceRequest` from the tool, using a new `PracticeTool.toRequest()`.
+  The old branch's `deepLinkRefreshGate.reset()` is kept, so a later lesson link
+  can still claim the gate.
+- Deleted `core/config/FeatureFlags.kt`. `PRACTICE_ENABLED`, `VOICE_ENABLED` and
+  `SUBSCRIPTION_ENABLED` were all `false` while the screens opened anyway — the
+  object was read from nowhere in the whole module. It described a shipped app
+  as unbuilt, which is worse than no flag.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/core/navigation/DeepLinkRouter.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+- `android/app/src/test/java/com/pomp/hskai/feature/practice/PracticeToolRequestTest.kt` (new)
+- `android/app/src/test/java/com/pomp/hskai/core/navigation/DeepLinkRouterTest.kt`
+
+Important decision:
+- `PracticeTool.MEMORIZE` maps to a null request on purpose, so the link opens
+  the practice home instead of being rejected. Rejecting it would ignore the
+  link entirely and leave the app where it was — the exact failure just fixed.
+  `PracticeToolRequestTest` asserts every other tool reaches a screen, so a new
+  tool cannot be added without deciding where it opens.
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 213 passed, 0 failed.
+- `connectedDirectDebugAndroidTest` on the Pixel_8 emulator: 17 passed,
+  1 skipped (pre-existing `WidgetLayoutTest.launcherFixture`), 0 failed.
+- `lintDirectDebug` and `assembleDirectDebug` clean.
+- On the emulator, all four of `practice`, `practice/mistakes`,
+  `practice/memorize` and `practice/unknown-tool` were delivered to a resumed
+  `MainActivity` with no crash. The screen behind them could NOT be checked:
+  the build has no linked Telegram account, so it stops at the link screen. The
+  tool-to-screen step is covered by unit tests only.
+
+Follow-up:
+- Still open from the entry above: the exam screen renders `audioText` as
+  written text (`PracticeScreen.kt:432,488,506`), so an HSK listening question
+  shows its own script.
+- Android has no `Yodlash` screen. The Mini App's is a stroke and radical
+  exercise (`memo.js`), not an MCQ, so it is a real screen to build, not a
+  mapping to add.
+
+### 2026-09-14 — A lesson you already opened reopens without a network
+
+Finding that changed the plan:
+- The intended work was a background prefetch of the next few lessons. It must
+  never be built. `desktop_course_service.lesson()` calls
+  `LessonAccessService.status(..., consume=True)`, so **fetching a lesson IS
+  opening it** — a silent read-ahead would burn a free learner's daily lesson
+  allowance on lessons they never asked for. Any future prefetch needs a
+  non-consuming content endpoint first; it is not a client-side decision.
+
+Changed:
+- `CourseRepository.lesson()` had no cache at all. A learner interrupted
+  mid-lesson whose app restarted came back to a lesson that would not load —
+  after the slot for it was already spent. It now stores the validated envelope
+  and serves it back when the request never reached the server.
+- New `course_lesson_cache` table (`LessonCacheEntity` / `LessonCacheDao`),
+  database version 2 → 3. Only a lesson the learner actually opened is ever
+  written, and only after the server said yes and the payload parsed.
+- The whole `CourseLessonResponse` is stored, not the parsed lesson, and the
+  new private `snapshotOf()` validates fresh and cached envelopes through one
+  path — so a cached lesson can never come out more permissive than the server
+  last made it, and it re-parses in whatever language is current.
+- `LessonSnapshot.isStale` / `LessonUiState.isStale` carry the marker, and the
+  lesson screen shows the Kurs map's existing offline banner
+  (`R.string.today_stale`, already uz/ru/tg). No new text, no new component
+  shape — the same banner the course map already uses.
+
+Important decision — the fallback is deliberately narrower than the map's:
+- Only `ApiError.Offline` and `ApiError.Timeout` open a cached lesson. The map's
+  `cached()` serves on any error except `SessionExpired`; a lesson may not. If
+  the server answered at all — spent allowance, lesson no longer unlocked,
+  expired session — that answer stands and the disk copy must not talk over it.
+  Otherwise yesterday's download becomes a way around today's limit.
+- Serving a cached lesson grants nothing: the slot was spent on the original
+  GET, and reopening a lesson has never cost a second slot.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/data/local/LessonCache.kt` (new)
+- `android/app/src/main/java/com/pomp/hskai/data/local/CourseCache.kt`
+- `android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonViewModel.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt`
+- `android/app/src/androidTest/java/com/pomp/hskai/data/local/LessonCacheDaoTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/data/local/DatabaseUpgradeTest.kt` (new)
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 220 passed, 0 failed.
+- `connectedDirectDebugAndroidTest` on the Pixel_8 emulator: 22 passed,
+  1 skipped (pre-existing `WidgetLayoutTest.launcherFixture`), 0 failed.
+- The 2 → 3 upgrade is covered on device: `DatabaseUpgradeTest` writes a real
+  version 2 file and opens the current database on top of it, so the
+  destructive fallback is proven rather than assumed.
+- Unit tests cover the access rules directly: a cached preview stays a preview,
+  a refused lesson is never served from disk, an expired session never opens
+  one, a lesson never opened never reaches the cache, and one lesson number
+  never answers for another.
+- `lintDirectDebug` and `assembleDirectDebug` clean.
+
+Not verified:
+- The offline banner has not been seen on a real screen. The build has no
+  linked Telegram account, so nothing past the link screen can be reached by
+  hand here.
+
+Follow-up:
+- Completing a lesson still needs a connection. Offline it fails into the
+  existing retry CTA; a queued completion that replays when the network returns
+  is the obvious next step and does not exist.
+- Still open: the exam screen renders `audioText` as written text
+  (`PracticeScreen.kt:432,488,506`); Android has no `Yodlash` screen.
+
+### 2026-09-14 — New-word card and pair matching copied from the Mini App
+
+Changed:
+- `NewWordCardView` was four stacked `Text`s; the Mini App's `cardWord` is a
+  celebration. Rebuilt to `.nw*` in `course-v3.html`: a white plate with a 3px
+  cinnabar edge and a flat 6px cinnabar-dark depth, popping in over 500ms on
+  `cubic-bezier(.34,1.56,.64,1)` from `scale(.3) rotate(-6deg)`; three gold
+  sparkles fading in oversized at 300/450/600ms and drifting up; the label
+  rising under it; then at 400ms the word is spoken and at 900ms the pinyin,
+  part-of-speech chip, meaning and `Tinglash` button slide up. The footer CTA
+  stays hidden until that reveal, as `cardWord` keeps `#f-cta` hidden.
+- The label was gold; `.nw-label` is `--cin`. It is cinnabar now.
+- `MatchPairsCardView` never showed a selection. `Tile` was given neither
+  `selectedLeft` nor `matched`, so tapping a hanzi changed nothing on screen and
+  there was no way to tell what the second tap would be matched against. New
+  `PairCell` carries `.pcell` / `.sel` / `.ok`: neutral edge, cinnabar when
+  picked, jade at `opacity:.7` when solved. A right cell tapped first does
+  nothing, matching `window._mR`'s bail on `selL === null`.
+- The section heading was cinnabar `CardTitle`; `.qq` is a quiet `--ink2`
+  instruction line. Changed to match.
+- Added `lesson_listen` in uz/ru/tg, copied verbatim from the Mini App's own
+  `T().listen` ("Tinglash" / "Послушать" / "Гӯш кардан").
+
+On colours:
+- No hex was hardcoded. The Android light palette already holds the Mini App's
+  `:root` values exactly, so the cards reach for `PompColors.Cinnabar` and paint
+  `--cin`. New `MiniAppPaletteTest` pins all thirteen shared tokens to the hex
+  in `course-v3.html`, so the two products cannot drift by someone nudging one.
+  Using tokens also keeps dark mode working, which a hardcoded copy would break.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCards.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt`
+- `android/app/src/test/java/com/pomp/hskai/core/design/MiniAppPaletteTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/feature/lesson/MatchPairsSelectionTest.kt` (new)
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 221 passed, 0 failed.
+- `connectedDirectDebugAndroidTest`: 27 passed, 1 skipped (pre-existing), 0 failed.
+- The new-word card was seen on the emulator against a live account: plate,
+  depth, cinnabar label, pinyin, `n.` chip, meaning, `Tinglash`, and the CTA
+  appearing only after the reveal.
+- `MatchPairsSelectionTest` reads the fill back out of the rendered pixels.
+  Note for whoever touches it: a tapped cell keeps Material's focus state layer,
+  which darkens the fill by a few percent, so an exact-hex assertion passes on
+  an untouched cell and fails on every tapped one. The test asserts the tint
+  (neutral / red / green) instead, which is what a learner actually reads and is
+  immune to that overlay; exact hex is pinned in `MiniAppPaletteTest`.
+
+Not verified:
+- The pair-matching screen was never reached by hand. It sits at card 11 of 18,
+  and `connectedAndroidTest` uninstalls and reinstalls the app on every run
+  (the uid moved from 10214 to 10226), which clears the Keystore credentials —
+  so the emulator lost its linked session and had to be re-linked. Drive that
+  screen before release, or expect to re-link after any on-device test run.
+
+Follow-up:
+- `cardWord` also plays `beep([784,1046])`. Android has no tone helper at all,
+  so the audible half of the effect is missing on every card, not just this one.
+  Adding one is a product call: it needs audio-focus handling and a silent-mode
+  rule, and it would be the app's first synthesized sound.
+
+### 2026-09-14 — `Gapni tuzing` became a gap fill, on Android only
+
+Changed:
+- The sentence builder made the learner lay every tile of a sentence they had
+  just been shown — nine taps for a seven-token HSK 2 sentence. The card now
+  arrives already built except for one or two words, and the bank holds only
+  those words plus the card's own distractors. Four tiles instead of nine, and
+  the choice is the grammar point rather than the word order.
+- Two gaps once the answer is five tokens or longer, otherwise one. Positions
+  are seeded from `materialRef`, so they hold still across recomposition and a
+  reopened lesson but differ from card to card.
+- The bank is the card's tile list minus one instance of every answer token that
+  stays visible, so what is left is exactly the hidden tokens plus the author's
+  distractors. `planGaps` returns null when the tiles cannot account for the
+  answer, and the old build-it-all card is used instead — broken data must not
+  produce a gap that nothing can fill.
+- `Tile` now dims when it cannot be tapped. With both gaps full the bank is
+  inert until a slot is freed, and it used to keep looking tappable.
+- Added `lesson_fill_gaps` in uz/ru/tg.
+
+Grading is untouched:
+- The submitted answer is still the whole sentence — the visible tokens with the
+  chosen ones slotted in — so `SentenceBuilderCard.isCorrect`, the XP path and
+  the mistake record never learn that the card changed shape.
+
+This is a deliberate divergence:
+- The Mini App's `cardBuilder` still builds the whole sentence. This was not a
+  parity fix; it is a new design, asked for after seeing the Android screen, and
+  it is not in `course-v3.html`. Mirroring it there is a separate decision and
+  needs its own approval.
+- It is also a real trade-off: word order is no longer practised on this card.
+  If that matters, the honest answer is to keep both — gap fill early in a unit,
+  full build at the checkpoint — which is a course-data decision, not a client one.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCards.kt`
+- `android/app/src/test/java/com/pomp/hskai/feature/lesson/SentenceGapPlanTest.kt` (new)
+- `android/app/src/androidTest/java/com/pomp/hskai/feature/lesson/SentenceGapBuilderTest.kt` (new)
+
+Verified:
+- `testDirectDebugUnitTest` + `testPlayDebugUnitTest`: 233 passed, 0 failed.
+- `connectedDirectDebugAndroidTest`: 31 passed, 1 skipped (pre-existing), 0 failed.
+- `lintDirectDebug` and `assembleDirectDebug` clean.
+- The card was rendered on the emulator and the pixels inspected, empty and
+  filled. The live lesson could not be driven to it: the emulator has no linked
+  session, because `connectedAndroidTest` uninstalls the app on every run.
+
+Note for whoever needs a picture of a screen the app cannot be driven to:
+- Install both APKs by hand and run `adb shell am instrument` directly, rather
+  than through Gradle. Gradle's `connectedAndroidTest` uninstalls both packages
+  when it finishes, which takes the app's files with it, so anything a test
+  wrote to `cacheDir` is gone before it can be pulled.
+
+### 2026-09-15 — The bot hands out the Android APK
+
+Changed:
+- The Android client had no way to reach anyone. There is no Play listing and
+  no download page, so the bot is now the whole distribution channel: the admin
+  uploads one signed `direct` release APK, Telegram keeps the bytes, and every
+  learner afterwards receives that same `file_id`. Nothing of ours serves the
+  download, there is no hosting bill, and the file lands in the chat the
+  learner is already reading.
+- New `bot_settings` row `android_apk_release` holds the published release as
+  one JSON value (`file_id`, name, size, version, who published it, when). No
+  migration, and withdrawing a bad build is a single write rather than a
+  deploy — which is the property that matters when a broken APK is being
+  handed to everyone who asks.
+- Admin panel gained **📱 Android ilova** (`adm:android_panel`): upload,
+  send-it-to-myself, withdraw. The upload step **refuses** a `play` or `debug`
+  build. Both install perfectly and only fail later, in the learner's hands —
+  `play` compiles out every external checkout so that learner could never pay,
+  and `debug` carries the `.debug` application id so no real release can ever
+  update it.
+- The profile no longer carries a button per device. One **📱 HSK AI ilovalari**
+  button opens a chooser with **📱 Android** and **💻 Kompyuter**; the device
+  choice comes after, so a learner who wants "the app" does not have to know
+  which of our two products they mean before they can press anything. The
+  desktop half is the same Mini App button as before, unchanged, because its
+  installer is downloaded in a browser. Android is a plain callback: the file
+  is handed over in this chat, and a web view would only add a step between the
+  learner and the APK. `/android` still works on its own.
+- Nine new strings across uz/ru/tj.
+- Two funnel events, `android_apk_requested` and `android_apk_sent`. They are
+  the only measurement that exists for this channel — nothing of ours serves
+  the file and Telegram reports nothing back. A request with nothing published
+  is still counted: it is the only measure of demand for an app that is not out
+  yet.
+- `archivesBaseName` now makes Gradle emit
+  `hsk-ai-<versionName>-<versionCode>-<flavour>-<buildType>.apk`. The file name
+  is the only place the version survives the trip through Telegram, because the
+  bot never opens the APK; it is also what the `play`/`debug` refusal reads.
+
+Release signing now exists:
+- A 4096-bit RSA keystore was generated at `~/.pomp-hskai/pomp-hskai-release.jks`
+  (alias `pomp-hskai`, valid 10 000 days), with `android/keystore.properties`
+  pointing at it. Both are outside Git and outside the working tree, so a clean
+  checkout cannot destroy them. **It must be backed up**: every future update,
+  through the bot now and through Play later, has to be signed with the same
+  key, and an APK signed by a different key will not upgrade over the installed
+  one.
+
+Key files:
+- `app/services/android_release_service.py` (new)
+- `app/bot/handlers/admin_android.py` (new), `app/bot/fsm/admin_android.py` (new)
+- `app/bot/handlers/android_app.py` (new)
+- `app/bot/utils/i18n.py`, `app/bot/handlers/commands.py`, `app/bot/handlers/admin.py`,
+  `app/bot/create_bot.py`, `app/db/models/course_miniapp_event.py`
+- `android/app/build.gradle.kts`, `android/README.md`
+- `tests/test_android_apk_download.py` (new)
+
+Verified:
+- Backend: 1354 passed, 0 failed (full suite, `tests/` excluding `e2e`,
+  randomised order).
+- `tests/test_android_apk_download.py`: 41 tests. They cover the refusal of a
+  `play`/`debug` build, a published row missing its `file_id` reading as
+  "nothing to give", a `file_id` that has stopped resolving being reported
+  rather than swallowed (and not counted as a delivery), the admin flow end to
+  end, and the three languages.
+- Router order is checked by walking the real dispatcher and asking who claims
+  `/android`. That is the one thing a handler unit test cannot see: every
+  handler passes its own tests while an earlier router quietly answers first.
+  Note for whoever writes the next one of these: that check runs in a
+  subprocess on purpose. Building a Dispatcher attaches every module-level
+  router to it permanently, so doing it in the test process makes the next
+  `create_bot()` anywhere in the suite raise "Router is already attached" —
+  which is exactly how it first showed up, as two unrelated failures in
+  `test_main_imports.py`.
+- Android: the five static checks, 233 + 226 unit tests, `lintDirectDebug`,
+  `lintPlayDebug`, `assembleDirectDebug`, and 31 instrumented tests on the
+  Pixel_8 emulator (30 passed, 1 pre-existing skip) — all clean before and
+  after the Gradle change.
+- The signed release APK is real and works: 3.77 MB, `apksigner` verifies it
+  (v2, `CN=Pomp HSK AI`), it installs on the emulator, launches, and reached
+  the live backend — the link screen showed a code issued by
+  `/api/v3/android-auth/link/start`. That last part is what proves R8 did not
+  break serialisation or networking, which is the real risk in a minified
+  release build.
+
+Not verified:
+- Nothing has been sent through the real Telegram Bot API. The upload and the
+  handout were driven against fakes and an in-memory database, never against
+  the production bot, so the first real upload is still the first real test of
+  the `file_id` round trip.
+- No one has installed the APK on a physical phone. The emulator proves the
+  build runs; it does not prove the "unknown sources" flow the install caption
+  describes.
+
+Caught in review, before this shipped:
+- The `waiting_for_apk` step had a catch-all that claimed every message, so an
+  admin who entered the upload step and then pressed any menu button got "send
+  it as a document" instead — with no exit but the inline cancel button. It now
+  answers only photos/videos/audio; text and commands fall through.
+- Two handlers read `callback.message.chat.id`. Telegram stops attaching the
+  message to a callback once it is old enough, and the profile keyboard is
+  exactly the message a learner scrolls back to. Both now go through
+  `reply_chat_id`, which falls back to the sender's own id.
+- The admin's "send it to myself" check was recording `android_apk_requested`
+  and `android_apk_sent` — the only two numbers that measure this channel, and
+  there is no server log to check them against. It now passes `track=False`.
+
+Known limitation, left deliberately:
+- The `play`/`debug` refusal reads the file name, so a renamed artifact skips
+  it. The bot never opens the APK, so the name is all it has. It is a guard
+  against a slip, not against intent.
+
+Follow-up:
+- The APK is handed out but never announced. A learner only finds it by opening
+  the profile or typing `/android`.
+- Nothing tells an installed app that a newer APK exists. Until Play is live,
+  an update reaches people only if they ask for the file again.
+
+### 2026-09-15 — The direct build can update itself, the Play build cannot
+
+Changed:
+- An installed APK had no way to learn that a newer one existed; the only
+  route was asking the bot for the file again. The `direct` build now checks
+  `GET /api/v3/android-update/check?version_code=N` when the profile opens and
+  shows one card there if something newer is published.
+- **Android cannot do this silently.** The system always shows its own install
+  confirmation for a sideloaded app, so this is one tap and then that dialog —
+  not the background swap the Tauri desktop client performs. Do not describe it
+  to a learner as automatic. The thing that actually updates silently is Google
+  Play, and that is the argument for finishing the Play listing.
+- The card lives in the profile and nowhere else. It was offered on the course
+  screen and refused: an update is not urgent enough to stand between someone
+  and the lesson they opened the app for.
+- The Play build has a composable that renders nothing in its place. Play
+  forbids an app it distributes from updating itself by any other route, so
+  this is a source set, not a flag: `REQUEST_INSTALL_PACKAGES` and the
+  `FileProvider` are declared in `src/direct/AndroidManifest.xml` and are
+  **absent from the Play APK** — verified with `aapt2 dump badging`.
+- The download link lives on the same `bot_settings` row as the Telegram file,
+  set from the same admin panel. Publishing a new APK **clears** it. That is
+  the whole point of one row: a new version must never be advertised with the
+  previous file behind it, and two rows would let exactly that drift in.
+- `/downloads/android` mirrors `/downloads/macos` and `/downloads/windows`.
+
+On what is checked, and where:
+- The server refuses anything that is not a plain https `.apk` with no
+  credential in it, on the way in and on the way back out — a stored row
+  outlives the code that wrote it.
+- The client checks the same things again. It is the side that writes a file to
+  disk and opens an install dialog over it; it must not do that merely because
+  an answer said so. It also re-checks the version code, because a card that
+  never goes away is a card people learn to ignore.
+- The real defence is neither: Android refuses an update signed by a different
+  key. The size check exists for the one failure that cannot catch — a release
+  uploaded to the bot and to storage as two different builds, both signed by us.
+
+Key files:
+- `app/api/android_update.py` (new), `app/services/android_release_service.py`
+- `app/bot/handlers/admin_android.py`, `app/bot/fsm/admin_android.py`, `app/main.py`
+- `android/app/src/direct/java/com/pomp/hskai/feature/update/` (new, two files)
+- `android/app/src/play/java/com/pomp/hskai/feature/update/AppUpdateCard.kt` (new, no-op)
+- `android/app/src/direct/AndroidManifest.xml` (new), `direct/res/xml/update_paths.xml` (new)
+- `android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt`
+- `tests/test_android_update_api.py` (new), `android/.../testDirect/.../AppUpdateTest.kt` (new),
+  `android/.../androidTest/.../UpdateCardStatesTest.kt` (new)
+
+Verified:
+- Backend: full suite green; 16 new tests cover the link validation, the
+  refusals, every reason the check says nothing, and that publishing again
+  drops the previous link.
+- Android: the five static checks pass (flavour parity now covers three shared
+  declarations), 244 direct and 226 play unit tests — the 18 difference is the
+  update code, which the Play flavour does not compile. `lintDirectDebug` and
+  `lintPlayDebug` clean, both release APKs build.
+- 36 instrumented tests on the Pixel_8 emulator (35 passed, 1 pre-existing
+  skip). Five of them read each card state off a rendered screen, including the
+  one that is easy to get wrong: with no install permission the card asks for
+  the permission instead of announcing a version it cannot install.
+- `aapt2 dump badging` on both release APKs: `REQUEST_INSTALL_PACKAGES` and the
+  `updates` provider are in `direct` and absent from `play`.
+
+Not verified:
+- No APK has been downloaded and installed by this code on any device. The
+  check URL is compiled in and points at production, which has nothing
+  published yet, so the positive path could not be driven end to end here. The
+  parsing, validation and every card state are covered; the HTTP fetch, the
+  file write and the install intent are not.
+- Nobody has seen the system install dialog this produces.
+
+Follow-up:
+- `versionCode` is still hand-written in `build.gradle.kts`. Nothing compares
+  version names, so forgetting to raise it ships an update no installed app can
+  see — and nothing currently catches that.
+- The check runs on every profile open. Harmless at this size (a 204), worth
+  caching if the profile ever becomes a hot screen.
+
+### 2026-09-15 — An Android release publishes itself, like the desktop one
+
+Changed:
+- Cutting an Android release meant pasting a link into the bot every time.
+  macOS and Windows have not worked that way since they shipped: the release
+  workflow writes `desktop/latest.json` to R2 and the server reads it. Android
+  now has the same arrangement — `android/latest.json`, written by
+  `.github/workflows/android-release.yml`, read through
+  `ANDROID_RELEASE_MANIFEST_URL`.
+- `AndroidReleaseManifestService` reuses the desktop resolver's URL and text
+  rules rather than restating them; the threat is identical, since the server
+  fetches whatever that setting points at. It keeps the same three refusals:
+  a manifest that cannot be read never un-publishes a release (last-known-good
+  survives), a manifest that goes backwards is refused, and the same version
+  pointing at a different artifact is refused.
+- `AndroidReleaseService.serve()` is now the one place that answers "which
+  build do we hand out". The manifest wins when configured; the bot-panel row
+  is the fallback and remains the only path when it is not. Both the update
+  check and the bot go through it.
+- **Telegram's copy follows on its own.** The bot sends the APK by URL the
+  first time somebody asks after a release, and stores the `file_id` Telegram
+  hands back against that version code. Everyone after gets the `file_id`. A
+  `file_id` from an older build is never attached to a newer version — that
+  would announce 1.2.0 and deliver 1.1.0, and it is the failure that would have
+  looked completely fine.
+- The admin panel says when the manifest is in charge, so a pasted link that
+  changes nothing is explained rather than mysterious.
+
+Caught while writing it:
+- `send_android_app` grew a local `source` holding the file_id-or-URL, which
+  shadowed the `source` parameter that names where the request came from. The
+  funnel would have recorded a URL instead of `bot_command`. Renamed, and there
+  is now a test that reads the recorded source back out of the database.
+
+Key files:
+- `app/services/android_release_manifest_service.py` (new)
+- `app/services/android_release_service.py` (`ServedRelease`, `serve`,
+  `remember_file_id`)
+- `app/api/android_update.py`, `app/bot/handlers/android_app.py`,
+  `app/bot/handlers/admin_android.py`, `app/config.py`, `.env.example`
+- `.github/workflows/android-release.yml`
+- `tests/test_android_release_manifest.py` (new), `tests/test_android_apk_download.py`
+
+Verified:
+- The workflow's `jq` output was run through the server's parser: what CI
+  writes is what the server reads.
+- 21 new manifest tests and 3 new handout tests, plus the existing suite.
+- The live production endpoints were checked against the real published 1.1.0
+  before this change: an older caller got the update, a current one got 204,
+  and `/downloads/android` redirected to R2.
+
+Not verified:
+- The workflow has never run. No GitHub secret is set yet, so the build, the
+  signature check and the R2 upload have only been exercised by reading them.
+- `ANDROID_RELEASE_MANIFEST_URL` is not set anywhere, so the manifest path has
+  only ever run against fakes.
+
+Follow-up:
+- `versionCode` is still hand-written. The workflow refuses a downgrade, but
+  nothing refuses a release that forgot to raise it at all — it just publishes
+  a build no installed app can see.
+
+### 2026-09-16 — Reklama boshqaruvi bitta bo'limga yig'ildi
+
+Changed:
+- Admin panelida reklama TO'RT joyga bo'lingan edi: modul ro'yxatida
+  `Реклама жойлари`, `App рекламаси` va `Реклама кампанияси` alohida tugma,
+  roliklar formasi esa sozlamalar ichida to'rtinchi joyda. Nomlari o'xshash,
+  vazifalari boshqa. Endi bitta `📣 Реклама` moduli va sozlamalar ichida
+  bitta `📣 Reklama` bo'limi — ichida to'rt tanlov: roliklar, qayerda chiqadi,
+  ilova reklamasi, botdagi kampaniya.
+- Joylar/ilova/kampaniya panellari qayta yozilmadi: `showPanel()` drawer uchun
+  mavjud `renderAdPlacements` / `renderAppPromo` / `renderCampaign` ni bo'lim
+  ichiga chizadi. Profildan ochilgan chegirma hamon drawer'da ochiladi.
+- Rolik formasi endi tanlangan turga qarab o'zgaradi. Qaysi turga qaysi maydon
+  kerakligi `CA_TYPE_SPEC` da — ro'yxatda yo'q maydon yashiriladi va yuborilmaydi
+  ham. Ilgari hammasi birdan ko'rinardi, `Knopka nomi` esa `odiy` turda
+  o'chirilgan holda turardi.
+- `App reklamasi` turida `Zaxira havola` endi platforma havolalaridan keyin
+  turadi: u aynan o'shalar topilmaganda ishlatiladi.
+
+Fixed:
+- `.chip.on` ni hech qanday CSS qoidasi bo'yamasdi. `Qayerda chiqsin`
+  chiplari `on` klassini qo'shardi — admin joy tanlaydi, ekranda esa hech nima
+  o'zgarmasdi. Endi `.chip.active` bilan bir qatorda.
+- `collectAppPromo()` har saqlashda `platforms.android=false` yozardi, ya'ni
+  admin Android chipini yoqib saqlasa ham u qaytib o'chardi. Olib tashlandi,
+  saqlangan standart qiymat ham `android: True` ga o'tdi. iOS o'chiqligicha
+  qoladi — unga alohida ilova yo'q.
+
+Key files:
+- `app/static/admin.html`
+- `app/services/admin_miniapp_service.py` (`_modules()`)
+- `app/services/desktop_app_promo_settings_service.py`
+- `tests/test_admin_panel_has_no_dead_controls.py` (ikkita yangi klass),
+  `tests/test_course_v3_static_data.py`, `tests/test_course_ad_app_type.py`
+
+Verified:
+- Butun test to'plami: 1430 passed, 78255 subtests.
+- Panel haqiqiy brauzerda ishga tushirildi (fixture bilan stub qilingan
+  nusxada): to'rt tanlov ham chiziladi, har bir tur uchun ko'rinadigan
+  maydonlar to'g'ri (`odiy` → faqat havola; `app` → knopka, limitlar,
+  platforma havolalari, zaxira havola), `collectAppPromo()` endi
+  `android: true` qaytaradi, joy chipi ko'k bo'lib yonadi.
+
+Not verified:
+- Saqlash (`/api/admin-miniapp/...`) haqiqiy serverga qarshi bosilmadi —
+  brauzer nusxasida tarmoq stub edi. Endpointlar o'zgarmagan.
+
+### 2026-09-16 — Rolik endi yopish vaqtini ham, kunlik chegarani ham belgilamaydi
+
+Changed:
+- `App reklamasi` formasidagi `X paydo bo'lishi (s)` va `Kuniga necha marta`
+  maydonlari olib tashlandi. Ikkalasi ham to'ldirilar, bazaga yozilar, lekin
+  HECH QACHON ishlamasdi:
+  - `AdPlacementService.next_ad()` va Android endpointi reklamani berishdan
+    oldin `payload["skip_after_seconds"] = rule.skip_after_seconds` qiladi —
+    rolikning o'z qiymati har doim ustidan yozilardi;
+  - rolik bo'yicha `daily_limit` ni na server, na `ads.js`, na Android
+    o'qirdi. Yagona ishlaydigan chegara — joy qoidasining `daily_cap` i,
+    u `course_ad_views` qatorlaridan Telegram akkaunt bo'yicha sanaladi.
+- `/api/admin-miniapp/course-ads/upload` endi bu ikki qiymatni forma'dan
+  o'qimaydi va `create_video` ga uzatmaydi.
+- `CourseAdService.payload()` dan `skip_after_seconds` va `daily_limit`
+  kalitlari olib tashlandi: reklamani beruvchi ikkala yo'l ham yopish vaqtini
+  o'zi qo'yadi, payload esa bilmagan narsasini da'vo qilmasin.
+- Formadagi izoh endi qayerda boshqarilishini aytadi: «Yopish vaqti va kunlik
+  chegara «📺 Qayerda chiqadi» bo'limida».
+
+Not changed:
+- `course_ad_creatives.skip_after_seconds` va `.daily_limit` ustunlari bazada
+  qoldi (eski yozuvlar), `create_video` parametrlari ham. Ular endi faqat
+  o'qilmaydigan meros — migratsiya qilishga arzimaydi.
+
+Key files:
+- `app/static/admin.html`, `app/main.py`, `app/services/course_ad_service.py`
+- `tests/test_admin_panel_has_no_dead_controls.py`
+  (`TheAdVideoDoesNotOwnTimingOrLimitsTests`), `tests/test_course_ad_app_type.py`,
+  `tests/test_course_ad_photo_media.py`
+
+Verified:
+- 1434 passed, 78254 subtests.
+- Brauzerda: `app` turida endi `button, appLinks, link` chiqadi (ilgari
+  `appLimits` ham bor edi), `caSkipAfter`/`caDailyLimit` DOM'da yo'q.
+
+### 2026-09-16 — Ilovani reklama qilishning ikkinchi yo'li olib tashlandi
+
+Muammo: foydalanuvchi "yarmi u yerda, yarmi bu yerda" dedi va haq edi.
+Ilovani reklama qilishning IKKITA mustaqil yo'li bor edi va ular bir-birini
+bilmasdi:
+
+* `app` turidagi kurs rolik — o'z media, o'z MacBook/Windows/Android
+  havolalari, havolani to'g'ridan-to'g'ri reliz tizimidan olardi;
+* `desktop_app_promo` — o'z media, o'z platforma chiplari.
+
+Ya'ni `App reklamasi` da Android chipini o'chirsangiz ham `app` turidagi
+rolik baribir Android tugmasini chiqarardi.
+
+Changed:
+- **`app` reklama turi butunlay olib tashlandi.** Ilovani endi FAQAT
+  `desktop_app_promo` reklama qiladi. Birga ketganlar: `COURSE_AD_APP_TYPE`,
+  `COURSE_AD_APP_PLATFORMS`, `COURSE_AD_APP_VISIBLE_PLATFORMS`,
+  `normalize_platform_links`, `platform_links_storage_value`,
+  `app_platform_buttons`, `app_open` sloti, `_attach_platform_buttons`
+  (miniapp_ads), `_desktop_auto_download_links` (main), klientdagi
+  `APP_PLATFORM_META` / `renderAppPlatforms` / `renderAppAdButtons` va
+  `.caa-app-plat*` CSS.
+  Eski `ad_type="app"` qatorlari `normalize_ad_type` orqali `odiy` ga
+  tushadi — ko'rsatilaveradi, faqat platforma tugmalarisiz.
+- **Reklama bo'limi endi ikki tanlov**: `🎬 Kurs reklamasi` (rolik formasi +
+  joy qoidalari + yuklanganlar ro'yxati BIR ekranda) va `💻 Ilova
+  reklamasi`. Rolik `placements` deydi, joy qoidasi chiqishini hal qiladi —
+  ikkalasi bir-birisiz ishlamaydi, shuning uchun ularni ikki tanlovga
+  bo'lish ortiqcha qadam edi.
+- **Botdagi reklama xabari reklama bo'limidan chiqarildi** va `📢 Оммавий
+  хабар` yoniga qaytdi, nomi `📨 Ботдаги реклама хабари`. U boshqa jadval,
+  boshqa kanal, boshqa endpoint — rolik tizimi bilan bitta satr ham umumiy
+  kodi yo'q edi.
+- **O'lik tarmoq olib tashlandi**: `ads.js` da reklama oynasi ichidagi
+  yuklab olish bloki `isLessonEnd()?"lesson_end_ad":"screen_center_ad"` deb
+  hisoblanardi, lekin butun blok `if(isLessonEnd())` ichida turardi —
+  `screen_center_ad` hech qachon ishlamasdi. Endi to'g'ridan-to'g'ri
+  `"lesson_end_ad"`. Admin chipining nomi ham shunga moslandi:
+  «Reklama oynasida (dars yakunida)».
+
+Key files:
+- `app/static/admin.html`, `app/static/course_v3_data/ads.js`
+- `app/services/course_ad_service.py`, `app/db/models/course_ad.py`
+- `app/api/miniapp_ads.py`, `app/main.py`,
+  `app/services/admin_miniapp_service.py`
+- `tests/test_course_ad_app_type.py` → `tests/test_course_ad_types.py`
+  (butunlay qayta yozildi), `tests/test_admin_panel_has_no_dead_controls.py`,
+  `tests/test_course_ad_photo_media.py`, `tests/test_course_v3_static_data.py`
+
+Verified:
+- 1427 passed, 78259 subtests.
+- Brauzerda: ikkita tanlov, rolik turlari endi to'rtta (`app` yo'q), joy
+  qoidalari rolik formasi bilan bir panelda chiziladi, `Ilova reklamasi`
+  chiplari va saqlash tugmasi joyida.
+
+Diqqat:
+- Produkshnda `ad_type="app"` rolik bo'lsa, u endi oddiy reklama bo'lib
+  ko'rinadi (platforma tugmalarisiz, faqat o'z `link_url` i bilan). Kerak
+  bo'lmasa adminda o'chirib tashlash mumkin.
+
+### 2026-09-16 — Joy bir marta so'raladi: kalit va qoida bitta kartada
+
+Muammo: foydalanuvchi "nega 2 ta joyda so'ralyapti?" dedi. Ekranda joy
+ikki marta chiqardi — yuqorida «Qayerda chiqsin» chiplari (shu rolik uchun),
+pastda «Qayerda chiqadi va necha marta» kartalari (joyning o'zi uchun).
+Nomlari deyarli bir xil edi, shuning uchun takrorga o'xshardi.
+
+Ikkalasi ham kerak va birini ikkinchisidan chiqarib bo'lmaydi: rolik joyni
+tanlaydi (`course_ad_creatives.placements`), joy esa hamma roliklar uchun
+bitta qoidaga bo'ysunadi (`ad_placements_v1`). Shuning uchun ular
+qo'shilmadi — BIR kartaga yig'ildi.
+
+Changed:
+- `adPlacementCard()` endi joy haqidagi hamma narsani chizadi: yuqorida
+  «Yangi rolik shu joyga qo'yilsin» kaliti (faqat shu rolik uchun), ostida
+  joyning o'z qoidasi (yoqiqmi, kimga, kuniga nechta, X qachon). Ikkita
+  karta, ikkita joy — boshqa hech qayerda joy so'ralmaydi.
+- Chiplar (`data-act="ca-place"`) va ularning ishlovchisi olib tashlandi.
+  Tanlov `caPlaceChosen` obyektida saqlanadi: karta joy sozlamasi bilan
+  birga qayta chizilaveradi va faqat DOM'da turgan tanlov saqlashdan keyin
+  jimgina nolga qaytardi.
+- Tanlangan joy o'chirilgan bo'lsa, o'sha kartaning ichida ogohlantirish
+  chiqadi. Hech biri tanlanmasa — «rolik dars yakuniga qo'yiladi» deyiladi
+  (server aynan shunday qiladi).
+
+Fixed:
+- `.hint` klassini HECH QANDAY CSS qoidasi bo'yamasdi. Butun admin panel
+  bo'ylab izohlar asosiy matn kattaligida, oq rangda chiqardi va muhim
+  narsadan farq qilmasdi. Endi kichik va muted.
+
+Key files:
+- `app/static/admin.html`
+- `tests/test_admin_panel_has_no_dead_controls.py`
+  (`EachPlacementIsOneBlockTests`)
+
+Verified:
+- 1433 passed, 78259 subtests.
+- Brauzerda: kalitni bosish `caPlacementsValue()` ni to'g'ri o'zgartiradi
+  (`lesson_end` → `lesson_end,screen_center` → `screen_center`), ikkalasini
+  ham o'chirsa ogohlantirish chiqadi va qiymat `lesson_end` ga tushadi.
+
+### 2026-09-16 — Android promo tugmasi: muammoning qolgan yarmi
+
+Foydalanuvchi "Android xalyam chiqmayapti" degan edi. Admin paneldagi
+saqlash xatosi tuzatilgandan keyin ham chiqmasligining sababi topildi:
+
+`DesktopDownloadService.status()` javobidagi `platform_targets` da
+`"android": False` QATTIQ yozilgan edi (Android relizi yo'q paytdan
+qolgan). Klient (`desktop-download.js`, `buildActions` →
+`isPlatformTargeted`) aynan shu qiymatga qarab tugmani chizadi yoki
+tashlab ketadi — ya'ni admin chipni yoqsa ham Mini App promosida Android
+tugmasi umuman paydo bo'lmasdi.
+
+Endi `bool(promo_settings.platforms.get("android"))` — admin tanloviga
+bo'ysunadi. iOS o'chiqligicha qoladi (alohida ilova yo'q).
+
+Eski test buni "kutilgan xatti-harakat" deb qotirib qo'ygan edi:
+`assertFalse(payload["promo"]["platform_targets"]["android"])`, ustiga
+sozlamaga `"android": True` berib turib. Qayta yozildi va chipni
+o'chirganda tugma yo'qolishini tekshiradigan yangi test qo'shildi.
+
+Key files:
+- `app/services/desktop_download_service.py`
+- `tests/test_desktop_download_api.py`
+
+Verified: 1434 passed, 78259 subtests.
+
+### 2026-09-16 — Dars yakunidagi ilova promosi hech qachon chiqmasdi
+
+Foydalanuvchi "dars oxirida chiqishini tekshir, xozir ishlamayapti" dedi.
+Sabab topildi va u sozlama emas, mantiq xatosi edi.
+
+Sovish muddati (14 kun) JOYDAN QAT'I NAZAR bitta hisoblagichdan olinardi:
+
+* klientda bitta `promo_seen` localStorage kaliti bor edi va uni
+  `showPromo()` har qanday joy uchun yozardi;
+* serverda `promo_cooldown_remaining` `desktop_promo_seen` eventining
+  joydan qat'i nazar `max(created_at)` idan hisoblanardi.
+
+Uch joydan ikkitasi (`home_prompt`, `ad_promo`) bu sovishni ATAYLAB
+e'tiborsiz qoldirardi, `lesson_end_promo` esa unga bo'ysunardi. "Mini App
+ochilganda" promosi kuniga 3 martagacha chiqadi va har safar sovishni
+yangilab turardi — natijada dars yakunidagi promo 14 kunlik oynadan hech
+qachon chiqa olmasdi. Admin uni yoqib qo'ysa ham amalda hech qachon
+ko'rinmasdi.
+
+Changed:
+- Server `desktop_promo_seen` ni `group_by(source)` bilan oladi va
+  `lesson_end_promo` faqat O'Z `lesson_end_cooldown_remaining` iga
+  qaraydi. `reason == "cooldown"` ham shunga o'tdi.
+- Klientda kalit joy nomini olib yuradi: `promo_seen:<source>`.
+  `hasLocalPromoCooldown(source)` endi parametr qabul qiladi.
+  `download_requested` UMUMIY qoladi: odam yuklab olishni allaqachon
+  so'ragan bo'lsa, hech qayerda qayta bezovta qilinmaydi.
+- Eski `promo_seen` kaliti eski o'rnatishlar uchun yozilaveradi, lekin
+  sovish endi undan hisoblanmaydi.
+
+Key files:
+- `app/services/desktop_download_service.py`
+- `app/static/course_v3_data/desktop-download.js`
+- `tests/test_desktop_download_api.py`,
+  `tests/test_course_v3_static_data.py`
+
+Verified: 1439 passed, 78259 subtests. Yangi testlar: bir soat oldin
+`home_prompt` ko'rgan odam dars yakunidagi promoni oladi; `lesson_end_promo`
+ni ko'rgan odam esa o'z sovishini kutadi va qolgan ikki joy ochiq qoladi.
+
+### 2026-09-18 — App reklamasi: uchta sabab, uchtasi ham boshqa qatlamda
+
+Foydalanuvchi "app reklamasi ishlamayapti, markazdagi reklama va profilda
+faqat chiqyapti, Android umuman yo'q, dars oxirida deganiyam chiqmayapti"
+dedi va screenshot yubordi. Uchta MUSTAQIL sabab topildi — 09-16 dagi
+tuzatishlar to'g'ri edi, lekin ulardan ikkitasi hech kimga yetib bormagan.
+
+**1. `?v=` hech qachon ko'tarilmagan — asosiy sabab.**
+
+`ads.js` va `desktop-download.js` `immutable`, bir yillik cache bilan
+beriladi (`app/main.py`, `STATIC_ASSET_HEADERS`). Fayllar 09-15 va 09-16
+da o'zgardi, `?v=` esa `20260812-3` / `20260812-5` bo'lib qoldi. Ya'ni
+brauzerda hali ham AVGUSTDAGI skript ishlayapti, undagi:
+
+    var APP_PROMO_PLATFORMS = ["macos", "windows"];
+
+Screenshotdagi manzara aynan shu: Android tugmasi umuman chizilmagan,
+hatto "Android — tez orada" ham yo'q. Server tomondagi `a471395`
+(`platform_targets.android`) va `0723009` (joyga ajratilgan sovish)
+tuzatishlari ham shu devorga urilib qolgan edi.
+
+Endi ikkalasi `?v=20260918-1`. `course-v3.html` ham versiya testiga
+qo'shildi — ilgari test faqat beshta ichki sahifani tekshirardi, asosiy
+ekranni emas.
+
+**2. `ads.js` da mavjud bo'lmagan global.**
+
+Reklama oynasi ichidagi ilova bloki `window.DesktopDownloadPromo` orqali
+o'rnatilardi. Bunday global YO'Q — `desktop-download.js` o'zini
+`window.PompDesktopDownload` deb e'lon qiladi. Shart hech qachon
+bajarilmagan, ya'ni "Reklama oynasida (dars yakunida)" joyi admin panelda
+yoqilgan bo'lsa ham hech qachon chiqmagan.
+
+Eski test buni ko'rmagan: u faqat `mountAdPromoTrigger(e.promo,{...})`
+qismini tekshirardi, obyekt nomini emas.
+
+**3. `promoSeenInSession` — bitta umumiy bayroq.**
+
+`showPromo()` uni HAR QANDAY joy uchun `true` qilardi va u qayta
+tiklanmasdi. "Mini App ochilganda" promosi har ochilishda birinchi bo'lib
+chiqadi, dars yakunidagisi esa odam darsni tugatgandan KEYIN — ya'ni
+birinchisi ikkinchisining navbatini doim yeb qo'yardi. `0723009` sovish
+muddatini joyga ajratgan edi, lekin sessiya bayrog'i ajratilmagan qolgan.
+
+Foydalanuvchi ikki variantdan ikkinchisini tanladi: sessiyada bitta promo
+qolsin, lekin dars yakuni ustun bo'lsin. Shunday qilindi:
+
+- `state.promoSeenInSession` → `state.sessionPromoSource` (qaysi joy
+  o'rinni egallagani yodda qoladi).
+- `sessionSlotAllows(source)`: o'rin bo'sh bo'lsa — ha; band bo'lsa faqat
+  `lesson_end_promo` uni bir marta egallay oladi.
+- `lesson_end_promo` chiqqandan keyin sessiya yopiladi — shu sababdan
+  ikkinchi shart (`sessionPromoSource !== PROMO_PRIORITY_SOURCE`) bor.
+
+Ya'ni eng yomon holat: bitta sessiyada "ochilganda" + "dars yakunida",
+har biri bir martadan. Undan keyin jimlik. `home_prompt` ning kunlik
+chegarasi va 14 kunlik sovish o'zgarmadi.
+
+Fixed (kichik):
+- Admin paneldagi "Joriy holat" tegi `home_prompt` va `ad_promo` ni
+  ko'rsatib, `lesson_end_promo` ni ko'rsatmasdi — endi uchalasi ham bor.
+- `ANDROID_CONTEXT.md` §4.6 hali ham `COURSE_AD_APP_VISIBLE_PLATFORMS` va
+  `_desktop_auto_download_links` haqida gapirardi; ular `645111c` da
+  o'chirilgan edi.
+
+Key files:
+- `app/static/course_v3_data/ads.js`,
+  `app/static/course_v3_data/desktop-download.js`
+- `app/static/course-v3.html` + beshta ichki sahifa (`?v=`)
+- `app/static/admin.html`
+- `tests/test_course_v3_static_data.py`, `tests/test_course_ad_types.py`
+- `ANDROID_CONTEXT.md`
+
+Verified: 1446 passed, 78267 subtests. Yangi testlar:
+`ImmutableScriptsCarryTheirVersionTests` ikkala skriptning hash'ini
+qotirib qo'yadi — endi faylni o'zgartirib `?v=` ni unutib bo'lmaydi, test
+yiqiladi va nima qilish kerakligini aytadi;
+`SessionSlotGoesToTheLessonEndPromoTests` sessiya o'rni qoidasini
+tekshiradi; `ads.js` global nomi ham testga bog'landi.
+
+E2E: `test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt`
+brauzerda aynan foydalanuvchi ko'rgan ketma-ketlikni bosib o'tadi —
+ochilgandagi promo chiqadi, yopiladi, keyin dars yakunidagi promo CHIQADI,
+undan keyin sessiya yopiladi. Eski kodda bu test aynan ikkinchi qadamda
+yiqiladi (tekshirildi).
+
+Diqqat: `tests/e2e/test_miniapp_smoke.py` dagi beshta test shu ishdan
+OLDIN ham yiqilardi (`branded_download_page*` va
+`admin_control_renders_real_api_payload_without_demo_data`) — bu
+o'zgarishga aloqasi yo'q, toza `main` da ham xuddi shunday.
+
+### 2026-09-18 — Profildagi «HSK AI ilovalari» endi yuklab olish sahifasini ochadi
+
+> **QAYTARIB OLINDI o'sha kuni.** Bot profili va sahifa eski holiga
+> tiklandi — sababi pastdagi «Bot profili va sahifa eski holiga qaytarildi»
+> yozuvida. Quyidagilar tarix uchun qoldirilgan.
+
+Foydalanuvchi: profildagi tugma o'rniga `/desktop-download` linki tursin va
+sahifadagi Android tugmasi bosilganda APK **chatga** tushsin.
+
+Changed:
+- Profildagi «📱 HSK AI ilovalari» endi chooser chiqarmaydi (Android +
+  Kompyuter callback'lari olib tashlandi), balki to'g'ridan-to'g'ri
+  `/desktop-download?lang=<til>` ni ochadigan `url` tugma. `platform` ataylab
+  yozilmaydi: bot foydalanuvchining qurilmasini ko'rmaydi, sahifa esa
+  user-agent bo'yicha o'zi tanlaydi — `platform=android` ni majburlash
+  iPhone'dagi odamga o'rnata olmaydigan APK ni ko'rsatardi.
+- Base URL noto'g'ri sozlangan bo'lsa (https emas), tugma o'lik qolmaydi:
+  eski Android callback'iga tushadi, ya'ni fayl baribir bir bosishda.
+- Sahifadagi Android tugmasi endi hech nima yuklab olmaydi —
+  `t.me/<bot>?start=android` ga olib boradi. Faylni bot beradi (Telegram
+  bytes'ni ushlab turadi, biz hech nima serve qilmaymiz).
+- `/start android` — yangi deep-link. Onboarding'dan o'tgan odam faqat faylni
+  oladi (start kartasi qayta chiqmaydi); yangi odam avval odatdagi onboarding,
+  keyin fayl. `android` **hech qachon** referral kod sifatida o'qilmaydi,
+  aks holda har bir APK so'rovi taklif bo'lib ko'rinardi.
+- `app_download_status`: Android relizi endi public URL'siz ham `available`
+  bo'ladi (bot file_id bilan bera oladi), lekin `download` shundagina
+  to'ldiriladi. Ya'ni crawler ro'yxati va JSON-LD yo'q havolani da'vo qilmaydi.
+  Admin faylni botga yuklab, R2 linkini keyin qo'yadigan oraliqda sahifa
+  «hali chiqarilmagan» deb yolg'on gapirmaydi.
+- Sahifa matni 3 tilda yangilandi: `androidDownload` («Telegramda faylni
+  olish»), yangi `androidStatus`, 1-qadam matni.
+- Yo'l-yo'lakay tuzatildi: yuklab olish tugmasi bosilganda `opening…` /
+  «Qayta yuklash» va installer qo'llanmasi endi faqat haqiqiy fayl yuklashda
+  ishlaydi. Android va iOS'da bo'sh modal ochilar va tugma «Qayta yuklash»ga
+  aylanardi — ikkalasi ham bo'lmagan narsani tasvirlardi.
+- O'lik qatorlar olib tashlandi: `apps_menu_text`, `apps_android_button`,
+  `apps_desktop_button` (uz/ru/tj).
+
+Nima o'zgarmadi:
+- `request` tokeni va Mini App ichidagi desktop yuklash oqimi (foydalanuvchi
+  aniq shuni so'radi). Bot profilidan desktop endi sahifa orqali boradi,
+  Mini App profilidagi promo esa avvalgidek ishlaydi.
+- `/android` buyrug'i, admin paneli, `android_apk_requested/sent` eventlari.
+
+Key files:
+- `app/bot/handlers/commands.py`, `app/bot/handlers/start.py`,
+  `app/bot/utils/course_miniapp.py` (`apps_download_page_url`),
+  `app/bot/utils/i18n.py`, `app/services/app_downloads_service.py`,
+  `app/static/desktop-download-page.js`
+- `tests/test_bot_profile_desktop_cta.py` (qayta yozildi),
+  `tests/test_android_apk_download.py`, `tests/test_app_downloads_status.py`
+
+Verified:
+- Backend: 1449 passed, 78262 subtests (`tests/`, e2e'siz).
+- Sahifa haqiqiy brauzerda (Chromium/Playwright) tekshirildi: uz/ru/tj
+  Android tabida tugma `https://t.me/darsi_chini_bot?start=android`,
+  `data-action="open"`; Android user-agent `platform` yozilmagan holda ham
+  Android tabiga tushadi; iPhone iOS tabini oladi; macOS avvalgidek to'g'ridan
+  yuklaydi; hech narsa nashr qilinmagan holda tugma o'chiq va «hali
+  chiqarilmagan» deb turadi; bosilganda bo'sh modal ochilmaydi.
+- Router tartibi subprocess'da tekshirildi: `/start android` ni `cmd_start`
+  oladi, oldingi routerlardan hech biri yeb qo'ymaydi.
+
+Not verified:
+- Haqiqiy Telegram orqali o'tilmagan: deep-link ham, fayl ham fake bot va
+  in-memory bazada tekshirildi. Prod'da birinchi bosish — birinchi haqiqiy
+  sinov.
+- Prod'da Android relizi nashr qilinganmi, tekshirilmadi. Nashr yo'q bo'lsa
+  sahifa Android tugmasini o'chiq ko'rsatadi (bu to'g'ri xatti-harakat).
+
+### 2026-09-18 — Mini App profilidagi karta endi hamma ilovalarga eshik
+
+Foydalanuvchi: profildagi «Kompyuter ilovasi» kartasiga yuklab olish tugmasi
+qo'shilsin, u sahifani ochsin va sahifa qurilmaga mos variantni o'zi tanlasin.
+
+Changed:
+- Karta «HSK AI ilovalari» bo'ldi: eyebrow, sarlavha va tavsif uz/ru/tj da
+  yangilandi (endi Android ham qamrab olinadi).
+- MacBook/Windows tugmalari **tegilmadi** — token oqimi (`/request` →
+  `download_page_url`) va «qayerga ochamiz?» oynasi (AirDrop / linkni
+  nusxalash) avvalgidek ishlaydi.
+- Ularning ostida bitta to'liq enli tugma: «Ilovalarni yuklab olish» →
+  `/desktop-download?lang=<til>`, `Telegram.WebApp.openLink` orqali.
+  `platform` **yozilmaydi**: karta faqat telefonda chiqadi, sahifa esa
+  qurilmani user-agent bo'yicha o'zi tanlaydi — iPhone iOS tabini, Android
+  Android tabini oladi.
+- «Telefondasiz: AirDrop/ulashish…» yozuvi olib tashlandi (`mobileCardHint`
+  uz/ru/tj + `.pdd-mobile-hint` CSS). U eski ramkaga tegishli edi; ko'chirish
+  yo'li MacBook/Windows bosilganda chiqadigan oynada baribir tushuntiriladi.
+- `course_v3_data/desktop-download.{js,css}` versiyasi `20260918-1` ga
+  ko'tarildi (6 ta HTML). Bu fayllar `immutable` cache bilan beriladi —
+  ko'tarilmasa hech kim yangi kartani ko'rmasdi.
+
+Bilib turib qilinmagani:
+- Bu tugmaga alohida analitika eventi qo'shilmadi. Klient eventlari
+  `CLIENT_COURSE_MINIAPP_EVENT_NAMES` ro'yxatidan o'tadi, yangi nom qo'shish
+  server tomonini ham talab qiladi — so'ralmagan, shuning uchun qilinmadi.
+  Ya'ni bu kirish nuqtasi hozircha o'lchanmaydi.
+- Kartadagi preview rasmi hali ham kompyuter oynasi. Sarlavha kengaydi,
+  rasm esa eski — o'zgartirish Mini App dizayniga tegadi, so'ralmagan.
+
+Key files:
+- `app/static/course_v3_data/desktop-download.js`,
+  `app/static/course_v3_data/desktop-download.css`,
+  `app/static/course-v3.html` + 5 ta course sahifasi (versiya),
+- `tests/test_course_v3_static_data.py`, `tests/e2e/test_miniapp_smoke.py`
+
+Verified:
+- Backend: 1449 passed, 78262 subtests.
+- E2E (Playwright, static route bilan): profil kartasiga tegishli 5 test
+  o'tdi; tugma matni «Ilovalarni yuklab olish», bosilganda
+  `openLink('/desktop-download?lang=uz')` chaqiriladi (ekranda ham ko'rildi).
+- To'liq `tests/e2e`: 65 passed, 21 failed — **o'sha 21 tasi `origin/main` da
+  ham aynan shunday yiqiladi** (baseline worktree'da tekshirildi), ya'ni bu
+  o'zgarishlardan emas, muhitdan (Playwright 1.63 + eski chromium build).
+
+### 2026-09-18 — Bot profili va sahifa eski holiga qaytarildi
+
+Foydalanuvchi ko'rib chiqib qaror qildi: sahifaga tegilmasin — u yerdan APK
+to'g'ridan-to'g'ri yuklab olinaversin; bot profilidagi tugma esa link
+bo'lmasin, faylni to'g'ridan-to'g'ri chatga yuborsin.
+
+Changed (aynan shu kundagi oldingi yozuv bekor qilindi):
+- `commands.py`, `start.py`, `course_miniapp.py`, `i18n.py`,
+  `app_downloads_service.py`, `desktop-download-page.js`,
+  `desktop-download.html` va ularning uchta test fayli `48f3aa5` dagi holatga
+  qaytarildi. Ya'ni:
+  - profilda yana «📱 HSK AI ilovalari» → [📱 Android] [💻 Kompyuter]
+    chooseri; Android — callback, fayl darhol chatga; Kompyuter — Mini App;
+  - sahifadagi Android tugmasi yana `/downloads/android` ni yuklaydi;
+  - `/start android` deep-link olib tashlandi (uni faqat sahifa ishlatardi);
+  - `apps_download_page_url()` helperi olib tashlandi;
+  - `app_download_status` yana Android uchun public URL talab qiladi.
+- Mini App profilidagi karta **qoldi** (oldingi yozuvga qarang): sarlavha
+  «HSK AI ilovalari», MacBook/Windows tugmalari o'z joyida, ostida
+  «Ilovalarni yuklab olish» → `/desktop-download`. Sahifa endi yana to'g'ridan
+  yuklaydigan bo'lgani uchun bu tugma mantiqan mos.
+
+Nima bilib turib qilinmadi:
+- Sahifadagi yuklash tugmasi bosilganda iOS/Android'da bo'sh «installer
+  qo'llanmasi» modali ochilishi va tugma «Qayta yuklash»ga aylanishi —
+  haqiqiy, eskidan bor kamchilik. Oldingi o'zgarishda yo'l-yo'lakay
+  tuzatilgandi, «saytga tegma» qarori bilan u ham qaytarildi. Alohida
+  so'ralsa, bir qatorlik tuzatish.
+
+Key files: yuqoridagi ro'yxat + `ANDROID_CONTEXT.md` (tarqatish qatori eski
+holida).
+
+Verified: backend 1449 passed, 78262 subtests; profil kartasiga tegishli 5 ta
+Playwright testi o'tdi; `git diff 48f3aa5` faqat Mini App kartasi va
+xotira/hujjat fayllarini ko'rsatadi.
+
+### 2026-09-18 — Kartadagi platformalar bir qatorda, Android fayli chatga
+
+Foydalanuvchi: karta g'alati ko'rinyapti (ikkita tugma, ostida yolg'iz
+«Android — tez orada»), bitta universal blok bo'lsin; Android bosilganda
+Mini App yopilsin va ilova fayli chat orqali tashlansin.
+
+Changed:
+- `buildActions` endi nechta platforma chizilganini `data-pdd-columns` ga
+  yozadi, CSS esa uchtasini teng kenglikda bitta qatorga tizadi (uchta
+  bo'lganda ikona yorliq tepasiga chiqadi, shrift kichrayadi). Ikkita
+  platforma bo'lsa avvalgidek ikki ustun. «Ilovalarni yuklab olish» tugmasi
+  ostida to'liq enli qolaveradi.
+- Mini App'dagi Android chipi endi hech nima ochmaydi:
+  `POST /api/miniapp/event` → `{"event": "android_apk_to_chat"}`, server
+  `send_android_app` bilan APK ni chatga yuboradi, klient esa muvaffaqiyatda
+  `Telegram.WebApp.close()` qiladi. Xato bo'lsa Mini App **yopilmaydi** —
+  kartadagi status qatorida sabab chiqadi.
+- `isPlatformAvailable("android")` endi public URL talab qilmaydi, chunki
+  hech qanday havola ochilmaydi. `app_download_status` ham: bot bera oladigan
+  reliz (`file_id`) `available` bo'ladi, `download` esa faqat R2 linki
+  bo'lgandagina to'ldiriladi — sahifa, crawler ro'yxati va JSON-LD avvalgidek
+  faqat haqiqiy fayl havolasini ko'rsatadi. **Ayni shu sababli bu ish kerak
+  edi:** prodda APK botga yuklangan, R2 linki qo'yilmagan, shuning uchun
+  kartada «Android — tez orada» turardi.
+- O'lik holat olib tashlandi: `state.transferUrls.android` (endi o'quvchisi
+  yo'q). Uch tilda ikkita yangi qator: `sendingToChat`, `chatSendFailed`.
+- `desktop-download.{js,css}` versiyasi `20260918-2`.
+
+Key files:
+- `app/static/course_v3_data/desktop-download.js` / `.css`, `app/main.py`,
+  `app/services/app_downloads_service.py`, 6 ta course HTML
+- `tests/test_course_v3_static_data.py`, `tests/e2e/test_miniapp_smoke.py`
+  (yangi test: `test_android_chip_sends_the_apk_to_the_chat_and_closes`)
+
+Verified:
+- Backend: to'liq suite yashil.
+- Playwright: yangi test chipni bosadi va `window.__closed === true` bo'lguncha
+  kutadi; `/api/miniapp/event` ga ketgan tana `android_apk_to_chat` +
+  `miniapp_profile` ekani tekshiriladi va hech qanday havola ochilmagani
+  (`window.__openedLink === null`) ham. Karta ikkala holatda (Android bor /
+  «tez orada») ekranda ko'rildi: uchta chip bitta qatorda.
+
+Eslatma:
+- Server tomoni `main.py` dagi `/api/miniapp/event` ichida, `subscribe_clicked`
+  yonida. Loyihada bu endpoint uchun HTTP-test yo'q, shuning uchun mavjud
+  uslubga ergashildi: `main.py` matni ustidan static assert + e2e.
+
+### 2026-09-18 — Bot profilidagi tugma Mini App kartasini ochadi
+
+Foydalanuvchi: chat ichidagi profildagi «ilovalar» tugmasi Mini App'dagi shu
+blok turgan joyni ochsin.
+
+Changed:
+- `profile_menu_keyboard` dagi «📱 HSK AI ilovalari» endi chooser callback
+  emas, **Mini App tugmasi**: `?tab=profile&desktop_download=1` — profil tabi
+  ochiladi va karta fokuslanadi (`focusProfileDownload` mexanizmi allaqachon
+  bor edi, uni eski «💻 Kompyuter» tugmasi ishlatardi).
+- Chooser (`[📱 Android] [💻 Kompyuter]`) olib tashlandi: qurilma tanlash endi
+  kartaning o'zida — uchta chip bir qatorda, Android bosilsa Mini App yopilib
+  fayl chatga tushadi.
+- `APPS_MENU_CALLBACK` handleri **ataylab qoldirildi**: eski profil
+  xabarlaridagi tugma hali ham bosiladi va endi bitta Mini App tugmasi bilan
+  javob beradi (`apps_menu_keyboard` ham shunga qisqardi). `apps_menu_text`
+  uch tilda yangilandi — «qaysi qurilma?» degan savol endi o'rinsiz.
+- `apps_android_button` / `apps_desktop_button` (uz/ru/tj) o'chirildi.
+- `/android` buyrug'i va `android_app:get` callbacki tegilmadi.
+
+Key files:
+- `app/bot/handlers/commands.py`, `app/bot/utils/i18n.py`
+- `tests/test_bot_profile_desktop_cta.py` (qayta yozildi),
+  `tests/test_android_apk_download.py`
+
+Verified:
+- Backend: 1442 passed, 78265 subtests.
+- Playwright: deep-link fokus testi + karta testlari (8 ta) yashil — tugma
+  yuboradigan URL kartani haqiqatan ochadi va fokuslaydi.

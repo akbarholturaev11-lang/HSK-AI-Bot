@@ -1,0 +1,291 @@
+name: Android release
+
+# Builds the signed `direct` APK and publishes it to the same Cloudflare R2
+# bucket the desktop installers live in. Manual only: a release is a decision,
+# not something a push should cause.
+#
+# It never publishes an APK signed by a different key. Every learner who
+# installed from the bot can only be updated by the key that signed what they
+# already have, so the certificate fingerprint is pinned below and a mismatch
+# fails the run rather than stranding them.
+on:
+  workflow_dispatch:
+    inputs:
+      publish_to_r2:
+        description: Upload the signed APK to Cloudflare R2
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release
+  cancel-in-progress: false
+
+env:
+  # SHA-256 of the release signing certificate. Read it from a known-good APK
+  # with: apksigner verify --print-certs app.apk
+  RELEASE_CERT_SHA256: bce68c9459d5a95c760785c7d4a52aade5d957ee26f828084e06e7ba441d8502
+
+jobs:
+  release:
+    name: Build, verify and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require a complete committed Gradle wrapper
+        working-directory: android
+        run: |
+          set -euo pipefail
+          for f in gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar \
+                   gradle/wrapper/gradle-wrapper.properties; do
+            test -f "$f" || { echo "::error::Missing Gradle wrapper file: $f"; exit 1; }
+          done
+          chmod +x gradlew
+
+      - name: Validate the wrapper checksum
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle caching
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: true
+
+      # The same checks CI runs. A release must not be the first build that
+      # skips them just because someone is in a hurry.
+      - name: Static checks
+        working-directory: android
+        run: |
+          set -euo pipefail
+          python3 tools/check_interface_fakes.py
+          python3 tools/check_named_arguments.py
+          python3 tools/check_flavor_parity.py
+          python3 tools/check_strings_translated.py
+          python3 tools/check_palette_matches_miniapp.py
+
+      - name: Unit tests and lint
+        working-directory: android
+        run: ./gradlew --no-daemon testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug
+
+      - name: Restore the release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.POMP_ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          for value in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS; do
+            test -n "${!value}" || {
+              echo "::error::POMP_ANDROID_${value#KEYSTORE_} is required"
+              exit 1
+            }
+          done
+
+          # The name of the secret is roughly 28 characters and decodes to a
+          # short run of bytes, so "is it empty" does not catch the easiest
+          # mistake there is: pasting the field's own name into it. A keystore
+          # this small does not exist.
+          if [ "${#KEYSTORE_BASE64}" -lt 1000 ]; then
+            echo "::error::POMP_ANDROID_KEYSTORE_BASE64 is only ${#KEYSTORE_BASE64} characters."
+            echo "::error::Expected a few thousand — the base64 of release.jks, not the secret's name."
+            echo "::error::Re-copy it with: base64 -i release.jks | tr -d '\n' | pbcopy"
+            exit 1
+          fi
+
+          # Outside the workspace so no later step can archive it by accident.
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks" || {
+            echo "::error::POMP_ANDROID_KEYSTORE_BASE64 is not valid base64"
+            exit 1
+          }
+
+          # The only check that actually proves this is the keystore: open it
+          # with the password and alias the build is about to use. Failing here
+          # says which of the three secrets is wrong; failing inside Gradle
+          # says "Keystore was tampered with, or password was incorrect".
+          if ! keytool -list \
+            -keystore "$RUNNER_TEMP/release.jks" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -alias "$KEY_ALIAS" > /dev/null 2>keytool.err; then
+            echo "::error::Could not open the keystore with the configured password and alias."
+            echo "::error::One of POMP_ANDROID_KEYSTORE_BASE64, _KEYSTORE_PASSWORD or _KEY_ALIAS is wrong."
+            sed -E 's/[A-Za-z0-9+\/=]{20,}/[redacted]/g' keytool.err
+            exit 1
+          fi
+          echo "Keystore opened with the configured alias."
+
+      - name: Build the signed direct release
+        working-directory: android
+        env:
+          POMP_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/release.jks
+          POMP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          POMP_ANDROID_KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
+          POMP_ANDROID_KEY_PASSWORD: ${{ secrets.POMP_ANDROID_KEY_PASSWORD }}
+        run: ./gradlew --no-daemon assembleDirectRelease
+
+      # An unsigned build is what `build.gradle.kts` produces when any signing
+      # value is missing, and it looks like a successful release until someone
+      # tries to install it.
+      - name: Verify the APK is signed by the expected key
+        id: apk
+        run: |
+          set -euo pipefail
+          apk="$(find android/app/build/outputs/apk/direct/release -name '*.apk' | head -1)"
+          test -n "$apk" || { echo "::error::No APK was produced"; exit 1; }
+
+          build_tools="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          "$build_tools/apksigner" verify --print-certs "$apk" > certs.txt
+          cat certs.txt
+
+          actual="$(awk '/certificate SHA-256 digest/ {print $NF; exit}' certs.txt)"
+          if [ "$actual" != "$RELEASE_CERT_SHA256" ]; then
+            echo "::error::Signed by the wrong key. Expected $RELEASE_CERT_SHA256, got $actual."
+            echo "::error::An APK signed by a different key cannot update any installed app."
+            exit 1
+          fi
+
+          name="$(basename "$apk")"
+          version="$(echo "$name" | sed -E 's/^hsk-ai-(.+)-[0-9]+-direct-release\.apk$/\1/')"
+          code="$(echo "$name" | sed -E 's/^hsk-ai-.+-([0-9]+)-direct-release\.apk$/\1/')"
+          test "$version" != "$name" && test "$code" != "$name" || {
+            echo "::error::Unexpected artifact name: $name"
+            exit 1
+          }
+          echo "path=$apk" >> "$GITHUB_OUTPUT"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "size=$(stat -c%s "$apk")" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "$apk" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.path }}
+          if-no-files-found: error
+
+      - name: Publish to Cloudflare R2
+        if: ${{ inputs.publish_to_r2 }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+          APK_PATH: ${{ steps.apk.outputs.path }}
+          APK_NAME: ${{ steps.apk.outputs.name }}
+          APK_VERSION: ${{ steps.apk.outputs.version }}
+          APK_CODE: ${{ steps.apk.outputs.code }}
+          APK_SIZE: ${{ steps.apk.outputs.size }}
+          APK_SHA256: ${{ steps.apk.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          for value in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY R2_ACCOUNT_ID R2_BUCKET R2_PUBLIC_BASE_URL; do
+            test -n "${!value}" || { echo "::error::$value is required"; exit 1; }
+          done
+          case "$R2_PUBLIC_BASE_URL" in
+            https://*) ;;
+            *) echo "::error::R2_PUBLIC_BASE_URL must use HTTPS"; exit 1 ;;
+          esac
+
+          endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          key="android/v${APK_VERSION}/${APK_NAME}"
+
+          # Release keys are immutable. Re-running the same release is fine;
+          # quietly replacing a published APK with different bytes is not —
+          # installed apps would be offered a file that is no longer the one
+          # anyone tested.
+          error_file="$(mktemp)"
+          if aws s3api head-object --bucket "$R2_BUCKET" --key "$key" \
+            --endpoint-url "$endpoint" >/dev/null 2>"$error_file"; then
+            existing="$(mktemp)"
+            aws s3 cp "s3://${R2_BUCKET}/${key}" "$existing" \
+              --endpoint-url "$endpoint" --only-show-errors
+            if ! cmp --silent "$APK_PATH" "$existing"; then
+              echo "::error::$key already exists with different content"
+              exit 1
+            fi
+            echo "Already published, byte for byte identical."
+          elif grep -Eq '404|Not Found|NoSuchKey' "$error_file"; then
+            aws s3 cp "$APK_PATH" "s3://${R2_BUCKET}/${key}" \
+              --endpoint-url "$endpoint" \
+              --content-type application/vnd.android.package-archive \
+              --only-show-errors
+          else
+            echo "::error::Could not check whether $key already exists"
+            cat "$error_file"
+            exit 1
+          fi
+
+          url="${R2_PUBLIC_BASE_URL%/}/${key}"
+
+          # The manifest is the only mutable object here, and it is what makes
+          # a release take effect without anyone pasting anything. Refuse to
+          # move it backwards: the server rejects a downgrade too, but a run
+          # that fails is far easier to notice than a manifest quietly ignored.
+          previous_code=0
+          manifest_error="$(mktemp)"
+          if aws s3api head-object --bucket "$R2_BUCKET" --key "android/latest.json" \
+            --endpoint-url "$endpoint" >/dev/null 2>"$manifest_error"; then
+            previous="$(mktemp)"
+            aws s3 cp "s3://${R2_BUCKET}/android/latest.json" "$previous" \
+              --endpoint-url "$endpoint" --only-show-errors
+            previous_code="$(jq -er '.version_code' "$previous")"
+          elif ! grep -Eq '404|Not Found|NoSuchKey' "$manifest_error"; then
+            echo "::error::Could not read the existing Android manifest"
+            cat "$manifest_error"
+            exit 1
+          fi
+          if [ "$APK_CODE" -lt "$previous_code" ]; then
+            echo "::error::versionCode $APK_CODE is older than the published $previous_code"
+            exit 1
+          fi
+
+          manifest="$(mktemp)"
+          jq -n \
+            --arg version_name "$APK_VERSION" \
+            --argjson version_code "$APK_CODE" \
+            --arg download_url "$url" \
+            --argjson size "$APK_SIZE" \
+            --arg sha256 "$APK_SHA256" \
+            --arg published_at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            '{
+              schema_version: 1,
+              version_name: $version_name,
+              version_code: $version_code,
+              download_url: $download_url,
+              size: $size,
+              sha256: $sha256,
+              published_at: $published_at
+            }' > "$manifest"
+          cat "$manifest"
+
+          aws s3 cp "$manifest" "s3://${R2_BUCKET}/android/latest.json" \
+            --endpoint-url "$endpoint" \
+            --content-type application/json \
+            --cache-control "public, max-age=60" \
+            --only-show-errors
+
+          {
+            echo "### Android ${APK_VERSION} (${APK_CODE}) published"
+            echo
+            echo "The server reads \`android/latest.json\`, so this release is live"
+            echo "without anyone pasting anything. Installed apps will see it within a minute."
+            echo
+            echo "APK: \`$url\`"
+            echo
+            echo "Still manual: handing the file to the bot chat. The bot fetches it"
+            echo "from the URL above the first time somebody asks, and caches what"
+            echo "Telegram gives back — so normally there is nothing left to do."
+          } >> "$GITHUB_STEP_SUMMARY"

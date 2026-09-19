@@ -81,6 +81,7 @@ import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
 import com.pomp.hskai.feature.practice.DrillMode
 import com.pomp.hskai.feature.practice.PracticeRequest
+import com.pomp.hskai.feature.practice.toRequest
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
 import com.pomp.hskai.feature.practice.WordDrillScreen
@@ -273,7 +274,11 @@ private fun AppRoot(
                 .collectAsStateWithLifecycle(initialValue = PinyinVisibility.DEFAULT)
             val practiceViewModel: PracticeViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
-                factory = PracticeViewModel.Factory(app.featureRepository),
+                factory = PracticeViewModel.Factory(
+                    repository = app.featureRepository,
+                    courseRepository = app.courseRepository,
+                    audioPlayer = app.lessonAudioPlayer,
+                ),
             )
             val practiceState by practiceViewModel.state.collectAsStateWithLifecycle()
             val voiceViewModel: VoiceViewModel = viewModel(
@@ -370,6 +375,12 @@ private fun AppRoot(
 
             LaunchedEffect(courseState.map?.studySetup) {
                 studySetupViewModel.sync(courseState.map?.studySetup)
+                // The daily goal belongs to the account, not to the phone. The
+                // local copy is only a mirror so the profile can draw before
+                // the map arrives; the server's answer always wins.
+                courseState.map?.studySetup?.dailyGoalXp
+                    ?.takeIf { it > 0 }
+                    ?.let { app.appSettings.setDailyGoal(it) }
             }
 
             // The blocks arrive with the map, but they belong to every
@@ -587,6 +598,15 @@ private fun AppRoot(
                     }
                     AppDestination.WidgetSetup -> {
                         widgetSetupOpen = true
+                        onDestinationConsumed()
+                    }
+                    // `toTab()` above has already moved to Mashq; this opens the
+                    // named tool inside it, which the link used to lose.
+                    is AppDestination.Practice -> {
+                        // Reset kept from the `else` branch this used to fall
+                        // into, so a later lesson link can still claim the gate.
+                        deepLinkRefreshGate.reset()
+                        practiceRequest = destination.tool?.toRequest()
                         onDestinationConsumed()
                     }
                     else -> {
@@ -847,6 +867,7 @@ private fun AppRoot(
                             onAnswerReview = practiceViewModel::answerReview,
                             onAdvanceReview = practiceViewModel::advanceReview,
                             onResetReview = practiceViewModel::resetReview,
+                            onSpeakReview = practiceViewModel::playReviewAudio,
                             onStartExam = { examLevel ->
                                 practiceViewModel.startExam(examLevel, currentLanguage)
                             },
@@ -991,7 +1012,11 @@ private fun AppRoot(
                             current = dailyGoal,
                             onPick = { value ->
                                 goalPickerOpen = false
+                                // Written locally at once so the profile does
+                                // not lag behind the tap, and sent on, because
+                                // the Mini App reads the same number.
                                 scope.launch { app.appSettings.setDailyGoal(value) }
+                                studySetupViewModel.chooseDailyGoalXp(value)
                             },
                             onDismiss = { goalPickerOpen = false },
                         )

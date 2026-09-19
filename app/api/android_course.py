@@ -20,7 +20,7 @@ from pathlib import Path
 import re
 import tempfile
 from urllib.parse import quote
-from typing import Callable, Literal
+from typing import Annotated, Callable, Literal
 
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
@@ -97,6 +97,10 @@ class AndroidStudyPreferencesRequest(BaseModel):
         "travel",
     ] | None = None
     daily_minutes: Literal[5, 10, 15, 20, 30] | None = None
+    # The Mini App has written this since the goal stopped being a JS variable
+    # (`miniapp_preferences.py`). Android kept its own copy in device storage
+    # and never sent it, so one account showed two different goals.
+    daily_goal_xp: Annotated[int, Field(ge=10, le=500)] | None = None
     preferred_focus: Literal[
         "speaking",
         "listening",
@@ -107,7 +111,12 @@ class AndroidStudyPreferencesRequest(BaseModel):
 
     @model_validator(mode="after")
     def _at_least_one_change(self):
-        if self.goal is None and self.daily_minutes is None and self.preferred_focus is None:
+        if (
+            self.goal is None
+            and self.daily_minutes is None
+            and self.preferred_focus is None
+            and self.daily_goal_xp is None
+        ):
             raise ValueError("at least one study preference is required")
         return self
 
@@ -489,6 +498,7 @@ def create_android_course_router(
                     goal=payload.goal,
                     daily_minutes=payload.daily_minutes,
                     preferred_focus=payload.preferred_focus,
+                    daily_goal_xp=payload.daily_goal_xp,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:

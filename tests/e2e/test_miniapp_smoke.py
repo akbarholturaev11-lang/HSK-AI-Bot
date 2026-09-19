@@ -2780,7 +2780,70 @@ def test_desktop_ad_block_ignores_modal_promo_cooldown(page):
     expect(host.locator('[data-pdd-platform="windows"]')).to_be_visible()
 
 
-def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
+def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
+    """Android is the one platform the Mini App cannot deliver itself.
+
+    Nothing of ours serves the APK: the bot holds it. So the chip asks the bot
+    to send it and closes, because staying open would cover the chat the file
+    just landed in.
+    """
+
+    mock_telegram_desktop_download(page, platform="android")
+    page.route(
+        "**/api/v3/apps/public-status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "platforms": {
+                    "macos": {"available": False, "download": None},
+                    "windows": {"available": False, "download": None},
+                    # Published to the bot, no storage URL behind it: exactly
+                    # the state the chat hand-off exists for.
+                    "android": {
+                        "available": True,
+                        "version": "1.1.1 (3)",
+                        "download": None,
+                    },
+                },
+                "any": True,
+            },
+        ),
+    )
+
+    requests = []
+    def capture_event(route):
+        try:
+            requests.append(route.request.post_data_json)
+        except Exception:
+            requests.append(None)
+        json_response(route, {"ok": True})
+
+    _open_course_profile_with_desktop_release(page, status_handler=None)
+    page.route("**/api/miniapp/event", capture_event)
+
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    android = card.locator('[data-pdd-platform="android"]')
+    expect(android).to_be_visible()
+    expect(android).to_be_enabled()
+    # Every offered platform on one line.
+    expect(card.locator(".pdd-actions")).to_have_attribute("data-pdd-columns", "3")
+
+    android.click()
+    page.wait_for_function("() => window.__closed === true", timeout=5000)
+
+    asked = [
+        request
+        for request in requests
+        if request and request.get("event") == "android_apk_to_chat"
+    ]
+    assert asked, requests
+    assert asked[0]["source"] == "miniapp_profile"
+    # The link the chip used to open is gone: nothing is opened for Android.
+    assert page.evaluate("window.__openedLink") is None
+
+
+def test_desktop_profile_card_is_discoverable_and_reaches_every_client(page):
     mock_telegram_desktop_download(page, platform="android")
     _open_course_profile_with_desktop_release(page)
 
@@ -2800,9 +2863,10 @@ def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
     expect(card.locator(".pdd-preview-word")).to_contain_text("学习")
     expect(card.locator(".pdd-preview-word")).to_contain_text("xuéxí · o‘rganmoq")
     expect(card.locator(".pdd-benefit")).to_have_count(3)
-    expect(card.locator(".pdd-mobile-hint")).to_contain_text(
-        "AirDrop/ulashish"
-    )
+    # The way out to every client, including the one this phone can install.
+    apps = card.locator(".pdd-apps-button")
+    expect(apps).to_be_visible()
+    expect(apps).to_contain_text("Ilovalarni yuklab olish")
 
     goal_box = goal.bounding_box()
     card_box = card.bounding_box()
@@ -2930,7 +2994,7 @@ def test_desktop_profile_preview_is_localized_and_fits(page, lang, expected):
 
     card = page.locator("#pomp-desktop-profile-root .pdd-card")
     expect(card.locator(".pdd-product-preview")).to_contain_text(expected)
-    expect(card.locator(".pdd-mobile-hint")).to_be_visible()
+    expect(card.locator(".pdd-apps-button")).to_be_visible()
     assert card.evaluate("node => node.scrollWidth <= node.clientWidth + 1")
 
 
@@ -3667,6 +3731,53 @@ def test_desktop_promo_fits_short_360x640_viewport(page):
     assert box["y"] + box["height"] <= 640.5
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="macos"]')).to_be_visible()
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="windows"]')).to_be_visible()
+
+
+def test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt(page):
+    """Sessiyada bitta promo — lekin dars yakuni ustun.
+
+    `promoSeenInSession` bitta umumiy bayroq edi: "Mini App ochilganda"
+    promosi har ochilishda birinchi bo'lib chiqib uni yoqardi va dars
+    yakunidagi promo o'sha sessiyada hech qachon chiqmasdi. Bu yerda
+    aynan o'sha ketma-ketlik tekshiriladi, chunki foydalanuvchi uni
+    shunday ko'rgan edi.
+    """
+    mock_telegram_desktop_download(page, platform="tdesktop", native_download=True)
+    # Sozlamada uchala joy ham yoqilgan (mock'ning default javobi).
+    _open_course_profile_with_desktop_release(page)
+    page.locator('#nav button[data-s="course"]').click()
+
+    def dismiss_open_promo():
+        later = page.locator(".pdd-promo-dismiss")
+        if later.count() and later.is_visible():
+            later.click()
+        expect(page.locator(".pdd-promo-shell")).to_have_count(0)
+
+    # 1. Ochilgandagi promo o'rinni egallaydi. U boot paytida o'zi chiqib
+    #    ulgurgan bo'lishi ham mumkin, shuning uchun natija emas, HOLAT
+    #    tekshiriladi: ikkinchi urinish rad etilishi kerak.
+    page.evaluate("PompDesktopDownload.queuePromo('home_prompt',{})")
+    dismiss_open_promo()
+    assert not page.evaluate("PompDesktopDownload.queuePromo('home_prompt',{})")
+
+    # 2. Dars yakunidagi promo SHU sessiyada baribir chiqadi — regressiya
+    #    aynan shu qadamda edi.
+    assert page.evaluate(
+        "PompDesktopDownload.queuePromo('lesson_end_promo',{lesson_id:1})"
+    )
+    expect(
+        page.locator(
+            '#pomp-desktop-promo-root[data-source="lesson_end_promo"] .pdd-promo-shell'
+        )
+    ).to_be_visible()
+    dismiss_open_promo()
+
+    # 3. Undan keyin sessiya yopiq: na dars yakuni, na ochilgandagi promo.
+    assert not page.evaluate(
+        "PompDesktopDownload.queuePromo('lesson_end_promo',{lesson_id:2})"
+    )
+    assert not page.evaluate("PompDesktopDownload.queuePromo('home_prompt',{})")
+    expect(page.locator(".pdd-promo-shell")).to_have_count(0)
 
 
 def _mock_voice_environment(page, *, start=None, message=None, end=None, remaining=1):

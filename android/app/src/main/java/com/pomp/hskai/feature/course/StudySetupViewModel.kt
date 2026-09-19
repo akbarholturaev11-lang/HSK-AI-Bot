@@ -111,6 +111,18 @@ class StudySetupViewModel(
         nextStage = null,
     )
 
+    /**
+     * The daily XP target, chosen from the profile rather than the prompt.
+     *
+     * `nextStage = null` because this is not a step of the goal -> time ->
+     * focus flow: it is reached from the profile, and the sheet closing is the
+     * caller's business, not a stage change.
+     */
+    fun chooseDailyGoalXp(value: Int) = save(
+        request = { repository.setDailyGoalXp(value) },
+        nextStage = null,
+    )
+
     private fun save(
         request: suspend () -> ApiResult<CourseStudySetup>,
         nextStage: StudySetupStage?,

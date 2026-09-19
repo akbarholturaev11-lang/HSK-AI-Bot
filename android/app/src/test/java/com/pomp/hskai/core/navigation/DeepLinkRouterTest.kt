@@ -32,6 +32,34 @@ class DeepLinkRouterTest {
     }
 
     /**
+     * `practice` with no tool is the section home. It is the link the release
+     * feedback's "try it" button sends, and it used to resolve to nothing at
+     * all, so tapping that button left the app exactly where it was.
+     */
+    @Test
+    fun `practice with no tool opens the section home`() {
+        assertEquals(
+            AppDestination.Practice(),
+            DeepLinkRouter.resolve("pomp-hsk-ai://practice"),
+        )
+        assertEquals(
+            AppDestination.Practice(),
+            DeepLinkRouter.resolve("pomp-hsk-ai://practice/"),
+        )
+        assertNull(AppDestination.Practice().tool)
+    }
+
+    @Test
+    fun `every tool survives a round trip through its own uri`() {
+        PracticeTool.entries.forEach { tool ->
+            val destination = AppDestination.Practice(tool)
+            assertEquals(destination, DeepLinkRouter.resolve(DeepLinkRouter.uriFor(destination)))
+        }
+        val home = AppDestination.Practice()
+        assertEquals(home, DeepLinkRouter.resolve(DeepLinkRouter.uriFor(home)))
+    }
+
+    /**
      * The existing reminder flows already target an exact lesson
      * (`motivation_reminder_service` sends `target_level` + `target_lesson`
      * with `autostart`), so Android has to be able to address one when those

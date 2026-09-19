@@ -1,5 +1,6 @@
 package com.pomp.hskai.data.repository
 
+import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidCourseApi
@@ -19,6 +20,8 @@ import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.api.RewardChestOpenResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
+import com.pomp.hskai.data.local.LessonCacheDao
+import com.pomp.hskai.data.local.LessonCacheEntity
 import com.pomp.hskai.domain.model.LessonAccess
 import java.io.IOException
 import kotlinx.coroutines.test.runTest
@@ -51,6 +54,38 @@ private class FakeCourseMapDao : CourseMapDao {
     }
 }
 
+private class FakeLessonCacheDao : LessonCacheDao {
+    val rows = mutableMapOf<Pair<String, Int>, LessonCacheEntity>()
+    var clearCalls = 0
+
+    override suspend fun find(level: String, lessonOrder: Int) = rows[level to lessonOrder]
+
+    override suspend fun upsert(entity: LessonCacheEntity) {
+        rows[entity.level to entity.lessonOrder] = entity
+    }
+
+    override suspend fun clear() {
+        clearCalls++
+        rows.clear()
+    }
+}
+
+private class FakeTtsCache : TtsCache {
+    val entries = mutableMapOf<String, ByteArray>()
+    var cleared = 0
+
+    override suspend fun read(key: String): ByteArray? = entries[key]
+
+    override suspend fun write(key: String, audio: ByteArray) {
+        entries[key] = audio
+    }
+
+    override suspend fun clear() {
+        cleared++
+        entries.clear()
+    }
+}
+
 private val lessonPayload = Json.parseToJsonElement(
     """{"source_lesson":1,"part_no":1,"part_count":1,"checkpoint":false,"title":{"uz":"1-dars"},"subtitle":{"uz":"1-qism"},"sections":[{"section_no":1,"cards":[{"type":"pronunciation","phrase":"你好","pinyin":"nǐ hǎo","translation":{"uz":"salom"}},{"type":"tone_drill_v2"}]}]}"""
 ).jsonObject
@@ -59,10 +94,14 @@ private open class FakeCourseApi : AndroidCourseApi {
     var lastAuthorization: String? = null
     var lastTimezoneOffset: Int? = null
 
+    /** Counted so a cache read can be proven to touch nothing. */
+    var mapCalls = 0
+
     override suspend fun courseMap(
         authorization: String,
         timezoneOffsetMinutes: Int,
     ): Response<CourseMapDto> {
+        mapCalls++
         lastAuthorization = authorization
         lastTimezoneOffset = timezoneOffsetMinutes
         return Response.success(sampleMap())
@@ -83,11 +122,16 @@ private open class FakeCourseApi : AndroidCourseApi {
     ): Response<StrokeDataDto> = throw NotImplementedError()
 
 
+    var ttsCalls = 0
+
     override suspend fun tts(
         authorization: String,
         text: String,
         rate: String,
-    ): Response<ResponseBody> = Response.success("audio".toResponseBody())
+    ): Response<ResponseBody> {
+        ttsCalls++
+        return Response.success("audio".toResponseBody())
+    }
 
     override suspend fun complete(
         authorization: String,
@@ -139,21 +183,273 @@ class CourseRepositoryTest {
 
     private val json = Json { ignoreUnknownKeys = true }
 
+    /**
+     * The cache used to be reachable only after a request had failed, so every
+     * open waited out a full round trip with a copy of the same screen already
+     * on disk. These two pin the read that makes the app draw first.
+     */
+    @Test
+    fun `the map on disk is returned without asking the network`() = runTest {
+        val dao = FakeCourseMapDao()
+        val api = FakeCourseApi()
+        val repo = repository(api, dao)
+
+        // Fill the cache the only way anything ever does: one good response.
+        repo.courseMap()
+        val callsAfterWarmUp = api.mapCalls
+
+        val cached = repo.cachedCourseMap()
+
+        assertEquals(callsAfterWarmUp, api.mapCalls)
+        assertEquals(false, cached == null)
+        // Not stale: a refresh has not failed, it has not been attempted.
+        assertFalse(cached!!.isStale)
+        assertNull(cached.refreshError)
+    }
+
+    @Test
+    fun `an empty cache asks for nothing and promises nothing`() = runTest {
+        val dao = FakeCourseMapDao()
+        val api = FakeCourseApi()
+
+        val cached = repository(api, dao).cachedCourseMap()
+
+        assertNull(cached)
+        assertEquals(0, api.mapCalls)
+    }
+
     private fun repository(
         api: AndroidCourseApi,
         dao: CourseMapDao,
         token: suspend () -> ApiResult<String> = { ApiResult.Success("access-1") },
         offsetMinutes: Int = 300,
         onSessionExpired: suspend () -> Unit = {},
+        ttsCache: TtsCache? = null,
+        lessonDao: LessonCacheDao? = null,
     ) = CourseRepository(
         api = api,
         accessToken = token,
         dao = dao,
+        lessonDao = lessonDao,
         json = json,
         onSessionExpired = onSessionExpired,
+        ttsCache = ttsCache,
         now = { 1_700_000_000_000L },
         timezoneOffsetMinutes = { offsetMinutes },
     )
+
+    private fun lessonApi(
+        previewHalf: Boolean = false,
+        previewCardLimit: Int = 2,
+        completionAllowed: Boolean = true,
+        failure: Boolean = false,
+    ) = object : FakeCourseApi() {
+        var lessonCalls = 0
+
+        override suspend fun lesson(
+            authorization: String,
+            lessonOrder: Int,
+            accessRef: String,
+        ): Response<CourseLessonResponse> {
+            lessonCalls++
+            if (failure) throw IOException("offline")
+            return Response.success(
+                CourseLessonResponse(
+                    ok = true,
+                    level = "hsk1",
+                    lessonOrder = lessonOrder,
+                    previewHalf = previewHalf,
+                    previewCardLimit = previewCardLimit,
+                    totalCards = 2,
+                    completionAllowed = completionAllowed,
+                    lesson = lessonPayload,
+                )
+            )
+        }
+    }
+
+    private suspend fun CourseRepository.openLesson(order: Int = 1) = lesson(
+        level = "hsk1",
+        lessonOrder = order,
+        language = com.pomp.hskai.core.i18n.AppLanguage.UZBEK,
+    )
+
+    @Test
+    fun `a lesson opened online reopens from disk when the network is gone`() = runTest {
+        val cache = FakeLessonCacheDao()
+        repository(lessonApi(), FakeCourseMapDao(), lessonDao = cache).openLesson()
+        assertEquals(1, cache.rows.size)
+
+        val offline = repository(
+            api = lessonApi(failure = true),
+            dao = FakeCourseMapDao(),
+            lessonDao = cache,
+        )
+
+        val snapshot = (offline.openLesson() as ApiResult.Success).value
+        assertTrue(snapshot.isStale)
+        assertEquals(2, snapshot.lesson.cards.size)
+    }
+
+    /**
+     * The cached copy is a snapshot, never a second source of truth: a lesson
+     * the server last served as a one-card preview must reopen as a one-card
+     * preview, not as the whole deck.
+     */
+    @Test
+    fun `a cached preview stays a preview offline`() = runTest {
+        val cache = FakeLessonCacheDao()
+        repository(
+            api = lessonApi(previewHalf = true, previewCardLimit = 1, completionAllowed = false),
+            dao = FakeCourseMapDao(),
+            lessonDao = cache,
+        ).openLesson()
+
+        val snapshot = (
+            repository(lessonApi(failure = true), FakeCourseMapDao(), lessonDao = cache)
+                .openLesson() as ApiResult.Success
+            ).value
+
+        assertTrue(snapshot.isHalfPreview)
+        assertEquals(1, snapshot.previewCardLimit)
+        assertFalse(snapshot.completionAllowed)
+    }
+
+    /**
+     * Only a request that never got an answer may be answered from disk. A
+     * spent allowance is the server deciding, and the cache must not overrule
+     * it — otherwise yesterday's download becomes a way around today's limit.
+     */
+    @Test
+    fun `a refused lesson is never served from the cache`() = runTest {
+        val cache = FakeLessonCacheDao()
+        repository(lessonApi(), FakeCourseMapDao(), lessonDao = cache).openLesson()
+
+        val refusing = object : FakeCourseApi() {
+            override suspend fun lesson(
+                authorization: String,
+                lessonOrder: Int,
+                accessRef: String,
+            ): Response<CourseLessonResponse> = Response.error(
+                403,
+                """{"error":"free_feature_limit_reached"}""".toResponseBody(),
+            )
+        }
+
+        val result = repository(refusing, FakeCourseMapDao(), lessonDao = cache).openLesson()
+
+        assertTrue(result is ApiResult.Failure)
+        assertFalse((result as ApiResult.Failure).error is ApiError.Offline)
+    }
+
+    @Test
+    fun `an expired session never opens a cached lesson`() = runTest {
+        val cache = FakeLessonCacheDao()
+        repository(lessonApi(), FakeCourseMapDao(), lessonDao = cache).openLesson()
+
+        val result = repository(
+            api = lessonApi(failure = true),
+            dao = FakeCourseMapDao(),
+            token = { ApiResult.Failure(ApiError.SessionExpired) },
+            lessonDao = cache,
+        ).openLesson()
+
+        assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
+    }
+
+    /**
+     * Fetching a lesson spends the learner's daily slot on the server, so a
+     * lesson that was never opened must never be on disk to open offline.
+     */
+    @Test
+    fun `nothing reaches the cache without an opened lesson`() = runTest {
+        val cache = FakeLessonCacheDao()
+        val offline = repository(lessonApi(failure = true), FakeCourseMapDao(), lessonDao = cache)
+
+        val result = offline.openLesson(order = 7)
+
+        assertTrue(result is ApiResult.Failure)
+        assertTrue(cache.rows.isEmpty())
+    }
+
+    @Test
+    fun `a lesson cached under one number does not answer for another`() = runTest {
+        val cache = FakeLessonCacheDao()
+        repository(lessonApi(), FakeCourseMapDao(), lessonDao = cache).openLesson(order = 1)
+
+        val result = repository(lessonApi(failure = true), FakeCourseMapDao(), lessonDao = cache)
+            .openLesson(order = 2)
+
+        assertTrue(result is ApiResult.Failure)
+    }
+
+    @Test
+    fun `logging out drops cached lessons with everything else`() = runTest {
+        val cache = FakeLessonCacheDao()
+        val repository = repository(lessonApi(), FakeCourseMapDao(), lessonDao = cache)
+        repository.openLesson()
+
+        repository.clearCache()
+
+        assertEquals(1, cache.clearCalls)
+        assertTrue(cache.rows.isEmpty())
+    }
+
+    @Test
+    fun `the same phrase is fetched once and replayed from the cache`() = runTest {
+        val api = FakeCourseApi()
+        val cache = FakeTtsCache()
+        val repository = repository(api, FakeCourseMapDao(), ttsCache = cache)
+
+        val first = repository.ttsAudio("\u4f60\u597d")
+        val second = repository.ttsAudio("\u4f60\u597d")
+
+        assertEquals("audio", String((first as ApiResult.Success).value))
+        assertEquals("audio", String((second as ApiResult.Success).value))
+        assertEquals(1, api.ttsCalls)
+        assertEquals(1, cache.entries.size)
+    }
+
+    @Test
+    fun `cached audio plays even when the session can no longer be renewed`() = runTest {
+        val api = FakeCourseApi()
+        val cache = FakeTtsCache()
+        repository(api, FakeCourseMapDao(), ttsCache = cache).ttsAudio("\u4f60\u597d")
+
+        val offline = repository(
+            api = api,
+            dao = FakeCourseMapDao(),
+            token = { ApiResult.Failure(ApiError.SessionExpired) },
+            ttsCache = cache,
+        )
+
+        assertEquals("audio", String((offline.ttsAudio("\u4f60\u597d") as ApiResult.Success).value))
+        assertEquals(1, api.ttsCalls)
+    }
+
+    @Test
+    fun `a phrase with no chinese is never fetched or cached`() = runTest {
+        val api = FakeCourseApi()
+        val cache = FakeTtsCache()
+
+        val result = repository(api, FakeCourseMapDao(), ttsCache = cache).ttsAudio("salom")
+
+        assertTrue(result is ApiResult.Failure)
+        assertEquals(0, api.ttsCalls)
+        assertTrue(cache.entries.isEmpty())
+    }
+
+    @Test
+    fun `clearing the cache drops downloaded audio too`() = runTest {
+        val cache = FakeTtsCache()
+        val repository = repository(FakeCourseApi(), FakeCourseMapDao(), ttsCache = cache)
+        repository.ttsAudio("\u4f60\u597d")
+
+        repository.clearCache()
+
+        assertEquals(1, cache.cleared)
+        assertTrue(cache.entries.isEmpty())
+    }
 
     @Test
     fun `a successful fetch is fresh and gets cached`() = runTest {

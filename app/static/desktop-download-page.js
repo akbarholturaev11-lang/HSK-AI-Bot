@@ -1,27 +1,59 @@
 (function () {
   "use strict";
 
-  var STATUS_ENDPOINT = "/api/v3/desktop-download/public-status";
+  var STATUS_ENDPOINT = "/api/v3/apps/public-status";
   var params = new URLSearchParams(window.location.search || "");
-  var supportedPlatforms = ["macos", "windows"];
+  var supportedPlatforms = ["ios", "macos", "android", "windows"];
+  // iOS has no build of its own. It is offered because an iPhone owner
+  // deserves an answer, and the answer is the Mini App inside Telegram.
+  var BOT_URL = "https://t.me/darsi_chini_bot";
+  // The copy keys are prefixed per platform; `macos` is historically "mac".
+  var COPY_KEY = { ios: "ios", macos: "mac", android: "android", windows: "windows" };
+
+  function forPlatform(localized, suffix) {
+    return localized[COPY_KEY[state.platform] + suffix];
+  }
   var supportedLanguages = ["uz", "ru", "tj"];
 
   var COPY = {
     uz: {
+      iosSecurityTitle: "Hech narsa o‘rnatilmaydi",
+      androidSecurityTitle: "O‘rnatishda ogohlantirish chiqishi mumkin",
+      macSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
+      windowsSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
+      iosTitle: "iPhone va iPad uchun",
+      iosDownload: "Telegramda ochish",
+      iosStatus: "iOS uchun alohida ilova hozircha yo‘q — Telegram ichidagi Mini App to‘liq ishlaydi.",
+      iosSecurity: "Mini App Telegram ichida ochiladi. Hech narsa o‘rnatilmaydi, hisobingiz va progressingiz o‘sha yerda qoladi.",
+      iosSteps: [
+        ["Telegramni oching", "Yuqoridagi tugma botni ochadi."],
+        ["Kursni boshlang", "Mini App darslar, mashq va AI yordamchini to‘liq beradi."],
+        ["Alohida ilova kutmang", "iOS uchun ilova tayyor bo‘lganda shu sahifada paydo bo‘ladi."],
+      ],
+      androidTitle: "Android uchun HSK AI",
+      androidDownload: "APK yuklab olish",
+      androidSecurity: "Android «noma’lum manbalar» haqida ogohlantirishi mumkin: ruxsat bering va davom eting. Bu — bizning rasmiy faylimiz.",
+      androidSteps: [
+        ["APK faylni yuklang", "Yuqoridagi tugma faylni telefoningizga saqlaydi."],
+        ["Faylni oching va o‘rnating", "Yuklangan faylni bosing → «O‘rnatish»."],
+        ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."],
+      ],
+      allTitle: "Barcha yuklamalar",
+      allLead: "Har bir qurilma uchun oxirgi versiya.",
+      allUnavailable: "hali chiqarilmagan",
       skip: "Yuklashga o‘tish",
-      brandNote: "Kompyuter ilovasi",
+      brandNote: "Ilovalar",
       eyebrow: "Kurs · progress · AI yordamchi",
-      title: "Xitoy tilini katta ekranda davom ettiring.",
-      lead: "Telegramdagi hisobingiz, obunangiz va dars natijalaringiz shu ilovada ham ishlaydi.",
+      title: "Yuklab olish",
+      lead: "Qurilmangizni tanlang",
       featureCourse: "Bir xil kurs va progress",
       featureAi: "Yon paneldagi AI yordamchi",
       featureUpdate: "Avtomatik yangilanish",
       readyLabel: "Tayyor installer",
       freeDownload: "Bepul yuklash",
-      selectTitle: "Mac yoki Windowsni tanlang",
-      selectBody:
-        "Kompyuteringizda qaysi tizim ishlashini tanlagach, mos DMG yoki EXE ko‘rsatiladi.",
-      selectDownload: "Avval platformani tanlang",
+      selectTitle: "Qurilmangizni tanlang",
+      selectBody: "Qurilmangizni tanlang — mos fayl yoki havola ko‘rsatiladi.",
+      selectDownload: "Avval qurilmangizni tanlang",
       loading: "Tayyorlanmoqda…",
       checking: "Mos versiya tekshirilmoqda.",
       unavailable: "Bu platforma uchun installer hali chiqarilmagan.",
@@ -99,20 +131,43 @@
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
+      iosSecurityTitle: "Ничего устанавливать не нужно",
+      androidSecurityTitle: "При установке может появиться предупреждение",
+      macSecurityTitle: "При первом запуске может появиться предупреждение",
+      windowsSecurityTitle: "При первом запуске может появиться предупреждение",
+      iosTitle: "Для iPhone и iPad",
+      iosDownload: "Открыть в Telegram",
+      iosStatus: "Отдельного приложения для iOS пока нет — Mini App в Telegram работает полностью.",
+      iosSecurity: "Mini App открывается внутри Telegram. Ничего устанавливать не нужно, аккаунт и прогресс остаются там же.",
+      iosSteps: [
+        ["Откройте Telegram", "Кнопка выше открывает бота."],
+        ["Начните курс", "Mini App даёт уроки, практику и AI-помощника полностью."],
+        ["Отдельного приложения ждать не нужно", "Когда приложение для iOS будет готово, оно появится на этой странице."],
+      ],
+      androidTitle: "HSK AI для Android",
+      androidDownload: "Скачать APK",
+      androidSecurity: "Android может предупредить о «неизвестных источниках»: разрешите и продолжите. Это наш официальный файл.",
+      androidSteps: [
+        ["Скачайте APK", "Кнопка выше сохранит файл на телефон."],
+        ["Откройте файл и установите", "Нажмите на скачанный файл → «Установить»."],
+        ["Подключите аккаунт Telegram", "Подтвердите код из приложения через Telegram. Подписка и прогресс придут автоматически."],
+      ],
+      allTitle: "Все загрузки",
+      allLead: "Последняя версия для каждого устройства.",
+      allUnavailable: "ещё не выпущено",
       skip: "Перейти к загрузке",
-      brandNote: "Приложение для компьютера",
+      brandNote: "Приложения",
       eyebrow: "Курс · прогресс · AI-помощник",
-      title: "Продолжайте китайский на большом экране.",
-      lead: "Ваш Telegram-аккаунт, подписка и результаты уроков работают и в приложении.",
+      title: "Загрузка",
+      lead: "Выберите устройство",
       featureCourse: "Единый курс и прогресс",
       featureAi: "AI-помощник в боковой панели",
       featureUpdate: "Автоматические обновления",
       readyLabel: "Установщик готов",
       freeDownload: "Бесплатная загрузка",
-      selectTitle: "Выберите Mac или Windows",
-      selectBody:
-        "После выбора системы компьютера появится подходящий DMG или EXE.",
-      selectDownload: "Сначала выберите платформу",
+      selectTitle: "Выберите устройство",
+      selectBody: "Выберите устройство — покажем подходящий файл или ссылку.",
+      selectDownload: "Сначала выберите устройство",
       loading: "Подготавливаем…",
       checking: "Проверяем подходящую версию.",
       unavailable: "Установщик для этой платформы ещё не опубликован.",
@@ -190,20 +245,43 @@
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
+      iosSecurityTitle: "Ҳеҷ чиз насб намешавад",
+      androidSecurityTitle: "Ҳангоми насб огоҳӣ пайдо шуда метавонад",
+      macSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
+      windowsSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
+      iosTitle: "Барои iPhone ва iPad",
+      iosDownload: "Дар Telegram кушодан",
+      iosStatus: "Барномаи алоҳида барои iOS ҳанӯз нест — Mini App дар Telegram пурра кор мекунад.",
+      iosSecurity: "Mini App дар дохили Telegram кушода мешавад. Ҳеҷ чиз насб намешавад, ҳисоб ва пешрафти шумо ҳамон ҷо мемонад.",
+      iosSteps: [
+        ["Telegram-ро кушоед", "Тугмаи боло ботро мекушояд."],
+        ["Курсро оғоз кунед", "Mini App дарсҳо, машқ ва ёрдамчии AI-ро пурра медиҳад."],
+        ["Барномаи алоҳидаро интизор нашавед", "Вақте барнома барои iOS тайёр шавад, дар ҳамин саҳифа пайдо мешавад."],
+      ],
+      androidTitle: "HSK AI барои Android",
+      androidDownload: "APK-ро боргирӣ кунед",
+      androidSecurity: "Android метавонад дар бораи «манбаъҳои номаълум» огоҳӣ диҳад: иҷозат диҳед ва идома диҳед. Ин файли расмии мост.",
+      androidSteps: [
+        ["APK-ро боргирӣ кунед", "Тугмаи боло файлро ба телефони шумо мегузорад."],
+        ["Файлро кушоед ва насб кунед", "Файли боргиришударо пахш кунед → «Насб кардан»."],
+        ["Ҳисоби Telegram-ро пайваст кунед", "Рамзи барномаро тавассути Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."],
+      ],
+      allTitle: "Ҳамаи боргириҳо",
+      allLead: "Версияи охирин барои ҳар дастгоҳ.",
+      allUnavailable: "ҳанӯз нашр нашудааст",
       skip: "Гузаштан ба боргирӣ",
-      brandNote: "Барномаи компютерӣ",
+      brandNote: "Барномаҳо",
       eyebrow: "Курс · пешрафт · ёвари AI",
-      title: "Омӯзиши забони чиниро дар экрани калон идома диҳед.",
-      lead: "Ҳисоби Telegram, обуна ва натиҷаҳои дарсҳо дар барнома ҳам кор мекунанд.",
+      title: "Боргирӣ",
+      lead: "Дастгоҳи худро интихоб кунед",
       featureCourse: "Курс ва пешрафти умумӣ",
       featureAi: "Ёвари AI дар панели паҳлӯӣ",
       featureUpdate: "Навсозии автоматӣ",
       readyLabel: "Насбкунанда омода",
       freeDownload: "Боргирии ройгон",
-      selectTitle: "Mac ё Windows-ро интихоб кунед",
-      selectBody:
-        "Баъди интихоби системаи компютер DMG ё EXE-и мувофиқ нишон дода мешавад.",
-      selectDownload: "Аввал платформаро интихоб кунед",
+      selectTitle: "Дастгоҳи худро интихоб кунед",
+      selectBody: "Дастгоҳи худро интихоб кунед — файл ё пайванди мувофиқ нишон дода мешавад.",
+      selectDownload: "Аввал дастгоҳро интихоб кунед",
       loading: "Омода мешавад…",
       checking: "Версияи мувофиқ санҷида мешавад.",
       unavailable: "Насбкунандаи ин платформа ҳоло нашр нашудааст.",
@@ -299,6 +377,11 @@
   }
 
   function detectedPlatform() {
+    var agent = String(navigator.userAgent || "");
+    // A phone is no longer a dead end: it gets the platform it is.
+    if (/Android/i.test(agent)) return "android";
+    if (/iPhone|iPod/i.test(agent)) return "ios";
+    if (/iPad/i.test(agent)) return "ios";
     if (isMobile()) return "";
     var source = String(
       (navigator.userAgentData && navigator.userAgentData.platform) ||
@@ -357,38 +440,22 @@
     renderPlatform();
   }
 
-  function releaseAvailable(platform) {
-    return Boolean(
-      state.release &&
-        state.release.enabled &&
-        state.release.platforms &&
-        state.release.platforms[platform] &&
-        state.release.downloads &&
-        state.release.downloads[platform]
+  function platformEntry(platform) {
+    return (
+      (state.release && state.release.platforms && state.release.platforms[platform]) || null
     );
+  }
+
+  function releaseAvailable(platform) {
+    var entry = platformEntry(platform);
+    return Boolean(entry && entry.available && entry.download);
   }
 
   function transferUrl(platform) {
     if (!releaseAvailable(platform)) return "";
-    var base = String(state.release.downloads[platform] || "");
+    var entry = platformEntry(platform);
     try {
-      var url = new URL(base, window.location.origin);
-      var localHttp =
-        url.protocol === "http:" &&
-        (url.hostname === "localhost" ||
-          url.hostname === "127.0.0.1" ||
-          url.hostname === "hsk-ai.local");
-      if (
-        (url.protocol !== "https:" && !localHttp) ||
-        url.username ||
-        url.password ||
-        url.pathname !== "/downloads/" + platform
-      ) {
-        return "";
-      }
-      url.search = "";
-      url.hash = "";
-      return url.toString();
+      return new URL(String(entry.download), window.location.origin).toString();
     } catch (error) {
       return "";
     }
@@ -396,30 +463,39 @@
 
   function downloadUrl(platform) {
     var base = transferUrl(platform);
-    if (!base) return "";
+    // A learner who arrived from the Mini App carries a request token, and
+    // the download is attributed by it. Losing it does not break the
+    // download — it silently empties the funnel it feeds.
     var token = validRequestToken();
-    if (!token) return base;
-    var url = new URL(base, window.location.origin);
-    url.searchParams.set("request", token);
-    return url.toString();
+    if (!base || !token) return base;
+    try {
+      var url = new URL(base, window.location.origin);
+      url.searchParams.set("request", token);
+      return url.toString();
+    } catch (error) {
+      return base;
+    }
   }
 
   function renderSteps() {
     if (supportedPlatforms.indexOf(state.platform) < 0) return;
-    var steps =
-      state.platform === "macos" ? copy().macSteps : copy().windowsSteps;
+    var steps = forPlatform(copy(), "Steps");
+    if (!steps) return;
     ["one", "two", "three"].forEach(function (key, index) {
-      setText('[data-step-title="' + key + '"]', steps[index][0]);
-      setText('[data-step-body="' + key + '"]', steps[index][1]);
+      var step = steps[index] || ["", ""];
+      setText('[data-step-title="' + key + '"]', step[0]);
+      setText('[data-step-body="' + key + '"]', step[1]);
     });
   }
 
   function renderQuickGuide() {
     var localized = copy();
-    var steps =
-      state.platform === "macos"
-        ? localized.macQuickSteps
-        : localized.windowsQuickSteps;
+    var steps = forPlatform(localized, "QuickSteps");
+    if (!steps) {
+      var dialog = document.querySelector("[data-quick-guide]");
+      if (dialog && dialog.open) dialog.close();
+      return;
+    }
     var guide = document.querySelector("[data-quick-guide]");
     var platform = document.querySelector("[data-quick-guide-platform]");
     var progress = document.querySelector("[data-quick-guide-progress]");
@@ -514,24 +590,12 @@
       return;
     }
 
-    setText(
-      "[data-download-title]",
-      state.platform === "macos"
-        ? localized.macTitle
-        : localized.windowsTitle
-    );
-    setText(
-      "[data-download-label]",
-      state.platform === "macos"
-        ? localized.macDownload
-        : localized.windowsDownload
-    );
-    setText(
-      "[data-security-copy]",
-      state.platform === "macos"
-        ? localized.macSecurity
-        : localized.windowsSecurity
-    );
+    setText("[data-download-title]", forPlatform(localized, "Title"));
+    setText("[data-download-label]", forPlatform(localized, "Download"));
+    setText("[data-security-copy]", forPlatform(localized, "Security"));
+    // The heading is per platform too: on iOS nothing is installed, so
+    // "a warning may appear on first open" would simply be untrue.
+    setText("#security-title", forPlatform(localized, "SecurityTitle"));
     renderSteps();
     renderInstallerStage();
     renderQuickGuide();
@@ -539,6 +603,14 @@
   }
 
   function renderTransfer() {
+    // Only the desktop installers are unusable on the phone that opened this
+    // page. An APK is not, and iOS has nothing to transfer at all.
+    var block = document.querySelector("[data-mobile-transfer]");
+    if (block) {
+      var desktopChoice =
+        state.platform === "macos" || state.platform === "windows";
+      block.hidden = !(isMobile() && desktopChoice);
+    }
     var url = transferUrl(state.platform);
     var shareButton = document.querySelector("[data-share-link]");
     var copyButton = document.querySelector("[data-copy-link]");
@@ -557,22 +629,33 @@
     var button = document.querySelector("[data-download-button]");
     var status = document.querySelector("[data-download-status]");
     var selected = supportedPlatforms.indexOf(state.platform) >= 0;
-    var version =
-      selected &&
-      state.release &&
-      state.release.versions &&
-      state.release.versions[state.platform];
+    var entry = selected ? platformEntry(state.platform) : null;
 
     renderTransfer();
+
+    // iOS has nothing to download and never will until there is a build. It
+    // gets the truth and a working way in, not a disabled button.
+    if (state.platform === "ios") {
+      setText("[data-version]", "");
+      setText("[data-published]", "");
+      if (!button || !status) return;
+      button.href = BOT_URL;
+      button.removeAttribute("aria-disabled");
+      button.dataset.action = "open";
+      status.dataset.state = "ready";
+      status.lastElementChild.textContent = localized.iosStatus;
+      return;
+    }
 
     setText(
       "[data-version]",
       !selected
-        ? localized.selectBody
-        : version
-        ? localized.version.replace("{version}", String(version))
+        ? ""
+        : entry && entry.version
+        ? localized.version.replace("{version}", String(entry.version))
         : localized.checking
     );
+    setText("[data-published]", (selected && entry && entry.published) || "");
     if (!button || !status) return;
 
     if (!selected) {
@@ -596,6 +679,7 @@
 
     button.href = url;
     button.removeAttribute("aria-disabled");
+    button.dataset.action = "download";
     status.dataset.state = "ready";
     status.lastElementChild.textContent = localized.ready;
   }
@@ -797,7 +881,8 @@
   function init() {
     bindEvents();
     var mobileTransfer = document.querySelector("[data-mobile-transfer]");
-    if (mobileTransfer) mobileTransfer.hidden = !isMobile();
+    // Hidden until a platform is chosen; renderTransfer decides from there.
+    if (mobileTransfer) mobileTransfer.hidden = true;
     applyLanguage();
     loadRelease();
   }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108" role="img" aria-labelledby="title description">
+  <title id="title">HSK AI tone seal</title>
+  <desc id="description">A speech seal containing the four Mandarin tone trajectories.</desc>
+  <rect width="108" height="108" fill="#E04A40"/>
+  <path d="M31 25.5H77C81.5 25.5 83.5 29 83.5 33.5V69.5C83.5 74.5 81 77.5 76.5 77.5H63L54 85.5 55 77.5H31C26.5 77.5 24.5 74.5 24.5 69.5V33.5C24.5 29 26.5 25.5 31 25.5Z" fill="none" stroke="#FDF9F0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M35 40C47 40 60 40 74 40" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
+  <path d="M35 51C45 56 57 55 70 44.5" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
+  <path d="M35 59C47 58 55 65 64 65 69 65 73 61 77 57.5" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
+  <path d="M35 69C48 69 61 72 75 72.5" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
+  <circle cx="76.5" cy="34.25" r="3.25" fill="#E9A916"/>
+</svg>

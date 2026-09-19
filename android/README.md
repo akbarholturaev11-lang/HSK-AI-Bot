@@ -97,6 +97,121 @@ or the environment variables `POMP_ANDROID_KEYSTORE_FILE`,
 When none are present the release build is produced unsigned, so a public
 release stays fail-closed rather than silently shipping an unsignable bundle.
 
+The keystore itself lives outside the repository (`~/.pomp-hskai/`) so that a
+clean checkout or a `git clean -fdx` cannot destroy it. Back it up: every
+future update — through the bot today, through Play later — must be signed with
+the same key, and a direct-install APK signed by a different key will not
+upgrade over the installed one.
+
+## Distribution: the bot hands out the APK
+
+There is no Play listing yet. The whole channel is the Telegram bot: the admin
+uploads one signed `direct` release APK, Telegram keeps the bytes, and every
+learner afterwards receives that same `file_id`. Nothing of ours serves the
+download and there is no second copy to drift out of sync with the first.
+
+```bash
+cd android && ./gradlew assembleDirectRelease
+# → app/build/outputs/apk/direct/release/hsk-ai-<version>-<code>-direct-release.apk
+```
+
+Then, in the bot: **Admin panel → 📱 Android ilova → ⬆️ Yangi APK yuklash**,
+send the file as a *document*, confirm the version, publish. Learners reach it
+with `/android` or the **📱 Android ilova** button in their profile.
+**🚫 Tarqatishni to'xtatish** stops the handout immediately — one settings
+write, no deploy.
+
+The artifact name is load-bearing. `archivesBaseName` makes Gradle emit
+`hsk-ai-<versionName>-<versionCode>-<flavour>-<buildType>.apk`, which is the
+only place the version survives the trip through Telegram — the bot never opens
+the APK. It is also how the upload step refuses a `play` or `debug` build:
+both install perfectly and then strand whoever installed them, the first with
+no way to pay and the second with an application id that no real release can
+ever update.
+
+Server side: `app/services/android_release_service.py` (the stored release),
+`app/bot/handlers/admin_android.py` (publishing), `app/bot/handlers/android_app.py`
+(handing it over). The published release lives in one `bot_settings` row, so
+there is no migration and withdrawing a bad build is a single write.
+
+## Cutting a release
+
+`.github/workflows/android-release.yml`, run by hand from the Actions tab. It
+runs the same static checks and tests CI does, builds the signed `direct`
+release, uploads it to the same Cloudflare R2 bucket the desktop installers
+live in under `android/v<version>/`, and rewrites `android/latest.json`.
+
+That manifest is what makes a release take effect. With
+`ANDROID_RELEASE_MANIFEST_URL` set, the server reads the current build from it
+and nobody pastes a link per release — the same arrangement `desktop/latest.json`
+has had since the desktop client shipped. Leave the setting blank and the
+manual bot-panel flow is used instead; it still works and is the fallback
+whenever the manifest cannot be read.
+
+Telegram's copy of the APK follows on its own. The first learner who asks after
+a release is served straight from storage, and what Telegram hands back is
+cached against that version code, so everyone after them gets a `file_id`. A
+`file_id` from an older build is never attached to a newer version — that would
+announce 1.2.0 and deliver 1.1.0.
+
+It refuses to publish an APK signed by anything but the expected key: the
+certificate SHA-256 is pinned in the workflow, because an APK signed by a
+different key cannot update any app anyone already installed. It also refuses
+to overwrite a published key with different bytes — re-running the same
+release is fine, silently replacing one is not.
+
+Secrets it needs, beyond the `R2_*` ones the desktop release already uses:
+
+| Secret | What it is |
+|---|---|
+| `POMP_ANDROID_KEYSTORE_BASE64` | `base64 -i release.jks` of the keystore |
+| `POMP_ANDROID_KEYSTORE_PASSWORD` | its password |
+| `POMP_ANDROID_KEY_ALIAS` | `pomp-hskai` |
+| `POMP_ANDROID_KEY_PASSWORD` | the key password |
+
+Uploading the APK to the bot is still a manual step — Telegram holds the file
+itself, and only an admin chat can hand it over.
+
+## In-app updates, and why only one flavour has them
+
+Android cannot update a sideloaded app silently. The system always shows its
+own install confirmation, so the `direct` build's update is one tap and then
+that dialog — never a background swap the way the Tauri desktop client does it.
+
+The Play build has none of it. Google Play forbids an app it distributes from
+updating itself by any other route, so this is a source set rather than a
+runtime flag: `src/direct` holds the card, the downloader,
+`REQUEST_INSTALL_PACKAGES` and the `FileProvider`, and `src/play` holds a
+composable that renders nothing. The permission and the provider are simply
+not in the Play APK — check with
+`aapt2 dump badging <apk> | grep REQUEST_INSTALL_PACKAGES`.
+
+How it works:
+
+1. The profile screen asks `GET /api/v3/android-update/check?version_code=N`.
+   The answer is 204 unless a newer build with a download link is published —
+   no release, no link, no version code, or a caller already current all
+   collapse to the same empty answer. The release comes from the manifest when
+   one is configured, and from the bot panel otherwise.
+2. A card appears in the profile, and nowhere else: an update is not urgent
+   enough to stand between someone and the lesson they opened the app for.
+3. Tapping downloads the APK to `cacheDir/updates/update.apk`, checks the size
+   against what the server announced, and opens the system installer.
+
+Android refuses an update signed by a different key, so a swapped file cannot
+replace the app with something else. The size check catches the one thing that
+signature check cannot: a release uploaded to the bot and to storage as two
+different builds.
+
+Publishing an update is the same panel as the APK itself: **Admin panel → 📱
+Android ilova → 🔗 Yangilanish havolasi**, pasting the https link to the APK in
+storage. Publishing a new APK **clears** the previous link on purpose — a new
+version must never be advertised with the old file behind it.
+
+Every release must raise `versionCode` in `android/app/build.gradle.kts`.
+Nothing compares version names; an update nobody's app can see is the failure
+mode of forgetting.
+
 ## Localisation
 
 Backend language codes are `uz` / `ru` / `tj`. Android resource qualifiers are

@@ -43,6 +43,7 @@ class TestCentreLayoutTest {
                     onAnswerReview = {},
                     onAdvanceReview = {},
                     onResetReview = {},
+                    onSpeakReview = {},
                     onStartExam = {},
                     onOpenDrill = {},
                     onSelectExamOption = {},

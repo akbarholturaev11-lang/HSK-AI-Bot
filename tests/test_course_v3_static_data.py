@@ -1,3 +1,4 @@
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -716,10 +717,17 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # ko'rinishini belgilaydi (obuna tugmasi bilanmi), joyni esa
         # alohida maydon belgilaydi.
         self.assertIn('value="dars_yakuni">👑 Obuna taklifi bilan', html)
-        self.assertIn('noBtn=t==="odiy"', html)
-        self.assertIn('t==="dars_yakuni"?"Tashqi link knopkasi"', html)
-        self.assertIn('t==="dars_yakuni" ? "Tashqi havola (ixtiyoriy)"', html)
-        self.assertIn('fd.append("button_text",adType==="odiy"?"":', html)
+        # Qaysi turga qaysi maydon kerakligi endi bitta jadvalda turadi va
+        # ro'yxatda yo'q maydon formadan butunlay yo'qoladi. Ilgari u
+        # o'chirilgan holda ko'rinib turardi — admin uni ko'rar, lekin nega
+        # to'ldira olmasligini tushunmasdi.
+        self.assertIn("const CA_TYPE_SPEC={", html)
+        self.assertIn('buttonLabel:"Tashqi link knopkasi"', html)
+        self.assertIn('linkLabel:"Tashqi havola (ixtiyoriy)"', html)
+        self.assertIn("el.hidden=on.indexOf(el.dataset.caField)<0", html)
+        # Yashiringan maydon yuborilmaydi ham: ko'rinmaydigan katak jimgina
+        # saqlanib ketmasin.
+        self.assertIn('caFields.indexOf("button")<0?""', html)
 
     def test_desktop_installer_flow_is_direct_and_available_on_all_ad_surfaces(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -746,7 +754,19 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("cleanTransferUrl", download)
         self.assertNotIn("message_sent", download)
         self.assertNotIn("close_mini_app", download)
-        self.assertNotIn("app.close()", download)
+        # The desktop installers still never close the Mini App: the file is
+        # downloaded in a browser and the learner stays where they were. The
+        # single close belongs to Android, whose file lands in the chat this
+        # Mini App is sitting on top of.
+        self.assertEqual(download.count("app.close()"), 1)
+        self.assertEqual(download.count("closeMiniApp();"), 1)
+        self.assertIn("function closeMiniApp()", download)
+        self.assertIn("sendAndroidToChat(source);", download)
+        self.assertIn('event: "android_apk_to_chat"', download)
+        # Nothing is opened for Android any more, so the transfer URL that fed
+        # that link is gone along with the requirement for one.
+        self.assertNotIn("transferUrls.android", download)
+        self.assertIn("return Boolean(state.platforms.android);", download)
 
         self.assertIn('id="pomp-desktop-profile-root"', course)
         self.assertIn('id="ad-desktop"', course)
@@ -754,7 +774,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Desktop promosi endi dars yakunidagi modalda.
         self.assertIn("mountAdPromoTrigger", ads)
         self.assertIn('<div class="caa-desktop" hidden></div>', ads)
-        self.assertIn('var desktopPlacement=isLessonEnd()?"lesson_end_ad"', ads)
+        # Joy shart bilan hisoblanmaydi: blok `if(isLessonEnd())` ning
+        # ichida, ya'ni `screen_center_ad` ga tushadigan tarmoq hech qachon
+        # ishlamasdi va olib tashlandi.
+        self.assertIn(
+            'mountAdPromoTrigger(e.promo,{placement:"lesson_end_ad"})', ads
+        )
+        self.assertNotIn("screen_center_ad\"", ads)
         self.assertNotIn('<button class="caa-desktop"', ads)
         self.assertLess(ads.index('caa-pay"></button>'), ads.index('caa-cont"></button>'))
         self.assertLess(
@@ -765,7 +791,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function shouldShowAdPromoEntry()", download)
         self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
-        self.assertIn('var APP_PROMO_PLATFORMS = ["macos", "windows"]', download)
+        # Android qo'shildi; iOS'ga alohida ilova yo'q, shuning uchun u yo'q.
+        self.assertIn(
+            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android"]', download
+        )
         self.assertIn("buildOsButton(platform, source)", download)
         self.assertNotIn('buildOsButton("android", source)', download)
         self.assertNotIn('buildOsButton("ios", source)', download)
@@ -794,10 +823,15 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn('element("span", "pdd-seal", "桌")', download)
         self.assertNotIn('element("span", "pdd-laptop-seal", "桌")', download)
         self.assertNotIn("<script>", landing)
-        self.assertIn('"/api/v3/desktop-download/public-status"', landing_js)
+        # The page asks one endpoint for every platform now, not the desktop
+        # pair alone: iOS, macOS, Android and Windows are all offered on it.
+        self.assertIn('"/api/v3/apps/public-status"', landing_js)
         self.assertIn('url.searchParams.set("request", token)', landing_js)
 
+        # `course-v3.html` ham shu ro'yxatda: versiyasi qolgan sahifalardan
+        # orqada qolsa, aynan asosiy ekranda eski skript keshda qolardi.
         for page in (
+            "course-v3.html",
             "course_v3_memorize.html",
             "course_v3_mistakes.html",
             "course_v3_pronunciation.html",
@@ -806,18 +840,21 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260812-3", html, page
+                "/course_v3_data/desktop-download.css?v=20260918-2", html, page
             )
+            # Ikkala skript `immutable`, bir yillik cache bilan beriladi
+            # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
+            # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260812-3", html, page
+                "/course_v3_data/desktop-download.js?v=20260918-2", html, page
             )
-            # ads.js `immutable` cache bilan beriladi — surat reklamasi
-            # qo'shilganda versiya ko'tarildi, aks holda eski pleyer keshda qoladi.
-            self.assertIn("/course_v3_data/ads.js?v=20260812-5", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260918-1", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         download = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+        download_css = (BASE / "desktop-download.css").read_text(encoding="utf-8")
+        main = Path("app/main.py").read_text(encoding="utf-8")
 
         goal_position = course.index("+'<div class=\"pgoal\"")
         desktop_position = course.index(
@@ -827,7 +864,21 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertLess(goal_position, desktop_position)
         self.assertLess(desktop_position, calendar_position)
 
-        self.assertEqual(download.count("mobileCardHint:"), 3)
+        # The card is no longer the desktop client's alone: one button under
+        # the platform pair opens the page that carries every client and picks
+        # the device itself. The AirDrop hint went with the old framing — the
+        # destination sheet still explains the transfer where it matters.
+        self.assertEqual(download.count("appsPage:"), 3)
+        self.assertNotIn("mobileCardHint", download)
+        self.assertNotIn("pdd-mobile-hint", download)
+        self.assertIn("actions.appendChild(buildAppsPageButton())", download)
+        # Every offered platform on one line; the count drives the grid.
+        self.assertIn('actions.dataset.pddColumns = String(shown || 1)', download)
+        self.assertIn('.pdd-actions[data-pdd-columns="3"]', download_css)
+        self.assertIn('new URL("/desktop-download", window.location.origin)', download)
+        self.assertIn('url.searchParams.set("lang", language())', download)
+        # No platform is pinned: the page reads the device it was opened on.
+        self.assertNotIn('searchParams.set("platform"', download)
         self.assertEqual(download.count("previewTranslation:"), 3)
         self.assertIn('main.appendChild(buildProductPreview("card"))', download)
         self.assertIn("main.appendChild(buildBenefits(true))", download)
@@ -846,6 +897,15 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('state.availabilityError ? " is-error" : ""', download)
         self.assertIn("loadAvailability();", download)
 
+        # Android is the one platform whose file never leaves Telegram: the
+        # Mini App asks the bot for it rather than opening anything, so the
+        # server side of that request has to exist.
+        self.assertIn('if event == "android_apk_to_chat":', main)
+        self.assertIn("sent = await send_android_app(", main)
+        self.assertIn('return {"ok": False, "error": "android_apk_send_failed"}', main)
+        self.assertEqual(download.count("sendingToChat:"), 3)
+        self.assertEqual(download.count("chatSendFailed:"), 3)
+
     def test_admin_has_app_promo_controls(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
         main = Path("app/main.py").read_text(encoding="utf-8")
@@ -856,7 +916,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("App reklamasi", html)
         self.assertIn('appPromoChipHtml("platform","macos","MacBook"', html)
         self.assertIn('appPromoChipHtml("platform","windows","Windows"', html)
-        self.assertNotIn('appPromoChipHtml("platform","android","Android"', html)
+        # Android endi ko'rsatiladi, ya'ni admin uni yoqib-o'chira olishi kerak.
+        self.assertIn('appPromoChipHtml("platform","android","Android"', html)
         self.assertNotIn('appPromoChipHtml("platform","ios","Apple"', html)
         self.assertIn("data-app-promo-media-upload", html)
         self.assertIn("/api/admin-miniapp/desktop-promo/media", html)
@@ -864,8 +925,104 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("/uploads/app_promo/", main)
         self.assertIn("desktop_app_promo", main)
         self.assertIn("daily_limit=3", service)
-        self.assertIn('"android": False', service)
+        # Android chiqarilgan — standart holatda YOQILGAN. iOS'ga alohida ilova
+        # yo'q, shuning uchun o'chiq: o'lik tugma chiqmasligi kerak.
+        self.assertIn('"android": True', service)
         self.assertIn('"ios": False', service)
+        # Admin tanlovini hech kim bekor qilmasin: bu qator har saqlashda
+        # Android'ni o'chirib, chipni ishlamaydigan holga keltirgan edi.
+        self.assertNotIn("platforms.android=false", html)
+
+
+class DesktopPromoCooldownIsPerPlacementTests(unittest.TestCase):
+    """Bir joyning promosi boshqasining navbatini yeb qo'ymasin.
+
+    Klientda bitta `promo_seen` kaliti bor edi va uni HAR QANDAY promo
+    yozardi. "Mini App ochilganda" kuniga 3 martagacha chiqadi, ya'ni u
+    kalitni doim yangilab turardi va dars yakunidagi promo 14 kunlik
+    sovishdan hech qachon chiqa olmasdi.
+    """
+
+    def setUp(self):
+        self.js = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+
+    def test_the_cooldown_key_carries_the_placement(self):
+        self.assertIn('storeNumber("promo_seen:" + source, Date.now())', self.js)
+        self.assertIn('keys.push("promo_seen:" + source)', self.js)
+
+    def test_the_check_is_told_which_placement_it_is_for(self):
+        self.assertIn("function hasLocalPromoCooldown(source)", self.js)
+        self.assertIn("hasLocalPromoCooldown(source)", self.js)
+
+    def test_an_answered_download_still_silences_every_placement(self):
+        # Odam yuklab olishni allaqachon so'ragan bo'lsa, uni hech qayerda
+        # qayta bezovta qilmaymiz — bu kalit UMUMIY qoladi.
+        self.assertIn('var keys = ["download_requested"];', self.js)
+
+
+class SessionSlotGoesToTheLessonEndPromoTests(unittest.TestCase):
+    """Sessiyada bitta promo — lekin dars yakuni o'z navbatini oladi.
+
+    `promoSeenInSession` bitta umumiy bayroq edi va uni HAR QANDAY promo
+    yoqardi. "Mini App ochilganda" promosi har ochilishda birinchi bo'lib
+    chiqadi, ya'ni dars yakunidagi promo o'sha sessiyada hech qachon
+    chiqmasdi — sovish muddati joyga ajratilgandan keyin ham.
+    """
+
+    def setUp(self):
+        self.js = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+
+    def test_the_old_shared_flag_is_gone(self):
+        self.assertNotIn("promoSeenInSession", self.js)
+
+    def test_the_slot_remembers_which_placement_took_it(self):
+        self.assertIn("sessionPromoSource: \"\",", self.js)
+        self.assertIn("state.sessionPromoSource = source;", self.js)
+
+    def test_the_lesson_end_promo_may_take_an_occupied_slot_once(self):
+        self.assertIn(
+            'var PROMO_PRIORITY_SOURCE = "lesson_end_promo";', self.js
+        )
+        self.assertIn("function sessionSlotAllows(source)", self.js)
+        self.assertIn("!sessionSlotAllows(source) ||", self.js)
+        # O'zi chiqqandan keyin sessiya yopiladi: shu shart bo'lmasa dars
+        # yakunidagi promo bitta sessiyada qayta-qayta chiqaverardi.
+        self.assertIn(
+            "state.sessionPromoSource !== PROMO_PRIORITY_SOURCE", self.js
+        )
+
+
+class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
+    """`?v=` ko'tarilmasa, o'zgarish foydalanuvchiga YETIB BORMAYDI.
+
+    `ads.js` va `desktop-download.js` `immutable`, bir yillik cache bilan
+    beriladi (`app/main.py`, STATIC_ASSET_HEADERS). 2026-09-15/16 dagi
+    Android va promo tuzatishlari aynan shu sababdan hech kimga
+    ko'rinmadi: fayllar o'zgardi, `?v=` esa avgustdagicha qoldi.
+
+    Shuning uchun fayl mazmuni shu yerga bog'lab qo'yilgan. Bu test
+    yiqilsa — skript o'zgargan: HTML'lardagi `?v=` ni ko'taring va
+    quyidagi hash'ni yangilang.
+    """
+
+    EXPECTED = {
+        "desktop-download.js": "18b31acfeec04ae5",
+        "ads.js": "7e793b5069ada727",
+    }
+
+    def test_a_changed_script_forces_a_new_version(self):
+        for name, digest in self.EXPECTED.items():
+            with self.subTest(script=name):
+                actual = hashlib.sha256(
+                    (BASE / name).read_bytes()
+                ).hexdigest()[:16]
+                self.assertEqual(
+                    actual,
+                    digest,
+                    f"{name} o'zgargan: app/static/*.html dagi `?v=` ni "
+                    "ko'taring va shu hash'ni yangilang, aks holda "
+                    "o'zgarish keshdagi eski nusxa ostida qoladi.",
+                )
 
 
 if __name__ == "__main__":

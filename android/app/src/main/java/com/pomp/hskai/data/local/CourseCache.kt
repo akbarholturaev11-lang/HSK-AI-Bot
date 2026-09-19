@@ -44,14 +44,17 @@ interface CourseMapDao {
 @Database(
     entities = [
         CourseMapCacheEntity::class,
+        LessonCacheEntity::class,
         DictionaryWordEntity::class,
         DictionaryMetaEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false,
 )
 abstract class HskAiDatabase : RoomDatabase() {
     abstract fun courseMapDao(): CourseMapDao
+
+    abstract fun lessonCacheDao(): LessonCacheDao
 
     abstract fun dictionaryDao(): DictionaryDao
 

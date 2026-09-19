@@ -10,4 +10,16 @@
     <string name="limit_unlock_button">Бе маҳдудият омӯхтан</string>
     <string name="limit_unlock_hint">Тугма Telegram-ботро мекушояд. Обуна дар ҳамон ҷо ба расмият дароварда мешавад, баъд ин ҷо ҳама чиз кушода мешавад.</string>
     <string name="limit_unlock_unavailable">Telegram-ботро кушода натавонистем. Худатон ба бот ворид шавед ё баъдтар кӯшиш кунед.</string>
+
+    <!--
+        In-app updating. Only this channel may do it: Google Play
+        forbids an app it distributes from updating itself by any
+        other route, so the Play build has none of this.
+    -->
+    <string name="update_card_title">Версияи нав %1$s</string>
+    <string name="update_card_subtitle">%1$s · барои навсозӣ пахш кунед</string>
+    <string name="update_card_downloading">Боргирӣ…</string>
+    <string name="update_card_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
+    <string name="update_card_permission">Ба насб иҷозат диҳед</string>
+    <string name="update_card_permission_hint">Танзимоти Android кушода мешавад</string>
 </resources>

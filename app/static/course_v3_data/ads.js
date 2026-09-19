@@ -148,11 +148,6 @@
   +'.caa-app-cta:active{transform:translateY(1px)}'
   +'.caa-app-sub{width:100%;border:1px solid rgba(255,255,255,.18);border-radius:13px;padding:13px;font-family:inherit;font-size:14px;font-weight:600;background:rgba(255,255,255,.08);color:#fff;cursor:pointer}'
   +'.caa-app-sub[hidden],.caa-app-promo[hidden]{display:none!important}'
-  +'.caa-app-plats{display:flex;gap:8px}'
-  +'.caa-app-plats[hidden]{display:none!important}'
-  +'.caa-app-plat{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:12px;padding:12px 8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}'
-  +'.caa-app-plat:active{transform:translateY(1px)}'
-  +'.caa-app-plat i{font-size:17px}'
   +'.caa-app-x{position:absolute;top:-10px;right:-10px;width:34px;height:34px;border-radius:50%;background:#15120f;border:1px solid rgba(255,255,255,.22);color:#fff;display:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:2}'
   +'.caa-app-x.on{display:flex}'
   +'.caa-app-wait{position:absolute;top:-10px;right:-10px;min-width:34px;height:34px;padding:0 10px;border-radius:20px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.82);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;white-space:nowrap;z-index:2}'
@@ -279,49 +274,15 @@
     while(node&&node!==els.ps){if(node.classList&&node.classList.contains("caa-ps-btn")){btn=node;break}node=node.parentNode}
     if(!btn||!psCurrent)return;
     var act=btn.getAttribute("data-psact"),sec=psCurrent;
-    var plat=btn.getAttribute("data-psplat");
-    if(plat){
-      var found=null,list=sec.platforms||[];
-      for(var i=0;i<list.length;i++){if(list[i].platform===plat)found=list[i]}
-      if(found)openUrl(found.url);
-      return;
-    }
     if(act==="open")openUrl(sec.link_url);
     else if(act==="copy")copyUrl(sec.link_url,btn);
     else if(act==="share")shareUrl(sec.link_url,sec.title);
   }
   function hidePs(){if(els&&els.ps){els.ps.classList.remove("on");els.ps.innerHTML=""}psCurrent=null}
-  /* App reklamasi katta pleyerda: platforma tugmalari (MacBook/Windows).
-     Server faqat havolasi BOR platformalarni yuboradi — o'lik tugma chiqmaydi.
-     Platforma ro'yxati bo'sh bo'lsa, oddiy havola tugmasiga tushamiz. */
-  function renderAppAdButtons(ad){
-    var list=(ad&&ad.app_buttons&&ad.app_buttons.length)?ad.app_buttons:[];
-    var t=T();
-    if(!list.length){
-      if(!ad.link_url)return;
-      var label=(ad.button_text&&String(ad.button_text).trim())?String(ad.button_text).trim():(t.appCta||t.psTry);
-      psCurrent={link_url:ad.link_url,title:ad.title||""};
-      els.ps.innerHTML='<div class="caa-ps-btns"><button class="caa-ps-btn primary" data-psact="open">'
-        +'<i class="ti ti-download"></i> '+esc(label)+'</button></div>';
-      els.ps.classList.add("on");
-      return;
-    }
-    els.ps.innerHTML='<div class="caa-ps-btns">'+list.map(function(b){
-      var meta=APP_PLATFORM_META[b.platform]||{icon:"ti-download",label:b.platform};
-      return '<button class="caa-ps-btn primary" data-psplat="'+esc(b.platform)+'">'
-        +'<i class="ti '+meta.icon+'"></i> '+esc(meta.label)+'</button>';
-    }).join("")+'</div>';
-    els.ps.classList.add("on");
-    psCurrent={link_url:ad.link_url||"",title:ad.title||"",platforms:list};
-  }
   function renderAdButtons(ad){
     hidePs();
     if(!ad)return;
     var type=ad.ad_type||"odiy";
-    /* App reklamasi mashq bo'limlarida va darslarda ham chiqadi. U yerda
-       markazdagi karta emas, katta pleyer ishlaydi — shuning uchun platforma
-       tugmalari shu mavjud tugma blokida ko'rsatiladi. */
-    if(type==="app")return renderAppAdButtons(ad);
     if((type!=="hamkorlik"&&type!=="bot")||!ad.link_url)return;
     var t=T(),bt=(ad.button_text&&String(ad.button_text).trim())?String(ad.button_text).trim():(type==="hamkorlik"?t.psWrite:t.psTry);
     psCurrent={link_url:ad.link_url,title:ad.title||""};
@@ -573,7 +534,6 @@
       +'<span class="caa-app-wait" hidden></span>'
       +'<div class="caa-app-media"><video muted playsinline webkit-playsinline preload="auto"></video><img alt="" hidden></div>'
       +'<p class="caa-app-t"></p>'
-      +'<div class="caa-app-plats" hidden></div>'
       +'<button class="caa-app-cta"></button>'
       +'<button class="caa-app-sub" hidden></button>'
       +'<div class="caa-app-promo" hidden></div>'
@@ -581,7 +541,7 @@
     document.body.appendChild(ov);
     var q=function(s){return ov.querySelector(s)};
     appEls={ov:ov,card:q(".caa-app-card"),x:q(".caa-app-x"),wait:q(".caa-app-wait"),
-      video:q("video"),photo:q(".caa-app-media img"),title:q(".caa-app-t"),plats:q(".caa-app-plats"),cta:q(".caa-app-cta"),
+      video:q("video"),photo:q(".caa-app-media img"),title:q(".caa-app-t"),cta:q(".caa-app-cta"),
       sub:q(".caa-app-sub"),promo:q(".caa-app-promo")};
     return appEls;
   }
@@ -604,17 +564,6 @@
     appState.open=false;
   }
 
-  /* Platforma tugmalari — serverdan tayyor ro'yxat keladi (`app_buttons`).
-     Server faqat KO'RINADIGAN va havolasi BOR platformalarni yuboradi:
-     hozircha MacBook va Windows. iPhone/Android reliz tayyor bo'lgach
-     serverdagi ro'yxatga qo'shiladi, bu yerda o'zgartirish kerak emas. */
-  var APP_PLATFORM_META={
-    macos:{icon:"ti-brand-apple",label:"MacBook"},
-    windows:{icon:"ti-brand-windows",label:"Windows"},
-    ios:{icon:"ti-device-mobile",label:"iPhone"},
-    android:{icon:"ti-brand-android",label:"Android"}
-  };
-
   function openAppLink(url){
     if(!url) return;
     try{
@@ -622,27 +571,6 @@
       if(tg&&typeof tg.openLink==="function") tg.openLink(url);
       else window.open(url,"_blank","noopener");
     }catch(err){}
-  }
-
-  function renderAppPlatforms(e,ad){
-    var list=(ad&&ad.app_buttons&&ad.app_buttons.length)?ad.app_buttons:[];
-    if(!list.length){ e.plats.hidden=true; e.plats.innerHTML=""; return; }
-    e.plats.innerHTML=list.map(function(b){
-      var meta=APP_PLATFORM_META[b.platform]||{icon:"ti-download",label:b.platform};
-      return '<button class="caa-app-plat" data-plat="'+b.platform+'">'
-        +'<i class="ti '+meta.icon+'"></i> '+meta.label+'</button>';
-    }).join("");
-    e.plats.hidden=false;
-    var btns=e.plats.querySelectorAll(".caa-app-plat");
-    for(var i=0;i<btns.length;i++){
-      (function(btn){
-        btn.onclick=function(){
-          var found=null;
-          for(var j=0;j<list.length;j++){ if(list[j].platform===btn.dataset.plat) found=list[j]; }
-          openAppLink(found&&found.url);
-        };
-      })(btns[i]);
-    }
   }
 
   function showCenterAd(ad){
@@ -654,11 +582,8 @@
     appState.placement=isLessonEnd()?"lesson_end":"screen_center";
     appState.watched=0;
     e.title.textContent=String(ad.title||"");
-    renderAppPlatforms(e,ad);
     e.cta.textContent=String(ad.button_text||t.appCta);
-    /* Platforma tugmalari bo'lsa umumiy CTA ortiqcha — takror bo'lmasin. */
-    var hasPlatforms=!!(ad&&ad.app_buttons&&ad.app_buttons.length);
-    e.cta.style.display=(ad.link_url&&!hasPlatforms)?"":"none";
+    e.cta.style.display=ad.link_url?"":"none";
     e.cta.onclick=function(){ openAppLink(ad.link_url); };
     e.x.classList.remove("on");
     e.x.onclick=closeAppAd;
@@ -687,10 +612,16 @@
          endi ko'rsatilmaydigan elementga yozardi. */
       /* Desktop ilova promosi — ilgari reklama overlayining oxirida edi. */
       try{
-        if(window.DesktopDownloadPromo&&typeof window.DesktopDownloadPromo.mountAdPromoTrigger==="function"){
+        /* Global nomi `PompDesktopDownload` — `desktop-download.js` aynan
+           shuni e'lon qiladi. Bu yerda `DesktopDownloadPromo` deb yozilgani
+           uchun shart hech qachon bajarilmasdi va reklama oynasidagi ilova
+           bloki umuman chiqmasdi. */
+        if(window.PompDesktopDownload&&typeof window.PompDesktopDownload.mountAdPromoTrigger==="function"){
+          /* Bu blok `if(isLessonEnd())` ning ICHIDA — ya'ni joy har doim
+             dars yakuni. Ilgari bu yerda `screen_center_ad` ga tushadigan
+             tarmoq bor edi, u hech qachon ishlamasdi. */
           e.promo.hidden=false;
-          var desktopPlacement=isLessonEnd()?"lesson_end_ad":"screen_center_ad";
-          window.DesktopDownloadPromo.mountAdPromoTrigger(e.promo,{placement:desktopPlacement});
+          window.PompDesktopDownload.mountAdPromoTrigger(e.promo,{placement:"lesson_end_ad"});
         }
       }catch(err){}
     }else{
