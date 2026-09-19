@@ -27,6 +27,7 @@ fun HskGlassSurface(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(20.dp),
     shadowElevation: Dp = 12.dp,
+    borderColor: Color? = null,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     content: @Composable () -> Unit,
@@ -59,7 +60,7 @@ fun HskGlassSurface(
             modifier = decoratedModifier,
             shape = shape,
             color = surface,
-            border = BorderStroke(1.dp, border),
+            border = BorderStroke(1.dp, borderColor ?: border),
             tonalElevation = 0.dp,
             shadowElevation = 0.dp,
         ) {
@@ -72,7 +73,7 @@ fun HskGlassSurface(
             enabled = enabled,
             shape = shape,
             color = surface,
-            border = BorderStroke(1.dp, border),
+            border = BorderStroke(1.dp, borderColor ?: border),
             tonalElevation = 0.dp,
             shadowElevation = 0.dp,
         ) {
