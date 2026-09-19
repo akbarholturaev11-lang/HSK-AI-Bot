@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -58,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
@@ -418,7 +418,7 @@ private fun ToolRow(
                 Text(title, style = MaterialTheme.typography.titleMedium, color = if (enabled) PompColors.Ink else PompColors.InkDisabled)
                 Text(body, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
             }
-            if (busy) CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.height(18.dp))
+            if (busy) HskBrandLoader(compact = true)
             else Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = PompColors.InkDisabled)
         }
     }
@@ -585,7 +585,7 @@ private fun QuestionText(
         ) {
             Box(contentAlignment = Alignment.Center) {
                 if (isAudioLoading) {
-                    CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                    HskBrandLoader(compact = true)
                 } else {
                     Icon(
                         Icons.Filled.VolumeUp,
