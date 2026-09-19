@@ -104,6 +104,11 @@ data class OnboardingCopy(
     val beginner: String,
     val beginnerSub: String,
     val selected: String,
+    val notifyTitle: String,
+    val notifyLessons: String,
+    val notifyUpdates: String,
+    val notifyAllow: String,
+    val notifyLater: String,
 ) {
     companion object {
         fun forLanguage(language: String): OnboardingCopy = when (language.lowercase()) {
@@ -127,6 +132,11 @@ data class OnboardingCopy(
                 beginner = "Xitoy tilini umuman bilmayman",
                 beginnerSub = "Avval hanzi, pinyin va tonlarni tushunamiz",
                 selected = "Darajangiz",
+                notifyTitle = "Bildirishnomalarni yoqing",
+                notifyLessons = "Kechqurun darsni eslatib turamiz",
+                notifyUpdates = "Yangi versiya chiqqanda bir marta xabar beramiz",
+                notifyAllow = "Yoqish",
+                notifyLater = "Keyinroq",
             )
             "tg", "tj" -> OnboardingCopy(
                 hello = "Салом! Ман устод Ли ҳастам.",
@@ -148,6 +158,11 @@ data class OnboardingCopy(
                 beginner = "Забони чиниро тамоман намедонам",
                 beginnerSub = "Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем",
                 selected = "Сатҳи шумо",
+                notifyTitle = "Огоҳиномаҳоро фаъол кунед",
+                notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
+                notifyUpdates = "Вақте версияи нав барояд, як бор хабар медиҳем",
+                notifyAllow = "Фаъол кардан",
+                notifyLater = "Баъдтар",
             )
             else -> OnboardingCopy(
                 hello = "Привет! Я учитель Ли.",
@@ -169,6 +184,11 @@ data class OnboardingCopy(
                 beginner = "Я совсем с нуля",
                 beginnerSub = "Сначала разберём ханцзы, пиньинь и тоны",
                 selected = "Ваш уровень",
+                notifyTitle = "Включите уведомления",
+                notifyLessons = "Вечером напомним про занятие",
+                notifyUpdates = "Один раз сообщим, когда выйдет новая версия",
+                notifyAllow = "Включить",
+                notifyLater = "Позже",
             )
         }
     }

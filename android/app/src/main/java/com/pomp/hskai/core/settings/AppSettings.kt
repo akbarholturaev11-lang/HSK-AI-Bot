@@ -133,6 +133,21 @@ class AppSettings(context: Context) : LessonResumeStore {
     val voiceSlowSpeech: Flow<Boolean> = appContext.settingsDataStore.data
         .map { it[VOICE_SLOW_SPEECH_KEY] ?: false }
 
+    /**
+     * Whether the one-time notification primer has been answered.
+     *
+     * Android grants notifications once for the whole app, not per kind, and
+     * it only ever shows its dialog twice. So this is asked once, at the end
+     * of onboarding, and never again — whatever the answer was. A learner who
+     * said no keeps the update card and the banner; nothing else changes.
+     */
+    val notificationPrimerSeen: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[NOTIFICATION_PRIMER_SEEN_KEY] ?: false }
+
+    suspend fun setNotificationPrimerSeen() {
+        appContext.settingsDataStore.edit { it[NOTIFICATION_PRIMER_SEEN_KEY] = true }
+    }
+
     suspend fun setVoiceSubtitles(value: Boolean) {
         appContext.settingsDataStore.edit { it[VOICE_SUBTITLES_KEY] = value }
     }
@@ -205,5 +220,6 @@ class AppSettings(context: Context) : LessonResumeStore {
         val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
         val VOICE_SUBTITLES_KEY = booleanPreferencesKey("hsk_voice_sub")
         val VOICE_SLOW_SPEECH_KEY = booleanPreferencesKey("hsk_voice_rate_slow")
+        val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
     }
 }

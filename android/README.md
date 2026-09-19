@@ -202,8 +202,12 @@ How it works:
 3. The first check to see a release posts **one** notification, on its own
    `app_updates` channel, and writes the version code down so the same release
    is never announced twice — not the next day, not after a reinstall.
-   `POST_NOTIFICATIONS` is never requested for it: with notifications off the
-   card and the banner are the whole story.
+   `POST_NOTIFICATIONS` is asked for once, at the end of onboarding
+   (`NotificationPrimerScreen`), for both kinds of notification at once —
+   Android grants them per app, not per channel, and stops showing its dialog
+   after two refusals, so there is no second chance to spend. Granting it also
+   switches the evening study reminder on. Refusing costs nothing: the card
+   and the banner do not depend on it, and the question is not asked again.
 4. Two releases behind (`AppUpdate.NUDGE_AFTER_MISSED_RELEASES`), a bar appears
    above the tab bar and stays until the install is newer. It cannot be
    dismissed, and it is drawn by `MainScaffold`, so a lesson, a drill and a

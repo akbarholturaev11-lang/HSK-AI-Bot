@@ -63,6 +63,7 @@ import com.pomp.hskai.core.navigation.DestinationRequest
 import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.feature.auth.LinkScreen
+import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 import com.pomp.hskai.core.navigation.MainScaffold
@@ -482,6 +483,10 @@ private fun AppRoot(
                 .collectAsStateWithLifecycle(initialValue = true)
             val voiceSlowSpeech by app.appSettings.voiceSlowSpeech
                 .collectAsStateWithLifecycle(initialValue = false)
+            // Starts as "seen" so the primer cannot flash on top of the app
+            // in the moment before the store has been read.
+            val notificationPrimerSeen by app.appSettings.notificationPrimerSeen
+                .collectAsStateWithLifecycle(initialValue = true)
             LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
@@ -635,6 +640,22 @@ private fun AppRoot(
                     onGoalSelected = onboardingViewModel::selectGoal,
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
+                )
+            } else if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
+                // Asked once, at the end of onboarding, for both kinds of
+                // notification at once: Android grants them for the whole app,
+                // not per kind, and it stops showing its dialog after two
+                // refusals. Whatever the answer, the flag is written and the
+                // question never comes back.
+                NotificationPrimerScreen(
+                    language = currentLanguage,
+                    onAllow = {
+                        scope.launch { app.appSettings.setNotificationPrimerSeen() }
+                        toggleLocalReminder(true)
+                    },
+                    onSkip = {
+                        scope.launch { app.appSettings.setNotificationPrimerSeen() }
+                    },
                 )
             } else if (ad != null) {
                 val adViewModel: AdViewModel = viewModel(

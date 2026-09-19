@@ -9328,3 +9328,56 @@ Eslatma:
 - Qator va bildirishnomani ishlab ko'rish uchun serverda **yangi release**
   e'lon qilingan bo'lishi kerak; qatorni ko'rish uchun esa o'rnatilgan
   `versionCode` dan kamida 2 ga katta bo'lishi shart.
+
+### 2026-09-19 — Bildirishnoma ruxsati onboardingda bir marta so'raladi
+
+Foydalanuvchi: «hozir aytdingki alohida ruxsat berishi kerak yangi versiya
+xabari yuborishi uchun, yana darsga tegishli uchun alohida — buni o'zgartir,
+bitta onboardingda ilova userdan xabar yuborish imkonini telefon sozlamasidan
+yoqishni so'rasin».
+
+Aniqlik: Android'da ruxsat **bitta** — `POST_NOTIFICATIONS`, butun ilova uchun
+(13+). Tur bo'yicha alohida ruxsat yo'q. Haqiqiy muammo boshqa edi: ilova bu
+ruxsatni faqat **dars eslatmasi tugmasi** yoqilganda so'rardi
+(`MainActivity.kt:432`). Ya'ni eslatmani yoqmagan odamda yangi versiya xabari
+hech qachon kelmasdi.
+
+Changed:
+- `NotificationPrimerScreen` (`feature/onboarding/`): onboarding tugagach, ilova
+  ochilishidan oldin bir marta chiqadi. Panda, sarlavha, **ikkita** qator (kechki
+  dars eslatmasi va yangi versiya), «Yoqish» va «Keyinroq». Matnlar
+  `OnboardingCopy` ichida UZ/RU/TJ — resurs emas, chunki butun onboarding shunday.
+- «Yoqish» mavjud `toggleLocalReminder(true)` ni chaqiradi: Android 13+ da tizim
+  dialogi ochiladi va ruxsat berilsa `setReminder(true)` + scheduler; eskiroq
+  Android'da to'g'ridan-to'g'ri yoqadi. Ya'ni **bitta so'rov ikkalasini ham**
+  yoqadi — foydalanuvchining qarori (15-sentabrdagi «eslatma default OFF»
+  qoidasi shu nuqtada ataylab yumshatildi: OFF hamon default, lekin primer uni
+  ochiq taklif qiladi).
+- `AppSettings.notificationPrimerSeen` — javob nima bo'lishidan qat'i nazar
+  yoziladi. Android ikki marta rad etilgandan keyin dialogni umuman
+  ko'rsatmaydi, shuning uchun savol qayta berilmaydi.
+- Primer faqat `!seen && !reminderEnabled` bo'lganda chiqadi; flag o'qilgunicha
+  `initialValue = true` — ilova ustidan lip etib o'tmaydi.
+
+Bilib qo'yish kerak:
+- Kanallarni (`study_reminders`, `app_updates`) foydalanuvchi Android
+  sozlamalarida alohida o'chira oladi va buni ilova **taqiqlay olmaydi** — bu
+  platformaning kafolati. Ilova ichida esa yangilanish xabari uchun tugma yo'q.
+- Ikkala turni bitta kanalga qo'shish rad etildi: u holda dars eslatmasini
+  o'chirgan odam versiya xabarini ham yo'qotardi.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/onboarding/NotificationPrimerScreen.kt`
+- `.../feature/onboarding/OnboardingScreen.kt` (`OnboardingCopy` + 5 ta maydon ×3 til)
+- `.../MainActivity.kt` (gate), `.../core/settings/AppSettings.kt`
+- `androidTest/.../onboarding/NotificationPrimerTest.kt`
+- `android/README.md`
+
+Verified:
+- Beshta statik tekshiruv yashil (`check_named_arguments` — 1128 callable,
+  `check_strings_translated` — 526 satr uz/ru/tg).
+- Versiya: 1.3.0 (5) → **1.3.1 (6)**.
+
+Eslatma:
+- Bu muhitda Android SDK yo'q; kompilyatsiya GitHub Actions'dagi «Android CI»
+  orqali tekshiriladi.
