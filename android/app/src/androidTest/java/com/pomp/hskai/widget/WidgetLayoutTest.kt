@@ -75,6 +75,39 @@ class WidgetLayoutTest {
         }
     }
 
+    /** Every panda face and every asking line has to fit the same layout. */
+    @Test fun rendersEveryReactionAndPrompt() = runBlocking {
+        val renderer = GlanceRemoteViews()
+        val size = DpSize(260.dp, 110.dp)
+        val session = WidgetSession(linked = true, snapshot = snapshot().copy(dailyXp = 20, goalXp = 50))
+        val prompts = listOf(WidgetPrompt.Mood, WidgetPrompt.StreakAtRisk, WidgetPrompt.GoalLeft(30))
+        for (language in listOf("uz", "ru", "tg")) {
+            val config = Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)) }
+            val localized = context.createConfigurationContext(config)
+            for (reaction in WidgetReaction.entries) for (prompt in prompts) {
+                val views = renderer.compose(localized, size) {
+                    WidgetContent(localized, session, WidgetMood.CONTINUE, false, reaction, prompt)
+                }.remoteViews
+                instrumentation.runOnMainSync {
+                    val parent = FrameLayout(localized)
+                    val view = views.apply(localized, parent)
+                    val density = context.resources.displayMetrics.density
+                    val width = (size.width.value * density).toInt()
+                    val height = (size.height.value * density).toInt()
+                    view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+                    view.layout(0, 0, width, height)
+                    val texts = textViews(view)
+                    assertTrue("Missing widget copy: $language $reaction $prompt", texts.isNotEmpty())
+                    // Today against today's goal, never the lifetime total.
+                    assertTrue("Missing goal progress: $language $reaction", texts.any { it.text.contains("20") && it.text.contains("50") })
+                    texts.forEach { text ->
+                        assertTrue("Clipped vertically: $language $reaction ${text.text}", text.height >= (text.layout?.height ?: 0))
+                    }
+                }
+            }
+        }
+    }
+
     /** Opt-in fixture for launcher inspection. Only exists in the instrumentation APK. */
     @Test fun launcherFixture() = runBlocking {
         val args = InstrumentationRegistry.getArguments()
@@ -87,6 +120,10 @@ class WidgetLayoutTest {
         val fixture = snapshot().copy(
             dayComplete = mood == "complete", foundationRequired = mood == "foundation",
             fetchedAtMillis = if (mood == "stale") 1 else System.currentTimeMillis(),
+            // Drive the asking line and the panda face from the command line:
+            // "-e dailyXp 0" at night is the streak-at-risk face.
+            dailyXp = args.getString("dailyXp")?.toIntOrNull() ?: 20,
+            goalXp = args.getString("goalXp")?.toIntOrNull() ?: 50,
         )
         app.widgetStore.save(fixture, session.epoch)
         if (mood == "unlinked") app.widgetStore.clear()

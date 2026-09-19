@@ -7,11 +7,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.pomp.hskai.R
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -69,11 +71,44 @@ object StudyNotifications {
             NotificationManagerCompat.from(context).areNotificationsEnabled()
         }
 
+    /** The bodies each reminder rotates through, in [ReminderDecision.variant] order. */
+    private fun bodies(reminder: Reminder): List<Int> = when (reminder) {
+        Reminder.STREAK_AT_RISK -> listOf(
+            R.string.notify_streak_body,
+            R.string.notify_streak_body_2,
+            R.string.notify_streak_body_3,
+        )
+
+        Reminder.DAILY_GOAL -> listOf(
+            R.string.notify_goal_body,
+            R.string.notify_goal_body_2,
+            R.string.notify_goal_body_3,
+        )
+
+        Reminder.NONE -> emptyList()
+    }
+
+    /**
+     * The panda face that goes with the reminder, as the notification's large
+     * icon. It is the same artwork the home-screen widget uses, so the
+     * reminder and the widget read as one character rather than two.
+     */
+    private fun panda(context: Context, reminder: Reminder): Bitmap? {
+        val art = when (reminder) {
+            Reminder.STREAK_AT_RISK -> R.drawable.widget_panda_worried
+            Reminder.DAILY_GOAL -> R.drawable.widget_panda_cheer
+            Reminder.NONE -> return null
+        }
+        // A missing or unrenderable asset must not cost the learner the
+        // reminder itself, so the icon is optional all the way down.
+        return runCatching { ContextCompat.getDrawable(context, art)?.toBitmap() }.getOrNull()
+    }
+
     /**
      * Posts the reminder. Returns false when the system refused it, so the
      * caller does not record a delivery that never happened.
      */
-    fun postReminder(context: Context, reminder: Reminder): Boolean {
+    fun postReminder(context: Context, reminder: Reminder, variant: Int = 0): Boolean {
         if (reminder == Reminder.NONE) return false
         // Repeated inline rather than delegated: this is the guard that keeps
         // the notify() call below legal, and it has to be visible right here.
@@ -90,15 +125,14 @@ object StudyNotifications {
         val localized = AppLocale.wrap(context)
         ensureChannel(localized)
 
-        val (titleRes, bodyRes) = when (reminder) {
-            Reminder.STREAK_AT_RISK ->
-                R.string.notify_streak_title to R.string.notify_streak_body
-
-            Reminder.DAILY_GOAL ->
-                R.string.notify_goal_title to R.string.notify_goal_body
-
+        val titleRes = when (reminder) {
+            Reminder.STREAK_AT_RISK -> R.string.notify_streak_title
+            Reminder.DAILY_GOAL -> R.string.notify_goal_title
             Reminder.NONE -> return false
         }
+        val choices = bodies(reminder)
+        if (choices.isEmpty()) return false
+        val bodyRes = choices[variant.mod(choices.size)]
 
         // Tapping opens the lesson the server says is next. Resolving the link
         // is not authorisation: the app still checks entitlement before the
@@ -115,6 +149,7 @@ object StudyNotifications {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
+            .setLargeIcon(panda(localized, reminder))
             .setContentTitle(localized.getString(titleRes))
             .setContentText(localized.getString(bodyRes))
             .setStyle(NotificationCompat.BigTextStyle().bigText(localized.getString(bodyRes)))

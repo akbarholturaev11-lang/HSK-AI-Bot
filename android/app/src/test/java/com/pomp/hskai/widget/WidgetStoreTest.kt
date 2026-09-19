@@ -3,6 +3,8 @@ package com.pomp.hskai.widget
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.mutablePreferencesOf
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -55,6 +57,21 @@ class WidgetStoreTest {
         store.clear()
         assertFalse(store.remindOnce(epoch, "2026-09-13") { sent++; true })
         assertFalse(store.read().reminderEnabled)
+    }
+    @Test fun `a cache written before the goal fields still opens`() = runTest {
+        // An unreadable cache is dropped, and a dropped cache shows "link your
+        // account" to someone who is linked. New snapshot fields must default.
+        val memory = MemoryPreferences()
+        val legacy = "{\"epoch\":\"e1\",\"linked\":true,\"snapshot\":{" +
+            "\"fetchedAtMillis\":10,\"localDay\":\"2026-09-11\",\"zoneId\":\"Asia/Tashkent\"," +
+            "\"level\":\"hsk1\",\"lessonOrder\":1,\"xp\":50,\"streak\":2," +
+            "\"dayComplete\":false,\"foundationRequired\":false}}"
+        memory.updateData { mutablePreferencesOf(stringPreferencesKey("session_v1") to legacy) }
+        val store = WidgetStore(memory)
+        assertTrue(store.read().linked)
+        assertEquals(50, store.read().snapshot?.xp)
+        assertEquals(0, store.read().snapshot?.goalXp)
+        assertEquals(0, store.read().snapshot?.dailyXp)
     }
     @Test fun `telemetry queue bounded deduped persisted and account isolated`() = runTest {
         val memory = MemoryPreferences()

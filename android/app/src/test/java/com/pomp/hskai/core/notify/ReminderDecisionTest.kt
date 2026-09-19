@@ -1,6 +1,7 @@
 package com.pomp.hskai.core.notify
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ReminderDecisionTest {
@@ -102,5 +103,17 @@ class ReminderDecisionTest {
             Reminder.STREAK_AT_RISK,
             ReminderDecision.decide(facts(dailyXp = -5, streak = 3)),
         )
+    }
+
+    @Test
+    fun `the wording rotates by day and stays stable within one`() {
+        val days = (1..14).map { "2026-09-%02d".format(it) }
+        val picked = days.map { ReminderDecision.variant(it) }
+        assertTrue(picked.all { it in 0 until 3 })
+        // A single body every evening is the sentence people stop reading.
+        assertTrue("The reminder body never rotates", picked.toSet().size > 1)
+        // A retried worker on the same day must not change the text mid-evening.
+        assertEquals(picked.first(), ReminderDecision.variant(days.first()))
+        assertEquals(0, ReminderDecision.variant("2026-09-03", count = 1))
     }
 }

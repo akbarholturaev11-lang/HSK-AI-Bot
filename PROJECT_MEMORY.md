@@ -9188,3 +9188,70 @@ Verified:
 - Backend: 1442 passed, 78265 subtests.
 - Playwright: deep-link fokus testi + karta testlari (8 ta) yashil — tugma
   yuboradigan URL kartani haqiqatan ochadi va fokuslaydi.
+
+### 2026-09-19 — Widget pandasi darsga chaqiradi (holatga bog'liq reaksiya)
+
+Foydalanuvchi: «viджетлар булимни кучайтириш керак, Duolingo kabi odamni darsga
+chaqirib tursin, emotsiya ko'rsatsin — Duolingo boyqushi o'rniga o'zimizning
+panda».
+
+Muammo: panda rasmi faqat **soatga** qarab aylanardi (09:00–19:00, 90 daqiqali
+7 slot). Ya'ni kun bo'yi hech nima qilmagan odam ham, maqsadning 90% ini
+bajargan odam ham bir xil rasmni ko'rardi. Widgetdagi raqam ham umumiy XP edi —
+bugungi maqsadga aloqasi yo'q, ya'ni «ilovani ochaymi?» degan savolga javob
+bermasdi.
+
+Changed:
+- `WidgetSnapshot` ga `dailyXp` va `goalXp` qo'shildi — **default qiymat
+  bilan**, chunki dekod qilinmaydigan eski kesh tashlanadi va tashlangan kesh
+  ulangan odamga «Hisobni ulang» ko'rsatadi. `goalXp = 0` — «ma'lum emas»,
+  bunday holda widget avvalgidek umumiy XP ni ko'rsatadi va bugun haqida hech
+  narsa da'vo qilmaydi.
+- Rasm endi holatga bog'liq (`WidgetStateResolver.reaction`): 19:00–22:00
+  oralig'ida bugun 0 XP bo'lsa — `worried`; 22:00–06:00 — `sleepy`; maqsadning
+  yarmi bajarilgan bo'lsa — `cheer`; qolganida streak bor bo'lsa `streak`, aks
+  holda avvalgi kunduzgi rotatsiya (`WidgetReaction.DAYTIME_ROTATION`).
+- Widget matni ham holatga bog'landi (`WidgetStateResolver.prompt`): streak
+  yo'qolish arafasida `widget_streak_risk`, bugun boshlangan va maqsad hali
+  yetmagan bo'lsa `widget_goal_left` («Maqsadgacha N XP»). Boshqa hollarda
+  avvalgi mood sarlavhasi. Matn tanlash ko'rinish (layout) ichida emas,
+  resolverda — layout faqat chizadi.
+- Statistika qatori endi `widget_stats_goal` — «bugungi XP / maqsad · streak».
+- Ikkita yangi vektor: `widget_panda_worried` (ter tomchisi, tushkun og'iz),
+  `widget_panda_sleepy` (yumuq ko'z, «Z Z»). Uslub va ranglar mavjud panda
+  assetlari bilan bir xil.
+- Kechki eslatma: har turi uchun 3 ta matn varianti, kun bo'yicha aylanadi
+  (`ReminderDecision.variant` — kunning o'zidan chiqadi, ya'ni qayta urinayotgan
+  worker matnni o'zgartira olmaydi), va bildirishnomaga mos panda rasmi
+  `largeIcon` sifatida qo'yildi. Kuniga bitta eslatma chegarasi va opt-in
+  tegilmadi.
+- `SCHEDULE_VERSION` 2 → 3.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/widget/WidgetState.kt`,
+  `WidgetPolicy.kt`, `HskAiSmartWidget.kt`, `WidgetCoordinator.kt`
+- `android/app/src/main/java/com/pomp/hskai/core/notify/StudyNotifications.kt`,
+  `ReminderDecision.kt`, `StudyReminderWorker.kt`
+- `android/app/src/main/res/drawable/widget_panda_{worried,sleepy}.xml`
+- `android/app/src/main/res/values{,-ru,-tg}/widget_strings.xml`,
+  `values{,-ru,-tg}/strings.xml`
+- `android/app/src/test/.../WidgetStateTest.kt`, `WidgetStoreTest.kt`,
+  `ReminderDecisionTest.kt`, `androidTest/.../WidgetLayoutTest.kt`
+- `ANDROID_SMART_WIDGET.md`
+
+Verified:
+- Beshta statik tekshiruv yashil (`check_interface_fakes`,
+  `check_named_arguments`, `check_flavor_parity`, `check_strings_translated` —
+  516 ta satr uz/ru/tg, `check_palette_matches_miniapp`).
+- Yangi testlar yozildi: kechki `worried`, tungi `sleepy`, yarim maqsadda
+  `cheer`, «Maqsadgacha N XP» faqat kun boshlangandan keyin, eslatma matni kun
+  ichida o'zgarmasligi va **eski keshning hali ham ochilishi**.
+
+Eslatma:
+- **Bu muhitda Android SDK yo'q**, ya'ni `./gradlew testDirectDebugUnitTest
+  testPlayDebugUnitTest lintDirectDebug lintPlayDebug` ishga tushirilmadi.
+  Kompilyatsiya va instrumentatsiya (`WidgetLayoutTest` — endi barcha 9 ta
+  reaksiya va 3 ta matn holatini ham chizadi) SDK bor mashinada tekshirilishi
+  kerak.
+- Server tomoniga tegilmadi: yangi event qo'shilmadi, `android_events.py`
+  allowlisti o'sha-o'sha.

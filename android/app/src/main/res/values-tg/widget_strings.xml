@@ -25,4 +25,7 @@
     <string name="widget_setup_permission">Дар танзимоти телефон ба огоҳиҳои HSK AI иҷозат диҳед.</string>
     <string name="widget_telegram_reminders">Ёдрасиҳои Telegram</string>
     <string name="widget_preview_label">Виҷети экрани асосӣ</string>
+    <string name="widget_streak_risk">Силсила имрӯз шикаста шуда метавонад</string>
+    <string name="widget_goal_left">То ҳадаф %1$d XP</string>
+    <string name="widget_stats_goal">%1$d/%2$d XP · %3$d рӯз</string>
 </resources>

@@ -37,6 +37,20 @@ data class ReminderFacts(
 object ReminderDecision {
 
     /**
+     * Which wording today's reminder uses.
+     *
+     * The same sentence every evening stops being read, so the bodies rotate.
+     * The choice is derived from the day itself: stable within a day — a
+     * retried worker cannot change the text mid-evening — and testable without
+     * a clock or a random source.
+     */
+    fun variant(day: String, count: Int = com.pomp.hskai.widget.WidgetPolicy.REMINDER_VARIANTS): Int {
+        if (count <= 1) return 0
+        val hash = day.fold(0) { acc, character -> acc * 31 + character.code }
+        return ((hash % count) + count) % count
+    }
+
+    /**
      * At most one reminder a day, and never after the learner has already done
      * the work — a notification that arrives once the goal is met reads as
      * nagging and is the fastest way to get reminders turned off for good.

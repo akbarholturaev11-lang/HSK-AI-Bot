@@ -258,6 +258,10 @@
     <string name="notify_streak_body">Сегодня вы ещё не занимались. Одной части хватит, чтобы сохранить серию.</string>
     <string name="notify_goal_title">Дневная цель ещё не выполнена</string>
     <string name="notify_goal_body">До сегодняшней цели осталось немного. Завершите одну часть.</string>
+    <string name="notify_streak_body_2">Панда ждёт вас. Один короткий урок — и серия сохранится.</string>
+    <string name="notify_streak_body_3">День заканчивается, а серию ещё можно спасти. Хватит одной части.</string>
+    <string name="notify_goal_body_2">До цели совсем немного — панда дойдёт с вами до конца.</string>
+    <string name="notify_goal_body_3">Осталась одна часть. Закроем сегодняшнюю цель?</string>
     <string name="practice_dictionary_title">Словарь иероглифов</string>
     <string name="practice_dictionary_body">HSK 1–4 · написание, пиньинь, значение</string>
     <string name="dictionary_search_hint">Иероглиф, пиньинь или значение</string>

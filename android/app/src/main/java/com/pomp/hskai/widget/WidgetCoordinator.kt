@@ -46,6 +46,10 @@ class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi
                 streak = map.progress.streak,
                 dayComplete = map.today?.complete ?: false,
                 foundationRequired = map.foundation?.mustComeFirst == true,
+                dailyXp = map.progress.dailyXp,
+                // Zero when the server has no plan for today; the widget then
+                // says nothing about a goal rather than inventing one.
+                goalXp = map.today?.goalXp ?: 0,
             ),
             epoch,
         )

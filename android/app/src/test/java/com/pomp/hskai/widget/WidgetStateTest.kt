@@ -39,7 +39,8 @@ class WidgetStateTest {
     @Test fun `policy supports WorkManager minimum and chronological hours`() {
         assertTrue(WidgetPolicy.REFRESH_MINUTES >= 15)
         assertTrue(WidgetPolicy.REACTION_START_HOUR < WidgetPolicy.REACTION_END_HOUR)
-        assertEquals(7, WidgetReaction.entries.size)
+        assertEquals(7, WidgetReaction.DAYTIME_ROTATION.size)
+        assertTrue(WidgetReaction.entries.containsAll(WidgetReaction.DAYTIME_ROTATION))
         assertTrue(WidgetPolicy.REACTION_SLOT_MINUTES > 0)
         assertTrue(WidgetPolicy.SCHEDULE_VERSION > 0)
     }
@@ -48,19 +49,80 @@ class WidgetStateTest {
         val reactions = (0 until 7).map { index ->
             WidgetStateResolver.reaction(
                 WidgetMood.CONTINUE,
-                now.withHour(9).plusMinutes(index * WidgetPolicy.REACTION_SLOT_MINUTES.toLong()),
+                now = now.withHour(9).plusMinutes(index * WidgetPolicy.REACTION_SLOT_MINUTES.toLong()),
             )
         }
-        assertEquals(WidgetReaction.entries.toList(), reactions)
+        assertEquals(WidgetReaction.DAYTIME_ROTATION, reactions)
         assertEquals(WidgetReaction.CALM, WidgetStateResolver.reaction(
             WidgetMood.CONTINUE,
-            now.withHour(7),
+            now = now.withHour(7),
         ))
         assertEquals(WidgetReaction.CALM, WidgetStateResolver.reaction(
             WidgetMood.CONTINUE,
-            now.withHour(20),
+            now = now.withHour(20),
         ))
         // Art is separate from access state: a completed day remains celebratory.
-        assertEquals(WidgetReaction.CELEBRATE, WidgetStateResolver.reaction(WidgetMood.COMPLETE, now))
+        assertEquals(WidgetReaction.CELEBRATE, WidgetStateResolver.reaction(WidgetMood.COMPLETE, now = now))
+    }
+
+    @Test fun `an evening with nothing earned asks instead of rotating`() {
+        val evening = now.withHour(WidgetPolicy.RISK_HOUR)
+        val idle = snapshot().copy(dailyXp = 0, goalXp = 50)
+        assertEquals(WidgetReaction.WORRIED, WidgetStateResolver.reaction(WidgetMood.STREAK, idle, evening))
+        assertEquals(WidgetReaction.WORRIED, WidgetStateResolver.reaction(WidgetMood.CONTINUE, idle, evening))
+        // Before the risk hour the same day is still an ordinary one.
+        assertEquals(WidgetReaction.STREAK, WidgetStateResolver.reaction(WidgetMood.STREAK, idle, now.withHour(12)))
+    }
+
+    @Test fun `at night the panda rests rather than nags`() {
+        val night = now.withHour(WidgetPolicy.NIGHT_HOUR)
+        val idle = snapshot().copy(dailyXp = 0, goalXp = 50)
+        assertEquals(WidgetReaction.SLEEPY, WidgetStateResolver.reaction(WidgetMood.STREAK, idle, night))
+        assertEquals(WidgetReaction.SLEEPY, WidgetStateResolver.reaction(WidgetMood.CONTINUE, idle, night.withHour(3)))
+        // A finished day is celebrated whatever the hour.
+        assertEquals(WidgetReaction.CELEBRATE, WidgetStateResolver.reaction(WidgetMood.COMPLETE, idle, night))
+    }
+
+    @Test fun `half of today's goal switches the panda to cheering`() {
+        val midday = now.withHour(12)
+        assertEquals(WidgetReaction.CHEER, WidgetStateResolver.reaction(
+            WidgetMood.STREAK, snapshot().copy(dailyXp = 25, goalXp = 50), midday,
+        ))
+        // An unknown goal claims nothing, so the rotation is unchanged.
+        assertEquals(WidgetReaction.STREAK, WidgetStateResolver.reaction(
+            WidgetMood.STREAK, snapshot().copy(dailyXp = 25, goalXp = 0), midday,
+        ))
+    }
+
+    @Test fun `the goal line appears only after the day has started`() {
+        val midday = now.withHour(12)
+        assertEquals(WidgetPrompt.GoalLeft(30), WidgetStateResolver.prompt(
+            WidgetMood.STREAK, snapshot().copy(dailyXp = 20, goalXp = 50), midday,
+        ))
+        // Nothing earned yet, a met goal and an unknown goal all stay on the mood title.
+        listOf(
+            snapshot().copy(dailyXp = 0, goalXp = 50),
+            snapshot().copy(dailyXp = 50, goalXp = 50),
+            snapshot().copy(dailyXp = 20, goalXp = 0),
+        ).forEach {
+            assertEquals(WidgetPrompt.Mood, WidgetStateResolver.prompt(WidgetMood.STREAK, it, midday))
+        }
+    }
+
+    @Test fun `the streak line needs a run to lose and a day that is running out`() {
+        val evening = now.withHour(WidgetPolicy.RISK_HOUR)
+        assertEquals(WidgetPrompt.StreakAtRisk, WidgetStateResolver.prompt(
+            WidgetMood.STREAK, snapshot().copy(dailyXp = 0, streak = 4), evening,
+        ))
+        assertEquals(WidgetPrompt.Mood, WidgetStateResolver.prompt(
+            WidgetMood.CONTINUE, snapshot().copy(dailyXp = 0, streak = 0), evening,
+        ))
+        assertEquals(WidgetPrompt.Mood, WidgetStateResolver.prompt(
+            WidgetMood.STREAK, snapshot().copy(dailyXp = 0, streak = 4), now.withHour(12),
+        ))
+        // Access states keep their own title; a locked or unlinked widget asks for nothing else.
+        listOf(WidgetMood.UNLINKED, WidgetMood.STALE, WidgetMood.FOUNDATION, WidgetMood.COMPLETE).forEach {
+            assertEquals(WidgetPrompt.Mood, WidgetStateResolver.prompt(it, snapshot(), evening))
+        }
     }
 }
