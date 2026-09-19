@@ -243,15 +243,6 @@ private fun MistakesHeader(onBack: () -> Unit) {
             iconSize = 18.dp,
             tint = PompColors.InkSecondary,
         )
-        /* legacy icon container removed */ /*
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.practice_back_to_tools),
-                    tint = PompColors.InkSecondary,
-                    modifier = Modifier.size(18.dp),
-                )
-            }
-        }*/
         Text(
             text = stringResource(R.string.mistakes_title),
             fontSize = 23.sp,
