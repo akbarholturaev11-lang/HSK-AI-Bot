@@ -340,7 +340,7 @@ private fun CallChat(
                     color = PompColors.InkDisabled,
                 )
             }
-            return@Surface
+            return@HskGlassSurface
         }
         LazyColumn(
             state = listState,
