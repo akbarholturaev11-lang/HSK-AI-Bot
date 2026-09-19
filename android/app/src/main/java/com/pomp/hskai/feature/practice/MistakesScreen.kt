@@ -44,7 +44,6 @@ import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -70,6 +69,10 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassIconButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -188,16 +191,15 @@ internal fun MistakesOverviewScreen(
 
                 if (filteredItems.size > visibleCount) {
                     item {
-                        Surface(
-                            color = PompColors.PaperRaised,
-                            shape = RoundedCornerShape(13.dp),
-                            border = BorderStroke(1.dp, PompColors.Divider),
+                        HskGlassSurface(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 2.dp, bottom = 12.dp)
-                                .clickable {
-                                    visibleCount = (visibleCount + MISTAKES_VISIBLE_PAGE).coerceAtMost(filteredItems.size)
-                                },
+                                .padding(top = 2.dp, bottom = 12.dp),
+                            shape = RoundedCornerShape(13.dp),
+                            shadowElevation = 4.dp,
+                            onClick = {
+                                visibleCount = (visibleCount + MISTAKES_VISIBLE_PAGE).coerceAtMost(filteredItems.size)
+                            },
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -233,13 +235,15 @@ private fun MistakesHeader(onBack: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(11.dp),
         modifier = Modifier.padding(bottom = 6.dp),
     ) {
-        Surface(
-            color = PompColors.PaperRaised,
-            shape = RoundedCornerShape(999.dp),
-            border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier.size(32.dp).clickable(onClick = onBack),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
+        HskGlassIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.practice_back_to_tools),
+            onClick = onBack,
+            size = 32.dp,
+            iconSize = 18.dp,
+            tint = PompColors.InkSecondary,
+        )
+        /* legacy icon container removed */ /*
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.practice_back_to_tools),
@@ -247,7 +251,7 @@ private fun MistakesHeader(onBack: () -> Unit) {
                     modifier = Modifier.size(18.dp),
                 )
             }
-        }
+        }*/
         Text(
             text = stringResource(R.string.mistakes_title),
             fontSize = 23.sp,
@@ -303,11 +307,7 @@ private fun MistakesReviewCta(total: Int, busy: Boolean, onStartReview: () -> Un
                     contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
                 ) {
                     if (busy) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp,
-                            color = PompColors.Paper,
-                        )
+                        HskBrandLoader(compact = true)
                     } else {
                         Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
                     }
@@ -344,11 +344,10 @@ private fun MistakeCategoryChip(text: String, selected: Boolean, onClick: () -> 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun MistakeCard(item: MistakeItemDto) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
+        shadowElevation = 5.dp,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -494,7 +493,7 @@ private fun MistakesState(
     ) {
         val stateColor = if (destructive) PompColors.Flame else PompColors.Cinnabar
         when {
-            loading -> CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.size(30.dp), strokeWidth = 2.5.dp)
+            loading -> HskBrandLoader()
             icon != null -> Icon(imageVector = icon, contentDescription = null, tint = stateColor, modifier = Modifier.size(30.dp))
         }
         Spacer(Modifier.height(9.dp))
@@ -632,11 +631,10 @@ private fun ReviewMaterial(
     audioError: ApiError?,
     onSpeak: () -> Unit,
 ) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        shadowElevation = 5.dp,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(14.dp)) {
             if (question.audioText.isNotBlank()) {
@@ -647,7 +645,7 @@ private fun ReviewMaterial(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         if (isAudioLoading) {
-                            CircularProgressIndicator(color = PompColors.Cinnabar, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                            HskBrandLoader(compact = true)
                         } else {
                             Icon(
                                 Icons.Filled.VolumeUp,
@@ -851,16 +849,11 @@ internal fun MistakesReviewResult(
             }
         }
 
-        Button(
+        HskPrimaryButton(
+            text = stringResource(R.string.mistakes_done),
             onClick = onDone,
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp).heightIn(min = 54.dp),
-        ) {
-            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(8.dp))
-            Text(text = stringResource(R.string.mistakes_done), fontSize = 16.sp, fontWeight = FontWeight.Medium)
-        }
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp),
+        )
     }
 }
 
