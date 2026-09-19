@@ -91,6 +91,33 @@ fun WidgetSetupSheet(
         onDispose { lifecycle.removeObserver(observer) }
     }
 
+    val requestWidget: () -> Unit = {
+        requesting = true
+        scope.launch {
+            try {
+                app.widgetStore.enqueue(
+                    AndroidWidgetEvent("android_widget_pin_requested")
+                )
+                requested = GlanceAppWidgetManager(context)
+                    .requestPinGlanceAppWidget(
+                        receiver = HskAiWidgetReceiver::class.java,
+                        preview = HskAiSmartWidget(),
+                        previewState = androidx.datastore.preferences.core.emptyPreferences(),
+                    )
+                app.applicationScope.launch {
+                    app.widgetCoordinator.flushEvents()
+                }
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                requested = false
+            } finally {
+                requesting = false
+            }
+        }
+        Unit
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -137,35 +164,7 @@ fun WidgetSetupSheet(
                 text = stringResource(
                     if (installed) R.string.widget_setup_done else R.string.widget_setup_add
                 ),
-                onClick = if (installed) {
-                    onDismiss
-                } else {
-                    {
-                        requesting = true
-                        scope.launch {
-                            try {
-                                app.widgetStore.enqueue(
-                                    AndroidWidgetEvent("android_widget_pin_requested")
-                                )
-                                requested = GlanceAppWidgetManager(context)
-                                    .requestPinGlanceAppWidget(
-                                        receiver = HskAiWidgetReceiver::class.java,
-                                        preview = HskAiSmartWidget(),
-                                        previewState = androidx.datastore.preferences.core.emptyPreferences(),
-                                    )
-                                app.applicationScope.launch {
-                                    app.widgetCoordinator.flushEvents()
-                                }
-                            } catch (cancelled: kotlinx.coroutines.CancellationException) {
-                                throw cancelled
-                            } catch (_: Exception) {
-                                requested = false
-                            } finally {
-                                requesting = false
-                            }
-                        }
-                    }
-                },
+                onClick = if (installed) onDismiss else requestWidget,
                 enabled = installed || !requesting,
                 loading = requesting,
                 modifier = Modifier.fillMaxWidth(),
