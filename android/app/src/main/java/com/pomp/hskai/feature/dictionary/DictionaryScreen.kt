@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.hanzi.StrokeAnimation
 import com.pomp.hskai.data.repository.DictionaryWord
@@ -190,8 +190,7 @@ private fun DictionaryDetail(
                     Box(Modifier.fillMaxWidth().aspectRatio(1f)) {
                         WriterGrid(Modifier.fillMaxSize())
                         when {
-                            state.isStrokeLoading -> CircularProgressIndicator(
-                                color = PompColors.Cinnabar,
+                            state.isStrokeLoading -> HskBrandLoader(
                                 modifier = Modifier.align(Alignment.Center),
                             )
                             state.strokes.isNotEmpty() -> StrokeAnimation(
@@ -264,7 +263,7 @@ private fun DictionaryDetail(
                     Surface(color = PompColors.CinnabarSoft, shape = CircleShape) {
                         IconButton(onClick = onPlayAudio, enabled = !state.isAudioLoading) {
                             if (state.isAudioLoading) {
-                                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = PompColors.CinnabarDark)
+                                HskBrandLoader(compact = true)
                             } else {
                                 Icon(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.dictionary_listen), tint = PompColors.CinnabarDark)
                             }
@@ -370,7 +369,7 @@ private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
 
 @Composable
 private fun LoadingBox() = Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    CircularProgressIndicator(color = PompColors.Cinnabar)
+    HskBrandLoader()
 }
 
 @Composable
