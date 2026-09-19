@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,6 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassIconButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.challengeAssistantContext
@@ -68,22 +72,14 @@ fun ChallengeRunScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(11.dp),
             ) {
-                Surface(
+                HskGlassIconButton(
+                    icon = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.action_close),
                     onClick = onClose,
-                    shape = CircleShape,
-                    color = PompColors.PaperRaised,
-                    border = BorderStroke(1.dp, PompColors.Divider),
-                    modifier = Modifier.size(30.dp),
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(R.string.action_close),
-                            tint = PompColors.InkSecondary,
-                            modifier = Modifier.size(17.dp),
-                        )
-                    }
-                }
+                    size = 30.dp,
+                    iconSize = 17.dp,
+                    tint = PompColors.InkSecondary,
+                )
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -105,7 +101,7 @@ fun ChallengeRunScreen(
                 state.isLoading -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
-                ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
+                ) { HskBrandLoader() }
 
                 state.finished -> ChallengeSubmitted(
                     opponentName = opponentName,
@@ -149,11 +145,10 @@ private fun ChallengeQuestion(
         )
         ColumnQuestionSpacing()
         if (question.sentence.isNotBlank() || question.audioText.isNotBlank()) {
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
+            HskGlassSurface(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                shadowElevation = 6.dp,
             ) {
                 Text(
                     text = question.sentence.ifBlank { question.audioText },
@@ -294,18 +289,10 @@ private fun ChallengeFailed(onRetry: () -> Unit, onClose: () -> Unit) {
             )
         }
         Spacer(Modifier.height(16.dp))
-        Surface(
+        HskPrimaryButton(
+            text = stringResource(R.string.action_retry),
             onClick = onRetry,
-            color = PompColors.Cinnabar,
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.action_retry),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Paper,
-                modifier = Modifier.padding(horizontal = 22.dp, vertical = 13.dp),
-            )
-        }
+        )
         Spacer(Modifier.height(12.dp))
         Surface(
             onClick = onClose,
