@@ -79,20 +79,12 @@ internal fun PrimaryAction(
     onClick: () -> Unit,
     enabled: Boolean = true,
 ) {
-    Button(
+    HskPrimaryButton(
+        text = text,
         onClick = onClick,
         enabled = enabled,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 52.dp),
-        shape = RoundedCornerShape(14.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = PompColors.Cinnabar,
-            contentColor = PompColors.Paper,
-        ),
-    ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
-    }
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
