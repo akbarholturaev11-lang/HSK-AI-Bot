@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
@@ -287,13 +288,12 @@ private fun RoleCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    Surface(
-        color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        shadowElevation = 6.dp,
+        borderColor = if (selected) PompColors.Cinnabar else null,
+        onClick = onClick,
     ) {
         Row(Modifier.padding(16.dp)) {
             Text(
@@ -342,17 +342,14 @@ internal fun PartnerPicker(
             Spacer(Modifier.height(10.dp))
             VOICE_PARTNERS.forEach { role ->
                 val selected = role.id == current
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(
-                        if (selected) 2.dp else 1.dp,
-                        if (selected) PompColors.Cinnabar else PompColors.Divider,
-                    ),
-                    onClick = { onPick(role.id) },
+                HskGlassSurface(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    shadowElevation = 4.dp,
+                    borderColor = if (selected) PompColors.Cinnabar else null,
+                    onClick = { onPick(role.id) },
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
