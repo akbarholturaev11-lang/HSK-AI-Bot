@@ -67,6 +67,9 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.courseAssistantContext
@@ -269,10 +272,9 @@ private fun StatChip(
     value: String,
     label: String,
 ) {
-    Surface(
-        color = PompColors.PaperRaised,
+    HskGlassSurface(
         shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+        shadowElevation = 4.dp,
     ) {
         Row(
             modifier = Modifier
@@ -911,10 +913,10 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Surface(
-                color = PompColors.Paper,
-                shape = RoundedCornerShape(22.dp),
+            HskGlassSurface(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp),
+                shape = RoundedCornerShape(22.dp),
+                shadowElevation = 16.dp,
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 22.dp, vertical = 24.dp),
@@ -931,23 +933,11 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
                         fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.height(18.dp))
-                    Surface(
-                        color = PompColors.Cinnabar,
-                        shape = RoundedCornerShape(14.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 50.dp)
-                            .clickable(onClick = onContinue),
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = stringResource(R.string.action_continue),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = PompColors.Paper,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                        }
-                    }
+                    HskPrimaryButton(
+                        text = stringResource(R.string.action_continue),
+                        onClick = onContinue,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
         }
@@ -968,17 +958,10 @@ private fun CourseErrorBlock(messageRes: Int, onRetry: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(16.dp))
-        androidx.compose.material3.OutlinedButton(
+        HskGlassButton(
+            text = stringResource(R.string.action_retry),
             onClick = onRetry,
-            modifier = Modifier.heightIn(min = 48.dp),
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(
-                stringResource(R.string.action_retry),
-                style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
-            )
-        }
+        )
     }
 }
 
