@@ -58,6 +58,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassButton
+import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
@@ -326,11 +327,13 @@ private fun PlacementCard(enabled: Boolean, onClick: () -> Unit) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ExamRow(entry: ExamEntry, isMine: Boolean, enabled: Boolean, onClick: () -> Unit) {
-    Surface(
-        color = PompColors.PaperRaised,
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, if (isMine) PompColors.Cinnabar else PompColors.Divider),
-        modifier = Modifier.fillMaxWidth().clickable(enabled = enabled, onClick = onClick),
+        shadowElevation = 6.dp,
+        borderColor = if (isMine) PompColors.Cinnabar else null,
+        onClick = onClick,
+        enabled = enabled,
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.Top) {
             Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(14.dp), border = BorderStroke(2.dp, PompColors.CinnabarDark), modifier = Modifier.size(52.dp)) {
@@ -368,9 +371,15 @@ private fun PracticeHeader(group: PracticeGroup?, onBack: () -> Unit, hints: Lis
     val titleRes = if (group == null) R.string.practice_title else R.string.practice_group_tests
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (group != null) {
-            Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(999.dp), border = BorderStroke(1.dp, PompColors.Divider), modifier = Modifier.padding(end = 8.dp).clickable(onClick = onBack)) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.practice_back_to_tools), tint = PompColors.InkSecondary, modifier = Modifier.padding(8.dp))
-            }
+            HskGlassIconButton(
+                icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = stringResource(R.string.practice_back_to_tools),
+                onClick = onBack,
+                size = 40.dp,
+                iconSize = 20.dp,
+                tint = PompColors.InkSecondary,
+            )
+            Spacer(Modifier.width(8.dp))
         }
         Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
             Text(stringResource(titleRes), style = MaterialTheme.typography.titleMedium, color = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
