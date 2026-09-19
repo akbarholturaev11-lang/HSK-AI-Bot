@@ -175,33 +175,13 @@ private fun AdContent(
         }
 
         Spacer(Modifier.height(14.dp))
-        Button(
+        HskPrimaryButton(
+            text = stringResource(R.string.ad_continue),
             onClick = onContinue,
             enabled = state.canContinue && !state.isFinishing,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 52.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = PompColors.Paper,
-                disabledContainerColor = PompColors.Locked,
-                disabledContentColor = PompColors.Paper,
-            ),
-        ) {
-            if (state.isFinishing) {
-                CircularProgressIndicator(
-                    color = PompColors.Paper,
-                    strokeWidth = 2.dp,
-                    modifier = Modifier.size(18.dp),
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.ad_continue),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-        }
+            loading = state.isFinishing,
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         val error = state.error
         if (error != null) {
