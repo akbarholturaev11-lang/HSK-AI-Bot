@@ -198,22 +198,11 @@ private fun CodeBlock(state: LinkUiState, context: Context) {
         )
 
         Spacer(Modifier.height(20.dp))
-        Button(
+        HskPrimaryButton(
+            text = stringResource(R.string.auth_login),
             onClick = { openTelegram(context, state.botDeepLink) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 52.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = PompColors.Paper,
-            ),
-        ) {
-            Text(
-                text = stringResource(R.string.auth_login),
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         Spacer(Modifier.height(6.dp))
         TextButton(
