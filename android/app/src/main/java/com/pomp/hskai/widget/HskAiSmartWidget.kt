@@ -61,7 +61,8 @@ class HskAiSmartWidget : GlanceAppWidget() {
                 session = session,
                 mood = mood,
                 dark = dark,
-                reaction = WidgetStateResolver.reaction(mood, now),
+                reaction = WidgetStateResolver.reaction(mood, session.snapshot, now),
+                prompt = WidgetStateResolver.prompt(mood, session.snapshot, now),
             )
         }
     }
@@ -74,7 +75,8 @@ internal fun WidgetContent(
     session: WidgetSession,
     mood: WidgetMood,
     dark: Boolean,
-    reaction: WidgetReaction = WidgetStateResolver.reaction(mood),
+    reaction: WidgetReaction = WidgetStateResolver.reaction(mood, session.snapshot),
+    prompt: WidgetPrompt = WidgetStateResolver.prompt(mood, session.snapshot),
 ) {
     val size = LocalSize.current
     val compact = size.height < 110.dp
@@ -98,11 +100,24 @@ internal fun WidgetContent(
         WidgetReaction.CHEER -> R.drawable.widget_panda_cheer
         WidgetReaction.STREAK -> R.drawable.widget_panda_streak
         WidgetReaction.CELEBRATE -> R.drawable.widget_panda_celebrate
+        WidgetReaction.WORRIED -> R.drawable.widget_panda_worried
+        WidgetReaction.SLEEPY -> R.drawable.widget_panda_sleepy
     }
     val fresh = mood != WidgetMood.UNLINKED && mood != WidgetMood.STALE
     val snapshot = session.snapshot
-    val stats = if (fresh && snapshot != null) context.getString(R.string.widget_stats, snapshot.xp, snapshot.streak)
-        else context.getString(R.string.widget_open)
+    // Today against today's goal is what decides whether to open the app;
+    // the lifetime total is kept only while the goal is still unknown.
+    val stats = when {
+        !fresh || snapshot == null -> context.getString(R.string.widget_open)
+        snapshot.goalXp > 0 ->
+            context.getString(R.string.widget_stats_goal, snapshot.dailyXp, snapshot.goalXp, snapshot.streak)
+        else -> context.getString(R.string.widget_stats, snapshot.xp, snapshot.streak)
+    }
+    val call = when (prompt) {
+        is WidgetPrompt.StreakAtRisk -> context.getString(R.string.widget_streak_risk)
+        is WidgetPrompt.GoalLeft -> context.getString(R.string.widget_goal_left, prompt.xp)
+        is WidgetPrompt.Mood -> title
+    }
     val lesson = if (fresh && snapshot?.lessonOrder != null)
         context.getString(R.string.widget_lesson, snapshot.level.uppercase(), snapshot.lessonOrder) else "HSK AI"
     // Every tap goes through CurrentLesson; MainActivity performs the fresh bearer/access check.
@@ -128,7 +143,7 @@ internal fun WidgetContent(
                 Spacer(GlanceModifier.height(4.dp))
             }
             val heading = if (compact && fresh && snapshot?.lessonOrder != null)
-                context.getString(R.string.widget_lesson_short, snapshot.lessonOrder) else title
+                context.getString(R.string.widget_lesson_short, snapshot.lessonOrder) else call
             Text(heading, style = TextStyle(color = ColorProvider(palette.ink), fontSize = (if (compact) 12 else 15).sp, fontWeight = FontWeight.Bold), maxLines = if (compact) 1 else 2)
             Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 11.sp), maxLines = 1)
         }

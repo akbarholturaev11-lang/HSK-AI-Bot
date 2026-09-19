@@ -28,4 +28,7 @@
     <string name="widget_setup_manual_step_1">Bosh ekranni bosib turing</string>
     <string name="widget_setup_manual_step_2">Widgetlar → HSK AI ni oching</string>
     <string name="widget_setup_manual_step_3">Panda widgetini tanlang</string>
+    <string name="widget_streak_risk">Streak bugun uzilishi mumkin</string>
+    <string name="widget_goal_left">Maqsadgacha %1$d XP</string>
+    <string name="widget_stats_goal">%1$d/%2$d XP · %3$d kun</string>
 </resources>

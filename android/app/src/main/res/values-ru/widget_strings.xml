@@ -28,4 +28,7 @@
     <string name="widget_setup_manual_step_1">Удерживайте главный экран</string>
     <string name="widget_setup_manual_step_2">Откройте Виджеты → HSK AI</string>
     <string name="widget_setup_manual_step_3">Выберите виджет с пандой</string>
+    <string name="widget_streak_risk">Серия может прерваться сегодня</string>
+    <string name="widget_goal_left">До цели %1$d XP</string>
+    <string name="widget_stats_goal">%1$d/%2$d XP · %3$d дн.</string>
 </resources>

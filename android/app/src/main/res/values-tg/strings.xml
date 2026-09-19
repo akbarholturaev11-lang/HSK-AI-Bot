@@ -259,6 +259,10 @@
     <string name="notify_streak_body">Имрӯз ҳанӯз машқ накардед. Як қисм кифоя аст, то силсила нашиканад.</string>
     <string name="notify_goal_title">Ҳадафи рӯзона ҳанӯз иҷро нашуд</string>
     <string name="notify_goal_body">То ҳадафи имрӯза каме мондааст. Як қисмро анҷом диҳед.</string>
+    <string name="notify_streak_body_2">Панда интизори шумост. Як дарси кӯтоҳ — силсила боқӣ мемонад.</string>
+    <string name="notify_streak_body_3">Рӯз ба охир мерасад, вале силсиларо ҳанӯз наҷот додан мумкин. Як қисм кифоя аст.</string>
+    <string name="notify_goal_body_2">То ҳадаф каме мондааст — панда то охир бо шумост.</string>
+    <string name="notify_goal_body_3">Танҳо як қисм мондааст. Ҳадафи имрӯзаро пӯшем?</string>
     <string name="practice_dictionary_title">Луғати иероглиф</string>
     <string name="practice_dictionary_body">HSK 1–4 · навишт, пинйин, маъно</string>
     <string name="dictionary_search_hint">Иероглиф, пинйин ё маъно</string>

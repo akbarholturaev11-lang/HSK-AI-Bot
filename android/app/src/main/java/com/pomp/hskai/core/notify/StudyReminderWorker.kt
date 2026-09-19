@@ -72,8 +72,11 @@ class StudyReminderWorker(
         )
         if (reminder == Reminder.NONE) return Result.success()
 
-        app.widgetStore.remindOnce(session.epoch, day ?: return Result.success()) {
-            StudyNotifications.postReminder(applicationContext, reminder)
+        val today = day ?: return Result.success()
+        app.widgetStore.remindOnce(session.epoch, today) {
+            // The wording rotates by day so the evening reminder does not read
+            // as the same canned sentence every time.
+            StudyNotifications.postReminder(applicationContext, reminder, ReminderDecision.variant(today))
         }
         return Result.success()
     }
