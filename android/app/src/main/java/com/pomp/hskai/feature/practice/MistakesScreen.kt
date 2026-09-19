@@ -42,8 +42,6 @@ import androidx.compose.material.icons.filled.Trophy
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WifiOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -287,28 +285,12 @@ private fun MistakesReviewCta(total: Int, busy: Boolean, onStartReview: () -> Un
                     color = foreground.copy(alpha = 0.72f),
                     modifier = Modifier.padding(top = 5.dp, bottom = 13.dp),
                 )
-                Button(
+                HskPrimaryButton(
+                    text = stringResource(R.string.mistakes_start),
                     onClick = onStartReview,
                     enabled = !busy,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = PompColors.Cinnabar,
-                        contentColor = PompColors.Paper,
-                    ),
-                    contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
-                ) {
-                    if (busy) {
-                        HskBrandLoader(compact = true)
-                    } else {
-                        Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
-                    }
-                    Spacer(Modifier.width(7.dp))
-                    Text(
-                        text = if (busy) stringResource(R.string.mistakes_loading) else stringResource(R.string.mistakes_start),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                    )
-                }
+                    loading = busy,
+                )
             }
         }
     }
@@ -457,14 +439,10 @@ private fun MistakesEmpty(onCourse: () -> Unit) {
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 6.dp, bottom = 22.dp),
         )
-        Button(
+        HskPrimaryButton(
+            text = stringResource(R.string.mistakes_to_course),
             onClick = onCourse,
-            shape = RoundedCornerShape(13.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
-            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 13.dp),
-        ) {
-            Text(text = stringResource(R.string.mistakes_to_course), fontSize = 14.sp, fontWeight = FontWeight.Medium)
-        }
+        )
     }
 }
 
@@ -491,14 +469,10 @@ private fun MistakesState(
         Text(text = text, fontSize = 14.sp, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         if (action != null) {
             Spacer(Modifier.height(14.dp))
-            Button(
+            HskPrimaryButton(
+                text = action,
                 onClick = onAction,
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
-            ) {
-                Text(action, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-            }
+            )
         }
     }
 }
@@ -587,30 +561,19 @@ internal fun MistakesReviewRun(
         }
 
         if (state.reviewFeedback != null) {
-            Button(
+            HskPrimaryButton(
+                text = stringResource(
+                    if (state.reviewIndex >= session.questions.lastIndex) {
+                        R.string.mistakes_finish
+                    } else {
+                        R.string.mistakes_next
+                    }
+                ),
                 onClick = onAdvance,
                 enabled = !state.isCompleting,
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
-                ),
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp).heightIn(min = 54.dp),
-            ) {
-                if (state.isCompleting) {
-                    CircularProgressIndicator(color = PompColors.Paper, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.mistakes_loading))
-                } else if (state.reviewIndex >= session.questions.lastIndex) {
-                    Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.mistakes_finish), fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                } else {
-                    Text(stringResource(R.string.mistakes_next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                    Spacer(Modifier.width(8.dp))
-                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
-                }
-            }
+                loading = state.isCompleting,
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp),
+            )
         }
     }
 }
