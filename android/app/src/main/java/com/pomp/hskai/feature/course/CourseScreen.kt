@@ -381,33 +381,47 @@ private fun UnitHeader(unit: CourseUnit) {
                 shape = shape,
             )
         )
-    Surface(
-        color = if (unit.isLocked) PompColors.PaperRaised else Color.Transparent,
-        shape = shape,
-        border = if (unit.isLocked) BorderStroke(1.dp, PompColors.Divider) else null,
-        modifier = bannerModifier,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
-            verticalAlignment = Alignment.CenterVertically,
+    if (unit.isLocked) {
+        HskGlassSurface(
+            modifier = bannerModifier,
+            shape = shape,
+            shadowElevation = 5.dp,
         ) {
-            Text(
-                text = unit.title.ifBlank { unit.number.toString() },
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 15.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                color = foreground,
-                modifier = Modifier.weight(1f),
-                maxLines = 2,
-            )
-            MiniAppNodeIcon(
-                kind = if (unit.isLocked) CourseNodeIconKind.Lock else CourseNodeIconKind.Book2,
-                tint = foreground.copy(alpha = 0.85f),
-                size = 18.dp,
-            )
+            UnitHeaderBody(unit = unit, foreground = foreground)
         }
+    } else {
+        Surface(
+            color = Color.Transparent,
+            shape = shape,
+            modifier = bannerModifier,
+        ) {
+            UnitHeaderBody(unit = unit, foreground = foreground)
+        }
+    }
+}
+
+@Composable
+private fun UnitHeaderBody(unit: CourseUnit, foreground: Color) {
+    Row(
+        modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = unit.title.ifBlank { unit.number.toString() },
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontSize = 15.sp,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+            ),
+            color = foreground,
+            modifier = Modifier.weight(1f),
+            maxLines = 2,
+        )
+        MiniAppNodeIcon(
+            kind = if (unit.isLocked) CourseNodeIconKind.Lock else CourseNodeIconKind.Book2,
+            tint = foreground.copy(alpha = 0.85f),
+            size = 18.dp,
+        )
     }
 }
 
@@ -579,10 +593,10 @@ private fun CurrentBubble() {
             .wrapContentSize(unbounded = true),
         contentAlignment = Alignment.Center,
     ) {
-        Surface(
-            color = PompColors.PaperRaised,
+        HskGlassSurface(
             shape = RoundedCornerShape(20.dp),
-            border = BorderStroke(1.dp, PompColors.Cinnabar),
+            shadowElevation = 5.dp,
+            borderColor = PompColors.Cinnabar,
         ) {
             Text(
                 text = stringResource(R.string.today_continue).uppercase(),
@@ -845,6 +859,11 @@ private fun PathPanda(
     animationDelayMillis: Int,
     modifier: Modifier = Modifier,
 ) {
+    val bubbleFill = if (PompColors.IsDark) {
+        PompColors.PaperRaised.copy(alpha = 0.88f)
+    } else {
+        Color.White.copy(alpha = 0.72f)
+    }
     Box(modifier = modifier.size(72.dp), contentAlignment = Alignment.Center) {
         CoursePandaMascot(
             modifier = Modifier.size(72.dp),
@@ -855,10 +874,9 @@ private fun PathPanda(
                 .align(if (leftBubble) Alignment.TopStart else Alignment.TopEnd)
                 .offset(y = (-28).dp),
         ) {
-            Surface(
-                color = PompColors.PaperRaised,
+            HskGlassSurface(
                 shape = RoundedCornerShape(14.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
+                shadowElevation = 4.dp,
             ) {
                 Text(
                     text = text,
@@ -888,7 +906,7 @@ private fun PathPanda(
                     lineTo(size.width, size.height / 2f)
                     close()
                 }
-                drawPath(path, color = PompColors.PaperRaised)
+                drawPath(path, color = bubbleFill)
                 drawLine(
                     PompColors.Divider,
                     Offset(size.width / 2f, size.height),
