@@ -9255,3 +9255,7 @@ Eslatma:
   kerak.
 - Server tomoniga tegilmadi: yangi event qo'shilmadi, `android_events.py`
   allowlisti o'sha-o'sha.
+- Versiya ko'tarildi: `appVersionName` 1.1.1 → **1.2.0**, `appVersionCode`
+  3 → **4**. APK nomi ham shundan chiqadi
+  (`hsk-ai-1.2.0-4-direct-release.apk`), ya'ni release yig'ilganda R2 dagi
+  papka `android/v1.2.0/` bo'ladi.
