@@ -158,6 +158,9 @@ internal enum class UpdatePhase { Ready, Downloading, Failed }
 /**
  * Its own client on purpose.
  *
+ * Shared with the banner and the background check, which is why these are
+ * `internal` rather than private to this file.
+ *
  * The app's shared OkHttp client carries `OriginGuardInterceptor`, which
  * rejects every host but our API — correct for the API, and fatal here, since
  * the artifact is served from object storage. This one accepts only what
@@ -172,7 +175,7 @@ private val downloadClient: OkHttpClient by lazy {
         .build()
 }
 
-private fun fetchRelease(): UpdateRelease? = try {
+internal fun fetchRelease(): UpdateRelease? = try {
     val request = Request.Builder()
         .url(
             "${BuildConfig.API_ORIGIN}/api/v3/android-update/check" +
@@ -194,7 +197,7 @@ private fun fetchRelease(): UpdateRelease? = try {
     null
 }
 
-private fun download(context: Context, release: UpdateRelease): File? = try {
+internal fun download(context: Context, release: UpdateRelease): File? = try {
     val directory = File(context.cacheDir, "updates").apply { mkdirs() }
     // One file, always overwritten. Keeping a version-named file per release
     // would quietly fill the cache with installers nobody will open again.
@@ -224,9 +227,9 @@ private fun download(context: Context, release: UpdateRelease): File? = try {
     null
 }
 
-private fun Context.canInstallApks(): Boolean = packageManager.canRequestPackageInstalls()
+internal fun Context.canInstallApks(): Boolean = packageManager.canRequestPackageInstalls()
 
-private fun Context.openInstallPermissionSettings() {
+internal fun Context.openInstallPermissionSettings() {
     try {
         startActivity(
             Intent(
@@ -239,7 +242,7 @@ private fun Context.openInstallPermissionSettings() {
     }
 }
 
-private fun Context.launchInstaller(file: File) {
+internal fun Context.launchInstaller(file: File) {
     try {
         val uri = FileProvider.getUriForFile(this, "$packageName.updates", file)
         startActivity(

@@ -188,15 +188,29 @@ not in the Play APK — check with
 
 How it works:
 
-1. The profile screen asks `GET /api/v3/android-update/check?version_code=N`.
-   The answer is 204 unless a newer build with a download link is published —
-   no release, no link, no version code, or a caller already current all
-   collapse to the same empty answer. The release comes from the manifest when
-   one is configured, and from the bot panel otherwise.
-2. A card appears in the profile, and nowhere else: an update is not urgent
-   enough to stand between someone and the lesson they opened the app for.
-3. Tapping downloads the APK to `cacheDir/updates/update.apk`, checks the size
-   against what the server announced, and opens the system installer.
+1. `GET /api/v3/android-update/check?version_code=N` is asked from three
+   places: the profile screen when it opens, once when the app starts, and
+   once a day in the background (`UpdateWatch`, WorkManager — the daily check
+   is what reaches a phone nobody has opened this week). The answer is 204
+   unless a newer build with a download link is published — no release, no
+   link, no version code, or a caller already current all collapse to the same
+   empty answer. The release comes from the manifest when one is configured,
+   and from the bot panel otherwise.
+2. A card appears in the profile. For one missed release that is still all of
+   it: an update is not urgent enough to stand between someone and the lesson
+   they opened the app for.
+3. The first check to see a release posts **one** notification, on its own
+   `app_updates` channel, and writes the version code down so the same release
+   is never announced twice — not the next day, not after a reinstall.
+   `POST_NOTIFICATIONS` is never requested for it: with notifications off the
+   card and the banner are the whole story.
+4. Two releases behind (`AppUpdate.NUDGE_AFTER_MISSED_RELEASES`), a bar appears
+   above the tab bar and stays until the install is newer. It cannot be
+   dismissed, and it is drawn by `MainScaffold`, so a lesson, a drill and a
+   voice call never carry it.
+5. Tapping either the card or the bar downloads the APK to
+   `cacheDir/updates/update.apk`, checks the size against what the server
+   announced, and opens the system installer.
 
 Android refuses an update signed by a different key, so a swapped file cannot
 replace the app with something else. The size check catches the one thing that

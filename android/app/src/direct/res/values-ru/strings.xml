@@ -21,4 +21,16 @@
     <string name="update_card_failed">Не удалось загрузить — попробуйте ещё раз</string>
     <string name="update_card_permission">Разрешите установку</string>
     <string name="update_card_permission_hint">Откроются настройки Android</string>
+
+    <!--
+        Two releases behind: the banner above the tab bar, and the one
+        notification a release is allowed to send.
+    -->
+    <string name="update_banner_text">Новая версия %1$s — нажмите, чтобы обновить</string>
+    <string name="update_banner_downloading">Загрузка…</string>
+    <string name="update_banner_failed">Не удалось загрузить — попробуйте ещё раз</string>
+    <string name="update_banner_permission">Разрешите установку — нажмите, чтобы обновить</string>
+    <string name="update_channel_name">Обновления приложения</string>
+    <string name="notify_update_title">Вышла новая версия</string>
+    <string name="notify_update_body">HSK AI %1$s готов. Откройте приложение, чтобы обновить.</string>
 </resources>

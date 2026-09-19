@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.feature.update.AppUpdateBanner
 
 enum class MainTab(val labelRes: Int, val icon: ImageVector) {
     COURSE(R.string.nav_course, Icons.Filled.Map),
@@ -76,26 +77,32 @@ fun MainScaffold(
     Scaffold(
         containerColor = PompColors.Paper,
         bottomBar = {
-            Surface(
-                color = PompColors.PaperRaised,
-                border = BorderStroke(1.dp, PompColors.Divider),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(94.dp)
-                        .padding(horizontal = 4.dp, vertical = 8.dp)
-                        .navigationBarsPadding(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+            Column {
+                // An install two releases behind is told so here: above the
+                // tabs, on every main screen, and never inside a lesson. The
+                // direct channel draws it; the Play build draws nothing.
+                AppUpdateBanner()
+                Surface(
+                    color = PompColors.PaperRaised,
+                    border = BorderStroke(1.dp, PompColors.Divider),
                 ) {
-                    tabs.forEach { tab ->
-                        NavItem(
-                            tab = tab,
-                            selected = selectedTab == tab,
-                            onClick = { onTabSelected(tab) },
-                            modifier = Modifier.weight(1f),
-                        )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(94.dp)
+                            .padding(horizontal = 4.dp, vertical = 8.dp)
+                            .navigationBarsPadding(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        tabs.forEach { tab ->
+                            NavItem(
+                                tab = tab,
+                                selected = selectedTab == tab,
+                                onClick = { onTabSelected(tab) },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
                     }
                 }
             }

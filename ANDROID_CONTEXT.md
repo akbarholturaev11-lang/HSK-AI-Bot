@@ -47,6 +47,11 @@ build'da ekanini bilmay chaqiradi.
   `android_app:get` tugmasi ham ishlayveradi. Saytdagi (`/desktop-download`)
   Android tugmasi esa faylni to'g'ridan-to'g'ri yuklaydi — u R2 linkini talab
   qiladi.
+- Yangilanishdan xabar berish (faqat `direct`): ilova ochilganda va kuniga bir
+  marta fonda `…/android-update/check` so'raladi (`UpdateWatch`). Har release
+  uchun **bitta** bildirishnoma (`app_updates` kanali, `UpdateNotices`), va
+  `versionCode` farqi ≥ 2 bo'lsa tab paneli ustida yopib bo'lmaydigan qator
+  (`AppUpdateBanner`). Bitta release qoldirilsa — faqat profildagi karta.
 - Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
   tushiriladi). Hali **bir marta ham ishlamagan**.
 - Play Market: yo'q. Akkaunt ham ochilmagan.

@@ -22,4 +22,16 @@
     <string name="update_card_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
     <string name="update_card_permission">O‘rnatishga ruxsat bering</string>
     <string name="update_card_permission_hint">Android sozlamalari ochiladi</string>
+
+    <!--
+        Two releases behind: the banner above the tab bar, and the one
+        notification a release is allowed to send.
+    -->
+    <string name="update_banner_text">Yangi versiya %1$s — yangilash uchun bosing</string>
+    <string name="update_banner_downloading">Yuklanmoqda…</string>
+    <string name="update_banner_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
+    <string name="update_banner_permission">O‘rnatishga ruxsat bering — yangilash uchun bosing</string>
+    <string name="update_channel_name">Ilova yangilanishlari</string>
+    <string name="notify_update_title">Yangi versiya chiqdi</string>
+    <string name="notify_update_body">HSK AI %1$s tayyor. Yangilash uchun ilovani oching.</string>
 </resources>

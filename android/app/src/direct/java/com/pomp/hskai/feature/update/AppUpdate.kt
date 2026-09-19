@@ -27,6 +27,19 @@ data class UpdateRelease(
  */
 object AppUpdate {
 
+    /**
+     * How many releases someone has to miss before the profile card stops
+     * being enough.
+     *
+     * Every release raises `versionCode` by exactly one, so the gap between
+     * the installed code and the published one is the number of releases
+     * skipped. One missed release is ordinary — the card in the profile says
+     * so and that is the end of it. Two means the card has been passed over
+     * at least once, and a learner running a build two releases old is the
+     * one who reports bugs that were fixed weeks ago.
+     */
+    const val NUDGE_AFTER_MISSED_RELEASES = 2
+
     private val json = Json { ignoreUnknownKeys = true }
 
     fun parse(status: Int, body: String?, installedVersionCode: Int): UpdateRelease? {
@@ -73,4 +86,24 @@ object AppUpdate {
         if (announcedBytes <= 0L) return downloadedBytes > 0L
         return downloadedBytes == announcedBytes
     }
+
+    /**
+     * Whether this install is far enough behind to be told so on every screen.
+     *
+     * [parse] has already refused anything that is not newer, so the only
+     * question left is the size of the gap.
+     */
+    fun isFarBehind(release: UpdateRelease, installedVersionCode: Int): Boolean =
+        release.versionCode - installedVersionCode >= NUDGE_AFTER_MISSED_RELEASES
+
+    /**
+     * Whether this release still owes the learner a notification.
+     *
+     * One per release, ever: the code of the last release announced is kept
+     * on the device, so reopening the app, a second background check the same
+     * day and a reinstall of the same build all stay silent. Announcing a
+     * release twice is how a notification becomes the thing people switch off.
+     */
+    fun shouldAnnounce(release: UpdateRelease, announcedVersionCode: Int): Boolean =
+        release.versionCode > announcedVersionCode
 }

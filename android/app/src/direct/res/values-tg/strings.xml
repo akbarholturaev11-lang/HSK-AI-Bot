@@ -22,4 +22,16 @@
     <string name="update_card_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
     <string name="update_card_permission">Ба насб иҷозат диҳед</string>
     <string name="update_card_permission_hint">Танзимоти Android кушода мешавад</string>
+
+    <!--
+        Two releases behind: the banner above the tab bar, and the one
+        notification a release is allowed to send.
+    -->
+    <string name="update_banner_text">Версияи нав %1$s — барои навсозӣ пахш кунед</string>
+    <string name="update_banner_downloading">Боргирӣ…</string>
+    <string name="update_banner_failed">Боргирӣ нашуд — боз кӯшиш кунед</string>
+    <string name="update_banner_permission">Ба насб иҷозат диҳед — барои навсозӣ пахш кунед</string>
+    <string name="update_channel_name">Навсозиҳои барнома</string>
+    <string name="notify_update_title">Версияи нав баромад</string>
+    <string name="notify_update_body">HSK AI %1$s омода аст. Барои навсозӣ барномаро кушоед.</string>
 </resources>

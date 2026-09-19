@@ -9259,3 +9259,72 @@ Eslatma:
   3 → **4**. APK nomi ham shundan chiqadi
   (`hsk-ai-1.2.0-4-direct-release.apk`), ya'ni release yig'ilganda R2 dagi
   papka `android/v1.2.0/` bo'ladi.
+
+### 2026-09-19 — Yangi versiya haqida bitta bildirishnoma, ikki versiya orqada qolganga doimiy qator
+
+Foydalanuvchi: «yangi versiya chiqsa ilova bitta xabar jo'natib qo'yadigan qil;
+agar 2 ta yangi versiya chiqsayu user hali obnovit qilmagan bo'lsa, ilova
+ekranida obnovit qilish matnini chiqarsin, to obnovit qilinmaguncha shunday
+qolsin».
+
+Muammo: 15-sentabrda qo'yilgan yangilanish kartasi **faqat profil ochilganda**
+serverdan so'rardi. Profilga kirmagan odam yangi versiya borligini umuman
+bilmasdi — ya'ni yangilanish bor edi, xabar yo'q edi.
+
+Changed:
+- `UpdateWatch` (WorkManager): ilova ishga tushganda bir marta (`KEEP` —
+  tugallangan tekshiruvdan keyin yangisi navbatga qo'yiladi, ishlayotgani
+  ustiga ikkinchisi qo'yilmaydi) va **kuniga bir marta** fonda tekshiradi.
+  Tarmoq shart (`NetworkType.CONNECTED`). Xatolik `Result.success()` —
+  keyingi ishga tushish va ertangi tekshiruv baribir so'raydi, flaky tarmoqda
+  retry batareyani yeydi.
+- `UpdateNotices`: har release uchun **bitta** bildirishnoma. Oxirgi e'lon
+  qilingan `versionCode` qurilmada saqlanadi (`SharedPreferences`), ya'ni
+  ertasi kuni, qayta ochilganda yoki o'sha buildni qayta o'rnatganda takror
+  kelmaydi. Alohida kanal — `app_updates`, dars eslatmasidan ajratilgan:
+  darslar haqida bezovta qilinishni istamagan odam ham tuzatilgan build
+  haqida eshitishi mumkin. `POST_NOTIFICATIONS` **so'ralmaydi** — ruxsat
+  bo'lmasa, karta va qator o'z ishini qilaveradi.
+- `AppUpdateBanner`: `versionCode` farqi ≥ 2 bo'lsa (`NUDGE_AFTER_MISSED_RELEASES`),
+  tab paneli ustida qizil qator chiqadi va **o'rnatilmaguncha turadi** — yopib
+  bo'lmaydi. `MainScaffold` chizadi, shuning uchun dars, mashq va ovoz
+  ekranlarida ko'rinmaydi. Bosilganda karta bilan bir xil yo'l: ruxsat →
+  yuklash → tizim o'rnatuvchisi.
+- 15-sentabrdagi «karta faqat profilda, boshqa joyda emas» qarori **qisman**
+  o'zgardi: bitta release qoldirilsa hamon faqat karta; ikkitasi qoldirilsa —
+  qator. Sabab: kartani yonidan o'tib ketgan odam ikki hafta eski buildda
+  qolib, allaqachon tuzatilgan xatolar haqida yozadi.
+- Yuklash/o'rnatish quvuri (`fetchRelease`, `download`, `canInstallApks`,
+  `openInstallPermissionSettings`, `launchInstaller`) `private` dan `internal`
+  ga o'tdi — karta, qator va fon tekshiruvi bittasini ishlatadi.
+- Play flavour'da hech nima yo'q: `AppUpdateBanner` — bo'sh composable,
+  `UpdateWatch` — bo'sh `schedule`/`cancel`. Play o'zi yangilaydi va boshqa
+  yo'lni taqiqlaydi.
+
+Key files:
+- `android/app/src/direct/.../feature/update/AppUpdate.kt` (`isFarBehind`,
+  `shouldAnnounce`, `NUDGE_AFTER_MISSED_RELEASES`), `AppUpdateBanner.kt`,
+  `UpdateNotices.kt`, `UpdateWatch.kt`, `AppUpdateCard.kt`
+- `android/app/src/play/.../feature/update/AppUpdateBanner.kt`, `UpdateWatch.kt`
+- `android/app/src/main/java/com/pomp/hskai/core/navigation/MainScaffold.kt`,
+  `HskAiApplication.kt`
+- `android/app/src/direct/res/values{,-ru,-tg}/strings.xml` (7 ta yangi satr
+  uchta tilda)
+- `android/app/src/testDirect/.../UpdateNudgeTest.kt`,
+  `androidTest/.../UpdateBannerStatesTest.kt`
+- `android/README.md`
+
+Verified:
+- Beshta statik tekshiruv yashil: `check_flavor_parity` (4 ta umumiy
+  deklaratsiya), `check_named_arguments` (1102 callable),
+  `check_interface_fakes`, `check_palette_matches_miniapp`,
+  `check_strings_translated` — 516 → **523** satr uz/ru/tg.
+
+Eslatma:
+- **Bu muhitda Android SDK yo'q**: `./gradlew testDirectDebugUnitTest
+  testPlayDebugUnitTest lintDirectDebug lintPlayDebug assembleDirectDebug`
+  ishga tushirilmadi. Kompilyatsiya SDK bor mashinada tekshirilishi kerak.
+- Server tomoniga tegilmadi — `/api/v3/android-update/check` o'sha-o'sha.
+- Qator va bildirishnomani ishlab ko'rish uchun serverda **yangi release**
+  e'lon qilingan bo'lishi kerak; qatorni ko'rish uchun esa o'rnatilgan
+  `versionCode` dan kamida 2 ga katta bo'lishi shart.

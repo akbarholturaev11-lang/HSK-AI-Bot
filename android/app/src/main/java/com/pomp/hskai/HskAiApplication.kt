@@ -33,6 +33,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import com.pomp.hskai.widget.*
 import com.pomp.hskai.core.notify.StudyReminderScheduler
+import com.pomp.hskai.feature.update.UpdateWatch
 import com.pomp.hskai.core.notify.StudyNotifications
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -55,6 +56,11 @@ class HskAiApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         applicationScope.launch {
+            // Whether a newer build exists is asked here rather than from a
+            // screen: the profile card only ever spoke to someone who opened
+            // the profile. The Play build schedules nothing — Play updates
+            // itself, and its flavour has an empty [UpdateWatch].
+            UpdateWatch.schedule(this@HskAiApplication)
             if (widgetStore.read().linked) WidgetScheduler.schedule(this@HskAiApplication)
             // Migrate the old Telegram-coupled reminder: local reminders now default OFF.
             if (widgetStore.read().reminderEnabled) StudyReminderScheduler.schedule(this@HskAiApplication)
