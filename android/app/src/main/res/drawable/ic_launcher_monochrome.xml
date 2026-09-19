@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Single-color HSK AI tone seal for Android themed icons. -->
+<!--
+    Single-colour HSK AI knot for Android themed icons. A themed icon has no
+    ground of its own, so the under-passes cannot be cut by a casing the way
+    ic_launcher_foreground.xml cuts them: here each strand is simply drawn with
+    a gap where it passes under, and the second strand is the same path turned
+    45 degrees.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -8,18 +14,20 @@
 
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M31,25.5 H77 C81.5,25.5 83.5,29 83.5,33.5 V69.5 C83.5,74.5 81,77.5 76.5,77.5 H63 L54,85.5 L55,77.5 H31 C26.5,77.5 24.5,74.5 24.5,69.5 V33.5 C24.5,29 26.5,25.5 31,25.5 Z"
+        android:pathData="M67.87,35 H68.5 A4.5,4.5 0 0 1 73,39.5 V55.87 M73,67.87 V68.5 A4.5,4.5 0 0 1 68.5,73 H52.13 M40.13,73 H39.5 A4.5,4.5 0 0 1 35,68.5 V52.13 M35,40.13 V39.5 A4.5,4.5 0 0 1 39.5,35 H55.87"
         android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="5" />
-    <path
-        android:fillColor="@android:color/transparent"
-        android:pathData="M35,40 C47,40 60,40 74,40 M35,51 C45,56 57,55 70,44.5 M35,59 C47,58 55,65 64,65 C69,65 73,61 77,57.5 M35,69 C48,69 61,72 75,72.5"
-        android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
-        android:strokeWidth="4.25" />
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="M76.5,31 A3.25,3.25 0,1 1,76.5,37.5 A3.25,3.25 0,1 1,76.5,31" />
+        android:strokeWidth="6" />
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="45">
+        <path
+            android:fillColor="@android:color/transparent"
+            android:pathData="M67.87,35 H68.5 A4.5,4.5 0 0 1 73,39.5 V55.87 M73,67.87 V68.5 A4.5,4.5 0 0 1 68.5,73 H52.13 M40.13,73 H39.5 A4.5,4.5 0 0 1 35,68.5 V52.13 M35,40.13 V39.5 A4.5,4.5 0 0 1 39.5,35 H55.87"
+            android:strokeColor="#FF000000"
+            android:strokeLineJoin="round"
+            android:strokeWidth="6" />
+    </group>
 </vector>
