@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -67,6 +66,7 @@ import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.feature.update.AppUpdateCard
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -202,7 +202,7 @@ fun ProfileScreen(
             if (state.isLoading) {
                 item {
                     Box(Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = PompColors.Cinnabar, strokeWidth = 2.dp)
+                        HskBrandLoader(compact = true)
                     }
                 }
             }
