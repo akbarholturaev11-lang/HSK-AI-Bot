@@ -65,6 +65,31 @@ def create_ios_course_router(
 ) -> APIRouter:
     router = APIRouter(tags=["ios-course"])
 
+    @router.get("/api/v3/ios/course/map")
+    async def ios_course_map(request: Request):
+        try:
+            raw_offset = request.query_params.get("tz")
+            offset: int | None = None
+            if raw_offset is not None:
+                try:
+                    offset = int(raw_offset)
+                except (TypeError, ValueError) as exc:
+                    raise DesktopCourseError("ios_request_invalid", status_code=422) from exc
+                if not MIN_TZ_OFFSET_MINUTES <= offset <= MAX_TZ_OFFSET_MINUTES:
+                    raise DesktopCourseError("ios_request_invalid", status_code=422)
+
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).course_map(
+                    bearer_access_token(request),
+                    timezone_offset_minutes=offset,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS course map failed")
+            return _unavailable()
+
     @router.get("/api/v3/ios/course/onboarding")
     async def ios_onboarding_status(request: Request):
         try:

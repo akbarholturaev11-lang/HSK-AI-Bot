@@ -28,6 +28,44 @@ class IOSCourseOnboardingTransportTests(unittest.IsolatedAsyncioTestCase):
             base_url="https://testserver",
         )
 
+    async def test_course_map_delegates_timezone_to_shared_service(self):
+        service = SimpleNamespace(
+            course_map=AsyncMock(
+                return_value={
+                    "ok": True,
+                    "level": "hsk3",
+                    "units": [],
+                    "progress": {},
+                    "user": {},
+                    "notify": {"enabled": True},
+                }
+            )
+        )
+
+        async with await self._client(service) as client:
+            response = await client.get(
+                "/api/v3/ios/course/map?tz=480",
+                headers={"Authorization": "Bearer access-token"},
+            )
+
+        self.assertEqual(200, response.status_code)
+        service.course_map.assert_awaited_once_with(
+            "access-token",
+            timezone_offset_minutes=480,
+        )
+
+    async def test_course_map_rejects_out_of_range_timezone(self):
+        service = SimpleNamespace(course_map=AsyncMock())
+
+        async with await self._client(service) as client:
+            response = await client.get(
+                "/api/v3/ios/course/map?tz=9999",
+                headers={"Authorization": "Bearer access-token"},
+            )
+
+        self.assertEqual(422, response.status_code)
+        service.course_map.assert_not_awaited()
+
     async def test_status_delegates_to_shared_native_course_service(self):
         service = SimpleNamespace(
             onboarding_status=AsyncMock(
