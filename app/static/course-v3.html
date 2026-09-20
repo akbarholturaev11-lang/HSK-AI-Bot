@@ -1156,6 +1156,13 @@ button{cursor:pointer}
 @keyframes hskHpLast{0%,100%{transform:scale(1);filter:none}50%{transform:scale(1.16);filter:drop-shadow(0 0 10px rgba(224,74,64,.45))}}
 @keyframes hskHpZero{0%{transform:scale(1)}40%{transform:scale(.88);opacity:.7}100%{transform:scale(1);opacity:1}}
 @media (prefers-reduced-motion:reduce){.fheart.hp-hit,.fheart.hp-last,.fheart.hp-zero{animation:none!important}}
+.hsk-lesson-reaction{
+  position:fixed;right:16px;bottom:calc(92px + var(--safe-b));z-index:38;
+  width:76px;height:82px;pointer-events:none;opacity:0;
+}
+.hsk-lesson-reaction.on{opacity:1}
+.hsk-lesson-reaction .hsk-character{width:100%;height:100%}
+@media (prefers-reduced-motion:reduce){.hsk-lesson-reaction{display:none!important}}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260918-2" rel="stylesheet">
 </head>
@@ -3340,6 +3347,21 @@ function renderFeedbackCharacter(host,id,reaction){
   if(window.HSKCharacters&&HSKCharacters.mount)HSKCharacters.mount(host,id,feedbackMoodFromReaction(reaction));
   if(window.HSKCharacterMotion&&HSKCharacterMotion.play)HSKCharacterMotion.play(host,reaction);
 }
+function lessonCharacterHtml(id,mood){
+  if(window.HSKCharacters&&HSKCharacters.render)return HSKCharacters.render(id,mood||"idle");
+  return pandaChar(mood==="talk"?"talk":"happy");
+}
+function flashLessonReaction(id,reaction){
+  var old=document.querySelector(".hsk-lesson-reaction");if(old)old.remove();
+  var el=document.createElement("div");el.className="hsk-lesson-reaction hsk-character-stage";
+  document.body.appendChild(el);
+  if(window.HSKCharacters&&HSKCharacters.mount)HSKCharacters.mount(el,id,feedbackMoodFromReaction(reaction));
+  requestAnimationFrame(function(){el.classList.add("on")});
+  var done=function(){el.classList.remove("on");setTimeout(function(){if(el.parentNode)el.remove()},170)};
+  if(window.HSKCharacterMotion&&HSKCharacterMotion.play){
+    Promise.resolve(HSKCharacterMotion.play(el,reaction)).then(function(){setTimeout(done,120)});
+  }else setTimeout(done,650);
+}
 function animateHeartState(prev,next){
   var heart=document.querySelector("#flow .fheart");if(!heart)return;
   heart.classList.remove("hp-hit","hp-last","hp-zero");void heart.offsetWidth;
@@ -4049,7 +4071,7 @@ function cardGrammar(g){
   var lead=R.lead||tr(g.title);
   $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-bulb"></i> '+T().grammar+'</span>'
     +'<div class="gtitle"><span class="han zh">'+esc(g.title_zh||"")+'</span> '+esc(tr(g.title))+'</div>'
-    +'<div class="teach"><div class="teach-pd">'+pandaChar("happy")+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div></div></div>'
+    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("crane","talk")+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div></div></div>'
     +'<div class="gsteps" id="gsteps"></div>'
     +'<button class="gnext" id="gnext" onclick="window._grNext()">'+esc(gt.next)+' <i class="ti ti-arrow-right"></i></button>';
   var gi=0;
@@ -4148,7 +4170,7 @@ function cardBuilder(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
   draw();
 }
 function cardReverse(c){
@@ -4159,7 +4181,7 @@ function cardReverse(c){
   var bank=(((c.tokens||{})[LANG])||[]).slice(),ans=(((c.answer_tokens||{})[LANG])||[]);
   if(!bank.length||!ans.length)return cardChoice(c);
   $("#f-body").innerHTML='<div class="qq">'+esc(RT)+'</div>'
-    +'<div class="teach"><div class="teach-pd">'+pandaChar("talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.zh||"")+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.zh||"")+'</div><div class="p4">'+esc(c.pinyin||"")+'</div></div></div>'
+    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("crane","talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.zh||"")+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.zh||"")+'</div><div class="p4">'+esc(c.pinyin||"")+'</div></div></div>'
     +'<div class="tokens" id="bld-line"></div><div class="bank" id="bld-bank"></div>';
   setTimeout(function(){speak(c.zh)},350);
   var line=[]; /* tanlangan bank indekslari — takroriy plitkalar to'g'ri ishlashi uchun */
@@ -4169,7 +4191,7 @@ function cardReverse(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
   draw();
 }
 function cardMatch(c){
@@ -4184,7 +4206,7 @@ function cardMatch(c){
     $("#mR").innerHTML=ri.map(function(idx){return '<button class="pcell sm" data-i="'+idx+'" onclick="window._mR('+idx+')">'+esc(right[idx])+'</button>'}).join("");
   }
   window._mL=function(i){if(Flow.answered)return;selL=i;document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.toggle("sel",+b.dataset.i===i&&!b.classList.contains("ok"))})};
-  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i)b.classList.add("ok")});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;haptic("ok");showBar(true,T().correct,"")}}else{beep([200,150]);haptic("no");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel")});selL=null}};
+  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i)b.classList.add("ok")});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;haptic("ok");showBar(true,T().correct,"")}}else{beep([200,150]);haptic("no");flashLessonReaction("monkey","wrong");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel")});selL=null}};
   draw();
 }
 function initData(){return (tg&&tg.initData)?tg.initData:""}
