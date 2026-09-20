@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import unittest
 
 
@@ -16,6 +17,11 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
     def test_course_references_only_existing_versioned_character_assets(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         root = Path("app/static/assets/characters")
+
+        refs = set(
+            re.findall(r"/assets/characters/([^?\"']+)\\?v=[^\"']+", html)
+        )
+        self.assertEqual(refs, set(CHARACTER_ASSETS))
 
         for filename in CHARACTER_ASSETS:
             with self.subTest(filename=filename):
@@ -35,6 +41,21 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
             'f"app/static/assets/characters/{filename}"',
             source,
         )
+
+    def test_unlock_animation_only_follows_a_real_progress_transition(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+        self.assertIn(
+            'if(nextWasLocked&&next&&next.status!=="locked")'
+            'window._pendingCourseUnlockOrder=Number(next.n)||0',
+            html,
+        )
+        self.assertIn(
+            'if(wasLocked&&target&&target.status!=="locked")'
+            'window._pendingCourseUnlockOrder=Number(target.n)||0',
+            html,
+        )
+        self.assertIn("applyLocalProgress(d.completed_lessons_count)", html)
 
     def test_character_route_does_not_use_a_generic_static_mount(self):
         source = Path("app/main.py").read_text(encoding="utf-8")
