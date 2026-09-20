@@ -1163,6 +1163,32 @@ button{cursor:pointer}
 .hsk-lesson-reaction.on{opacity:1}
 .hsk-lesson-reaction .hsk-character{width:100%;height:100%}
 @media (prefers-reduced-motion:reduce){.hsk-lesson-reaction{display:none!important}}
+.node.unlock-reveal{animation:hskUnlockNode 1.05s cubic-bezier(.2,.8,.25,1)}
+.node.unlock-reveal .ring{border-color:var(--gold);animation:hskUnlockRing 1.1s ease-out}
+.unlock-lock-pop{
+  position:absolute;left:50%;top:31px;z-index:5;transform:translate(-50%,-50%);
+  width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--gold);color:#3a2c08;font-size:21px;pointer-events:none;
+  box-shadow:0 7px 18px rgba(33,29,23,.22);animation:hskUnlockLock .9s cubic-bezier(.2,.8,.25,1) forwards;
+}
+@keyframes hskUnlockNode{
+  0%{transform:scale(.78);filter:brightness(.9)}
+  35%{transform:scale(1.18);filter:brightness(1.12)}
+  62%{transform:scale(.96)}
+  100%{transform:scale(1);filter:none}
+}
+@keyframes hskUnlockRing{
+  0%{transform:scale(.6);opacity:0}
+  30%{opacity:1}
+  100%{transform:scale(1.65);opacity:0}
+}
+@keyframes hskUnlockLock{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.45) rotate(-16deg)}
+  38%{opacity:1;transform:translate(-50%,-65%) scale(1.14) rotate(5deg)}
+  78%{opacity:1;transform:translate(-50%,-78%) scale(.98) rotate(0)}
+  100%{opacity:0;transform:translate(-50%,-100%) scale(.82)}
+}
+@media (prefers-reduced-motion:reduce){.node.unlock-reveal,.node.unlock-reveal .ring,.unlock-lock-pop{animation:none!important}}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260918-2" rel="stylesheet">
 </head>
@@ -1727,6 +1753,7 @@ var App={
     var go=function(){
       if(dest==="rating"){App.show("rating");renderRating()}
       else{App.show("course");renderAll()}
+      if(dest!=="rating"&&dest!=="checkpoint_next")setTimeout(animatePendingCourseUnlock,140);
       if(dest==="checkpoint_next"&&checkpointNext>=0&&allLessons()[checkpointNext])setTimeout(function(){openLessonSheet(checkpointNext)},80);
       if(desktopLesson&&window.PompDesktopDownload&&window.PompDesktopDownload.queuePromo){
         window.PompDesktopDownload.queuePromo("lesson_end_promo",{lesson_id:desktopLesson});
@@ -2631,7 +2658,7 @@ function renderCourse(){
         clk='onclick="openLessonSheet('+JSON.stringify(allLessons().indexOf(n.l))+')"';
       }
       h+='<div class="prow">'+mascot+decor+'<div class="nodewrap" style="transform:translateX('+off+'px)">'+bub
-        +'<button class="node '+cls+'" '+clk+'><span class="ring"></span>'+inner+'</button>'
+        +'<button class="node '+cls+'"'+(n.kind==="lesson"?' data-lesson-order="'+Number(n.l.n||0)+'"':"")+' '+clk+'><span class="ring"></span>'+inner+'</button>'
         +(lbl?'<span class="nlabel '+(cls==="locked"||cls==="boss"||cls==="chest"?"mut":"")+'">'+esc(lbl)
           +(n.kind==="lesson"?'<span class="nnum">'+esc(nodeSub(n.l))+'</span>':'')+'</span>':'')+'</div></div>';
     });
@@ -3363,6 +3390,25 @@ function flashLessonReaction(id,reaction){
   if(window.HSKCharacterMotion&&HSKCharacterMotion.play){
     Promise.resolve(HSKCharacterMotion.play(el,reaction)).then(function(){setTimeout(done,120)});
   }else setTimeout(done,650);
+}
+function animatePendingCourseUnlock(){
+  var order=Number(window._pendingCourseUnlockOrder)||0;
+  if(!order)return;
+  window._pendingCourseUnlockOrder=0;
+  var node=document.querySelector('.node[data-lesson-order="'+order+'"]');
+  if(!node)return;
+  try{node.scrollIntoView({block:"center",behavior:fxOff()?"auto":"smooth"})}catch(e){}
+  var wrap=node.closest(".nodewrap")||node.parentElement;
+  setTimeout(function(){
+    node.classList.remove("unlock-reveal");void node.offsetWidth;node.classList.add("unlock-reveal");
+    if(wrap){
+      var pop=document.createElement("span");pop.className="unlock-lock-pop";pop.innerHTML='<i class="ti ti-lock-open"></i>';
+      wrap.appendChild(pop);setTimeout(function(){if(pop.parentNode)pop.remove()},1050);
+    }
+    flashLessonReaction("dragon","celebrate");
+    beep([523,659,784,1046]);haptic("ok");
+    setTimeout(function(){node.classList.remove("unlock-reveal")},1250);
+  },fxOff()?20:260);
 }
 function animateHeartState(prev,next){
   var heart=document.querySelector("#flow .fheart");if(!heart)return;
@@ -4437,12 +4483,14 @@ function applyLessonDone(cur,d){
   }
   pendingRankUp=(d&&d.gamification&&!d.duplicate)?{before:rankBefore}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
+  var nextWasLocked=!!(next&&next.status==="locked");
   /* Keyingi darsni hardcoded free-part formula bilan ochmaymiz. Server
      `completed_lessons_count` qaytarsa lokal progressni shu raqamga keltiramiz;
      aks holda faqat bepul userda keyingi darsni ehtiyotkor lock holatida
      qoldiramiz va server map refresh yakuniy qarorni beradi. */
   if(typeof d.completed_lessons_count!=="undefined")applyLocalProgress(d.completed_lessons_count);
   else if(next&&!isPaidUser()){next.status="locked";delete next.preview_half;delete next.ad_required;}
+  if(nextWasLocked&&next&&next.status!=="locked")window._pendingCourseUnlockOrder=Number(next.n)||0;
   window._pendingCheckpointNextIdx=(cur&&cur.checkpoint&&normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&Number(cur.src)===1&&next)?al.indexOf(next):null;
   renderAll();
   if(d&&d.ok)refreshCourseProgress(true);
