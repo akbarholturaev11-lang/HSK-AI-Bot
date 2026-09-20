@@ -53,7 +53,11 @@ build'da ekanini bilmay chaqiradi.
   `versionCode` farqi ≥ 2 bo'lsa tab paneli ustida yopib bo'lmaydigan qator
   (`AppUpdateBanner`). Bitta release qoldirilsa — faqat profildagi karta.
 - Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
-  tushiriladi). Hali **bir marta ham ishlamagan**.
+  tushiriladi). 2026-09-20 holatiga ko'ra **to'rt marta muvaffaqiyatli
+  o'tgan**, hammasi `main` dan. Ya'ni imzo va R2 sirlari GitHub'da sozlangan
+  va ishlaydi. Release faqat `main` dan chiqariladi: manifest versionCode
+  orqaga ketishini rad etadi, shuning uchun boshqa branch'dan chiqarilgan
+  release keyingi `main` release'ini bloklaydi.
 - Play Market: yo'q. Akkaunt ham ochilmagan.
 
 ## 3. HOZIR OCHIQ MUAMMOLAR
