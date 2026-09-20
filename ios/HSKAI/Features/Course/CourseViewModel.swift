@@ -8,7 +8,7 @@ final class CourseViewModel: ObservableObject {
     @Published private(set) var isStale = false
     @Published private(set) var errorKey: String?
 
-    private let api: IOSCourseAPI
+    let api: IOSCourseAPI
     private let cache: CourseMapCache
     private var loadedScope: String?
 

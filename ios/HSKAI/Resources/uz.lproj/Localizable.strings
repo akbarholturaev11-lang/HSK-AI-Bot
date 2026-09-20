@@ -57,3 +57,15 @@
 "today_task_test" = "Test";
 "today_task_voice" = "Gapirish";
 "today_task_drill" = "Mashq";
+
+"foundation_gate_title" = "0 dan boshlash";
+"foundation_gate_subtitle" = "HSK 1 darslaridan oldin qisqa Starter 0 bosqichini tugating.";
+"foundation_step" = "Starter 0 · Asoslar";
+"foundation_listen" = "Tinglash";
+"foundation_check" = "Tekshirish";
+"foundation_builder_hint" = "Ierogliflarni to‘g‘ri tartibda joylang";
+"foundation_speaking_optional" = "Bu qadam ixtiyoriy. Talaffuz mashqi keyingi bosqichda to‘liq baholanadi.";
+"foundation_unknown_card" = "Bu karta turi hali qo‘llab-quvvatlanmaydi.";
+"foundation_load_error" = "Starter 0 yuklanmadi. Qayta urinib ko‘ring.";
+"foundation_save_error" = "Natijani saqlab bo‘lmadi. Qayta urinib ko‘ring.";
+"foundation_objectives_missing" = "Majburiy mashqlar hali tugallanmagan.";

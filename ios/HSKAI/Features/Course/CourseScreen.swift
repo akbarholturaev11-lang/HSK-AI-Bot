@@ -4,6 +4,9 @@ struct CourseScreen: View {
     @ObservedObject var model: CourseViewModel
     let account: LinkedAccount
 
+    @State private var foundationModel: FoundationViewModel?
+    @State private var showingFoundation = false
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -12,7 +15,7 @@ struct CourseScreen: View {
                 if model.isLoading && model.map == nil {
                     ProgressView().tint(HSKColors.cinnabar).controlSize(.large)
                 } else if let map = model.map {
-                    ScrollView {
+                    ScrollView(showsIndicators: false) {
                         VStack(spacing: 14) {
                             CourseSummaryCard(map: map)
 
@@ -27,6 +30,18 @@ struct CourseScreen: View {
                                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                                             .stroke(Color.white.opacity(0.42), lineWidth: 0.8)
                                     )
+                            }
+
+                            if let foundation = map.foundation,
+                               foundation.required,
+                               !foundation.completed {
+                                FoundationGateCard {
+                                    foundationModel = FoundationViewModel(
+                                        api: model.api,
+                                        language: map.user.language
+                                    )
+                                    showingFoundation = true
+                                }
                             }
 
                             if let today = map.today, !today.tasks.isEmpty {
@@ -62,6 +77,61 @@ struct CourseScreen: View {
         .task(id: account.deviceId) {
             await model.load(scope: account.deviceId)
         }
+        .fullScreenCover(isPresented: $showingFoundation) {
+            if let foundationModel {
+                FoundationScreen(
+                    model: foundationModel,
+                    required: model.map?.foundation?.required == true,
+                    onCompleted: {
+                        showingFoundation = false
+                        Task {
+                            await model.load(scope: account.deviceId, force: true)
+                        }
+                    },
+                    onClose: {
+                        showingFoundation = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+private struct FoundationGateCard: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HSKGlassCard(cornerRadius: 24, padding: 17, tint: HSKColors.cinnabar) {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(HSKColors.cinnabar.opacity(0.14))
+                            .frame(width: 52, height: 52)
+                        Image(systemName: "sparkles")
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(HSKColors.cinnabar)
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("foundation_gate_title")
+                            .font(.headline)
+                            .foregroundStyle(HSKColors.ink)
+                        Text("foundation_gate_subtitle")
+                            .font(.caption)
+                            .foregroundStyle(HSKColors.inkSecondary)
+                            .multilineTextAlignment(.leading)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(HSKColors.inkSecondary)
+                }
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 

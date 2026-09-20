@@ -57,3 +57,15 @@
 "today_task_test" = "Тест";
 "today_task_voice" = "Гуфтор";
 "today_task_drill" = "Машқ";
+
+"foundation_gate_title" = "Аз сифр оғоз кардан";
+"foundation_gate_subtitle" = "Пеш аз дарсҳои HSK 1 марҳилаи кӯтоҳи Starter 0-ро анҷом диҳед.";
+"foundation_step" = "Starter 0 · Асосҳо";
+"foundation_listen" = "Гӯш кардан";
+"foundation_check" = "Санҷидан";
+"foundation_builder_hint" = "Иероглифҳоро бо тартиби дуруст ҷойгир кунед";
+"foundation_speaking_optional" = "Ин қадам ихтиёрӣ аст. Баҳодиҳии пурраи талаффуз дар марҳилаи баъдӣ меояд.";
+"foundation_unknown_card" = "Ин навъи корт ҳоло дастгирӣ намешавад.";
+"foundation_load_error" = "Starter 0 бор нашуд. Аз нав кӯшиш кунед.";
+"foundation_save_error" = "Натиҷа сабт нашуд. Аз нав кӯшиш кунед.";
+"foundation_objectives_missing" = "Машқҳои ҳатмӣ ҳанӯз анҷом нашудаанд.";

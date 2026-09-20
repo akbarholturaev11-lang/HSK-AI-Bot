@@ -57,3 +57,15 @@
 "today_task_test" = "Тест";
 "today_task_voice" = "Речь";
 "today_task_drill" = "Практика";
+
+"foundation_gate_title" = "Начать с нуля";
+"foundation_gate_subtitle" = "Перед уроками HSK 1 завершите короткий этап Starter 0.";
+"foundation_step" = "Starter 0 · Основы";
+"foundation_listen" = "Послушать";
+"foundation_check" = "Проверить";
+"foundation_builder_hint" = "Соберите иероглифы в правильном порядке";
+"foundation_speaking_optional" = "Этот шаг необязательный. Полная оценка произношения появится на следующем этапе.";
+"foundation_unknown_card" = "Этот тип карточки пока не поддерживается.";
+"foundation_load_error" = "Не удалось загрузить Starter 0. Попробуйте снова.";
+"foundation_save_error" = "Не удалось сохранить результат. Попробуйте снова.";
+"foundation_objectives_missing" = "Обязательные упражнения ещё не завершены.";
