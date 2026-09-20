@@ -178,11 +178,13 @@ private class NoopSkipDao : CourseMapDao {
 }
 
 /** Eight graded cards, so a draw of six is a real choice rather than the lot. */
+private const val SKIP_CARD_COUNT = 8
+
 private fun skipLessonBody(withQuestions: Boolean): String {
     val cards = if (!withQuestions) {
         """{"type":"pronunciation","phrase":"你好","pinyin":"nǐ hǎo","translation":{"uz":"salom"}}"""
     } else {
-        (1..8).joinToString(",") { index ->
+        (1..SKIP_CARD_COUNT).joinToString(",") { index ->
             """{"type":"meaning_guess","prompt":"词 $index","options":["a","b","c"],"correct_index":1,"explanation":""}"""
         }
     }
@@ -193,6 +195,8 @@ private fun skipLessonBody(withQuestions: Boolean): String {
 
 private class FakeSkipApi(private val withQuestions: Boolean = true) : AndroidCourseApi {
     val unlocks = mutableListOf<Pair<Int, Int>>()
+
+    private val cardCount = if (withQuestions) SKIP_CARD_COUNT else 1
 
     override suspend fun unlockLesson(
         authorization: String,
@@ -217,6 +221,11 @@ private class FakeSkipApi(private val withQuestions: Boolean = true) : AndroidCo
             ok = true,
             level = "hsk1",
             lessonOrder = lessonOrder,
+            // The repository refuses an envelope whose counts do not match the
+            // payload it carries, so a fake that leaves them at zero is
+            // refused exactly as a malformed server answer would be.
+            previewCardLimit = cardCount,
+            totalCards = cardCount,
             completionAllowed = true,
             lesson = Json.parseToJsonElement(skipLessonBody(withQuestions))
                 .jsonObject
