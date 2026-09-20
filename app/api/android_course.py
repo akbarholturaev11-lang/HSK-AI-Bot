@@ -132,6 +132,20 @@ class AndroidCourseCompleteRequest(DesktopCourseCompleteRequest):
     access_ref: str = Field(default="", max_length=160)
 
 
+class AndroidLessonUnlockRequest(BaseModel):
+    """Skip-ahead test result for a locked lesson.
+
+    The level is not here on purpose: the server reads the learner's band from
+    their own record, exactly as completion does, so a client cannot unlock a
+    lesson in a band it does not belong to.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    lesson_order: int = Field(ge=MIN_LESSON_ORDER, le=MAX_LESSON_ORDER)
+    score: int = Field(default=0, ge=0, le=100)
+
+
 class AndroidFoundationCompleteRequest(BaseModel):
     """Completion payload for the shared Starter 0/Foundation flow."""
 
@@ -469,6 +483,31 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android course completion failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/lesson/unlock")
+    async def android_lesson_unlock(request: Request):
+        """The Mini App's skip-ahead test, on the same shared rules.
+
+        A spent daily allowance closes this route too, so the test cannot be
+        used to step past the limit the next lesson is already refusing.
+        """
+        try:
+            payload = await validated_course_payload(
+                request,
+                AndroidLessonUnlockRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).unlock_lesson(
+                    bearer_access_token(request),
+                    lesson_order=payload.lesson_order,
+                    score=payload.score,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android lesson unlock failed")
             return _unavailable()
 
     @router.post("/api/v3/android/course/reward-chest/open")

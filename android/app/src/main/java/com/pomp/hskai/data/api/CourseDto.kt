@@ -24,6 +24,14 @@ data class LocalizedText(
     }.ifBlank { uz }
 }
 
+/** The `lesson_limit` block the course map has always carried. */
+@Serializable
+data class CourseLessonLimitDto(
+    @SerialName("allowed") val allowed: Boolean = true,
+    @SerialName("limit_text") val limitText: String? = null,
+    @SerialName("reset_at") val resetAt: String? = null,
+)
+
 @Serializable
 data class CourseMapDto(
     @SerialName("ok") val ok: Boolean = false,
@@ -35,6 +43,14 @@ data class CourseMapDto(
     @SerialName("study_setup") val studySetup: CourseStudySetupDto? = null,
     @SerialName("today") val today: CourseTodayDto? = null,
     @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+    /**
+     * What the server says about today's free lesson allowance.
+     *
+     * The map already carried it; the client simply never read it, so a spent
+     * allowance had no reason and no reopening hour to show. The hour is never
+     * assumed here — an absent value means the server did not say.
+     */
+    @SerialName("lesson_limit") val lessonLimit: CourseLessonLimitDto? = null,
     /**
      * Small explanation blocks the server decided this learner should see.
      *

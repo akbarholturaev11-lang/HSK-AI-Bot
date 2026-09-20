@@ -357,6 +357,91 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             # Rad etilgan urinish progressni SURMAYDI.
             self.assertEqual(2, await self._completed_count(session))
 
+    async def test_the_skip_test_opens_a_locked_lesson(self):
+        """The Mini App's skip-ahead test, reachable from the native client.
+
+        A locked lesson was simply dead on Android: the map offered no way in
+        and the service had no route to open one. The rule that matters is what
+        it does to progress — everything before the unlocked lesson counts as
+        behind the learner, which is what puts the lesson itself in reach.
+        """
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+
+            result = await service.unlock_lesson(token, lesson_order=4, score=80)
+
+            self.assertTrue(result["ok"])
+            self.assertEqual(4, result["lesson_order"])
+            self.assertEqual(3, result["completed_lessons_count"])
+            self.assertEqual(3, await self._completed_count(session))
+
+    async def test_a_weak_skip_test_still_opens_the_lesson(self):
+        """A low score is recorded, not judged.
+
+        The Mini App asks the learner to confirm and then opens the lesson
+        anyway. Refusing on the server would only teach people to retake the
+        test until it passed, and the client already owns that conversation.
+        """
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+
+            result = await service.unlock_lesson(token, lesson_order=3, score=20)
+
+            self.assertTrue(result["ok"])
+            self.assertEqual(2, await self._completed_count(session))
+
+    async def test_the_skip_test_never_walks_progress_backwards(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            await service.unlock_lesson(token, lesson_order=5, score=90)
+
+            await service.unlock_lesson(token, lesson_order=2, score=90)
+
+            self.assertEqual(4, await self._completed_count(session))
+
+    async def test_a_spent_allowance_closes_the_skip_test(self):
+        """The one way this could have become a paywall bypass.
+
+        The next lesson is already refused when the daily allowance is spent.
+        If the skip test stayed open it would hand the learner the lesson after
+        that one instead, which is the same door with a longer walk.
+        """
+        async with self.sessions() as session:
+            token = await self._token(session)
+            await self._lesson_limit(session, 2)
+            service = AndroidCourseService(session, _settings())
+            for order in (1, 2):
+                await service.complete(
+                    token,
+                    lesson_order=order,
+                    event_id=f"android:skip{order:032d}",
+                )
+
+            with self.assertRaises(DesktopCourseError) as blocked:
+                await service.unlock_lesson(token, lesson_order=6, score=100)
+
+            self.assertEqual(403, blocked.exception.status_code)
+            self.assertEqual("free_feature_limit_reached", blocked.exception.code)
+            self.assertEqual(2, await self._completed_count(session))
+
+    async def test_the_skip_test_refuses_a_lesson_outside_the_band(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+
+            with self.assertRaises(DesktopCourseError) as missing:
+                await service.unlock_lesson(token, lesson_order=499, score=100)
+
+            self.assertEqual(404, missing.exception.status_code)
+            # The refusal lands before any progress row is written, so there is
+            # nothing to count — that absence is the assertion.
+            self.assertIsNone(
+                await CourseProgressRepository(session).get_by_user_id(1)
+            )
+
     async def test_lesson_payload_matches_the_checked_in_material(self):
         async with self.sessions() as session:
             token = await self._token(session)
@@ -562,6 +647,7 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 {"lesson_order": 1, "event_id": "android:" + "a" * 32},
             ),
             ("post", "/api/v3/android/preferences/language", {"language": "uz"}),
+            ("post", "/api/v3/android/lesson/unlock", {"lesson_order": 2}),
         ]
         for method, path, body in cases:
             with self.subTest(path=path):
@@ -571,6 +657,40 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 )
                 self.assertEqual(401, response.status_code)
                 self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_the_skip_test_route_opens_a_locked_lesson(self):
+        """The route the Android skip test posts to, end to end.
+
+        The body is deliberately small: the lesson and the score. The band is
+        not in it, because the server reads the learner's own band — a client
+        that sent one could otherwise unlock a lesson in a level it has never
+        reached.
+        """
+        headers = await self._bearer()
+
+        response = await self.client.post(
+            "/api/v3/android/lesson/unlock",
+            json={"lesson_order": 4, "score": 75},
+            headers=headers,
+        )
+
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        self.assertTrue(body["ok"])
+        self.assertEqual(4, body["lesson_order"])
+        self.assertEqual(3, body["completed_lessons_count"])
+        self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_the_skip_test_route_rejects_a_level_the_client_invents(self):
+        headers = await self._bearer()
+
+        response = await self.client.post(
+            "/api/v3/android/lesson/unlock",
+            json={"lesson_order": 4, "score": 75, "level": "hsk4"},
+            headers=headers,
+        )
+
+        self.assertEqual(422, response.status_code)
 
     async def test_onboarding_saves_the_choices_the_screen_collects(self):
         """The onboarding screen's only server call, end to end.

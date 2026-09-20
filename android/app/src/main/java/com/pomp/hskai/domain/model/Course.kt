@@ -142,6 +142,18 @@ data class CourseToday(
     val localDay: String,
 )
 
+/**
+ * What the server says about today's free lesson allowance.
+ *
+ * [resetAt] is the instant it reopens, or null when the server did not say.
+ * The hour is never worked out on the device.
+ */
+data class CourseLessonLimit(
+    val allowed: Boolean,
+    val limitText: String?,
+    val resetAt: String?,
+)
+
 data class CourseMap(
     val level: String,
     val units: List<CourseUnit>,
@@ -159,6 +171,8 @@ data class CourseMap(
      * rules in step. Empty is the normal case.
      */
     val hints: List<AndroidHintDto> = emptyList(),
+    /** Today's free lesson allowance, as the server reports it. */
+    val lessonLimit: CourseLessonLimit? = null,
 ) {
     val lessons: List<CourseLesson> get() = units.flatMap { it.lessons }
 
