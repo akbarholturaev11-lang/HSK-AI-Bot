@@ -1,11 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108" role="img" aria-labelledby="title description">
-  <title id="title">HSK AI tone seal</title>
-  <desc id="description">A speech seal containing the four Mandarin tone trajectories.</desc>
-  <rect width="108" height="108" fill="#E04A40"/>
-  <path d="M31 25.5H77C81.5 25.5 83.5 29 83.5 33.5V69.5C83.5 74.5 81 77.5 76.5 77.5H63L54 85.5 55 77.5H31C26.5 77.5 24.5 74.5 24.5 69.5V33.5C24.5 29 26.5 25.5 31 25.5Z" fill="none" stroke="#FDF9F0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M35 40C47 40 60 40 74 40" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
-  <path d="M35 51C45 56 57 55 70 44.5" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
-  <path d="M35 59C47 58 55 65 64 65 69 65 73 61 77 57.5" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
-  <path d="M35 69C48 69 61 72 75 72.5" fill="none" stroke="#FDF9F0" stroke-width="4.25" stroke-linecap="round"/>
-  <circle cx="76.5" cy="34.25" r="3.25" fill="#E9A916"/>
+  <title id="title">HSK AI knot</title>
+  <desc id="description">A gold Chinese knot, two rounded squares woven over and under, on cinnabar.</desc>
+  <defs>
+    <linearGradient id="cinnabar" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F0614C"/>
+      <stop offset="1" stop-color="#C02F32"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="28" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F7C948"/>
+      <stop offset="1" stop-color="#D9920F"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="108" height="108" fill="url(#cinnabar)"/>
+
+  <!--
+    Two rounded squares, one turned 45 degrees, woven: each strand passes over
+    at four crossings and under at the other four. The under-passes are cut by
+    a casing stroke painted in the background gradient, so the gap reads as the
+    cinnabar behind the knot. Both strands stay inside the adaptive-icon safe
+    circle, so a launcher mask cannot bite into the knot.
+  -->
+  <g fill="none" stroke-linejoin="round">
+    <!-- strand A, flat -->
+    <path d="M39.5,35 H68.5 A4.5,4.5 0 0 1 73,39.5 V68.5 A4.5,4.5 0 0 1 68.5,73 H39.5 A4.5,4.5 0 0 1 35,68.5 V39.5 A4.5,4.5 0 0 1 39.5,35 Z" stroke="url(#cinnabar)" stroke-width="9.5"/>
+    <path d="M39.5,35 H68.5 A4.5,4.5 0 0 1 73,39.5 V68.5 A4.5,4.5 0 0 1 68.5,73 H39.5 A4.5,4.5 0 0 1 35,68.5 V39.5 A4.5,4.5 0 0 1 39.5,35 Z" stroke="url(#gold)" stroke-width="6"/>
+
+    <!-- strand B, turned 45 degrees, laid over strand A -->
+    <path d="M57.18,30.31 L77.69,50.82 A4.5,4.5 0 0 1 77.69,57.18 L57.18,77.69 A4.5,4.5 0 0 1 50.82,77.69 L30.31,57.18 A4.5,4.5 0 0 1 30.31,50.82 L50.82,30.31 A4.5,4.5 0 0 1 57.18,30.31 Z" stroke="url(#cinnabar)" stroke-width="9.5"/>
+    <path d="M57.18,30.31 L77.69,50.82 A4.5,4.5 0 0 1 77.69,57.18 L57.18,77.69 A4.5,4.5 0 0 1 50.82,77.69 L30.31,57.18 A4.5,4.5 0 0 1 30.31,50.82 L50.82,30.31 A4.5,4.5 0 0 1 57.18,30.31 Z" stroke="url(#gold)" stroke-width="6"/>
+
+    <!-- strand A returns over strand B at every other crossing -->
+    <path d="M39.5,35 H52.9 M73,39.5 V52.9 M68.5,73 H55.1 M35,68.5 V55.1" stroke="url(#cinnabar)" stroke-width="9.5"/>
+    <path d="M39.5,35 H52.9 M73,39.5 V52.9 M68.5,73 H55.1 M35,68.5 V55.1" stroke="url(#gold)" stroke-width="6"/>
+  </g>
 </svg>

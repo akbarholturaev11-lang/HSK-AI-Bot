@@ -1,56 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    HSK AI tone seal. The four inner strokes are Mandarin's four tones:
-    level, rising, dip-rise and falling. Everything stays inside Android's
-    adaptive-icon safe zone so OEM launcher masks cannot cut the meaning.
+    HSK AI knot. Two rounded squares, one turned 45 degrees, woven: each strand
+    passes over at four crossings and under at the other four. An under-pass is
+    cut by a casing stroke painted in the background gradient, so the gap reads
+    as the cinnabar behind the knot — which is why the casing gradient must stay
+    identical to ic_launcher_background.xml. The whole knot sits inside the
+    adaptive-icon safe circle, so no OEM mask can bite into it.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
+    <!-- Strand A, flat: casing first, then the gold. -->
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M31,25.5 H77 C81.5,25.5 83.5,29 83.5,33.5 V69.5 C83.5,74.5 81,77.5 76.5,77.5 H63 L54,85.5 L55,77.5 H31 C26.5,77.5 24.5,74.5 24.5,69.5 V33.5 C24.5,29 26.5,25.5 31,25.5 Z"
-        android:strokeColor="@color/pomp_paper"
-        android:strokeLineCap="round"
+        android:pathData="M39.5,35 H68.5 A4.5,4.5 0 0 1 73,39.5 V68.5 A4.5,4.5 0 0 1 68.5,73 H39.5 A4.5,4.5 0 0 1 35,68.5 V39.5 A4.5,4.5 0 0 1 39.5,35 Z"
         android:strokeLineJoin="round"
-        android:strokeWidth="5" />
-
-    <!-- Tone 1: high and level. -->
+        android:strokeWidth="9.5">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:startColor="#FFF0614C"
+                android:endColor="#FFC02F32" />
+        </aapt:attr>
+    </path>
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M35,40 C47,40 60,40 74,40"
-        android:strokeColor="@color/pomp_paper"
-        android:strokeLineCap="round"
-        android:strokeWidth="4.25" />
+        android:pathData="M39.5,35 H68.5 A4.5,4.5 0 0 1 73,39.5 V68.5 A4.5,4.5 0 0 1 68.5,73 H39.5 A4.5,4.5 0 0 1 35,68.5 V39.5 A4.5,4.5 0 0 1 39.5,35 Z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="6">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="28"
+                android:endX="0"
+                android:endY="80"
+                android:startColor="#FFF7C948"
+                android:endColor="#FFD9920F" />
+        </aapt:attr>
+    </path>
 
-    <!-- Tone 2: rising. -->
+    <!-- Strand B, turned 45 degrees, laid over strand A. -->
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M35,51 C45,56 57,55 70,44.5"
-        android:strokeColor="@color/pomp_paper"
-        android:strokeLineCap="round"
-        android:strokeWidth="4.25" />
-
-    <!-- Tone 3: dip, then rise. -->
+        android:pathData="M57.18,30.31 L77.69,50.82 A4.5,4.5 0 0 1 77.69,57.18 L57.18,77.69 A4.5,4.5 0 0 1 50.82,77.69 L30.31,57.18 A4.5,4.5 0 0 1 30.31,50.82 L50.82,30.31 A4.5,4.5 0 0 1 57.18,30.31 Z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="9.5">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:startColor="#FFF0614C"
+                android:endColor="#FFC02F32" />
+        </aapt:attr>
+    </path>
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M35,59 C47,58 55,65 64,65 C69,65 73,61 77,57.5"
-        android:strokeColor="@color/pomp_paper"
-        android:strokeLineCap="round"
-        android:strokeWidth="4.25" />
+        android:pathData="M57.18,30.31 L77.69,50.82 A4.5,4.5 0 0 1 77.69,57.18 L57.18,77.69 A4.5,4.5 0 0 1 50.82,77.69 L30.31,57.18 A4.5,4.5 0 0 1 30.31,50.82 L50.82,30.31 A4.5,4.5 0 0 1 57.18,30.31 Z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="6">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="28"
+                android:endX="0"
+                android:endY="80"
+                android:startColor="#FFF7C948"
+                android:endColor="#FFD9920F" />
+        </aapt:attr>
+    </path>
 
-    <!-- Tone 4: falling. -->
+    <!-- Strand A returns over strand B at every other crossing. -->
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M35,69 C48,69 61,72 75,72.5"
-        android:strokeColor="@color/pomp_paper"
-        android:strokeLineCap="round"
-        android:strokeWidth="4.25" />
-
+        android:pathData="M39.5,35 H52.9 M73,39.5 V52.9 M68.5,73 H55.1 M35,68.5 V55.1"
+        android:strokeWidth="9.5">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:startColor="#FFF0614C"
+                android:endColor="#FFC02F32" />
+        </aapt:attr>
+    </path>
     <path
-        android:fillColor="@color/pomp_gold"
-        android:pathData="M76.5,31 A3.25,3.25 0,1 1,76.5,37.5 A3.25,3.25 0,1 1,76.5,31" />
+        android:fillColor="@android:color/transparent"
+        android:pathData="M39.5,35 H52.9 M73,39.5 V52.9 M68.5,73 H55.1 M35,68.5 V55.1"
+        android:strokeWidth="6">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="28"
+                android:endX="0"
+                android:endY="80"
+                android:startColor="#FFF7C948"
+                android:endColor="#FFD9920F" />
+        </aapt:attr>
+    </path>
 </vector>
