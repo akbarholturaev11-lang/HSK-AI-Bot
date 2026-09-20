@@ -993,7 +993,6 @@ private fun AppRoot(
                             onOpenWidget = { widgetSetupOpen = true },
                             onOpenSupport = { url -> openExternal(context, url) },
                             onRefresh = profileViewModel::load,
-                            onStartTrial = profileViewModel::startTrial,
                             onLogout = { signOut(false) },
                             onUnlinkDevice = { signOut(true) },
                             modifier = contentModifier,
