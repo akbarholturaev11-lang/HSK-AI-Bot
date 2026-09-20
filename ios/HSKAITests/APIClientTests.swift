@@ -36,3 +36,26 @@ final class APIClientTests: XCTestCase {
         }
     }
 }
+
+
+final class AuthModelTests: XCTestCase {
+    func testAccessTokenRefreshesEarly() {
+        let now = Date(timeIntervalSince1970: 1_000)
+        let token = AccessToken(
+            value: "token",
+            expiresAt: now.addingTimeInterval(20)
+        )
+
+        XCTAssertFalse(token.isUsable(at: now))
+    }
+
+    func testAccessTokenIsUsableOutsideRefreshSkew() {
+        let now = Date(timeIntervalSince1970: 1_000)
+        let token = AccessToken(
+            value: "token",
+            expiresAt: now.addingTimeInterval(120)
+        )
+
+        XCTAssertTrue(token.isUsable(at: now))
+    }
+}

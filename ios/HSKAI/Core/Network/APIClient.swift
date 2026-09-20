@@ -41,7 +41,9 @@ struct APIClient: Sendable {
         )
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
-            request.httpBody = try JSONEncoder().encode(body)
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            request.httpBody = try encoder.encode(body)
         } catch {
             throw APIError.encoding
         }
@@ -104,6 +106,15 @@ struct APIClient: Sendable {
             throw APIError.invalidResponse
         }
         guard (200..<300).contains(http.statusCode) else {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            if
+                let envelope = try? decoder.decode(APIErrorEnvelope.self, from: data),
+                let code = envelope.error,
+                !code.isEmpty
+            {
+                throw APIError.server(code: code, status: http.statusCode)
+            }
             throw APIError.httpStatus(http.statusCode)
         }
         guard !data.isEmpty else {
@@ -111,7 +122,9 @@ struct APIClient: Sendable {
         }
 
         do {
-            return try JSONDecoder().decode(type, from: data)
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode(type, from: data)
         } catch {
             throw APIError.decoding
         }

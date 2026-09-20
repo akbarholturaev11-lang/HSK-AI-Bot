@@ -1,60 +1,103 @@
 import Foundation
 import Security
 
-struct NativeCredentials: Codable, Equatable, Sendable {
-    let accessToken: String
-    let refreshToken: String
-}
-
 protocol CredentialStore: Sendable {
-    func load() throws -> NativeCredentials?
-    func save(_ credentials: NativeCredentials) throws
-    func clear() throws
+    func installationKey() throws -> String
+    func refreshToken() throws -> String?
+    func saveRefreshToken(_ token: String) throws
+    func clearSession() throws
+    func clearEverything() throws
 }
 
+/// The only persistent native-auth storage.
+///
+/// The short-lived access token deliberately never touches disk. Keychain
+/// contains only the stable installation identity and the rotating refresh
+/// token, matching the Android security contract.
 struct KeychainCredentialStore: CredentialStore {
     private let service: String
-    private let account: String
 
-    init(
-        service: String = "com.pomp.hskai.auth",
-        account: String = "native-session"
-    ) {
+    init(service: String = "com.pomp.hskai.auth") {
         self.service = service
-        self.account = account
     }
 
-    func load() throws -> NativeCredentials? {
-        var query = baseQuery
+    func installationKey() throws -> String {
+        if let existing = try read(account: Account.installationKey.rawValue) {
+            return existing
+        }
+
+        var bytes = [UInt8](repeating: 0, count: 48)
+        let status = bytes.withUnsafeMutableBytes { buffer in
+            guard let baseAddress = buffer.baseAddress else {
+                return errSecParam
+            }
+            return SecRandomCopyBytes(kSecRandomDefault, buffer.count, baseAddress)
+        }
+        guard status == errSecSuccess else {
+            throw KeychainError.random(status)
+        }
+
+        let generated = Data(bytes)
+            .base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+
+        try write(generated, account: Account.installationKey.rawValue)
+        return generated
+    }
+
+    func refreshToken() throws -> String? {
+        try read(account: Account.refreshToken.rawValue)
+    }
+
+    func saveRefreshToken(_ token: String) throws {
+        guard !token.isEmpty else {
+            throw KeychainError.invalidPayload
+        }
+        try write(token, account: Account.refreshToken.rawValue)
+    }
+
+    func clearSession() throws {
+        try delete(account: Account.refreshToken.rawValue)
+    }
+
+    func clearEverything() throws {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+        ]
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw KeychainError.delete(status)
+        }
+    }
+
+    private func read(account: String) throws -> String? {
+        var query = baseQuery(account: account)
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
 
         var item: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &item)
-
         if status == errSecItemNotFound {
             return nil
         }
         guard status == errSecSuccess, let data = item as? Data else {
             throw KeychainError.read(status)
         }
-
-        do {
-            return try JSONDecoder().decode(NativeCredentials.self, from: data)
-        } catch {
+        guard let value = String(data: data, encoding: .utf8), !value.isEmpty else {
             throw KeychainError.invalidPayload
         }
+        return value
     }
 
-    func save(_ credentials: NativeCredentials) throws {
-        let data: Data
-        do {
-            data = try JSONEncoder().encode(credentials)
-        } catch {
+    private func write(_ value: String, account: String) throws {
+        guard let data = value.data(using: .utf8) else {
             throw KeychainError.invalidPayload
         }
 
-        var query = baseQuery
+        let query = baseQuery(account: account)
         let update = [kSecValueData as String: data]
         let updateStatus = SecItemUpdate(query as CFDictionary, update as CFDictionary)
 
@@ -65,27 +108,33 @@ struct KeychainCredentialStore: CredentialStore {
             throw KeychainError.write(updateStatus)
         }
 
-        query[kSecValueData as String] = data
-        query[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        let addStatus = SecItemAdd(query as CFDictionary, nil)
+        var create = query
+        create[kSecValueData as String] = data
+        create[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        let addStatus = SecItemAdd(create as CFDictionary, nil)
         guard addStatus == errSecSuccess else {
             throw KeychainError.write(addStatus)
         }
     }
 
-    func clear() throws {
-        let status = SecItemDelete(baseQuery as CFDictionary)
+    private func delete(account: String) throws {
+        let status = SecItemDelete(baseQuery(account: account) as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw KeychainError.delete(status)
         }
     }
 
-    private var baseQuery: [String: Any] {
+    private func baseQuery(account: String) -> [String: Any] {
         [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
         ]
+    }
+
+    private enum Account: String {
+        case installationKey = "installation-key"
+        case refreshToken = "refresh-token"
     }
 }
 
@@ -93,5 +142,6 @@ enum KeychainError: Error, Equatable {
     case read(OSStatus)
     case write(OSStatus)
     case delete(OSStatus)
+    case random(OSStatus)
     case invalidPayload
 }
