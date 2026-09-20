@@ -262,7 +262,36 @@ o'tdi, kompilyatsiya va ko'rinish telefonda tasdiqlanishi kerak. Ayniqsa:
 streak ekrani past ekranda sig'yaptimi (aylanadigan qilingan), panda alanga
 yonida to'g'ri turibdimi, jadval uzun ismda kesilyaptimi.
 
-### 3.7 Boshqa ochiqlar
+### 3.7 Mashq yakunida ham alanga ekrani — 2026-09-20
+
+Dars bayrami qilingach, o'sha effekt mashqqa ham moslandi. Umumiy qismlar
+`core/design/components/HskCelebration.kt` ga chiqarildi:
+`HskCelebrationStage` (qora sahna + oltin nurlar + konfetti),
+`HskStreakCelebration` (alanga, raqam, matn, 7 kunlik qator, haftalik maqsad),
+`HskCelebrationPanda`, `HskRayBurst`, `HskConfettiField`. Dars ham, mashq ham
+**bitta** manbadan foydalanadi — ikkitasi vaqt o'tib bir-biridan ajralmasin.
+
+**Tartib Mini App'dagidek:** avval natija, keyin alanga. Mashq natijasi
+(tavsiya, xato savollar, imtihon bo'limlari, qolgan xatolar) o'z joyida
+qoladi — u yo'qotilmadi. `hasStreakEvent` bo'lsa tugma «Davom etish» bo'ladi
+va alanga ekraniga olib boradi; bo'lmasa to'g'ridan-to'g'ri yopadi, bo'sh
+ekran chiqmaydi.
+
+Ulangan joylar: `CompletionSummaryShell` (Mashq va Testlar) va
+`MistakesCompletionResult` (Xatolarim).
+
+**Reyting sahnasi mashqda yo'q va bu ataylab.** `rank_before`/`rank_after`
+faqat dars yakunida keladi (`android_course_service.py:122-136`); mashq,
+imtihon va xato takrori javoblarida bunday maydon yo'q. Ko'tarilishni XP'dan
+taxmin qilishdan ko'ra sahnani umuman ko'rsatmaslik to'g'ri.
+
+Ieroglif mashqlari (`RECOGNITION`/`PRONUNCIATION`) da gamification umuman
+yo'q (`drillCompletionOutcome` bo'sh DTO qaytaradi), ya'ni alanga ekrani u
+yerda o'zidan-o'zi chiqmaydi.
+
+**Tekshirilmagan:** SDK yo'q. Beshta statik tekshiruv o'tdi.
+
+### 3.8 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga

@@ -16,6 +16,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -40,6 +44,19 @@ internal fun MistakesReviewResult(
     onDone: () -> Unit,
 ) {
     val outcome = result.toCompletionOutcome()
+
+    // Same order as the lesson and the practice shell: the result, then the
+    // flame when this round actually moved the streak.
+    var streakStep by rememberSaveable(result.score, result.total, result.remaining) {
+        mutableStateOf(false)
+    }
+    if (streakStep) {
+        PracticeStreakStep(outcome = outcome, onDone = onDone)
+        return
+    }
+    val advance: () -> Unit = {
+        if (outcome.hasStreakEvent) streakStep = true else onDone()
+    }
 
     Column(
         modifier = Modifier
@@ -76,7 +93,7 @@ internal fun MistakesReviewResult(
         }
 
         Button(
-            onClick = onDone,
+            onClick = advance,
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = PompColors.Cinnabar,
@@ -90,7 +107,13 @@ internal fun MistakesReviewResult(
             Icon(Icons.Filled.Check, contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.mistakes_done),
+                // One more screen follows when the streak moved, so the button
+                // says so rather than promising to close.
+                text = if (outcome.hasStreakEvent) {
+                    stringResource(R.string.lesson_next)
+                } else {
+                    stringResource(R.string.mistakes_done)
+                },
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
             )
