@@ -392,8 +392,8 @@ struct LessonScreen: View {
                             .foregroundStyle(HSKColors.inkSecondary)
                             .frame(maxWidth: .infinity, minHeight: 54)
                     } else {
-                        ForEach(Array(model.builderTokens.enumerated()), id: \.offset) { _, token in
-                            token(token) { model.undoBuilderToken() }
+                        ForEach(Array(model.builderTokens.enumerated()), id: \.offset) { _, value in
+                            token(value) { model.undoBuilderToken() }
                         }
                         Spacer()
                     }
@@ -682,7 +682,7 @@ struct LessonScreen: View {
     private var failureView: some View {
         endCard(
             icon: "wifi.exclamationmark",
-            title: model.errorKey ?? "lesson_load_error",
+            title: LocalizedStringKey(model.errorKey ?? "lesson_load_error"),
             body: "lesson_retry_body",
             accent: HSKColors.flame,
             primaryTitle: "action_retry"
@@ -694,7 +694,7 @@ struct LessonScreen: View {
     private func endCard(
         icon: String,
         title: LocalizedStringKey,
-        body: LocalizedStringKey,
+        body: String,
         accent: Color,
         primaryTitle: LocalizedStringKey,
         primary: @escaping () -> Void
@@ -702,7 +702,7 @@ struct LessonScreen: View {
         endCard(
             icon: icon,
             title: title,
-            bodyText: String(localized: body),
+            bodyText: NSLocalizedString(body, comment: ""),
             accent: accent,
             primaryTitle: primaryTitle,
             primary: primary
