@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -113,7 +114,7 @@ data class LessonUiState(
     val hearts: Int = MAX_HEARTS,
     /** Stroke outlines for the character the pencil is showing, if any. */
     val writerChar: WriterTarget? = null,
-    val writerStrokes: List<String>? = null,
+    val writerStrokes: CharacterStrokes? = null,
     val isWriterLoading: Boolean = false,
 ) {
     val cards: List<LessonCard> get() = lesson?.cards.orEmpty()
@@ -341,12 +342,14 @@ class LessonViewModel(
         }
         viewModelScope.launch {
             val single = target.hanzi.trim().takeIf { it.length == 1 }
+            // Null rather than an empty set: the sheet then shows the plain
+            // character instead of an empty writing box.
             val strokes = if (single == null) {
-                emptyList()
+                null
             } else {
                 when (val result = repository.strokes(single)) {
                     is ApiResult.Success -> result.value
-                    is ApiResult.Failure -> emptyList()
+                    is ApiResult.Failure -> null
                 }
             }
             _state.update { it.copy(writerStrokes = strokes, isWriterLoading = false) }

@@ -276,6 +276,15 @@ data class DictionaryWordDto(
 @Serializable
 data class StrokeDataDto(
     @SerialName("strokes") val strokes: List<String> = emptyList(),
+    /**
+     * The centre line of each stroke, as `[x, y]` points on the same 1024 grid.
+     *
+     * hanzi-writer has always sent these and the server passes the file
+     * through untouched; Android simply never read them. They are what makes
+     * the animation a stroke being written rather than an outline being
+     * traced — see `StrokeAnimation`.
+     */
+    @SerialName("medians") val medians: List<List<List<Float>>> = emptyList(),
 )
 
 @Serializable

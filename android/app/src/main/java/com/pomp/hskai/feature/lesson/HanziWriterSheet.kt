@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.core.hanzi.StrokeAnimation
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.ScreenContext
@@ -64,7 +65,7 @@ internal fun HanziWriterSheet(
     hanzi: String,
     pinyin: String,
     meaning: String,
-    strokes: List<String>?,
+    strokes: CharacterStrokes?,
     isLoading: Boolean,
     onReplay: () -> Unit,
     onDismiss: () -> Unit,
@@ -125,7 +126,7 @@ internal fun HanziWriterSheet(
 
                         // Without the outlines the character is still shown —
                         // the learner loses the animation, not the word.
-                        strokes.isNullOrEmpty() -> Text(
+                        strokes == null || strokes.isEmpty() -> Text(
                             text = hanzi,
                             style = PompTextStyles.hanziLarge.copy(fontSize = 128.sp),
                             color = PompColors.Ink,

@@ -4,6 +4,8 @@ import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.hanzi.CharacterStrokes
+import androidx.compose.ui.geometry.Offset
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
@@ -314,7 +316,7 @@ class CourseRepository(
     }
 
     /** Stroke outlines for one character; the server proxies and caches them. */
-    suspend fun strokes(char: String): ApiResult<List<String>> {
+    suspend fun strokes(char: String): ApiResult<CharacterStrokes> {
         val single = char.trim()
         if (single.length != 1) return ApiResult.Failure(ApiError.Unknown)
         val token = when (val result = accessToken()) {
@@ -323,7 +325,18 @@ class CourseRepository(
         }
         return when (val result = apiCall { api.stroke("Bearer $token", single) }) {
             is ApiResult.Failure -> result
-            is ApiResult.Success -> ApiResult.Success(result.value.strokes)
+            is ApiResult.Success -> ApiResult.Success(
+                CharacterStrokes(
+                    outlines = result.value.strokes,
+                    // A payload without medians still draws; the stroke simply
+                    // appears whole instead of being written.
+                    medians = result.value.medians.map { points ->
+                        points.mapNotNull { point ->
+                            if (point.size >= 2) Offset(point[0], point[1]) else null
+                        }
+                    },
+                )
+            )
         }
     }
 

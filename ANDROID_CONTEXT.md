@@ -324,7 +324,42 @@ topshirishga o'rgatardi. Ball yoziladi, tasdiqni klient so'raydi.
 Qamrov: `SkipTestViewModelTest` (6 ta) + backendda 7 ta. Android testlari bu
 muhitda ishlamaydi (SDK yo'q) — ularni release workflow tekshiradi.
 
-### 3.9 Boshqa ochiqlar
+### 3.9 ~~Lug'atdagi yozish tartibi besifat~~ — TUZATILDI 2026-09-20
+
+Ikkita alohida sabab bor edi, va kattarog'i tezlik emas.
+
+**Sifat: chiziq noto'g'ri chizilardi.** hanzi-writer chizig'i — bu to'ldirilgan
+**konturi**, ya'ni cho'tkaning izi shakli, chiziladigan chiziq emas.
+`StrokeAnimation` esa o'sha konturning **perimetridan** ulush kesib, qolganini
+to'ldirardi (`PathMeasure.getSegment`). Bu yarim yozilgan chiziq emas —
+chetning bir parchasi, va aynan shunday ko'rinardi ham.
+
+Endi cho'tka chiziqning **markaz chizig'i** (median) bo'ylab yuradi: qalin
+dumaloq chiziq median bo'ylab o'sadi va chiziqning o'z shakliga qirqiladi
+(`clipPath`). hanzi-writer ham shunday qiladi.
+
+**Medianlar allaqachon kelayotgan edi.** Server hanzi-writer faylini o'zi
+qanday bo'lsa shunday uzatadi, `StrokeDataDto` esa faqat `strokes` ni o'qib,
+`medians` ni tashlab yuborardi. Serverga tegilmadi.
+
+**Tezlik.** Ilgari butun ieroglif bitta `LinearEasing` sweep edi, har chiziq
+qat'iy 420 ms, chiziqlar orasida pauza yo'q. Endi har chiziq **o'z uzunligiga**
+qarab vaqt oladi (hanzi-writer formulasi: `(uzunlik + 600) / 3`) va orasida
+280 ms pauza bor — Mini App'dagi `delayBetweenStrokes` qiymati.
+
+**Kontur ham tuzatildi:** ilgari 2 **piksel** (dp emas) simli ramka edi, ya'ni
+zich ekranda soch tolasidek. Endi hanzi-writer'dagidek xira to'ldirilgan shakl.
+
+`strokes()` endi `CharacterStrokes` (kontur + median) qaytaradi — ikkisi
+alohida ma'noga ega emas, shuning uchun birga yuradi. Lug'at ham, darsdagi
+yozish varag'i ham shu bitta chizuvchidan foydalanadi.
+
+Qamrov: `CourseRepositoryTest` — medianlar DTO'dan o'tishini mixlaydi.
+
+**Tekshirilmagan:** ko'rinish telefonda ko'rilishi kerak — ayniqsa cho'tka
+kengligi (`BRUSH_WIDTH_RATIO = 0.22`) eng yo'g'on chiziqni qoplayaptimi.
+
+### 3.10 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
