@@ -2873,12 +2873,13 @@ function showSkipResult(pct,idx){
   var col=pass?"#2F7D5E":"var(--gold)";
   var unlockChar=pass?"dragon":"panda",unlockMood=pass?"celebrate":"proud";
   window._pendingUnlockAfterSheet=!!window._pendingCourseUnlockOrder;
-  App.openSheet('<div class="shead"><div class="hsk-character-stage" style="width:104px;height:112px;margin:0 auto 2px">'+lessonCharacterHtml(unlockChar,unlockMood)+'</div>'
+  App.openSheet('<div class="shead"><div class="hsk-character-stage" style="width:104px;height:112px;min-height:112px;margin:0 auto 2px">'+lessonCharacterHtml(unlockChar,unlockMood)+'</div>'
     +'<div style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold);color:#3a2c08;font-size:20px;margin:-10px auto 4px;position:relative;z-index:2"><i class="ti ti-lock-open"></i></div>'
     +'<div class="han" style="font-size:40px;font-weight:800;color:'+col+';margin-top:4px">'+pct+'%</div>'
     +'<div class="tr" style="font-size:17px;font-weight:700;color:var(--ink);margin-top:6px">'+esc(pass?s.passH:s.failH)+'</div>'
     +'<div class="tr" style="margin-top:8px;line-height:1.5">'+esc((pass?s.passP:s.failP).replace("{pct}",pct))+'</div></div>'
     +'<button class="scta" onclick="window._pendingUnlockAfterSheet=false;window._pendingCourseUnlockOrder=0;App.closeSheet();startLesson('+idx+')"><i class="ti ti-player-play"></i> '+esc(s.startNow)+'</button>');
+  setTimeout(function(){var ch=document.querySelector("#sheet .hsk-character-stage");if(ch&&window.HSKCharacterMotion)HSKCharacterMotion.play(ch,pass?"celebrate":"proud")},40);
   if(pass){beep([523,659,784,1046]);haptic("ok")}else{beep([392,330]);haptic("light")}
 }
 
@@ -3910,8 +3911,11 @@ function renderCheer(){
   setWriteBtn("");hideBar();
   var cheerChar=HP===1?"rabbit":"panda";
   $("#f-body").innerHTML='<div class="cheer"><div class="cpd hsk-character-stage" style="min-height:92px">'+lessonCharacterHtml(cheerChar,HP===1?"one-heart":"correct")+'</div><div class="cbub">'+esc(msg)+'</div></div>';
-  setTimeout(function(){var ch=document.querySelector("#f-body .cheer .cpd");if(ch&&window.HSKCharacterMotion)HSKCharacterMotion.play(ch,HP===1?"oneHeart":"proud")},30);
-  pandaFx(document.querySelector("#f-body .cpd"),"pop");
+  setTimeout(function(){
+    var ch=document.querySelector("#f-body .cheer .cpd");if(!ch)return;
+    if(window.HSKCharacterMotion)HSKCharacterMotion.play(ch,HP===1?"oneHeart":"proud");
+    else pandaFx(ch,"pop");
+  },30);
   var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+T().cont;
   haptic("light");
 }
