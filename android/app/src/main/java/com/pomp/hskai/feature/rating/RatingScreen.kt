@@ -233,11 +233,21 @@ fun RatingScreen(
 
 @Composable
 private fun ChallengeBell(pendingCount: Int, onClick: () -> Unit) {
-    Box {
+    // The count used to be aligned to the same 44dp box as the centred bell,
+    // so it covered the glyph's own top corner and the bell read as half
+    // drawn. It gets its own room outside the circle instead.
+    Box(modifier = Modifier.size(52.dp)) {
         HskGlassSurface(
-            modifier = Modifier.size(44.dp),
+            modifier = Modifier
+                .size(44.dp)
+                .align(Alignment.BottomStart),
             shape = CircleShape,
             shadowElevation = 5.dp,
+            // Glass is white at 72% on a near-white Paper, so without a
+            // stated border the circle is invisible and the icon reads as a
+            // loose glyph rather than a button. The voice call's round
+            // buttons already use this border.
+            borderColor = PompColors.Divider,
             onClick = onClick,
         ) {
             Box(contentAlignment = Alignment.Center) {
@@ -507,6 +517,9 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
             modifier = Modifier.size(44.dp),
             shape = CircleShape,
             shadowElevation = 5.dp,
+            // Same reason as the bell: white glass on Paper needs a stated
+            // border, or back looks like a stray arrow, not a button.
+            borderColor = PompColors.Divider,
             onClick = onBack,
         ) {
             Box(contentAlignment = Alignment.Center) {

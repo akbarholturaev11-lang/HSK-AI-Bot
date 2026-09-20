@@ -1,10 +1,7 @@
 package com.pomp.hskai.feature.profile
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +30,6 @@ import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +55,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -109,7 +106,6 @@ fun ProfileScreen(
     onToggleNotifications: (Boolean) -> Unit,
     onOpenSupport: (String) -> Unit,
     onRefresh: () -> Unit,
-    onStartTrial: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
     modifier: Modifier = Modifier,
@@ -196,9 +192,6 @@ fun ProfileScreen(
                 )
             }
 
-            item { TrialCard(state = state, onStart = onStartTrial) }
-            item { SubscriptionCard(state) }
-            item { ReferralCard(state) }
             // Compiled only into the `direct` build; the Play flavour has a
             // no-op here, because Play updates the app itself.
             item { AppUpdateCard() }
@@ -291,26 +284,33 @@ private fun ProfileHero(account: LinkedAccount, state: ProfileUiState, courseUse
                     }
                 }
             }
-            Column(Modifier.padding(start = 14.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(start = 14.dp)
+                    .weight(1f),
+            ) {
                 Text(
                     text = profile?.user?.name?.ifBlank { account.displayName } ?: account.displayName,
                     style = MaterialTheme.typography.headlineSmall,
                     color = PompColors.Ink,
+                    // A long name now shares the row with the access pill, so
+                    // it ellipsizes instead of pushing the pill off the card.
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(4.dp))
                 LevelLeaguePill(
                     level = (profile?.user?.level ?: account.level).uppercase(),
                     league = profile?.stats?.league.orEmpty(),
                 )
-                Text(
-                    text = stringResource(
-                        if (profile?.subscription?.isPaid == true || account.isPaid) R.string.synced_access_paid
-                        else R.string.synced_access_free,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (profile?.subscription?.isPaid == true || account.isPaid) PompColors.Jade else PompColors.InkSecondary,
-                )
             }
+            // Access is a state, not a third line of the name. In the card's
+            // top corner it leaves the name and the league two rows instead
+            // of the three that read as clutter.
+            AccessPill(
+                isPaid = profile?.subscription?.isPaid == true || account.isPaid,
+                modifier = Modifier.align(Alignment.Top),
+            )
         }
     }
     if (avatarNoteOpen) AvatarNoteSheet { avatarNoteOpen = false }
@@ -411,64 +411,22 @@ internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTin
 }
 
 @Composable
-private fun TrialCard(state: ProfileUiState, onStart: () -> Unit) {
-    val trial = state.trial ?: return
-    if (!trial.eligible && !trial.active) return
-    Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, PompColors.Gold), modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp)) {
-            Text(stringResource(if (trial.active) R.string.profile_trial_active_title else R.string.profile_trial_title), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
-            Text(stringResource(if (trial.active) R.string.profile_trial_active_body else R.string.profile_trial_body), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-            if (state.trialError.isNotBlank()) Text(stringResource(R.string.profile_trial_failed), style = MaterialTheme.typography.bodySmall, color = PompColors.Flame, modifier = Modifier.padding(top = 6.dp))
-            if (trial.eligible) Button(onClick = onStart, enabled = !state.trialStarting, modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) { Text(stringResource(R.string.profile_trial_cta)) }
-        }
-    }
-}
-
-@Composable
-private fun SubscriptionCard(state: ProfileUiState) {
-    val active = state.subscription?.access?.isPaid == true
-    Surface(color = if (active) PompColors.JadeSoft else PompColors.GoldSoft, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, if (active) PompColors.Jade else PompColors.Gold), modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp)) {
-            Text(stringResource(R.string.profile_subscription_title), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
-            Text(stringResource(if (active) R.string.profile_subscription_active else R.string.profile_subscription_play_blocked), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-        }
-    }
-}
-
-@Composable
-private fun ReferralCard(state: ProfileUiState) {
-    val referral = state.referral
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 8.dp,
+private fun AccessPill(isPaid: Boolean, modifier: Modifier = Modifier) {
+    Surface(
+        color = if (isPaid) PompColors.JadeSoft else PompColors.PaperRaised,
+        shape = RoundedCornerShape(999.dp),
+        border = BorderStroke(1.dp, if (isPaid) PompColors.Jade else PompColors.Divider),
+        modifier = modifier,
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(stringResource(R.string.profile_referral_title), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
-            Text(stringResource(R.string.profile_referral_progress, referral?.activated ?: 0, referral?.trialRequired ?: 0), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-            val link = referral?.link.orEmpty()
-            if (link.isNotBlank()) {
-                Spacer(Modifier.height(8.dp))
-                Text(link, style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(12.dp))
-                val context = LocalContext.current
-                val copied = stringResource(R.string.profile_referral_copied)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Surface(onClick = {
-                        context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("invite", link))
-                        Toast.makeText(context, copied, Toast.LENGTH_SHORT).show()
-                    }, shape = RoundedCornerShape(12.dp), color = PompColors.Cinnabar) {
-                        Text(stringResource(R.string.profile_referral_copy), style = MaterialTheme.typography.labelLarge, color = PompColors.Paper, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
-                    }
-                    Surface(onClick = {
-                        val send = Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, link) }
-                        runCatching { context.startActivity(Intent.createChooser(send, null)) }
-                    }, shape = RoundedCornerShape(12.dp), color = if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper, border = BorderStroke(1.dp, PompColors.Divider)) {
-                        Text(stringResource(R.string.profile_referral_share), style = MaterialTheme.typography.labelLarge, color = PompColors.InkSecondary, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
-                    }
-                }
-            }
-        }
+        Text(
+            text = stringResource(
+                if (isPaid) R.string.synced_access_paid else R.string.synced_access_free,
+            ),
+            style = MaterialTheme.typography.labelMedium,
+            color = if (isPaid) PompColors.Jade else PompColors.InkSecondary,
+            maxLines = 1,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+        )
     }
 }
 

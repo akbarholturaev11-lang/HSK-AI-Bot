@@ -175,7 +175,53 @@ o'zgarsa tugma ham ergashadi. Suhbat vaqtida esa dock balandligi
 tekshiruv o'tkazildi. Kompilyatsiya, lint va real ko'rinish (light/dark,
 360–390 dp, katta font, uz/ru/tg) telefonda tasdiqlanishi kerak.
 
-### 3.5 Boshqa ochiqlar
+### 3.5 ~~Profil va Reyting chrome'i~~ — TUZATILDI 2026-09-20
+
+Uchta alohida narsa, foydalanuvchi suratlaridan (1.3.1):
+
+**Profil sarlavhasi uch qator edi.** `ProfileHero` da ism, `HSK2 · Bronze`
+pilli va kirish holati (`Bepul rejim`) bitta ustunda ketma-ket turardi. Holat
+endi kartaning o'ng yuqori burchagida alohida pill (`AccessPill`) — ism bilan
+pill ikki qatorda qoladi. Ism `maxLines = 1` bo'ldi, aks holda uzun ism pillni
+kartadan chiqarib yuborardi.
+
+**Qo'ng'iroqcha yarmi ko'rinardi.** `ChallengeBell` da «1» nishoni ikona bilan
+**bitta 44 dp qutida**, `TopEnd` ga tekislangan edi. Ikona markazda 21 dp —
+ya'ni nishon uning o'ng-yuqori choragini bosib turardi. Quti 52 dp bo'ldi,
+doira `BottomStart` ga, nishon esa doiradan tashqariga chiqdi.
+
+**Dumaloq tugmalar tugmaga o'xshamasdi.** `HskGlassSurface` yorug' rejimda
+`oq @ 0.72`, chegarasi `oq @ 0.92`, fon `#FDF9F0` — ya'ni doira ham, chegara
+ham ko'rinmaydi. Reyting qo'ng'irog'i va `RatingScreenHeader` dagi orqaga
+tugmasi endi `borderColor = PompColors.Divider` oladi, ya'ni `VoiceCallScreen`
+dagi `RoundIconButton` bilan bir xil. Umumiy `HskGlassSurface` ga tegilmadi —
+u kartalarda to'g'ri ishlaydi.
+
+**Diqqat:** boshqa `HskGlassIconButton` ishlatadigan joylar (Mashq, ovozli
+suhbat) hali ham chegarasiz, ya'ni yorug' rejimda xira. Kerak bo'lsa
+`HskGlassIconButton` ga standart chegara berilsa hammasi bir xil bo'ladi.
+
+### 3.5.1 Profildan olib tashlangan uchta blok — 2026-09-20
+
+`TrialCard`, `SubscriptionCard` va `ReferralCard` olib tashlandi:
+
+- **Do'st taklif qilish** — `RatingScreen` dagi `FriendInviteCard` ayni havola
+  va tugmalarni beradi. Toza dublikat edi.
+- **Obuna** — matni `profile_subscription_play_blocked`:
+  «Google Play Billing sozlamalari repo tashqarisida…». Bu dasturchi izohi
+  bo'lib, foydalanuvchiga chiqib qolgan edi.
+- **7 kun Pro bepul** — dublikat emas, lekin trial yo'qolgani yo'q: limit
+  tugaganda chiqadigan paywall (`SectionLimitBlock`, `direct` va `play`)
+  uni baribir taklif qiladi.
+
+`ProfileScreen` va `ProfileWidgetCompat` dan `onStartTrial` parametri ham
+olib tashlandi. `ProfileViewModel.startTrial` o'z joyida qoladi —
+`MainActivity:472` dagi `LimitGate` uni ishlatadi.
+
+`profile_trial_*`, `profile_subscription_*` va `profile_referral_*` satrlari
+resurslarda qoldi (uch tilda), chunki ular qaytarilishi mumkin.
+
+### 3.6 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
