@@ -1727,6 +1727,7 @@ var App={
     }
     SALES_VALUE_STATE.nextIdx=nextIdx;SALES_VALUE_STATE.bridgeAction="";
     window._pendingCheckpointNextIdx=null;window._pendingLessonEndAd=0;window._pendingDesktopLessonPromo=0;
+    window._pendingCourseUnlockOrder=0;window._pendingCourseUnlockRetries=0;
     window._pendingStreak=null;pendingRankUp=null;App.exitFlow();
     var ov=$("#levelup");ov.classList.remove("cine");ov.classList.add("sales-bridge");ov.classList.add("on");
     $("#lu-panda").innerHTML="";$("#lu-stage").innerHTML=salesBridgeHtml();
@@ -1754,6 +1755,7 @@ var App={
     window._pendingDesktopLessonPromo=0;
     var checkpointNext=Number(window._pendingCheckpointNextIdx);
     window._pendingCheckpointNextIdx=null;
+    if(dest==="checkpoint_next"){window._pendingCourseUnlockOrder=0;window._pendingCourseUnlockRetries=0}
     var go=function(){
       if(dest==="rating"){App.show("rating");renderRating()}
       else{App.show("course");renderAll()}
