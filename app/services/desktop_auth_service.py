@@ -23,11 +23,11 @@ from app.services.user_access_state_service import UserAccessStateService
 
 DISPLAY_CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
 DESKTOP_PLATFORMS = {"macos", "windows"}
-MOBILE_PLATFORMS = {"android"}
-# Telegram deep-link payloads are intentionally opaque. The Android client
-# receives the polling secret separately and the bot only sees this one-time
-# request identifier.
+MOBILE_PLATFORMS = {"android", "ios"}
+# Telegram deep-link payloads are intentionally opaque. Mobile clients receive
+# the polling secret separately and the bot sees only a one-time request id.
 ANDROID_LINK_PREFIX = "android_link_"
+IOS_LINK_PREFIX = "ios_link_"
 # Every native client allowed to open a Telegram device link. The desktop-only
 # set stays separate so desktop consumers (downloads, release manifest, admin
 # desktop statistics) keep their current meaning and are not silently widened.
@@ -78,13 +78,13 @@ def _b64_decode(value: str) -> bytes:
 def analytics_prefix(platform: str | None) -> str:
     """Analytics namespace for a native platform.
 
-    Android must never be counted as a desktop install, so its lifecycle
-    events, analytics source and dedupe keys use their own prefix. Desktop
-    platforms keep the exact names they already emit in production.
+    Mobile apps must never be counted as desktop installs. Android and iOS
+    each keep their own lifecycle namespace while macOS/Windows preserve the
+    existing desktop event names.
     """
 
     normalized = str(platform or "").strip().lower()
-    return "android" if normalized in MOBILE_PLATFORMS else "desktop"
+    return normalized if normalized in MOBILE_PLATFORMS else "desktop"
 
 
 class DesktopAuthService:
@@ -357,11 +357,12 @@ class DesktopAuthService:
             .lstrip("@")
             or "darsi_chini_bot"
         )
-        bot_start_payload = (
-            f"{ANDROID_LINK_PREFIX}{link_request.id}"
-            if platform == "android"
-            else "desktop_link"
-        )
+        if platform == "android":
+            bot_start_payload = f"{ANDROID_LINK_PREFIX}{link_request.id}"
+        elif platform == "ios":
+            bot_start_payload = f"{IOS_LINK_PREFIX}{link_request.id}"
+        else:
+            bot_start_payload = "desktop_link"
         return {
             "ok": True,
             "status": "pending",
@@ -433,7 +434,7 @@ class DesktopAuthService:
         )
         link_request = result.scalar_one_or_none()
         now = _utcnow()
-        if not link_request or link_request.platform != "android":
+        if not link_request or link_request.platform not in MOBILE_PLATFORMS:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
         if not hmac.compare_digest(
             str(getattr(link_request, "display_code_hash", "") or ""),

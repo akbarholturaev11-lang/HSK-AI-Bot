@@ -10,6 +10,7 @@ from aiogram.types import (
 
 from app.bot.fsm.android_auth import AndroidLinkStates
 from app.bot.fsm.desktop_auth import DesktopLinkStates
+from app.bot.fsm.ios_auth import IOSLinkStates
 from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.services.onboarding_service import (
@@ -19,6 +20,7 @@ from app.services.onboarding_service import (
 )
 from app.services.desktop_auth_service import (
     ANDROID_LINK_PREFIX,
+    IOS_LINK_PREFIX,
     MOBILE_PLATFORMS,
     DesktopAuthError,
     DesktopAuthService,
@@ -202,6 +204,33 @@ _ANDROID_COPY = {
     },
 }
 
+_IOS_COPY = {
+    "uz": {
+        "choose_language": "📱 <b>HSK AI iPhone ilovasi</b>\n\nIlovadagi tilni tanlang:",
+        "enter_code": (
+            "🔐 <b>iPhone ilovasidagi 8 belgili kodni yuboring</b>\n\n"
+            "Kod ilovada ko‘rsatilgan. Uni shu chatga qo‘lda yuboring."
+        ),
+        "invalid": "Bu ulash havolasi yoki kod eskirgan. Ilovadan qayta boshlang.",
+    },
+    "ru": {
+        "choose_language": "📱 <b>Приложение HSK AI для iPhone</b>\n\nВыберите язык приложения:",
+        "enter_code": (
+            "🔐 <b>Отправьте 8-символьный код из приложения iPhone</b>\n\n"
+            "Код показан в приложении. Отправьте его в этот чат вручную."
+        ),
+        "invalid": "Ссылка или код подключения истекли. Начните заново в приложении.",
+    },
+    "tj": {
+        "choose_language": "📱 <b>Барномаи HSK AI барои iPhone</b>\n\nЗабони барномаро интихоб кунед:",
+        "enter_code": (
+            "🔐 <b>Рамзи 8-аломатиро аз барномаи iPhone фиристед</b>\n\n"
+            "Рамз дар барнома нишон дода шудааст. Онро ба ин чат дастӣ фиристед."
+        ),
+        "invalid": "Истинод ё рамзи пайвастшавӣ гузаштааст. Аз барнома аз нав оғоз кунед.",
+    },
+}
+
 
 def _android_language_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
@@ -215,12 +244,25 @@ def _android_language_keyboard() -> InlineKeyboardMarkup:
     )
 
 
+def _ios_language_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="🇹🇯 Тоҷикӣ", callback_data="ios_link:lang:tj"),
+                InlineKeyboardButton(text="🇷🇺 Русский", callback_data="ios_link:lang:ru"),
+                InlineKeyboardButton(text="🇺🇿 O‘zbek", callback_data="ios_link:lang:uz"),
+            ]
+        ]
+    )
+
+
 # The Telegram confirmation must name the real device. The previous
 # "Mac or else Windows" shortcut would have shown an Android phone as Windows.
 _PLATFORM_LABELS = {
     "macos": "Mac",
     "windows": "Windows",
     "android": "Android",
+    "ios": "iPhone",
 }
 
 
@@ -328,6 +370,11 @@ def _android_language(user) -> str:
     return value if value in _ANDROID_COPY else "ru"
 
 
+def _ios_language(user) -> str:
+    value = str(getattr(user, "language", None) or "ru")
+    return value if value in _IOS_COPY else "ru"
+
+
 async def _begin_android_code_entry(
     message: Message,
     state: FSMContext,
@@ -431,6 +478,108 @@ async def choose_android_link_language(
     await _begin_android_code_entry(callback.message, state, request_id, language)
 
 
+async def _begin_ios_code_entry(
+    message: Message,
+    state: FSMContext,
+    request_id: str,
+    language: str,
+) -> None:
+    await state.clear()
+    await state.set_state(DesktopLinkStates.waiting_code)
+    await state.update_data(
+        ios_link_request_id=request_id,
+        desktop_link_invalid_attempts=0,
+        desktop_link_prompted=True,
+    )
+    await message.answer(
+        _IOS_COPY[language]["enter_code"],
+        parse_mode="HTML",
+    )
+
+
+@router.message(
+    CommandStart(deep_link=True),
+    F.text.regexp(r"^/start(?:@\w+)?\s+ios_link_[0-9a-fA-F-]{36}\s*$"),
+)
+async def begin_ios_link(
+    message: Message,
+    state: FSMContext,
+    session,
+) -> None:
+    """Start the native iPhone registration/link flow from Telegram."""
+
+    raw = str(message.text or "").strip().split()[-1]
+    request_id = raw[len(IOS_LINK_PREFIX):]
+    try:
+        await DesktopAuthService(session, settings).link_request_preview(
+            link_request_id=request_id,
+            platform="ios",
+        )
+    except DesktopAuthError:
+        await message.answer(_IOS_COPY["ru"]["invalid"], parse_mode="HTML")
+        return
+
+    onboarding = OnboardingService(session)
+    user, created = await onboarding.get_or_create_user(
+        telegram_id=message.from_user.id,
+        full_name=message.from_user.full_name if message.from_user else None,
+        username=message.from_user.username if message.from_user else None,
+        bot=message.bot,
+    )
+
+    await state.clear()
+    if created or onboarding_stage(user) == "language":
+        await state.update_data(ios_link_request_id=request_id)
+        await state.set_state(IOSLinkStates.choosing_language)
+        await message.answer(
+            _IOS_COPY["tj"]["choose_language"],
+            reply_markup=_ios_language_keyboard(),
+            parse_mode="HTML",
+        )
+        return
+
+    await _begin_ios_code_entry(message, state, request_id, _ios_language(user))
+
+
+@router.callback_query(
+    IOSLinkStates.choosing_language,
+    F.data.regexp(r"^ios_link:lang:(?:uz|ru|tj)$"),
+)
+async def choose_ios_link_language(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session,
+) -> None:
+    data = await state.get_data()
+    request_id = str(data.get("ios_link_request_id") or "").strip()
+    language = str(callback.data or "").rsplit(":", 1)[-1]
+    user, _ = await OnboardingService(session).get_or_create_user(
+        telegram_id=callback.from_user.id,
+        full_name=callback.from_user.full_name if callback.from_user else None,
+        username=callback.from_user.username if callback.from_user else None,
+        bot=callback.bot,
+    )
+    if not request_id or not user or language not in _IOS_COPY:
+        await callback.answer(_IOS_COPY["ru"]["invalid"], show_alert=True)
+        return
+    user.language = language
+    # Native iOS owns the remaining course questions after account linking.
+    user.learning_mode = ONBOARDING_MODE_CHOICE_MODE
+    await session.commit()
+    try:
+        await DesktopAuthService(session, settings).link_request_preview(
+            link_request_id=request_id,
+            platform="ios",
+        )
+    except DesktopAuthError:
+        await state.clear()
+        await callback.answer(_IOS_COPY[language]["invalid"], show_alert=True)
+        return
+
+    await callback.answer()
+    await _begin_ios_code_entry(callback.message, state, request_id, language)
+
+
 @router.message(
     CommandStart(deep_link=True),
     F.text.regexp(r"^/start(?:@\w+)?\s+desktop_link\s*$"),
@@ -461,14 +610,16 @@ async def receive_desktop_link_code(
         await _register_invalid_attempt(message, state, language)
         return
     state_data = await state.get_data()
-    android_request_id = str(
-        state_data.get("android_link_request_id") or ""
+    mobile_request_id = str(
+        state_data.get("android_link_request_id")
+        or state_data.get("ios_link_request_id")
+        or ""
     ).strip()
     try:
         service = DesktopAuthService(session, settings)
-        if android_request_id:
+        if mobile_request_id:
             preview = await service.link_request_preview_for_code(
-                link_request_id=android_request_id,
+                link_request_id=mobile_request_id,
                 display_code=display_code,
                 telegram_id=message.from_user.id,
             )

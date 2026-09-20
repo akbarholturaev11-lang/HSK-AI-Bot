@@ -104,6 +104,12 @@ COURSE_MINIAPP_EVENT_NAMES = (
     # Telegram reports nothing back about it.
     "android_apk_requested",
     "android_apk_sent",
+    # Native iOS client lifecycle. Kept separate from Android and desktop so
+    # funnels never merge different distribution/platform behavior.
+    "ios_session_linked",
+    "ios_first_open",
+    "ios_app_opened",
+    "ios_update_installed",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (

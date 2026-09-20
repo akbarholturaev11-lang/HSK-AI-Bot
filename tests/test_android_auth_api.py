@@ -81,6 +81,8 @@ class AndroidPlatformAllowlistTests(unittest.TestCase):
     def test_android_is_native_but_not_desktop(self):
         self.assertIn("android", NATIVE_PLATFORMS)
         self.assertIn("android", MOBILE_PLATFORMS)
+        self.assertIn("ios", NATIVE_PLATFORMS)
+        self.assertIn("ios", MOBILE_PLATFORMS)
         # Desktop-only consumers (downloads, release manifest, desktop admin
         # statistics) must not silently start counting Android.
         self.assertNotIn("android", DESKTOP_PLATFORMS)
@@ -88,6 +90,7 @@ class AndroidPlatformAllowlistTests(unittest.TestCase):
 
     def test_analytics_prefix_separates_android_from_desktop(self):
         self.assertEqual("android", analytics_prefix("android"))
+        self.assertEqual("ios", analytics_prefix("ios"))
         self.assertEqual("desktop", analytics_prefix("macos"))
         self.assertEqual("desktop", analytics_prefix("windows"))
         self.assertEqual("desktop", analytics_prefix(None))
@@ -178,7 +181,7 @@ class AndroidAuthServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_unknown_platform_is_rejected(self):
         async with self.sessions() as session:
-            for platform in ("ios", "linux", "web", "", "ANDROID "):
+            for platform in ("linux", "web", "", "ANDROID "):
                 with self.subTest(platform=platform):
                     with self.assertRaises(DesktopAuthError) as rejected:
                         await self._start(session, platform=platform)
@@ -194,6 +197,20 @@ class AndroidAuthServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(
             started["bot_deep_link"].startswith(
                 "https://t.me/pomp_test_bot?start=android_link_"
+            )
+        )
+        self.assertIn(started["link_request_id"], started["bot_deep_link"])
+        self.assertNotIn(started["display_code"], started["bot_deep_link"])
+        self.assertNotIn(started["polling_secret"], started["bot_deep_link"])
+
+
+    async def test_ios_display_code_never_reaches_the_deep_link(self):
+        async with self.sessions() as session:
+            started = await self._start(session, platform="ios")
+
+        self.assertTrue(
+            started["bot_deep_link"].startswith(
+                "https://t.me/pomp_test_bot?start=ios_link_"
             )
         )
         self.assertIn(started["link_request_id"], started["bot_deep_link"])
