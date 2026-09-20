@@ -368,6 +368,28 @@ struct FoundationScreen: View {
         let correct = selected && model.answerCorrect == true
         let wrong = selected && model.answerCorrect == false
 
+        let fillColor: Color
+        let strokeColor: Color
+        let shadowColor: Color
+
+        if correct {
+            fillColor = HSKColors.jade.opacity(0.12)
+            strokeColor = HSKColors.jade.opacity(0.70)
+            shadowColor = HSKColors.jade.opacity(0.12)
+        } else if wrong {
+            fillColor = HSKColors.flame.opacity(0.12)
+            strokeColor = HSKColors.flame.opacity(0.70)
+            shadowColor = HSKColors.flame.opacity(0.12)
+        } else if selected {
+            fillColor = HSKColors.cinnabar.opacity(0.08)
+            strokeColor = HSKColors.cinnabar.opacity(0.58)
+            shadowColor = Color.black.opacity(0.06)
+        } else {
+            fillColor = .clear
+            strokeColor = Color.white.opacity(0.44)
+            shadowColor = Color.black.opacity(0.06)
+        }
+
         return Button {
             model.choose(index)
         } label: {
@@ -386,38 +408,13 @@ struct FoundationScreen: View {
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 19, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 19, style: .continuous)
-                    .fill(
-                        correct
-                            ? HSKColors.jade.opacity(0.12)
-                            : wrong
-                                ? HSKColors.flame.opacity(0.12)
-                                : selected
-                                    ? HSKColors.cinnabar.opacity(0.08)
-                                    : Color.clear
-                    )
+                    .fill(fillColor)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 19, style: .continuous)
-                    .stroke(
-                        correct
-                            ? HSKColors.jade.opacity(0.70)
-                            : wrong
-                                ? HSKColors.flame.opacity(0.70)
-                                : selected
-                                    ? HSKColors.cinnabar.opacity(0.58)
-                                    : Color.white.opacity(0.44),
-                        lineWidth: selected ? 1.2 : 0.8
-                    )
+                    .stroke(strokeColor, lineWidth: selected ? 1.2 : 0.8)
             )
-            .shadow(
-                color: correct
-                    ? HSKColors.jade.opacity(0.12)
-                    : wrong
-                        ? HSKColors.flame.opacity(0.12)
-                        : Color.black.opacity(0.06),
-                radius: 12,
-                y: 6
-            )
+            .shadow(color: shadowColor, radius: 12, y: 6)
         }
         .buttonStyle(.plain)
         .disabled(model.answerCorrect == true)
