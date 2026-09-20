@@ -7,6 +7,12 @@
 <title>HSK AI</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921">
+<link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921">
+<link rel="stylesheet" href="/assets/characters/hsk-lesson-presentation.css?v=20260921">
+<script src="/assets/characters/hsk-character-pack.js?v=20260921"></script>
+<script src="/assets/characters/hsk-character-motion.js?v=20260921"></script>
+<script src="/assets/characters/hsk-lesson-presentation.js?v=20260921"></script>
 <style>
 :root{
   --ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;
@@ -3195,6 +3201,10 @@ function startLesson(idx,opts){
   if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
   if(l.status==="locked")return;
+  /* Presentation only: show the centered HSK AI mascot immediately while the
+     existing reserve/data requests run. Business logic remains unchanged. */
+  var lessonEntry=(window.HSKLessonPresentation&&HSKLessonPresentation.beginLessonEntry)
+    ?HSKLessonPresentation.beginLessonEntry({lang:LANG,character:"panda"}):null;
   var lv=MAP.level||"hsk1";
   reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}).then(function(d){
     Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
@@ -3211,8 +3221,11 @@ function startLesson(idx,opts){
       activation_variant:activationVariant(),
       dedupe_key:lessonEventKey("lesson_started",l.n)
     });
-    HP=5;$("#f-hp").textContent=HP;$("#flow").classList.add("on");renderFlowCard();
+    HP=5;$("#f-hp").textContent=HP;
+    var revealLesson=function(){$("#flow").classList.add("on");renderFlowCard()};
+    if(lessonEntry&&lessonEntry.reveal)lessonEntry.reveal(revealLesson);else revealLesson();
   }).catch(function(err){
+    if(lessonEntry&&lessonEntry.cancel)lessonEntry.cancel();
     if(err&&err.data){handleLessonStartDenied(err,idx);return}
     var msg=LANG==="ru"?"Дарс пока не готов":LANG==="tj"?"Дарс ҳанӯз тайёр нест":"Dars hali tayyor emas";
     toast(msg,2500);
