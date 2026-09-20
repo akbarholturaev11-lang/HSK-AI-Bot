@@ -40,8 +40,37 @@ def _balanced_block(text: str, open_at: int) -> str:
     return ""
 
 
+def _abstract_suspend_funs(body: str) -> set[str]:
+    """The suspend funs a fake must override: the ones with no body.
+
+    An interface method that carries its own implementation — a Room
+    `@Transaction` helper built out of the abstract queries, say — is
+    inherited, so demanding an override would be asking for a copy of code
+    that already works.
+    """
+    members: set[str] = set()
+    for match in re.finditer(r"\bsuspend\s+fun\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(", body):
+        # Walk past the parameter list, then past an optional return type, and
+        # see whether a body opens before the next declaration begins.
+        depth, index = 0, match.end() - 1
+        while index < len(body):
+            if body[index] == "(":
+                depth += 1
+            elif body[index] == ")":
+                depth -= 1
+                if depth == 0:
+                    break
+            index += 1
+        rest = body[index + 1:]
+        head = re.match(r"\s*(?::[^={\n]*)?", rest)
+        tail = rest[head.end():].lstrip() if head else rest.lstrip()
+        if not tail.startswith("{") and not tail.startswith("="):
+            members.add(match.group(1))
+    return members
+
+
 def interface_members(sources: list[Path]) -> dict[str, set[str]]:
-    """Maps interface name -> the suspend fun names it declares."""
+    """Maps interface name -> the suspend fun names a fake has to implement."""
     found: dict[str, set[str]] = {}
     for path in sources:
         text = path.read_text(encoding="utf-8")
@@ -49,7 +78,7 @@ def interface_members(sources: list[Path]) -> dict[str, set[str]]:
             body = _balanced_block(text, match.end() - 1)
             if not body:
                 continue
-            members = set(re.findall(r"\bsuspend\s+fun\s+([A-Za-z_][A-Za-z0-9_]*)", body))
+            members = _abstract_suspend_funs(body)
             # Only the Retrofit-style, all-suspend interfaces are checked.
             if members and not re.search(r"\bval\s|\bvar\s", body):
                 found[match.group(1)] = members

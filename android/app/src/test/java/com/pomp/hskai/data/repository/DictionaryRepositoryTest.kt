@@ -14,6 +14,8 @@ import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.api.RewardChestOpenResponse
 import com.pomp.hskai.data.api.StrokeDataDto
+import com.pomp.hskai.data.api.LessonUnlockRequest
+import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.local.DictionaryDao
 import com.pomp.hskai.data.local.DictionaryMetaEntity
 import com.pomp.hskai.data.local.DictionaryWordEntity
@@ -84,6 +86,11 @@ private class FakeBundledDictionarySource(
 
 private class DictionaryApi : AndroidCourseApi {
     var calls = 0
+
+    override suspend fun unlockLesson(
+        authorization: String,
+        body: LessonUnlockRequest,
+    ): Response<LessonUnlockResponse> = throw NotImplementedError()
 
     override suspend fun dictionary(
         authorization: String,

@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.dictionary
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
@@ -27,7 +28,7 @@ data class DictionaryUiState(
     val selectedWord: DictionaryWord? = null,
     val characters: List<String> = emptyList(),
     val characterIndex: Int = 0,
-    val strokes: List<String> = emptyList(),
+    val strokes: CharacterStrokes = CharacterStrokes.EMPTY,
     val isStrokeLoading: Boolean = false,
     val strokeError: ApiError? = null,
     /** Null means full autoplay; otherwise it is the number of visible strokes. */
@@ -96,7 +97,7 @@ class DictionaryViewModel(
                 selectedWord = word,
                 characters = characters,
                 characterIndex = 0,
-                strokes = emptyList(),
+                strokes = CharacterStrokes.EMPTY,
                 strokeError = null,
                 visibleStrokeCount = null,
             )
@@ -122,7 +123,7 @@ class DictionaryViewModel(
             it.copy(
                 selectedWord = null,
                 characters = emptyList(),
-                strokes = emptyList(),
+                strokes = CharacterStrokes.EMPTY,
                 isStrokeLoading = false,
                 isAudioLoading = false,
             )
@@ -162,7 +163,7 @@ class DictionaryViewModel(
         val character = _state.value.currentCharacter ?: return
         strokeJob?.cancel()
         _state.update {
-            it.copy(isStrokeLoading = true, strokes = emptyList(), strokeError = null)
+            it.copy(isStrokeLoading = true, strokes = CharacterStrokes.EMPTY, strokeError = null)
         }
         strokeJob = viewModelScope.launch {
             when (val result = courseRepository.strokes(character)) {

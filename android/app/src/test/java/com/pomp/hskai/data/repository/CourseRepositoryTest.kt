@@ -1,5 +1,6 @@
 package com.pomp.hskai.data.repository
 
+import androidx.compose.ui.geometry.Offset
 import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -18,6 +19,8 @@ import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.LocalizedText
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.api.RewardChestOpenResponse
+import com.pomp.hskai.data.api.LessonUnlockRequest
+import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.local.LessonCacheDao
@@ -114,12 +117,19 @@ private open class FakeCourseApi : AndroidCourseApi {
     ): Response<CourseLessonResponse> = throw NotImplementedError()
 
     override suspend fun stroke(
-
         authorization: String,
-
         char: String,
+    ): Response<StrokeDataDto> = Response.success(
+        StrokeDataDto(
+            strokes = listOf("M 0 0 L 100 0 L 100 20 L 0 20 Z"),
+            medians = listOf(listOf(listOf(0f, 10f), listOf(100f, 10f))),
+        )
+    )
 
-    ): Response<StrokeDataDto> = throw NotImplementedError()
+    override suspend fun unlockLesson(
+        authorization: String,
+        body: LessonUnlockRequest,
+    ): Response<LessonUnlockResponse> = throw NotImplementedError()
 
 
     var ttsCalls = 0
@@ -216,6 +226,26 @@ class CourseRepositoryTest {
 
         assertNull(cached)
         assertEquals(0, api.mapCalls)
+    }
+
+    /**
+     * The medians are what make the animation a stroke being written rather
+     * than an outline being traced, and they were being dropped here: the DTO
+     * read `strokes` and nothing else, so the screen had no centre line to
+     * sweep the brush along.
+     */
+    @Test
+    fun `stroke data carries the centre line of every stroke`() = runTest {
+        val repository = repository(api = FakeCourseApi(), dao = FakeCourseMapDao())
+
+        val result = repository.strokes("人")
+
+        val strokes = (result as ApiResult.Success).value
+        assertEquals(1, strokes.size)
+        assertEquals(
+            listOf(Offset(0f, 10f), Offset(100f, 10f)),
+            strokes.medians.single(),
+        )
     }
 
     private fun repository(

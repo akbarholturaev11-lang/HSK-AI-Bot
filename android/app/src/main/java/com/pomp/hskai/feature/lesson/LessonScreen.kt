@@ -132,7 +132,8 @@ fun LessonScreen(
                 SecondaryAction(stringResource(R.string.action_close), onExit)
             }
             outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
-            outcome is LessonOutcome.Completed -> CompletedBlock(outcome, onExit)
+            outcome is LessonOutcome.Completed ->
+                CompletedBlock(outcome, state.rankBoard, onExit)
             outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
             else -> LessonBody(
                 state = state,
@@ -537,8 +538,12 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
 }
 
 @Composable
-private fun CompletedBlock(outcome: LessonOutcome.Completed, onExit: () -> Unit) {
-    LessonCompletionCelebration(outcome = outcome, onExit = onExit)
+private fun CompletedBlock(
+    outcome: LessonOutcome.Completed,
+    rankBoard: LessonRankBoard?,
+    onExit: () -> Unit,
+) {
+    LessonCompletionCelebration(outcome = outcome, rankBoard = rankBoard, onExit = onExit)
 }
 
 @Composable

@@ -145,6 +145,40 @@
     <string name="lesson_done_low_2">Boshlash — eng qiyini. Uddaladingiz.</string>
     <string name="lesson_done_low_3">Hech qisi yo\'q. Yana bir bor ko\'ramiz.</string>
     <string name="lesson_done_low_sub">Bu darsni takrorlash foydali bo\'ladi.</string>
+    <!-- Dars yakuni: alanga ekrani. Matnlar Mini App dagi streakCopy dan
+         so'zma-so'z ko'chirilgan — ikkala klient bir xil gapirishi uchun. -->
+    <!-- O'tish testi: yopiq darsni qisqa test bilan ochish. Matnlar Mini App
+         dagi skipI18n() dan so'zma-so'z ko'chirilgan. -->
+    <string name="skip_test_tag">O\'tish testi</string>
+    <string name="skip_test_offer">Bu dars hali qulflangan. Uni ochish uchun qisqa test topshiring.</string>
+    <string name="skip_test_start">Testni boshlash</string>
+    <string name="skip_test_pass_title">Ajoyib natija!</string>
+    <string name="skip_test_pass_body">%1$d%% — zo\'r! Bu dars sizga oson keladi. Dars ochildi 🎉</string>
+    <string name="skip_test_fail_title">Dars ochildi</string>
+    <string name="skip_test_fail_body">%1$d%% — bu dars sizga biroz qiyinlik qilishi mumkin. Lekin xafa bo\'lmang — dars ochildi, bosqichma-bosqich o\'rganib olasiz 💪</string>
+    <string name="skip_test_confirm_title">Bu darsga hali tayyor emassiz</string>
+    <string name="skip_test_confirm_body">%1$d%% — natija past. Bu dars sizga qiyinlik qilishi mumkin. Baribir ochishni xohlaysizmi?</string>
+    <string name="skip_test_confirm_yes">Baribir ochish</string>
+    <string name="skip_test_confirm_no">Orqaga</string>
+    <string name="skip_test_start_lesson">Darsni boshlash</string>
+    <string name="skip_test_not_ready">Dars hali tayyor emas</string>
+    <string name="skip_test_save_error">Dars ochilishi saqlanmadi. Qayta urinib ko\'ring.</string>
+    <string name="skip_test_progress">%1$d / %2$d</string>
+    <string name="lesson_streak_days">kun ketma-ket!</string>
+    <string name="lesson_streak_reset">Muhimi — qaytding. Bugundan yangi hisob boshlandi.</string>
+    <string name="lesson_streak_d1">Birinchi uchqun sizniki. Ertaga yana kelsangiz — alanga o\'chmaydi.</string>
+    <string name="lesson_streak_d2">Ikki kun. Endi bu tasodif emas — bu odat boshlanishi.</string>
+    <string name="lesson_streak_d3">Uch kun ketma-ket. Ko\'pchilik shu yerda to\'xtaydi, siz esa yo\'q.</string>
+    <string name="lesson_streak_d7">Bir hafta to\'liq. Xitoy tili endi kunlik hayotingizning bir qismi.</string>
+    <string name="lesson_streak_d14">Ikki hafta. Bu darajaga har o\'ninchi o\'quvchi yetadi.</string>
+    <string name="lesson_streak_d30">Bir oy uzluksiz. Siz o\'zingizga so\'zingizni bajarib chiqdingiz.</string>
+    <string name="lesson_streak_d100">Yuz kun. Bu shunchaki seriya emas — bu xarakter.</string>
+    <string name="lesson_week_title">Sizning haftangiz</string>
+    <string name="lesson_week_count">%1$d / 7</string>
+    <string name="lesson_week_left">Yana %1$d kun — hafta to\'liq yopiladi</string>
+    <string name="lesson_week_done">To\'liq hafta. Bironta ham kun tashlanmadi!</string>
+    <string name="lesson_rank_title">Reytingda ko\'tarildingiz!</string>
+    <string name="lesson_rank_sub">%1$s ortda qoldi. Buni bugungi darsingiz hal qildi.</string>
     <string name="lesson_stat_xp">TAJRIBA</string>
     <string name="lesson_stat_accuracy">ANIQLIK</string>
     <string name="lesson_stat_time">VAQT</string>

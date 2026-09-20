@@ -73,6 +73,7 @@ jobs:
           python3 tools/check_flavor_parity.py
           python3 tools/check_strings_translated.py
           python3 tools/check_palette_matches_miniapp.py
+          python3 tools/check_stroke_assets.py
 
       - name: Unit tests and lint
         working-directory: android

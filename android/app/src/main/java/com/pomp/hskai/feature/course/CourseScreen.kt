@@ -42,7 +42,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,6 +87,7 @@ import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
 import com.pomp.hskai.domain.model.TodayTask
 import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
@@ -96,6 +100,8 @@ fun CourseScreen(
     hints: List<AndroidHintDto> = emptyList(),
     onDismissHint: (String) -> Unit = {},
     onLesson: (CourseLesson) -> Unit,
+    /** A lesson not reached yet: the host offers the Mini App's skip test. */
+    onLockedLesson: (CourseLesson) -> Unit = {},
     onTodayTask: (TodayTask) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenChest: () -> Unit,
@@ -105,6 +111,10 @@ fun CourseScreen(
 ) {
     AssistantScreen(courseAssistantContext(state), bottomBar = true)
     val map = state.map
+    // The limit window belongs to the map, not to the lesson host: the Mini App
+    // answers a spent allowance where the learner tapped, without loading a
+    // lesson it already knows it will refuse.
+    var limitedLesson by remember(map?.lessonLimit) { mutableStateOf<CourseLesson?>(null) }
     Box(modifier = modifier.fillMaxSize()) {
         Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
             when {
@@ -186,6 +196,8 @@ fun CourseScreen(
                                         isOpeningChest = state.isOpeningChest,
                                         isStale = state.isStale,
                                         onLesson = onLesson,
+                                        onLimitedLesson = { limitedLesson = it },
+                                        onLockedLesson = onLockedLesson,
                                         onOpenChest = onOpenChest,
                                     )
                                 }
@@ -195,6 +207,19 @@ fun CourseScreen(
                     }
                 }
             }
+        }
+
+        if (limitedLesson != null) {
+            SectionLimitOverlay(
+                sectionTitle = stringResource(R.string.nav_course),
+                limit = limit,
+                reason = map?.lessonLimit?.limitText
+                    ?: stringResource(R.string.limit_lesson_reason),
+                // The server says when the allowance reopens; the hour is
+                // never worked out here.
+                resetAt = map?.lessonLimit?.resetAt,
+                onClose = { limitedLesson = null },
+            )
         }
 
         state.chestRewardXp?.let { reward ->
@@ -449,6 +474,10 @@ private fun PathRow(
     isOpeningChest: Boolean,
     isStale: Boolean,
     onLesson: (CourseLesson) -> Unit,
+    /** A lesson the spent daily allowance is holding shut. */
+    onLimitedLesson: (CourseLesson) -> Unit,
+    /** A lesson not reached yet — the Mini App offers a skip test here. */
+    onLockedLesson: (CourseLesson) -> Unit,
     onOpenChest: () -> Unit,
 ) {
     val offsetX = pathOffset(row.unitIndex, row.nodeIndex)
@@ -498,26 +527,32 @@ private fun PathRow(
                 when (val item = row.item) {
                     is PathItem.Lesson -> {
                         val lesson = item.lesson
-                        // The server marks the next lesson as a premium lock
-                        // when the free allowance is spent. It is still the
-                        // learner's current destination, so let the tap open
-                        // the lesson host; that host performs the fresh check
-                        // and shows the actionable limit window.
-                        val clickable = lesson.access == LessonAccess.Open ||
-                            lesson.access == LessonAccess.HalfPreview ||
-                            (lesson.access == LessonAccess.PremiumLocked && lesson.isCurrent)
+                        // Every node answers a tap, the way the Mini App's
+                        // `openLessonSheet` does. Which answer depends on why
+                        // the lesson is shut: a spent allowance opens the limit
+                        // window, a lesson not reached yet offers the skip
+                        // test. A node that silently does nothing reads as a
+                        // broken app, which is what it was.
+                        val openable = lesson.access == LessonAccess.Open ||
+                            lesson.access == LessonAccess.HalfPreview
                         val lessonDescription = lesson.stateLabel()
-                        if (lesson.isCurrent && clickable) CurrentBubble()
+                        if (lesson.isCurrent && openable) CurrentBubble()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
-                                .then(
-                                    if (clickable) {
-                                        Modifier.clickable { onLesson(lesson) }
-                                    } else {
-                                        Modifier
+                                .clickable {
+                                    when (lesson.access) {
+                                        LessonAccess.Open,
+                                        LessonAccess.HalfPreview,
+                                        -> onLesson(lesson)
+                                        // The server sets `status: locked` on
+                                        // the lesson it just refused, so this
+                                        // must not be gated on `isCurrent` —
+                                        // that was exactly the dead tap.
+                                        LessonAccess.PremiumLocked -> onLimitedLesson(lesson)
+                                        LessonAccess.NotReached -> onLockedLesson(lesson)
                                     }
-                                )
+                                }
                                 .semantics { contentDescription = lessonDescription },
                             contentAlignment = Alignment.Center,
                         ) {

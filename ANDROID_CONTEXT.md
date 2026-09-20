@@ -221,7 +221,208 @@ olib tashlandi. `ProfileViewModel.startTrial` o'z joyida qoladi —
 `profile_trial_*`, `profile_subscription_*` va `profile_referral_*` satrlari
 resurslarda qoldi (uch tilda), chunki ular qaytarilishi mumkin.
 
-### 3.6 Boshqa ochiqlar
+### 3.6 Dars yakuni bayrami Mini App darajasiga chiqarildi — 2026-09-20
+
+`LessonCompletionCelebration.kt` da uchala sahna bor edi, lekin ikkitasi
+yalang'och: streak ekrani faqat «🔥 N» va «0 → 1» ko'rsatardi, reyting ekrani
+esa «🏆 #6» va «#7 → #6». Mini App'da esa hafta kunlari, haftalik maqsad va
+ismli reyting jadvali bor.
+
+Endi:
+
+- **Sahna qora** (`--ink`, Mini App'dagi `.levelup` kabi) va orqasida 24 ta
+  oltin nur sekin aylanadi (`RayBurst`, Canvas bilan chiziladi — `#lu-rays`
+  JS'da ham xuddi shunday quriladi).
+- **Streak ekrani**: katta alanga + panda, raqam, «kun ketma-ket!», holatga
+  mos matn, 7 kunlik alanga/muz qatori va «Sizning haftangiz N/7» progressi.
+- **Reyting ekrani**: «Reytingda ko'tarildingiz!», o'zib ketilgan o'quvchining
+  ismi va uch qatorli jadval (yuqoridagi, siz, o'zib ketilgan).
+
+**Ma'lumot qayerdan keladi.** Hafta uchun serverga tegilmadi —
+`CourseGamificationDto` allaqachon `week_start`, `week_activity_dates` va
+`local_date` ni beradi. `StreakCalendar.kt` dagi `weekCalendarMeta()` endi
+`internal` va ikkala joy ham (profil kalendari va bayram) **bitta**
+implementatsiyadan o'qiydi — bir hafta haqida ikki xil javob bo'lmasligi uchun.
+
+**Reyting jadvali bitta qo'shimcha so'rov qiladi.** `rank_before`/`rank_after`
+serverdan keladi va ko'tarilish faktini **faqat o'sha** hal qiladi (XP'dan
+taxmin qilinmaydi). Qo'shnilarning ismi va XP'si esa kelmaydi, shuning uchun
+dars tugagach `FeatureRepository.rating()` bir marta so'raladi. So'rov yiqilsa
+yoki o'zida ism bo'lmasa — sahna oddiy «#7 → #6» qatoriga tushadi, Mini App
+ham tasdiqlay olmasa bayram oynasini ochmaydi.
+
+`LessonViewModel` endi `featureRepository` oladi (testlarda `null`, ya'ni
+so'rov umuman qilinmaydi).
+
+**Matnlar** Mini App'dagi `streakCopy()` va `skWeekGoalHtml()` dan so'zma-so'z
+ko'chirildi, uch tilda — o'ylab topilmadi.
+
+**Tekshirilmagan:** bu muhitda Android SDK yo'q. Beshta statik tekshiruv
+o'tdi, kompilyatsiya va ko'rinish telefonda tasdiqlanishi kerak. Ayniqsa:
+streak ekrani past ekranda sig'yaptimi (aylanadigan qilingan), panda alanga
+yonida to'g'ri turibdimi, jadval uzun ismda kesilyaptimi.
+
+### 3.7 Mashq yakunida ham alanga ekrani — 2026-09-20
+
+Dars bayrami qilingach, o'sha effekt mashqqa ham moslandi. Umumiy qismlar
+`core/design/components/HskCelebration.kt` ga chiqarildi:
+`HskCelebrationStage` (qora sahna + oltin nurlar + konfetti),
+`HskStreakCelebration` (alanga, raqam, matn, 7 kunlik qator, haftalik maqsad),
+`HskCelebrationPanda`, `HskRayBurst`, `HskConfettiField`. Dars ham, mashq ham
+**bitta** manbadan foydalanadi — ikkitasi vaqt o'tib bir-biridan ajralmasin.
+
+**Tartib Mini App'dagidek:** avval natija, keyin alanga. Mashq natijasi
+(tavsiya, xato savollar, imtihon bo'limlari, qolgan xatolar) o'z joyida
+qoladi — u yo'qotilmadi. `hasStreakEvent` bo'lsa tugma «Davom etish» bo'ladi
+va alanga ekraniga olib boradi; bo'lmasa to'g'ridan-to'g'ri yopadi, bo'sh
+ekran chiqmaydi.
+
+Ulangan joylar: `CompletionSummaryShell` (Mashq va Testlar) va
+`MistakesCompletionResult` (Xatolarim).
+
+**Reyting sahnasi mashqda yo'q va bu ataylab.** `rank_before`/`rank_after`
+faqat dars yakunida keladi (`android_course_service.py:122-136`); mashq,
+imtihon va xato takrori javoblarida bunday maydon yo'q. Ko'tarilishni XP'dan
+taxmin qilishdan ko'ra sahnani umuman ko'rsatmaslik to'g'ri.
+
+Ieroglif mashqlari (`RECOGNITION`/`PRONUNCIATION`) da gamification umuman
+yo'q (`drillCompletionOutcome` bo'sh DTO qaytaradi), ya'ni alanga ekrani u
+yerda o'zidan-o'zi chiqmaydi.
+
+**Tekshirilmagan:** SDK yo'q. Beshta statik tekshiruv o'tdi.
+
+### 3.8 Yopiq darsni ochish: o'tish testi — 2026-09-20
+
+Androidda yopiq dars tugunini bosganda hech narsa bo'lmasdi. Mini App esa
+`offerSkipTest` ni ochadi: «Bu dars hali qulflangan. Uni ochish uchun qisqa
+test topshiring.»
+
+Endi Androidda ham shunday. Oqim Mini App tartibini takrorlaydi:
+
+1. Taklif ekrani (`SkipTestScreen`)
+2. Darsning **o'z kartalaridan** 6 ta savol (`SkipTestViewModel.drawQuestions`)
+3. ≥60% — darhol ochiladi; <60% — «Baribir ochish» so'raladi
+4. Ochilish **natijadan oldin** bo'ladi (`completeSkipUnlock` ham shunday),
+   natija esa «Darsni boshlash» bilan tugaydi
+
+**Savollar o'ylab topilmaydi** — darsning graded kartalari olinadi. Kartasi
+yo'q dars shunchaki ochiladi, Mini App'da `buildTestQueue` bo'sh qaytganda
+ham shunday.
+
+**Urug' — dars raqami.** Yopiq darsni yopib-ochish savollarni qayta
+aralashtirmaydi, aks holda oson chiqquncha qayta urinish mumkin bo'lardi.
+
+**Server:** `POST /api/v3/android/lesson/unlock` (bearer) →
+`DesktopCourseService.unlock_lesson`. Sarflangan kunlik limit bu yo'lni ham
+yopadi — aks holda keyingi dars rad etilganda undan keyingisini test bilan
+ochish mumkin bo'lardi, ya'ni paywall'ni aylanib o'tish. Band so'rovda yo'q:
+server foydalanuvchining o'zinikini o'qiydi.
+
+**Nega past ball ham ochadi.** Serverda rad etish faqat testni qayta
+topshirishga o'rgatardi. Ball yoziladi, tasdiqni klient so'raydi.
+
+Qamrov: `SkipTestViewModelTest` (6 ta) + backendda 7 ta. Android testlari bu
+muhitda ishlamaydi (SDK yo'q) — ularni release workflow tekshiradi.
+
+### 3.9 ~~Lug'atdagi yozish tartibi besifat~~ — TUZATILDI 2026-09-20
+
+Ikkita alohida sabab bor edi, va kattarog'i tezlik emas.
+
+**Sifat: chiziq noto'g'ri chizilardi.** hanzi-writer chizig'i — bu to'ldirilgan
+**konturi**, ya'ni cho'tkaning izi shakli, chiziladigan chiziq emas.
+`StrokeAnimation` esa o'sha konturning **perimetridan** ulush kesib, qolganini
+to'ldirardi (`PathMeasure.getSegment`). Bu yarim yozilgan chiziq emas —
+chetning bir parchasi, va aynan shunday ko'rinardi ham.
+
+Endi cho'tka chiziqning **markaz chizig'i** (median) bo'ylab yuradi: qalin
+dumaloq chiziq median bo'ylab o'sadi va chiziqning o'z shakliga qirqiladi
+(`clipPath`). hanzi-writer ham shunday qiladi.
+
+**Medianlar allaqachon kelayotgan edi.** Server hanzi-writer faylini o'zi
+qanday bo'lsa shunday uzatadi, `StrokeDataDto` esa faqat `strokes` ni o'qib,
+`medians` ni tashlab yuborardi. Serverga tegilmadi.
+
+**Tezlik.** Ilgari butun ieroglif bitta `LinearEasing` sweep edi, har chiziq
+qat'iy 420 ms, chiziqlar orasida pauza yo'q. Endi har chiziq **o'z uzunligiga**
+qarab vaqt oladi (hanzi-writer formulasi: `(uzunlik + 600) / 3`) va orasida
+280 ms pauza bor — Mini App'dagi `delayBetweenStrokes` qiymati.
+
+**Kontur ham tuzatildi:** ilgari 2 **piksel** (dp emas) simli ramka edi, ya'ni
+zich ekranda soch tolasidek. Endi hanzi-writer'dagidek xira to'ldirilgan shakl.
+
+`strokes()` endi `CharacterStrokes` (kontur + median) qaytaradi — ikkisi
+alohida ma'noga ega emas, shuning uchun birga yuradi. Lug'at ham, darsdagi
+yozish varag'i ham shu bitta chizuvchidan foydalanadi.
+
+Qamrov: `CourseRepositoryTest` — medianlar DTO'dan o'tishini mixlaydi.
+
+**Tekshirilmagan:** ko'rinish telefonda ko'rilishi kerak — ayniqsa cho'tka
+kengligi (`BRUSH_WIDTH_RATIO = 0.22`) eng yo'g'on chiziqni qoplayaptimi.
+
+### 3.10 Lug'at endi internetsiz to'liq ishlaydi — 2026-09-20
+
+Lug'at APK bilan kelmasdi. So'zlar serverdan yuklanib Room'ga keshlanardi,
+chiziqlarning esa **keshi umuman yo'q** edi — har ochilishda tarmoqqa borardi.
+Ya'ni mobil internetda o'rnatib, keyin metroda ochgan odam bo'sh lug'at
+ko'rardi; ilgari ishlatgan odam ham yozish tartibini ko'rmasdi.
+
+Ikkalasi ham repoda allaqachon bor edi — Mini App lug'at sahifasi ularni
+o'zi bilan olib yuradi (`hsk-words.js`, `hsk-extra.js`). Endi o'sha fayllardan
+Android assetlari yasaladi:
+
+```
+android/app/src/main/assets/hsk-words.js         1247 so'z, uch tilda
+android/app/src/main/assets/strokes/<kod>.json   1055 ieroglif
+```
+
+**Bu ish ikki marta, mustaqil qilingan** va 2026-09-20 da birlashtirildi.
+`172bcb5` so'zlarni bundle qildi (`AssetBundledDictionarySource` +
+`DictionaryRepositoryTest`) va `SEARCH_LIMIT` ni 200 dan 2000 ga ko'tardi —
+200 lik chegara ro'yxat HSK2 da tugaganday ko'rsatardi. Chiziqlar esa alohida
+ishda qo'shildi. Birlashtirishda **so'zlar tomoni o'sha ishniki** qoldi
+(interfeys, testi va tuzatishi bilan), chiziqlar ustiga qo'shildi. Ikkinchi
+nusxa (`dictionary.json`) olib tashlandi — bir xil so'zlar ikki joyda
+turmasligi uchun.
+
+Fayl nomi ieroglifning kod nuqtasi — server o'z keshini ham shunday nomlaydi
+(`{ord(char)}.json`), ya'ni ikki tomonni solishtirish uchun tarjima kerak emas.
+
+**Narxi: chiziqlar APK'da ~+1.3 MB** (o'lchandi). Har ieroglif alohida fayl
+bo'lgani uchun bitta katta fayldan ~344 KB ko'proq — evaziga bitta ieroglifni
+o'qish uchun 2.4 MB JSON parse qilinmaydi.
+
+**Bundle — manba emas, poydevor.** So'zlar ro'yxati kesh bo'sh bo'lsa
+bundle'dan to'ldiriladi, keyin server baribir so'raladi: deploy ro'yxatni
+o'zgartirsa bundle ilovani eski nusxaga mixlab qo'ymasligi kerak.
+
+**Chiziqlar** (`BundledStrokes`) avval bundle'dan o'qiladi, topilmasa
+tarmoqdan — darsda uchraydigan, lug'atda yo'q ieroglif uchun.
+
+**Yasash va tekshirish:**
+
+```bash
+python3 android/tools/build_stroke_assets.py   # Mini App ma'lumotidan yasaydi
+python3 android/tools/check_stroke_assets.py   # eskirib qolmaganini tekshiradi
+```
+
+Ikkinchisi oltinchi statik tekshiruv sifatida CI va release workflow'ga
+qo'shildi. Ikki nusxa ajralib ketadi: Mini App ma'lumoti o'zgaradi, generator
+qayta ishga tushirilmaydi, va telefonda yozib bo'lmaydigan ieroglif qoladi —
+jimgina, chunki yo'q chiziq fayli hech qachon bo'lmaganidan farq qilmaydi.
+
+**Ovoz baribir to'liq offline emas.** Faqat ilgari eshitilgani ishlaydi
+(`ttsCache`). 1247 so'zning audiosi bir necha MB, telefonning o'z TTS'i esa
+yaramaydi — 3.1 ga qarang.
+
+**Ikkita mashq — so'z bazasi endi offline, lekin eshik yopiq.**
+`WordDrillViewModel` savollar hovuzini `DictionaryRepository` dan oladi, ya'ni
+u endi bundle'dan keladi va internetsiz ham to'ladi. Lekin mashq birinchi
+`repository.drillGate(...)` ni so'raydi va offline'da o'sha yiqiladi. Bu
+ataylab: gate — server qarori (bepul o'quvchi bo'limni bir marta oladi,
+reklama uni qayta ochadi), va uni qurilmada hal qilish huquqni klientga
+berish bo'lardi. Ya'ni mashqlar online qolishi — e'tiborsizlik emas, qoida.
+
+### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
@@ -360,7 +561,8 @@ berilardi — ya'ni faylga yetib borishi kerak bo'lgan yana bitta tomon bor edi,
 va u yiqilganda foydalanuvchi faqat «fayl yuborilmadi» ni ko'rardi, sabab esa
 allaqachon aylanib ketgan logda qolardi. 2026-09-15 da aynan shunday bo'ldi.
 
-**Narxi: har release uchun bir marta 3.7 MB.** Foydalanuvchi boshiga emas —
+**Narxi: har release uchun bir marta ~4.7 MB** (offline lug'at qo'shilgandan
+keyin; ilgari 3.7 MB edi). Foydalanuvchi boshiga emas —
 birinchi so'ragandan keyin Telegram bergan `file_id` saqlanadi va qolganlarga
 Telegram serverlaridan ketadi, biz orqali hech narsa o'tmaydi.
 R2'dan chiqish bepul, Railway'ga kirish ham. Hisob: ~$0.0002 bir release,
@@ -386,10 +588,11 @@ yaxshi.
 | Statik tekshiruvlar | `android/tools/check_*.py` — **Gradle'dan oldin ishga tushiring** |
 | Server tomoni | `app/api/android_*.py`, `app/services/android_*.py` |
 | Rang palitrasi | Mini App bilan bir xil bo'lishi shart, `check_palette_matches_miniapp.py` tekshiradi |
+| Offline lug'at | `android/app/src/main/assets/` — so'zlar `hsk-words.js`, chiziqlar `strokes/`. `build_stroke_assets.py` yasaydi, `check_stroke_assets.py` eskirmaganini tekshiradi |
 
 ## 6. Ishlash qoidalari
 
-- **Har o'zgarishdan keyin:** beshta statik tekshiruv, keyin
+- **Har o'zgarishdan keyin:** oltita statik tekshiruv, keyin
   `./gradlew testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug`.
 - **Matn qo'shsangiz** — uchta tilda (uz/ru/tg). `check_strings_translated.py`
   buni majburlaydi. Backend kodlari `uz/ru/tj`, Android qualifierlari

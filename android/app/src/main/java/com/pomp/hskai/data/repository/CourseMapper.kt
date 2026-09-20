@@ -5,6 +5,7 @@ import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.domain.model.CourseFoundation
 import com.pomp.hskai.domain.model.CourseLesson
+import com.pomp.hskai.domain.model.CourseLessonLimit
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.CourseMilestone
 import com.pomp.hskai.domain.model.CourseProgress
@@ -118,6 +119,13 @@ object CourseMapper {
             // Passed through untouched: which blocks exist, who sees them and
             // when one comes back are all server decisions.
             hints = dto.hints,
+            lessonLimit = dto.lessonLimit?.let { limit ->
+                CourseLessonLimit(
+                    allowed = limit.allowed,
+                    limitText = limit.limitText?.takeIf { it.isNotBlank() },
+                    resetAt = limit.resetAt?.takeIf { it.isNotBlank() },
+                )
+            },
         )
     }
 

@@ -70,6 +70,8 @@ import com.pomp.hskai.core.navigation.MainScaffold
 import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
 import com.pomp.hskai.feature.course.CourseViewModel
+import com.pomp.hskai.feature.course.SkipTestScreen
+import com.pomp.hskai.feature.course.SkipTestViewModel
 import com.pomp.hskai.feature.course.StudySetupSheet
 import com.pomp.hskai.feature.course.StudySetupViewModel
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
@@ -525,6 +527,9 @@ private fun AppRoot(
                 )
             }
 
+            // Which locked lesson the skip test is running for, if any.
+            var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
+
             fun launchDrill(mode: DrillMode) {
                 // A drill is an attempt, not a reusable destination. A fresh
                 // key prevents a completed/result state from surviving into
@@ -780,6 +785,40 @@ private fun AppRoot(
                         courseViewModel.load()
                     },
                 )
+            } else if (skipTestLesson != null) {
+                // The skip test is its own screen, beside the lesson and the
+                // drill rather than inside the map: it runs the lesson's own
+                // cards, so it needs the whole window.
+                val locked = checkNotNull(skipTestLesson)
+                val skipTestViewModel: SkipTestViewModel = viewModel(
+                    key = "skip-test-$currentLevel-${locked.order}",
+                    viewModelStoreOwner = sessionOwner,
+                    factory = SkipTestViewModel.Factory(
+                        repository = app.courseRepository,
+                        level = currentLevel,
+                        language = state.account.language,
+                    ),
+                )
+                val skipTestState by skipTestViewModel.state.collectAsStateWithLifecycle()
+                SkipTestScreen(
+                    state = skipTestState,
+                    pinyin = pinyin,
+                    onStart = { skipTestViewModel.start(locked.order) },
+                    onSelect = skipTestViewModel::select,
+                    onAdvance = skipTestViewModel::advance,
+                    onUnlock = { skipTestViewModel.unlock() },
+                    onOpenLesson = {
+                        // The server moved progress; the map has to be re-read
+                        // before the lesson can be walked into.
+                        skipTestLesson = null
+                        courseViewModel.load()
+                        launchLesson(locked)
+                    },
+                    onClose = {
+                        skipTestLesson = null
+                        if (skipTestState.unlocked) courseViewModel.load()
+                    },
+                )
             } else if (dictionaryOpen) {
                 val dictionaryViewModel: DictionaryViewModel = viewModel(
                     key = "dictionary-${state.account.language.backendCode}",
@@ -883,6 +922,7 @@ private fun AppRoot(
                             hints = hints,
                             onDismissHint = hintsViewModel::dismiss,
                             onLesson = { lesson -> launchLesson(lesson) },
+                            onLockedLesson = { lesson -> skipTestLesson = lesson },
                             onTodayTask = ::openTodayTask,
                             onOpenGoal = { goalPickerOpen = true },
                             onOpenChest = courseViewModel::openRewardChest,
@@ -1093,6 +1133,9 @@ private fun LessonHost(
             lessonOrder = lesson.order,
             language = language,
             resumeStore = app.appSettings,
+            // Only the rank-up board uses it, and only when the lesson moved
+            // the learner up the weekly league.
+            featureRepository = app.featureRepository,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()

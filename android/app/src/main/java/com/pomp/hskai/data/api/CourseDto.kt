@@ -24,6 +24,14 @@ data class LocalizedText(
     }.ifBlank { uz }
 }
 
+/** The `lesson_limit` block the course map has always carried. */
+@Serializable
+data class CourseLessonLimitDto(
+    @SerialName("allowed") val allowed: Boolean = true,
+    @SerialName("limit_text") val limitText: String? = null,
+    @SerialName("reset_at") val resetAt: String? = null,
+)
+
 @Serializable
 data class CourseMapDto(
     @SerialName("ok") val ok: Boolean = false,
@@ -35,6 +43,14 @@ data class CourseMapDto(
     @SerialName("study_setup") val studySetup: CourseStudySetupDto? = null,
     @SerialName("today") val today: CourseTodayDto? = null,
     @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+    /**
+     * What the server says about today's free lesson allowance.
+     *
+     * The map already carried it; the client simply never read it, so a spent
+     * allowance had no reason and no reopening hour to show. The hour is never
+     * assumed here — an absent value means the server did not say.
+     */
+    @SerialName("lesson_limit") val lessonLimit: CourseLessonLimitDto? = null,
     /**
      * Small explanation blocks the server decided this learner should see.
      *
@@ -207,6 +223,19 @@ data class CourseCompleteResponse(
 )
 
 @Serializable
+data class LessonUnlockRequest(
+    @SerialName("lesson_order") val lessonOrder: Int,
+    @SerialName("score") val score: Int,
+)
+
+@Serializable
+data class LessonUnlockResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("lesson_order") val lessonOrder: Int = 0,
+    @SerialName("completed_lessons_count") val completedLessonsCount: Int = 0,
+)
+
+@Serializable
 data class CourseLessonResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("level") val level: String = "hsk1",
@@ -247,6 +276,15 @@ data class DictionaryWordDto(
 @Serializable
 data class StrokeDataDto(
     @SerialName("strokes") val strokes: List<String> = emptyList(),
+    /**
+     * The centre line of each stroke, as `[x, y]` points on the same 1024 grid.
+     *
+     * hanzi-writer has always sent these and the server passes the file
+     * through untouched; Android simply never read them. They are what makes
+     * the animation a stroke being written rather than an outline being
+     * traced — see `StrokeAnimation`.
+     */
+    @SerialName("medians") val medians: List<List<List<Float>>> = emptyList(),
 )
 
 @Serializable

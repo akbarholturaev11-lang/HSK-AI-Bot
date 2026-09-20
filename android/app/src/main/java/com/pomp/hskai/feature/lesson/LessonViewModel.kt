@@ -4,13 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.LessonResumeStore
+import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.data.api.CourseMistakeDto
+import com.pomp.hskai.data.api.RatingResponse
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.NewWordCard
@@ -56,6 +60,24 @@ sealed interface LessonOutcome {
     data class Failed(val error: ApiError) : LessonOutcome
 }
 
+/** One row of the rank-up board: the Mini App shows three, centred on you. */
+data class LessonRankRow(
+    val rank: Int,
+    val avatar: String,
+    val name: String,
+    val xp: Int,
+    val isMe: Boolean,
+)
+
+/**
+ * The rank-up board. [passedName] is the learner the lesson overtook, which is
+ * what the headline names — without it the Mini App shows nothing at all.
+ */
+data class LessonRankBoard(
+    val rows: List<LessonRankRow>,
+    val passedName: String,
+)
+
 data class LessonUiState(
     val isLoading: Boolean = true,
     val lesson: Lesson? = null,
@@ -76,6 +98,13 @@ data class LessonUiState(
     val isAudioLoading: Boolean = false,
     val audioError: ApiError? = null,
     val outcome: LessonOutcome = LessonOutcome.InProgress,
+    /**
+     * The three leaderboard rows the rank-up celebration shows, fetched once
+     * after a completion that actually moved the learner up. Null until it
+     * arrives, and null forever when it did not: the Mini App shows no board
+     * it cannot name either.
+     */
+    val rankBoard: LessonRankBoard? = null,
     val error: ApiError? = null,
     /**
      * The Mini App's five hearts. A wrong answer costs one and the count is
@@ -85,7 +114,7 @@ data class LessonUiState(
     val hearts: Int = MAX_HEARTS,
     /** Stroke outlines for the character the pencil is showing, if any. */
     val writerChar: WriterTarget? = null,
-    val writerStrokes: List<String>? = null,
+    val writerStrokes: CharacterStrokes? = null,
     val isWriterLoading: Boolean = false,
 ) {
     val cards: List<LessonCard> get() = lesson?.cards.orEmpty()
@@ -153,6 +182,11 @@ data class WriterTarget(
 class LessonViewModel(
     private val repository: CourseRepository,
     private val audioPlayer: LessonAudioPlayer,
+    /**
+     * Only the rank-up board needs it, and only after a completion that moved
+     * the learner up. Absent in tests, where no board is asserted.
+     */
+    private val featureRepository: FeatureRepository? = null,
     private val level: String,
     private val lessonOrder: Int,
     private val language: AppLanguage,
@@ -308,12 +342,14 @@ class LessonViewModel(
         }
         viewModelScope.launch {
             val single = target.hanzi.trim().takeIf { it.length == 1 }
+            // Null rather than an empty set: the sheet then shows the plain
+            // character instead of an empty writing box.
             val strokes = if (single == null) {
-                emptyList()
+                null
             } else {
                 when (val result = repository.strokes(single)) {
                     is ApiResult.Success -> result.value
-                    is ApiResult.Failure -> emptyList()
+                    is ApiResult.Failure -> null
                 }
             }
             _state.update { it.copy(writerStrokes = strokes, isWriterLoading = false) }
@@ -392,6 +428,7 @@ class LessonViewModel(
             )
             if (result is ApiResult.Success) resumeStore?.clearLessonResume(level, lessonOrder)
             if (activeAttemptKey != attemptKey) return@launch
+            if (result is ApiResult.Success) loadRankBoard(result.value, attemptKey)
             _state.update { current ->
                 when (result) {
                     is ApiResult.Success -> current.copy(
@@ -414,6 +451,29 @@ class LessonViewModel(
                     )
                 }
             }
+        }
+    }
+
+    /**
+     * The rank-up board, fetched once after a completion that actually moved
+     * the learner up the weekly league.
+     *
+     * The move itself is the server's answer — `rank_before` and `rank_after`
+     * from the completion — never something inferred from XP. The board is
+     * only fetched to put names and numbers on it; if the request fails the
+     * celebration simply skips that scene, exactly as the Mini App does when
+     * it cannot confirm who was passed.
+     */
+    private fun loadRankBoard(completion: CourseCompleteResponse, attemptKey: String) {
+        val repo = featureRepository ?: return
+        val before = completion.rankBefore
+        val after = completion.rankAfter
+        if (completion.duplicate || before <= 0 || after <= 0 || after >= before) return
+        viewModelScope.launch {
+            val result = repo.rating()
+            if (activeAttemptKey != attemptKey) return@launch
+            val board = (result as? ApiResult.Success)?.value?.let(::buildRankBoard) ?: return@launch
+            _state.update { it.copy(rankBoard = board) }
         }
     }
 
@@ -479,17 +539,39 @@ class LessonViewModel(
         private val language: AppLanguage,
         private val resumeStore: LessonResumeStore,
         private val accessRef: String = "",
+        private val featureRepository: FeatureRepository? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = LessonViewModel(
             repository = repository,
             audioPlayer = audioPlayer,
+            featureRepository = featureRepository,
             level = level,
             lessonOrder = lessonOrder,
             language = language,
             accessRef = accessRef,
             resumeStore = resumeStore,
         ) as T
+    }
+
+    private fun buildRankBoard(rating: RatingResponse): LessonRankBoard? {
+        val rows = rating.leaderboard
+        val meIndex = rows.indexOfFirst { it.isCurrentUser }
+        if (meIndex < 0) return null
+        // The one directly below is the one this lesson overtook. Without a
+        // name for them there is nothing to celebrate, so no board is built.
+        val passed = rows.getOrNull(meIndex + 1) ?: return null
+        val above = rows.getOrNull(meIndex - 1)
+        val board = listOfNotNull(above, rows[meIndex], passed).map { entry ->
+            LessonRankRow(
+                rank = entry.rank,
+                avatar = entry.name.take(1).uppercase().ifBlank { "阿" },
+                name = entry.name,
+                xp = entry.xp,
+                isMe = entry.isCurrentUser,
+            )
+        }
+        return LessonRankBoard(rows = board, passedName = passed.name)
     }
 
     companion object {

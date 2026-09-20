@@ -712,6 +712,18 @@ private fun CompletionSummaryShell(
     onDone: () -> Unit,
     extra: @Composable ColumnScope.() -> Unit = {},
 ) {
+    // The result first, the flame after it — the Mini App's order. A round
+    // that did not move the streak goes straight back, with no empty screen.
+    var streakStep by rememberSaveable(outcome.kind, outcome.score, outcome.total) {
+        mutableStateOf(false)
+    }
+    if (streakStep) {
+        PracticeStreakStep(outcome = outcome, onDone = onDone)
+        return
+    }
+    val advance: () -> Unit = {
+        if (outcome.hasStreakEvent) streakStep = true else onDone()
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
@@ -727,7 +739,15 @@ private fun CompletionSummaryShell(
             Text(body, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
             Spacer(Modifier.height(16.dp))
             Column { extra() }
-            PrimaryAction(stringResource(R.string.practice_back_to_tools), true, onDone)
+            PrimaryAction(
+                if (outcome.hasStreakEvent) {
+                    stringResource(R.string.lesson_next)
+                } else {
+                    stringResource(R.string.practice_back_to_tools)
+                },
+                true,
+                advance,
+            )
         }
     }
 }

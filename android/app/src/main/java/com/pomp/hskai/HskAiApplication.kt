@@ -18,6 +18,7 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
+import com.pomp.hskai.data.local.BundledStrokes
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.AssetBundledDictionarySource
 import com.pomp.hskai.data.repository.CourseRepository
@@ -162,6 +163,7 @@ class HskAiApplication : Application() {
             foundationApi = foundationApi,
             onSessionExpired = authRepository::invalidateSession,
             ttsCache = ttsCache,
+            bundledStrokes = bundledStrokes,
         )
     }
 
@@ -193,6 +195,15 @@ class HskAiApplication : Application() {
             onSessionExpired = authRepository::invalidateSession,
             bundledSource = AssetBundledDictionarySource(this, json),
         )
+    }
+
+    /**
+     * The writing order that ships with the app. The word list has its own
+     * source (`AssetBundledDictionarySource`); together they are what makes
+     * the dictionary work with no connection.
+     */
+    private val bundledStrokes: BundledStrokes by lazy {
+        BundledStrokes(context = this, json = json)
     }
 
     val featureRepository: FeatureRepository by lazy {

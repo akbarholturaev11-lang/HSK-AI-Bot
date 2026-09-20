@@ -618,6 +618,101 @@ class DesktopCourseService:
             )
         return completion_result
 
+    async def unlock_lesson(
+        self,
+        access_token: str,
+        *,
+        lesson_order: int,
+        score: int,
+    ) -> dict[str, Any]:
+        """Open a not-yet-reached lesson after the Mini App's skip-ahead test.
+
+        The Mini App has offered this since Course v3: a locked lesson can be
+        opened by passing a short test built from that lesson's own cards. The
+        rules are the ones that matter and they live here, so a native client
+        cannot reach a different decision — in particular it cannot use the
+        skip test to step past a spent daily allowance, which is the one way
+        this could have become a paywall bypass.
+
+        The score is recorded, not judged: the client decides what to do with a
+        weak result (the Mini App asks the learner to confirm), and either way
+        the lesson opens. Refusing here would only teach people to retake the
+        test until it passed.
+        """
+        context = await self._context(access_token)
+        user = await self._locked_context_user(context)
+        lesson_order = int(lesson_order)
+        level = self._level(user)
+
+        if lesson_order <= 0:
+            raise DesktopCourseError("invalid_lesson_order", status_code=422)
+        total = total_parts(level)
+        if not total or lesson_order > total:
+            raise DesktopCourseError("course_no_lesson_found", status_code=404)
+
+        # Spending the daily allowance closes the skip test too. Without this
+        # a locked lesson would be a way around the very limit the next lesson
+        # is already refusing.
+        limit_status = await LessonAccessService(self.session).status(
+            user,
+            level=level,
+            lesson_order=lesson_order,
+        )
+        if not limit_status["allowed"]:
+            await self.session.commit()
+            raise DesktopCourseError(
+                limit_status.get("error", "free_feature_limit_reached"),
+                status_code=403,
+                detail=limit_status,
+            )
+
+        legacy_lesson = await CourseLessonRepository(
+            self.session
+        ).get_by_level_and_order(level, lesson_order)
+        legacy_lesson_id = getattr(legacy_lesson, "id", None)
+
+        progress_repository = CourseProgressRepository(self.session)
+        progress = await self._progress(user, for_update=True)
+        progress.level = level
+        # Everything before this lesson counts as behind the learner. `max`
+        # keeps it from walking progress backwards when an earlier lesson is
+        # unlocked a second time.
+        progress.completed_lessons_count = max(
+            int(progress.completed_lessons_count or 0),
+            lesson_order - 1,
+        )
+        await progress_repository.set_current_lesson_and_step(
+            progress=progress,
+            lesson_id=legacy_lesson_id,
+            step="intro",
+            waiting_for="none",
+        )
+        await progress_repository.set_homework_status(progress, "none")
+
+        completed_lessons_count = int(progress.completed_lessons_count or 0)
+        await CourseMiniAppAnalyticsService(self.session).record_server_event(
+            event_name="test_completed",
+            telegram_id=user.telegram_id,
+            user_id=user.id,
+            source=f"{self.CLIENT_NAMESPACE}_course_skip_test",
+            level=level,
+            lesson_id=legacy_lesson_id,
+            lesson_order=lesson_order,
+            dedupe_key=(
+                f"{self.CLIENT_NAMESPACE}-course-skip-test:{level}:{lesson_order}"
+            ),
+            payload={
+                "score": max(0, min(100, int(score or 0))),
+                "unlock_completed_lessons_count": completed_lessons_count,
+            },
+        )
+        await self.session.commit()
+        return {
+            "ok": True,
+            "lesson_order": lesson_order,
+            "completed_lessons_count": completed_lessons_count,
+        }
+
     async def set_language(
         self,
         access_token: str,

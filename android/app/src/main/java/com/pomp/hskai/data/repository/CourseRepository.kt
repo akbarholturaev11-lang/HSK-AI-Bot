@@ -4,12 +4,17 @@ import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.hanzi.CharacterStrokes
+import com.pomp.hskai.data.local.BundledStrokes
+import androidx.compose.ui.geometry.Offset
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
+import com.pomp.hskai.data.api.LessonUnlockRequest
+import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.FoundationCompleteRequest
@@ -61,6 +66,8 @@ class CourseRepository(
     private val foundationApi: AndroidFoundationApi? = null,
     private val onSessionExpired: suspend () -> Unit = {},
     private val ttsCache: TtsCache? = null,
+    /** The writing order shipped in the APK. Absent in tests. */
+    private val bundledStrokes: BundledStrokes? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val now: () -> Long = System::currentTimeMillis,
     private val timezoneOffsetMinutes: () -> Int = {
@@ -312,16 +319,34 @@ class CourseRepository(
     }
 
     /** Stroke outlines for one character; the server proxies and caches them. */
-    suspend fun strokes(char: String): ApiResult<List<String>> {
+    suspend fun strokes(char: String): ApiResult<CharacterStrokes> {
         val single = char.trim()
         if (single.length != 1) return ApiResult.Failure(ApiError.Unknown)
+
+        // The APK carries every character the dictionary can open, so the
+        // writing order draws with no connection and without a round trip for
+        // something that only changes with a release. Anything outside that
+        // set — a character met in a lesson, say — still asks the server.
+        bundledStrokes?.find(single)?.let { return ApiResult.Success(it) }
+
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
         return when (val result = apiCall { api.stroke("Bearer $token", single) }) {
             is ApiResult.Failure -> result
-            is ApiResult.Success -> ApiResult.Success(result.value.strokes)
+            is ApiResult.Success -> ApiResult.Success(
+                CharacterStrokes(
+                    outlines = result.value.strokes,
+                    // A payload without medians still draws; the stroke simply
+                    // appears whole instead of being written.
+                    medians = result.value.medians.map { points ->
+                        points.mapNotNull { point ->
+                            if (point.size >= 2) Offset(point[0], point[1]) else null
+                        }
+                    },
+                )
+            )
         }
     }
 
@@ -388,6 +413,34 @@ class CourseRepository(
 
     /** Rate is part of the key: the same phrase sounds different slowed down. */
     private fun ttsCacheKey(phrase: String): String = "$DEFAULT_TTS_RATE|$phrase"
+
+    /**
+     * Opens a not-yet-reached lesson after the skip-ahead test, the way the
+     * Mini App has always allowed.
+     *
+     * The score is reported, not enforced: the server records it and opens the
+     * lesson either way, and a spent daily allowance is refused there rather
+     * than guessed at here.
+     */
+    suspend fun unlockLesson(
+        lessonOrder: Int,
+        score: Int,
+    ): ApiResult<LessonUnlockResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall {
+            api.unlockLesson(
+                "Bearer $token",
+                LessonUnlockRequest(lessonOrder = lessonOrder, score = score),
+            )
+        }
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        // The map's progress moved on the server, so the cached copy is stale.
+        if (result is ApiResult.Success) clearCache()
+        return result
+    }
 
     suspend fun completeLesson(
         lessonOrder: Int,
