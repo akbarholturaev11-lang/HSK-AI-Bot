@@ -55,6 +55,7 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.hint.SectionHint
@@ -91,7 +92,13 @@ fun RatingScreen(
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                end = 20.dp,
+                top = 20.dp,
+                // The tab bar floats over the list; the last row clears it here.
+                bottom = 20.dp + LocalMainBottomInset.current,
+            ),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {

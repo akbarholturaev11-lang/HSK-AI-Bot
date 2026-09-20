@@ -51,6 +51,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
@@ -85,7 +86,14 @@ fun VoiceScreen(
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AssistantScreen(voiceAssistantContext(state, level), bottomBar = true)
+    // A running call hides the tab bar and puts its own dock there instead,
+    // so the floating AI button is told to clear the dock, not the tabs.
+    val callActive = state.hasSession && state.result == null
+    AssistantScreen(
+        voiceAssistantContext(state, level),
+        bottomBar = !callActive,
+        bottomInset = if (callActive) VOICE_DOCK_HEIGHT else 0.dp,
+    )
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {
         when {
@@ -162,7 +170,14 @@ private fun VoiceHome(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+        contentPadding = PaddingValues(
+            start = 16.dp,
+            end = 16.dp,
+            top = 16.dp,
+            // The tab bar floats over the list; without this the limit card
+            // would sit behind it with no way to scroll it out.
+            bottom = 16.dp + LocalMainBottomInset.current,
+        ),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
@@ -252,6 +267,9 @@ private fun VoiceBox(
                 onClick = onStart,
                 enabled = enabled,
                 loading = isStarting,
+                // Full width inside the card: a long ru/tg label then wraps
+                // with the card instead of pushing past its padding.
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -467,7 +485,8 @@ private fun VoiceResult(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+            .padding(bottom = 20.dp + LocalMainBottomInset.current),
     ) {
         Text(
             text = stringResource(R.string.voice_result_title),
@@ -509,6 +528,13 @@ internal fun ErrorPill(text: String) {
         )
     }
 }
+
+/**
+ * Roughly what `CallDock` covers at the bottom of a call: the "what to say"
+ * pill, the microphone and the line under it. The assistant button stays above
+ * this instead of parking itself on the microphone.
+ */
+private val VOICE_DOCK_HEIGHT = 168.dp
 
 private fun canStartVoice(state: VoiceUiState): Boolean {
     val status = state.status ?: return false

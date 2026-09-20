@@ -68,6 +68,7 @@ import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.update.AppUpdateCard
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -129,7 +130,13 @@ fun ProfileScreen(
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp,
+                // The tab bar floats over the list; logout must stay reachable.
+                bottom = 16.dp + LocalMainBottomInset.current,
+            ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item { ProfilePill() }

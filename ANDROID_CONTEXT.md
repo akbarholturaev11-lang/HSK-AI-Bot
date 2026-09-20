@@ -53,7 +53,11 @@ build'da ekanini bilmay chaqiradi.
   `versionCode` farqi ≥ 2 bo'lsa tab paneli ustida yopib bo'lmaydigan qator
   (`AppUpdateBanner`). Bitta release qoldirilsa — faqat profildagi karta.
 - Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
-  tushiriladi). Hali **bir marta ham ishlamagan**.
+  tushiriladi). 2026-09-20 holatiga ko'ra **to'rt marta muvaffaqiyatli
+  o'tgan**, hammasi `main` dan. Ya'ni imzo va R2 sirlari GitHub'da sozlangan
+  va ishlaydi. Release faqat `main` dan chiqariladi: manifest versionCode
+  orqaga ketishini rad etadi, shuning uchun boshqa branch'dan chiqarilgan
+  release keyingi `main` release'ini bloklaydi.
 - Play Market: yo'q. Akkaunt ham ochilmagan.
 
 ## 3. HOZIR OCHIQ MUAMMOLAR
@@ -137,7 +141,41 @@ yangilash hali ketayotganda buni hech kim bilmaydi. Yiqilsa, eski
 hali ham yo'q — profil, mashq, testlar, reyting har ochilishda tarmoqni
 kutadi.
 
-### 3.4 Boshqa ochiqlar
+### 3.4 ~~AI Voice ekrani buzuq~~ — TUZATILDI 2026-09-20
+
+Suhbat ekrani to'liq ekran uchun yozilgan edi, lekin `MainScaffold` ichiga
+qo'yilgan. Scaffold allaqachon status bar va pastki panel joyini ajratardi,
+`VoiceCallScreen` esa ustidan yana `statusBarsPadding()` va dock'da
+`navigationBarsPadding()` qo'shardi — tepada ham, dock ustida ham ikkinchi
+bo'sh joy ochilardi, pastda esa tab tugmalari suhbat ostida ko'rinib turardi.
+
+Endi:
+
+- suhbat faol bo'lganda `MainScaffold(bottomBarVisible = false)` — tab paneli
+  yo'q, Mini App'dagi `course_v3_voice.html` kabi. Chiqish — Close tugmasi
+  yoki «orqaga» (`BackHandler` → `onEndSession`);
+- `VoiceCallScreen` endi hech qanday system inset qo'shmaydi, dock esa
+  klaviatura va gesture panelini **bitta** inset sifatida oladi
+  (`WindowInsets.ime.union(WindowInsets.navigationBars)`), ikkitasini ustma-ust
+  emas.
+
+**Panel endi kontent ustida suzadi.** Shisha effekti ortida ko'rinadigan narsa
+bo'lishini talab qiladi — ilgari Scaffold kontentni panel ustida to'xtatardi va
+yarim shaffof panel qattiq plitaday ko'rinardi. Narxi: har bir asosiy ekran o'z
+pastki padding'iga `LocalMainBottomInset` ni qo'shishi shart, aks holda oxirgi
+karta panel ostida qolib ketadi. Qo'shilgan joylar: Course, Practice (ro'yxat,
+`QuestionShell`, yakun), Rating, Profile, Voice va `SectionLimitOverlay`.
+
+Suzuvchi AI tugmasining pastki chegarasi qattiq yozilgan `72.dp` edi — haqiqiy
+panel 98 dp. Endi `MainBottomBarHeight` dan olinadi, ya'ni panel balandligi
+o'zgarsa tugma ham ergashadi. Suhbat vaqtida esa dock balandligi
+(`VOICE_DOCK_HEIGHT`) qo'shiladi — tugma mikrofon ustiga o'tirmaydi.
+
+**Tekshirilmagan:** bu yerda Android SDK yo'q, ya'ni faqat beshta statik
+tekshiruv o'tkazildi. Kompilyatsiya, lint va real ko'rinish (light/dark,
+360–390 dp, katta font, uz/ru/tg) telefonda tasdiqlanishi kerak.
+
+### 3.5 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga

@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.voice
 
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.RepeatMode
@@ -17,15 +18,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -116,11 +119,14 @@ internal fun VoiceCallScreen(
         if (granted) onToggleRecording()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-    ) {
+    // The call hides the tabs, so back has to do what Close does — otherwise
+    // it would leave the app while a session is still open on the server.
+    BackHandler(onBack = onEndSession)
+
+    // MainScaffold already pads the status bar and hides the tab bar for a
+    // running call, so the screen adds neither again — doing so opened a gap
+    // at the top and another above the dock.
+    Column(modifier = Modifier.fillMaxSize()) {
         CallTopBar(
             title = stringResource(partnerTitleRes(state.selectedRole)),
             subtitle = stringResource(
@@ -382,8 +388,9 @@ private fun CallDock(
     ) {
         Column(
             modifier = Modifier
-                .navigationBarsPadding()
-                .imePadding()
+                // The keyboard already covers the gesture bar, so the two are
+                // taken as one inset instead of stacking into a dead band.
+                .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
                 .padding(start = 14.dp, end = 14.dp, top = 10.dp, bottom = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

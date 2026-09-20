@@ -863,9 +863,17 @@ private fun AppRoot(
                         }
                     }
                 }
+                // A running AI Voice conversation takes the whole screen:
+                // the tabs are not a place to leave a call from, the Close
+                // button is, and the Mini App shows no tabs there either.
+                val voiceCallActive = selectedTab == MainTab.VOICE &&
+                    voiceState.hasSession &&
+                    voiceState.result == null
+
                 MainScaffold(
                     selectedTab = selectedTab,
                     onTabSelected = { selectedTab = it },
+                    bottomBarVisible = !voiceCallActive,
                 ) { tab, contentModifier ->
                     when (tab) {
                         MainTab.COURSE -> CourseScreen(
