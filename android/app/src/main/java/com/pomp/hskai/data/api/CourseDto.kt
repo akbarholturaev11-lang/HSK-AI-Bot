@@ -223,6 +223,19 @@ data class CourseCompleteResponse(
 )
 
 @Serializable
+data class LessonUnlockRequest(
+    @SerialName("lesson_order") val lessonOrder: Int,
+    @SerialName("score") val score: Int,
+)
+
+@Serializable
+data class LessonUnlockResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("lesson_order") val lessonOrder: Int = 0,
+    @SerialName("completed_lessons_count") val completedLessonsCount: Int = 0,
+)
+
+@Serializable
 data class CourseLessonResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("level") val level: String = "hsk1",

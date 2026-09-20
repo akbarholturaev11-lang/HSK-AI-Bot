@@ -18,6 +18,8 @@ import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.LocalizedText
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.api.RewardChestOpenResponse
+import com.pomp.hskai.data.api.LessonUnlockRequest
+import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.local.LessonCacheDao
@@ -91,6 +93,11 @@ private val lessonPayload = Json.parseToJsonElement(
 ).jsonObject
 
 private open class FakeCourseApi : AndroidCourseApi {
+    override suspend fun unlockLesson(
+        authorization: String,
+        body: LessonUnlockRequest,
+    ): Response<LessonUnlockResponse> = throw NotImplementedError()
+
     var lastAuthorization: String? = null
     var lastTimezoneOffset: Int? = null
 

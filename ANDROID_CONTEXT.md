@@ -291,7 +291,40 @@ yerda o'zidan-o'zi chiqmaydi.
 
 **Tekshirilmagan:** SDK yo'q. Beshta statik tekshiruv o'tdi.
 
-### 3.8 Boshqa ochiqlar
+### 3.8 Yopiq darsni ochish: o'tish testi — 2026-09-20
+
+Androidda yopiq dars tugunini bosganda hech narsa bo'lmasdi. Mini App esa
+`offerSkipTest` ni ochadi: «Bu dars hali qulflangan. Uni ochish uchun qisqa
+test topshiring.»
+
+Endi Androidda ham shunday. Oqim Mini App tartibini takrorlaydi:
+
+1. Taklif ekrani (`SkipTestScreen`)
+2. Darsning **o'z kartalaridan** 6 ta savol (`SkipTestViewModel.drawQuestions`)
+3. ≥60% — darhol ochiladi; <60% — «Baribir ochish» so'raladi
+4. Ochilish **natijadan oldin** bo'ladi (`completeSkipUnlock` ham shunday),
+   natija esa «Darsni boshlash» bilan tugaydi
+
+**Savollar o'ylab topilmaydi** — darsning graded kartalari olinadi. Kartasi
+yo'q dars shunchaki ochiladi, Mini App'da `buildTestQueue` bo'sh qaytganda
+ham shunday.
+
+**Urug' — dars raqami.** Yopiq darsni yopib-ochish savollarni qayta
+aralashtirmaydi, aks holda oson chiqquncha qayta urinish mumkin bo'lardi.
+
+**Server:** `POST /api/v3/android/lesson/unlock` (bearer) →
+`DesktopCourseService.unlock_lesson`. Sarflangan kunlik limit bu yo'lni ham
+yopadi — aks holda keyingi dars rad etilganda undan keyingisini test bilan
+ochish mumkin bo'lardi, ya'ni paywall'ni aylanib o'tish. Band so'rovda yo'q:
+server foydalanuvchining o'zinikini o'qiydi.
+
+**Nega past ball ham ochadi.** Serverda rad etish faqat testni qayta
+topshirishga o'rgatardi. Ball yoziladi, tasdiqni klient so'raydi.
+
+Qamrov: `SkipTestViewModelTest` (6 ta) + backendda 7 ta. Android testlari bu
+muhitda ishlamaydi (SDK yo'q) — ularni release workflow tekshiradi.
+
+### 3.9 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga

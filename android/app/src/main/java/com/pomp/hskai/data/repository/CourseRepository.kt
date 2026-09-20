@@ -10,6 +10,8 @@ import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
+import com.pomp.hskai.data.api.LessonUnlockRequest
+import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.FoundationCompleteRequest
@@ -388,6 +390,34 @@ class CourseRepository(
 
     /** Rate is part of the key: the same phrase sounds different slowed down. */
     private fun ttsCacheKey(phrase: String): String = "$DEFAULT_TTS_RATE|$phrase"
+
+    /**
+     * Opens a not-yet-reached lesson after the skip-ahead test, the way the
+     * Mini App has always allowed.
+     *
+     * The score is reported, not enforced: the server records it and opens the
+     * lesson either way, and a spent daily allowance is refused there rather
+     * than guessed at here.
+     */
+    suspend fun unlockLesson(
+        lessonOrder: Int,
+        score: Int,
+    ): ApiResult<LessonUnlockResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall {
+            api.unlockLesson(
+                "Bearer $token",
+                LessonUnlockRequest(lessonOrder = lessonOrder, score = score),
+            )
+        }
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        // The map's progress moved on the server, so the cached copy is stale.
+        if (result is ApiResult.Success) clearCache()
+        return result
+    }
 
     suspend fun completeLesson(
         lessonOrder: Int,

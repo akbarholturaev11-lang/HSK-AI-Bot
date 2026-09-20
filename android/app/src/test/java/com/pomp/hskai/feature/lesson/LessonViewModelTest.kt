@@ -16,6 +16,8 @@ import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.api.RewardChestOpenResponse
+import com.pomp.hskai.data.api.LessonUnlockRequest
+import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.repository.CourseRepository
@@ -84,6 +86,11 @@ private open class FakeLessonApi(
     private val previewHalf: Boolean = false,
     private val previewCardLimit: Int = if (previewHalf) 3 else 6,
 ) : AndroidCourseApi {
+    override suspend fun unlockLesson(
+        authorization: String,
+        body: LessonUnlockRequest,
+    ): Response<LessonUnlockResponse> = throw NotImplementedError()
+
     val completions = mutableListOf<CourseCompleteRequest>()
     var completeDuplicate = false
     var lastTtsAuthorization: String? = null
