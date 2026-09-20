@@ -1,0 +1,5 @@
+HSKAI.xcodeproj/
+DerivedData/
+.build/
+xcuserdata/
+*.xcuserstate
