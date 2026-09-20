@@ -140,7 +140,7 @@ internal fun HanziWriterSheet(
             Spacer(Modifier.height(14.dp))
             Surface(
                 onClick = onReplay,
-                enabled = !isLoading && !strokes.isNullOrEmpty(),
+                enabled = !isLoading && strokes?.isNotEmpty() == true,
                 color = PompColors.Gold,
                 shape = RoundedCornerShape(13.dp),
             ) {

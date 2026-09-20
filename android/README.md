@@ -51,6 +51,7 @@ python3 tools/check_flavor_parity.py       # the flavours can no longer swap
 python3 tools/check_strings_translated.py  # a string is missing uz, ru or tg
 python3 tools/check_palette_matches_miniapp.py  # a colour drifted from the Mini App
 python3 tools/check_stroke_assets.py       # the bundled stroke data fell behind
+python3 tools/check_unresolved_references.py  # a called name is not imported
 ```
 
 ## Distribution flavours

@@ -114,7 +114,7 @@ fun HskStreakCelebration(gamification: CourseGamificationDto) {
                 tint = PompColors.LightCinnabar,
                 modifier = Modifier.size(104.dp),
             )
-            CelebrationPanda(
+            HskCelebrationPanda(
                 drawable = R.drawable.widget_panda_streak,
                 pulseKey = streak,
                 modifier = Modifier.offset(x = 46.dp, y = 8.dp),
