@@ -7,6 +7,7 @@ on:
     paths:
       - "ios/**"
       - "app/api/ios_auth.py"
+      - "app/api/ios_course.py"
       - "app/bot/fsm/ios_auth.py"
       - "app/bot/handlers/desktop_auth.py"
       - "app/db/models/course_miniapp_event.py"
@@ -14,11 +15,13 @@ on:
       - "app/main.py"
       - "tests/test_android_auth_api.py"
       - "tests/test_ios_auth_api.py"
+      - "tests/test_ios_course_api.py"
       - ".github/workflows/ios-ci.yml"
   pull_request:
     paths:
       - "ios/**"
       - "app/api/ios_auth.py"
+      - "app/api/ios_course.py"
       - "app/bot/fsm/ios_auth.py"
       - "app/bot/handlers/desktop_auth.py"
       - "app/db/models/course_miniapp_event.py"
@@ -26,6 +29,7 @@ on:
       - "app/main.py"
       - "tests/test_android_auth_api.py"
       - "tests/test_ios_auth_api.py"
+      - "tests/test_ios_course_api.py"
       - ".github/workflows/ios-ci.yml"
 
 jobs:
@@ -77,8 +81,9 @@ jobs:
         run: |
           python -m py_compile \
             app/api/ios_auth.py \
+            app/api/ios_course.py \
             app/services/desktop_auth_service.py \
             app/bot/handlers/desktop_auth.py
 
       - name: Run Android + iOS auth regressions
-        run: PYTHONPATH=. pytest tests/test_android_auth_api.py tests/test_ios_auth_api.py -q
+        run: PYTHONPATH=. pytest tests/test_android_auth_api.py tests/test_ios_auth_api.py tests/test_ios_course_api.py -q
