@@ -324,6 +324,106 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
         self.assertEqual(all_time["retention"]["inactive_paid_share_pct"], 50.0)
         self.assertIsNone(all_time["retention"]["churn_rate_pct"])
 
+    async def test_client_business_groups_shared_schema_across_clients(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            users = [
+                User(
+                    id=idx,
+                    telegram_id=telegram_id,
+                    status="active",
+                    payment_status="approved",
+                    created_at=now - timedelta(days=30),
+                    last_active_at=now - timedelta(hours=idx),
+                    end_date=now + timedelta(days=10),
+                )
+                for idx, telegram_id in enumerate((101, 202, 303, 404), start=1)
+            ]
+            session.add_all(
+                users
+                + [
+                    SubscriptionEntryEvent(
+                        id=1,
+                        telegram_id=101,
+                        source="v3_paywall",
+                        mode="subscription",
+                        created_at=now - timedelta(days=3),
+                    ),
+                    SubscriptionEntryEvent(
+                        id=2,
+                        telegram_id=202,
+                        source="android_subscription",
+                        mode="subscription",
+                        created_at=now - timedelta(days=3),
+                    ),
+                    SubscriptionEntryEvent(
+                        id=3,
+                        telegram_id=303,
+                        source="desktop_subscription",
+                        mode="subscription",
+                        created_at=now - timedelta(days=3),
+                    ),
+                    SubscriptionEntryEvent(
+                        id=4,
+                        telegram_id=404,
+                        source="android_subscription",
+                        mode="subscription",
+                        created_at=now - timedelta(days=2),
+                    ),
+                    Payment(
+                        id=1,
+                        user_telegram_id=101,
+                        plan_type="1_month",
+                        amount=100,
+                        currency="USD",
+                        payment_status="approved",
+                        submitted_at=now - timedelta(days=2),
+                        reviewed_at=now - timedelta(days=1),
+                    ),
+                    Payment(
+                        id=2,
+                        user_telegram_id=202,
+                        plan_type="1_month",
+                        amount=50,
+                        currency="USD",
+                        payment_status="approved",
+                        submitted_at=now - timedelta(days=2),
+                        reviewed_at=now - timedelta(days=1),
+                    ),
+                    Payment(
+                        id=3,
+                        user_telegram_id=303,
+                        plan_type="1_month",
+                        amount=70,
+                        currency="USD",
+                        payment_status="approved",
+                        submitted_at=now - timedelta(days=2),
+                        reviewed_at=now - timedelta(days=1),
+                    ),
+                ]
+            )
+            await session.commit()
+
+            payload = await AdminFinanceStatsService(session).build()
+
+        weekly = next(item for item in payload["periods"] if item["key"] == "weekly")
+        by_client = {
+            row["key"]: row
+            for row in weekly["client_business"]["rows"]
+        }
+
+        self.assertEqual(by_client["miniapp"]["payments"], 1)
+        self.assertEqual(by_client["miniapp"]["revenue_usd"], 100.0)
+        self.assertEqual(by_client["android"]["entry_users"], 2)
+        self.assertEqual(by_client["android"]["payments"], 1)
+        self.assertEqual(by_client["android"]["revenue_usd"], 50.0)
+        self.assertEqual(by_client["desktop"]["payments"], 1)
+        self.assertEqual(by_client["desktop"]["revenue_usd"], 70.0)
+        self.assertIn(
+            "approved Payment",
+            weekly["client_business"]["cards"][0]["note"],
+        )
+
 
 class NotificationStatsIntegrityTests(unittest.TestCase):
     def test_recent_sends_wait_for_maturity_and_one_open_is_not_reused(self):

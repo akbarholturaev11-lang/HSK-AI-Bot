@@ -9381,3 +9381,111 @@ Verified:
 Eslatma:
 - Bu muhitda Android SDK yo'q; kompilyatsiya GitHub Actions'dagi «Android CI»
   orqali tekshiriladi.
+
+### 2026-09-20 — Reklama umuman chiqmasdi: bitta nom, uchta qatlam
+
+Foydalanuvchi: «реклама бўлимини текшир ишламаяпти, илова рекламаси ҳам
+ишламаяпти, логикани текшир, бир-бирига зид эмасмикин». Zid edi, va sabab
+bitta nomdan boshlanardi.
+
+**1. `ads.js` da mavjud bo'lmagan funksiya — asosiy sabab.**
+
+`showCenterAd()` ichida `e.x.onclick=closeAppAd;` turardi. Bunday funksiya
+YO'Q — u `closeCenterAd` deb ataladi. Qator esa overlay ochiladigan
+`e.ov.classList.add("on")` dan OLDIN, ya'ni `ReferenceError` bilan butun
+funksiya yiqilardi va:
+
+- ekran markazidagi reklama (`playScreenCenter`) hech qachon chiqmasdi;
+- dars yakunidagi reklama (`playLessonEnd`) ham chiqmasdi;
+- xato ko'rinmasdi, chunki chaqiruvchilar `.catch(go)` / `try{}catch{}` bilan
+  o'ralgan — oqim jimgina davom etardi.
+
+Ustiga `appState.open=true` throw'dan oldin qo'yilardi va hech kim uni
+qaytarmasdi: birinchi urinishdan keyin bayroq abadiy `true` bo'lib qolar,
+keyingi chaqiruvlar serverga UMUMAN bormasdi. Endi bayroq oyna haqiqatan
+ochilganda qo'yiladi — modalni yig'ishdagi xato butun bo'limni qulflab
+qo'ymasin.
+
+Bu `25b4e22` merge'idan beri shunday edi. Server tomoni (`AdPlacementService`,
+`/api/v3/ad`, `ad_placements_v1`) sog'lom — muammo faqat klientda.
+
+**2. «Реклама ойнасидаги» ilova promosi — 1-sabobning oqibati va ikkinchi
+o'lik yo'l.**
+
+`ad_promo` joyining yagona tirik chaqiruvi — `showCenterAd()` ichidagi
+`mountAdPromoTrigger`, u esa throw'dan KEYIN turardi. Ikkinchi yo'l ham
+o'lik edi: `syncAdPromo()` ni faqat `course-v3.html` dagi
+`setAdSubscribeVisible()` chaqirardi, u esa eski `#adov` / `AdFlow`
+overlayiga tegishli — uning kirish nuqtasi `showCourseAd()` hech qayerdan
+chaqirilmasdi.
+
+**3. Android `release_ready` dan tashqarida qolgan — haqiqiy zidlik.**
+
+`desktop_download_service.py` dagi `PLATFORMS = ("macos", "windows")` va
+`target_for("android")` har doim `None`. Shu yolg'iz javob «tarqatadigan
+narsa bormi?» degan savolni hal qilardi, ya'ni APK nashr qilingan, desktop
+relizi qilinmagan holatda ilova promosi uchala joyda ham o'chardi — admin
+Android chipini yoqib qo'ygan, `app_downloads_service` esa o'sha relizni
+«mavjud» deb ko'rsatib turgan bo'lsa ham. Ikki fayl bir xil nomdagi
+ro'yxatni ikki xil ma'noda ishlatardi.
+
+Changed:
+- `ads.js`: `closeAppAd` → `closeCenterAd`; `appState.open` / `shownInSession`
+  endi overlay ochilgan paytda qo'yiladi.
+- `desktop_download_service.py`: `release_ready` endi `desktop_ready or
+  android_ready`, Android holati `AndroidReleaseService` dan olinadi (R2
+  havolasi shart emas — bot `file_id` bilan beradi, bu
+  `app_downloads_service` bilan bitta qoida). `DESKTOP_DOWNLOADS_ENABLED`
+  DESKTOP yuklab olishning kill switch'i bo'lib qoladi va Android-only
+  promoni o'chira olmaydi. Admin kaliti avvalgidek hammasidan ustun.
+- `course-v3.html` dan eski `#adov` / `AdFlow` reklama tizimi butunlay olib
+  tashlandi: CSS (`.adov`…`.adpromo-*`), markup, `showCourseAd`,
+  `fetchCourseAds` (u hech qachon qaytmaydigan `d.ads` massivini kutardi),
+  `recordCourseAdView`, `AD_STATE`, `setAdSubscribeVisible`, `adUiText`,
+  `startAdPromo` va `T()` dagi 13 ta o'lik `ad*` qator (uz/ru/tj — uchalasi
+  birdan, ya'ni til bo'shlig'i paydo bo'lmadi). `@keyframes promoIn` QOLDI —
+  uni `.spromo-slide` ishlatadi.
+- `desktop-download.js` dan `#ad-desktop` yo'li olib tashlandi (`syncAdPromo`,
+  `dismissAdPromo` va `#ad-sub-cont` fokus selektori) — u host aynan o'sha
+  overlay ichida edi. Reklama ichidagi ilova bloki endi FAQAT
+  `mountAdPromoTrigger` orqali chiziladi, ya'ni bitta yo'l qoldi.
+- `safeForPromo()` endi `#adov.on` emas, `.caa-ov.on, .caa-app.on` ni
+  tekshiradi — aks holda desktop promo ochiq reklama ustiga chiqib ketardi.
+- `NavBack.BLOCK` selektorlarga o'tdi (`#paywall.on`, `#levelup.on`,
+  `.caa-ov.on`, `.caa-app.on`). Ilgari u `"adov"` id'siga qarardi; yangi
+  overlaylarda `id` yo'q, ya'ni reklama paytida orqaga swipe to'silmasdi.
+- `?v=` uchchala aktiv uchun `20260920-1` (6 ta HTML): bu fayllar `immutable`,
+  bir yillik cache bilan beriladi.
+
+Key files:
+- `app/static/course_v3_data/ads.js`, `app/static/course_v3_data/desktop-download.js`
+- `app/static/course-v3.html` + 5 ta ichki sahifa (`?v=`)
+- `app/services/desktop_download_service.py`
+- `tests/test_course_ads_module.py`, `tests/test_course_v3_static_data.py`,
+  `tests/test_desktop_download_api.py`
+- `ANDROID_CONTEXT.md` §4.6
+
+Verified:
+- `tests/test_course_ads_module.py` endi qo'lda yozilgan `HELPERS` ro'yxatiga
+  tayanmaydi: `ads.js` izoh va matn literallaridan tozalanib, `x.onclick=nom`
+  va `nom(...)` shakllaridagi HAR BIR nom e'lon qilinganmi tekshiriladi.
+  `closeAppAd` ni qaytarib qo'yib sinaldi — test yiqiladi.
+- Haqiqiy brauzerda (Chromium/Playwright, 390×780): `playScreenCenter()`
+  overlayni chizadi (obuna kartasisiz), `skip_after_seconds` dan keyin X
+  ochiladi, yopilganda `/api/v3/ad/view` ga `placement:"screen_center"` va
+  `watched_seconds:2` ketadi; `playLessonEnd(3)` esa obuna tugmasi bilan
+  chiqadi. JS xato yo'q. Eski kodda xuddi shu skript birinchi qadamda
+  yiqiladi.
+- `tests/test_desktop_download_api.py` ga uchta yangi test: Android-only
+  reliz promo oladi, chip o'chirilsa olmaydi, reliz yo'q bo'lsa ham olmaydi.
+  Birinchisi eski kodda yiqiladi (tekshirildi).
+
+Diqqat:
+- Prodda qaysi reliz nashr qilinganini bu muhitdan ko'rib bo'lmaydi.
+  Ilova reklamasi chiqishi uchun: admin panelda «Ilova reklamasi» yoqilgan
+  va kerakli platforma chipi tanlangan bo'lsin; desktop uchun qo'shimcha
+  `DESKTOP_DOWNLOADS_ENABLED=true` + reliz URL'lari kerak, Android uchun esa
+  bot panelidan yuklangan APK yetarli.
+- `tests/test_admin_stats_integrity.py::test_client_business_groups_shared_schema_across_clients`
+  shu ishdan OLDIN ham yiqilardi (toza `main` da tekshirildi) — bu
+  o'zgarishga aloqasi yo'q.

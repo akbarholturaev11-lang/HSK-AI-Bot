@@ -5,7 +5,7 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.hanzi.CharacterStrokes
-import com.pomp.hskai.data.local.BundledDictionary
+import com.pomp.hskai.data.local.BundledStrokes
 import androidx.compose.ui.geometry.Offset
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidCourseApi
@@ -66,8 +66,8 @@ class CourseRepository(
     private val foundationApi: AndroidFoundationApi? = null,
     private val onSessionExpired: suspend () -> Unit = {},
     private val ttsCache: TtsCache? = null,
-    /** The stroke data shipped in the APK. Absent in tests. */
-    private val bundled: BundledDictionary? = null,
+    /** The writing order shipped in the APK. Absent in tests. */
+    private val bundledStrokes: BundledStrokes? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val now: () -> Long = System::currentTimeMillis,
     private val timezoneOffsetMinutes: () -> Int = {
@@ -327,7 +327,7 @@ class CourseRepository(
         // writing order draws with no connection and without a round trip for
         // something that only changes with a release. Anything outside that
         // set — a character met in a lesson, say — still asks the server.
-        bundled?.strokes(single)?.let { return ApiResult.Success(it) }
+        bundledStrokes?.find(single)?.let { return ApiResult.Success(it) }
 
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result

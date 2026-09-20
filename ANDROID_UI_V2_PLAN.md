@@ -212,7 +212,7 @@ python3 tools/check_named_arguments.py
 python3 tools/check_flavor_parity.py
 python3 tools/check_strings_translated.py
 python3 tools/check_palette_matches_miniapp.py
-python3 tools/check_dictionary_assets.py
+python3 tools/check_stroke_assets.py
 
 ./gradlew --no-daemon testPlayDebugUnitTest testDirectDebugUnitTest
 ./gradlew --no-daemon lintPlayDebug lintDirectDebug

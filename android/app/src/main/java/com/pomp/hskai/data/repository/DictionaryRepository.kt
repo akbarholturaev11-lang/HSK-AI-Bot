@@ -6,7 +6,6 @@ import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.toApiError
 import com.pomp.hskai.core.text.PinyinSearch
 import com.pomp.hskai.data.api.AndroidCourseApi
-import com.pomp.hskai.data.local.BundledDictionary
 import com.pomp.hskai.data.local.DictionaryDao
 import com.pomp.hskai.data.local.DictionaryMetaEntity
 import com.pomp.hskai.data.local.DictionaryWordEntity
@@ -35,11 +34,7 @@ class DictionaryRepository(
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: DictionaryDao,
     private val onSessionExpired: suspend () -> Unit = {},
-    /**
-     * The copy that ships in the APK. Absent in tests, where the asset folder
-     * is not there to read.
-     */
-    private val bundled: BundledDictionary? = null,
+    private val bundledSource: BundledDictionarySource? = null,
 ) {
 
     /**
@@ -53,13 +48,15 @@ class DictionaryRepository(
         var cached = dao.meta()
         var cachedCount = dao.count()
         var sameLanguage = cached?.language == language.backendCode
-
-        // Nothing stored for this language yet: fill from the copy that came
-        // with the app before asking the network. A first open with no
-        // connection then shows the dictionary instead of an empty screen,
-        // and the refresh below still replaces it when the server answers.
-        if (cachedCount == 0 || !sameLanguage) {
-            if (seedFromBundle(language) > 0) {
+        if ((cachedCount == 0 || !sameLanguage) && bundledSource != null) {
+            bundledSource.load(language)?.let { bundled ->
+                dao.replace(
+                    words = bundled.words,
+                    meta = DictionaryMetaEntity(
+                        version = bundled.version,
+                        language = bundled.language,
+                    ),
+                )
                 cached = dao.meta()
                 cachedCount = dao.count()
                 sameLanguage = cached?.language == language.backendCode
@@ -148,35 +145,6 @@ class DictionaryRepository(
 
     suspend fun clearCache() = dao.clear()
 
-    /**
-     * Writes the shipped list into the cache.
-     *
-     * Marked with its own version so the next sync still asks the server: the
-     * bundle is a starting point, and a deploy that changes the list must be
-     * able to replace it.
-     */
-    private suspend fun seedFromBundle(language: AppLanguage): Int {
-        val words = bundled?.words(language).orEmpty()
-        if (words.isEmpty()) return 0
-        dao.replace(
-            words = words.mapIndexed { index, word ->
-                DictionaryWordEntity(
-                    hanzi = word.hanzi,
-                    pinyin = word.pinyin,
-                    pinyinPlain = PinyinSearch.plain(word.pinyin),
-                    meaning = word.meaning,
-                    level = word.level,
-                    position = index,
-                )
-            },
-            meta = DictionaryMetaEntity(
-                version = BUNDLED_VERSION,
-                language = language.backendCode,
-            ),
-        )
-        return words.size
-    }
-
     private suspend fun keepOrFail(error: ApiError, cachedCount: Int): ApiResult<Int> {
         if (error is ApiError.SessionExpired) onSessionExpired()
         return if (cachedCount > 0) ApiResult.Success(cachedCount) else ApiResult.Failure(error)
@@ -184,12 +152,9 @@ class DictionaryRepository(
 
     private companion object {
         const val NOT_MODIFIED = 304
-
-        /**
-         * Never sent as an ETag, so the seeded copy always asks the server
-         * once rather than claiming to be whatever the server last had.
-         */
-        const val BUNDLED_VERSION = ""
-        const val SEARCH_LIMIT = 200
+        // The server currently ships HSK 1-4 as one 1247-word dictionary. A
+        // 200-row cap made the default list look like it stopped at HSK2
+        // because the source is ordered by level.
+        const val SEARCH_LIMIT = 2_000
     }
 }

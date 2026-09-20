@@ -1482,7 +1482,6 @@
     }
     closeDestinationChooser(false);
     syncMountedAdPromos();
-    dismissAdPromo();
     showSuccess(platform, transport, source);
     try {
       var app = telegramWebApp();
@@ -1782,7 +1781,7 @@
     if (!document.querySelector("#s-course.on")) return false;
     if (
       document.querySelector(
-        "#flow.on, #sheet.on, #paywall.on, #adov.on, #writeov.on, #levelup.on, #tour.on, #upov.on, #onboarding.on, .onboarding.on, [data-onboarding].on"
+        "#flow.on, #sheet.on, #paywall.on, .caa-ov.on, .caa-app.on, #writeov.on, #levelup.on, #tour.on, #upov.on, #onboarding.on, .onboarding.on, [data-onboarding].on"
       )
     ) {
       return false;
@@ -1962,8 +1961,10 @@
     promoRoot.replaceChildren();
     syncControls();
     if (!previousFocus || !previousFocus.isConnected || previousFocus.hidden) {
+      // `#ad-sub-cont` bu yerdan olib tashlandi: u eski `#adov` overlayining
+      // tugmasi edi, o'sha overlay bilan birga yo'q bo'ldi.
       previousFocus = document.querySelector(
-        "#ad-sub-cont:not(:disabled), #nav button.on, #pomp-ai-launcher"
+        "#nav button.on, #pomp-ai-launcher"
       );
     }
     if (previousFocus && typeof previousFocus.focus === "function") {
@@ -1981,13 +1982,6 @@
       promoPayload(state.activePromoSource, state.activePromoMeta)
     );
     closePromo();
-  }
-
-  function dismissAdPromo() {
-    var host = document.getElementById("ad-desktop");
-    if (!host) return;
-    host.hidden = true;
-    host.replaceChildren();
   }
 
   function buildAdDownloadBlock() {
@@ -2034,16 +2028,6 @@
     if (!host) return;
     host.hidden = true;
     host.replaceChildren();
-  }
-
-  function syncAdPromo(visible) {
-    var host = document.getElementById("ad-desktop");
-    if (!host) return;
-    if (!visible || !shouldShowAdPromoEntry()) {
-      dismissAdPromo();
-      return;
-    }
-    renderAdActions(host, { placement: "course_ad_end" });
   }
 
   function syncMountedAdPromos() {
@@ -2202,14 +2186,6 @@
         state.availabilityLoading = false;
         renderProfile();
         syncMountedAdPromos();
-        var adSubscribe = document.getElementById("ad-sub");
-        syncAdPromo(
-          Boolean(
-            adSubscribe &&
-              !adSubscribe.hidden &&
-              adSubscribe.style.display !== "none"
-          )
-        );
         if (!drainQueuedPromo()) schedulePromo();
       });
   }
@@ -2256,12 +2232,10 @@
   });
 
   window.PompDesktopDownload = {
-    dismissAdPromo: dismissAdPromo,
     queuePromo: queuePromo,
     renderProfile: renderProfile,
     refreshAvailability: loadAvailability,
-    mountAdPromoTrigger: mountAdPromoTrigger,
-    syncAdPromo: syncAdPromo
+    mountAdPromoTrigger: mountAdPromoTrigger
   };
 
   renderProfile();

@@ -371,38 +371,44 @@ o'zi bilan olib yuradi (`hsk-words.js`, `hsk-extra.js`). Endi o'sha fayllardan
 Android assetlari yasaladi:
 
 ```
-android/app/src/main/assets/dictionary.json          1247 so'z, uch tilda
-android/app/src/main/assets/strokes/<kod>.json       1055 ieroglif
+android/app/src/main/assets/hsk-words.js         1247 so'z, uch tilda
+android/app/src/main/assets/strokes/<kod>.json   1055 ieroglif
 ```
+
+**Bu ish ikki marta, mustaqil qilingan** va 2026-09-20 da birlashtirildi.
+`172bcb5` so'zlarni bundle qildi (`AssetBundledDictionarySource` +
+`DictionaryRepositoryTest`) va `SEARCH_LIMIT` ni 200 dan 2000 ga ko'tardi —
+200 lik chegara ro'yxat HSK2 da tugaganday ko'rsatardi. Chiziqlar esa alohida
+ishda qo'shildi. Birlashtirishda **so'zlar tomoni o'sha ishniki** qoldi
+(interfeys, testi va tuzatishi bilan), chiziqlar ustiga qo'shildi. Ikkinchi
+nusxa (`dictionary.json`) olib tashlandi — bir xil so'zlar ikki joyda
+turmasligi uchun.
 
 Fayl nomi ieroglifning kod nuqtasi — server o'z keshini ham shunday nomlaydi
 (`{ord(char)}.json`), ya'ni ikki tomonni solishtirish uchun tarjima kerak emas.
 
-**Narxi: APK'da +1314 KB** (o'lchandi, taxmin emas). Har ieroglif alohida
-fayl bo'lgani uchun bitta katta fayldan ~344 KB ko'proq — evaziga bitta
-ieroglifni o'qish uchun 2.4 MB JSON parse qilinmaydi.
+**Narxi: chiziqlar APK'da ~+1.3 MB** (o'lchandi). Har ieroglif alohida fayl
+bo'lgani uchun bitta katta fayldan ~344 KB ko'proq — evaziga bitta ieroglifni
+o'qish uchun 2.4 MB JSON parse qilinmaydi.
 
 **Bundle — manba emas, poydevor.** So'zlar ro'yxati kesh bo'sh bo'lsa
 bundle'dan to'ldiriladi, keyin server baribir so'raladi: deploy ro'yxatni
-o'zgartirsa bundle ilovani eski nusxaga mixlab qo'ymasligi kerak. Seed
-qilingan nusxaning versiyasi bo'sh, ya'ni ETag yuborilmaydi va server to'liq
-javob qaytaradi.
+o'zgartirsa bundle ilovani eski nusxaga mixlab qo'ymasligi kerak.
 
-**Chiziqlar** avval bundle'dan o'qiladi, topilmasa tarmoqdan — darsda
-uchraydigan, lug'atda yo'q ieroglif uchun.
+**Chiziqlar** (`BundledStrokes`) avval bundle'dan o'qiladi, topilmasa
+tarmoqdan — darsda uchraydigan, lug'atda yo'q ieroglif uchun.
 
 **Yasash va tekshirish:**
 
 ```bash
-python3 android/tools/build_dictionary_assets.py   # Mini App ma'lumotidan yasaydi
-python3 android/tools/check_dictionary_assets.py   # eskirib qolmaganini tekshiradi
+python3 android/tools/build_stroke_assets.py   # Mini App ma'lumotidan yasaydi
+python3 android/tools/check_stroke_assets.py   # eskirib qolmaganini tekshiradi
 ```
 
 Ikkinchisi oltinchi statik tekshiruv sifatida CI va release workflow'ga
-qo'shildi. Ikki nusxa ajralib ketadi: Mini App ro'yxatiga so'z qo'shiladi,
-generator qayta ishga tushirilmaydi, va telefonda bir release eski lug'at
-qoladi — jimgina, chunki yo'q so'z hech qachon bo'lmagan so'zdan farq
-qilmaydi.
+qo'shildi. Ikki nusxa ajralib ketadi: Mini App ma'lumoti o'zgaradi, generator
+qayta ishga tushirilmaydi, va telefonda yozib bo'lmaydigan ieroglif qoladi —
+jimgina, chunki yo'q chiziq fayli hech qachon bo'lmaganidan farq qilmaydi.
 
 **Ovoz baribir to'liq offline emas.** Faqat ilgari eshitilgani ishlaydi
 (`ttsCache`). 1247 so'zning audiosi bir necha MB, telefonning o'z TTS'i esa
@@ -513,10 +519,23 @@ dan olinadi — desktop statusidan emas, chunki u boshqa pipeline va
 autentifikatsiya talab qilmaydi. Uning yiqilishi desktop tugmalarini
 o'ldirmaydi.
 
-Android **qisqa yo'ldan** ketadi: havola to'g'ridan-to'g'ri ochiladi. Pastdagi
-butun mashina (request token, «faylni qayerda ochamiz?» oynasi, boshqa
-qurilmaga uzatish) DMG/EXE telefonda ishlamagani uchun qurilgan. APK ishlaydi —
+Android **qisqa yo'ldan** ketadi: chip bosilganda hech qanday havola
+ochilmaydi — `POST /api/miniapp/event` (`android_apk_to_chat`) serverga
+boradi, bot APK'ni chatga tashlaydi va Mini App yopiladi. Pastdagi butun
+mashina (request token, «faylni qayerda ochamiz?» oynasi, boshqa qurilmaga
+uzatish) DMG/EXE telefonda ishlamagani uchun qurilgan. APK ishlaydi —
 o'quvchi allaqachon o'rnatadigan qurilmani ushlab turibdi.
+
+**Promo «tarqatadigan narsa bormi?» degan savolni Android'dan ham so'raydi**
+(2026-09-20). `DesktopDownloadService._promo_status()` dagi `release_ready`
+ilgari faqat `PLATFORMS = ("macos", "windows")` ni ko'rardi, `target_for(
+"android")` esa har doim `None` qaytaradi — ya'ni APK nashr qilingan, desktop
+relizi esa qilinmagan holatda ilova promosi UCHALA joyda ham o'chib qolardi,
+admin Android chipini yoqib qo'ygan bo'lsa ham. Endi `AndroidReleaseService`
+ham so'raladi (R2 havolasi shart emas: bot `file_id` bilan beradi — bu
+`app_downloads_service` bilan bitta qoida). Shu sababdan
+`DESKTOP_DOWNLOADS_ENABLED` ham Android-only promoni o'chira olmaydi: u
+DESKTOP yuklab olishning kill switch'i, Android u yo'ldan o'tmaydi.
 
 **Dars yakunidagi reklama oynasi ichidagi ilova bloki** (`ads.js` →
 `PompDesktopDownload.mountAdPromoTrigger`). 2026-09-16 da `app` reklama turi
@@ -569,7 +588,7 @@ yaxshi.
 | Statik tekshiruvlar | `android/tools/check_*.py` — **Gradle'dan oldin ishga tushiring** |
 | Server tomoni | `app/api/android_*.py`, `app/services/android_*.py` |
 | Rang palitrasi | Mini App bilan bir xil bo'lishi shart, `check_palette_matches_miniapp.py` tekshiradi |
-| Offline lug'at | `android/app/src/main/assets/`, `build_dictionary_assets.py` yasaydi, `check_dictionary_assets.py` eskirmaganini tekshiradi |
+| Offline lug'at | `android/app/src/main/assets/` — so'zlar `hsk-words.js`, chiziqlar `strokes/`. `build_stroke_assets.py` yasaydi, `check_stroke_assets.py` eskirmaganini tekshiradi |
 
 ## 6. Ishlash qoidalari
 

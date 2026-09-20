@@ -18,8 +18,9 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
-import com.pomp.hskai.data.local.BundledDictionary
+import com.pomp.hskai.data.local.BundledStrokes
 import com.pomp.hskai.data.local.HskAiDatabase
+import com.pomp.hskai.data.repository.AssetBundledDictionarySource
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
@@ -162,7 +163,7 @@ class HskAiApplication : Application() {
             foundationApi = foundationApi,
             onSessionExpired = authRepository::invalidateSession,
             ttsCache = ttsCache,
-            bundled = bundledDictionary,
+            bundledStrokes = bundledStrokes,
         )
     }
 
@@ -192,16 +193,17 @@ class HskAiApplication : Application() {
             accessToken = authRepository::accessToken,
             dao = database.dictionaryDao(),
             onSessionExpired = authRepository::invalidateSession,
-            bundled = bundledDictionary,
+            bundledSource = AssetBundledDictionarySource(this, json),
         )
     }
 
     /**
-     * The dictionary that ships with the app, so it opens with no connection.
-     * One instance: both repositories read the same asset folder.
+     * The writing order that ships with the app. The word list has its own
+     * source (`AssetBundledDictionarySource`); together they are what makes
+     * the dictionary work with no connection.
      */
-    private val bundledDictionary: BundledDictionary by lazy {
-        BundledDictionary(context = this, json = json)
+    private val bundledStrokes: BundledStrokes by lazy {
+        BundledStrokes(context = this, json = json)
     }
 
     val featureRepository: FeatureRepository by lazy {

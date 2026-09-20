@@ -41,6 +41,26 @@ STATS_TZ = ZoneInfo("Asia/Shanghai")
 _USD_TO_SOMONI = float(DEFAULT_VISA_LOCAL_RATES["tjs"])
 _USD_TO_YUAN = float(DEFAULT_USD_CNY_RATE)
 
+_CLIENT_CHANNELS = {
+    "miniapp": {
+        "label": "Mini App / bot",
+        "note": "Telegram Mini App va bot ichidagi canonical checkout",
+    },
+    "android": {
+        "label": "Android",
+        "note": "Native Android -> Telegram subscription handoff",
+    },
+    "desktop": {
+        "label": "Desktop",
+        "note": "Native desktop -> canonical checkout adapter",
+    },
+    "unknown": {
+        "label": "Noma'lum",
+        "note": "Paymentdan oldin entry source topilmadi",
+    },
+}
+_CLIENT_ORDER = ("miniapp", "android", "desktop", "unknown")
+
 
 def _amount_to_usd(amount, currency: str | None) -> float | None:
     """To'lov summasini USDga aylantiradi (portfel bilan bir xil mantiq)."""
@@ -340,6 +360,14 @@ class AdminFinanceStatsService:
 
         # Manba -> pul
         sources_paid = self._sources_paid(in_period, source_events_by_user)
+        client_business = self._client_business(
+            since=since,
+            approved=in_period,
+            source_events_by_user=source_events_by_user,
+            revenue_usd=revenue_usd,
+            approved_count=approved_count,
+            active_paid_now=active_paid_now,
+        )
 
         ai_share = _pct(ai_cost_usd, revenue_usd)
         margin = _pct(net_usd, revenue_usd)
@@ -425,6 +453,7 @@ class AdminFinanceStatsService:
             "unit": unit,
             "retention": retention,
             "sources_paid": sources_paid,
+            "client_business": client_business,
             "source_attribution_explain": (
                 "Har to'lov payment yuborilgan paytdan oldingi eng yaqin obuna-kirish manbasiga bog'landi. "
                 "Oldingi to'lovlar keyinroq ochilgan manbaga ko'chirilmaydi."
@@ -477,6 +506,136 @@ class AdminFinanceStatsService:
         ]
         rows.sort(key=lambda r: r["revenue_usd"], reverse=True)
         return rows[:12]
+
+    def _client_business(
+        self,
+        *,
+        since: datetime | None,
+        approved: list[_ApprovedPayment],
+        source_events_by_user: dict[int, list[tuple[datetime, str]]],
+        revenue_usd: float,
+        approved_count: int,
+        active_paid_now: int,
+    ) -> dict:
+        buckets = {
+            key: {
+                "entries": 0,
+                "entry_users": set(),
+                "paying_users": set(),
+                "payments": 0,
+                "revenue": 0.0,
+            }
+            for key in _CLIENT_CHANNELS
+        }
+
+        for telegram_id, events in source_events_by_user.items():
+            for created_at, source in events:
+                if since is not None and created_at < since:
+                    continue
+                client = self._client_key_for_source(source)
+                bucket = buckets.setdefault(
+                    client,
+                    {
+                        "entries": 0,
+                        "entry_users": set(),
+                        "paying_users": set(),
+                        "payments": 0,
+                        "revenue": 0.0,
+                    },
+                )
+                bucket["entries"] += 1
+                bucket["entry_users"].add(int(telegram_id))
+
+        for payment in approved:
+            source = self._source_for_payment(
+                payment,
+                source_events_by_user.get(payment.user_id, []),
+            )
+            client = self._client_key_for_source(source)
+            bucket = buckets.setdefault(
+                client,
+                {
+                    "entries": 0,
+                    "entry_users": set(),
+                    "paying_users": set(),
+                    "payments": 0,
+                    "revenue": 0.0,
+                },
+            )
+            bucket["payments"] += 1
+            bucket["paying_users"].add(payment.user_id)
+            if payment.priced:
+                bucket["revenue"] += payment.usd
+
+        rows = []
+        for key in _CLIENT_ORDER:
+            data = buckets.get(key)
+            if not data:
+                continue
+            if key == "unknown" and not any(
+                (
+                    data["entries"],
+                    data["entry_users"],
+                    data["paying_users"],
+                    data["payments"],
+                    data["revenue"],
+                )
+            ):
+                continue
+            meta = _CLIENT_CHANNELS.get(key, _CLIENT_CHANNELS["unknown"])
+            rows.append(
+                {
+                    "key": key,
+                    "label": meta["label"],
+                    "note": meta["note"],
+                    "entries": int(data["entries"]),
+                    "entry_users": len(data["entry_users"]),
+                    "paying_users": len(data["paying_users"]),
+                    "payments": int(data["payments"]),
+                    "revenue_usd": round(float(data["revenue"]), 2),
+                    "revenue_text": _usd(float(data["revenue"])),
+                }
+            )
+
+        return {
+            "cards": [
+                {
+                    "label": "Umumiy tushum",
+                    "value": _usd(revenue_usd),
+                    "note": f"{approved_count} ta approved payment",
+                    "tone": "info",
+                },
+                {
+                    "label": "Faol obuna",
+                    "value": active_paid_now,
+                    "note": "User access bitta schema",
+                    "tone": "good",
+                },
+                {
+                    "label": "Client kesimi",
+                    "value": "Mini App · Android · Desktop",
+                    "note": "alohida payment bazasi yo'q",
+                    "tone": "info",
+                },
+            ],
+            "rows": rows,
+            "explain": (
+                "Mini App, Android va Desktop alohida biznes bazaga yozmaydi: "
+                "pul approved Payment jadvalidan, obuna holati User access maydonlaridan, "
+                "client attribution esa paymentdan oldingi eng yaqin SubscriptionEntryEvent manbasidan olinadi."
+            ),
+        }
+
+    @staticmethod
+    def _client_key_for_source(source: str | None) -> str:
+        group = SubscriptionEntryAnalyticsService.source_group_key(source)
+        if group == "unknown":
+            return "unknown"
+        if group.startswith("android_") or group == "android_subscription":
+            return "android"
+        if group.startswith("desktop_") or group == "desktop_subscription":
+            return "desktop"
+        return "miniapp"
 
     @staticmethod
     def _source_for_payment(

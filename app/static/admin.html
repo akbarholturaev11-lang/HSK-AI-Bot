@@ -350,6 +350,14 @@
           <div class="explain" id="desktopExplain"></div>
         </div>
 
+        <!-- Unified client business schema -->
+        <div class="block">
+          <div class="block-head"><span class="bi">▦</span><div><h3>Mini App · Android · Desktop biznes</h3><p>Bitta payment/access schema bo'yicha client kesimi</p></div></div>
+          <div class="grid g2" id="clientBusinessCards"></div>
+          <div id="clientBusinessTable"></div>
+          <div class="explain" id="clientBusinessExplain"></div>
+        </div>
+
         <!-- Finance -->
         <div class="block">
           <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
@@ -808,6 +816,9 @@
       if(!desktop&&!state.desktopStatsLoading[state.statsPeriod]) loadDesktopStats(state.statsPeriod);
       if(!fp){
         $("rangeLabel").textContent="Davr: "+((orep&&orep.note)||"—");
+        $("clientBusinessCards").innerHTML="<p class='empty'>Business schema statistikasi yuklanmadi.</p>";
+        $("clientBusinessTable").innerHTML="";
+        $("clientBusinessExplain").textContent="";
         $("financeCards").innerHTML="<p class='empty'>Moliyaviy statistikani yuklab bo'lmadi.</p>";
         $("financeExplain").textContent="";
         $("aiUsageBreakdown").textContent="";
@@ -820,6 +831,16 @@
       }
       else{
         $("rangeLabel").textContent = "Davr: " + (fp.range_label||fp.note);
+        const cb=fp.client_business||{};
+        const cbRows=cb.rows||[];
+        $("clientBusinessCards").innerHTML = (cb.cards||[]).length
+          ? (cb.cards||[]).map(cardHtml).join("")
+          : "<p class='empty'>Client kesimi bo'yicha ma'lumot yo'q.</p>";
+        $("clientBusinessTable").innerHTML = cbRows.length ? `<table class="tbl"><thead><tr>
+            <th>Client</th><th class="r">Kirish<br><small>event/user</small></th><th class="r">Pullik</th><th class="r">To'lov</th><th class="r">Daromad</th></tr></thead>
+          <tbody>${cbRows.map(row=>`<tr><td><b>${esc(row.label)}</b><br><small>${esc(row.note)}</small></td><td class="r"><b>${esc(row.entries)}</b>/${esc(row.entry_users)}</td><td class="r">${esc(row.paying_users)}</td><td class="r">${esc(row.payments)}</td><td class="r"><b>${esc(row.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
+          : "<p class='empty'>Bu davrda client attribution yo'q.</p>";
+        $("clientBusinessExplain").textContent = cb.explain || "";
         $("financeCards").innerHTML = [
           {label:"Daromad",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
           {label:"AI model estimate",value:fp.finance.ai_cost_text,note:"invoice emas · "+fp.finance.ai_share_pct+"%",tone:"warn"},

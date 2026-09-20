@@ -35,12 +35,27 @@ button:active{transform:scale(.96)}
 .lang-switch{display:flex;gap:7px;margin-bottom:12px}
 .lang-btn{min-height:32px;padding:7px 11px;border-radius:999px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:800}
 .lang-btn.active{border-color:rgba(91,140,255,.62);background:var(--accent-dim);color:var(--accent)}
-.search-wrap{position:relative}
+.search-row{position:relative;display:flex;align-items:stretch;gap:8px}
+.search-wrap{position:relative;flex:1;min-width:0}
 #search{width:100%;padding:13px 16px;font-size:14px;font-weight:600;border-radius:16px;
   background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);outline:none;
   transition:border-color .15s ease, box-shadow .15s ease}
 #search::placeholder{color:var(--text2);font-weight:500}
 #search:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim)}
+.filter-btn{width:68px;border-radius:16px;background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-weight:800;line-height:1;flex-shrink:0}
+.filter-btn span{font-size:9px;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)}
+.filter-btn b{font-size:12px;font-weight:900;color:var(--accent)}
+.filter-btn.active{border-color:rgba(91,140,255,.62);background:var(--accent-dim)}
+.filter-panel,.search-history{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:20;background:rgba(18,24,38,.98);
+  border:1px solid var(--border2);border-radius:16px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.28);backdrop-filter:blur(16px)}
+.filter-panel.hidden,.search-history.hidden{display:none}
+.filter-title,.history-title{font-size:11px;color:var(--text2);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.filter-chips,.history-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.filter-chip,.history-item{padding:9px 11px;border-radius:999px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:800}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.history-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.history-clear{font-size:11px;color:var(--accent);font-weight:800}
 .count{margin-top:10px;font-size:12px;color:var(--text2);font-weight:600}
 .list{flex:1;overflow-y:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
 .row{display:flex;align-items:center;gap:13px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer}
@@ -156,6 +171,8 @@ html.theme-light #app{background:#FBF7EF;}
 html.theme-light .char-box-lg .grid-bg line{stroke:rgba(33,29,23,.08);}
 html.theme-light #search:focus{box-shadow:0 0 0 4px rgba(194,64,58,.12);}
 html.theme-light .lang-btn.active{border-color:rgba(194,64,58,.55);}
+html.theme-light .filter-btn.active{border-color:rgba(194,64,58,.55);}
+html.theme-light .filter-panel,html.theme-light .search-history{background:rgba(255,255,255,.98);box-shadow:0 14px 34px rgba(33,29,23,.12);}
 html.theme-light .lang-switch{display:none;}
 html.theme-light .hero-copy{display:none;}
 html.theme-light .hero{padding-bottom:10px;}
@@ -186,8 +203,15 @@ html.theme-light .hero{padding-bottom:10px;}
         </div>
       </div>
       <div class="lang-switch" id="lang-switch"></div>
-      <div class="search-wrap">
-        <input id="search" type="text" placeholder="Mano, pinyin yoki ieroglif bo'yicha qidiring…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div class="search-row" id="search-row">
+        <div class="search-wrap">
+          <input id="search" type="text" placeholder="Mano, pinyin yoki ieroglif bo'yicha qidiring…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+        <button class="filter-btn" id="filter-btn" type="button" aria-expanded="false">
+          <span id="filter-text">Filtr</span><b id="filter-label">1-4</b>
+        </button>
+        <div class="filter-panel hidden" id="filter-panel"></div>
+        <div class="search-history hidden" id="search-history"></div>
       </div>
       <div class="count" id="count"></div>
     </div>
@@ -298,7 +322,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       emptyTitle: "Hech narsa topilmadi.",
       emptySub: "Boshqa so'z bilan urinib ko'ring.",
       grammar: "Grammatika",
-      grammarExample: "Misol"
+      grammarExample: "Misol",
+      filter: "Filtr",
+      historyTitle: "Oxirgi qidiruvlar",
+      clearHistory: "Tozalash"
     },
     ru: {
       title: "Словарь новых слов",
@@ -309,7 +336,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       emptyTitle: "Ничего не найдено.",
       emptySub: "Попробуйте другое слово.",
       grammar: "Грамматика",
-      grammarExample: "Пример"
+      grammarExample: "Пример",
+      filter: "Фильтр",
+      historyTitle: "Последние поиски",
+      clearHistory: "Очистить"
     },
     tj: {
       title: "Луғати калимаҳои нав",
@@ -320,7 +350,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       emptyTitle: "Чизе ёфт нашуд.",
       emptySub: "Калимаи дигар санҷед.",
       grammar: "Грамматика",
-      grammarExample: "Мисол"
+      grammarExample: "Мисол",
+      filter: "Филтр",
+      historyTitle: "Ҷустуҷӯҳои охир",
+      clearHistory: "Тоза кардан"
     }
   };
   var levelLabels = {
@@ -359,8 +392,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var key = String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     return ['hsk1','hsk2','hsk3','hsk4','hsk4a','hsk4b'].indexOf(key) !== -1 ? key : 'all';
   }
+  function normalizeFilterLevel(value){
+    var key = normalizeLevel(value);
+    if(key === 'hsk4a' || key === 'hsk4b') return 'hsk4';
+    return ['all','hsk1','hsk2','hsk3','hsk4'].indexOf(key) !== -1 ? key : 'all';
+  }
   var currentLang = normalizeLang(params.get('lang')) || normalizeLang(localStorage.getItem('hsk_all_current_lang_v3')) || detectLang();
   var currentLevel = normalizeLevel(params.get('level'));
+  var currentFilterLevel = normalizeFilterLevel(params.get('filter'));
   var isLight = params.get('theme') === 'light';
   if(isLight) document.documentElement.classList.add('theme-light');
   var activeWords = [];
@@ -539,13 +578,19 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&quot;';
     });
   }
-  function wordMatchesLevel(word){
+  function wordMatchesLevelKey(word, level){
     var lv = String(word.lv || '').toLowerCase();
-    if(currentLevel === 'all') return true;
-    if(currentLevel === 'hsk4') return lv.indexOf('hsk4') === 0;
-    if(currentLevel === 'hsk4a') return lv.indexOf('hsk4') === 0 && lv.indexOf('1-qism') !== -1;
-    if(currentLevel === 'hsk4b') return lv.indexOf('hsk4') === 0 && lv.indexOf('2-qism') !== -1;
-    return lv.replace(/\s/g, '').indexOf(currentLevel) === 0;
+    if(level === 'all') return true;
+    if(level === 'hsk4') return lv.indexOf('hsk4') === 0;
+    if(level === 'hsk4a') return lv.indexOf('hsk4') === 0 && lv.indexOf('1-qism') !== -1;
+    if(level === 'hsk4b') return lv.indexOf('hsk4') === 0 && lv.indexOf('2-qism') !== -1;
+    return lv.replace(/\s/g, '').indexOf(level) === 0;
+  }
+  function wordMatchesLevel(word){
+    return wordMatchesLevelKey(word, currentLevel);
+  }
+  function wordMatchesFilter(word){
+    return wordMatchesLevelKey(word, currentFilterLevel);
   }
   function localizedExample(ex){
     if(!ex) return '';
@@ -566,16 +611,27 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     w._p = normPinyin(w.p);
     w._m = allText(w.m).toLowerCase();
   });
-  // Show all hieroglyphs; user's level first, the rest follow in book order.
-  if(currentLevel === 'all'){
-    activeWords = WORDS.slice();
-  } else {
-    var _inLevel = [], _others = [];
-    WORDS.forEach(function(w){ (wordMatchesLevel(w) ? _inLevel : _others).push(w); });
-    activeWords = _inLevel.concat(_others);
+  function rebuildActiveWords(){
+    var ordered;
+    // Show all hieroglyphs by default; user's level first, the rest follow in book order.
+    if(currentLevel === 'all'){
+      ordered = WORDS.slice();
+    } else {
+      var _inLevel = [], _others = [];
+      WORDS.forEach(function(w){ (wordMatchesLevel(w) ? _inLevel : _others).push(w); });
+      ordered = _inLevel.concat(_others);
+    }
+    activeWords = currentFilterLevel === 'all' ? ordered : ordered.filter(wordMatchesFilter);
   }
+  rebuildActiveWords();
 
   var searchEl = document.getElementById('search');
+  var searchRow = document.getElementById('search-row');
+  var filterBtn = document.getElementById('filter-btn');
+  var filterText = document.getElementById('filter-text');
+  var filterLabel = document.getElementById('filter-label');
+  var filterPanel = document.getElementById('filter-panel');
+  var searchHistory = document.getElementById('search-history');
   var listEl = document.getElementById('list');
   var countEl = document.getElementById('count');
   var heroTitle = document.getElementById('hero-title');
@@ -725,15 +781,106 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }catch(e){ if(tok===_ttsTok && st===0){ st=2; _ttsFallback(textValue); } }
   }
 
+  var SEARCH_HISTORY_KEY = 'hsk_lugat_search_history_v1';
+  var searchHistoryOpen = false;
+  var searchSaveTimer = null;
+  var filterChoices = ['all','hsk1','hsk2','hsk3','hsk4'];
+
+  function filterShortLabel(level){
+    return level === 'all' ? '1-4' : String(levelLabels[level] || level).replace(/^HSK\s*/i, '');
+  }
+  function readSearchHistory(){
+    try{
+      var raw = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
+      if(!Array.isArray(raw)) return [];
+      var seen = {};
+      return raw.map(function(item){ return String(item || '').trim(); }).filter(function(item){
+        var key = item.toLowerCase();
+        if(!item || seen[key]) return false;
+        seen[key] = true;
+        return true;
+      }).slice(0, 8);
+    }catch(e){ return []; }
+  }
+  function writeSearchHistory(items){
+    try{ localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(items.slice(0, 8))); }catch(e){}
+  }
+  function saveSearchQuery(query){
+    query = String(query || '').trim();
+    if(query.length < 2) return;
+    var lower = query.toLowerCase();
+    var items = readSearchHistory().filter(function(item){ return item.toLowerCase() !== lower; });
+    items.unshift(query);
+    writeSearchHistory(items);
+    renderSearchHistory();
+  }
+  function scheduleSearchSave(query){
+    if(searchSaveTimer) clearTimeout(searchSaveTimer);
+    query = String(query || '').trim();
+    if(query.length < 2) return;
+    searchSaveTimer = setTimeout(function(){ saveSearchQuery(query); }, 700);
+  }
+  function setSearchHistoryVisible(show){
+    searchHistoryOpen = !!show;
+    if(searchHistoryOpen) closeFilterPanel();
+    renderSearchHistory();
+  }
+  function renderSearchHistory(){
+    if(!searchHistory) return;
+    var items = readSearchHistory();
+    if(!searchHistoryOpen || searchEl.value.trim() || !items.length){
+      searchHistory.classList.add('hidden');
+      return;
+    }
+    var t = UI[currentLang] || UI.uz;
+    searchHistory.innerHTML =
+      '<div class="history-head"><div class="history-title">'+escapeHtml(t.historyTitle)+'</div>'+
+      '<button class="history-clear" type="button" data-clear-history="1">'+escapeHtml(t.clearHistory)+'</button></div>'+
+      '<div class="history-list">'+items.map(function(item){
+        return '<button class="history-item" type="button" data-history="'+escapeHtml(item)+'">'+escapeHtml(item)+'</button>';
+      }).join('')+'</div>';
+    searchHistory.classList.remove('hidden');
+  }
+  function closeFilterPanel(){
+    if(!filterPanel) return;
+    filterPanel.classList.add('hidden');
+    filterBtn.setAttribute('aria-expanded', 'false');
+  }
+  function renderFilterPanel(){
+    var t = UI[currentLang] || UI.uz;
+    filterText.textContent = t.filter;
+    filterLabel.textContent = filterShortLabel(currentFilterLevel);
+    filterBtn.classList.toggle('active', currentFilterLevel !== 'all');
+    filterPanel.innerHTML =
+      '<div class="filter-title">'+escapeHtml(t.filter)+'</div>'+
+      '<div class="filter-chips">'+filterChoices.map(function(level){
+        return '<button class="filter-chip '+(level === currentFilterLevel ? 'active' : '')+'" type="button" data-filter="'+level+'">'+
+          escapeHtml(levelLabels[level] || level)+'</button>';
+      }).join('')+'</div>';
+  }
+  function toggleFilterPanel(){
+    var willOpen = filterPanel.classList.contains('hidden');
+    if(willOpen){
+      setSearchHistoryVisible(false);
+      renderFilterPanel();
+      filterPanel.classList.remove('hidden');
+      filterBtn.setAttribute('aria-expanded', 'true');
+    } else {
+      closeFilterPanel();
+    }
+  }
+
   function applyStaticText(){
     var t = UI[currentLang] || UI.uz;
-    var label = levelLabels.all;
+    var label = levelLabels[currentFilterLevel] || levelLabels.all;
     document.documentElement.lang = currentLang;
     document.title = t.title;
     heroTitle.textContent = t.title;
     heroEyebrow.textContent = '汉字 · ' + label;
     searchEl.placeholder = t.placeholder;
     grammarLabel.textContent = t.grammar;
+    renderFilterPanel();
+    renderSearchHistory();
     langSwitch.innerHTML = validLangs.map(function(value){
       return '<button class="lang-btn '+(value === currentLang ? 'active' : '')+'" data-lang="'+value+'">'+value.toUpperCase()+'</button>';
     }).join('');
@@ -783,7 +930,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           w._m.indexOf(qLower) !== -1 || text(w.m).toLowerCase().indexOf(qLower) !== -1;
       });
     }
-    countEl.textContent = q ? t.countResults(results.length) : t.countAll(activeWords.length, levelLabels.all);
+    countEl.textContent = q ? t.countResults(results.length) : t.countAll(activeWords.length, levelLabels[currentFilterLevel] || levelLabels.all);
     if(results.length === 0){
       listEl.innerHTML = '<div class="empty">'+escapeHtml(t.emptyTitle)+'<br>'+escapeHtml(t.emptySub)+'</div>';
       return;
@@ -1056,6 +1203,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   listEl.addEventListener('click', function(e){
     var row = e.target.closest('.row');
     if(!row) return;
+    saveSearchQuery(searchEl.value);
+    setSearchHistoryVisible(false);
+    closeFilterPanel();
     var idx = parseInt(row.dataset.idx, 10);
     openDetail(WORDS[idx]);
   });
@@ -1068,6 +1218,46 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   });
 
   listBackBtn.addEventListener('click', goBackToStudy);
+  filterBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    toggleFilterPanel();
+  });
+  filterPanel.addEventListener('click', function(e){
+    var button = e.target.closest('[data-filter]');
+    if(!button) return;
+    currentFilterLevel = normalizeFilterLevel(button.dataset.filter);
+    if(currentFilterLevel === 'all') params.delete('filter');
+    else params.set('filter', currentFilterLevel);
+    history.replaceState(null, '', location.pathname + '?' + params.toString());
+    rebuildActiveWords();
+    applyStaticText();
+    closeFilterPanel();
+    renderList(searchEl.value);
+  });
+  searchEl.addEventListener('focus', function(){ setSearchHistoryVisible(true); });
+  searchEl.addEventListener('click', function(){ setSearchHistoryVisible(true); });
+  searchHistory.addEventListener('click', function(e){
+    var clear = e.target.closest('[data-clear-history]');
+    if(clear){
+      writeSearchHistory([]);
+      setSearchHistoryVisible(false);
+      return;
+    }
+    var item = e.target.closest('[data-history]');
+    if(!item) return;
+    var query = item.dataset.history || '';
+    searchEl.value = query;
+    saveSearchQuery(query);
+    setSearchHistoryVisible(false);
+    renderList(query);
+    searchEl.focus();
+  });
+  document.addEventListener('pointerdown', function(e){
+    if(searchRow && !searchRow.contains(e.target)){
+      setSearchHistoryVisible(false);
+      closeFilterPanel();
+    }
+  });
   langSwitch.addEventListener('click', function(e){
     var button = e.target.closest('[data-lang]');
     if(!button) return;
@@ -1081,7 +1271,19 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     renderList(searchEl.value);
     refreshDetailText();
   });
-  searchEl.addEventListener('input', function(e){ renderList(e.target.value); });
+  searchEl.addEventListener('input', function(e){
+    renderList(e.target.value);
+    closeFilterPanel();
+    renderSearchHistory();
+    scheduleSearchSave(e.target.value);
+  });
+  searchEl.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      saveSearchQuery(searchEl.value);
+      setSearchHistoryVisible(false);
+      searchEl.blur();
+    }
+  });
 
   function init(){
     applyStaticText();

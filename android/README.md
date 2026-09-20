@@ -50,7 +50,7 @@ python3 tools/check_named_arguments.py     # a call passes a name that is gone
 python3 tools/check_flavor_parity.py       # the flavours can no longer swap
 python3 tools/check_strings_translated.py  # a string is missing uz, ru or tg
 python3 tools/check_palette_matches_miniapp.py  # a colour drifted from the Mini App
-python3 tools/check_dictionary_assets.py    # the bundled dictionary fell behind
+python3 tools/check_stroke_assets.py       # the bundled stroke data fell behind
 ```
 
 ## Distribution flavours
