@@ -1326,7 +1326,7 @@ try{
      yuklanish, hech narsa qilinmaydi. */
   window.addEventListener("pageshow",function(e){
     if(!e||!e.persisted)return;
-    EXIT_PINGED=false;
+    EXIT_PINGED=false;clearDeferredCourseUnlock();
     if(!INIT_DATA||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
       if(!d||d._parseFail||d.authenticated===false||!d.units)return;
@@ -3263,6 +3263,7 @@ function startLesson(idx,opts){
   if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
   if(l.status==="locked")return;
+  clearDeferredCourseUnlock();
   /* Presentation only: show the centered HSK AI mascot immediately while the
      existing reserve/data requests run. Business logic remains unchanged. */
   var lessonEntry=(window.HSKLessonPresentation&&HSKLessonPresentation.beginLessonEntry)
@@ -3413,6 +3414,11 @@ function flashLessonReaction(id,reaction){
   if(window.HSKCharacterMotion&&HSKCharacterMotion.play){
     Promise.resolve(HSKCharacterMotion.play(el,reaction)).then(function(){setTimeout(done,120)});
   }else setTimeout(done,650);
+}
+function clearDeferredCourseUnlock(){
+  window._pendingCourseUnlockOrder=0;
+  window._pendingCourseUnlockRetries=0;
+  window._pendingUnlockAfterSheet=false;
 }
 function animatePendingCourseUnlock(){
   var order=Number(window._pendingCourseUnlockOrder)||0;
@@ -4474,6 +4480,7 @@ function loadCourseMap(lv,tries){
 }
 function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return loadCourseMap(lv,tries+1)})}
 function loadLevel(lv){
+  clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(lv).then(function(res){
