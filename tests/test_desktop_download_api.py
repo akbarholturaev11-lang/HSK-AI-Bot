@@ -2,7 +2,7 @@ import json
 import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 from urllib.parse import parse_qs, urlsplit
 
 from fastapi import FastAPI
@@ -18,6 +18,7 @@ from app.api.desktop_download import (
 from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
+from app.services.android_release_service import AndroidReleaseService
 from app.services.desktop_download_service import (
     DesktopDownloadError,
     DesktopDownloadService,
@@ -231,6 +232,81 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(targets["macos"])
             self.assertTrue(targets["windows"])
             self.assertFalse(targets["android"])
+
+    async def _android_only_promo(self, *, android_chip: bool, release):
+        """Faqat Android nashr qilingan holat: desktop relizi ham, uning
+        kaliti ham yo'q."""
+        async with self.sessions() as session:
+            await save_desktop_app_promo_settings(
+                session,
+                {
+                    "enabled": True,
+                    "daily_limit": 3,
+                    "placements": {
+                        "home_prompt": True,
+                        "lesson_end_promo": True,
+                        "ad_promo": True,
+                    },
+                    "platforms": {
+                        "macos": True,
+                        "windows": True,
+                        "android": android_chip,
+                        "ios": False,
+                    },
+                },
+            )
+            await session.commit()
+
+        settings = _settings(
+            DESKTOP_DOWNLOADS_ENABLED=False,
+            DESKTOP_DOWNLOAD_BASE_URL="",
+            DESKTOP_MAC_DOWNLOAD_URL="",
+            DESKTOP_WINDOWS_DOWNLOAD_URL="",
+        )
+        with patch.object(
+            AndroidReleaseService, "serve", AsyncMock(return_value=release)
+        ):
+            async with self.sessions() as session:
+                payload = await DesktopDownloadService(session, settings).status(1001)
+        return payload["promo"]
+
+    async def test_an_android_only_release_still_gets_the_app_promo(self):
+        """Desktop relizisiz ham ilova promosi chiqadi.
+
+        Bu servisdagi `PLATFORMS` faqat `macos`/`windows` ni bildiradi —
+        `target_for("android")` har doim `None`. Ilgari "tarqatadigan narsa
+        bormi?" degan savolga shu yolg'iz javob berardi, ya'ni APK nashr
+        qilingan, desktop esa qilinmagan holatda promo UCHALA joyda ham
+        o'chib qolardi. Admin Android chipini yoqib qo'ygan, Mini App
+        kartasi Android tugmasini chizib turgan bo'lsa ham.
+
+        R2 havolasi shart emas: faylni bot `file_id` bilan beradi — bu
+        `app_downloads_service` bilan bitta qoida."""
+        promo = await self._android_only_promo(
+            android_chip=True,
+            release=SimpleNamespace(download_url=None, file_id="tg-file-id"),
+        )
+        self.assertEqual(promo["reason"], "eligible")
+        self.assertTrue(promo["eligible"])
+        self.assertTrue(promo["placements"]["home_prompt"])
+        self.assertTrue(promo["placements"]["lesson_end_promo"])
+        self.assertTrue(promo["placements"]["ad_promo"])
+        self.assertTrue(promo["platform_targets"]["android"])
+
+    async def test_the_android_chip_off_still_silences_the_promo(self):
+        """Admin Android chipini o'chirsa — tarqatadigan narsa qolmaydi."""
+        promo = await self._android_only_promo(
+            android_chip=False,
+            release=SimpleNamespace(download_url=None, file_id="tg-file-id"),
+        )
+        self.assertEqual(promo["reason"], "disabled")
+        self.assertFalse(promo["eligible"])
+
+    async def test_no_android_release_means_no_promo_either(self):
+        """Chip yoqilgan, lekin hech narsa nashr qilinmagan."""
+        promo = await self._android_only_promo(android_chip=True, release=None)
+        self.assertEqual(promo["reason"], "disabled")
+        self.assertFalse(promo["eligible"])
 
     async def test_request_returns_tracked_download_page_and_safe_filename(self):
         async with self.sessions() as session:

@@ -12,6 +12,7 @@ from sqlalchemy import func, select
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
+from app.services.android_release_service import AndroidReleaseService
 from app.services.desktop_app_promo_settings_service import (
     DesktopAppPromoSettings,
     get_desktop_app_promo_settings,
@@ -323,6 +324,21 @@ class DesktopDownloadService:
         )
         return payload
 
+    async def _android_release_ready(self) -> bool:
+        """Android buildi hozir tarqatishga tayyormi.
+
+        Qoida `app_downloads_service` bilan bir xil: R2 havolasi qo'yilmagan
+        bo'lsa ham bot faylni `file_id` bilan beradi, ya'ni reliz baribir
+        o'rnatiladi. Holatini o'qib bo'lmasa — «yo'q», chunki bu javob butun
+        promo statusini yiqitmasligi kerak.
+        """
+        try:
+            release = await AndroidReleaseService(self.session).serve()
+        except Exception:  # noqa: BLE001
+            logger.exception("Android release status could not be read for the promo")
+            return False
+        return bool(release is not None and (release.download_url or release.file_id))
+
     async def _promo_status(
         self,
         telegram_id: int,
@@ -410,13 +426,30 @@ class DesktopDownloadService:
             promo_cooldown_remaining,
             request_cooldown_remaining,
         )
-        feature_enabled = bool(
-            getattr(self.settings, "DESKTOP_DOWNLOADS_ENABLED", False)
-        ) and promo_settings.enabled
-        release_ready = self.releases.enabled and any(
+        # Bu yerdagi `PLATFORMS` faqat DESKTOPni bildiradi (`macos`,
+        # `windows`) — `target_for("android")` har doim `None`. Ilgari
+        # «tarqatadigan narsa bormi?» savoliga shu yolg'iz javob berardi,
+        # ya'ni admin Android chipini yoqib qo'ysa ham, desktop relizi
+        # bo'lmagan holda ilova promosi hamma joyda o'chirilardi — holbuki
+        # `app_downloads_service` aynan o'sha Android relizini «mavjud» deb
+        # ko'rsatib turadi va Mini App kartasi uni chizadi.
+        desktop_ready = self.releases.enabled and any(
             bool(self.releases.target_for(platform))
             and bool(promo_settings.platforms.get(platform))
             for platform in PLATFORMS
+        )
+        android_ready = bool(
+            promo_settings.platforms.get("android")
+        ) and await self._android_release_ready()
+        release_ready = desktop_ready or android_ready
+        # `DESKTOP_DOWNLOADS_ENABLED` — DESKTOP yuklab olishning kill
+        # switch'i: u DMG/EXE ni shu origin orqali berishni to'xtatadi.
+        # Android bu yo'ldan umuman o'tmaydi (faylni bot chatga tashlaydi),
+        # shuning uchun o'sha flag Android-only promoni o'chira olmasligi
+        # kerak. Adminning o'z kaliti esa avvalgidek hammasidan ustun.
+        feature_enabled = promo_settings.enabled and (
+            bool(getattr(self.settings, "DESKTOP_DOWNLOADS_ENABLED", False))
+            or android_ready
         )
         learning_ready = has_learning_progress or not promo_settings.require_learning_progress
 

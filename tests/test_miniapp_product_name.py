@@ -141,7 +141,11 @@ class TheCopyMatchesTheButtonItNamesTests(unittest.TestCase):
     def test_the_ad_subscribe_button_names_the_product(self):
         # Reklama oxiridagi obuna tugmasi ham «HSK AI Pro» deydi — ilgari u
         # «Obuna olish» / «Оформить подписку» edi, ya'ni boshqa nom.
-        buttons = re.findall(r'adSubPay:"([^"]*)"', self.COURSE)
+        # Matn `ads.js` da: `course-v3.html` dagi eski reklama overlayi va
+        # uning o'z `ad*` qatorlari olib tashlandi, reklamani endi faqat shu
+        # modul chizadi.
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+        buttons = re.findall(r'adSubPay:"([^"]*)"', ads)
         self.assertEqual(3, len(buttons), "uchala tilda ham bo'lishi kerak")
         for value in buttons:
             with self.subTest(button=value):

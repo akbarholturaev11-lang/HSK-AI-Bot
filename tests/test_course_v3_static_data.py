@@ -75,9 +75,16 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn("start=ref_", html)
         self.assertIn("PRONOUNCE_LIMIT_EXCEEDED", html)
         self.assertIn("v3_pronunciation_limit", html)
-        self.assertIn("Reklama bilan davom etish", html)
-        self.assertIn("/api/v3/ad?placement=", html)
-        self.assertIn("/api/v3/ad/view", html)
+        # Reklama oqimi butunlay `ads.js` ga ko'chdi: `course-v3.html` da na
+        # ikkinchi overlay, na uning endpointlari qolishi kerak. Ikkitasi
+        # birga turganda qaysi biri ishlayotganini hech kim ayta olmasdi —
+        # aslida esa hech qaysi biri ishlamasdi.
+        self.assertNotIn("/api/v3/ad?placement=", html)
+        self.assertNotIn("/api/v3/ad/view", html)
+        self.assertNotIn("AdFlow", html)
+        ads_js = (BASE / "ads.js").read_text(encoding="utf-8")
+        self.assertIn('"/api/v3/ad?placement="', ads_js)
+        self.assertIn('"/api/v3/ad/view"', ads_js)
         self.assertIn("/api/v3/lesson/unlock", html)
         self.assertIn("section_completed", html)
         self.assertIn("ratingCountdownText()", html)
@@ -101,7 +108,6 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn('["+50",lu.bonusXp]', html)
         self.assertNotIn("64 / 100", html)
         self.assertNotIn("2'+(LANG", html)
-        self.assertIn("AdFlow", html)
         self.assertIn('event:"checkout_opened"', html)
         self.assertIn("CHECKOUT_NAVIGATING", html)
         self.assertIn('"&sid="+encodeURIComponent(COURSE_SESSION_ID)', html)
@@ -456,9 +462,18 @@ class CourseV3StaticMapTests(unittest.TestCase):
         )
 
         # Access/monetizatsiya gate'lari hech qachon swipe bilan yopilmasin.
+        # Ro'yxat SELEKTORLARdan iborat: reklamani `ads.js` chizadi va uning
+        # overlaylarida `id` yo'q. Ilgari bu yerda `"adov"` turardi — o'sha
+        # overlay olib tashlangach u hech nimani to'smay qolgan bo'lardi.
         block = html.split("BLOCK:[", 1)[1].split("]", 1)[0]
-        for gate in ('"paywall"', '"adov"', '"levelup"'):
+        for gate in ('"#paywall.on"', '"#levelup.on"', '".caa-ov.on"', '".caa-app.on"'):
             self.assertIn(gate, block, f"{gate} BLOCK ro'yxatida bo'lishi shart")
+        self.assertIn(
+            "document.querySelector(NavBack.BLOCK[i])",
+            html,
+            "BLOCK selektor bilan tekshirilishi shart, `getElementById` bilan emas",
+        )
+        self.assertNotIn("adov", html, "eski reklama overlayi butunlay olib tashlangan")
         layers = html.split("LAYERS:[", 1)[1].split("\n  ],", 1)[0]
         for gate in ("paywall", "adov", "levelup"):
             self.assertNotIn(f'id:"{gate}"', layers, f"{gate} yopiladigan qatlam BO'LMASIN")
@@ -769,7 +784,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("return Boolean(state.platforms.android);", download)
 
         self.assertIn('id="pomp-desktop-profile-root"', course)
-        self.assertIn('id="ad-desktop"', course)
+        # `#ad-desktop` eski `#adov` overlayining ichida edi va u overlay
+        # bilan birga ketdi. Reklama ichidagi ilova bloki endi FAQAT
+        # `mountAdPromoTrigger` orqali chiziladi, ya'ni bitta yo'l qoldi.
+        self.assertNotIn('id="ad-desktop"', course)
+        self.assertNotIn("ad-desktop", download)
+        self.assertNotIn("syncAdPromo", download)
         self.assertIn('queuePromo("lesson_end_promo"', course)
         # Desktop promosi endi dars yakunidagi modalda.
         self.assertIn("mountAdPromoTrigger", ads)
@@ -840,15 +860,15 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260918-2", html, page
+                "/course_v3_data/desktop-download.css?v=20260920-1", html, page
             )
             # Ikkala skript `immutable`, bir yillik cache bilan beriladi
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
             # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260918-2", html, page
+                "/course_v3_data/desktop-download.js?v=20260920-1", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260918-1", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260920-1", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -1006,8 +1026,8 @@ class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
     """
 
     EXPECTED = {
-        "desktop-download.js": "18b31acfeec04ae5",
-        "ads.js": "7e793b5069ada727",
+        "desktop-download.js": "9d473017d3877170",
+        "ads.js": "60b6ef5a1b107406",
     }
 
     def test_a_changed_script_forces_a_new_version(self):

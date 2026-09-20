@@ -576,8 +576,6 @@
   function showCenterAd(ad){
     var e=ensureAppDom(), t=T();
     var skip=Math.max(0,Math.min(60,Number(ad&&ad.skip_after_seconds)||0));
-    appState.open=true;
-    appState.shownInSession=true;
     appState.ad=ad;
     appState.placement=isLessonEnd()?"lesson_end":"screen_center";
     appState.watched=0;
@@ -586,7 +584,7 @@
     e.cta.style.display=ad.link_url?"":"none";
     e.cta.onclick=function(){ openAppLink(ad.link_url); };
     e.x.classList.remove("on");
-    e.x.onclick=closeAppAd;
+    e.x.onclick=closeCenterAd;
     /* Surat reklamasi bo'lsa <img>, aks holda avvalgidek <video>. */
     if(isPhotoAd(ad)){
       e.video.hidden=true;e.photo.hidden=false;
@@ -627,6 +625,12 @@
     }else{
       e.sub.hidden=true;e.promo.hidden=true;e.promo.innerHTML="";
     }
+    /* «Ochiq» bayrog'i oyna HAQIQATAN ochilganda qo'yiladi. Ilgari u eng
+       boshida turardi: modalni yig'ishda bitta xato bo'lsa (aynan shunday
+       bo'lgan — `closeAppAd`), bayroq `true` bo'lib qotib qolardi va
+       `playScreenCenter`/`playLessonEnd` keyin serverga umuman bormasdi. */
+    appState.open=true;
+    appState.shownInSession=true;
     e.ov.classList.add("on");
     e.ov.setAttribute("aria-hidden","false");
     appMarkSeen(ad.id);

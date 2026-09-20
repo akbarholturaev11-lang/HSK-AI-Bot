@@ -318,10 +318,23 @@ dan olinadi — desktop statusidan emas, chunki u boshqa pipeline va
 autentifikatsiya talab qilmaydi. Uning yiqilishi desktop tugmalarini
 o'ldirmaydi.
 
-Android **qisqa yo'ldan** ketadi: havola to'g'ridan-to'g'ri ochiladi. Pastdagi
-butun mashina (request token, «faylni qayerda ochamiz?» oynasi, boshqa
-qurilmaga uzatish) DMG/EXE telefonda ishlamagani uchun qurilgan. APK ishlaydi —
+Android **qisqa yo'ldan** ketadi: chip bosilganda hech qanday havola
+ochilmaydi — `POST /api/miniapp/event` (`android_apk_to_chat`) serverga
+boradi, bot APK'ni chatga tashlaydi va Mini App yopiladi. Pastdagi butun
+mashina (request token, «faylni qayerda ochamiz?» oynasi, boshqa qurilmaga
+uzatish) DMG/EXE telefonda ishlamagani uchun qurilgan. APK ishlaydi —
 o'quvchi allaqachon o'rnatadigan qurilmani ushlab turibdi.
+
+**Promo «tarqatadigan narsa bormi?» degan savolni Android'dan ham so'raydi**
+(2026-09-20). `DesktopDownloadService._promo_status()` dagi `release_ready`
+ilgari faqat `PLATFORMS = ("macos", "windows")` ni ko'rardi, `target_for(
+"android")` esa har doim `None` qaytaradi — ya'ni APK nashr qilingan, desktop
+relizi esa qilinmagan holatda ilova promosi UCHALA joyda ham o'chib qolardi,
+admin Android chipini yoqib qo'ygan bo'lsa ham. Endi `AndroidReleaseService`
+ham so'raladi (R2 havolasi shart emas: bot `file_id` bilan beradi — bu
+`app_downloads_service` bilan bitta qoida). Shu sababdan
+`DESKTOP_DOWNLOADS_ENABLED` ham Android-only promoni o'chira olmaydi: u
+DESKTOP yuklab olishning kill switch'i, Android u yo'ldan o'tmaydi.
 
 **Dars yakunidagi reklama oynasi ichidagi ilova bloki** (`ads.js` →
 `PompDesktopDownload.mountAdPromoTrigger`). 2026-09-16 da `app` reklama turi

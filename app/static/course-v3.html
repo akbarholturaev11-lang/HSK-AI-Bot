@@ -185,48 +185,7 @@ button{cursor:pointer}
 /* lesson overlay flow */
 .flow{position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:var(--read);margin:0 auto}
 .flow.on{display:flex}
-.adov{position:fixed;inset:0;z-index:82;background:#15120f;display:none;max-width:var(--read);margin:0 auto;color:#fff}
-.adov.on{display:flex;flex-direction:column}
-.adbox{min-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:calc(14px + var(--safe-t)) 14px calc(16px + var(--safe-b));gap:12px}
-.adtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}
-.adcount{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 10px;white-space:nowrap}
-.advideo-wrap{position:relative;min-height:0;height:100%;display:block}
-.advideo{width:100%;height:100%;min-height:320px;max-height:none;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
-.advisit{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.24);color:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.adstatus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:16px;background:rgba(0,0,0,.58);color:#fff;font-size:14px;font-weight:600;line-height:1.35}
-.adstatus[hidden]{display:none!important}
-.admeta{display:grid;gap:8px}
-.admeta b{font-size:15px;font-weight:600}.admeta small{font-size:12px;color:rgba(255,255,255,.68);line-height:1.4}
-.adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s ease,box-shadow .2s ease,background .2s ease}
-.adcta:disabled{background:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
-.adcta:active:not(:disabled){transform:translateY(1px)}
-.adsub{display:grid;gap:11px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:18px 16px;box-shadow:0 12px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08)}
-.adsub[hidden]{display:none!important}
-.adsub-t{margin:2px 0 4px;font-size:15px;line-height:1.42;color:#fff;text-align:center;font-weight:700;letter-spacing:-.01em}
-.adsub-benefits{display:grid;gap:10px;margin:0 0 4px;padding:13px 13px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:15px}
-.adben{display:flex;align-items:center;gap:11px;font-size:14px;line-height:1.35;color:rgba(255,255,255,.95);text-align:left}
-.adben i{color:#7BE0B3;font-size:20px;flex-shrink:0}
-.adsub-pay{background:linear-gradient(180deg,#ffffff,#f1eee9);color:#211D17;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.5) inset}
-.adcta.ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.16);font-weight:600}
-/* reklamalar tugagach: toza promo ekran (reklama blok qoldiqlarisiz) */
-#adov.done .adtop{display:none}
-#adov.done .adbox{grid-template-rows:minmax(0,1fr) auto}
-#adov.done #ad-video-wrap{display:none!important}
-#adov.done .admeta>b,#adov.done .admeta>small,#adov.done #ad-cta{display:none}
-#adov.done .adsub-benefits{display:none}
-#adov.done .adsub{gap:8px;padding:14px}
-#adov.done .adsub-t{font-size:14px;margin:0 0 2px}
-#adov.done .adsub-pay,#adov.done .adcta.ghost{padding:12px;font-size:14px;border-radius:12px}
-.adpromo{position:relative;height:100%;min-height:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px;background:radial-gradient(120% 90% at 50% 0,rgba(194,64,58,.22),transparent 62%),rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.10);border-radius:18px;overflow:hidden}
-#adov.done .adpromo{display:flex}
-.adpromo-slide{display:flex;flex-direction:column;align-items:center;animation:promoIn .5s ease}
 @keyframes promoIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
-.adpromo-ic{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;color:#fff;background:linear-gradient(160deg,#D6493C,#9A2F2B);box-shadow:0 14px 34px rgba(194,64,58,.42);margin-bottom:20px}
-.adpromo-t{font-size:20px;font-weight:800;letter-spacing:-.02em;color:#fff;margin:0 0 9px;max-width:300px;line-height:1.25}
-.adpromo-s{font-size:14px;line-height:1.5;color:rgba(255,255,255,.74);max-width:290px;margin:0}
-.adpromo-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px}
-.adpromo-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);transition:width .3s,background .3s}
-.adpromo-dots i.on{width:18px;border-radius:6px;background:#D6493C}
 /* "nega bu oyna chiqdi" sabab qatori (paywall ichida, promodan yuqorida) */
 .paywhy{display:flex;align-items:flex-start;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:10px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:left}
 .paywhy i{color:var(--gold);font-size:17px;flex-shrink:0;margin-top:1px}
@@ -1139,7 +1098,7 @@ button{cursor:pointer}
   .rl-done{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--jade);font-weight:500}
 }
 </style>
-<link href="/course_v3_data/desktop-download.css?v=20260918-2" rel="stylesheet">
+<link href="/course_v3_data/desktop-download.css?v=20260920-1" rel="stylesheet">
 </head>
 <body>
 <div class="wrap">
@@ -1176,30 +1135,6 @@ button{cursor:pointer}
     <div class="fbar" id="f-bar"><div class="fmsg" id="f-msg"></div><button class="fbtn" onclick="Flow.next()" id="f-barbtn"></button></div>
   </div>
 
-  <div class="adov" id="adov" aria-hidden="true">
-    <div class="adbox">
-      <div class="adtop"><span id="ad-label"></span><span class="adcount" id="ad-count"></span></div>
-      <div class="advideo-wrap" id="ad-video-wrap" onclick="AdFlow.openAdLink()">
-        <video class="advideo" id="ad-video" muted playsinline webkit-playsinline preload="auto"></video>
-        <div class="adstatus" id="ad-status" hidden></div>
-        <span class="advisit" id="ad-visit" hidden><i class="ti ti-external-link"></i> <span id="ad-visit-t"></span></span>
-      </div>
-      <div class="adpromo" id="ad-promo">
-        <div class="adpromo-slide" id="ad-promo-slide"></div>
-        <div class="adpromo-dots" id="ad-promo-dots"></div>
-      </div>
-      <div class="admeta">
-        <b id="ad-title"></b><small id="ad-note"></small>
-        <button class="adcta" id="ad-cta" disabled onclick="AdFlow.done()"></button>
-        <div class="adsub" id="ad-sub" hidden>
-          <p class="adsub-t" id="ad-sub-title"></p>
-          <div class="adsub-benefits" id="ad-sub-benefits"></div>
-          <button class="adcta adsub-pay" id="ad-sub-pay" onclick="AdFlow.subscribe()"></button>
-          <button class="adcta ghost" id="ad-sub-cont" onclick="AdFlow.done()"></button>
-          <div class="pdd-ad-entry" id="ad-desktop" hidden></div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="writeov" id="writeov"><button class="writeov-x" onclick="App.closeWriter()" aria-label="Yopish"><i class="ti ti-chevron-down"></i></button><div class="writeov-loading" id="write-loading"><span class="wspin"></span><b id="write-loading-text">Yuklanmoqda...</b></div><iframe id="writeframe" title="Ieroglif yozilishi"></iframe></div>
@@ -1216,13 +1151,13 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script defer src="/course_v3_data/ads.js?v=20260918-1"></script>
+<script defer src="/course_v3_data/ads.js?v=20260920-1"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
-  ru:{trialOn:"HSK AI Pro открыт на 7 дней",trialFail:"Сейчас не получилось",trialTitle:"HSK AI Pro — 7 дней бесплатно",trialBody:"Попробуете все основные возможности. Деньги автоматически не спишутся.",trialCta:"Попробовать 7 дней бесплатно",trialActive:"HSK AI Pro активен",trialLeft:"осталось дней: {n}",trialLeftHours:"Заканчивается сегодня · осталось часов: {n}",trialLeftSoon:"Заканчивается сегодня · меньше часа",trialUsed:"Пробный период уже использован",planPay:"Оформить HSK AI Pro",planFree:"Начать бесплатно",planTitle:"Ваш личный план готов",planBody:"Выберите, как начать. Бесплатно можно пользоваться всегда — с дневными лимитами.",nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"HSK AI Pro ⭐️",learner:"ученик",premium:"HSK AI Pro",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",helpTitle:"Помощь",helpText:"Возникла ошибка или проблема в приложении? Коротко напишите админу и приложите screenshot — мы поможем.",helpBtn:"Написать админу",helpNoContact:"Контакт админа пока недоступен. Попробуйте позже.",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Pro",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Получить HSK AI Pro ⭐️",later:"Позже",lockedLesson:"Этот урок в HSK AI Pro",adContinue:"Продолжить с рекламой",adStart:"Реклама перед уроком",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adWait:"Продолжить через {s} сек.",adReady:"Продолжить урок",adNote:"Посмотрите ролик до конца. С HSK AI Pro — без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Получить HSK AI Pro ⭐️",adOpenLink:"Открыть ссылку рекламодателя?",adVisit:"Перейти по ссылке",adAllDone:"Реклама закончилась",adNext:"Дальше через {s} сек."},
-  uz:{trialOn:"HSK AI Pro 7 kunga ochildi",trialFail:"Hozir ochib bo'lmadi",trialTitle:"HSK AI Pro — 7 kun bepul",trialBody:"Barcha asosiy imkoniyatlarni sinab ko'rasiz. Avtomatik pul yechilmaydi.",trialCta:"7 kun bepul sinash",trialActive:"HSK AI Pro faol",trialLeft:"{n} kun qoldi",trialLeftHours:"Bugun tugaydi · {n} soat qoldi",trialLeftSoon:"Bugun tugaydi · 1 soatdan kam",trialUsed:"Sinov muddatidan foydalangansiz",planPay:"HSK AI Pro olish",planFree:"Bepul boshlash",planTitle:"Shaxsiy rejangiz tayyor",planBody:"Qanday boshlashni tanlang. Bepul rejimdan doim foydalanish mumkin — kunlik limitlar bilan.",nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"HSK AI Pro ⭐️",learner:"o'quvchi",premium:"HSK AI Pro",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",helpTitle:"Yordam",helpText:"Mini appda biror xatolik yoki muammo bo'lsa, adminga qisqa yozing va screenshot yuboring — yordam beramiz.",helpBtn:"Adminga yozish",helpNoContact:"Admin kontakti hozircha mavjud emas. Keyinroq urinib ko'ring.",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Pro",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"HSK AI Pro ⭐️ olish",later:"Keyinroq",lockedLesson:"Bu dars HSK AI Pro'da",adContinue:"Reklama bilan davom etish",adStart:"Darsdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adWait:"{s} soniyadan keyin davom etish",adReady:"Darsni davom ettirish",adNote:"Rolikni oxirigacha ko'ring. HSK AI Pro reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"HSK AI Pro ⭐️ olish",adOpenLink:"Reklama havolasini ochasizmi?",adVisit:"Havolaga o'tish",adAllDone:"Reklamalar tugadi",adNext:"Keyingisi {s} soniyadan keyin"},
-  tj:{trialOn:"HSK AI Pro ба 7 рӯз кушода шуд",trialFail:"Ҳозир нашуд",trialTitle:"HSK AI Pro — 7 рӯз ройгон",trialBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",trialCta:"7 рӯз ройгон санҷидан",trialActive:"HSK AI Pro фаъол",trialLeft:"{n} рӯз монд",trialLeftHours:"Имрӯз тамом мешавад · {n} соат монд",trialLeftSoon:"Имрӯз тамом мешавад · камтар аз 1 соат",trialUsed:"Шумо аллакай санҷишро истифода бурдед",planPay:"HSK AI Pro гирифтан",planFree:"Ройгон оғоз кардан",planTitle:"Нақшаи шахсии шумо тайёр",planBody:"Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.",nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Гуфтугӯ",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"HSK AI Pro ⭐️",learner:"донишҷӯ",premium:"HSK AI Pro",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Pro",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",lockedLesson:"Ин дарс дар HSK AI Pro аст",adContinue:"Идома бо реклама",adStart:"Реклама пеш аз дарс",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adWait:"Пас аз {s} сония идома",adReady:"Идомаи дарс",adNote:"Роликро то охир бинед. Бо HSK AI Pro бе реклама.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"HSK AI Pro ⭐️ гирифтан",adOpenLink:"Ҳаволаи рекламаро мекушоед?",adVisit:"Гузаштан ба ҳавола",adAllDone:"Рекламаҳо тамом шуданд",adNext:"Баъдӣ пас аз {s} сония"}
+  ru:{trialOn:"HSK AI Pro открыт на 7 дней",trialFail:"Сейчас не получилось",trialTitle:"HSK AI Pro — 7 дней бесплатно",trialBody:"Попробуете все основные возможности. Деньги автоматически не спишутся.",trialCta:"Попробовать 7 дней бесплатно",trialActive:"HSK AI Pro активен",trialLeft:"осталось дней: {n}",trialLeftHours:"Заканчивается сегодня · осталось часов: {n}",trialLeftSoon:"Заканчивается сегодня · меньше часа",trialUsed:"Пробный период уже использован",planPay:"Оформить HSK AI Pro",planFree:"Начать бесплатно",planTitle:"Ваш личный план готов",planBody:"Выберите, как начать. Бесплатно можно пользоваться всегда — с дневными лимитами.",nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"HSK AI Pro ⭐️",learner:"ученик",premium:"HSK AI Pro",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",helpTitle:"Помощь",helpText:"Возникла ошибка или проблема в приложении? Коротко напишите админу и приложите screenshot — мы поможем.",helpBtn:"Написать админу",helpNoContact:"Контакт админа пока недоступен. Попробуйте позже.",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Pro",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Получить HSK AI Pro ⭐️",later:"Позже",lockedLesson:"Этот урок в HSK AI Pro"},
+  uz:{trialOn:"HSK AI Pro 7 kunga ochildi",trialFail:"Hozir ochib bo'lmadi",trialTitle:"HSK AI Pro — 7 kun bepul",trialBody:"Barcha asosiy imkoniyatlarni sinab ko'rasiz. Avtomatik pul yechilmaydi.",trialCta:"7 kun bepul sinash",trialActive:"HSK AI Pro faol",trialLeft:"{n} kun qoldi",trialLeftHours:"Bugun tugaydi · {n} soat qoldi",trialLeftSoon:"Bugun tugaydi · 1 soatdan kam",trialUsed:"Sinov muddatidan foydalangansiz",planPay:"HSK AI Pro olish",planFree:"Bepul boshlash",planTitle:"Shaxsiy rejangiz tayyor",planBody:"Qanday boshlashni tanlang. Bepul rejimdan doim foydalanish mumkin — kunlik limitlar bilan.",nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"HSK AI Pro ⭐️",learner:"o'quvchi",premium:"HSK AI Pro",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",helpTitle:"Yordam",helpText:"Mini appda biror xatolik yoki muammo bo'lsa, adminga qisqa yozing va screenshot yuboring — yordam beramiz.",helpBtn:"Adminga yozish",helpNoContact:"Admin kontakti hozircha mavjud emas. Keyinroq urinib ko'ring.",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Pro",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"HSK AI Pro ⭐️ olish",later:"Keyinroq",lockedLesson:"Bu dars HSK AI Pro'da"},
+  tj:{trialOn:"HSK AI Pro ба 7 рӯз кушода шуд",trialFail:"Ҳозир нашуд",trialTitle:"HSK AI Pro — 7 рӯз ройгон",trialBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",trialCta:"7 рӯз ройгон санҷидан",trialActive:"HSK AI Pro фаъол",trialLeft:"{n} рӯз монд",trialLeftHours:"Имрӯз тамом мешавад · {n} соат монд",trialLeftSoon:"Имрӯз тамом мешавад · камтар аз 1 соат",trialUsed:"Шумо аллакай санҷишро истифода бурдед",planPay:"HSK AI Pro гирифтан",planFree:"Ройгон оғоз кардан",planTitle:"Нақшаи шахсии шумо тайёр",planBody:"Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.",nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Гуфтугӯ",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"HSK AI Pro ⭐️",learner:"донишҷӯ",premium:"HSK AI Pro",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Pro",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",lockedLesson:"Ин дарс дар HSK AI Pro аст"}
 };
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
 var LEVELS=["hsk1","hsk2","hsk3","hsk4"];
@@ -2152,72 +2087,6 @@ function serverSaveErrorText(code,serverText){
   }[LANG]||{};
   return m[code]||m.default||"Progress error";
 }
-function adPlacementTitle(placement){
-  var t=T();
-  if(placement==="middle")return t.adMiddle;
-  if(placement==="end")return t.adEnd;
-  return t.adStart;
-}
-/* Qulflangan (premium) qism — access rejimi server mapidan keladi.
-   HSK1 da checkpointgacha 3 qism, boshqa darajalarda 2 qism bepul. */
-function openLockedLessonSheet(idx){
-  var l=allLessons()[idx];if(!l)return;
-  App.openPaywall({lessonIdx:idx,lesson:l});
-}
-/* Admin bir nechta reklama joylagan bo'lsa — barchasini qaytaramiz (ketma-ket
-   ko'rsatish uchun). Eski "ad" maydoni ham qoladi (zaxira). */
-function fetchCourseAds(placement,l){
-  var url="/api/v3/ad?placement="+encodeURIComponent(placement)+"&level="+encodeURIComponent(MAP&&MAP.level||"hsk1")+"&lesson="+encodeURIComponent(l&&l.n||0)+"&lang="+encodeURIComponent(LANG);
-  return _apiGet(url).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
-    var ads=(d&&d.ads&&d.ads.length)?d.ads:(d&&d.ad?[d.ad]:[]);
-    if(!d.ok||!ads.length)throw new Error(d.error||"course_ad_not_found");
-    return ads;
-  });
-}
-function recordCourseAdView(ad,placement,l,watched){
-  if(!INIT_DATA)return Promise.resolve({ok:true});
-  return _apiPost("/api/v3/ad/view",{
-    ad_id:ad.id,
-    level:MAP&&MAP.level||"hsk1",
-    lesson_order:l&&l.n||0,
-    placement:placement,
-    watched_seconds:watched
-  }).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
-    if(!d.ok)throw new Error(d.error||"course_ad_view_failed");
-    return d;
-  });
-}
-/* Davomiylik adminda 5–120s oralig'ida boshqariladi (backend bilan bir xil clamp). */
-function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
-function setAdSubscribeVisible(visible){
-  var sub=$("#ad-sub");if(!sub)return;sub.hidden=!visible;sub.style.display=visible?"grid":"none";
-  if(window.PompDesktopDownload&&window.PompDesktopDownload.syncAdPromo)window.PompDesktopDownload.syncAdPromo(visible);
-}
-function adUiText(key){
-  var m={
-    ru:{loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",retry:"Повторить загрузку",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC."},
-    uz:{loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",retry:"Qayta yuklash",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak."},
-    tj:{loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",retry:"Боз бор кардан",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад."}
-  }[LANG]||{};
-  return m[key]||key;
-}
-function setAdStatus(text){var el=$("#ad-status");if(!el)return;el.hidden=!text;el.textContent=text||""}
-function resetAdVideo(video){
-  if(!video)return;
-  video.onloadedmetadata=video.onloadeddata=video.oncanplay=video.onplaying=video.ontimeupdate=video.onerror=video.onstalled=video.onwaiting=null;
-}
-function _closeAdOverlay(){
-  clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);
-  /* Video elementni TO'LIQ bo'shatamiz: pause + src'ni olib tashlab load().
-     iOS/Telegram WebView'da dekoder cheklangan — src'ni bo'shatmasak, oldingi
-     dars roligi dekoderni ushlab qoladi va keyingi darsda video qora bo'lib
-     ochilmaydi ("boshda ochiladi, keyin ochilmaydi"). */
-  try{var v=$("#ad-video");resetAdVideo(v);v.pause();v.removeAttribute("src");v.load()}catch(e){}
-  stopAdPromo();$("#adov").classList.remove("done");
-  setAdStatus("");$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")
-}
-function _resetAdState(){AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}
-var AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
 /* Reklamalar tugagach chiqadigan toza promo ekran — botning barcha pullik
    imkoniyatlarini har ~4.5 soniyada almashib turadigan qisqa rolikchalar. */
 function adPromoSlides(){
@@ -2249,8 +2118,9 @@ function adPromoSlides(){
   };
   return m[LANG]||m.uz;
 }
-/* Bitta karusel — turli joyda ishlaydi. pfx: "adpromo" (to'liq ekran, qora fon)
-   yoki "spromo" (sheet ichida, och fon). To'xtatish funksiyasini qaytaradi. */
+/* Bitta karusel — hozircha bitta joyda: "spromo" (sheet/paywall ichida).
+   Reklama overlayidagi "adpromo" varianti `ads.js` ga ko'chgan. To'xtatish
+   funksiyasini qaytaradi. */
 function _renderPromo(slideEl,dotsEl,slides,idx,pfx){
   if(!slideEl)return;
   var s=slides[idx];
@@ -2269,10 +2139,6 @@ function mountPromoCarousel(slideEl,dotsEl,pfx){
 }
 /* Sheet/paywall ichidagi promo bloki markupi. */
 function promoBlockHtml(){return '<div class="spromo"><div class="spromo-slide"></div><div class="spromo-dots"></div></div>'}
-/* Reklama tugagach — to'liq ekran promo */
-var AD_PROMO_STOP=null;
-function startAdPromo(){stopAdPromo();AD_PROMO_STOP=mountPromoCarousel($("#ad-promo-slide"),$("#ad-promo-dots"),"adpromo")}
-function stopAdPromo(){if(AD_PROMO_STOP){AD_PROMO_STOP();AD_PROMO_STOP=null}}
 /* Sheet/paywall ichidagi promo (bir vaqtda bittasi ochiq) */
 var SHEET_PROMO_STOP=null;
 function stopSheetPromo(){if(SHEET_PROMO_STOP){SHEET_PROMO_STOP();SHEET_PROMO_STOP=null}}
@@ -2281,178 +2147,6 @@ function startSheetPromo(rootSel){
   var root=$(rootSel);if(!root)return;
   var slide=root.querySelector(".spromo-slide");if(!slide)return;
   SHEET_PROMO_STOP=mountPromoCarousel(slide,root.querySelector(".spromo-dots"),"spromo");
-}
-var AdFlow={
-  /* "Reklama bilan davom etish" — rolik tugagach darsni davom ettiradi.
-     Yozuv saqlanmasa ham userni obunaga MAJBURLAMAYMIZ, shunchaki davom etadi. */
-  done:function(){
-    if(!AD_STATE.ready||AD_STATE.busy)return;
-    if(window.PompDesktopDownload&&window.PompDesktopDownload.dismissAdPromo)window.PompDesktopDownload.dismissAdPromo();
-    AD_STATE.busy=true;
-    var cont=$("#ad-sub-cont");if(cont){cont.disabled=true;cont.innerHTML='<i class="ti ti-loader-2"></i> …'}
-    function finish(){
-      _closeAdOverlay();
-      var resolve=AD_STATE.resolve;_resetAdState();
-      if(resolve)resolve();
-    }
-    recordCourseAdView(AD_STATE.ad,AD_STATE.placement,AD_STATE.lesson,AD_STATE.watched)
-      .then(finish).catch(finish);
-  },
-  /* Obuna tugmasi — istalgan reklama oxirida obuna sahifasiga olib boradi. */
-  subscribe:function(){
-    if(window.PompDesktopDownload&&window.PompDesktopDownload.dismissAdPromo)window.PompDesktopDownload.dismissAdPromo();
-    _closeAdOverlay();_resetAdState();
-    App.goPay("v3_course_ad");
-  },
-  /* Rolikka tegilsa — reklama beruvchining havolasini ochishni so'raydi. */
-  openAdLink:function(){
-    var ad=AD_STATE.ad;if(!ad||!ad.link_url)return;
-    var url=ad.link_url;haptic("tap");
-    function go(){try{if(tg&&tg.openLink){tg.openLink(url);return}}catch(e){}try{window.open(url,"_blank")}catch(e){}}
-    try{if(tg&&tg.showConfirm){tg.showConfirm(T().adOpenLink,function(ok){if(ok)go()});return}}catch(e){}
-    if(window.confirm(T().adOpenLink))go();
-  }
-};
-function _isNoAd(e){return e&&String(e.message||e)==="course_ad_not_found"}
-function showCourseAd(placement,idx){
-  return new Promise(function(resolve,reject){
-    var l=allLessons()[idx];if(!l){reject(new Error("lesson_not_found"));return}
-    fetchCourseAds(placement,l).then(function(ads){
-      var t=T();
-      var btn=$("#ad-cta"),count=$("#ad-count"),video=$("#ad-video");
-      var contBtn=$("#ad-sub-cont"),payBtn=$("#ad-sub-pay"),visit=$("#ad-visit");
-      $("#ad-note").textContent=t.adNote;
-      /* obuna bloki matnlari + aniq foydalar ro'yxati
-         (faqat BARCHA reklamalar tugagach ko'rinadi) */
-      $("#ad-sub-title").textContent=t.adSubTitle;
-      $("#ad-sub-benefits").innerHTML=["b1","b2","b3"].map(function(k){return '<div class="adben"><i class="ti ti-circle-check"></i><span>'+esc(t[k])+'</span></div>'}).join("");
-      payBtn.innerHTML='<i class="ti ti-lock-open"></i> '+t.adSubPay;
-      $("#adov").classList.add("on");$("#adov").setAttribute("aria-hidden","false");
-      clearInterval(AD_STATE.timer);
-      /* Reklamalarni ketma-ket ko'rsatamiz: har biri o'z majburiy vaqtida.
-         Oxirgisi tugagach — "Obuna ol / Reklama bilan davom etish" bloki. */
-      function playAd(i){
-        var ad=ads[i],duration=adDuration(ad),isLast=(i>=ads.length-1),multi=ads.length>1;
-        clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);resetAdVideo(video);
-        AD_STATE={timer:null,loadTimer:null,resolve:resolve,reject:reject,ad:ad,lesson:l,placement:placement,watched:0,ready:false,busy:false};
-        $("#ad-label").textContent=adPlacementTitle(placement)+(multi?" · "+(i+1)+"/"+ads.length:"");
-        $("#ad-title").textContent=ad.title||adPlacementTitle(placement);
-        $("#ad-note").textContent=t.adNote;
-        var hasLink=!!ad.link_url;
-        if(hasLink){$("#ad-visit-t").textContent=t.adVisit;visit.hidden=false}else{visit.hidden=true}
-        stopAdPromo();$("#adov").classList.remove("done");
-        $("#ad-video-wrap").style.display="";
-        $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
-        contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adReady;
-        /* Pastdagi tugma normal oqimda ko'rinmaydi — faqat xatolikda "qayta yuklash"
-           bo'lib chiqadi. Sanoq faqat tepada (#ad-count) ko'rsatiladi. */
-        setAdSubscribeVisible(false);btn.style.display="none";btn.disabled=true;
-        count.textContent="...";
-        setAdStatus(adUiText("loading"));
-        var srcBase=ad.media_url,loadAttempt=0;
-        var left=duration,timer=null,started=false,failed=false;
-        /* Videoni o'rnatish. bust=true bo'lsa cache'ni chetlab o'tish uchun
-           ?r=timestamp qo'shadi (buzilgan/yarim keshlangan javobni aylanib o'tish). */
-        function setSrc(bust){
-          try{video.pause()}catch(e){}
-          video.removeAttribute("src");try{video.load()}catch(e){}
-          video.src=bust?srcBase+(srcBase.indexOf("?")>=0?"&":"?")+"r="+Date.now():srcBase;
-          video.loop=true;video.muted=true;
-          try{video.load()}catch(e){}
-        }
-        function armGuard(ms){clearTimeout(AD_STATE.loadTimer);AD_STATE.loadTimer=setTimeout(onLoadTimeout,ms)}
-        function tryPlay(){var p;try{p=video.play()}catch(e){}if(p&&p.then)p.then(startCountdown).catch(function(){if(video.readyState>=2)startCountdown()})}
-        /* Guard ishga tushdi: video hali tayyor emas. Sekin tarmoq bo'lishi mumkin,
-           shuning uchun DARROV xato bermaymiz — 2 martagacha jimgina (cache-bust bilan)
-           qayta yuklab, uzunroq kutamiz; shundan keyingina manual "qayta yuklash". */
-        function onLoadTimeout(){
-          if(started||failed||AD_STATE.ad!==ad)return;
-          if(video.readyState>=2){startCountdown();return}
-          if(loadAttempt<2){loadAttempt++;setAdStatus(adUiText("loading"));setSrc(true);armGuard(loadAttempt>=2?16000:12000);tryPlay();return}
-          mediaFailed();
-        }
-        /* Qattiq <video> error hodisasi — avval bir marta cache-bust bilan qayta
-           urinib ko'ramiz (vaqtinchalik tarmoq uzilishi), keyin manual retry. */
-        function onMediaError(){
-          if(started||failed||AD_STATE.ad!==ad)return;
-          if(loadAttempt<2){loadAttempt++;setAdStatus(adUiText("loading"));setSrc(true);armGuard(12000);tryPlay();return}
-          mediaFailed();
-        }
-        function draw(){
-          count.textContent=left>0?left+"s":"OK";
-          if(left>0){
-            /* Sanoq davom etmoqda — pastda tugma yo'q, faqat tepadagi sekund. */
-            btn.style.display="none";setAdSubscribeVisible(false);
-            return;
-          }
-          if(!isLast){
-            /* bu reklama tugadi — ko'rilgani yoziladi va keyingisiga o'tiladi */
-            recordCourseAdView(ad,placement,l,duration).catch(function(){});
-            playAd(i+1);
-          }else{
-            /* BARCHA reklamalar tugadi — videoni to'xtatib yashiramiz, so'ng
-               obuna (aniq foydalar bilan) / reklama bilan davom etish bloki chiqadi */
-            try{video.pause()}catch(e){}
-            $("#ad-video-wrap").style.display="none";
-            $("#adov").classList.add("done");startAdPromo();
-            AD_STATE.ready=true;btn.style.display="none";setAdSubscribeVisible(true);
-          }
-        }
-        function startCountdown(){
-          if(started||failed||AD_STATE.ad!==ad)return;
-          started=true;clearTimeout(AD_STATE.loadTimer);setAdStatus("");
-          draw();
-          timer=setInterval(function(){
-            left=Math.max(0,left-1);AD_STATE.watched=duration-left;
-            if(left<=0)clearInterval(timer);
-            draw();
-          },1000);
-          AD_STATE.timer=timer;
-        }
-        function failAdFlow(){
-          if(AD_STATE.ad!==ad)return;
-          var rej=AD_STATE.reject||reject;
-          _closeAdOverlay();
-          _resetAdState();
-          if(rej)rej(new Error("course_ad_media_failed"));
-        }
-        function mediaFailed(){
-          if(started||failed||AD_STATE.ad!==ad)return;
-          failed=true;
-          clearTimeout(AD_STATE.loadTimer);clearInterval(AD_STATE.timer);
-          AD_STATE.ready=false;AD_STATE.watched=0;
-          try{video.pause()}catch(e){}
-          setAdStatus(adUiText("failed"));
-          $("#ad-note").textContent=adUiText("failedNote");
-          count.textContent="!";
-          btn.style.display="";btn.disabled=false;
-          btn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adReady;
-          btn.onclick=function(ev){if(ev)ev.stopPropagation();failAdFlow()};
-          setTimeout(failAdFlow,1600);
-        }
-        video.onloadedmetadata=tryPlay;
-        video.onloadeddata=startCountdown;
-        video.oncanplay=startCountdown;
-        video.onplaying=startCountdown;
-        video.ontimeupdate=startCountdown;
-        video.onerror=onMediaError;
-        /* stalled/waiting — bu buferlash, MEDIA xatosi EMAS: faqat guard'ni uzaytiramiz.
-           Ma'lumot kelishi bilan load hodisalari sanoqni boshlaydi va guard'ni tozalaydi. */
-        video.onstalled=video.onwaiting=function(){if(started||failed||AD_STATE.ad!==ad)return;armGuard(12000)};
-        setSrc(false);
-        /* Birinchi guard 12s (eski 8s soxta xato berardi). Tayyor bo'lmasa onLoadTimeout
-           cache-bust bilan 2 marta jimgina qayta uradi (12s/16s), shundan keyin manual. */
-        armGuard(12000);
-        /* Cache'dan qayta ochilganda (2-3-reklama) load hodisalari qayta otilmasligi
-           mumkin — agar media allaqachon tayyor bo'lsa, sanoqni darhol boshlaymiz. */
-        if(video.readyState>=2)startCountdown();
-        /* Muted autoplay bloklanishi (Telegram WebView'da gesture'siz) MEDIA xatosi EMAS:
-           catch'da darrov xato bermaymiz, video baribir load hodisalari/guard orqali hal bo'ladi. */
-        tryPlay();
-      }
-      playAd(0);
-    }).catch(function(){reject(new Error("course_ad_not_found"))});
-  });
 }
 function lessonStatusNode(l){return l.status}
 /* kurs ochilganda user turgan (current) dars ekran o'rtasida ko'rinsin */
@@ -6922,11 +6616,14 @@ var NavBack={
     {id:"flow",    close:function(){App.exitFlow()}}
   ],
   /* Bular ochiq bo'lsa orqaga qaytish UMUMAN ishlamaydi: to'lov va reklama
-     gate'i hamda mukofot ketma-ketligi aylanib o'tilmasligi shart. */
-  BLOCK:["paywall","adov","levelup"],
+     gate'i hamda mukofot ketma-ketligi aylanib o'tilmasligi shart.
+     Reklamani endi `ads.js` chizadi va uning overlaylarida `id` yo'q, shuning
+     uchun ro'yxat selektorlardan iborat. Ilgari bu yerda eski overlayning
+     id'si turardi — u olib tashlangandan keyin hech nimani to'smasdi. */
+  BLOCK:["#paywall.on","#levelup.on",".caa-ov.on",".caa-app.on"],
   _guarded:false,_g:null,
   _on:function(id){var e=document.getElementById(id);return !!(e&&e.classList.contains("on"))},
-  blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(NavBack._on(NavBack.BLOCK[i]))return true;return false},
+  blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(document.querySelector(NavBack.BLOCK[i]))return true;return false},
   top:function(){
     if(NavBack.blocked())return null;
     for(var i=0;i<NavBack.LAYERS.length;i++)if(NavBack._on(NavBack.LAYERS[i].id))return NavBack.LAYERS[i];
@@ -7061,6 +6758,6 @@ var NavBack={
 };
 NavBack.init();
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20260918-2"></script>
+<script src="/course_v3_data/desktop-download.js?v=20260920-1"></script>
 </body>
 </html>

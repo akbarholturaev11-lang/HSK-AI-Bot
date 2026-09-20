@@ -79,28 +79,174 @@ class CourseAdsModuleTests(unittest.TestCase):
         self.assertIn('classList.remove("limit")', body)
 
 
+def _code_only(source: str) -> str:
+    """Izoh, matn (string) va regex literallarini bo'shliqqa almashtiradi.
+
+    Nomlarni matndan qidirish uchun bu SHART: `ads.js` ichida butun CSS
+    satrlari va uch tilli izohlar bor — ularsiz har qanday skaner
+    `rgba(` yoki `bloki (` ni «chaqiruv» deb o'qiydi.
+    """
+    out = []
+    i, n = 0, len(source)
+    # Regex literali bo'lishi mumkin bo'lgan joy: `/` dan oldin operator yoki
+    # ochiluvchi qavs turgan bo'lsa. Aks holda bu bo'lish amali.
+    before_regex = set("(,=:[!&|?{};\n+-*%~^<>")
+    while i < n:
+        ch = source[i]
+        if ch == "/" and i + 1 < n and source[i + 1] == "*":
+            end = source.find("*/", i + 2)
+            end = n if end < 0 else end + 2
+            out.append(" " * (end - i))
+            i = end
+        elif ch == "/" and i + 1 < n and source[i + 1] == "/":
+            end = source.find("\n", i)
+            end = n if end < 0 else end
+            out.append(" " * (end - i))
+            i = end
+        elif ch in "\"'":
+            j = i + 1
+            while j < n and source[j] != ch:
+                j += 2 if source[j] == "\\" else 1
+            j = min(j + 1, n)
+            out.append(" " * (j - i))
+            i = j
+        elif ch == "/":
+            prev = next(
+                (c for c in reversed("".join(out)) if not c.isspace()), "\n"
+            )
+            if prev in before_regex:
+                j = i + 1
+                in_class = False
+                while j < n and (in_class or source[j] != "/"):
+                    if source[j] == "\\":
+                        j += 1
+                    elif source[j] == "[":
+                        in_class = True
+                    elif source[j] == "]":
+                        in_class = False
+                    j += 1
+                j = min(j + 1, n)
+                out.append(" " * (j - i))
+                i = j
+            else:
+                out.append(ch)
+                i += 1
+        else:
+            out.append(ch)
+            i += 1
+    return "".join(out)
+
+
+ADS_CODE = _code_only(ADS)
+
+
+def _declared_names() -> set[str]:
+    """Modul ichida e'lon qilingan HAR QANDAY nom."""
+    names = set(re.findall(r"\bfunction\s+([A-Za-z_$][\w$]*)\s*\(", ADS))
+    names |= set(re.findall(r"\b(?:var|let|const)\s+([A-Za-z_$][\w$]*)", ADS))
+    # `var a=1,b=2` ko'rinishidagi qo'shimcha e'lonlar.
+    for chunk in re.findall(r"\b(?:var|let|const)\s+([^;\n]+)", ADS):
+        for part in chunk.split(","):
+            found = re.match(r"\s*([A-Za-z_$][\w$]*)\s*(?:=|$)", part)
+            if found:
+                names.add(found.group(1))
+    # Funksiya parametrlari va `catch (e)`.
+    for params in re.findall(r"\bfunction\s*[A-Za-z_$\w$]*\s*\(([^)]*)\)", ADS):
+        for part in params.split(","):
+            part = part.strip()
+            if re.fullmatch(r"[A-Za-z_$][\w$]*", part):
+                names.add(part)
+    names |= set(re.findall(r"\bcatch\s*\(\s*([A-Za-z_$][\w$]*)\s*\)", ADS))
+    names |= set(re.findall(r"\bfor\s*\(\s*var\s+([A-Za-z_$][\w$]*)", ADS))
+    return names
+
+
 class EveryNameUsedInsideTheModuleExistsTests(unittest.TestCase):
     """Ichkarida chaqiriladigan yordamchilar ham joyida bo'lsin.
 
     Eksport ro'yxati faqat modul yuklanishida yiqiladi; ichkaridagi yo'q nom
     esa foydalanuvchi tugmani bosgandagina yiqiladi — bu battar.
+
+    Ikkinchi marta aynan shunday bo'ldi: `e.x.onclick=closeAppAd` — bunday
+    funksiya yo'q edi (u `closeCenterAd` deb ataladi), qator esa overlay
+    ochiladigan joydan OLDIN turardi. Ya'ni markazdagi va dars yakunidagi
+    reklama HECH QACHON chiqmagan, xato esa `.catch()` larda yutilgan.
+
+    Shuning uchun bu test endi qo'lda yozilgan ro'yxatga tayanmaydi.
     """
 
     #: Modul ichida chaqiriladigan va shu faylda e'lon qilinishi SHART
-    #: bo'lgan yordamchilar.
+    #: bo'lgan yordamchilar. Ro'yxat pastdagi umumiy skanerga qo'shimcha:
+    #: u oqimning umurtqasini nomma-nom qotirib qo'yadi.
     HELPERS = (
         "closeOverlay",
         "resetState",
         "showCenterAd",
+        "closeCenterAd",
         "fetchPlacementAd",
         "recordView",
         "_closeLimit",
+    )
+
+    #: Brauzer beradigan (yoki tilning o'zi beradigan) va modul e'lon
+    #: qilmaydigan nomlar.
+    GLOBALS = frozenset(
+        {
+            "null", "true", "false", "undefined",
+            "window", "document", "navigator", "localStorage", "location",
+            "setTimeout", "clearTimeout", "setInterval", "clearInterval",
+            "Promise", "Object", "Number", "String", "Math", "Date", "JSON",
+            "Array", "Error", "isNaN", "parseInt", "parseFloat", "fetch",
+            "encodeURIComponent", "decodeURIComponent", "console",
+            "requestAnimationFrame", "void", "typeof", "this",
+        }
     )
 
     def test_the_helpers_the_flows_depend_on_are_declared(self):
         for name in self.HELPERS:
             with self.subTest(name=name):
                 self.assertRegex(ADS, rf"function\s+{re.escape(name)}\s*\(")
+
+    def test_no_handler_is_wired_to_a_name_that_does_not_exist(self):
+        """`x.onclick=nom` — `nom` shu faylda e'lon qilingan bo'lishi shart.
+
+        Aynan shu shakl bir marta butun reklama bo'limini o'ldirgan.
+        """
+        declared = _declared_names() | self.GLOBALS
+        wired = re.findall(
+            r"\.on(?:click|change|load|error|ended)\s*=\s*([A-Za-z_$][\w$]*)\s*[;,}]",
+            ADS,
+        )
+        self.assertTrue(wired, "hech qanday handler topilmadi — regex eskirgan")
+        for name in sorted(set(wired)):
+            with self.subTest(handler=name):
+                self.assertIn(
+                    name,
+                    declared,
+                    f"`{name}` handler sifatida ulangan, lekin e'lon qilinmagan",
+                )
+
+    def test_every_called_helper_exists(self):
+        """`nom(...)` shaklida chaqirilgan har bir nom mavjud bo'lsin."""
+        declared = _declared_names() | self.GLOBALS
+        # Metod chaqiruvlari (`a.b()`) va kalit so'zlar hisobga olinmaydi.
+        called = {
+            name
+            for name in re.findall(
+                r"(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(", ADS_CODE
+            )
+            if name
+            not in {
+                "function", "if", "for", "while", "switch", "catch", "return",
+                "typeof", "new", "delete", "in", "of", "do", "else",
+            }
+        }
+        missing = sorted(called - declared)
+        self.assertEqual(
+            missing,
+            [],
+            f"shu nomlar chaqiriladi, lekin e'lon qilinmagan: {missing}",
+        )
 
 
 if __name__ == "__main__":
