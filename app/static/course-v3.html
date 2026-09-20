@@ -3384,6 +3384,16 @@ function lessonCharacterHtml(id,mood){
   if(window.HSKCharacters&&HSKCharacters.render)return HSKCharacters.render(id,mood||"idle");
   return pandaChar(mood==="talk"?"talk":"happy");
 }
+function lessonCharacterLabel(id){
+  var L={
+    panda:{uz:"Panda",ru:"Панда",tj:"Панда"},
+    dragon:{uz:"Longlong · marra",ru:"Лунлун · финиш",tj:"Лунлун · марра"},
+    crane:{uz:"Hehe · grammatika",ru:"Хэхэ · грамматика",tj:"Хэхэ · грамматика"},
+    monkey:{uz:"Wuwu · mashq",ru:"Уу-у · практика",tj:"Уу-у · машқ"},
+    rabbit:{uz:"Yueyue · eslab qolish",ru:"Юэюэ · запоминание",tj:"Юэюэ · ёдгирӣ"}
+  };
+  return (L[id]&&L[id][LANG])||(L.panda[LANG]||"Panda");
+}
 function flashLessonReaction(id,reaction){
   var old=document.querySelector(".hsk-lesson-reaction");if(old)old.remove();
   var el=document.createElement("div");el.className="hsk-lesson-reaction hsk-character-stage";
@@ -3886,7 +3896,9 @@ function renderCheer(){
       "Наистед: як хато тамоми дарсро вайрон намекунад."]}[LANG]||[];
   var msg=M[Math.floor(Math.random()*M.length)]||"";
   setWriteBtn("");hideBar();
-  $("#f-body").innerHTML='<div class="cheer"><div class="cpd">'+pandaChar("happy")+'</div><div class="cbub">'+esc(msg)+'</div></div>';
+  var cheerChar=HP===1?"rabbit":"panda";
+  $("#f-body").innerHTML='<div class="cheer"><div class="cpd hsk-character-stage" style="min-height:92px">'+lessonCharacterHtml(cheerChar,HP===1?"one-heart":"correct")+'</div><div class="cbub">'+esc(msg)+'</div></div>';
+  setTimeout(function(){var ch=document.querySelector("#f-body .cheer .cpd");if(ch&&window.HSKCharacterMotion)HSKCharacterMotion.play(ch,HP===1?"oneHeart":"proud")},30);
   pandaFx(document.querySelector("#f-body .cpd"),"pop");
   var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+T().cont;
   haptic("light");
@@ -3982,7 +3994,7 @@ function cardBasics(c){
   });
   $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-flag-2"></i> '+esc(bt.kicker)+'</span>'
     +'<div class="gtitle"><span class="han zh">'+esc(c.title_zh||"")+'</span> '+esc(tr(c.title)||"")+'</div>'
-    +'<div class="teach"><div class="teach-pd">'+pandaChar("talk")+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div>'
+    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("panda","talk")+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div>'
       +'<div style="display:flex;gap:8px;margin-top:9px"><button class="au" title="'+esc(bt.replay)+'" onclick="window._basNarr()"><i class="ti ti-refresh"></i></button>'
       +'<button class="au'+(NARV?"":" off")+'" id="basvoice" title="'+esc(NARV?bt.voiceOn:bt.voiceOff)+'" onclick="window._basVoice()"><i class="ti ti-'+(NARV?"volume":"volume-off")+'"></i></button></div>'
     +'</div></div>'
@@ -4124,7 +4136,7 @@ function cardGrammar(g){
   var lead=R.lead||tr(g.title);
   $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-bulb"></i> '+T().grammar+'</span>'
     +'<div class="gtitle"><span class="han zh">'+esc(g.title_zh||"")+'</span> '+esc(tr(g.title))+'</div>'
-    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("crane","talk")+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div></div></div>'
+    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("crane","talk")+'</div><div class="teach-bub"><b>'+esc(lessonCharacterLabel("crane"))+'</b><div class="teach-say">'+esc(lead)+'</div></div></div>'
     +'<div class="gsteps" id="gsteps"></div>'
     +'<button class="gnext" id="gnext" onclick="window._grNext()">'+esc(gt.next)+' <i class="ti ti-arrow-right"></i></button>';
   var gi=0;
@@ -4277,7 +4289,7 @@ function cardPron(c){
     ru:{t:"Повторите за учителем Ли",skip:"Я СЕЙЧАС НЕ МОГУ ГОВОРИТЬ"},
     tj:{t:"Аз паси устод Ли такрор кунед",skip:"ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ"}}[LANG]||{t:"Takrorlang",skip:"KEYINROQ"};
   $("#f-body").innerHTML='<div class="qq">'+esc(RT.t)+'</div>'
-    +'<div class="teach"><div class="teach-pd">'+pandaChar("talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.phrase)+'</div><div class="p4">'+esc(c.pinyin||"")+'</div>'+(c.translation?'<div class="t4">'+esc(tr(c.translation))+'</div>':'')+'</div></div>'
+    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("panda","talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.phrase)+'</div><div class="p4">'+esc(c.pinyin||"")+'</div>'+(c.translation?'<div class="t4">'+esc(tr(c.translation))+'</div>':'')+'</div></div>'
     +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+T().say+'</button><div id="pron-hint" style="text-align:center;color:var(--ink3);font-size:13px;margin-top:8px;min-height:18px"></div>'
     +'<button class="pron-skip" onclick="window._pronSkip()">'+esc(RT.skip)+'</button>';
   setTimeout(function(){speak(c.phrase)},350);
