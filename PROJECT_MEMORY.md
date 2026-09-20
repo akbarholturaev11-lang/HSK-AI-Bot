@@ -9381,3 +9381,28 @@ Verified:
 Eslatma:
 - Bu muhitda Android SDK yo'q; kompilyatsiya GitHub Actions'dagi «Android CI»
   orqali tekshiriladi.
+
+### 2026-09-20 — Native iOS client foundation and first-class device auth
+
+Changed:
+- Dedicated `codex/ios-app` branch now contains a native SwiftUI iOS 17+ client, XcodeGen project definition and macOS CI.
+- iOS is a first-class native auth platform with opaque `ios_link_<request_id>` Telegram linking, shared session/device security, refresh rotation and iOS lifecycle analytics.
+- The iPhone client stores only installation identity + rotating refresh token in Keychain; short-lived access tokens stay in memory.
+- Native bootstrap/onboarding and `/api/v3/ios/course/map` transport reuse the existing shared course/onboarding services instead of creating parallel business logic.
+- Course screen uses an account-scoped cache before network refresh to avoid blank launches without leaking one account's progress into another.
+
+Why:
+- iPhone needs native UX while keeping progress, access, XP/streak and account state identical to Android/Mini App.
+
+Files touched:
+- `ios/`, `app/api/ios_auth.py`, `app/api/ios_course.py`,
+  `app/services/desktop_auth_service.py`, Telegram auth handler/FSM,
+  native auth/course tests and `.github/workflows/ios-ci.yml`.
+
+Risk:
+- Auth is security-sensitive; simulator compilation and backend regression tests pass, but the Telegram link flow still needs a physical-iPhone end-to-end smoke before promotion.
+- Lesson opening is intentionally not active yet; Foundation/lesson engine parity must be implemented first.
+
+Follow-up:
+- Keep all work on `codex/ios-app` until tested. Next core work is Foundation gating + lesson fetch/parser/render/complete, then practice and remaining parity.
+

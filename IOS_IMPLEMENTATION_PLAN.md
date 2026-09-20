@@ -24,12 +24,15 @@ Scope boundary: app implementation through a real-device release candidate. App 
 - [x] Central production API environment.
 - [x] HTTPS/origin-guarded API client.
 - [x] Keychain-backed credential store.
-- [ ] Generate Xcode project and compile on macOS CI/local Xcode.
-- [ ] Add baseline unit test target and first network/config tests.
+- [x] Generate Xcode project and compile on macOS CI.
+- [x] Add baseline unit test target and network/auth/course model tests.
+- [ ] Physical-iPhone build/signing smoke.
 
 Exit gate: the blank native app builds for an iPhone simulator without touching Android/backend behavior.
 
 ## Phase 1 — Native auth
+
+Implementation status: code-complete on `codex/ios-app`; simulator build and backend regressions pass. Physical-iPhone Telegram login smoke is still required.
 
 Backend:
 - Add `ios` as a first-class native platform in the shared device auth service.
@@ -48,20 +51,24 @@ Exit gate: new and existing Telegram users can sign in on a real iPhone and surv
 
 ## Phase 2 — Bootstrap + onboarding + shell
 
-- Bootstrap account state.
-- Device-language pre-auth behavior; server account language after auth.
-- Native onboarding parity: level, goal, daily minutes, focus, notification primer.
-- Main tab/navigation shell.
-- Shared design tokens/components.
-- UZ/RU/TJ localization infrastructure.
+Implementation status: bootstrap routing, native level/goal onboarding, 5-tab shell and UZ/RU/TJ resources are implemented. Daily-minutes/focus and notification primer remain.
+
+- [x] Bootstrap account state.
+- [x] Device-language pre-auth behavior; server account language after auth.
+- [ ] Native onboarding parity: level + goal done; daily minutes, focus and notification primer remain.
+- [x] Main tab/navigation shell.
+- [x] Shared design tokens/components foundation.
+- [x] UZ/RU/TJ localization infrastructure.
 
 Exit gate: authenticated user reaches the correct onboarding/main state with no duplicate navigation.
 
 ## Phase 3 — Course core
 
-- Course map.
-- Cached-first rendering + background refresh.
-- Today plan, XP, streak, daily goal, gates and reward chest.
+Implementation status: in progress.
+
+- [x] Course map transport + native rendering.
+- [x] Account-scoped cached-first rendering + background refresh.
+- [ ] Today plan summary + XP/streak/league done; task actions, daily-goal editing, gates and reward chest remain.
 - Lesson fetch and completion idempotency.
 - Lesson cards: text, vocabulary, MCQ, listening, matching, sentence gap, grammar/explanation and completion.
 - Server TTS playback/cache.

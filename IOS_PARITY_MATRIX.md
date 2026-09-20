@@ -5,15 +5,15 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 
 | Area | Android reference | Server contract | iOS status | iOS implementation |
 |---|---|---|---|---|
-| App shell | `MainActivity.kt` | — | 🟡 | SwiftUI app skeleton |
-| Secure credentials | `SecureCredentialStore.kt` | shared auth | 🟡 | Keychain |
-| Telegram link auth | `LinkScreen.kt`, `AndroidAuthApi.kt` | `/api/v3/android-auth/*` today | ⬜ | Native iOS auth transport |
-| Bootstrap/session restore | `AuthRepository.kt` | native auth bootstrap | ⬜ | Auth session coordinator |
-| Onboarding | `feature/onboarding/*` | Android course onboarding | ⬜ | SwiftUI onboarding |
+| App shell | `MainActivity.kt` | — | ✅ | SwiftUI 5-tab shell |
+| Secure credentials | `SecureCredentialStore.kt` | shared auth | ✅ | Keychain; access token RAM-only |
+| Telegram link auth | `LinkScreen.kt`, `AndroidAuthApi.kt` | `/api/v3/ios-auth/*` | 🟡 | First-class iOS transport + Telegram flow; physical-device smoke pending |
+| Bootstrap/session restore | `AuthRepository.kt` | `/api/v3/ios/bootstrap` | ✅ | RAM access token + rotating Keychain refresh token |
+| Onboarding | `feature/onboarding/*` | `/api/v3/ios/course/onboarding` | 🟡 | Level/goal native flow done; remaining preferences/notification primer pending |
 | Notification primer | `NotificationPrimerScreen.kt` | preferences | ⬜ | UNUserNotificationCenter |
-| Course map | `CourseScreen.kt` | `GET /api/v3/android/course/map` | ⬜ | Course feature |
-| Cached-first course | `CourseRepository.kt` | same | ⬜ | URL/disk cache + revalidate |
-| Today plan | `TodayPlanCard.kt` | map `today` block | ⬜ | Course feature |
+| Course map | `CourseScreen.kt` | `GET /api/v3/ios/course/map` | ✅ | Native XP/streak/league/today/unit rendering |
+| Cached-first course | `CourseRepository.kt` | same | ✅ | Device/account-scoped disk cache + network revalidate |
+| Today plan | `TodayPlanCard.kt` | map `today` block | 🟡 | Summary rendered; task routing/actions pending |
 | Daily goal/preferences | `StudySetup*` | study preferences | ⬜ | Profile/course settings |
 | Lesson engine | `feature/lesson/*` | lesson + complete | ⬜ | Native SwiftUI cards |
 | TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | `/api/v3/android/tts` | ⬜ | AVPlayer + disk cache |
@@ -38,10 +38,10 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
 | Smart widget | Glance widget | local/shared state | ⬜ | WidgetKit |
 | Deep links | `DeepLinkRouter.kt` | — | ⬜ | URL routing |
-| UZ localization | `values/` | language preference | ⬜ | String Catalog |
-| RU localization | `values-ru/` | language preference | ⬜ | String Catalog |
-| TJ localization | `values-tg/` | language preference | ⬜ | String Catalog |
-| Unit tests | Android JVM tests | — | ⬜ | XCTest |
+| UZ localization | `values/` | language preference | 🟡 | Auth/onboarding/course strings present |
+| RU localization | `values-ru/` | language preference | 🟡 | Auth/onboarding/course strings present |
+| TJ localization | `values-tg/` | language preference | 🟡 | Auth/onboarding/course strings present |
+| Unit tests | Android JVM tests | — | 🟡 | Network/auth/course-model XCTest added; broader coverage pending |
 | UI smoke tests | Android instrumentation | — | ⬜ | XCUITest |
 
 ## Backend cleanup rule
