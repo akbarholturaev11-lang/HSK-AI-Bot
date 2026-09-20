@@ -359,7 +359,56 @@ Qamrov: `CourseRepositoryTest` — medianlar DTO'dan o'tishini mixlaydi.
 **Tekshirilmagan:** ko'rinish telefonda ko'rilishi kerak — ayniqsa cho'tka
 kengligi (`BRUSH_WIDTH_RATIO = 0.22`) eng yo'g'on chiziqni qoplayaptimi.
 
-### 3.10 Boshqa ochiqlar
+### 3.10 Lug'at endi internetsiz to'liq ishlaydi — 2026-09-20
+
+Lug'at APK bilan kelmasdi. So'zlar serverdan yuklanib Room'ga keshlanardi,
+chiziqlarning esa **keshi umuman yo'q** edi — har ochilishda tarmoqqa borardi.
+Ya'ni mobil internetda o'rnatib, keyin metroda ochgan odam bo'sh lug'at
+ko'rardi; ilgari ishlatgan odam ham yozish tartibini ko'rmasdi.
+
+Ikkalasi ham repoda allaqachon bor edi — Mini App lug'at sahifasi ularni
+o'zi bilan olib yuradi (`hsk-words.js`, `hsk-extra.js`). Endi o'sha fayllardan
+Android assetlari yasaladi:
+
+```
+android/app/src/main/assets/dictionary.json          1247 so'z, uch tilda
+android/app/src/main/assets/strokes/<kod>.json       1055 ieroglif
+```
+
+Fayl nomi ieroglifning kod nuqtasi — server o'z keshini ham shunday nomlaydi
+(`{ord(char)}.json`), ya'ni ikki tomonni solishtirish uchun tarjima kerak emas.
+
+**Narxi: APK'da +1314 KB** (o'lchandi, taxmin emas). Har ieroglif alohida
+fayl bo'lgani uchun bitta katta fayldan ~344 KB ko'proq — evaziga bitta
+ieroglifni o'qish uchun 2.4 MB JSON parse qilinmaydi.
+
+**Bundle — manba emas, poydevor.** So'zlar ro'yxati kesh bo'sh bo'lsa
+bundle'dan to'ldiriladi, keyin server baribir so'raladi: deploy ro'yxatni
+o'zgartirsa bundle ilovani eski nusxaga mixlab qo'ymasligi kerak. Seed
+qilingan nusxaning versiyasi bo'sh, ya'ni ETag yuborilmaydi va server to'liq
+javob qaytaradi.
+
+**Chiziqlar** avval bundle'dan o'qiladi, topilmasa tarmoqdan — darsda
+uchraydigan, lug'atda yo'q ieroglif uchun.
+
+**Yasash va tekshirish:**
+
+```bash
+python3 android/tools/build_dictionary_assets.py   # Mini App ma'lumotidan yasaydi
+python3 android/tools/check_dictionary_assets.py   # eskirib qolmaganini tekshiradi
+```
+
+Ikkinchisi oltinchi statik tekshiruv sifatida CI va release workflow'ga
+qo'shildi. Ikki nusxa ajralib ketadi: Mini App ro'yxatiga so'z qo'shiladi,
+generator qayta ishga tushirilmaydi, va telefonda bir release eski lug'at
+qoladi — jimgina, chunki yo'q so'z hech qachon bo'lmagan so'zdan farq
+qilmaydi.
+
+**Ovoz baribir to'liq offline emas.** Faqat ilgari eshitilgani ishlaydi
+(`ttsCache`). 1247 so'zning audiosi bir necha MB, telefonning o'z TTS'i esa
+yaramaydi — 3.1 ga qarang. Ikkita mashq ham serverga bog'liq bo'lib qoladi.
+
+### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
@@ -511,10 +560,11 @@ yaxshi.
 | Statik tekshiruvlar | `android/tools/check_*.py` — **Gradle'dan oldin ishga tushiring** |
 | Server tomoni | `app/api/android_*.py`, `app/services/android_*.py` |
 | Rang palitrasi | Mini App bilan bir xil bo'lishi shart, `check_palette_matches_miniapp.py` tekshiradi |
+| Offline lug'at | `android/app/src/main/assets/`, `build_dictionary_assets.py` yasaydi, `check_dictionary_assets.py` eskirmaganini tekshiradi |
 
 ## 6. Ishlash qoidalari
 
-- **Har o'zgarishdan keyin:** beshta statik tekshiruv, keyin
+- **Har o'zgarishdan keyin:** oltita statik tekshiruv, keyin
   `./gradlew testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug`.
 - **Matn qo'shsangiz** — uchta tilda (uz/ru/tg). `check_strings_translated.py`
   buni majburlaydi. Backend kodlari `uz/ru/tj`, Android qualifierlari
