@@ -62,6 +62,7 @@ import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.hint.SectionHint
@@ -238,7 +239,13 @@ private fun PracticeHome(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
+        contentPadding = PaddingValues(
+            start = 16.dp,
+            end = 16.dp,
+            top = 20.dp,
+            // The tab bar floats over the list; the last tool clears it here.
+            bottom = 20.dp + LocalMainBottomInset.current,
+        ),
         verticalArrangement = Arrangement.spacedBy(11.dp),
     ) {
         item {
@@ -531,7 +538,13 @@ private fun examSectionLabel(section: String): Int = when (section) {
 
 @Composable
 private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
-    Column(Modifier.fillMaxSize().padding(20.dp)) {
+    // The Next button ends this column, and the tab bar floats over it.
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+            .padding(bottom = 20.dp + LocalMainBottomInset.current),
+    ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
             HskGlassButton(
@@ -699,7 +712,15 @@ private fun CompletionSummaryShell(
     onDone: () -> Unit,
     extra: @Composable ColumnScope.() -> Unit = {},
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp)) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            start = 20.dp,
+            end = 20.dp,
+            top = 20.dp,
+            bottom = 20.dp + LocalMainBottomInset.current,
+        ),
+    ) {
         item {
             PracticeCompletionHero(outcome = outcome)
             Spacer(Modifier.height(12.dp))

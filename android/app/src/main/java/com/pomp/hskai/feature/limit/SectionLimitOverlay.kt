@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 
 /**
  * The choice a learner is given when a section is spent: subscribe, or take
@@ -64,6 +65,9 @@ fun SectionLimitOverlay(
         Box(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
+                // On a main screen the tab bar floats over this scrim, so the
+                // card is centred in what is left, not behind the bar.
+                .padding(bottom = LocalMainBottomInset.current)
                 .widthIn(max = 360.dp)
                 // The card must not take the scrim's tap-to-close with it.
                 .clickable(

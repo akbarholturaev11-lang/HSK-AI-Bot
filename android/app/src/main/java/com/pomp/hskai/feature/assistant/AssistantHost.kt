@@ -69,11 +69,18 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.navigation.DeepLinkRouter
+import com.pomp.hskai.core.navigation.MainBottomBarHeight
 import java.io.ByteArrayOutputStream
 import java.io.File
 import kotlinx.coroutines.*
 
-data class VisibleScreen(val context: ScreenContext, val bottomBar: Boolean, val priority: Int)
+data class VisibleScreen(
+    val context: ScreenContext,
+    val bottomBar: Boolean,
+    val priority: Int,
+    /** Room the screen's own bottom dock needs, on top of any tab bar. */
+    val bottomInset: Dp = 0.dp,
+)
 
 /** Explicit registration avoids scraping UI, secrets or hidden answer keys. */
 class ScreenRegistry {
@@ -104,10 +111,10 @@ class AssistantBinding(val registry: ScreenRegistry, val controller: AssistantCo
 val LocalAssistant = staticCompositionLocalOf<AssistantBinding?> { null }
 
 @Composable
-fun AssistantScreen(context: ScreenContext, bottomBar: Boolean = false, priority: Int = 0) {
+fun AssistantScreen(context: ScreenContext, bottomBar: Boolean = false, priority: Int = 0, bottomInset: Dp = 0.dp) {
     val host = LocalAssistant.current ?: return
     val owner = remember { Any() }
-    SideEffect { host.registry.put(owner, VisibleScreen(context.copy(details = context.details.take(8000), title = context.title.take(160)), bottomBar, priority)) }
+    SideEffect { host.registry.put(owner, VisibleScreen(context.copy(details = context.details.take(8000), title = context.title.take(160)), bottomBar, priority, bottomInset)) }
     DisposableEffect(host, owner) { onDispose { host.registry.remove(owner) } }
 }
 
@@ -135,6 +142,7 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
                 areaWidth = maxWidth,
                 areaHeight = maxHeight,
                 bottomBar = visible?.bottomBar == true,
+                bottomInset = visible?.bottomInset ?: 0.dp,
             )
         }
         if (open && availableOnScreen) AssistantChat(app, visible!!.context, { open = false }) { action ->
@@ -196,7 +204,7 @@ private object AssistantFabPosition {
 }
 
 @Composable
-private fun DraggableAssistantButton(onClick: () -> Unit, areaWidth: Dp, areaHeight: Dp, bottomBar: Boolean) {
+private fun DraggableAssistantButton(onClick: () -> Unit, areaWidth: Dp, areaHeight: Dp, bottomBar: Boolean, bottomInset: Dp = 0.dp) {
     val context = LocalContext.current
     val density = LocalDensity.current
     val size = 56.dp
@@ -207,15 +215,18 @@ private fun DraggableAssistantButton(onClick: () -> Unit, areaWidth: Dp, areaHei
         if (width <= 0f || height <= 0f) return
         val button = size.toPx()
         val edge = margin.toPx()
-        // Never let it rest on top of a bottom bar or the gesture area.
-        val floor = height - button - edge - (if (bottomBar) 72.dp.toPx() else 0f) -
-            WindowInsets.navigationBars.getBottom(density).toFloat()
+        // Never let it rest on top of a bottom bar, a screen's own dock, the
+        // gesture area or the status bar. The tab bar's height is taken from
+        // the bar itself, so the two cannot drift apart.
+        val floor = height - button - edge - (if (bottomBar) MainBottomBarHeight.toPx() else 0f) -
+            bottomInset.toPx() - WindowInsets.navigationBars.getBottom(density).toFloat()
+        val ceiling = edge + WindowInsets.statusBars.getTop(density).toFloat()
         val maxX = (width - button - edge).coerceAtLeast(edge)
-        val maxY = floor.coerceAtLeast(edge)
-        val start = remember(width, height, bottomBar) {
+        val maxY = floor.coerceAtLeast(ceiling)
+        val start = remember(width, height, bottomBar, bottomInset) {
             val saved = AssistantFabPosition.load(context)
-            if (saved == null) Offset(maxX, (height * .58f).coerceIn(edge, maxY))
-            else Offset((saved.first * width).coerceIn(edge, maxX), (saved.second * height).coerceIn(edge, maxY))
+            if (saved == null) Offset(maxX, (height * .58f).coerceIn(ceiling, maxY))
+            else Offset((saved.first * width).coerceIn(edge, maxX), (saved.second * height).coerceIn(ceiling, maxY))
         }
         var position by remember(start) { mutableStateOf(start) }
         var dragging by remember { mutableStateOf(false) }
@@ -226,14 +237,14 @@ private fun DraggableAssistantButton(onClick: () -> Unit, areaWidth: Dp, areaHei
             onClick = onClick,
             modifier = Modifier
                 .offset { IntOffset(x.roundToInt(), y.roundToInt()) }
-                .pointerInput(width, height, bottomBar) {
+                .pointerInput(width, height, bottomBar, bottomInset) {
                     detectDragGestures(
                         onDragStart = { dragging = true },
                         onDrag = { change, drag ->
                             change.consume()
                             position = Offset(
                                 (position.x + drag.x).coerceIn(edge, maxX),
-                                (position.y + drag.y).coerceIn(edge, maxY),
+                                (position.y + drag.y).coerceIn(ceiling, maxY),
                             )
                         },
                         onDragEnd = {

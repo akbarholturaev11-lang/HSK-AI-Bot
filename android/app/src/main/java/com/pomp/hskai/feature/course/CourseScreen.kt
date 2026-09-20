@@ -70,6 +70,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.courseAssistantContext
@@ -165,7 +166,10 @@ fun CourseScreen(
                             state = listState,
                             modifier = Modifier.fillMaxWidth().weight(1f),
                             contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                                vertical = 8.dp,
+                                top = 8.dp,
+                                // The tab bar floats over the list now, so the
+                                // last lesson needs this to clear it.
+                                bottom = 8.dp + LocalMainBottomInset.current,
                             ),
                         ) {
                             if (foundationVisible) {
