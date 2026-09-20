@@ -5,7 +5,8 @@ final class AppModel: ObservableObject {
     enum Phase {
         case launching
         case signedOut
-        case authenticated(LinkedAccount)
+        case onboarding(LinkedAccount)
+        case main(LinkedAccount)
         case bootstrapFailed
     }
 
@@ -19,17 +20,29 @@ final class AppModel: ObservableObject {
         var errorKey: String?
     }
 
+    struct OnboardingPresentation: Equatable {
+        var step = 0
+        var selectedLevel = "beginner"
+        var selectedGoal = "hsk_exam"
+        var isSubmitting = false
+        var errorKey: String?
+    }
+
     @Published private(set) var phase: Phase = .launching
     @Published private(set) var link = LinkPresentation()
+    @Published private(set) var onboarding = OnboardingPresentation()
 
     private let authSession: AuthSession
+    private let courseAPI: IOSCourseAPI
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
     private var didRestore = false
 
     init(environment: AppEnvironment) {
         let client = APIClient(environment: environment)
-        self.authSession = AuthSession(api: IOSAuthAPI(client: client))
+        let authSession = AuthSession(api: IOSAuthAPI(client: client))
+        self.authSession = authSession
+        self.courseAPI = IOSCourseAPI(client: client, authSession: authSession)
     }
 
     func restoreSession() async {
@@ -37,7 +50,8 @@ final class AppModel: ObservableObject {
         didRestore = true
 
         do {
-            phase = .authenticated(try await authSession.bootstrap())
+            let account = try await authSession.bootstrap()
+            await routeAfterAuthentication(account)
         } catch AuthSessionError.sessionExpired {
             phase = .signedOut
         } catch {
@@ -48,7 +62,8 @@ final class AppModel: ObservableObject {
     func retryBootstrap() async {
         phase = .launching
         do {
-            phase = .authenticated(try await authSession.bootstrap())
+            let account = try await authSession.bootstrap()
+            await routeAfterAuthentication(account)
         } catch AuthSessionError.sessionExpired {
             phase = .signedOut
         } catch {
@@ -79,8 +94,99 @@ final class AppModel: ObservableObject {
         }
     }
 
-    func clearLinkError() {
-        link.errorKey = nil
+    func selectOnboardingLevel(_ level: String) {
+        guard Self.levels.contains(level), !onboarding.isSubmitting else { return }
+        onboarding.selectedLevel = level
+        onboarding.errorKey = nil
+    }
+
+    func selectOnboardingGoal(_ goal: String) {
+        guard Self.goals.contains(goal), !onboarding.isSubmitting else { return }
+        onboarding.selectedGoal = goal
+        onboarding.errorKey = nil
+    }
+
+    func onboardingBack() {
+        guard !onboarding.isSubmitting else { return }
+        onboarding.step = max(0, onboarding.step - 1)
+        onboarding.errorKey = nil
+    }
+
+    func onboardingNext(account: LinkedAccount) async {
+        guard !onboarding.isSubmitting else { return }
+        if onboarding.step < 2 {
+            onboarding.step += 1
+            onboarding.errorKey = nil
+            return
+        }
+
+        onboarding.isSubmitting = true
+        onboarding.errorKey = nil
+        do {
+            let result = try await courseAPI.completeOnboarding(
+                level: onboarding.selectedLevel,
+                goal: onboarding.selectedGoal,
+                language: Self.backendLanguage(account.language),
+                timezoneOffsetMinutes: Self.timezoneOffsetMinutes()
+            )
+            guard result.ok else {
+                onboarding.isSubmitting = false
+                onboarding.errorKey = "onboarding_save_error"
+                return
+            }
+
+            let updatedAccount = LinkedAccount(
+                displayName: account.displayName,
+                language: account.language,
+                level: result.level.isEmpty ? onboarding.selectedLevel : result.level,
+                accessState: account.accessState,
+                isPaid: account.isPaid
+            )
+            onboarding.isSubmitting = false
+            phase = .main(updatedAccount)
+        } catch let error as APIError where error.isSessionExpired {
+            onboarding.isSubmitting = false
+            await authSession.invalidateSession()
+            phase = .signedOut
+        } catch {
+            onboarding.isSubmitting = false
+            onboarding.errorKey = "onboarding_save_error"
+        }
+    }
+
+    func logout() async {
+        pollingTask?.cancel()
+        await authSession.logout()
+        link = LinkPresentation()
+        onboarding = OnboardingPresentation()
+        phase = .signedOut
+    }
+
+    private func routeAfterAuthentication(_ account: LinkedAccount) async {
+        do {
+            let status = try await courseAPI.onboardingStatus()
+            guard status.ok else {
+                phase = .bootstrapFailed
+                return
+            }
+            if status.completed {
+                phase = .main(account)
+            } else {
+                onboarding = OnboardingPresentation(
+                    step: 0,
+                    selectedLevel: Self.normalizedLevel(status.level),
+                    selectedGoal: Self.normalizedGoal(status.profile.goal),
+                    isSubmitting: false,
+                    errorKey: nil
+                )
+                phase = .onboarding(account)
+            }
+        } catch let error as APIError where error.isSessionExpired {
+            await authSession.invalidateSession()
+            phase = .signedOut
+        } catch {
+            phase = .bootstrapFailed
+        }
     }
 
     private func startPolling(_ pending: PendingLink) {
@@ -103,9 +209,8 @@ final class AppModel: ObservableObject {
                         self.link.isWaitingForApproval = false
                         self.phase = .launching
                         do {
-                            self.phase = .authenticated(
-                                try await self.authSession.bootstrap()
-                            )
+                            let account = try await self.authSession.bootstrap()
+                            await self.routeAfterAuthentication(account)
                         } catch {
                             self.phase = .bootstrapFailed
                         }
@@ -177,6 +282,37 @@ final class AppModel: ObservableObject {
         }
         return "error_auth_unavailable"
     }
+
+    private static func normalizedLevel(_ level: String) -> String {
+        let value = level.lowercased()
+        return levels.contains(value) ? value : "beginner"
+    }
+
+    private static func normalizedGoal(_ goal: String) -> String {
+        goals.contains(goal) ? goal : "hsk_exam"
+    }
+
+    private static func backendLanguage(_ language: String) -> String {
+        switch language.lowercased() {
+        case "uz": return "uz"
+        case "tg", "tj": return "tj"
+        default: return "ru"
+        }
+    }
+
+    private static func timezoneOffsetMinutes() -> Int {
+        let raw = TimeZone.current.secondsFromGMT() / 60
+        return min(840, max(-720, raw))
+    }
+
+    private static let levels = Set(["beginner", "hsk1", "hsk2", "hsk3", "hsk4"])
+    private static let goals = Set([
+        "hsk_exam",
+        "study_china",
+        "work_china",
+        "daily_communication",
+        "travel",
+    ])
 
     deinit {
         pollingTask?.cancel()
