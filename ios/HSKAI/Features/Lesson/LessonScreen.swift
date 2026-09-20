@@ -465,6 +465,23 @@ struct LessonScreen: View {
         let correct = selected && model.answerCorrect == true
         let wrong = selected && model.answerCorrect == false
 
+        let fillColor: Color
+        let strokeColor: Color
+
+        if correct {
+            fillColor = HSKColors.jade.opacity(0.12)
+            strokeColor = HSKColors.jade.opacity(0.70)
+        } else if wrong {
+            fillColor = HSKColors.flame.opacity(0.12)
+            strokeColor = HSKColors.flame.opacity(0.70)
+        } else if selected {
+            fillColor = HSKColors.cinnabar.opacity(0.08)
+            strokeColor = HSKColors.cinnabar.opacity(0.58)
+        } else {
+            fillColor = .clear
+            strokeColor = Color.white.opacity(0.44)
+        }
+
         return Button {
             model.answerChoice(index)
         } label: {
@@ -483,28 +500,11 @@ struct LessonScreen: View {
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 19, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 19, style: .continuous)
-                    .fill(
-                        correct
-                            ? HSKColors.jade.opacity(0.12)
-                            : wrong
-                                ? HSKColors.flame.opacity(0.12)
-                                : selected
-                                    ? HSKColors.cinnabar.opacity(0.08)
-                                    : Color.clear
-                    )
+                    .fill(fillColor)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 19, style: .continuous)
-                    .stroke(
-                        correct
-                            ? HSKColors.jade.opacity(0.70)
-                            : wrong
-                                ? HSKColors.flame.opacity(0.70)
-                                : selected
-                                    ? HSKColors.cinnabar.opacity(0.58)
-                                    : Color.white.opacity(0.44),
-                        lineWidth: selected ? 1.2 : 0.8
-                    )
+                    .stroke(strokeColor, lineWidth: selected ? 1.2 : 0.8)
             )
         }
         .buttonStyle(.plain)
@@ -533,7 +533,18 @@ struct LessonScreen: View {
         matched: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
+        let fillColor: Color = matched
+            ? HSKColors.jade.opacity(0.12)
+            : selected
+                ? HSKColors.cinnabar.opacity(0.10)
+                : .clear
+        let strokeColor: Color = matched
+            ? HSKColors.jade.opacity(0.62)
+            : selected
+                ? HSKColors.cinnabar.opacity(0.60)
+                : Color.white.opacity(0.44)
+
+        return Button(action: action) {
             Text(text)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(matched ? HSKColors.jade : HSKColors.ink)
@@ -543,22 +554,12 @@ struct LessonScreen: View {
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 17))
                 .overlay(
                     RoundedRectangle(cornerRadius: 17)
-                        .fill(
-                            matched
-                                ? HSKColors.jade.opacity(0.12)
-                                : selected
-                                    ? HSKColors.cinnabar.opacity(0.10)
-                                    : Color.clear
-                        )
+                        .fill(fillColor)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 17)
                         .stroke(
-                            matched
-                                ? HSKColors.jade.opacity(0.62)
-                                : selected
-                                    ? HSKColors.cinnabar.opacity(0.60)
-                                    : Color.white.opacity(0.44),
+                            strokeColor,
                             lineWidth: selected || matched ? 1.1 : 0.8
                         )
                 )
