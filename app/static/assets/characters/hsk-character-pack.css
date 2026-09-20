@@ -1,0 +1,74 @@
+/* HSK AI original lesson cast — Phase 1.
+   Presentation only. No lesson-engine dependency. */
+.hsk-character-stage{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:100%;
+  min-height:140px;
+  isolation:isolate;
+}
+.hsk-character{
+  width:100%;
+  height:100%;
+  overflow:visible;
+  filter:drop-shadow(0 10px 16px rgba(33,29,23,.16));
+  transform-origin:50% 88%;
+}
+.hsk-character .hc-core{transform-origin:50% 88%;transform-box:fill-box}
+.hsk-character .hc-eye{transform-origin:center;transform-box:fill-box}
+.hsk-character .hc-mouth{transform-origin:center;transform-box:fill-box}
+.hsk-character .hc-highlight{opacity:.72}
+.hsk-character .hc-depth{opacity:.26}
+.hsk-character .hc-shadow{opacity:.18;transform-origin:center}
+.hsk-character.hsk-mood-idle .hc-core,
+.hsk-character.hsk-mood-loading .hc-core{
+  animation:hskCharBreathe 2.7s ease-in-out infinite;
+}
+.hsk-character.hsk-mood-talk .hc-mouth{animation:hskCharTalk .42s ease-in-out infinite}
+.hsk-character.hsk-mood-talk .hc-core{animation:hskCharBreathe 2s ease-in-out infinite}
+.hsk-character.hsk-mood-correct .hc-core{transform:translateY(-2px)}
+.hsk-character.hsk-mood-wrong .hc-core{transform:rotate(-1.5deg)}
+.hsk-character.hsk-mood-celebrate .hc-core{transform:translateY(-4px) scale(1.025)}
+.hsk-character.hsk-mood-proud .hc-core{transform:rotate(1.2deg) translateY(-2px)}
+.hsk-character.hsk-mood-dismissive .hc-core{transform:rotate(-3deg)}
+.hsk-character.hsk-mood-one-heart .hc-core{transform:scale(1.01)}
+.hsk-character .hc-spark{transform-box:fill-box;transform-origin:center;animation:hskCharSpark 1.2s ease-in-out infinite}
+.hsk-character .hc-spark:nth-of-type(2){animation-delay:.22s}
+.hsk-character .hc-spark:nth-of-type(3){animation-delay:.44s}
+.hsk-character .hc-loading-prop{transform-box:fill-box;transform-origin:center;animation:hskCharLoading 1.8s ease-in-out infinite}
+
+@keyframes hskCharBreathe{
+  0%,100%{transform:translateY(0) scaleY(1)}
+  50%{transform:translateY(-2px) scaleY(1.018)}
+}
+@keyframes hskCharTalk{
+  0%,100%{transform:scaleY(.45)}
+  50%{transform:scaleY(1)}
+}
+@keyframes hskCharSpark{
+  0%,100%{opacity:.25;transform:scale(.75) rotate(0)}
+  50%{opacity:1;transform:scale(1.08) rotate(18deg)}
+}
+@keyframes hskCharLoading{
+  0%,100%{transform:rotate(-2deg) translateY(0)}
+  50%{transform:rotate(2deg) translateY(-2px)}
+}
+
+.hsk-character-card{
+  background:#fff;
+  border:1px solid #EAE0CC;
+  border-radius:22px;
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+.hsk-character-card .hcc-visual{height:190px;display:grid;place-items:center}
+.hsk-character-card .hcc-visual>div{width:160px;height:170px}
+.hsk-character-card .hcc-name{font-size:16px;font-weight:700;color:#211D17}
+.hsk-character-card .hcc-role{font-size:12px;line-height:1.4;color:#665D50}
+
+@media (prefers-reduced-motion:reduce){
+  .hsk-character *,
+  .hsk-character{animation:none!important;transition:none!important}
+}
