@@ -123,3 +123,16 @@ Check:
 - resume after reload;
 - reduced motion;
 - Telegram iOS/Android WebView viewport and safe-area behavior.
+
+
+## Implementation status
+
+- Phase 1 — DONE: five-character SVG cast + Character Lab.
+- Phase 2 — DONE: reusable motion/effect engine with reduced-motion support.
+- Phase 3 — DONE: centered lesson-entry mascot gate, cross-fade and exit motion.
+- Phase 4 — DONE: answer feedback cast mapping, builder/reverse-builder heart animation, match reaction, one-heart warning, Foundation feedback.
+- Phase 5 — DONE: Panda ordinary lesson finish, Dragon checkpoint/level finish, combo cast integration; existing XP/streak/ad ordering preserved.
+- Phase 6 — DONE: server-confirmed map unlock reveal plus skip-test unlock presentation.
+- Phase 7 — PARTIAL: JavaScript syntax/static integration checks pass. GitHub Actions has no run/status for this branch. Physical Telegram iOS/Android WebView QA still requires a deployed/review build.
+
+Current presentation integration branch: `codex/cloud-ai-lesson-character-motion`.
