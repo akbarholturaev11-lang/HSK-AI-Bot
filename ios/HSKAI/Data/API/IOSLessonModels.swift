@@ -86,6 +86,12 @@ enum LessonChoiceKind: String, Sendable, Equatable {
     case dialogCloze
 }
 
+struct LessonDialogLine: Sendable, Equatable {
+    let speaker: String
+    let text: String
+    let isBlank: Bool
+}
+
 struct LessonChoiceCard: Sendable, Equatable {
     let materialRef: String
     let kind: LessonChoiceKind
@@ -97,6 +103,10 @@ struct LessonChoiceCard: Sendable, Equatable {
     let sentence: String
     let audioText: String
     let audioPinyin: String
+    let lines: [LessonDialogLine]
+    let reviewOrigin: String
+
+    var isReviewCard: Bool { !reviewOrigin.isEmpty }
 }
 
 struct LessonWordCard: Sendable, Equatable {

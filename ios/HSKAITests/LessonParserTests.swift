@@ -132,3 +132,45 @@ final class LessonParserTests: XCTestCase {
         XCTAssertEqual(builder.answerTokens, ["你", "好"])
     }
 }
+
+
+extension LessonParserTests {
+    func testCheckpointExitTicketUsesStableSection99References() throws {
+        let json = """
+        {
+          "ok": true,
+          "level": "hsk1",
+          "lesson_order": 5,
+          "lesson": {
+            "title":"复习",
+            "sections":[],
+            "exit_ticket":{
+              "cards":[
+                {
+                  "type":"choice",
+                  "title":{"uz":"Ma'no","ru":"Значение","tj":"Маъно"},
+                  "prompt":{"uz":"Tanlang","ru":"Выберите","tj":"Интихоб кунед"},
+                  "options":[
+                    {"uz":"Salom","ru":"Привет","tj":"Салом"},
+                    {"uz":"Xayr","ru":"Пока","tj":"Хайр"}
+                  ],
+                  "correct_index":0,
+                  "explanation":{"uz":"To'g'ri","ru":"Верно","tj":"Дуруст"}
+                }
+              ]
+            }
+          }
+        }
+        """
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let response = try decoder.decode(IOSLessonResponse.self, from: Data(json.utf8))
+        let lesson = IOSLessonParser.parse(response: response, language: "uz")
+
+        XCTAssertEqual(lesson.sections.last?.sectionNo, 99)
+        XCTAssertEqual(
+            lesson.cards.last?.materialRef,
+            "lesson:hsk1:5:section:99:card:1"
+        )
+    }
+}
