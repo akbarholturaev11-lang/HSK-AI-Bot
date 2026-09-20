@@ -18,7 +18,7 @@ from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import update
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -34,6 +34,7 @@ from app.api.android_features import (
 from app.db.base import Base
 from app.db.models.course_ad import CourseAdCreative
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_access_service import COURSE_AD_ATTEMPT_EVENT_NAME
@@ -346,6 +347,15 @@ class AndroidSubscriptionHandoffApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(1, send.await_count)
         # The adapter must not invent its own subscription copy or keyboard.
         self.assertEqual(1001, send.await_args.args[1])
+        self.assertEqual("android_subscription", send.await_args.kwargs["source"])
+        async with self.sessions() as session:
+            entries = (
+                await session.execute(select(SubscriptionEntryEvent))
+            ).scalars().all()
+        self.assertEqual(1, len(entries))
+        self.assertEqual("android_subscription", entries[0].source)
+        self.assertEqual("subscription", entries[0].mode)
+        self.assertEqual(1001, entries[0].telegram_id)
 
     async def test_a_failed_message_still_hands_the_learner_the_bot_link(self):
         # Telegram can refuse the message (the user blocked the bot, a network

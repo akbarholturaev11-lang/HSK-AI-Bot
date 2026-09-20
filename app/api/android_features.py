@@ -79,6 +79,9 @@ from app.services.referral_service import (
     ReferralService,
 )
 from app.services.study_miniapp_service import StudyMiniAppService
+from app.services.subscription_entry_analytics_service import (
+    SubscriptionEntryAnalyticsService,
+)
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.voice_practice_service import (
     LANGUAGE_NAMES,
@@ -821,12 +824,19 @@ def create_android_features_router(
                     "android_subscription_handoff_unavailable", status_code=503
                 )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                user = await _user(session, request)
+                telegram_id = int(user.telegram_id)
+                await SubscriptionEntryAnalyticsService(session).record_entry(
+                    telegram_id=telegram_id,
+                    user=user,
+                    source="android_subscription",
+                    mode="subscription",
+                )
                 delivered = False
                 if bot is not None:
                     delivered = bool(
                         await StudyMiniAppService(session).send_subscription_menu(
-                            bot, telegram_id
+                            bot, telegram_id, source="android_subscription"
                         )
                     )
                 await session.commit()

@@ -27,6 +27,8 @@ class SubscriptionSourceStats:
 class SubscriptionEntryAnalyticsService:
     SOURCE_GROUP_LABELS = {
         "subscription_page": "Obuna sahifasi",
+        "android_subscription": "Android -> Telegram obuna",
+        "desktop_subscription": "Desktop -> Obuna",
         "course_locked_lesson": "Qulflangan dars",
         "pronunciation_limit": "Talaffuz limiti",
         "recognition_limit": "Rasm/ieroglif limiti",
@@ -43,6 +45,8 @@ class SubscriptionEntryAnalyticsService:
             "subscription_open",
             "direct_subscription",
         },
+        "android_subscription": {"android_subscription"},
+        "desktop_subscription": {"desktop_subscription"},
         "course_locked_lesson": {"course_locked", "locked_lesson", "v3_locked_lesson"},
         "pronunciation_limit": {"pronunciation_limit", "pron_limit", "v3_pronunciation_limit"},
         "recognition_limit": {"recognition_limit", "v3_recognition_limit", "photo_limit", "image_limit"},

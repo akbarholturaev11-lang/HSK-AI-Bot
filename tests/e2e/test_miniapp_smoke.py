@@ -2279,6 +2279,19 @@ def admin_finance_payload():
             "sources_paid": [
                 {"source": "v3_paywall", "label": "Course v3 - Paywall", "paying_users": 6, "payments": 7, "revenue_text": "$80.00"}
             ],
+            "client_business": {
+                "cards": [
+                    {"label": "Umumiy tushum", "value": "$120.00", "note": "10 ta approved payment", "tone": "info"},
+                    {"label": "Faol obuna", "value": 9, "note": "User access bitta schema", "tone": "good"},
+                    {"label": "Client kesimi", "value": "Mini App · Android · Desktop", "note": "alohida payment bazasi yo'q", "tone": "info"},
+                ],
+                "rows": [
+                    {"key": "miniapp", "label": "Mini App / bot", "note": "Telegram Mini App va bot ichidagi canonical checkout", "entries": 14, "entry_users": 9, "paying_users": 6, "payments": 7, "revenue_text": "$80.00"},
+                    {"key": "android", "label": "Android", "note": "Native Android -> Telegram subscription handoff", "entries": 3, "entry_users": 2, "paying_users": 1, "payments": 1, "revenue_text": "$10.00"},
+                    {"key": "desktop", "label": "Desktop", "note": "Native desktop -> canonical checkout adapter", "entries": 4, "entry_users": 3, "paying_users": 2, "payments": 2, "revenue_text": "$30.00"},
+                ],
+                "explain": "Mini App, Android va Desktop alohida biznes bazaga yozmaydi.",
+            },
             "source_attribution_explain": "Paymentdan oldingi eng yaqin source.",
             "cards": [
                 {"label": "Daromad", "value": "$120.00", "note": "10 ta to'lov", "tone": "info"},
@@ -2428,6 +2441,8 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("24000 token")
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Pullik taxmin")
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("$0.000000")
+    expect(page.locator("#clientBusinessTable")).to_contain_text("Android")
+    expect(page.locator("#clientBusinessTable")).to_contain_text("Desktop")
     expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
     expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
 
