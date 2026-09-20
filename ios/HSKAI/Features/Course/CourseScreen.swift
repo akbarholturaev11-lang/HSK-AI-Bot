@@ -7,7 +7,7 @@ struct CourseScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                HSKColors.paper.ignoresSafeArea()
+                HSKGlassBackdrop()
 
                 if model.isLoading && model.map == nil {
                     ProgressView().tint(HSKColors.cinnabar).controlSize(.large)
@@ -22,7 +22,11 @@ struct CourseScreen: View {
                                     .foregroundStyle(HSKColors.inkSecondary)
                                     .frame(maxWidth: .infinity)
                                     .padding(10)
-                                    .background(RoundedRectangle(cornerRadius: 12).fill(HSKColors.cinnabarSoft))
+                                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .stroke(Color.white.opacity(0.42), lineWidth: 0.8)
+                                    )
                             }
 
                             if let today = map.today, !today.tasks.isEmpty {
@@ -73,8 +77,12 @@ private struct CourseSummaryCard: View {
             metric(icon: "trophy.fill", value: map.progress.league.isEmpty ? "—" : map.progress.league, label: "course_league")
         }
         .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20).fill(HSKColors.paperRaised))
-        .overlay(RoundedRectangle(cornerRadius: 20).stroke(HSKColors.divider, lineWidth: 1))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.white.opacity(0.52), lineWidth: 0.9)
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 16, y: 8)
     }
 
     private func metric(icon: String, value: String, label: LocalizedStringKey) -> some View {
@@ -121,7 +129,26 @@ private struct TodayPlanSummary: View {
             }
         }
         .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20).fill(HSKColors.ink))
+        .background {
+            ZStack {
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                LinearGradient(
+                    colors: [
+                        HSKColors.ink.opacity(0.88),
+                        HSKColors.ink.opacity(0.70),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            }
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.white.opacity(0.20), lineWidth: 0.8)
+        )
+        .shadow(color: Color.black.opacity(0.16), radius: 18, y: 9)
     }
 
     private func taskIcon(_ task: IOSCourseTodayTask) -> String {
@@ -167,8 +194,12 @@ private struct CourseUnitCard: View {
             }
         }
         .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20).fill(HSKColors.paperRaised))
-        .overlay(RoundedRectangle(cornerRadius: 20).stroke(HSKColors.divider, lineWidth: 1))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.white.opacity(0.50), lineWidth: 0.9)
+        )
+        .shadow(color: Color.black.opacity(0.07), radius: 14, y: 7)
     }
 }
 

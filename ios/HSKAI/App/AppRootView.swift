@@ -36,16 +36,41 @@ struct AppRootView: View {
 }
 
 private struct LaunchView: View {
+    @State private var pulse = false
+
     var body: some View {
         ZStack {
-            HSKColors.paper.ignoresSafeArea()
-            VStack(spacing: 14) {
+            HSKGlassBackdrop()
+
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 100, height: 100)
+                        .overlay(Circle().stroke(Color.white.opacity(0.54), lineWidth: 1))
+                        .shadow(color: HSKColors.cinnabar.opacity(0.18), radius: 24, y: 10)
+
+                    Text("HSK")
+                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .foregroundStyle(HSKColors.cinnabarDark)
+                }
+                .scaleEffect(pulse ? 1.03 : 0.97)
+                .shadow(
+                    color: HSKColors.cinnabar.opacity(pulse ? 0.22 : 0.10),
+                    radius: pulse ? 22 : 10
+                )
+
                 Text("HSK AI")
-                    .font(.title.bold())
+                    .font(.title2.bold())
                     .foregroundStyle(HSKColors.ink)
+
                 ProgressView()
                     .tint(HSKColors.cinnabar)
-                    .controlSize(.regular)
+            }
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.15).repeatForever(autoreverses: true)) {
+                pulse = true
             }
         }
     }
@@ -56,13 +81,21 @@ private struct BootstrapFailureView: View {
 
     var body: some View {
         ZStack {
-            HSKColors.paper.ignoresSafeArea()
-            VStack(spacing: 18) {
-                Text("error_network")
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(HSKColors.inkSecondary)
-                Button("action_retry", action: retry)
-                    .buttonStyle(HSKPrimaryButtonStyle())
+            HSKGlassBackdrop()
+
+            HSKGlassCard(cornerRadius: 28, padding: 22, tint: HSKColors.flame) {
+                VStack(spacing: 18) {
+                    Image(systemName: "wifi.exclamationmark")
+                        .font(.system(size: 36))
+                        .foregroundStyle(HSKColors.flame)
+
+                    Text("error_network")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(HSKColors.inkSecondary)
+
+                    Button("action_retry", action: retry)
+                        .buttonStyle(HSKPrimaryButtonStyle())
+                }
             }
             .padding(24)
         }

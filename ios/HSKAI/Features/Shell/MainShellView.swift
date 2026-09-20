@@ -23,6 +23,8 @@ struct MainShellView: View {
                 .tabItem { Label("tab_profile", systemImage: "person.crop.circle.fill") }
         }
         .tint(HSKColors.cinnabar)
+        .toolbarBackground(.ultraThinMaterial, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
     }
 }
 
@@ -33,15 +35,25 @@ private struct ShellPlaceholder: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                HSKColors.paper.ignoresSafeArea()
-                VStack(spacing: 12) {
-                    Image(systemName: systemImage)
-                        .font(.system(size: 40))
-                        .foregroundStyle(HSKColors.cinnabar)
-                    Text(titleKey)
-                        .font(.title2.bold())
-                        .foregroundStyle(HSKColors.ink)
+                HSKGlassBackdrop()
+
+                HSKGlassCard(cornerRadius: 28, padding: 28, tint: HSKColors.cinnabar) {
+                    VStack(spacing: 14) {
+                        ZStack {
+                            Circle()
+                                .fill(HSKColors.cinnabar.opacity(0.12))
+                                .frame(width: 74, height: 74)
+                            Image(systemName: systemImage)
+                                .font(.system(size: 34, weight: .semibold))
+                                .foregroundStyle(HSKColors.cinnabar)
+                        }
+
+                        Text(titleKey)
+                            .font(.title2.bold())
+                            .foregroundStyle(HSKColors.ink)
+                    }
                 }
+                .padding(26)
             }
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -55,20 +67,35 @@ private struct ProfileShellPlaceholder: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                HSKColors.paper.ignoresSafeArea()
-                VStack(spacing: 12) {
-                    Image(systemName: "person.crop.circle.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(HSKColors.cinnabar)
-                    Text(account.displayName)
-                        .font(.title2.bold())
-                        .foregroundStyle(HSKColors.ink)
-                    Text(account.level.uppercased())
-                        .font(.subheadline)
-                        .foregroundStyle(HSKColors.inkSecondary)
-                    Button("profile_logout", action: onLogout)
-                        .padding(.top, 10)
-                        .foregroundStyle(HSKColors.cinnabarDark)
+                HSKGlassBackdrop()
+
+                HSKGlassCard(cornerRadius: 30, padding: 24, tint: HSKColors.cinnabar) {
+                    VStack(spacing: 13) {
+                        ZStack {
+                            Circle()
+                                .fill(.thinMaterial)
+                                .frame(width: 92, height: 92)
+                                .overlay(Circle().stroke(Color.white.opacity(0.54), lineWidth: 1))
+
+                            Image(systemName: "person.crop.circle.fill")
+                                .font(.system(size: 58))
+                                .foregroundStyle(HSKColors.cinnabar)
+                        }
+
+                        Text(account.displayName)
+                            .font(.title2.bold())
+                            .foregroundStyle(HSKColors.ink)
+
+                        HSKGlassPill {
+                            Text(account.level.uppercased())
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(HSKColors.inkSecondary)
+                        }
+
+                        Button("profile_logout", action: onLogout)
+                            .buttonStyle(HSKGlassSecondaryButtonStyle())
+                            .padding(.top, 8)
+                    }
                 }
                 .padding(24)
             }

@@ -3,6 +3,7 @@ import SwiftUI
 struct OnboardingScreen: View {
     @ObservedObject var model: AppModel
     let account: LinkedAccount
+    @State private var appeared = false
 
     private let levelOptions = [
         ("beginner", "onboarding_level_beginner", "onboarding_level_beginner_sub"),
@@ -22,22 +23,32 @@ struct OnboardingScreen: View {
 
     var body: some View {
         ZStack {
-            HSKColors.paper.ignoresSafeArea()
+            HSKGlassBackdrop()
+
             VStack(spacing: 0) {
                 if model.onboarding.step > 0 {
                     topBar
                 }
 
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     content
-                        .frame(maxWidth: 520)
-                        .padding(.horizontal, 24)
-                        .padding(.top, model.onboarding.step == 0 ? 42 : 24)
-                        .padding(.bottom, 24)
+                        .frame(maxWidth: 560)
+                        .padding(.horizontal, 20)
+                        .padding(.top, model.onboarding.step == 0 ? 34 : 22)
+                        .padding(.bottom, 30)
+                        .id(model.onboarding.step)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                            removal: .move(edge: .leading).combined(with: .opacity)
+                        ))
                 }
 
                 footer
             }
+        }
+        .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.onboarding.step)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.4)) { appeared = true }
         }
     }
 
@@ -45,10 +56,25 @@ struct OnboardingScreen: View {
     private var content: some View {
         switch model.onboarding.step {
         case 0:
-            VStack(spacing: 20) {
-                Text("你好")
-                    .font(.system(size: 68, weight: .bold, design: .rounded))
-                    .foregroundStyle(HSKColors.cinnabar)
+            VStack(spacing: 18) {
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 132, height: 132)
+                        .overlay(Circle().stroke(Color.white.opacity(0.58), lineWidth: 1))
+                        .shadow(color: HSKColors.cinnabar.opacity(0.16), radius: 24, y: 10)
+
+                    Text("你好")
+                        .font(.system(size: 54, weight: .bold, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [HSKColors.cinnabar, HSKColors.cinnabarDark],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+                .scaleEffect(appeared ? 1 : 0.90)
 
                 Text("onboarding_hello")
                     .font(.title2.bold())
@@ -60,16 +86,21 @@ struct OnboardingScreen: View {
                     .foregroundStyle(HSKColors.inkSecondary)
                     .multilineTextAlignment(.center)
                     .lineSpacing(5)
+                    .padding(.horizontal, 12)
+
+                HSKGlassPill {
+                    Label("HSK AI", systemImage: "sparkles")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(HSKColors.cinnabarDark)
+                }
+                .padding(.top, 4)
             }
-            .padding(.top, 54)
+            .padding(.top, 46)
 
         case 1:
-            choiceHeader(
-                title: "onboarding_ask_level",
-                subtitle: "onboarding_level_hint"
-            )
+            choiceHeader(title: "onboarding_ask_level", subtitle: "onboarding_level_hint")
 
-            VStack(spacing: 11) {
+            VStack(spacing: 12) {
                 ForEach(levelOptions, id: \.0) { option in
                     SelectionCard(
                         title: LocalizedStringKey(option.1),
@@ -84,12 +115,9 @@ struct OnboardingScreen: View {
             .padding(.top, 20)
 
         default:
-            choiceHeader(
-                title: "onboarding_ask_goal",
-                subtitle: "onboarding_goal_hint"
-            )
+            choiceHeader(title: "onboarding_ask_goal", subtitle: "onboarding_goal_hint")
 
-            VStack(spacing: 11) {
+            VStack(spacing: 12) {
                 ForEach(goalOptions, id: \.0) { option in
                     SelectionCard(
                         title: LocalizedStringKey(option.1),
@@ -123,35 +151,45 @@ struct OnboardingScreen: View {
     }
 
     private var topBar: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 13) {
             Button {
                 model.onboardingBack()
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.headline)
-                    .foregroundStyle(HSKColors.inkSecondary)
-                    .frame(width: 44, height: 44)
+                    .foregroundStyle(HSKColors.ink)
             }
+            .buttonStyle(HSKGlassIconButtonStyle())
 
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(HSKColors.divider)
+                    Capsule().fill(.ultraThinMaterial)
                     Capsule()
-                        .fill(HSKColors.cinnabar)
+                        .fill(
+                            LinearGradient(
+                                colors: [HSKColors.cinnabar, HSKColors.cinnabarDark],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                         .frame(
                             width: proxy.size.width *
                                 CGFloat(model.onboarding.step) / 2
                         )
                 }
+                .overlay(Capsule().stroke(Color.white.opacity(0.42), lineWidth: 0.7))
             }
-            .frame(height: 8)
+            .frame(height: 9)
 
-            Text("\(model.onboarding.step) / 2")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(HSKColors.inkSecondary)
+            HSKGlassPill {
+                Text("\(model.onboarding.step) / 2")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(HSKColors.inkSecondary)
+            }
         }
         .padding(.horizontal, 18)
-        .padding(.top, 8)
+        .padding(.top, 10)
+        .padding(.bottom, 4)
     }
 
     private var footer: some View {
@@ -167,8 +205,7 @@ struct OnboardingScreen: View {
                 Task { await model.onboardingNext(account: account) }
             } label: {
                 if model.onboarding.isSubmitting {
-                    ProgressView()
-                        .tint(.white)
+                    ProgressView().tint(.white)
                 } else {
                     Text(
                         model.onboarding.step == 0
@@ -182,9 +219,15 @@ struct OnboardingScreen: View {
             .buttonStyle(HSKPrimaryButtonStyle())
             .disabled(model.onboarding.isSubmitting)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 16)
-        .background(HSKColors.paper)
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 10)
+        .background(.ultraThinMaterial)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Color.white.opacity(0.28))
+                .frame(height: 0.7)
+        }
     }
 }
 
@@ -198,10 +241,14 @@ private struct SelectionCard: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                Image(systemName: systemImage)
-                    .font(.title3)
-                    .foregroundStyle(selected ? HSKColors.cinnabar : HSKColors.inkSecondary)
-                    .frame(width: 34)
+                ZStack {
+                    Circle()
+                        .fill(selected ? HSKColors.cinnabar.opacity(0.16) : Color.white.opacity(0.14))
+                        .frame(width: 42, height: 42)
+                    Image(systemName: systemImage)
+                        .font(.headline)
+                        .foregroundStyle(selected ? HSKColors.cinnabarDark : HSKColors.inkSecondary)
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
@@ -219,22 +266,34 @@ private struct SelectionCard: View {
 
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
-                    .foregroundStyle(selected ? HSKColors.cinnabar : HSKColors.divider)
+                    .foregroundStyle(selected ? HSKColors.cinnabar : HSKColors.inkSecondary.opacity(0.42))
             }
-            .padding(16)
+            .padding(15)
             .frame(maxWidth: .infinity)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(selected ? HSKColors.cinnabarSoft : HSKColors.paperRaised)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(selected ? HSKColors.cinnabar.opacity(0.08) : Color.clear)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(
-                        selected ? HSKColors.cinnabar : HSKColors.divider,
-                        lineWidth: selected ? 1.5 : 1
+                        selected
+                            ? HSKColors.cinnabar.opacity(0.58)
+                            : Color.white.opacity(0.48),
+                        lineWidth: selected ? 1.2 : 0.8
                     )
+            }
+            .shadow(
+                color: selected
+                    ? HSKColors.cinnabar.opacity(0.12)
+                    : Color.black.opacity(0.07),
+                radius: selected ? 16 : 10,
+                y: 6
             )
         }
         .buttonStyle(.plain)
+        .scaleEffect(selected ? 1.01 : 1)
+        .animation(.spring(response: 0.28, dampingFraction: 0.78), value: selected)
     }
 }

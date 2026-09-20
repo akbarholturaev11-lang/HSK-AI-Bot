@@ -4,103 +4,147 @@ import UIKit
 struct LinkScreen: View {
     @ObservedObject var model: AppModel
     @Environment(\.openURL) private var openURL
+    @State private var appeared = false
 
     var body: some View {
         ZStack {
-            HSKColors.paper.ignoresSafeArea()
+            HSKGlassBackdrop()
 
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    Spacer(minLength: 34)
+                    Spacer(minLength: 52)
 
-                    Text("HSK AI")
-                        .font(.headline)
+                    HSKGlassPill {
+                        HStack(spacing: 8) {
+                            Image(systemName: "sparkles")
+                                .font(.caption.weight(.bold))
+                            Text("HSK AI")
+                                .font(.subheadline.weight(.semibold))
+                        }
                         .foregroundStyle(HSKColors.cinnabarDark)
+                    }
 
                     Text("auth_welcome_title")
                         .font(.system(size: 34, weight: .bold, design: .rounded))
                         .foregroundStyle(HSKColors.ink)
                         .multilineTextAlignment(.center)
-                        .padding(.top, 12)
+                        .padding(.top, 20)
 
                     Text("auth_single_subtitle")
                         .font(.body)
                         .foregroundStyle(HSKColors.inkSecondary)
                         .multilineTextAlignment(.center)
-                        .padding(.top, 9)
+                        .lineSpacing(4)
+                        .padding(.top, 10)
+                        .padding(.horizontal, 8)
 
                     authCard
-                        .padding(.top, 28)
+                        .padding(.top, 30)
 
-                    Spacer(minLength: 30)
+                    Text("link_security_note")
+                        .font(.footnote)
+                        .foregroundStyle(HSKColors.inkSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 18)
+                        .padding(.horizontal, 24)
+
+                    Spacer(minLength: 34)
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 20)
+                .opacity(appeared ? 1 : 0)
+                .offset(y: appeared ? 0 : 18)
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.84)) {
+                appeared = true
             }
         }
     }
 
     @ViewBuilder
     private var authCard: some View {
-        VStack(spacing: 18) {
-            if model.link.isRequesting {
-                ProgressView()
-                    .tint(HSKColors.cinnabar)
-                    .controlSize(.large)
-                    .frame(minHeight: 180)
-            } else if model.link.displayCode.isEmpty || model.link.isExpired {
-                if let errorKey = model.link.errorKey {
-                    Text(LocalizedStringKey(errorKey))
-                        .font(.subheadline)
-                        .foregroundStyle(HSKColors.flame)
-                        .multilineTextAlignment(.center)
-                } else if model.link.isExpired {
-                    Text("link_expired")
-                        .font(.subheadline)
-                        .foregroundStyle(HSKColors.flame)
-                        .multilineTextAlignment(.center)
-                }
+        HSKGlassCard(cornerRadius: 30, padding: 22, tint: HSKColors.cinnabar) {
+            VStack(spacing: 18) {
+                if model.link.isRequesting {
+                    VStack(spacing: 14) {
+                        ProgressView()
+                            .tint(HSKColors.cinnabar)
+                            .controlSize(.large)
+                        Text("link_waiting")
+                            .font(.subheadline)
+                            .foregroundStyle(HSKColors.inkSecondary)
+                    }
+                    .frame(minHeight: 170)
+                } else if model.link.displayCode.isEmpty || model.link.isExpired {
+                    Image(systemName: model.link.isExpired ? "arrow.clockwise.circle.fill" : "paperplane.circle.fill")
+                        .font(.system(size: 44))
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(HSKColors.cinnabar)
 
-                Button(
-                    model.link.isExpired || model.link.errorKey != nil
-                        ? LocalizedStringKey("link_new_code")
-                        : LocalizedStringKey("action_continue")
-                ) {
-                    Task { await model.requestLink() }
+                    if let errorKey = model.link.errorKey {
+                        Text(LocalizedStringKey(errorKey))
+                            .font(.subheadline)
+                            .foregroundStyle(HSKColors.flame)
+                            .multilineTextAlignment(.center)
+                    } else if model.link.isExpired {
+                        Text("link_expired")
+                            .font(.subheadline)
+                            .foregroundStyle(HSKColors.flame)
+                            .multilineTextAlignment(.center)
+                    }
+
+                    Button(
+                        model.link.isExpired || model.link.errorKey != nil
+                            ? LocalizedStringKey("link_new_code")
+                            : LocalizedStringKey("action_continue")
+                    ) {
+                        Task { await model.requestLink() }
+                    }
+                    .buttonStyle(HSKPrimaryButtonStyle())
+                } else {
+                    codeBlock
                 }
-                .buttonStyle(HSKPrimaryButtonStyle())
-            } else {
-                codeBlock
             }
         }
-        .padding(22)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(HSKColors.paperRaised)
-                .shadow(color: Color.black.opacity(0.08), radius: 20, y: 8)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(HSKColors.divider.opacity(0.7), lineWidth: 1)
-        )
     }
 
     private var codeBlock: some View {
-        VStack(spacing: 14) {
-            Text("link_code_label")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(HSKColors.inkSecondary)
+        VStack(spacing: 15) {
+            HStack {
+                Text("link_code_label")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(HSKColors.inkSecondary)
+                Spacer()
+                if model.link.isWaitingForApproval {
+                    ProgressView()
+                        .tint(HSKColors.cinnabar)
+                        .scaleEffect(0.84)
+                }
+            }
 
             Text(model.link.displayCode)
-                .font(.system(size: 30, weight: .bold, design: .monospaced))
+                .font(.system(size: 31, weight: .bold, design: .monospaced))
                 .tracking(3)
-                .foregroundStyle(HSKColors.cinnabarDark)
+                .foregroundStyle(HSKColors.ink)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 17)
-                .background(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(HSKColors.cinnabarSoft)
+                .padding(.vertical, 18)
+                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.76),
+                                    HSKColors.cinnabar.opacity(0.28),
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
+                        )
                 )
+                .shadow(color: HSKColors.cinnabar.opacity(0.10), radius: 14, y: 7)
                 .textSelection(.enabled)
 
             Text("link_code_instruction")
@@ -114,16 +158,14 @@ struct LinkScreen: View {
                 }
             }
             .buttonStyle(HSKPrimaryButtonStyle())
-            .padding(.top, 5)
+            .padding(.top, 2)
 
             Button("auth_register") {
                 if let url = model.link.botDeepLink {
                     openURL(url)
                 }
             }
-            .font(.headline)
-            .foregroundStyle(HSKColors.cinnabarDark)
-            .frame(minHeight: 44)
+            .buttonStyle(HSKGlassSecondaryButtonStyle())
 
             Button {
                 UIPasteboard.general.string = model.link.displayCode
@@ -132,37 +174,31 @@ struct LinkScreen: View {
                     .font(.subheadline.weight(.semibold))
             }
             .foregroundStyle(HSKColors.cinnabarDark)
-            .frame(minHeight: 44)
+            .frame(minHeight: 42)
 
             if model.link.isWaitingForApproval {
-                Divider()
-                    .overlay(HSKColors.divider)
-
-                HStack(spacing: 10) {
-                    ProgressView()
-                        .tint(HSKColors.cinnabar)
-
+                HStack(spacing: 8) {
+                    Image(systemName: "lock.shield.fill")
+                        .foregroundStyle(HSKColors.jade)
                     Text("link_waiting")
-                        .font(.subheadline)
+                        .font(.footnote.weight(.medium))
                         .foregroundStyle(HSKColors.inkSecondary)
-                }
-
-                Text(
-                    String(
-                        format: NSLocalizedString("link_expires_in", comment: ""),
-                        Self.formatRemaining(model.link.secondsRemaining)
+                    Spacer()
+                    Text(
+                        String(
+                            format: NSLocalizedString("link_expires_in", comment: ""),
+                            Self.formatRemaining(model.link.secondsRemaining)
+                        )
                     )
-                )
-                .font(.footnote)
-                .foregroundStyle(HSKColors.inkSecondary)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(HSKColors.inkSecondary)
+                }
+                .padding(12)
+                .background(.ultraThinMaterial, in: Capsule())
+                .transition(.opacity.combined(with: .scale(scale: 0.97)))
             }
-
-            Text("link_security_note")
-                .font(.footnote)
-                .foregroundStyle(HSKColors.inkSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.top, 2)
         }
+        .animation(.spring(response: 0.35, dampingFraction: 0.86), value: model.link.isWaitingForApproval)
     }
 
     static func formatRemaining(_ totalSeconds: Int) -> String {
