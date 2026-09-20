@@ -6,8 +6,8 @@ Status: updated in the SEO branch; production deployment and search submission r
 
 - Backend: FastAPI in `app/main.py`; aiogram bot and DB/background jobs share its lifespan. No Flask server.
 - Railway: `railway.toml` → `scripts/start.sh` → Alembic upgrade → Uvicorn; health check remains `/health`. Procfile also targets `app.main:app`.
-- No root product landing, `/tj/`, `/ru/`, `/uz/`, clean download landing, robots, sitemap or IndexNow inventory existed in the isolated public router.
-- Mini App HTML had a generic HSK AI title and interactive content; the desktop/download page had its own app-download implementation, and now keeps crawler-readable release status while pointing canonical indexing to the clean `/download/` destination.
+- No root product landing, `/tj/`, `/ru/`, `/uz/`, robots, sitemap or IndexNow inventory existed in the isolated public router.
+- Mini App HTML had a generic HSK AI title and interactive content; the existing desktop/download page now keeps crawler-readable release status and is the indexed download destination itself.
 - Verified product evidence: `app/main.py` course/voice/practice routes, `app/static/course_v3_data/` HSK 1–4 materials and exams, `app/services/course_v3_dictionary.py` TJ/RU/UZ, `app/services/voice_practice_service.py`, `app/services/course_miniapp_analytics_service.py` progress. No fabricated student counts, ratings, results or certification claims.
 - Existing analytics require a verified Telegram ID and affect learner activity; anonymous visitors must not be inserted as fake learners.
 - Existing bot username helper defaults to `darsi_chini_bot`. Marketing CTA explicitly targets the user-requested `https://t.me/darsi_chini_bot` without adding a referral/start payload.
@@ -16,7 +16,7 @@ Status: updated in the SEO branch; production deployment and search submission r
 ## B. Implementation files
 
 - `app/api/public_site.py`: isolated router, robots/sitemap, fixed-destination CTA redirect, bounded campaign logging, optional verification file, asset allowlist.
-- `app/public_site/content.py`: all eight pages and localized copy, maintained canonical inventory.
+- `app/public_site/content.py`: public product pages, localized copy and the internal link to the real download page.
 - `app/public_site/render.py`: escaped server HTML, canonical/hreflang, JSON-LD, social metadata and verification meta tags.
 - `app/public_site/__init__.py`: package boundary.
 - `app/static/public-site.css`: responsive public-page styling; existing Mini App CSS untouched.
@@ -42,12 +42,12 @@ Current repository default origin (configuration evidence, not a live deployment
 - `https://telegram-chinese-bot-production.up.railway.app/tj/`
 - `https://telegram-chinese-bot-production.up.railway.app/ru/`
 - `https://telegram-chinese-bot-production.up.railway.app/uz/`
-- `https://telegram-chinese-bot-production.up.railway.app/download/`
+- `https://telegram-chinese-bot-production.up.railway.app/download`
 - `https://telegram-chinese-bot-production.up.railway.app/tj/hsk/`
 - `https://telegram-chinese-bot-production.up.railway.app/tj/learn-chinese/`
 - `https://telegram-chinese-bot-production.up.railway.app/tj/ai-chinese-teacher/`
 
-Root is a distinct Tajik product/language entry page with its own canonical and x-default alternate. `/tj/`, `/ru/`, `/uz/` are reciprocal home variants. `/download/` is the clean indexable HSK AI Apps / Download destination; `/desktop-download?lang=uz` remains the interactive installer page and points its canonical to `/download/`. Tajik uses ISO language code `tg`, while URLs retain requested `/tj/`. Intent guides are unique Tajik articles with self hreflang only; unrelated pages are not falsely marked as translations. No RU intent duplicates were needed.
+Root is a distinct Tajik product/language entry page with its own canonical and x-default alternate. `/tj/`, `/ru/`, `/uz/` are reciprocal home variants. `/download` is the existing HSK AI Apps / Download page itself, not a separate explanatory landing page. `/desktop-download?lang=uz` remains functional and points its canonical to `/download`. Tajik uses ISO language code `tg`, while URLs retain requested `/tj/`. Intent guides are unique Tajik articles with self hreflang only; unrelated pages are not falsely marked as translations. No RU intent duplicates were needed.
 
 ## D. Page title and description
 
@@ -57,7 +57,7 @@ Root is a distinct Tajik product/language entry page with its own canonical and 
 | `/tj/` | Омӯзиши забони чинӣ ба тоҷикӣ — HSK AI | Забони чиниро ба тоҷикӣ бо HSK AI омӯзед: курсҳои HSK 1–4, шарҳи AI, машқи талаффуз, луғат ва тестҳо дар Telegram Mini App. |
 | `/ru/` | Китайский язык для таджиков — HSK AI в Telegram | HSK AI — китайский язык с объяснениями на таджикском, русском и узбекском. Курсы HSK 1–4, AI-помощник, произношение, словарь и тесты в Telegram. |
 | `/uz/` | Xitoy tilini o‘rganish — HSK AI Telegram kurslari | HSK AI bilan xitoy tilini o‘rganing: HSK 1–4 kurslari, AI yordamchi, talaffuz mashqi, lug‘at va testlar. Tojik, rus va o‘zbek tillarida Telegram’da. |
-| `/download/` | HSK AI app download — macOS, Windows, Android va Telegram | HSK AI ilovalarini yuklab olish: macOS, Windows va Android release statusi, Telegram Mini App, iPhone/iPad public holati. Xitoy tili va HSK o‘rganish uchun AI yordamchi. |
+| `/download` | HSK AI Apps / Download — macOS, Windows va Android | HSK AI download sahifasi: macOS, Windows va Android uchun rasmiy release mavjud bo‘lsa yuklab oling. iPhone/iPad uchun Telegram Mini App orqali davom eting. |
 | `/tj/hsk/` | HSK ба тоҷикӣ: курсҳои HSK 1–4 — HSK AI | Барои омӯзиши HSK ба тоҷикӣ аз куҷо оғоз кунем? Роҳнамои интихоби маводи HSK 1–4, машқи калимаҳо ва такрори дарсҳо дар HSK AI. |
 | `/tj/learn-chinese/` | Омӯзиши забони чинӣ аз сифр ба тоҷикӣ — HSK AI | Забони чиниро аз сифр оғоз кунед: пинйин, оҳангҳо, иероглиф ва ҷумлаи аввал. Роҳнамои кӯтоҳи тоҷикӣ бо намуна ва машқи мустақилона. |
 | `/tj/ai-chinese-teacher/` | Ёрдамчии AI барои забони чинӣ ба тоҷикӣ — HSK AI | Аз AI барои омӯзиши чинӣ чӣ гуна истифода барем? Намунаи саволҳо ба тоҷикӣ, таҳлили ҷумла, машқи овозӣ ва санҷидани ҷавобҳои AI дар HSK AI. |
@@ -67,20 +67,20 @@ Root is a distinct Tajik product/language entry page with its own canonical and 
 `GET /robots.txt` returns text/plain. Identical rules are applied to `*`, `Googlebot`, `Bingbot`, and `OAI-SearchBot`:
 
 - `Disallow: /` as the default.
-- Explicit exact-path allows for eight public HTML pages, including their query variants.
+- Explicit exact-path allows for the public HTML pages and the real `/download` page, including their query variants.
 - Allow `/public-assets/`, `/assets/`, `/desktop-download`, `/desktop-download.html`, the desktop download page CSS/JS, `/robots.txt`, `/sitemap.xml` and the Google Search Console HTML file.
 - Allow only the configured IndexNow ownership key file when enabled.
 - `Sitemap: <PUBLIC_SITE_URL>/sitemap.xml`.
 
-This excludes admin, APIs, payments/subscription, internal course data, Mini App, uploads, docs, CTA redirect and future unlisted paths. The interactive `/desktop-download?lang=uz` installer page is crawlable so search engines can see its canonical pointer, but it is not in the sitemap; the clean `/download/` URL is the indexed download landing page. These are crawl preferences, not access control: existing auth is unchanged. If a private URL is already indexed, handle removal/noindex separately; robots disallow alone does not guarantee removal.
+This excludes admin, APIs, payments/subscription, internal course data, Mini App, uploads, docs, CTA redirect and future unlisted paths. The interactive `/desktop-download?lang=uz` installer page is crawlable so search engines can see its canonical pointer, but it is not in the sitemap; the existing `/download` app-download page is the indexed download page. These are crawl preferences, not access control: existing auth is unchanged. If a private URL is already indexed, handle removal/noindex separately; robots disallow alone does not guarantee removal.
 
 ## F. sitemap.xml
 
-`<PUBLIC_SITE_URL>/sitemap.xml` contains exactly the eight self-canonical public HTML URLs, no query strings, redirects, keys, admin, APIs, payments or Mini App. No artificial lastmod: content dates are not currently maintained. Add lastmod only when real editorial dates are tracked.
+`<PUBLIC_SITE_URL>/sitemap.xml` contains the seven public product/article URLs plus the real `/download` app-download page, no query strings, redirects, keys, admin, APIs, payments or Mini App. No artificial lastmod: content dates are not currently maintained. Add lastmod only when real editorial dates are tracked.
 
 ## G. Structured data and social previews
 
-Every public router page: Organization, WebSite, SoftwareApplication (`applicationCategory: EducationalApplication`), WebPage. `/download/` also describes the official HSK AI Apps / Download destination for macOS, Windows and Android status, without a fake direct `downloadUrl`, rating, review count or iOS/App Store claim. The existing app-download page (`/download`, `/desktop-download`, `/desktop-download.html`) renders per-platform SoftwareApplication JSON-LD only for platforms whose release service currently returns a real published link. `/tj/hsk/` additionally has four Course entities for the actual HSK 1–4 materials, anchored to visible sections.
+Every public router page: Organization, WebSite, SoftwareApplication (`applicationCategory: EducationalApplication`), WebPage. The app-download page (`/download`, `/desktop-download`, `/desktop-download.html`) renders per-platform SoftwareApplication JSON-LD only for platforms whose release service currently returns a real published link. `/tj/hsk/` additionally has four Course entities for the actual HSK 1–4 materials, anchored to visible sections.
 
 Organization `sameAs` and application `installUrl` reference the Telegram bot; website URLs remain website URLs. No offers/prices, ratings/reviews, exam guarantees or invented durations. This describes the product; eligibility for Google rich results is not promised.
 
@@ -114,7 +114,7 @@ python -m scripts.check_public_site_browser
 ## J. After deployment — manual checklist
 
 1. Choose the stable public domain before submission. Set `PUBLIC_SITE_URL=https://<public-domain>` in Railway. Keep `/health`, start command, DB and bot configuration unchanged. For a custom domain attach DNS and HTTPS in Railway. No DNS or deployment changes have been made by this task.
-2. Deploy reviewed changes, then GET `/`, `/tj/`, `/ru/`, `/uz/`, `/download/`, `/download`, `/desktop-download?lang=uz`, all three TJ guides, `/robots.txt`, `/sitemap.xml` and the OG image. Check rendered source, canonical origin, HTTPS, redirects and mobile CTA. Repeat with Googlebot, Bingbot and OAI-SearchBot user agents; ensure any CDN/WAF permits real crawler IPs. Staging should be protected outside this production crawl configuration.
+2. Deploy reviewed changes, then GET `/`, `/tj/`, `/ru/`, `/uz/`, `/download`, `/desktop-download?lang=uz`, all three TJ guides, `/robots.txt`, `/sitemap.xml` and the OG image. Check rendered source, canonical origin, HTTPS, redirects and mobile CTA. Repeat with Googlebot, Bingbot and OAI-SearchBot user agents; ensure any CDN/WAF permits real crawler IPs. Staging should be protected outside this production crawl configuration.
 3. Google Search Console: create a Domain property via the DNS token supplied by Google, or URL-prefix property using `GOOGLE_SITE_VERIFICATION` (meta-token value only) and redeploy. Do not invent a token. Submit `<PUBLIC_SITE_URL>/sitemap.xml`, inspect `/tj/` and guide URLs, and request indexing. Monitor Pages, canonical selection and Search Performance.
 4. Bing Webmaster Tools: import the verified Google property or set the issued `BING_SITE_VERIFICATION` meta value and redeploy. Submit the same sitemap and inspect URLs.
 5. IndexNow: generate a random ownership key outside Git (e.g. `python -c "import secrets; print(secrets.token_hex(16))"`), save in Railway `INDEXNOW_KEY`, redeploy, check `https://<public-domain>/<key>.txt` returns exactly the key. This is an intentionally public proof-of-ownership key, not a bot/payment credential. Do not put its value into Git or memory files.
@@ -146,8 +146,8 @@ Official references used:
 
 - `python -m compileall -q app/public_site app/api/public_site.py app/main.py scripts/check_public_site_browser.py`: passed.
 - `python -m unittest tests.test_course_v3_static_data tests.test_download_page_is_readable_without_js`: **40 tests passed**.
-- Custom render smoke: passed for all eight public pages, including canonical, meta description, robots, OG/Twitter, JSON-LD, download internal link and no fake ratings/reviews.
-- Custom sitemap/robots smoke: passed; sitemap has exactly the eight public canonical URLs and robots allows public/download assets while blocking admin/API/Mini App/private paths.
+- Custom render smoke: passed for public product/article pages, including canonical, meta description, robots, OG/Twitter, JSON-LD, download internal link and no fake ratings/reviews.
+- Custom sitemap/robots smoke: passed; sitemap has seven public product/article URLs plus `/download`, and robots allows public/download assets while blocking admin/API/Mini App/private paths.
 - Static/runtime download metadata smoke: passed; `/desktop-download` has index/follow metadata and the server path upgrades canonical/social URLs to the configured absolute public origin.
 - `git diff --check origin/main..HEAD`: passed.
 - `python -m pytest ...`, `tests.test_public_site`, full suite and Chromium browser smoke were not runnable in this scratch runtime because `pytest`, `fastapi`, `httpx`, `playwright`, `sqlalchemy` and `aiogram` are not installed. Run them in the project CI or a dev environment with `requirements-dev.txt`.

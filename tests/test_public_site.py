@@ -8,7 +8,12 @@ from xml.etree import ElementTree
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from app.api.public_site import GOOGLE_VERIFICATION_FILENAME, create_public_site_router, indexnow_payload
+from app.api.public_site import (
+    GOOGLE_VERIFICATION_FILENAME,
+    SITEMAP_PATHS,
+    create_public_site_router,
+    indexnow_payload,
+)
 from app.public_site.content import DOWNLOAD_PATH, HOME_PATHS, PAGES
 from app.public_site.render import attribution, public_origin
 
@@ -87,15 +92,6 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             if path == "/":
                 self.assertTrue(parsed.find("a", **{"class": "secondary-cta"}))
                 self.assertIn(DOWNLOAD_PATH, html)
-            if path == DOWNLOAD_PATH:
-                download_apps = [
-                    n for n in graph
-                    if n["@type"] == "SoftwareApplication" and n["@id"].endswith("#download-application")
-                ]
-                self.assertEqual(download_apps[0]["operatingSystem"], ["macOS", "Windows", "Android"])
-                self.assertEqual(download_apps[0]["installUrl"], ORIGIN + "/desktop-download?lang=uz")
-                self.assertIn("/desktop-download?lang=uz", html)
-                self.assertIn("iPhone/iPad", html)
             titles.add(page["title"])
             descriptions.add(page["description"])
         self.assertEqual(len(titles), len(PAGES))
@@ -105,7 +101,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.get("/sitemap.xml")
         self.assertEqual(response.status_code, 200)
         urls = ElementTree.fromstring(response.content).findall("{*}url/{*}loc")
-        self.assertEqual([u.text for u in urls], [ORIGIN + path for path in PAGES])
+        self.assertEqual([u.text for u in urls], [ORIGIN + path for path in SITEMAP_PATHS])
         self.assertNotIn("lastmod", response.text)
         robots = await self.client.get("/robots.txt")
         self.assertEqual(robots.status_code, 200)
@@ -114,6 +110,8 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             for path in PAGES:
                 self.assertTrue(allowed(robots.text, agent, path))
                 self.assertTrue(allowed(robots.text, agent, path + "?utm_source=x"))
+            self.assertTrue(allowed(robots.text, agent, DOWNLOAD_PATH))
+            self.assertTrue(allowed(robots.text, agent, DOWNLOAD_PATH + "?lang=uz"))
             for path in ("/admin.html", "/api/v3/map", "/subscription.html", "/payments/x", "/course-v3.html",
                          "/course-v3", "/course_v3_data/hsk1.json", "/uploads/private", "/docs", "/openapi.json",
                          "/go/telegram", "/tj/private", "/future-private"):
@@ -172,7 +170,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             robots = (await client.get("/robots.txt")).text
             self.assertTrue(allowed(robots, "Bingbot", "/test-key-12345678.txt"))
         payload = indexnow_payload(cfg)
-        self.assertEqual(payload["urlList"], [ORIGIN + p for p in PAGES])
+        self.assertEqual(payload["urlList"], [ORIGIN + p for p in SITEMAP_PATHS])
         self.assertEqual(payload["keyLocation"], ORIGIN + "/test-key-12345678.txt")
         with self.assertRaises(ValueError):
             indexnow_payload(settings())

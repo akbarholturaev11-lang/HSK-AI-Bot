@@ -47,19 +47,6 @@ def structured_data(path, origin):
          "name": page["title"], "description": page["description"], "inLanguage": page["lang"],
          "isPartOf": {"@id": origin + "/#website"}, "about": {"@id": origin + "/#application"}},
     ]
-    if path == DOWNLOAD_PATH:
-        graph.append({
-            "@type": "SoftwareApplication",
-            "@id": origin + DOWNLOAD_PATH + "#download-application",
-            "name": "HSK AI Apps / Download",
-            "applicationCategory": "EducationalApplication",
-            "operatingSystem": ["macOS", "Windows", "Android"],
-            "url": origin + DOWNLOAD_PATH,
-            "installUrl": origin + "/desktop-download?lang=uz",
-            "inLanguage": ["uz", "ru", "tg"],
-            "description": page["description"],
-            "publisher": {"@id": origin + "/#organization"},
-        })
     if path == "/tj/hsk/":
         for level in range(1, 5):
             graph.append({"@type": "Course", "@id": origin + path + f"#hsk{level}",
@@ -94,16 +81,10 @@ def render_page(path, settings_obj, tags=None):
         for i, (title, body) in enumerate(page["sections"]))
     guides = "".join(f'<li><a href="{esc(with_attribution(dest, tags))}">{esc(title)}</a></li>'
                      for dest, title in GUIDES.items())
-    if path == DOWNLOAD_PATH:
-        cta_url = with_attribution(page["primary_href"], tags)
-        cta = f'<a class="cta" href="{esc(cta_url)}">{esc(page["primary_cta"])} <span aria-hidden="true">↓</span></a>'
-        secondary_url = with_attribution(page["secondary_href"], tags)
-        secondary = f'<a class="secondary-cta" href="{esc(secondary_url)}">{esc(page["secondary_cta"])}</a>'
-    else:
-        cta_url = "/go/telegram?" + urlencode({"page": path, **tags})
-        cta = f'<a class="cta" href="{esc(cta_url)}" rel="nofollow">{CTA[lang]} <span aria-hidden="true">↗</span></a>'
-        download_url = with_attribution(DOWNLOAD_PATH, tags)
-        secondary = f'<a class="secondary-cta" href="{esc(download_url)}">{esc(DOWNLOAD_CTA[lang])}</a>'
+    cta_url = "/go/telegram?" + urlencode({"page": path, **tags})
+    cta = f'<a class="cta" href="{esc(cta_url)}" rel="nofollow">{CTA[lang]} <span aria-hidden="true">↗</span></a>'
+    download_url = with_attribution(DOWNLOAD_PATH, tags)
+    secondary = f'<a class="secondary-cta" href="{esc(download_url)}">{esc(DOWNLOAD_CTA[lang])}</a>'
     labels = {"tg": ("Салом", "Роҳнамоҳо ба тоҷикӣ", "Дар бораи маълумоти ташриф"),
               "ru": ("Привет", "Руководства на таджикском", "О данных посещения"),
               "uz": ("Salom", "Tojik tilidagi qo‘llanmalar", "Tashrif ma’lumotlari haqida")}[lang]
@@ -113,8 +94,8 @@ def render_page(path, settings_obj, tags=None):
         "uz": "Sahifa ochilishi va botga o‘tish kampaniya belgilari bilan server jurnaliga yoziladi. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
-    handle_rel = ' rel="nofollow"' if path != DOWNLOAD_PATH else ""
-    handle_text = "@darsi_chini_bot" if path != DOWNLOAD_PATH else page["primary_href"]
+    handle_rel = ' rel="nofollow"'
+    handle_text = "@darsi_chini_bot"
     return f'''<!doctype html>
 <html lang="{lang}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

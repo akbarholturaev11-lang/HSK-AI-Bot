@@ -9,13 +9,14 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 
-from app.public_site.content import PAGES
+from app.public_site.content import DOWNLOAD_PATH, PAGES
 from app.public_site.render import BOT_URL, attribution, public_origin, render_page
 
 logger = logging.getLogger("uvicorn.error.public_analytics")
 STATIC = Path(__file__).resolve().parents[1] / "static"
 GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
 GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
+SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH,)
 
 
 def indexnow_key(settings_obj):
@@ -32,12 +33,12 @@ def indexnow_payload(settings_obj):
         raise ValueError("Set INDEXNOW_KEY before submitting")
     return {"host": urlsplit(origin).netloc, "key": key,
             "keyLocation": origin + "/" + key + ".txt",
-            "urlList": [origin + path for path in PAGES]}
+            "urlList": [origin + path for path in SITEMAP_PATHS]}
 
 
 def sitemap_xml(origin):
     root = Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
-    for path in PAGES:
+    for path in SITEMAP_PATHS:
         SubElement(SubElement(root, "url"), "loc").text = origin + path
     # No fabricated lastmod; use actual editorial dates if maintained later.
     return tostring(root, encoding="utf-8", xml_declaration=True)
@@ -50,6 +51,8 @@ def robots_text(origin):
         if path != "/":
             rules.extend([f"Allow: {path}$", f"Allow: {path}?*"])
     rules.extend([
+        f"Allow: {DOWNLOAD_PATH}$",
+        f"Allow: {DOWNLOAD_PATH}?*",
         f"Allow: /{GOOGLE_VERIFICATION_FILENAME}$",
         "Allow: /public-assets/",
         "Allow: /desktop-download$",

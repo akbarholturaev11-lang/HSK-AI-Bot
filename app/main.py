@@ -1370,16 +1370,16 @@ def _absolute_download_seo_urls(html: str, origin: str) -> str:
 
     return (
         html.replace(
-            '<link rel="canonical" href="/download/">',
-            f'<link rel="canonical" href="{origin}/download/">',
+            '<link rel="canonical" href="/download">',
+            f'<link rel="canonical" href="{origin}/download">',
         )
         .replace(
-            '<link rel="alternate" hreflang="uz" href="/download/">',
-            f'<link rel="alternate" hreflang="uz" href="{origin}/download/">',
+            '<link rel="alternate" hreflang="uz" href="/download">',
+            f'<link rel="alternate" hreflang="uz" href="{origin}/download">',
         )
         .replace(
-            '<meta property="og:url" content="/download/">',
-            f'<meta property="og:url" content="{origin}/download/">',
+            '<meta property="og:url" content="/download">',
+            f'<meta property="og:url" content="{origin}/download">',
         )
         .replace(
             '<meta property="og:image" content="/assets/hsk-ai-cover.webp">',
