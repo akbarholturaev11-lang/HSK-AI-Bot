@@ -30,11 +30,12 @@ function make(opts){
     root:root,
     reveal:function(build){
       if(finished)return;
-      var minVisible=Math.max(0,650-(Date.now()-started));
+      var minVisible=Math.max(0,720-(Date.now()-started));
       clearTimeout(revealTimer);
       revealTimer=setTimeout(function(){
         if(finished)return;
         if(typeof build==="function")build();
+        if(global.HSKCharacterMotion)global.HSKCharacterMotion.play(charHost,"exit");
         requestAnimationFrame(function(){
           requestAnimationFrame(function(){
             if(finished)return;
@@ -43,7 +44,7 @@ function make(opts){
               finished=true;
               if(root.parentNode)root.parentNode.removeChild(root);
               if(active===api)active=null;
-            },390);
+            },430);
           });
         });
       },minVisible);
