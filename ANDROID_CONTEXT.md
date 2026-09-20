@@ -221,7 +221,48 @@ olib tashlandi. `ProfileViewModel.startTrial` o'z joyida qoladi —
 `profile_trial_*`, `profile_subscription_*` va `profile_referral_*` satrlari
 resurslarda qoldi (uch tilda), chunki ular qaytarilishi mumkin.
 
-### 3.6 Boshqa ochiqlar
+### 3.6 Dars yakuni bayrami Mini App darajasiga chiqarildi — 2026-09-20
+
+`LessonCompletionCelebration.kt` da uchala sahna bor edi, lekin ikkitasi
+yalang'och: streak ekrani faqat «🔥 N» va «0 → 1» ko'rsatardi, reyting ekrani
+esa «🏆 #6» va «#7 → #6». Mini App'da esa hafta kunlari, haftalik maqsad va
+ismli reyting jadvali bor.
+
+Endi:
+
+- **Sahna qora** (`--ink`, Mini App'dagi `.levelup` kabi) va orqasida 24 ta
+  oltin nur sekin aylanadi (`RayBurst`, Canvas bilan chiziladi — `#lu-rays`
+  JS'da ham xuddi shunday quriladi).
+- **Streak ekrani**: katta alanga + panda, raqam, «kun ketma-ket!», holatga
+  mos matn, 7 kunlik alanga/muz qatori va «Sizning haftangiz N/7» progressi.
+- **Reyting ekrani**: «Reytingda ko'tarildingiz!», o'zib ketilgan o'quvchining
+  ismi va uch qatorli jadval (yuqoridagi, siz, o'zib ketilgan).
+
+**Ma'lumot qayerdan keladi.** Hafta uchun serverga tegilmadi —
+`CourseGamificationDto` allaqachon `week_start`, `week_activity_dates` va
+`local_date` ni beradi. `StreakCalendar.kt` dagi `weekCalendarMeta()` endi
+`internal` va ikkala joy ham (profil kalendari va bayram) **bitta**
+implementatsiyadan o'qiydi — bir hafta haqida ikki xil javob bo'lmasligi uchun.
+
+**Reyting jadvali bitta qo'shimcha so'rov qiladi.** `rank_before`/`rank_after`
+serverdan keladi va ko'tarilish faktini **faqat o'sha** hal qiladi (XP'dan
+taxmin qilinmaydi). Qo'shnilarning ismi va XP'si esa kelmaydi, shuning uchun
+dars tugagach `FeatureRepository.rating()` bir marta so'raladi. So'rov yiqilsa
+yoki o'zida ism bo'lmasa — sahna oddiy «#7 → #6» qatoriga tushadi, Mini App
+ham tasdiqlay olmasa bayram oynasini ochmaydi.
+
+`LessonViewModel` endi `featureRepository` oladi (testlarda `null`, ya'ni
+so'rov umuman qilinmaydi).
+
+**Matnlar** Mini App'dagi `streakCopy()` va `skWeekGoalHtml()` dan so'zma-so'z
+ko'chirildi, uch tilda — o'ylab topilmadi.
+
+**Tekshirilmagan:** bu muhitda Android SDK yo'q. Beshta statik tekshiruv
+o'tdi, kompilyatsiya va ko'rinish telefonda tasdiqlanishi kerak. Ayniqsa:
+streak ekrani past ekranda sig'yaptimi (aylanadigan qilingan), panda alanga
+yonida to'g'ri turibdimi, jadval uzun ismda kesilyaptimi.
+
+### 3.7 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga

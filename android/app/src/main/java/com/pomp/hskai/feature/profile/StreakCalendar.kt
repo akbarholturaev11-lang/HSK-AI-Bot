@@ -73,7 +73,7 @@ internal fun StreakCalendar(progress: CourseProgress?, dailyXp: Int) {
                 Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     for (index in 0 until 7) {
                         val studied = if (meta.fromServer) {
-                            meta.activeDates.contains(meta.dates.getOrNull(index))
+                            meta.studied(index, streak)
                         } else {
                             index <= end && (end - index) < streak
                         }
@@ -280,31 +280,59 @@ private fun SectionHeader(title: String, trailing: String? = null) {
     }
 }
 
-private data class WeekMeta(
+internal data class WeekMeta(
     val dates: List<String>,
     val activeDates: Set<String>,
     val todayIndex: Int,
     val fromServer: Boolean,
+) {
+    /** How many of the seven days are already done — the Mini App's `n / 7`. */
+    fun activeCount(streak: Int): Int = (0 until 7).count { index ->
+        if (fromServer) activeDates.contains(dates.getOrNull(index))
+        else index <= todayIndex && (todayIndex - index) < streak
+    }
+
+    fun studied(index: Int, streak: Int): Boolean =
+        if (fromServer) activeDates.contains(dates.getOrNull(index))
+        else index <= todayIndex && (todayIndex - index) < streak
+}
+
+private fun weekCalendarMeta(progress: CourseProgress?): WeekMeta = weekCalendarMeta(
+    weekStart = progress?.weekStart,
+    activityDates = progress?.weekActivityDates,
+    localDate = progress?.localDate,
 )
 
-private fun weekCalendarMeta(progress: CourseProgress?): WeekMeta {
-    val local = progress?.localDate?.takeIf { isIsoDay(it) }
-    val start = progress?.weekStart?.takeIf { isIsoDay(it) }
+/**
+ * The Mini App's `weekCalendarMeta()`, from whichever payload carries the week.
+ *
+ * The course map sends it on `progress`; a lesson completion sends the same
+ * three fields on its gamification snapshot. Both feed one implementation so
+ * the profile calendar and the celebration can never disagree about which days
+ * are lit.
+ */
+internal fun weekCalendarMeta(
+    weekStart: String?,
+    activityDates: List<String>?,
+    localDate: String?,
+): WeekMeta {
+    val local = localDate?.takeIf { isIsoDay(it) }
+    val start = weekStart?.takeIf { isIsoDay(it) }
     val dates = if (start != null) (0 until 7).map { shiftIsoDay(start, it) } else emptyList()
-    val active = progress?.weekActivityDates.orEmpty().filter { isIsoDay(it) }.toSet()
+    val active = activityDates.orEmpty().filter { isIsoDay(it) }.toSet()
     val todayIndex = dates.indexOf(local).coerceAtLeast(0)
     return WeekMeta(
         dates = dates,
         activeDates = active,
         todayIndex = todayIndex,
-        fromServer = start != null && progress?.weekActivityDates != null,
+        fromServer = start != null && activityDates != null,
     )
 }
 
-private fun isIsoDay(value: String): Boolean =
+internal fun isIsoDay(value: String): Boolean =
     value.length == 10 && value[4] == '-' && value[7] == '-' &&
         value.filterIndexed { index, _ -> index != 4 && index != 7 }.all { it.isDigit() }
 
-private fun shiftIsoDay(day: String, days: Int): String =
+internal fun shiftIsoDay(day: String, days: Int): String =
     runCatching { java.time.LocalDate.parse(day).plusDays(days.toLong()).toString() }
         .getOrDefault(day)

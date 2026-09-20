@@ -1093,6 +1093,9 @@ private fun LessonHost(
             lessonOrder = lesson.order,
             language = language,
             resumeStore = app.appSettings,
+            // Only the rank-up board uses it, and only when the lesson moved
+            // the learner up the weekly league.
+            featureRepository = app.featureRepository,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
