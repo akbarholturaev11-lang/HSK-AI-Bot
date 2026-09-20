@@ -2,33 +2,22 @@ import SwiftUI
 
 struct MainShellView: View {
     let account: LinkedAccount
+    @ObservedObject var courseModel: CourseViewModel
     let onLogout: () -> Void
 
     var body: some View {
         TabView {
-            ShellPlaceholder(
-                titleKey: "tab_course",
-                systemImage: "map.fill"
-            )
-            .tabItem { Label("tab_course", systemImage: "map.fill") }
+            CourseScreen(model: courseModel, account: account)
+                .tabItem { Label("tab_course", systemImage: "map.fill") }
 
-            ShellPlaceholder(
-                titleKey: "tab_practice",
-                systemImage: "brain.head.profile"
-            )
-            .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
+            ShellPlaceholder(titleKey: "tab_practice", systemImage: "brain.head.profile")
+                .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
 
-            ShellPlaceholder(
-                titleKey: "tab_dictionary",
-                systemImage: "character.book.closed.fill"
-            )
-            .tabItem { Label("tab_dictionary", systemImage: "character.book.closed.fill") }
+            ShellPlaceholder(titleKey: "tab_dictionary", systemImage: "character.book.closed.fill")
+                .tabItem { Label("tab_dictionary", systemImage: "character.book.closed.fill") }
 
-            ShellPlaceholder(
-                titleKey: "tab_rating",
-                systemImage: "trophy.fill"
-            )
-            .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
+            ShellPlaceholder(titleKey: "tab_rating", systemImage: "trophy.fill")
+                .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
 
             ProfileShellPlaceholder(account: account, onLogout: onLogout)
                 .tabItem { Label("tab_profile", systemImage: "person.crop.circle.fill") }

@@ -105,6 +105,7 @@ actor AuthSession {
         }
 
         return LinkedAccount(
+            deviceId: response.device.id,
             displayName: response.user.name,
             language: response.user.language,
             level: response.user.level,

@@ -4,6 +4,17 @@ struct IOSCourseAPI: Sendable {
     let client: APIClient
     let authSession: AuthSession
 
+    func courseMap() async throws -> IOSCourseMap {
+        let token = try await authSession.bearerToken()
+        let rawOffset = TimeZone.current.secondsFromGMT() / 60
+        let offset = min(840, max(-720, rawOffset))
+        return try await client.get(
+            "/api/v3/ios/course/map",
+            bearerToken: token,
+            queryItems: [URLQueryItem(name: "tz", value: String(offset))]
+        )
+    }
+
     func onboardingStatus() async throws -> IOSOnboardingStatus {
         let token = try await authSession.bearerToken()
         return try await client.get(

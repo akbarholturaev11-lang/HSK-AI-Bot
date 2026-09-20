@@ -34,6 +34,7 @@ final class AppModel: ObservableObject {
 
     private let authSession: AuthSession
     private let courseAPI: IOSCourseAPI
+    let courseViewModel: CourseViewModel
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
     private var didRestore = false
@@ -41,8 +42,10 @@ final class AppModel: ObservableObject {
     init(environment: AppEnvironment) {
         let client = APIClient(environment: environment)
         let authSession = AuthSession(api: IOSAuthAPI(client: client))
+        let courseAPI = IOSCourseAPI(client: client, authSession: authSession)
         self.authSession = authSession
-        self.courseAPI = IOSCourseAPI(client: client, authSession: authSession)
+        self.courseAPI = courseAPI
+        self.courseViewModel = CourseViewModel(api: courseAPI)
     }
 
     func restoreSession() async {
@@ -136,6 +139,7 @@ final class AppModel: ObservableObject {
             }
 
             let updatedAccount = LinkedAccount(
+                deviceId: account.deviceId,
                 displayName: account.displayName,
                 language: account.language,
                 level: result.level.isEmpty ? onboarding.selectedLevel : result.level,
@@ -159,6 +163,7 @@ final class AppModel: ObservableObject {
         await authSession.logout()
         link = LinkPresentation()
         onboarding = OnboardingPresentation()
+        courseViewModel.reset()
         phase = .signedOut
     }
 

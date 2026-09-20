@@ -84,6 +84,7 @@ struct PendingLink: Sendable, Equatable {
 }
 
 struct LinkedAccount: Sendable, Equatable {
+    let deviceId: String
     let displayName: String
     let language: String
     let level: String

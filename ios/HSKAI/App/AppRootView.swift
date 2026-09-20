@@ -17,7 +17,10 @@ struct AppRootView: View {
             case .onboarding(let account):
                 OnboardingScreen(model: model, account: account)
             case .main(let account):
-                MainShellView(account: account) {
+                MainShellView(
+                    account: account,
+                    courseModel: model.courseViewModel
+                ) {
                     Task { await model.logout() }
                 }
             case .bootstrapFailed:
