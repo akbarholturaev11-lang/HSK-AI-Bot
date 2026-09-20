@@ -81,4 +81,4 @@ jobs:
             app/bot/handlers/desktop_auth.py
 
       - name: Run Android + iOS auth regressions
-        run: pytest tests/test_android_auth_api.py tests/test_ios_auth_api.py -q
+        run: PYTHONPATH=. pytest tests/test_android_auth_api.py tests/test_ios_auth_api.py -q
