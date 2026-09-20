@@ -8,9 +8,8 @@ from xml.etree import ElementTree
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from app.api.public_site import create_public_site_router, indexnow_payload
-from app.api.public_site import GOOGLE_VERIFICATION_FILENAME
-from app.public_site.content import HOME_PATHS, PAGES
+from app.api.public_site import GOOGLE_VERIFICATION_FILENAME, create_public_site_router, indexnow_payload
+from app.public_site.content import DOWNLOAD_PATH, HOME_PATHS, PAGES
 from app.public_site.render import attribution, public_origin
 
 ORIGIN = "https://learn.example.com"
@@ -66,6 +65,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(page["h1"], html)
             self.assertEqual(parsed.find("link", rel="canonical")[0]["href"], ORIGIN + path)
             self.assertEqual(parsed.find("meta", name="description")[0]["content"], page["description"])
+            self.assertEqual(parsed.find("meta", name="robots")[0]["content"], "index,follow")
             self.assertIn("HSK AI", html)
             self.assertIn("darsi_chini_bot", html)
             self.assertIn("HSK 1", html)
@@ -84,6 +84,18 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual([n["name"] for n in graph if n["@type"] == "Course"], [f"HSK {i}" for i in range(1, 5)])
                 for i in range(1, 5):
                     self.assertTrue(parsed.find("section", id=f"hsk{i}"))
+            if path == "/":
+                self.assertTrue(parsed.find("a", **{"class": "secondary-cta"}))
+                self.assertIn(DOWNLOAD_PATH, html)
+            if path == DOWNLOAD_PATH:
+                download_apps = [
+                    n for n in graph
+                    if n["@type"] == "SoftwareApplication" and n["@id"].endswith("#download-application")
+                ]
+                self.assertEqual(download_apps[0]["operatingSystem"], ["macOS", "Windows", "Android"])
+                self.assertEqual(download_apps[0]["installUrl"], ORIGIN + "/desktop-download?lang=uz")
+                self.assertIn("/desktop-download?lang=uz", html)
+                self.assertIn("iPhone/iPad", html)
             titles.add(page["title"])
             descriptions.add(page["description"])
         self.assertEqual(len(titles), len(PAGES))
@@ -107,6 +119,17 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                          "/go/telegram", "/tj/private", "/future-private"):
                 self.assertFalse(allowed(robots.text, agent, path), (agent, path))
             self.assertTrue(allowed(robots.text, agent, "/public-assets/site.css"))
+            self.assertTrue(allowed(robots.text, agent, "/desktop-download?lang=uz"))
+            self.assertTrue(allowed(robots.text, agent, "/desktop-download.html"))
+            self.assertTrue(allowed(robots.text, agent, "/assets/hsk-ai-cover.webp"))
+            self.assertTrue(allowed(robots.text, agent, "/google4575dc78c69e5824.html"))
+
+        verification = await self.client.get("/google4575dc78c69e5824.html")
+        self.assertEqual(verification.status_code, 200)
+        self.assertEqual(
+            verification.text,
+            "google-site-verification: google4575dc78c69e5824.html",
+        )
 
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:

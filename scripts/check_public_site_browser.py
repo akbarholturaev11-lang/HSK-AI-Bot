@@ -54,7 +54,7 @@ def main():
         assert source_page.locator("a.cta").first.get_attribute("href").startswith("/go/telegram?")
         no_js.close()
         browser.close()
-        print("PASS: 7 pages × 3 widths; no overflow/console errors; UTM navigation; CTA redirect; JavaScript disabled")
+        print(f"PASS: {len(PAGES)} pages × 3 widths; no overflow/console errors; UTM navigation; CTA redirect; JavaScript disabled")
 
 
 if __name__ == "__main__":

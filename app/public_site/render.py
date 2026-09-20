@@ -4,7 +4,7 @@ import re
 from html import escape
 from urllib.parse import urlencode, urlsplit
 
-from app.public_site.content import CTA, GUIDES, HOME_PATHS, PAGES
+from app.public_site.content import CTA, DOWNLOAD_CTA, DOWNLOAD_PATH, GUIDES, HOME_PATHS, PAGES
 
 BOT_URL = "https://t.me/darsi_chini_bot"
 ATTRIBUTION_KEYS = ("source", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
@@ -40,13 +40,26 @@ def structured_data(path, origin):
          "alternateName": "HSK AI — омӯзиши забони чинӣ", "url": origin + "/",
          "inLanguage": ["tg", "ru", "uz"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "SoftwareApplication", "@id": origin + "/#application", "name": "HSK AI",
-         "applicationCategory": "EducationalApplication", "operatingSystem": "Telegram",
-         "url": origin + "/tj/", "installUrl": BOT_URL, "inLanguage": ["tg", "ru", "uz"],
+         "applicationCategory": "EducationalApplication", "operatingSystem": "Telegram Mini App",
+         "url": origin + "/", "installUrl": BOT_URL, "inLanguage": ["tg", "ru", "uz"],
          "description": PAGES["/tj/"]["intro"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "WebPage", "@id": origin + path + "#page", "url": origin + path,
          "name": page["title"], "description": page["description"], "inLanguage": page["lang"],
          "isPartOf": {"@id": origin + "/#website"}, "about": {"@id": origin + "/#application"}},
     ]
+    if path == DOWNLOAD_PATH:
+        graph.append({
+            "@type": "SoftwareApplication",
+            "@id": origin + DOWNLOAD_PATH + "#download-application",
+            "name": "HSK AI Apps / Download",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": ["macOS", "Windows", "Android"],
+            "url": origin + DOWNLOAD_PATH,
+            "installUrl": origin + "/desktop-download?lang=uz",
+            "inLanguage": ["uz", "ru", "tg"],
+            "description": page["description"],
+            "publisher": {"@id": origin + "/#organization"},
+        })
     if path == "/tj/hsk/":
         for level in range(1, 5):
             graph.append({"@type": "Course", "@id": origin + path + f"#hsk{level}",
@@ -81,8 +94,16 @@ def render_page(path, settings_obj, tags=None):
         for i, (title, body) in enumerate(page["sections"]))
     guides = "".join(f'<li><a href="{esc(with_attribution(dest, tags))}">{esc(title)}</a></li>'
                      for dest, title in GUIDES.items())
-    cta_url = "/go/telegram?" + urlencode({"page": path, **tags})
-    cta = f'<a class="cta" href="{esc(cta_url)}" rel="nofollow">{CTA[lang]} <span aria-hidden="true">↗</span></a>'
+    if path == DOWNLOAD_PATH:
+        cta_url = with_attribution(page["primary_href"], tags)
+        cta = f'<a class="cta" href="{esc(cta_url)}">{esc(page["primary_cta"])} <span aria-hidden="true">↓</span></a>'
+        secondary_url = with_attribution(page["secondary_href"], tags)
+        secondary = f'<a class="secondary-cta" href="{esc(secondary_url)}">{esc(page["secondary_cta"])}</a>'
+    else:
+        cta_url = "/go/telegram?" + urlencode({"page": path, **tags})
+        cta = f'<a class="cta" href="{esc(cta_url)}" rel="nofollow">{CTA[lang]} <span aria-hidden="true">↗</span></a>'
+        download_url = with_attribution(DOWNLOAD_PATH, tags)
+        secondary = f'<a class="secondary-cta" href="{esc(download_url)}">{esc(DOWNLOAD_CTA[lang])}</a>'
     labels = {"tg": ("Салом", "Роҳнамоҳо ба тоҷикӣ", "Дар бораи маълумоти ташриф"),
               "ru": ("Привет", "Руководства на таджикском", "О данных посещения"),
               "uz": ("Salom", "Tojik tilidagi qo‘llanmalar", "Tashrif ma’lumotlari haqida")}[lang]
@@ -92,10 +113,13 @@ def render_page(path, settings_obj, tags=None):
         "uz": "Sahifa ochilishi va botga o‘tish kampaniya belgilari bilan server jurnaliga yoziladi. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
+    handle_rel = ' rel="nofollow"' if path != DOWNLOAD_PATH else ""
+    handle_text = "@darsi_chini_bot" if path != DOWNLOAD_PATH else page["primary_href"]
     return f'''<!doctype html>
 <html lang="{lang}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(page['title'])}</title><meta name="description" content="{esc(page['description'])}">
+<meta name="robots" content="index,follow">
 <link rel="canonical" href="{esc(canonical)}">{hreflang}{verification}
 <meta property="og:title" content="{esc(page['title'])}"><meta property="og:description" content="{esc(page['description'])}">
 <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}">
@@ -107,7 +131,7 @@ def render_page(path, settings_obj, tags=None):
 <link rel="stylesheet" href="/public-assets/site.css?v=1">
 <script type="application/ld+json">{schema}</script></head>
 <body><header><a class="brand" href="{esc(with_attribution('/', tags))}"><img src="/public-assets/avatar.webp" width="40" height="40" alt="">HSK AI</a><nav aria-label="Language">{nav}</nav></header>
-<main><div class="hero"><div><p class="eyebrow">HSK 1–4 · Telegram Mini App</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p>{cta}<p class="handle"><a href="{esc(cta_url)}" rel="nofollow">@darsi_chini_bot</a></p></div>
+<main><div class="hero"><div><p class="eyebrow">HSK 1–4 · Telegram Mini App</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p><div class="actions">{cta}{secondary}</div><p class="handle"><a href="{esc(cta_url)}"{handle_rel}>{esc(handle_text)}</a></p></div>
 <aside class="example" aria-label="中文"><span lang="zh" class="hanzi">你好</span><span class="pinyin">nǐ hǎo</span><span>{labels[0]}</span></aside></div>
 <article>{sections}</article><aside class="guides" lang="tg"><h2>{labels[1]}</h2><ul>{guides}</ul></aside>
 <div class="closing">{cta}</div></main><footer><span>HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span><details><summary>{labels[2]}</summary><p>{privacy}</p></details></footer></body></html>'''

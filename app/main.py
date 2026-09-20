@@ -1365,6 +1365,33 @@ async def course_v3_miniapp():
 APP_DOWNLOADS_MARKER = "<!--APP-DOWNLOADS-->"
 
 
+def _absolute_download_seo_urls(html: str, origin: str) -> str:
+    """Make static download metadata canonical on the configured public origin."""
+
+    return (
+        html.replace(
+            '<link rel="canonical" href="/download/">',
+            f'<link rel="canonical" href="{origin}/download/">',
+        )
+        .replace(
+            '<link rel="alternate" hreflang="uz" href="/download/">',
+            f'<link rel="alternate" hreflang="uz" href="{origin}/download/">',
+        )
+        .replace(
+            '<meta property="og:url" content="/download/">',
+            f'<meta property="og:url" content="{origin}/download/">',
+        )
+        .replace(
+            '<meta property="og:image" content="/assets/hsk-ai-cover.webp">',
+            f'<meta property="og:image" content="{origin}/assets/hsk-ai-cover.webp">',
+        )
+        .replace(
+            '<meta name="twitter:image" content="/assets/hsk-ai-cover.webp">',
+            f'<meta name="twitter:image" content="{origin}/assets/hsk-ai-cover.webp">',
+        )
+    )
+
+
 async def _rendered_downloads_page() -> Response:
     """The download page with the release facts already in the HTML.
 
@@ -1387,6 +1414,7 @@ async def _rendered_downloads_page() -> Response:
             settings_obj=settings,
         )
         origin = public_origin(settings)
+        html = _absolute_download_seo_urls(html, origin)
         section = downloads_section(status, origin=origin, language="uz")
         schema = app_downloads_structured_data(
             status, origin=origin, page_url="/download"

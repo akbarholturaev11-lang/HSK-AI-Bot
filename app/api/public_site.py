@@ -49,7 +49,19 @@ def robots_text(origin):
     for path in PAGES:
         if path != "/":
             rules.extend([f"Allow: {path}$", f"Allow: {path}?*"])
-    rules.extend(["Allow: /public-assets/", "Allow: /sitemap.xml$", "Allow: /robots.txt$"])
+    rules.extend([
+        f"Allow: /{GOOGLE_VERIFICATION_FILENAME}$",
+        "Allow: /public-assets/",
+        "Allow: /desktop-download$",
+        "Allow: /desktop-download?*",
+        "Allow: /desktop-download.html$",
+        "Allow: /desktop-download.html?*",
+        "Allow: /desktop-download-page.css$",
+        "Allow: /desktop-download-page.js$",
+        "Allow: /assets/",
+        "Allow: /sitemap.xml$",
+        "Allow: /robots.txt$",
+    ])
     return "\n\n".join("User-agent: " + agent + "\n" + "\n".join(rules)
                           for agent in ("*", "Googlebot", "Bingbot", "OAI-SearchBot")) + f"\n\nSitemap: {origin}/sitemap.xml\n"
 

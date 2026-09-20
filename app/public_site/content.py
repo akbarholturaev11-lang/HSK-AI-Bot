@@ -1,15 +1,18 @@
 """Reviewed public copy. Never derive marketing claims from user statistics."""
 
+DOWNLOAD_PATH = "/download/"
+
 PAGES = {
     "/": {
-        "lang": "tg", "title": "HSK AI — забони чинӣ дар Telegram",
-        "description": "HSK AI: платформаи омӯзиши забони чинӣ бо ёрии AI. Бо тоҷикӣ оғоз кунед ё русӣ ва ӯзбекиро интихоб намоед. Курсҳои HSK 1–4 дар Telegram.",
-        "h1": "Забони чинӣ. Бо забони худатон.",
-        "intro": "HSK AI — платформаи таълимӣ барои омӯзиши забони чинӣ бо ёрии зеҳни сунъӣ. Пеш аз ҳама барои омӯзандагони тоҷикзабон; забонҳои русӣ ва ӯзбекӣ низ дастгирӣ мешаванд.",
+        "lang": "tg", "title": "HSK AI — забони чинӣ, HSK ва AI teacher",
+        "description": "HSK AI: омӯзиши забони чинӣ ва HSK бо ёрии AI. Барои тоҷикӣ, ӯзбекӣ ва русӣ: Telegram Mini App, AI Chinese teacher, луғат, талаффуз ва курсҳои HSK 1–4.",
+        "h1": "HSK AI: забони чинӣ, HSK ва AI teacher",
+        "intro": "HSK AI — платформаи таълимӣ барои омӯзиши забони чинӣ бо ёрии зеҳни сунъӣ. Пеш аз ҳама барои омӯзандагони тоҷикзабон; забонҳои ӯзбекӣ ва русӣ низ дастгирӣ мешаванд. Дар Telegram Mini App курсҳои HSK, луғат, талаффуз ва саволу ҷавоби AI якҷо кор мекунанд.",
         "sections": [
             ("Аз курс оғоз кунед", "Дар Telegram боти @darsi_chini_bot-ро кушоед ва ба Mini App гузаред. Дарсҳои HSK 1, HSK 2, HSK 3 ва HSK 4, луғат, грамматика ва санҷишҳо ба омӯзиши пайдарпай кумак мекунанд."),
-            ("Забони омӯзишро интихоб кунед", "Саҳифаи тоҷикӣ имкониятҳои платформаро шарҳ медиҳад. Барои маълумот бо забони русӣ ё ӯзбекӣ аз пайвандҳои забон истифода баред. Дар барнома низ ин се забон мавҷуданд."),
-            ("Машқро ба дарс пайваст кунед", "Пас аз дарс калимаҳоро такрор кунед, бо AI саволу ҷавоб кунед ё талаффузро машқ намоед. Пешрафт ва хатоҳои сабтшуда ба шумо барои интихоби машқи навбатӣ кумак мекунанд."),
+            ("Забони омӯзишро интихоб кунед", "Саҳифаи тоҷикӣ имкониятҳои платформаро шарҳ медиҳад. Барои маълумот бо забони русӣ ё ӯзбекӣ аз пайвандҳои забон истифода баред. Дар барнома низ ин се забон мавҷуданд: тоҷикӣ, русский ва o‘zbekcha."),
+            ("Машқро ба дарс пайваст кунед", "Пас аз дарс калимаҳоро такрор кунед, бо AI саволу ҷавоб кунед ё талаффузро машқ намоед. Барои search intent-и «китайский язык на таджикском», «китайский язык на узбекском», «xitoy tilini o‘zbek tilida o‘rganish» ва «HSK o‘rganish» ин саҳифа маҳсулотро табиӣ шарҳ медиҳад, на бо такрори сунъии калимаҳо."),
+            ("Барномаҳо ва зеркашӣ", "HSK AI app download барои компютер дар саҳифаи алоҳида ҷамъ шудааст. Аз он ҷо саҳифаи насбкунандаи macOS ва Windows кушода мешавад; Telegram Mini App ҳамоно роҳи асосии оғози курс аст."),
         ],
     },
     "/tj/": {
@@ -47,6 +50,22 @@ PAGES = {
             ("So‘zlarni faol eslab qoling", "Iyeroglifni o‘qing, pinyinni ayting, tarjimani yopib ma’nosini eslang. Keyin yangi so‘z bilan gap tuzing. Lug‘at, test va xatolarni takrorlash bo‘limlari o‘tilgan materialga qaytishga yordam beradi."),
             ("Telegram’da boshlash", "@darsi_chini_bot botini oching, tilni tanlang va Mini App’dagi kursga kiring. Bepul foydalanishda kunlik limitlar bor; joriy obuna va kirish shartlari botda ko‘rsatiladi. Imtihon natijasi kafolatlanmaydi."),
         ],
+    },
+    DOWNLOAD_PATH: {
+        "lang": "uz", "title": "HSK AI app download — macOS, Windows, Android va Telegram",
+        "description": "HSK AI ilovalarini yuklab olish: macOS, Windows va Android release statusi, Telegram Mini App, iPhone/iPad public holati. Xitoy tili va HSK o‘rganish uchun AI yordamchi.",
+        "h1": "HSK AI ilovalarini yuklab olish",
+        "intro": "Bu sahifa HSK AI Apps / Download uchun clean public landing page. U crawler uchun login, Telegram initData yoki JavaScript talab qilmaydigan HTML ichida HSK AI app, HSK AI download va mavjud platformalar haqida aniq ma’lumot beradi.",
+        "sections": [
+            ("Mac, Windows va Android statusi", "HSK AI installer sahifasi macOS, Windows va Android uchun real release statusini tekshiradi. Link faqat rasmiy fayl e’lon qilingan bo‘lsa ko‘rinadi; DMG, EXE yoki APK yo‘q bo‘lsa sahifa buni mavjud emas deb ko‘rsatadi."),
+            ("Telegram Mini App", "HSK AI kursining asosiy yo‘li @darsi_chini_bot orqali ochiladigan Telegram Mini App. Hisob, progress, obuna holati, HSK 1–4 darslari, lug‘at, talaffuz va AI yordamchi shu oqim bilan bog‘langan."),
+            ("Android, iPhone va iPad holati", "Android uchun public APK faqat release service’da haqiqiy fayl bo‘lsa link qilinadi. iPhone/iPad uchun hozir alohida public App Store yoki IPA download bor deb ko‘rsatilmaydi; telefon va planshetda Telegram Mini App orqali davom etish mumkin."),
+            ("Kimlar uchun", "HSK AI xitoy tilini o‘zbek tilida o‘rganish, xitoy tilini tojik tilida o‘rganish, HSK o‘rganish, китайский язык на таджикском, китайский язык на узбекском va AI Chinese teacher izlayotgan o‘quvchilar uchun mo‘ljallangan. Maqsad — darsni tushuntirish, mashq qilish va xatoni ko‘rish; imtihon natijasi kafolatlanmaydi."),
+        ],
+        "primary_cta": "Installer sahifasini ochish",
+        "primary_href": "/desktop-download?lang=uz",
+        "secondary_cta": "Asosiy HSK AI saytiga qaytish",
+        "secondary_href": "/",
     },
     "/tj/hsk/": {
         "lang": "tg", "title": "HSK ба тоҷикӣ: курсҳои HSK 1–4 — HSK AI",
@@ -92,4 +111,7 @@ PAGES = {
 
 HOME_PATHS = {"tg": "/tj/", "ru": "/ru/", "uz": "/uz/", "x-default": "/"}
 CTA = {"tg": "Ботро дар Telegram кушоед", "ru": "Открыть бота в Telegram", "uz": "Telegram botni ochish"}
+DOWNLOAD_CTA = {"tg": "Барномаҳои HSK AI-ро боргирӣ кунед",
+                "ru": "Скачать приложения HSK AI",
+                "uz": "HSK AI ilovalarini yuklab olish"}
 GUIDES = {path: page["h1"] for path, page in PAGES.items() if path.startswith("/tj/") and path != "/tj/"}
