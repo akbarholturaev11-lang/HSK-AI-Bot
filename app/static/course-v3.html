@@ -1144,6 +1144,18 @@ button{cursor:pointer}
   .rl-task.lock{opacity:.55}
   .rl-done{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--jade);font-weight:500}
 }
+/* ---- Phase 4: character feedback + heart motion ---- */
+#f-msg{display:flex;align-items:center;gap:10px}
+#f-msg>span:last-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+#f-msg .fpanda.hsk-character-stage{width:46px;height:46px;min-width:46px;min-height:46px}
+#f-msg .fpanda .hsk-character{width:100%;height:100%}
+.fheart.hp-hit{animation:hskHpHit .42s ease}
+.fheart.hp-last{animation:hskHpLast 1.1s ease 2}
+.fheart.hp-zero{animation:hskHpZero .5s ease}
+@keyframes hskHpHit{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(-8deg)}100%{transform:scale(1)}}
+@keyframes hskHpLast{0%,100%{transform:scale(1);filter:none}50%{transform:scale(1.16);filter:drop-shadow(0 0 10px rgba(224,74,64,.45))}}
+@keyframes hskHpZero{0%{transform:scale(1)}40%{transform:scale(.88);opacity:.7}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.fheart.hp-hit,.fheart.hp-last,.fheart.hp-zero{animation:none!important}}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260918-2" rel="stylesheet">
 </head>
@@ -2924,9 +2936,11 @@ Foundation.grade=function(ok){
   Foundation.save();
 };
 Foundation.feedback=function(ok,sub){
-  var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");/* Panda javob beradi: to'g'rida quvonadi, xatoda tushuntiradi — koyimaydi */
-    $("#f-msg").innerHTML='<span class="fpanda">'+pandaChar(ok?"celebrate":"talk")+'</span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
+  var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");
+  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char"></span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';
+  $("#f-barbtn").textContent=T().next;
   beep(ok?[523,659,784]:[220,180]);haptic(ok?"ok":"no");
+  renderFeedbackCharacter($("#fbar-char"),ok?"panda":"rabbit",ok?"jump":"wrong");
 };
 Foundation.pick=function(el,k){
   if(Foundation.answered)return;Foundation.answered=true;var c=Foundation.queue[Foundation.i],ok=k===Number(c.correct_index);
@@ -3291,17 +3305,66 @@ function buildQueue(d){
 }
 function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length*100)+"%"}
 function hideBar(){$("#f-bar").className="fbar"}
-function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");/* Panda javob beradi: to'g'rida quvonadi, xatoda tushuntiradi — koyimaydi */
-  $("#f-msg").innerHTML='<span class="fpanda">'+pandaChar(ok?"celebrate":"talk")+'</span><span>'+msg+(sub?'<small>'+sub+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
+function flowCurrentCard(){return Flow.queue&&Flow.queue[Flow.i]?Flow.queue[Flow.i]:null}
+function oneHeartText(){
+  return {uz:"Oxirgi yurak",ru:"Последнее сердце",tj:"Дили охирин"}[LANG]||"Oxirgi yurak";
+}
+function feedbackCharacterId(card,ok){
+  card=card||{};var t=String(card.type||"");
+  if(!ok&&HP===1)return"rabbit";
+  if(t==="pronunciation")return"panda";
+  if(t==="_grammar"||t==="gap_fill"||t==="sentence_builder"||t==="builder"||t==="reverse_builder")return"crane";
+  if(t==="match_pairs"||t==="dialog_context"||t==="dialog_cloze"||t==="quick_quiz")return"monkey";
+  if(card._guided||card._repair||card.review_mix)return"rabbit";
+  if(card._exitTicket)return ok?"dragon":"rabbit";
+  return"panda";
+}
+function feedbackReaction(card,ok){
+  if(!ok&&HP===1)return"oneHeart";
+  if(ok&&card&&card._exitTicket)return"proud";
+  if(ok&&(Flow.streak||0)>=4)return"celebrate";
+  return ok?"jump":"wrong";
+}
+function feedbackMoodFromReaction(reaction){
+  if(reaction==="wrong")return"wrong";
+  if(reaction==="oneHeart")return"one-heart";
+  if(reaction==="celebrate")return"celebrate";
+  if(reaction==="proud")return"proud";
+  if(reaction==="dismiss")return"dismissive";
+  if(reaction==="loader")return"loading";
+  return"correct";
+}
+function renderFeedbackCharacter(host,id,reaction){
+  if(!host)return;
+  host.className="fpanda hsk-character-stage";
+  if(window.HSKCharacters&&HSKCharacters.mount)HSKCharacters.mount(host,id,feedbackMoodFromReaction(reaction));
+  if(window.HSKCharacterMotion&&HSKCharacterMotion.play)HSKCharacterMotion.play(host,reaction);
+}
+function animateHeartState(prev,next){
+  var heart=document.querySelector("#flow .fheart");if(!heart)return;
+  heart.classList.remove("hp-hit","hp-last","hp-zero");void heart.offsetWidth;
+  if(next<prev){
+    heart.classList.add("hp-hit");
+    if(next===1)heart.classList.add("hp-last");
+    if(next===0)heart.classList.add("hp-zero");
+  }
+}
+function showBar(ok,msg,sub){
+  var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");
+  var card=flowCurrentCard(),displaySub=sub;
+  if(!ok&&HP===1)displaySub=displaySub?(displaySub+" · "+oneHeartText()):oneHeartText();
+  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char"></span><span>'+msg+(displaySub?'<small>'+displaySub+'</small>':'')+'</span>';
+  $("#f-barbtn").textContent=T().next;
   setTimeout(function(){try{b.scrollIntoView({block:"end"})}catch(e){}},20);
   Flow.streak=ok?(Flow.streak||0)+1:0;
   edgeGlow(ok?Flow.streak:0);
   if(ok){if(Flow.streak>=5)haptic("heavy");else if(Flow.streak>=3)haptic("med")}
-  if(!ok)Flow._wrongPending=true; /* keyingi qadamda panda dalda ekrani (darsda 1 marta) */
+  if(!ok)Flow._wrongPending=true;
   recordObjectiveResult(Flow.queue&&Flow.queue[Flow.i],ok);
   if(Flow.queue&&Flow.queue[Flow.i]&&Flow.queue[Flow.i].objective_id)saveLessonResume(Flow.i+1);
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
+  renderFeedbackCharacter($("#fbar-char"),feedbackCharacterId(card,ok),feedbackReaction(card,ok));
 }
 /* Ketma-ket to'g'ri javoblarda ekran cheti porlashi (dofamin) */
 function edgeGlow(n){var e=$("#edgeglow");if(!e)return;e.className=n>=10?"g3":n>=5?"g2":n>=3?"g1":""}
@@ -4070,7 +4133,7 @@ Flow.pick=function(el,k){
   if(!ok)el.classList.add("bad");
   if(!ok)rememberLessonMistake(c,{selected_index:k,selected_answer:optText(c.options&&c.options[k])});
   beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");
-  if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}
+  if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP)}
   showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):""));
 };
 function cardBuilder(c){
