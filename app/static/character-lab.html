@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HSK AI Character Lab</title>
+<link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
+<style>
+:root{--paper:#FDF9F0;--ink:#211D17;--ink2:#665D50;--line:#EAE0CC;--card:#fff;--cin:#E04A40}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",sans-serif}
+main{max-width:1080px;margin:0 auto;padding:28px 18px 60px}.top{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+h1{font-size:26px;margin:0 0 4px}p{color:var(--ink2);margin:0;line-height:1.5}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}
+button{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 12px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}
+button.on{background:var(--cin);border-color:var(--cin);color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.hcc-cn{font-size:21px;font-weight:700}.meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.badge{font-size:11px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 8px}
+</style>
+</head>
+<body><main>
+<div class="top"><div><h1>HSK AI Character Lab</h1><p>Phase 1 — characters are isolated from lesson logic. Use buttons to inspect each authored mood.</p></div><div class="badge" id="ver"></div></div>
+<div class="controls" id="moods"></div><div class="controls" id="effects"></div><div class="grid" id="grid"></div>
+</main>
+<script src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
+<script src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
+<script>
+(function(){
+ var mood="idle",m=document.getElementById("moods"),e=document.getElementById("effects"),g=document.getElementById("grid");
+ document.getElementById("ver").textContent=HSKCharacters.version;
+ HSKCharacters.moods.forEach(function(x){var b=document.createElement("button");b.textContent=x;b.dataset.mood=x;b.onclick=function(){mood=x;draw()};m.appendChild(b)});
+ ["pop","jump","laugh","proud","dismiss","wrong","oneHeart","celebrate","loader","land","exit"].forEach(function(x){var b=document.createElement("button");b.textContent="FX: "+x;b.onclick=function(){document.querySelectorAll(".hcc-visual>div").forEach(function(t){HSKCharacterMotion.play(t,x)})};e.appendChild(b)});
+ function draw(){
+   m.querySelectorAll("button").forEach(function(b){b.classList.toggle("on",b.dataset.mood===mood)});
+   g.innerHTML="";
+   HSKCharacters.list().forEach(function(c){
+     var card=document.createElement("section");card.className="hsk-character-card";
+     card.innerHTML='<div class="hcc-visual hsk-character-stage"><div>'+HSKCharacters.render(c.id,mood)+'</div></div><div class="meta"><div><div class="hcc-name">'+c.name+' <span class="hcc-cn">'+c.zh+'</span></div><div class="hcc-role">'+c.role+'</div></div><span class="badge">'+c.weight+'%</span></div>';
+     g.appendChild(card);
+   });
+ }
+ draw();
+})();
+</script>
+</body></html>

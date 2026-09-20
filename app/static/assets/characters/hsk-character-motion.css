@@ -1,0 +1,57 @@
+/* HSK AI character motion layer — Phase 2.
+   Generic effects only; no lesson/business logic. */
+.hsk-character-stage{overflow:visible}
+.hsk-character-stage.hcm-busy{pointer-events:none}
+.hcm-burst{
+  position:absolute;
+  left:50%;top:48%;
+  width:8px;height:8px;
+  border-radius:3px;
+  opacity:0;
+  pointer-events:none;
+  z-index:5;
+  will-change:transform,opacity;
+}
+.hcm-ring{
+  position:absolute;
+  left:50%;top:50%;
+  width:86px;height:86px;
+  margin:-43px 0 0 -43px;
+  border:3px solid #E04A40;
+  border-radius:50%;
+  opacity:0;
+  pointer-events:none;
+  z-index:0;
+}
+.hcm-heart{
+  position:absolute;
+  left:50%;top:8%;
+  transform:translateX(-50%);
+  font-size:24px;
+  line-height:1;
+  opacity:0;
+  pointer-events:none;
+  z-index:6;
+  filter:drop-shadow(0 4px 8px rgba(33,29,23,.18));
+}
+.hcm-loader-dots{
+  display:flex;
+  justify-content:center;
+  gap:5px;
+  height:10px;
+  margin-top:8px;
+}
+.hcm-loader-dots i{
+  width:6px;height:6px;border-radius:50%;
+  background:currentColor;opacity:.28;
+  animation:hcmDot 1s ease-in-out infinite;
+}
+.hcm-loader-dots i:nth-child(2){animation-delay:.14s}
+.hcm-loader-dots i:nth-child(3){animation-delay:.28s}
+@keyframes hcmDot{
+  0%,100%{transform:translateY(0);opacity:.28}
+  50%{transform:translateY(-4px);opacity:.9}
+}
+@media (prefers-reduced-motion:reduce){
+  .hcm-loader-dots i{animation:none!important;opacity:.55}
+}

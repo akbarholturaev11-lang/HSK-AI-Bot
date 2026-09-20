@@ -1468,6 +1468,27 @@ async def hsk_ai_cover():
     )
 
 
+COURSE_CHARACTER_ASSETS = {
+    "hsk-character-pack.css": "text/css",
+    "hsk-character-motion.css": "text/css",
+    "hsk-lesson-presentation.css": "text/css",
+    "hsk-character-pack.js": "application/javascript",
+    "hsk-character-motion.js": "application/javascript",
+    "hsk-lesson-presentation.js": "application/javascript",
+}
+
+
+@app.get("/assets/characters/{filename}")
+async def course_character_asset(filename: str):
+    media_type = COURSE_CHARACTER_ASSETS.get(filename)
+    if not media_type:
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(
+        f"app/static/assets/characters/{filename}",
+        media_type,
+    )
+
+
 @app.get("/assets/install/{filename}")
 async def desktop_install_screenshot(filename: str):
     import re
