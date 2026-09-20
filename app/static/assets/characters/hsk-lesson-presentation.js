@@ -30,12 +30,13 @@ function make(opts){
     root:root,
     reveal:function(build){
       if(finished)return;
-      var minVisible=Math.max(0,720-(Date.now()-started));
+      var reduceMotion=!!(global.HSKCharacterMotion&&global.HSKCharacterMotion.reduced&&global.HSKCharacterMotion.reduced());
+      var minVisible=Math.max(0,(reduceMotion?120:720)-(Date.now()-started));
       clearTimeout(revealTimer);
       revealTimer=setTimeout(function(){
         if(finished)return;
         if(typeof build==="function")build();
-        if(global.HSKCharacterMotion)global.HSKCharacterMotion.play(charHost,"exit");
+        if(!reduceMotion&&global.HSKCharacterMotion)global.HSKCharacterMotion.play(charHost,"exit");
         requestAnimationFrame(function(){
           requestAnimationFrame(function(){
             if(finished)return;
@@ -63,7 +64,7 @@ function make(opts){
 }
 
 global.HSKLessonPresentation={
-  version:"1.0.0-phase3",
+  version:"1.0.1-phase3",
   beginLessonEntry:make,
   cancelEntry:function(){if(active&&active.cancel)active.cancel()},
   currentEntry:function(){return active}
