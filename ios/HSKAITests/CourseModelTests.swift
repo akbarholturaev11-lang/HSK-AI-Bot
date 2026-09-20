@@ -43,6 +43,13 @@ final class CourseModelTests: XCTestCase {
             "language": "uz",
             "is_paid": false
           },
+          "foundation": {
+            "id": "starter0_hsk1",
+            "version": 1,
+            "required": true,
+            "completed": false,
+            "status": "required"
+          },
           "today": {
             "goal_xp": 40,
             "done_xp": 20,
@@ -74,6 +81,8 @@ final class CourseModelTests: XCTestCase {
         XCTAssertEqual(map.units.first?.lessons.first?.partCount, 2)
         XCTAssertEqual(map.progress.xp, 45)
         XCTAssertEqual(map.today?.goalXp, 40)
+        XCTAssertEqual(map.foundation?.required, true)
+        XCTAssertEqual(map.foundation?.completed, false)
         XCTAssertEqual(map.units.first?.title.value(language: "tj"), "Салом")
     }
 }

@@ -25,6 +25,15 @@ struct IOSCourseMap: Codable, Sendable, Equatable {
     let progress: IOSCourseProgress
     let user: IOSCourseUser
     let today: IOSCourseToday?
+    let foundation: IOSCourseFoundation?
+}
+
+struct IOSCourseFoundation: Codable, Sendable, Equatable {
+    let id: String
+    let version: Int
+    let required: Bool
+    let completed: Bool
+    let status: String
 }
 
 struct IOSCourseUnit: Codable, Sendable, Equatable, Identifiable {
@@ -56,9 +65,9 @@ struct IOSCourseLesson: Codable, Sendable, Equatable, Identifiable {
     let pinyin: String
     let subtitle: IOSLocalizedText
     let completionAllowed: Bool
-    let previewHalf: Bool
-    let lockedPremium: Bool
-    let adUnlockable: Bool
+    let previewHalf: Bool?
+    let lockedPremium: Bool?
+    let adUnlockable: Bool?
     var id: Int { order }
 
     enum CodingKeys: String, CodingKey {

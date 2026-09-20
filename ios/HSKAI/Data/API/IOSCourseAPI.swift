@@ -44,4 +44,64 @@ struct IOSCourseAPI: Sendable {
             bearerToken: token
         )
     }
+
+    func foundation() async throws -> IOSFoundationResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.get(
+            "/api/v3/ios/course/foundation",
+            bearerToken: token
+        )
+    }
+
+    func completeFoundation(
+        speakingBonus: Bool,
+        eventId: String
+    ) async throws -> IOSFoundationCompleteResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/course/foundation/complete",
+            body: IOSFoundationCompleteRequest(
+                foundationId: "starter0_hsk1",
+                foundationVersion: 1,
+                speakingBonus: speakingBonus,
+                eventId: eventId
+            ),
+            bearerToken: token
+        )
+    }
+
+    func lesson(
+        order: Int,
+        accessRef: String = ""
+    ) async throws -> IOSLessonResponse {
+        let token = try await authSession.bearerToken()
+        var query: [URLQueryItem] = []
+        if !accessRef.isEmpty {
+            query.append(URLQueryItem(name: "access_ref", value: accessRef))
+        }
+        return try await client.get(
+            "/api/v3/ios/course/lesson/\(order)",
+            bearerToken: token,
+            queryItems: query
+        )
+    }
+
+    func completeLesson(
+        order: Int,
+        eventId: String,
+        mistakes: [IOSCourseMistake],
+        accessRef: String = ""
+    ) async throws -> IOSCourseCompleteResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/course/complete",
+            body: IOSCourseCompleteRequest(
+                lessonOrder: order,
+                eventId: eventId,
+                mistakes: mistakes,
+                accessRef: accessRef
+            ),
+            bearerToken: token
+        )
+    }
 }
