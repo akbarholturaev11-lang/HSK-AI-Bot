@@ -19,7 +19,7 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
         root = Path("app/static/assets/characters")
 
         refs = set(
-            re.findall(r"/assets/characters/([^?\"']+)\\?v=[^\"']+", html)
+            re.findall(r"/assets/characters/([^?\\\"']+)\\?v=[^\\\"']+", html)
         )
         self.assertEqual(refs, set(CHARACTER_ASSETS))
 
