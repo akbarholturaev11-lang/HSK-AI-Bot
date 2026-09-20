@@ -247,10 +247,24 @@ private fun AppRoot(
         is AuthState.Authenticated -> {
             LaunchedEffect(Unit) { offlineCourseEntry = false }
             val localeHost = LocalContext.current
+            var localeReady by rememberSaveable(state.account.language.backendCode) {
+                mutableStateOf(false)
+            }
             LaunchedEffect(state.account.language) {
                 if (AppLocale.sync(localeHost, state.account.language)) {
-                    (localeHost as? Activity)?.recreate()
+                    val activity = localeHost as? Activity
+                    if (activity != null) {
+                        activity.recreate()
+                    } else {
+                        localeReady = true
+                    }
+                } else {
+                    localeReady = true
                 }
+            }
+            if (!localeReady) {
+                SplashScreen()
+                return
             }
             val sessionOwner = rememberSessionViewModelStoreOwner()
             val onboardingViewModel: OnboardingViewModel = viewModel(
