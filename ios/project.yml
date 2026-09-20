@@ -17,6 +17,9 @@ targets:
   HSKAI:
     type: application
     platform: iOS
+    scheme:
+      testTargets:
+        - HSKAITests
     sources:
       - path: HSKAI
         excludes:

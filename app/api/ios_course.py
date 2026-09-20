@@ -1,8 +1,7 @@
-"""Bearer-authenticated onboarding transport for the native iOS client.
+"""Bearer-authenticated Course v3 transport for the native iOS client.
 
-This module owns no learning rules. It validates the iOS request shape and
-delegates to AndroidCourseService, which is already the shared native adapter
-over CourseMiniAppOnboardingService and the canonical course/profile state.
+This module owns transport only. Foundation, lesson access, XP, streak,
+mistakes and completion idempotency remain in the shared native course service.
 """
 
 from __future__ import annotations
@@ -15,6 +14,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.api.desktop_course import (
+    DesktopCourseCompleteRequest,
     bearer_access_token,
     course_error_response,
     validated_course_payload,
@@ -27,6 +27,8 @@ from app.services.desktop_course_service import DesktopCourseError
 logger = logging.getLogger(__name__)
 MIN_TZ_OFFSET_MINUTES = -720
 MAX_TZ_OFFSET_MINUTES = 840
+MIN_LESSON_ORDER = 1
+MAX_LESSON_ORDER = 500
 
 
 class IOSOnboardingRequest(BaseModel):
@@ -49,6 +51,19 @@ class IOSOnboardingRequest(BaseModel):
         le=MAX_TZ_OFFSET_MINUTES,
     )
     activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
+
+
+class IOSFoundationCompleteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    foundation_id: Literal["starter0_hsk1"]
+    foundation_version: Literal[1]
+    speaking_bonus: bool = False
+    event_id: str = Field(min_length=1, max_length=120)
+
+
+class IOSCourseCompleteRequest(DesktopCourseCompleteRequest):
+    access_ref: str = Field(default="", max_length=160)
 
 
 def _unavailable() -> JSONResponse:
@@ -126,6 +141,88 @@ def create_ios_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("iOS onboarding completion failed")
+            return _unavailable()
+
+    @router.get("/api/v3/ios/course/foundation")
+    async def ios_foundation(request: Request):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("ios_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).foundation(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS foundation load failed")
+            return _unavailable()
+
+    @router.post("/api/v3/ios/course/foundation/complete")
+    async def ios_foundation_complete(request: Request):
+        try:
+            payload = await validated_course_payload(
+                request,
+                IOSFoundationCompleteRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).complete_foundation(
+                    bearer_access_token(request),
+                    foundation_id=payload.foundation_id,
+                    foundation_version=payload.foundation_version,
+                    speaking_bonus=payload.speaking_bonus,
+                    event_id=payload.event_id,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS foundation completion failed")
+            return _unavailable()
+
+    @router.get("/api/v3/ios/course/lesson/{lesson_order}")
+    async def ios_course_lesson(request: Request, lesson_order: int):
+        try:
+            if not MIN_LESSON_ORDER <= lesson_order <= MAX_LESSON_ORDER:
+                raise DesktopCourseError("invalid_lesson_order", status_code=422)
+            access_ref = str(request.query_params.get("access_ref") or "").strip()[:160]
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).lesson(
+                    bearer_access_token(request),
+                    lesson_order=lesson_order,
+                    access_ref=access_ref,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS course lesson failed")
+            return _unavailable()
+
+    @router.post("/api/v3/ios/course/complete")
+    async def ios_course_complete(request: Request):
+        try:
+            payload = await validated_course_payload(
+                request,
+                IOSCourseCompleteRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).complete(
+                    bearer_access_token(request),
+                    lesson_order=payload.lesson_order,
+                    event_id=payload.event_id,
+                    mistakes=[
+                        mistake.model_dump(exclude_none=True)
+                        for mistake in payload.mistakes
+                    ],
+                    access_ref=payload.access_ref,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS course completion failed")
             return _unavailable()
 
     return router
