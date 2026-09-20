@@ -69,3 +69,23 @@
 "foundation_load_error" = "Starter 0 yuklanmadi. Qayta urinib ko‘ring.";
 "foundation_save_error" = "Natijani saqlab bo‘lmadi. Qayta urinib ko‘ring.";
 "foundation_objectives_missing" = "Majburiy mashqlar hali tugallanmagan.";
+
+"lesson_new_word" = "Yangi so‘z";
+"lesson_review" = "Takrorlash";
+"lesson_build_sentence" = "Gapni tuzing";
+"lesson_builder_hint" = "So‘zlarni to‘g‘ri tartibda joylang";
+"lesson_check" = "Tekshirish";
+"lesson_match_title" = "Juftliklarni toping";
+"lesson_match_subtitle" = "Ieroglifni to‘g‘ri ma’no bilan ulang";
+"lesson_correct" = "To‘g‘ri";
+"lesson_wrong" = "Yana bir bor ko‘rib chiqing";
+"lesson_next" = "Davom etish";
+"lesson_unsupported" = "Bu karta turi hali qo‘llab-quvvatlanmaydi";
+"lesson_load_error" = "Dars yuklanmadi";
+"lesson_retry_body" = "Internetni tekshirib, qayta urinib ko‘ring.";
+"lesson_save_error" = "Dars natijasini saqlab bo‘lmadi";
+"lesson_preview_title" = "Bepul ko‘rish tugadi";
+"lesson_preview_body" = "Bu darsning bepul qismi shu yerda tugaydi.";
+"lesson_completed_title" = "Dars tugadi";
+"lesson_completed_body" = "Natija saqlandi.";
+"lesson_score_format" = "%d / %d ta javob to‘g‘ri";

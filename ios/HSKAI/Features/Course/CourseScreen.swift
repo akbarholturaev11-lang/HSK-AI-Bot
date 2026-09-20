@@ -6,6 +6,8 @@ struct CourseScreen: View {
 
     @State private var foundationModel: FoundationViewModel?
     @State private var showingFoundation = false
+    @State private var lessonModel: LessonViewModel?
+    @State private var showingLesson = false
 
     var body: some View {
         NavigationStack {
@@ -49,7 +51,17 @@ struct CourseScreen: View {
                             }
 
                             ForEach(map.units) { unit in
-                                CourseUnitCard(unit: unit, language: map.user.language)
+                                CourseUnitCard(
+                                    unit: unit,
+                                    language: map.user.language
+                                ) { lesson in
+                                    lessonModel = LessonViewModel(
+                                        api: model.api,
+                                        lessonOrder: lesson.order,
+                                        language: map.user.language
+                                    )
+                                    showingLesson = true
+                                }
                             }
                         }
                         .padding(.horizontal, 16)
@@ -76,6 +88,21 @@ struct CourseScreen: View {
         }
         .task(id: account.deviceId) {
             await model.load(scope: account.deviceId)
+        }
+        .fullScreenCover(isPresented: $showingLesson) {
+            if let lessonModel {
+                LessonScreen(
+                    model: lessonModel,
+                    onClose: {
+                        showingLesson = false
+                    },
+                    onCompleted: {
+                        Task {
+                            await model.load(scope: account.deviceId, force: true)
+                        }
+                    }
+                )
+            }
         }
         .fullScreenCover(isPresented: $showingFoundation) {
             if let foundationModel {
@@ -247,6 +274,7 @@ private struct TodayPlanSummary: View {
 private struct CourseUnitCard: View {
     let unit: IOSCourseUnit
     let language: String
+    let onOpenLesson: (IOSCourseLesson) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -260,7 +288,11 @@ private struct CourseUnitCard: View {
             }
 
             ForEach(unit.lessons) { lesson in
-                CourseLessonRow(lesson: lesson, language: language)
+                CourseLessonRow(
+                    lesson: lesson,
+                    language: language,
+                    onOpen: { onOpenLesson(lesson) }
+                )
             }
         }
         .padding(16)
@@ -276,8 +308,10 @@ private struct CourseUnitCard: View {
 private struct CourseLessonRow: View {
     let lesson: IOSCourseLesson
     let language: String
+    let onOpen: () -> Void
 
     var body: some View {
+        Button(action: onOpen) {
         HStack(spacing: 12) {
             Image(systemName: statusIcon)
                 .font(.title3)
@@ -308,7 +342,18 @@ private struct CourseLessonRow: View {
             }
         }
         .padding(.vertical, 6)
-        .opacity(lesson.status == "locked" ? 0.62 : 1)
+        .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(!canOpen)
+        .opacity(canOpen ? 1 : 0.58)
+    }
+
+    private var canOpen: Bool {
+        let status = lesson.status.lowercased()
+        return status == "current"
+            || status == "done"
+            || (lesson.completionAllowed && status != "locked")
     }
 
     private var statusIcon: String {

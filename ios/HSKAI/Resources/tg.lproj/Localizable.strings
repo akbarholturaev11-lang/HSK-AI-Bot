@@ -69,3 +69,23 @@
 "foundation_load_error" = "Starter 0 бор нашуд. Аз нав кӯшиш кунед.";
 "foundation_save_error" = "Натиҷа сабт нашуд. Аз нав кӯшиш кунед.";
 "foundation_objectives_missing" = "Машқҳои ҳатмӣ ҳанӯз анҷом нашудаанд.";
+
+"lesson_new_word" = "Калимаи нав";
+"lesson_review" = "Такрор";
+"lesson_build_sentence" = "Ҷумларо созед";
+"lesson_builder_hint" = "Калимаҳоро бо тартиби дуруст ҷойгир кунед";
+"lesson_check" = "Санҷидан";
+"lesson_match_title" = "Ҷуфтҳоро ёбед";
+"lesson_match_subtitle" = "Иероглифро бо маънои дуруст пайваст кунед";
+"lesson_correct" = "Дуруст";
+"lesson_wrong" = "Боз як бор бинед";
+"lesson_next" = "Давом додан";
+"lesson_unsupported" = "Ин навъи корт ҳоло дастгирӣ намешавад";
+"lesson_load_error" = "Дарс бор нашуд";
+"lesson_retry_body" = "Интернетро санҷида, аз нав кӯшиш кунед.";
+"lesson_save_error" = "Натиҷаи дарс сабт нашуд";
+"lesson_preview_title" = "Намоиши ройгон тамом шуд";
+"lesson_preview_body" = "Қисми ройгони ин дарс дар ҳамин ҷо анҷом меёбад.";
+"lesson_completed_title" = "Дарс анҷом ёфт";
+"lesson_completed_body" = "Натиҷа сабт шуд.";
+"lesson_score_format" = "%d аз %d ҷавоб дуруст";

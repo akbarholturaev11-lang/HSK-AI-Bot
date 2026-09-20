@@ -69,3 +69,23 @@
 "foundation_load_error" = "Не удалось загрузить Starter 0. Попробуйте снова.";
 "foundation_save_error" = "Не удалось сохранить результат. Попробуйте снова.";
 "foundation_objectives_missing" = "Обязательные упражнения ещё не завершены.";
+
+"lesson_new_word" = "Новое слово";
+"lesson_review" = "Повторение";
+"lesson_build_sentence" = "Соберите фразу";
+"lesson_builder_hint" = "Расположите слова в правильном порядке";
+"lesson_check" = "Проверить";
+"lesson_match_title" = "Найдите пары";
+"lesson_match_subtitle" = "Соедините иероглиф с правильным значением";
+"lesson_correct" = "Верно";
+"lesson_wrong" = "Посмотрите ещё раз";
+"lesson_next" = "Продолжить";
+"lesson_unsupported" = "Этот тип карточки пока не поддерживается";
+"lesson_load_error" = "Не удалось загрузить урок";
+"lesson_retry_body" = "Проверьте интернет и попробуйте снова.";
+"lesson_save_error" = "Не удалось сохранить результат урока";
+"lesson_preview_title" = "Бесплатный просмотр закончился";
+"lesson_preview_body" = "Бесплатная часть этого урока заканчивается здесь.";
+"lesson_completed_title" = "Урок завершён";
+"lesson_completed_body" = "Результат сохранён.";
+"lesson_score_format" = "Правильно: %d из %d";
