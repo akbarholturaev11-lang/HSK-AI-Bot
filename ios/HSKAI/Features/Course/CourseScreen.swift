@@ -214,7 +214,7 @@ private struct CourseLessonRow: View {
         switch lesson.status.lowercased() {
         case "done": return "checkmark.circle.fill"
         case "current": return "play.circle.fill"
-        default: return lesson.adUnlockable ? "play.rectangle.fill" : "lock.circle.fill"
+        default: return (lesson.adUnlockable ?? false) ? "play.rectangle.fill" : "lock.circle.fill"
         }
     }
 
