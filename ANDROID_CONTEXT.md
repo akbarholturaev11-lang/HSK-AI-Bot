@@ -406,7 +406,15 @@ qilmaydi.
 
 **Ovoz baribir to'liq offline emas.** Faqat ilgari eshitilgani ishlaydi
 (`ttsCache`). 1247 so'zning audiosi bir necha MB, telefonning o'z TTS'i esa
-yaramaydi — 3.1 ga qarang. Ikkita mashq ham serverga bog'liq bo'lib qoladi.
+yaramaydi — 3.1 ga qarang.
+
+**Ikkita mashq — so'z bazasi endi offline, lekin eshik yopiq.**
+`WordDrillViewModel` savollar hovuzini `DictionaryRepository` dan oladi, ya'ni
+u endi bundle'dan keladi va internetsiz ham to'ladi. Lekin mashq birinchi
+`repository.drillGate(...)` ni so'raydi va offline'da o'sha yiqiladi. Bu
+ataylab: gate — server qarori (bepul o'quvchi bo'limni bir marta oladi,
+reklama uni qayta ochadi), va uni qurilmada hal qilish huquqni klientga
+berish bo'lardi. Ya'ni mashqlar online qolishi — e'tiborsizlik emas, qoida.
 
 ### 3.11 Boshqa ochiqlar
 
@@ -534,7 +542,8 @@ berilardi — ya'ni faylga yetib borishi kerak bo'lgan yana bitta tomon bor edi,
 va u yiqilganda foydalanuvchi faqat «fayl yuborilmadi» ni ko'rardi, sabab esa
 allaqachon aylanib ketgan logda qolardi. 2026-09-15 da aynan shunday bo'ldi.
 
-**Narxi: har release uchun bir marta 3.7 MB.** Foydalanuvchi boshiga emas —
+**Narxi: har release uchun bir marta ~4.7 MB** (offline lug'at qo'shilgandan
+keyin; ilgari 3.7 MB edi). Foydalanuvchi boshiga emas —
 birinchi so'ragandan keyin Telegram bergan `file_id` saqlanadi va qolganlarga
 Telegram serverlaridan ketadi, biz orqali hech narsa o'tmaydi.
 R2'dan chiqish bepul, Railway'ga kirish ham. Hisob: ~$0.0002 bir release,
