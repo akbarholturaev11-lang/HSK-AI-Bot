@@ -54,6 +54,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
+import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
@@ -237,28 +238,17 @@ private fun ChallengeBell(pendingCount: Int, onClick: () -> Unit) {
     // so it covered the glyph's own top corner and the bell read as half
     // drawn. It gets its own room outside the circle instead.
     Box(modifier = Modifier.size(52.dp)) {
-        HskGlassSurface(
-            modifier = Modifier
-                .size(44.dp)
-                .align(Alignment.BottomStart),
-            shape = CircleShape,
-            shadowElevation = 5.dp,
-            // Glass is white at 72% on a near-white Paper, so without a
-            // stated border the circle is invisible and the icon reads as a
-            // loose glyph rather than a button. The voice call's round
-            // buttons already use this border.
-            borderColor = PompColors.Divider,
+        // No circle behind it: on the near-white Paper the glass read as a
+        // pale blob around the bell rather than as a button.
+        HskGlassIconButton(
+            icon = Icons.Filled.Notifications,
+            contentDescription = stringResource(R.string.rating_challenges_bell),
             onClick = onClick,
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Filled.Notifications,
-                    contentDescription = stringResource(R.string.rating_challenges_bell),
-                    tint = PompColors.CinnabarDark,
-                    modifier = Modifier.size(21.dp),
-                )
-            }
-        }
+            modifier = Modifier.align(Alignment.BottomStart),
+            size = 44.dp,
+            iconSize = 21.dp,
+            tint = PompColors.CinnabarDark,
+        )
         if (pendingCount > 0) {
             Surface(
                 color = PompColors.Cinnabar,
@@ -513,23 +503,13 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        HskGlassSurface(
-            modifier = Modifier.size(44.dp),
-            shape = CircleShape,
-            shadowElevation = 5.dp,
-            // Same reason as the bell: white glass on Paper needs a stated
-            // border, or back looks like a stray arrow, not a button.
-            borderColor = PompColors.Divider,
+        HskGlassIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.action_back),
             onClick = onBack,
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.action_back),
-                    tint = PompColors.Ink,
-                )
-            }
-        }
+            iconSize = 24.dp,
+            tint = PompColors.Ink,
+        )
         Spacer(Modifier.width(12.dp))
         Text(
             text = title,

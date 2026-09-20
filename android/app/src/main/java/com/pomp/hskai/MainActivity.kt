@@ -1174,6 +1174,7 @@ private fun LessonHost(
         onRetryCompletion = model::retryCompletion,
         onOpenPinyinSettings = { pinyinSheetOpen = true },
         onOpenWriter = model::openWriter,
+        onShowWriterCharacter = model::showWriterCharacter,
         onCloseWriter = model::closeWriter,
         onExit = {
             val completed = lessonState.outcome is LessonOutcome.Completed

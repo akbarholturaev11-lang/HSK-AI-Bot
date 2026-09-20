@@ -399,6 +399,9 @@
     <string name="voice_rate_slow">sekin</string>
     <string name="voice_rate_normal">oddiy</string>
     <string name="lesson_writer_replay">Yana ko‘rsatish</string>
+    <string name="lesson_writer_previous">Oldingi ieroglif</string>
+    <string name="lesson_writer_next">Keyingi ieroglif</string>
+    <string name="lesson_writer_position">%1$d / %2$d</string>
     <string name="challenge_title">Chaqiriq</string>
     <string name="challenge_invite">Chaqirish</string>
     <string name="challenge_invite_send">Chaqiruv yuborish</string>

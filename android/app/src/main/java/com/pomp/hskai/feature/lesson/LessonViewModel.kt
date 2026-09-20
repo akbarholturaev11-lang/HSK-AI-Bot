@@ -114,6 +114,8 @@ data class LessonUiState(
     val hearts: Int = MAX_HEARTS,
     /** Stroke outlines for the character the pencil is showing, if any. */
     val writerChar: WriterTarget? = null,
+    /** Which character of [writerChar] the sheet is on; a phrase has several. */
+    val writerIndex: Int = 0,
     val writerStrokes: CharacterStrokes? = null,
     val isWriterLoading: Boolean = false,
 ) {
@@ -169,7 +171,20 @@ data class WriterTarget(
     val hanzi: String,
     val pinyin: String,
     val meaning: String,
-)
+) {
+    /**
+     * The characters the sheet can write, in order.
+     *
+     * Punctuation and spaces are dropped: they have no stroke data, and a
+     * page that says «3 / 8» where two of the eight cannot be drawn is
+     * counting things it will not show.
+     */
+    val characters: List<String>
+        get() = hanzi.filter { it.isHanzi() }.map { it.toString() }
+}
+
+/** CJK ideographs, the range hanzi-writer has data for. */
+private fun Char.isHanzi(): Boolean = code in 0x3400..0x9FFF || code in 0xF900..0xFAFF
 
 /**
  * Runs one mini-lesson.
@@ -219,6 +234,9 @@ class LessonViewModel(
         return seconds.coerceIn(0L, 3600L).toInt()
     }
     private var audioJob: Job? = null
+
+    /** The stroke fetch for the character the writing sheet is on. */
+    private var writerJob: Job? = null
 
     /**
      * Starts exactly one clean attempt for a UI launch.
@@ -331,33 +349,61 @@ class LessonViewModel(
     }
 
     /**
-     * Opens the writing sheet for [target] and fetches its strokes.
+     * Opens the writing sheet for [target], on its first character.
      *
-     * Only single characters have outlines; a phrase falls back to showing
-     * the characters themselves rather than failing.
+     * A listening card's target is the whole sentence that was said, so the
+     * sheet is usually asked for several characters at once. It writes them
+     * one at a time — the Mini App's `hsk-lugat` page does the same, because
+     * a stroke set belongs to one character and a sentence drawn into one
+     * box is a sentence drawn on top of itself.
      */
     fun openWriter(target: WriterTarget) {
+        writerJob?.cancel()
         _state.update {
-            it.copy(writerChar = target, writerStrokes = null, isWriterLoading = true)
+            it.copy(
+                writerChar = target,
+                writerIndex = 0,
+                writerStrokes = null,
+                isWriterLoading = false,
+            )
         }
-        viewModelScope.launch {
-            val single = target.hanzi.trim().takeIf { it.length == 1 }
+        showWriterCharacter(0)
+    }
+
+    /** Moves the sheet to [index] of the open target and fetches its strokes. */
+    fun showWriterCharacter(index: Int) {
+        val target = _state.value.writerChar ?: return
+        val characters = target.characters
+        if (index !in characters.indices) return
+        _state.update {
+            it.copy(writerIndex = index, writerStrokes = null, isWriterLoading = true)
+        }
+        writerJob?.cancel()
+        writerJob = viewModelScope.launch {
             // Null rather than an empty set: the sheet then shows the plain
             // character instead of an empty writing box.
-            val strokes = if (single == null) {
-                null
-            } else {
-                when (val result = repository.strokes(single)) {
-                    is ApiResult.Success -> result.value
-                    is ApiResult.Failure -> null
+            val strokes = when (val result = repository.strokes(characters[index])) {
+                is ApiResult.Success -> result.value
+                is ApiResult.Failure -> null
+            }
+            _state.update {
+                // A tap on the next character while this one was still loading
+                // must not have its answer land on the character now showing.
+                if (it.writerIndex == index) {
+                    it.copy(writerStrokes = strokes, isWriterLoading = false)
+                } else {
+                    it
                 }
             }
-            _state.update { it.copy(writerStrokes = strokes, isWriterLoading = false) }
         }
     }
 
     fun closeWriter() {
-        _state.update { it.copy(writerChar = null, writerStrokes = null, isWriterLoading = false) }
+        writerJob?.cancel()
+        writerJob = null
+        _state.update {
+            it.copy(writerChar = null, writerIndex = 0, writerStrokes = null, isWriterLoading = false)
+        }
     }
 
     /** Keeps the resume point in step with the card on screen. */

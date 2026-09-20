@@ -107,6 +107,28 @@ class HskAiApplication : Application() {
             .build()
     }
 
+    /**
+     * The assistant carries a photo inside its request body, so its upload is
+     * megabytes where every other call is kilobytes.
+     *
+     * On a phone's uplink those megabytes take longer than the 30s write
+     * budget that suits a lesson fetch, and the failure surfaced as "no
+     * connection" on a working connection. It gets its own timeouts rather
+     * than making every screen in the app wait three minutes before giving
+     * up. `newBuilder` shares the connection pool and dispatcher, so this is
+     * one more set of timeouts, not one more HTTP stack.
+     */
+    private val assistantRetrofit: Retrofit by lazy {
+        retrofit.newBuilder()
+            .client(
+                httpClient.newBuilder()
+                    .writeTimeout(ASSISTANT_WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                    .callTimeout(ASSISTANT_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                    .build()
+            )
+            .build()
+    }
+
     val credentialStore: SecureCredentialStore by lazy { SecureCredentialStore(this) }
 
     val appSettings: AppSettings by lazy { AppSettings(this) }
@@ -218,7 +240,7 @@ class HskAiApplication : Application() {
         com.pomp.hskai.feature.assistant.AssistantController(
             this,
             com.pomp.hskai.feature.assistant.AssistantRepository(
-                retrofit.create(com.pomp.hskai.feature.assistant.AssistantApi::class.java),
+                assistantRetrofit.create(com.pomp.hskai.feature.assistant.AssistantApi::class.java),
                 authRepository::accessToken,
                 authRepository::invalidateSession,
                 json,
@@ -237,5 +259,10 @@ class HskAiApplication : Application() {
         const val CONNECT_TIMEOUT_SECONDS = 15L
         const val READ_TIMEOUT_SECONDS = 30L
         const val CALL_TIMEOUT_SECONDS = 60L
+
+        // A photo upload on a slow uplink, not a slow server: the answer
+        // itself is written in the background and collected by polling.
+        const val ASSISTANT_WRITE_TIMEOUT_SECONDS = 120L
+        const val ASSISTANT_CALL_TIMEOUT_SECONDS = 180L
     }
 }

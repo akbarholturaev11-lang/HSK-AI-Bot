@@ -45,6 +45,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
@@ -110,6 +112,7 @@ fun LessonScreen(
     onRetryCompletion: () -> Unit,
     onOpenPinyinSettings: () -> Unit,
     onOpenWriter: (WriterTarget) -> Unit,
+    onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
@@ -146,6 +149,7 @@ fun LessonScreen(
                 onPlayAudio = onPlayAudio,
                 onOpenPinyinSettings = onOpenPinyinSettings,
                 onOpenWriter = onOpenWriter,
+                onShowWriterCharacter = onShowWriterCharacter,
                 onCloseWriter = onCloseWriter,
                 onExit = onExit,
             )
@@ -197,6 +201,7 @@ private fun LessonBody(
     onPlayAudio: (String) -> Unit,
     onOpenPinyinSettings: () -> Unit,
     onOpenWriter: (WriterTarget) -> Unit,
+    onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
 ) {
@@ -218,6 +223,11 @@ private fun LessonBody(
     var newWordOpen by remember(state.cardIndex) { mutableStateOf(false) }
 
     val writeTarget = state.writeTarget
+    // The footer grows with the explanation it carries, so a pencil pinned at a
+    // fixed height from the bottom sat on top of the answer whenever the answer
+    // had much to say. It is measured instead.
+    val density = LocalDensity.current
+    var footerHeight by remember { mutableStateOf(0.dp) }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             LessonTopBar(
@@ -284,19 +294,27 @@ private fun LessonBody(
               }
             }
 
-            FooterBar(
-                state = state,
-                card = card,
-                acknowledgeReady = card !is NewWordCard || newWordOpen,
-                onAcknowledge = onAcknowledge,
-                onAdvance = onAdvance,
-            )
+            Box(
+                modifier = Modifier.onSizeChanged { size ->
+                    footerHeight = with(density) { size.height.toDp() }
+                },
+            ) {
+                FooterBar(
+                    state = state,
+                    card = card,
+                    acknowledgeReady = card !is NewWordCard || newWordOpen,
+                    onAcknowledge = onAcknowledge,
+                    onAdvance = onAdvance,
+                )
+            }
         }
 
         if (writeTarget != null) {
             WriterButton(
                 onClick = { onOpenWriter(writeTarget) },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(end = 18.dp, bottom = 152.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 18.dp, bottom = footerHeight + WriterButtonGap),
             )
         }
     }
@@ -306,9 +324,12 @@ private fun LessonBody(
             hanzi = target.hanzi,
             pinyin = target.pinyin,
             meaning = target.meaning,
+            characters = target.characters,
+            index = state.writerIndex,
             strokes = state.writerStrokes,
             isLoading = state.isWriterLoading,
-            onReplay = { onOpenWriter(target) },
+            onShowCharacter = onShowWriterCharacter,
+            onReplay = { onShowWriterCharacter(state.writerIndex) },
             onDismiss = onCloseWriter,
         )
     }
@@ -344,6 +365,9 @@ private fun WriterButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 private val WriterDepthLight = Color(0xFF9A7420)
+
+/** How far the pencil floats above whatever the footer currently is. */
+private val WriterButtonGap = 16.dp
 
 @Composable
 private fun LessonTopBar(

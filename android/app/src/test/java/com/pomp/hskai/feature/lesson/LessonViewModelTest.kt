@@ -41,6 +41,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -119,13 +120,20 @@ private open class FakeLessonApi(
         )
     )
 
+    val strokeRequests = mutableListOf<String>()
+
     override suspend fun stroke(
-
         authorization: String,
-
         char: String,
-
-    ): Response<StrokeDataDto> = throw NotImplementedError()
+    ): Response<StrokeDataDto> {
+        strokeRequests += char
+        return Response.success(
+            StrokeDataDto(
+                strokes = listOf("M 100 100 L 900 100"),
+                medians = listOf(listOf(listOf(100f, 100f), listOf(900f, 100f))),
+            )
+        )
+    }
 
 
     override suspend fun tts(
@@ -206,6 +214,38 @@ class LessonViewModelTest {
         json = Json { ignoreUnknownKeys = true },
         ioDispatcher = dispatcher,
     )
+
+    @Test
+    fun `the writing sheet walks a phrase one character at a time`() = runTest(dispatcher) {
+        val api = FakeLessonApi()
+        val model = viewModel(api)
+        advanceUntilIdle()
+
+        // A listening card's target is the whole sentence that was said. It
+        // used to be drawn into one box, on top of itself.
+        model.openWriter(WriterTarget("我想去。", "wǒ xiǎng qù", ""))
+        advanceUntilIdle()
+
+        // The full stop has no strokes, so it is not one of the steps.
+        assertEquals(listOf("我", "想", "去"), model.state.value.writerChar?.characters)
+        assertEquals(0, model.state.value.writerIndex)
+        assertEquals(listOf("我"), api.strokeRequests)
+        assertTrue(model.state.value.writerStrokes?.isNotEmpty() == true)
+
+        model.showWriterCharacter(1)
+        advanceUntilIdle()
+        assertEquals(1, model.state.value.writerIndex)
+        assertEquals(listOf("我", "想"), api.strokeRequests)
+
+        // Past the end is ignored rather than emptying the sheet.
+        model.showWriterCharacter(3)
+        advanceUntilIdle()
+        assertEquals(1, model.state.value.writerIndex)
+        assertEquals(listOf("我", "想"), api.strokeRequests)
+
+        model.closeWriter()
+        assertNull(model.state.value.writerChar)
+    }
 
     private fun viewModel(
         api: AndroidCourseApi = FakeLessonApi(),

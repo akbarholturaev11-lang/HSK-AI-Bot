@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,6 +39,8 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,11 +68,17 @@ internal fun HanziWriterSheet(
     hanzi: String,
     pinyin: String,
     meaning: String,
+    /** The characters of [hanzi] the sheet can write, in order. */
+    characters: List<String>,
+    /** Which of [characters] is on screen. */
+    index: Int,
     strokes: CharacterStrokes?,
     isLoading: Boolean,
+    onShowCharacter: (Int) -> Unit,
     onReplay: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val current = characters.getOrNull(index) ?: hanzi
     AssistantScreen(
         ScreenContext(
             screen = "writing",
@@ -112,6 +121,41 @@ internal fun HanziWriterSheet(
             }
             Spacer(Modifier.height(14.dp))
 
+            // A listening card hands the sheet the whole sentence that was
+            // said. Stroke data belongs to one character, so the sentence is
+            // written a character at a time rather than drawn on top of
+            // itself — which is what one box for the lot produced.
+            if (characters.size > 1) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    WriterStep(
+                        glyph = "‹",
+                        description = stringResource(R.string.lesson_writer_previous),
+                        enabled = index > 0,
+                        onClick = { onShowCharacter(index - 1) },
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.lesson_writer_position,
+                            index + 1,
+                            characters.size,
+                        ),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = PompColors.InkSecondary,
+                    )
+                    WriterStep(
+                        glyph = "›",
+                        description = stringResource(R.string.lesson_writer_next),
+                        enabled = index < characters.lastIndex,
+                        onClick = { onShowCharacter(index + 1) },
+                    )
+                }
+                Spacer(Modifier.height(10.dp))
+            }
+
             Surface(
                 color = PompColors.Paper,
                 shape = RoundedCornerShape(18.dp),
@@ -127,7 +171,7 @@ internal fun HanziWriterSheet(
                         // Without the outlines the character is still shown —
                         // the learner loses the animation, not the word.
                         strokes == null || strokes.isEmpty() -> Text(
-                            text = hanzi,
+                            text = current,
                             style = PompTextStyles.hanziLarge.copy(fontSize = 128.sp),
                             color = PompColors.Ink,
                         )
@@ -158,5 +202,27 @@ internal fun HanziWriterSheet(
                 }
             }
         }
+    }
+}
+
+/** One step through the phrase — the dictionary's own arrows, and the Mini App's. */
+@Composable
+private fun WriterStep(
+    glyph: String,
+    description: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    IconButton(
+        onClick = onClick,
+        enabled = enabled,
+        // The glyph is a bracket, so a reader needs to be told what it does.
+        modifier = Modifier.size(40.dp).semantics { contentDescription = description },
+    ) {
+        Text(
+            text = glyph,
+            style = MaterialTheme.typography.headlineMedium,
+            color = if (enabled) PompColors.CinnabarDark else PompColors.InkDisabled,
+        )
     }
 }

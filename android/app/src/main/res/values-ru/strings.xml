@@ -365,6 +365,9 @@
     <string name="voice_rate_slow">медленно</string>
     <string name="voice_rate_normal">обычная</string>
     <string name="lesson_writer_replay">Показать ещё раз</string>
+    <string name="lesson_writer_previous">Предыдущий иероглиф</string>
+    <string name="lesson_writer_next">Следующий иероглиф</string>
+    <string name="lesson_writer_position">%1$d / %2$d</string>
     <string name="challenge_title">Вызов</string>
     <string name="challenge_invite">Вызвать</string>
     <string name="challenge_invite_send">Отправить вызов</string>

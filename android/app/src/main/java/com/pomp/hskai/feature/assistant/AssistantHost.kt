@@ -338,27 +338,30 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                     require(bounds.outWidth > 0 && bounds.outHeight > 0)
                     require(bounds.outWidth.toLong() * bounds.outHeight.toLong() <= 24_000_000L)
                     var sample = 1
-                    while (maxOf(bounds.outWidth / sample, bounds.outHeight / sample) > 2048) sample *= 2
+                    while (maxOf(bounds.outWidth / sample, bounds.outHeight / sample) > PHOTO_LONG_EDGE) sample *= 2
                     val bitmap = context.contentResolver.openInputStream(uri)?.use {
                         BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply { inSampleSize = sample })
                     } ?: error("image_decode_failed")
-                    val scaled = if (maxOf(bitmap.width, bitmap.height) > 2048) {
-                        val scale = 2048f / maxOf(bitmap.width, bitmap.height)
-                        android.graphics.Bitmap.createScaledBitmap(
-                            bitmap,
-                            (bitmap.width * scale).toInt().coerceAtLeast(1),
-                            (bitmap.height * scale).toInt().coerceAtLeast(1),
-                            true,
-                        ).also { bitmap.recycle() }
-                    } else {
-                        bitmap
-                    }
-                    // Shrink until the encoded photo clears the request budget on slow links.
-                    var quality = 88
-                    var bytes = ByteArrayOutputStream().also { scaled.compress(android.graphics.Bitmap.CompressFormat.JPEG, quality, it) }.toByteArray()
+                    var scaled = fitWithin(bitmap, PHOTO_LONG_EDGE)
+                    if (scaled !== bitmap) bitmap.recycle()
+                    // Shrink until the encoded photo clears the request budget on slow
+                    // links. The server re-encodes to 2048px at quality 88 anyway, so
+                    // anything heavier is bytes the phone spends and the server throws
+                    // away — and on an uplink those bytes are the wait.
+                    var quality = 82
+                    var bytes = encode(scaled, quality)
                     while (bytes.size > MAX_PHOTO_BYTES && quality > 45) {
                         quality -= 12
-                        bytes = ByteArrayOutputStream().also { scaled.compress(android.graphics.Bitmap.CompressFormat.JPEG, quality, it) }.toByteArray()
+                        bytes = encode(scaled, quality)
+                    }
+                    // A dense photo — a page of text, most often — can still be over
+                    // budget at the lowest quality worth reading. Give up resolution
+                    // rather than the send: a narrower photo the assistant can read
+                    // beats "bad photo" on a photo that was fine.
+                    if (bytes.size > MAX_PHOTO_BYTES) {
+                        val narrower = fitWithin(scaled, PHOTO_FALLBACK_LONG_EDGE)
+                        if (narrower !== scaled) { scaled.recycle(); scaled = narrower }
+                        bytes = encode(scaled, quality)
                     }
                     scaled.recycle()
                     require(bytes.size <= MAX_PHOTO_BYTES)
@@ -634,8 +637,42 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
     }
 }
 
-/** Keep the encoded photo comfortably inside the server request budget. */
-private const val MAX_PHOTO_BYTES = 3 * 1024 * 1024
+/** The photo's longest side, matching what the server keeps. */
+private const val PHOTO_LONG_EDGE = 2048
+
+/** Where a photo too dense to fit at 2048 lands instead. */
+private const val PHOTO_FALLBACK_LONG_EDGE = 1400
+
+/** Re-encodes [bitmap] as JPEG at [quality]. */
+private fun encode(bitmap: android.graphics.Bitmap, quality: Int): ByteArray =
+    ByteArrayOutputStream()
+        .also { bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, quality, it) }
+        .toByteArray()
+
+/**
+ * [bitmap] scaled so its longest side is at most [edge], or [bitmap] itself
+ * when it already fits. The caller owns both and recycles what it replaces.
+ */
+private fun fitWithin(bitmap: android.graphics.Bitmap, edge: Int): android.graphics.Bitmap {
+    val longest = maxOf(bitmap.width, bitmap.height)
+    if (longest <= edge) return bitmap
+    val scale = edge.toFloat() / longest
+    return android.graphics.Bitmap.createScaledBitmap(
+        bitmap,
+        (bitmap.width * scale).toInt().coerceAtLeast(1),
+        (bitmap.height * scale).toInt().coerceAtLeast(1),
+        true,
+    )
+}
+
+/**
+ * Keep the encoded photo comfortably inside the server request budget.
+ *
+ * The budget is the phone's uplink, not the server's limit, which is 5 MB:
+ * a 3 MB photo is around 4 MB once base64 wraps it, and that took longer to
+ * send than the request was willing to wait.
+ */
+private const val MAX_PHOTO_BYTES = 3 * 512 * 1024
 
 @Composable
 private fun AssistantDragHandle() {

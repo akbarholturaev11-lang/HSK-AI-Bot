@@ -197,9 +197,8 @@ tugmasi endi `borderColor = PompColors.Divider` oladi, ya'ni `VoiceCallScreen`
 dagi `RoundIconButton` bilan bir xil. Umumiy `HskGlassSurface` ga tegilmadi —
 u kartalarda to'g'ri ishlaydi.
 
-**Diqqat:** boshqa `HskGlassIconButton` ishlatadigan joylar (Mashq, ovozli
-suhbat) hali ham chegarasiz, ya'ni yorug' rejimda xira. Kerak bo'lsa
-`HskGlassIconButton` ga standart chegara berilsa hammasi bir xil bo'ladi.
+**Diqqat:** bu yechim 3.12 da bekor qilindi — chegara emas, doiraning o'zi
+ortiqcha edi. `HskGlassIconButton` endi faqat ikona chizadi.
 
 ### 3.5.1 Profildan olib tashlangan uchta blok — 2026-09-20
 
@@ -421,6 +420,62 @@ u endi bundle'dan keladi va internetsiz ham to'ladi. Lekin mashq birinchi
 ataylab: gate — server qarori (bepul o'quvchi bo'limni bir marta oladi,
 reklama uni qayta ochadi), va uni qurilmada hal qilish huquqni klientga
 berish bo'lardi. Ya'ni mashqlar online qolishi — e'tiborsizlik emas, qoida.
+
+### 3.12 Uch xato foydalanuvchi suratlaridan (1.3.4) — TUZATILDI 2026-09-20
+
+**AI chatda surat jo'natilmasdi.** Xabar `assistant_network` edi — ya'ni
+server rad etmagan (u `assistant_unavailable` bo'lardi), balki **istisno**
+chiqqan. Surat so'rov tanasi ichida base64 bo'lib ketadi, 3 MB gacha, ya'ni
+base64 dan keyin ~4 MB; umumiy OkHttp client'da esa `writeTimeout = 30s`,
+`callTimeout = 60s`. Telefon uplinkida 4 MB shuncha vaqtga sig'maydi.
+
+Ikki tomondan tuzatildi:
+
+- Assistant o'z timeout'ini oldi (`writeTimeout = 120s`, `callTimeout = 180s`).
+  `httpClient.newBuilder()` orqali, ya'ni connection pool va dispatcher
+  umumiy qoladi. Qolgan ekranlar 60 soniyada tushadigan javobni uch daqiqa
+  kutmaydi.
+- Surat byudjeti 3 MB → 1.5 MB, sifat 88 → 82. Server baribir 2048px va
+  sifat 88 ga qayta kodlaydi (`assistant_service.py`), ya'ni bundan og'iri
+  telefon sarflab, server tashlaydigan bayt. Zich surat (ko'pincha matn
+  sahifasi) eng past sifatda ham sig'masa, endi «yomon surat» demaydi —
+  1400px ga tushadi.
+
+**Tinglash savoli javobni o'zi yozib qo'yardi.** `LessonCards.kt` da
+`ChoiceKind.LISTENING` kartasi, pinyin yoqilgan bo'lsa, audio pinyinini
+variantlar tepasiga chop etardi — ya'ni to'g'ri javobni. Mini App
+(`course-v3.html`, `cardChoice`) tinglash kartasida faqat audio tugmasini
+ko'rsatadi. Olib tashlandi. `audioPinyin` modelda qoladi — yozish varag'i
+uni sarlavha sifatida ishlatadi.
+
+**Yozish varag'i butun gapni bitta katakka chizardi.** Tinglash kartasida
+qalam nishoni — eshitilgan **butun gap** (Mini App'da ham shunday). Lekin
+chiziq ma'lumoti bitta ieroglifga tegishli, shuning uchun varaq bir
+belgidan uzun narsani 128sp matn qilib katakka tiqardi — ieroglif ustma-ust
+tushardi.
+
+Endi Mini App'ning `hsk-lugat.html` sahifasi qanday qilsa shunday: nishon
+belgilarga ajraladi (`WriterTarget.characters`, tinish belgilari tashlanadi,
+chunki ularda chiziq yo'q) va birma-bir yoziladi — `‹ 2 / 7 ›`. Strelkalar
+lug'atdagi bilan bir xil glif. Kechikib kelgan javob boshqa belgiga
+tushmaydi: `writerIndex` tekshiriladi.
+
+Qamrov: `LessonViewModelTest` — gap bo'ylab yurish, tinish belgisi
+sanalmasligi, chegaradan tashqari indeks.
+
+**Qalam tugmasi javob panelining ustida turardi.** `WriterButton` pastdan
+qat'iy `152.dp` da edi; javob paneli esa izohiga qarab o'sadi. Endi panel
+`onSizeChanged` bilan o'lchanadi va tugma uning ustida 16 dp turadi.
+
+**Mayda ikonalar dumaloq blok ichida edi.** `HskGlassIconButton` har doim
+`HskGlassSurface` (doira + soya) ichiga o'rardi. Oq-oq Paper ustida doira
+tugmaga emas, glif atrofidagi xira dog'ga o'xshardi. Endi u oddiy
+`IconButton` — faqat ikona, tegish maydoni o'sha-o'sha. Reyting
+qo'ng'irog'i va `RatingScreenHeader` orqaga tugmasi ham shunga o'tdi, ya'ni
+3.5 dagi «chegara qo'shish» yechimi bekor qilindi: chegara emas, blokning
+o'zi ortiqcha edi.
+
+Kartalardagi `HskGlassSurface` ga tegilmadi — u yerda to'g'ri ishlaydi.
 
 ### 3.11 Boshqa ochiqlar
 

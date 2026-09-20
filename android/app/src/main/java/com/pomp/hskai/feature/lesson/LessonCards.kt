@@ -405,11 +405,10 @@ fun ChoiceCardView(
         when (card.kind) {
             ChoiceKind.LISTENING -> {
                 Text(text = stringResource(R.string.lesson_listen_and_choose), style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
-                val audioPinyin = card.audioPinyin
-                if (pinyin == PinyinVisibility.ALL && !audioPinyin.isNullOrBlank()) {
-                    Spacer(Modifier.height(6.dp))
-                    Text(text = audioPinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
-                }
+                // The pinyin of what is being said used to sit here whenever the
+                // learner had pinyin switched on — which is the answer, written out
+                // above the options. The Mini App shows the audio button and nothing
+                // else, and a listening question that can be read is not one.
                 Spacer(Modifier.height(12.dp))
                 AudioAction(isLoading = isAudioLoading, onClick = { onPlayAudio(card.audioText.orEmpty()) })
                 Spacer(Modifier.height(16.dp))
