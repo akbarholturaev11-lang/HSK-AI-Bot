@@ -1597,9 +1597,11 @@ var App={
     if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#FFC800" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
     var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw '+(x[2]||"")+'"><b>'+esc(x[0])+'</b><small>'+esc(x[1])+'</small></div>'}).join("")+'</div>':"";
     var t0=type||"lesson";
-    /* Avval yaqin kadrda panda osmondan changli qo'nadi — sahna keyin ochiladi */
-    cinePanda("land","land",function(){
-      $("#lu-panda").innerHTML=pandaChar("celebrate");
+    var finishChar=(t0==="checkpoint"||t0==="level")?"dragon":"panda";
+    /* Normal darsda Panda asosiy maskot bo'lib qoladi; checkpoint/level
+       marra ekranida energiyali Xitoy ajdari chiqadi. Server flow o'zgarmaydi. */
+    cineLessonCharacter("land",finishChar,"celebrate",function(){
+      $("#lu-panda").innerHTML=lessonCharacterHtml(finishChar,"celebrate");
       $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
       $("#lu-cta").setAttribute("onclick",firstCp?"App.openCheckpointNext()":((t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()"));
       var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
@@ -3397,7 +3399,8 @@ function comboPop(n){
     tj:["Идома деҳ!","Олӣ!","Оташин!","Аҷоиб!","Нашав!"]}[LANG]||["Zo'r!"];
   var msg=P[Math.min(Math.floor(n/5)-1,P.length-1)]||P[0];
   var el=$("#combo");if(!el)return;
-  el.innerHTML='<div class="combo-card"><div class="combo-pd">'+pandaChar("celebrate")+'</div><div class="combo-n"'+(n>=10?' style="color:var(--cin);font-size:'+Math.min(46+n,72)+'px"':'')+'>'+n+'×</div><div class="combo-tx">'+esc(msg)+'</div></div>';
+  var comboChar=n>=10?"dragon":"monkey";
+  el.innerHTML='<div class="combo-card"><div class="combo-pd">'+lessonCharacterHtml(comboChar,"celebrate")+'</div><div class="combo-n"'+(n>=10?' style="color:var(--cin);font-size:'+Math.min(46+n,72)+'px"':'')+'>'+n+'×</div><div class="combo-tx">'+esc(msg)+'</div></div>';
   var cols=['#E04A40','#E9A916','#2FA06A','#2E86C1','#F2A9B5'];
   var sparkN=16+Math.min(n||0,24);
   for(var i=0;i<sparkN;i++){(function(){var s=document.createElement('span');s.className='combo-spark';s.style.left='50%';s.style.top='42%';s.style.background=cols[i%5];el.appendChild(s);var a=Math.random()*6.28,d=70+Math.random()*90;requestAnimationFrame(function(){s.classList.add('go');s.style.opacity='1';s.style.transform='translate('+Math.cos(a)*d+'px,'+Math.sin(a)*d+'px) rotate('+(Math.random()*360)+'deg)';s.style.opacity='0'});setTimeout(function(){s.remove()},720)})()}
@@ -4672,6 +4675,29 @@ function cinePanda(kind,mood,build){
   /* Kutmoqchi bo'lmaganlar uchun: ekranga tegish effektni o'tkazib yuboradi */
   ov.addEventListener("click",reveal);
   tm=setTimeout(reveal,(PANDA_FX_DUR[kind]||900)+300);
+}
+function cineLessonCharacter(effect,id,reaction,build){
+  var ov=$("#levelup"),cine=$("#lu-cine"),stage=$("#lu-stage"),shown=false,tm=0;
+  function reveal(){
+    if(shown)return;shown=true;
+    clearTimeout(tm);ov.removeEventListener("click",reveal);
+    ov.classList.remove("cine");
+    if(cine)cine.innerHTML="";
+    build();
+    if(stage){stage.classList.remove("rev");void stage.offsetWidth;stage.classList.add("rev")}
+  }
+  if(!cine||fxOff()||!window.HSKCharacters||!window.HSKCharacterMotion){
+    cinePanda(effect==="land"?"land":"pop",reaction==="celebrate"?"celebrate":"happy",build);return;
+  }
+  stage.innerHTML="";$("#lu-panda").innerHTML="";
+  var mood=feedbackMoodFromReaction(reaction||"celebrate");
+  cine.innerHTML='<div class="cine-pd hsk-character-stage">'+HSKCharacters.render(id||"panda",mood)+'</div>';
+  ov.classList.add("cine");ov.classList.add("on");
+  var target=cine.querySelector(".cine-pd");
+  requestAnimationFrame(function(){HSKCharacterMotion.play(target,effect||reaction||"pop")});
+  ov.addEventListener("click",reveal);
+  var dur=(HSKCharacterMotion.durations&&HSKCharacterMotion.durations[effect])||900;
+  tm=setTimeout(reveal,dur+260);
 }
 function pandaChar(mood,opts){
   /* Do'mboq, ifodali panda (Duolingo maskot uslubi). API o'zgarmagan:
