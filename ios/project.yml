@@ -29,7 +29,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.pomp.hskai
-        PRODUCT_NAME: HSK AI
+        PRODUCT_NAME: HSKAI
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
     info:
