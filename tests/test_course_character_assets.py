@@ -42,6 +42,17 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
             source,
         )
 
+    def test_lesson_cards_have_a_persistent_character_coach(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+        self.assertIn('id="f-coach-dock"', html)
+        self.assertIn('id="f-coach"', html)
+        self.assertIn('renderLessonCoach(c,"idle")', html)
+        self.assertIn("reactLessonCoach(card,ok,reaction)", html)
+        self.assertIn('t==="_dialogue"', html)
+        self.assertIn('t==="sentence_builder"', html)
+        self.assertIn('return"monkey"', html)
+
     def test_unlock_animation_only_follows_a_real_progress_transition(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
 
