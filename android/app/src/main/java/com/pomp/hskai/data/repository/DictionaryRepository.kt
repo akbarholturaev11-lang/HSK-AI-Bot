@@ -34,6 +34,7 @@ class DictionaryRepository(
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: DictionaryDao,
     private val onSessionExpired: suspend () -> Unit = {},
+    private val bundledSource: BundledDictionarySource? = null,
 ) {
 
     /**
@@ -44,9 +45,23 @@ class DictionaryRepository(
      * cache the learner keeps their dictionary rather than an error.
      */
     suspend fun sync(language: AppLanguage): ApiResult<Int> {
-        val cached = dao.meta()
-        val cachedCount = dao.count()
-        val sameLanguage = cached?.language == language.backendCode
+        var cached = dao.meta()
+        var cachedCount = dao.count()
+        var sameLanguage = cached?.language == language.backendCode
+        if ((cachedCount == 0 || !sameLanguage) && bundledSource != null) {
+            bundledSource.load(language)?.let { bundled ->
+                dao.replace(
+                    words = bundled.words,
+                    meta = DictionaryMetaEntity(
+                        version = bundled.version,
+                        language = bundled.language,
+                    ),
+                )
+                cached = dao.meta()
+                cachedCount = dao.count()
+                sameLanguage = cached?.language == language.backendCode
+            }
+        }
         val etag = cached?.version
             ?.takeIf { it.isNotBlank() && sameLanguage && cachedCount > 0 }
             ?.let { "W/\"dictionary-$it\"" }
@@ -137,6 +152,9 @@ class DictionaryRepository(
 
     private companion object {
         const val NOT_MODIFIED = 304
-        const val SEARCH_LIMIT = 200
+        // The server currently ships HSK 1-4 as one 1247-word dictionary. A
+        // 200-row cap made the default list look like it stopped at HSK2
+        // because the source is ordered by level.
+        const val SEARCH_LIMIT = 2_000
     }
 }

@@ -19,6 +19,7 @@ import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
 import com.pomp.hskai.data.local.HskAiDatabase
+import com.pomp.hskai.data.repository.AssetBundledDictionarySource
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
@@ -190,6 +191,7 @@ class HskAiApplication : Application() {
             accessToken = authRepository::accessToken,
             dao = database.dictionaryDao(),
             onSessionExpired = authRepository::invalidateSession,
+            bundledSource = AssetBundledDictionarySource(this, json),
         )
     }
 
