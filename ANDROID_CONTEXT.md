@@ -405,7 +405,7 @@ python3 android/tools/build_stroke_assets.py   # Mini App ma'lumotidan yasaydi
 python3 android/tools/check_stroke_assets.py   # eskirib qolmaganini tekshiradi
 ```
 
-Ikkinchisi oltinchi statik tekshiruv sifatida CI va release workflow'ga
+Ikkinchisi statik tekshiruv sifatida CI va release workflow'ga
 qo'shildi. Ikki nusxa ajralib ketadi: Mini App ma'lumoti o'zgaradi, generator
 qayta ishga tushirilmaydi, va telefonda yozib bo'lmaydigan ieroglif qoladi —
 jimgina, chunki yo'q chiziq fayli hech qachon bo'lmaganidan farq qilmaydi.
@@ -586,13 +586,14 @@ yaxshi.
 | Retrofit interfeyslari | `data/api/Android*Api.kt` |
 | Flavour farqlari | `src/direct/`, `src/play/` |
 | Statik tekshiruvlar | `android/tools/check_*.py` — **Gradle'dan oldin ishga tushiring** |
+| Import qolib ketishi | `check_unresolved_references.py` — chaqirilgan nom import qilinganini tekshiradi |
 | Server tomoni | `app/api/android_*.py`, `app/services/android_*.py` |
 | Rang palitrasi | Mini App bilan bir xil bo'lishi shart, `check_palette_matches_miniapp.py` tekshiradi |
 | Offline lug'at | `android/app/src/main/assets/` — so'zlar `hsk-words.js`, chiziqlar `strokes/`. `build_stroke_assets.py` yasaydi, `check_stroke_assets.py` eskirmaganini tekshiradi |
 
 ## 6. Ishlash qoidalari
 
-- **Har o'zgarishdan keyin:** oltita statik tekshiruv, keyin
+- **Har o'zgarishdan keyin:** yettita statik tekshiruv, keyin
   `./gradlew testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug`.
 - **Matn qo'shsangiz** — uchta tilda (uz/ru/tg). `check_strings_translated.py`
   buni majburlaydi. Backend kodlari `uz/ru/tj`, Android qualifierlari
