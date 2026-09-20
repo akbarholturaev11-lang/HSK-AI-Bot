@@ -46,3 +46,14 @@
 "tab_rating" = "Рейтинг";
 "tab_profile" = "Профиль";
 "profile_logout" = "Выйти из аккаунта";
+
+"course_xp" = "XP";
+"course_streak" = "Серия";
+"course_league" = "Лига";
+"course_offline_cache" = "Показан последний сохранённый курс. Он обновится после восстановления сети.";
+"today_plan" = "План на сегодня";
+"today_task_lesson" = "Урок";
+"today_task_mistakes" = "Ошибки";
+"today_task_test" = "Тест";
+"today_task_voice" = "Речь";
+"today_task_drill" = "Практика";

@@ -46,3 +46,14 @@
 "tab_rating" = "Рейтинг";
 "tab_profile" = "Профил";
 "profile_logout" = "Баромадан аз ҳисоб";
+
+"course_xp" = "XP";
+"course_streak" = "Силсила";
+"course_league" = "Лига";
+"course_offline_cache" = "Курси охиринии сабтшуда нишон дода мешавад. Пас аз барқарор шудани шабака нав мешавад.";
+"today_plan" = "Нақшаи имрӯз";
+"today_task_lesson" = "Дарс";
+"today_task_mistakes" = "Хатоҳо";
+"today_task_test" = "Тест";
+"today_task_voice" = "Гуфтор";
+"today_task_drill" = "Машқ";

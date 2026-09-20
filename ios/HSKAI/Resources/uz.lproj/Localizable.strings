@@ -46,3 +46,14 @@
 "tab_rating" = "Reyting";
 "tab_profile" = "Profil";
 "profile_logout" = "Hisobdan chiqish";
+
+"course_xp" = "XP";
+"course_streak" = "Seriya";
+"course_league" = "Liga";
+"course_offline_cache" = "Oxirgi saqlangan kurs ko‘rsatilmoqda. Tarmoq tiklanganda yangilanadi.";
+"today_plan" = "Bugungi reja";
+"today_task_lesson" = "Dars";
+"today_task_mistakes" = "Xatolar";
+"today_task_test" = "Test";
+"today_task_voice" = "Gapirish";
+"today_task_drill" = "Mashq";
