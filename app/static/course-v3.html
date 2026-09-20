@@ -262,6 +262,12 @@ button{cursor:pointer}
 .fheart{display:flex;align-items:center;gap:3px;color:var(--cin);font-size:15px;font-weight:500}
 .fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fstage b{font-size:12px;color:var(--ink);font-weight:600;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fcoach-dock{min-height:78px;margin:0 18px 2px;display:none;align-items:center;justify-content:flex-end;gap:8px;pointer-events:none}
+.fcoach-dock.on{display:flex}
+.fcoach-label{max-width:130px;padding:6px 9px;border:1px solid var(--line);border-radius:11px;background:var(--card);color:var(--ink2);font-size:10px;font-weight:600;line-height:1.25;text-align:right;box-shadow:0 4px 12px rgba(33,29,23,.05)}
+.fcoach{width:70px;height:76px;min-height:76px;flex:0 0 70px;display:grid;place-items:center}
+.fcoach>.hsk-character{width:100%;height:100%}
+@media(max-height:650px){.fcoach-dock{min-height:64px}.fcoach{width:58px;height:62px;min-height:62px;flex-basis:58px}.fcoach-label{font-size:9px}}
 .fbody{flex:1;min-height:0;overflow-y:auto;padding:10px 18px 20px}
 .kicker{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 11px;border-radius:12px;margin:4px 0 14px}
 .k-word{background:var(--cinbg);color:var(--cin2)}.k-gram{background:#E7F0F8;color:#2F6F9E}.k-dia{background:var(--jadebg);color:var(--jade)}.k-check{background:var(--goldbg);color:var(--gold)}
@@ -1221,6 +1227,7 @@ button{cursor:pointer}
   <div class="flow" id="flow">
     <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
+    <div class="fcoach-dock" id="f-coach-dock" aria-hidden="true"><span class="fcoach-label" id="f-coach-label"></span><div class="fcoach hsk-character-stage" id="f-coach"></div></div>
     <div class="fbody" id="f-body"></div>
     <button class="fcta" id="f-cta" onclick="Flow.next()"></button>
     <button class="writebtn" id="writebtn" onclick="App.openWriter(writeChar)" style="display:none" aria-label="Yozilishi"><span class="penwrap"><i class="ti ti-pencil"></i></span></button>
@@ -3362,8 +3369,8 @@ function feedbackCharacterId(card,ok){
   card=card||{};var t=String(card.type||"");
   if(!ok&&HP===1)return"rabbit";
   if(t==="pronunciation")return"panda";
-  if(t==="_grammar"||t==="gap_fill"||t==="sentence_builder"||t==="builder"||t==="reverse_builder")return"crane";
-  if(t==="match_pairs"||t==="dialog_context"||t==="dialog_cloze"||t==="quick_quiz")return"monkey";
+  if(t==="_grammar"||t==="gap_fill")return"crane";
+  if(t==="_dialogue"||t==="match_pairs"||t==="dialog_context"||t==="dialog_cloze"||t==="quick_quiz"||t==="sentence_builder"||t==="builder"||t==="reverse_builder")return"monkey";
   if(card._guided||card._repair||card.review_mix)return"rabbit";
   if(card._exitTicket)return ok?"dragon":"rabbit";
   return"panda";
@@ -3403,6 +3410,31 @@ function lessonCharacterLabel(id){
     rabbit:{uz:"Yueyue · eslab qolish",ru:"Юэюэ · запоминание",tj:"Юэюэ · ёдгирӣ"}
   };
   return (L[id]&&L[id][LANG])||(L.panda[LANG]||"Panda");
+}
+function lessonCardHasEmbeddedCoach(card){
+  var t=String(card&&card.type||"");
+  return t==="_basics"||t==="_grammar"||t==="pronunciation";
+}
+function renderLessonCoach(card,mood){
+  var dock=$("#f-coach-dock"),host=$("#f-coach"),label=$("#f-coach-label");
+  if(!dock||!host)return;
+  if(lessonCardHasEmbeddedCoach(card)){dock.classList.remove("on");host.innerHTML="";return}
+  var id=feedbackCharacterId(card,true);
+  dock.classList.add("on");
+  if(label)label.textContent=lessonCharacterLabel(id);
+  host.innerHTML=lessonCharacterHtml(id,mood||"idle");
+  host.setAttribute("data-character",id);
+}
+function reactLessonCoach(card,ok,reaction){
+  var dock=$("#f-coach-dock"),host=$("#f-coach"),label=$("#f-coach-label");
+  if(!dock||!host||lessonCardHasEmbeddedCoach(card))return;
+  var id=feedbackCharacterId(card,ok);
+  dock.classList.add("on");
+  if(label)label.textContent=lessonCharacterLabel(id);
+  if(window.HSKCharacters&&HSKCharacters.mount)HSKCharacters.mount(host,id,feedbackMoodFromReaction(reaction));
+  else host.innerHTML=lessonCharacterHtml(id,feedbackMoodFromReaction(reaction));
+  host.setAttribute("data-character",id);
+  if(window.HSKCharacterMotion&&HSKCharacterMotion.play)HSKCharacterMotion.play(host,reaction);
 }
 function flashLessonReaction(id,reaction){
   var old=document.querySelector(".hsk-lesson-reaction");if(old)old.remove();
@@ -3469,7 +3501,9 @@ function showBar(ok,msg,sub){
   if(Flow.queue&&Flow.queue[Flow.i]&&Flow.queue[Flow.i].objective_id)saveLessonResume(Flow.i+1);
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
-  renderFeedbackCharacter($("#fbar-char"),feedbackCharacterId(card,ok),feedbackReaction(card,ok));
+  var reaction=feedbackReaction(card,ok);
+  renderFeedbackCharacter($("#fbar-char"),feedbackCharacterId(card,ok),reaction);
+  reactLessonCoach(card,ok,reaction);
 }
 /* Ketma-ket to'g'ri javoblarda ekran cheti porlashi (dofamin) */
 function edgeGlow(n){var e=$("#edgeglow");if(!e)return;e.className=n>=10?"g3":n>=5?"g2":n>=3?"g1":""}
@@ -3844,12 +3878,13 @@ function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==
 function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
 function renderFlowCard(){
   Flow.answered=false;hideBar();flowProg();
-  if(Flow.i>=Flow.queue.length){return flowDone()}
+  if(Flow.i>=Flow.queue.length){var doneDock=$("#f-coach-dock");if(doneDock)doneDock.classList.remove("on");return flowDone()}
   saveLessonResume();
   prefetchUpcomingAudio();
   applyPinyinMode();
   var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
   var t=c.type;
+  renderLessonCoach(c,"idle");
   trackFlowCard(c);
   var w=(c&&c.word)||null,writeTarget="",writeInfo={};
   if(t==="active_word"||t==="_word_flash"||t==="_word_listen"||t==="_word_pick_meaning"||t==="_word_pick_hanzi"){
@@ -3906,6 +3941,7 @@ function cardGuidedRepair(c){
 }
 function teachContinue(){var cta=$("#f-cta");cta.style.display="flex"}
 function renderCheer(){
+  var cheerDock=$("#f-coach-dock");if(cheerDock)cheerDock.classList.remove("on");
   var M={uz:["Xato bo'ldi — demak siz haqiqatan o'ylayapsiz. Aynan shunday esda qoladi.",
       "Bu so'z hozir qiyin keldi. Ikkinchi uchrashuvda osonroq bo'ladi — shu bilan o'rganiladi.",
       "To'xtamang: bitta xato butun darsni buzmaydi."],
