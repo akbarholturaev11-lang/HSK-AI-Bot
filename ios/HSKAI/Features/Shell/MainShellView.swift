@@ -33,7 +33,7 @@ struct MainShellView: View {
             RatingScreen(model: ratingModel)
                 .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
 
-            ProfileShellPlaceholder(account: account, onLogout: onLogout)
+            ProfileScreen(account: account, courseModel: courseModel, onLogout: onLogout)
                 .tabItem { Label("tab_profile", systemImage: "person.crop.circle.fill") }
         }
         .tint(HSKColors.cinnabar)

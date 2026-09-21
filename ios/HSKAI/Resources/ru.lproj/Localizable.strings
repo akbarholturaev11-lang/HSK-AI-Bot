@@ -161,3 +161,13 @@
 "rating_daily_xp" = "Сегодня";
 "rating_streak" = "Серия";
 "rating_load_error" = "Не удалось загрузить рейтинг.";
+
+"profile_pro" = "Pro";
+"profile_free" = "Бесплатно";
+"profile_xp" = "Всего XP";
+"profile_streak" = "Серия";
+"profile_lessons" = "Завершённые уроки";
+"profile_league" = "Лига";
+"profile_language" = "Язык";
+"profile_level" = "Уровень";
+"profile_access" = "Доступ";

@@ -161,3 +161,13 @@
 "rating_daily_xp" = "Имрӯз";
 "rating_streak" = "Силсила";
 "rating_load_error" = "Рейтинг бор карда нашуд.";
+
+"profile_pro" = "Pro";
+"profile_free" = "Ройгон";
+"profile_xp" = "XP-и умумӣ";
+"profile_streak" = "Силсила";
+"profile_lessons" = "Дарсҳои анҷомшуда";
+"profile_league" = "Лига";
+"profile_language" = "Забон";
+"profile_level" = "Сатҳ";
+"profile_access" = "Дастрасӣ";
