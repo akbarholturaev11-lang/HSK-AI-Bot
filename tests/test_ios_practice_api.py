@@ -251,7 +251,7 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
             })
         )
         fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
-        audio = "data:audio/mp4;base64,QUJDRA=="
+        audio = "data:audio/mp4;base64,AAAAGGZ0eXBpc29t"
 
         with patch(
             "app.api.ios_practice.DesktopAuthService.authenticate",
@@ -276,7 +276,7 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(123456, call.args[0])
         self.assertEqual("你", call.kwargs["target"])
         self.assertEqual("nǐ", call.kwargs["target_pinyin"])
-        self.assertEqual(b"ABCD", call.kwargs["audio_bytes"])
+        self.assertEqual(b"\x00\x00\x00\x18ftypisom", call.kwargs["audio_bytes"])
         self.assertEqual("uz", call.kwargs["language"])
         self.assertEqual("hsk1", call.kwargs["level"])
 
