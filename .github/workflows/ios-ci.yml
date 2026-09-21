@@ -13,6 +13,8 @@ on:
       - "app/api/ios_auth.py"
       - "app/api/ios_course.py"
       - "app/api/ios_practice.py"
+      - "app/api/ios_ads.py"
+      - "app/api/ios_assistant.py"
       - "app/bot/fsm/ios_auth.py"
       - "app/bot/handlers/desktop_auth.py"
       - "app/db/models/course_miniapp_event.py"
@@ -122,6 +124,7 @@ jobs:
           app/api/ios_subscription.py \
           app/api/ios_challenges.py \
           app/api/ios_assistant.py \
+          app/api/ios_ads.py \
             app/services/desktop_auth_service.py \
             app/bot/handlers/desktop_auth.py
 
