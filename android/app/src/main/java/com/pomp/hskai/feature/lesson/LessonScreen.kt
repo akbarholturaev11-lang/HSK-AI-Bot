@@ -145,7 +145,12 @@ fun LessonScreen(
                 }
                 outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
                 outcome is LessonOutcome.Completed ->
-                    CompletedBlock(outcome, state.rankBoard, onExit)
+                    CompletedBlock(
+                        outcome = outcome,
+                        isCheckpoint = state.lesson?.isCheckpoint == true,
+                        rankBoard = state.rankBoard,
+                        onExit = onExit,
+                    )
                 outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
                 else -> LessonBody(
                     state = state,
@@ -285,9 +290,23 @@ private fun LessonBody(
             )
             if (state.isStale) StaleBanner()
 
-            val coachCharacter = lessonCharacterFor(card)
             val checked = state.answer as? AnswerState.Checked
-            val coachReaction = checked?.let { lessonReactionFor(it.isCorrect, state.hearts) }
+            val coachCharacter = if (
+                checked != null &&
+                !checked.isCorrect &&
+                state.hearts == 1
+            ) {
+                LessonCharacter.Rabbit
+            } else {
+                lessonCharacterFor(card)
+            }
+            val coachReaction = checked?.let {
+                lessonReactionFor(
+                    correct = it.isCorrect,
+                    hearts = state.hearts,
+                    streak = state.answerStreak,
+                )
+            }
             val coachMood = when {
                 checked == null -> LessonCharacterMood.Idle
                 !checked.isCorrect && state.hearts == 1 -> LessonCharacterMood.OneHeart
@@ -834,10 +853,16 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
 @Composable
 private fun CompletedBlock(
     outcome: LessonOutcome.Completed,
+    isCheckpoint: Boolean,
     rankBoard: LessonRankBoard?,
     onExit: () -> Unit,
 ) {
-    LessonCompletionCelebration(outcome = outcome, rankBoard = rankBoard, onExit = onExit)
+    LessonCompletionCelebration(
+        outcome = outcome,
+        isCheckpoint = isCheckpoint,
+        rankBoard = rankBoard,
+        onExit = onExit,
+    )
 }
 
 @Composable
