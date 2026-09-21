@@ -9,6 +9,10 @@
   var BOT_URL = "https://t.me/darsi_chini_bot";
   // The copy keys are prefixed per platform; `macos` is historically "mac".
   var COPY_KEY = { ios: "ios", macos: "mac", android: "android", windows: "windows" };
+  // The quick guide keeps one step list per platform in the DOM; the prefix
+  // says which slots to fill, the badge says whose instructions these are.
+  var QUICK_PREFIX = { macos: "m", windows: "w", android: "a" };
+  var QUICK_BADGE = { macos: "macOS", windows: "Windows", android: "Android" };
 
   function forPlatform(localized, suffix) {
     return localized[COPY_KEY[state.platform] + suffix];
@@ -117,6 +121,14 @@
         ["EXE’ni oching", "Downloads (↓) ichidan yuklangan .exe faylini bosing."],
         ["SmartScreen bloklasa", "Rasmdagi More info, keyin Run anyway va Yes’ni bosing."],
         ["O‘rnating va oching", "Install tugmasini bosing, so‘ng Start menyusidan ilovani oching."]
+      ],
+      androidQuickLead:
+        "Yuklab olish tugashini kuting. Fayl bildirishnomada yoki «Yuklamalar» papkasida paydo bo‘ladi.",
+      androidQuickSteps: [
+        ["Yuklangan APK’ni oching", "Bildirishnomadagi faylni bosing yoki «Yuklamalar» papkasidan HSK AI faylini toping."],
+        ["Shu manbadan o‘rnatishga ruxsat bering", "Android so‘rasa: «Sozlamalar» → «Shu manbadan o‘rnatishga ruxsat berish» ni yoqing va orqaga qayting."],
+        ["«O‘rnatish» ni bosing", "Play Protect tekshiruvi chiqsa «Baribir o‘rnatish» ni tanlang. Bu — HSK AI rasmiy fayli."],
+        ["Ilovani oching va Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."]
       ],
       mobileEyebrow: "Telefon orqali ochdingiz",
       mobileTitle: "Linkni kompyuteringizga yuboring",
@@ -232,6 +244,14 @@
         ["Если появился SmartScreen", "Нажмите показанные ниже кнопки: «Подробнее», затем «Выполнить в любом случае»."],
         ["Установите и откройте", "Нажмите «Установить», затем откройте HSK AI через меню Пуск."]
       ],
+      androidQuickLead:
+        "Дождитесь окончания загрузки. Файл появится в уведомлении или в папке «Загрузки».",
+      androidQuickSteps: [
+        ["Откройте скачанный APK", "Нажмите файл в уведомлении или найдите HSK AI в папке «Загрузки»."],
+        ["Разрешите установку из этого источника", "Если Android спросит: «Настройки» → «Разрешить установку из этого источника», затем вернитесь назад."],
+        ["Нажмите «Установить»", "Если появится проверка Play Protect, выберите «Всё равно установить». Это наш официальный файл."],
+        ["Откройте приложение и подключите Telegram", "Подтвердите код из приложения через Telegram. Подписка и прогресс придут автоматически."]
+      ],
       mobileEyebrow: "Страница открыта на телефоне",
       mobileTitle: "Отправьте ссылку на компьютер",
       mobileBody:
@@ -345,6 +365,14 @@
         ["EXE-ро кушоед", "Дар Downloads (↓) файли .exe-и боршударо пахш кунед."],
         ["Агар SmartScreen роҳ надиҳад", "Тугмаҳои расмро пахш кунед: «Маълумоти бештар», баъд «Ба ҳар ҳол иҷро кардан»."],
         ["Насб ва кушоед", "«Насб кардан»-ро пахш кунед ва баъд HSK AI-ро аз Start кушоед."]
+      ],
+      androidQuickLead:
+        "То анҷоми боргирӣ интизор шавед. Файл дар огоҳинома ё дар ҷузвдони «Боргириҳо» пайдо мешавад.",
+      androidQuickSteps: [
+        ["APK-и боршударо кушоед", "Файлро дар огоҳинома пахш кунед ё дар ҷузвдони «Боргириҳо» HSK AI-ро ёбед."],
+        ["Ба насб аз ин манбаъ иҷозат диҳед", "Агар Android пурсад: «Танзимот» → «Иҷозати насб аз ин манбаъ»-ро фаъол кунед ва баргардед."],
+        ["«Насб кардан»-ро пахш кунед", "Агар санҷиши Play Protect барояд, «Ба ҳар ҳол насб кардан»-ро интихоб кунед. Ин файли расмии мост."],
+        ["Барномаро кушоед ва Telegram-ро пайваст кунед", "Рамзи барномаро тавассути Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."]
       ],
       mobileEyebrow: "Саҳифа дар телефон кушода шуд",
       mobileTitle: "Пайвандро ба компютер фиристед",
@@ -492,20 +520,28 @@
     var localized = copy();
     var steps = forPlatform(localized, "QuickSteps");
     if (!steps) {
-      var dialog = document.querySelector("[data-quick-guide]");
-      if (dialog && dialog.open) dialog.close();
+      // iOS installs nothing, so there is nothing to open "like this". The
+      // guide is closed rather than left holding another platform's steps.
+      closeQuickGuide();
       return;
     }
     var guide = document.querySelector("[data-quick-guide]");
     var platform = document.querySelector("[data-quick-guide-platform]");
     var progress = document.querySelector("[data-quick-guide-progress]");
+    var lead = document.querySelector("#quick-guide-lead");
     if (guide) guide.dataset.platform = state.platform;
-    if (platform) platform.textContent = state.platform === "macos" ? "macOS" : "Windows";
+    if (platform) platform.textContent = QUICK_BADGE[state.platform] || "";
     if (progress) progress.setAttribute("aria-label", localized.quickGuideProgress);
+    // A phone has no download icon in a browser toolbar, so Android gets its
+    // own opening line instead of the desktop one.
+    if (lead) {
+      lead.textContent =
+        forPlatform(localized, "QuickLead") || localized.quickGuideLead;
+    }
     document.querySelectorAll("[data-quick-guide-close-aria]").forEach(function (button) {
       button.setAttribute("aria-label", localized.quickGuideCloseAria);
     });
-    var prefix = state.platform === "macos" ? "m" : "w";
+    var prefix = QUICK_PREFIX[state.platform];
     steps.forEach(function (step, index) {
       var key = prefix + (index + 1);
       setText('[data-quick-step-title="' + key + '"]', step[0]);
@@ -520,6 +556,8 @@
   function openQuickGuide() {
     var guide = document.querySelector("[data-quick-guide]");
     if (!guide) return;
+    // Without steps there is no guide to open — iOS just opens Telegram.
+    if (!forPlatform(copy(), "QuickSteps")) return;
     renderQuickGuide();
     document.body.classList.add("quick-guide-open");
     if (typeof guide.showModal === "function") {

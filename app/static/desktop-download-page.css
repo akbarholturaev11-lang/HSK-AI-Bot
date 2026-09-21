@@ -862,7 +862,11 @@ body.quick-guide-open {
 }
 
 [data-quick-guide][data-platform="macos"] .quick-platform-windows,
-[data-quick-guide][data-platform="windows"] .quick-platform-macos {
+[data-quick-guide][data-platform="macos"] .quick-platform-android,
+[data-quick-guide][data-platform="windows"] .quick-platform-macos,
+[data-quick-guide][data-platform="windows"] .quick-platform-android,
+[data-quick-guide][data-platform="android"] .quick-platform-macos,
+[data-quick-guide][data-platform="android"] .quick-platform-windows {
   display: none;
 }
 

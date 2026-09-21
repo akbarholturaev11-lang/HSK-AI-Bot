@@ -9516,3 +9516,41 @@ Diqqat:
 - `tests/test_admin_stats_integrity.py::test_client_business_groups_shared_schema_across_clients`
   shu ishdan OLDIN ham yiqilardi (toza `main` da tekshirildi) — bu
   o'zgarishga aloqasi yo'q.
+
+### 2026-09-21 — Android'da yuklashdan keyingi qo'llanma telefonga mos bo'ldi
+
+Muammo: `/desktop-download` sahifasida Android tanlangan holda yuklash
+bosilganda "Пас аз боргирӣ ҳамин тавр кушоед" oynasi macOS (DMG →
+Applications → Gatekeeper) qadamlarini ko'rsatardi.
+
+Sabab: `openQuickGuide()` har qanday platformada ochilardi, `renderQuickGuide()`
+esa `androidQuickSteps` yo'qligi uchun darhol `return` qilardi — natijada
+oynada oldingi platformaning matni va `data-platform="macos"` qolib ketardi
+(CSS ham faqat macos/windows juftini biladi).
+
+- `androidQuickSteps` (4 qadam) + `androidQuickLead` uchchala tilda qo'shildi:
+  bildirishnomadagi APK → "shu manbadan o'rnatishga ruxsat" → Play Protect'da
+  "baribir o'rnatish" → ilovani ochib Telegram'ni ulash.
+- Dialogda uchinchi ro'yxat: `.quick-platform-android` (a1–a4 slotlari, skrinshotsiz).
+- `QUICK_PREFIX` / `QUICK_BADGE` xaritalari: prefiks va nishon endi platformadan
+  keladi (`state.platform === "macos" ? "m" : "w"` o'rniga).
+- Lead matni platformaga bog'liq: telefonda brauzerning yuqori o'ng burchagidagi
+  yuklash belgisi haqida gapirmaydi.
+- iOS: qadamlar yo'q, shuning uchun oyna umuman ochilmaydi (ilgari u yerda ham
+  eski matn chiqardi). Qadamlar yo'q bo'lsa `closeQuickGuide()` chaqiriladi.
+- `?v=` → `20260921-1` (CSS + JS).
+
+Key files:
+- `app/static/desktop-download.html`, `app/static/desktop-download-page.js`,
+  `app/static/desktop-download-page.css`
+- `tests/test_download_quick_guide_per_platform.py` (yangi)
+
+Verified:
+- Yangi test eski fayllarda yiqiladi (`git stash` bilan tekshirildi), yangisida
+  o'tadi; `tests/test_download_page_is_readable_without_js.py`,
+  `tests/test_public_site.py`, `tests/test_desktop_download_api.py` yashil.
+- Haqiqiy brauzerda (Chromium, 375×812, lokal statik server + soxta
+  `/api/v3/apps/public-status`): android → `data-platform="android"`, nishon
+  "Android", faqat `.quick-platform-android` ko'rinadi, uz/ru/tj matnlari
+  to'g'ri; macos/windows avvalgidek; ios'da oyna ochilmaydi; JS xatosi yo'q,
+  gorizontal scroll yo'q.
