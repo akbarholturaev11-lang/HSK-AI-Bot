@@ -21,6 +21,8 @@ data class CourseUiState(
     val isOpeningChest: Boolean = false,
     val chestRewardXp: Int? = null,
     val chestError: ApiError? = null,
+    /** Real server-map LOCKED -> non-LOCKED transition awaiting one reveal. */
+    val unlockedLessonOrder: Int? = null,
 ) {
     val map get() = snapshot?.map
     val isStale get() = snapshot?.isStale == true
@@ -60,12 +62,23 @@ class CourseViewModel(
                 }
             }
             when (val result = repository.courseMap()) {
-                is ApiResult.Success -> _state.update {
-                    it.copy(
+                is ApiResult.Success -> _state.update { current ->
+                    val previous = current.snapshot
+                    val unlockedOrder = if (
+                        previous != null &&
+                        !previous.isStale &&
+                        !result.value.isStale
+                    ) {
+                        findNewlyUnlockedLesson(previous.map.lessons, result.value.map.lessons)
+                    } else {
+                        null
+                    }
+                    current.copy(
                         isLoading = false,
                         isRefreshing = false,
                         snapshot = result.value,
                         error = null,
+                        unlockedLessonOrder = unlockedOrder,
                     )
                 }
 
@@ -120,6 +133,10 @@ class CourseViewModel(
         _state.update { it.copy(chestRewardXp = null) }
     }
 
+    fun consumeLessonUnlock() {
+        _state.update { it.copy(unlockedLessonOrder = null) }
+    }
+
     class Factory(
         private val repository: CourseRepository,
     ) : ViewModelProvider.Factory {
@@ -128,3 +145,19 @@ class CourseViewModel(
             CourseViewModel(repository) as T
     }
 }
+
+internal fun findNewlyUnlockedLesson(
+    previous: List<com.pomp.hskai.domain.model.CourseLesson>,
+    current: List<com.pomp.hskai.domain.model.CourseLesson>,
+): Int? {
+    val oldByOrder = previous.associateBy { it.order }
+    return current
+        .asSequence()
+        .filter { lesson ->
+            oldByOrder[lesson.order]?.status == com.pomp.hskai.domain.model.LessonStatus.LOCKED &&
+                lesson.status != com.pomp.hskai.domain.model.LessonStatus.LOCKED
+        }
+        .minByOrNull { it.order }
+        ?.order
+}
+

@@ -1,7 +1,9 @@
 package com.pomp.hskai.feature.course
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -35,6 +37,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +51,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -78,6 +84,10 @@ import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.courseAssistantContext
 import com.pomp.hskai.feature.hint.SectionHint
+import com.pomp.hskai.feature.lesson.LessonCharacter
+import com.pomp.hskai.feature.lesson.LessonCharacterMood
+import com.pomp.hskai.feature.lesson.LessonCharacterReaction
+import com.pomp.hskai.feature.lesson.LessonCharacterStage
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
@@ -90,6 +100,9 @@ import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /** Native rendering of the Mini App course shell. Mini App is source of truth. */
 @Composable
@@ -106,6 +119,7 @@ fun CourseScreen(
     onOpenGoal: () -> Unit,
     onOpenChest: () -> Unit,
     onChestRewardConsumed: () -> Unit,
+    onUnlockAnimationConsumed: () -> Unit = {},
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -195,6 +209,8 @@ fun CourseScreen(
                                         chestReady = map.progress.rewardChest?.ready == true,
                                         isOpeningChest = state.isOpeningChest,
                                         isStale = state.isStale,
+                                        unlockedLessonOrder = state.unlockedLessonOrder,
+                                        onUnlockAnimationConsumed = onUnlockAnimationConsumed,
                                         onLesson = onLesson,
                                         onLimitedLesson = { limitedLesson = it },
                                         onLockedLesson = onLockedLesson,
@@ -473,6 +489,8 @@ private fun PathRow(
     chestReady: Boolean,
     isOpeningChest: Boolean,
     isStale: Boolean,
+    unlockedLessonOrder: Int?,
+    onUnlockAnimationConsumed: () -> Unit,
     onLesson: (CourseLesson) -> Unit,
     /** A lesson the spent daily allowance is holding shut. */
     onLimitedLesson: (CourseLesson) -> Unit,
@@ -556,7 +574,11 @@ private fun PathRow(
                                 .semantics { contentDescription = lessonDescription },
                             contentAlignment = Alignment.Center,
                         ) {
-                            LessonNodeFace(lesson)
+                            UnlockingLessonNode(
+                                lesson = lesson,
+                                active = unlockedLessonOrder == lesson.order,
+                                onFinished = onUnlockAnimationConsumed,
+                            )
                         }
                     }
 
@@ -705,6 +727,162 @@ private fun PathTrailSlice(row: CourseRow.Path) {
             currentXDp = coursePathOffsetDp(row.unitIndex, row.nodeIndex),
             nextXDp = nextX,
             modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+private fun UnlockingLessonNode(
+    lesson: CourseLesson,
+    active: Boolean,
+    onFinished: () -> Unit,
+) {
+    if (!active) {
+        LessonNodeFace(lesson)
+        return
+    }
+
+    val haptics = LocalHapticFeedback.current
+    val density = LocalDensity.current
+    val nodeScale = remember(lesson.order) { Animatable(.78f) }
+    val ringScale = remember(lesson.order) { Animatable(.60f) }
+    val ringAlpha = remember(lesson.order) { Animatable(0f) }
+    val lockScale = remember(lesson.order) { Animatable(.45f) }
+    val lockAlpha = remember(lesson.order) { Animatable(0f) }
+    val lockY = remember(lesson.order) { Animatable(0f) }
+
+    LaunchedEffect(lesson.order) {
+        delay(260)
+        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+        coroutineScope {
+            launch {
+                nodeScale.animateTo(
+                    1f,
+                    keyframes {
+                        durationMillis = 1050
+                        .78f at 0
+                        1.18f at 368
+                        .96f at 651
+                        1f at 1050
+                    },
+                )
+            }
+            launch {
+                ringAlpha.animateTo(
+                    0f,
+                    keyframes {
+                        durationMillis = 1100
+                        0f at 0
+                        1f at 330
+                        0f at 1100
+                    },
+                )
+            }
+            launch {
+                ringScale.animateTo(
+                    1.65f,
+                    keyframes {
+                        durationMillis = 1100
+                        .60f at 0
+                        .88f at 330
+                        1.65f at 1100
+                    },
+                )
+            }
+            launch {
+                lockAlpha.animateTo(
+                    0f,
+                    keyframes {
+                        durationMillis = 900
+                        0f at 0
+                        1f at 342
+                        1f at 702
+                        0f at 900
+                    },
+                )
+            }
+            launch {
+                lockScale.animateTo(
+                    .82f,
+                    keyframes {
+                        durationMillis = 900
+                        .45f at 0
+                        1.14f at 342
+                        .98f at 702
+                        .82f at 900
+                    },
+                )
+            }
+            launch {
+                lockY.animateTo(
+                    -36f,
+                    keyframes {
+                        durationMillis = 900
+                        0f at 0
+                        -10f at 342
+                        -22f at 702
+                        -36f at 900
+                    },
+                )
+            }
+        }
+        onFinished()
+    }
+
+    Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
+        Canvas(
+            modifier = Modifier
+                .size(NODE_SIZE + 16.dp)
+                .graphicsLayer {
+                    scaleX = ringScale.value
+                    scaleY = ringScale.value
+                    alpha = ringAlpha.value
+                },
+        ) {
+            drawCircle(
+                color = PompColors.Gold,
+                radius = size.minDimension / 2f,
+                style = Stroke(width = 3.dp.toPx()),
+            )
+        }
+        Box(
+            modifier = Modifier.graphicsLayer {
+                scaleX = nodeScale.value
+                scaleY = nodeScale.value
+            },
+        ) {
+            LessonNodeFace(lesson)
+        }
+        Surface(
+            shape = CircleShape,
+            color = PompColors.Gold,
+            modifier = Modifier
+                .size(42.dp)
+                .graphicsLayer {
+                    alpha = lockAlpha.value
+                    scaleX = lockScale.value
+                    scaleY = lockScale.value
+                    translationY = with(density) { lockY.value.dp.toPx() }
+                    rotationZ = -16f * (1f - lockAlpha.value)
+                },
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Filled.LockOpen,
+                    contentDescription = null,
+                    tint = Color(0xFF3A2C08),
+                    modifier = Modifier.size(21.dp),
+                )
+            }
+        }
+        LessonCharacterStage(
+            character = LessonCharacter.Dragon,
+            mood = LessonCharacterMood.Celebrate,
+            reaction = LessonCharacterReaction.Celebrate,
+            reactionKey = lesson.order,
+            modifier = Modifier
+                .size(76.dp)
+                .offset(x = 70.dp, y = (-4).dp),
         )
     }
 }

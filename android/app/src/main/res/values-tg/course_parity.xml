@@ -22,4 +22,6 @@
     <string name="today_task_talk">Гуфтугӯ</string>
     <string name="today_task_chars">Ҳарфҳо</string>
     <string name="today_task_pron">Талаффуз</string>
+    <string name="lesson_entry_title">Дарс омода мешавад</string>
+    <string name="lesson_entry_subtitle">Панда шуморо интизор аст</string>
 </resources>

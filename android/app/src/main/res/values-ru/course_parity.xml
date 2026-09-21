@@ -22,4 +22,6 @@
     <string name="today_task_talk">Диалог</string>
     <string name="today_task_chars">Иероглифы</string>
     <string name="today_task_pron">Произношение</string>
+    <string name="lesson_entry_title">Готовим урок</string>
+    <string name="lesson_entry_subtitle">Панда уже ждёт вас</string>
 </resources>
