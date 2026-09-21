@@ -24,6 +24,7 @@ from app.config import settings
 from app.api.android_auth import create_android_auth_router
 from app.api.ios_auth import create_ios_auth_router
 from app.api.ios_course import create_ios_course_router
+from app.api.ios_practice import create_ios_practice_router
 from app.api.android_course import create_android_course_router
 from app.api.android_events import create_android_events_router
 from app.api.android_features import create_android_features_router
@@ -689,6 +690,13 @@ app.include_router(
     create_ios_course_router(
         session_factory=async_session_maker,
         settings_obj=settings,
+    )
+)
+app.include_router(
+    create_ios_practice_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+        bot=bot,
     )
 )
 app.include_router(
