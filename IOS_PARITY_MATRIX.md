@@ -25,10 +25,10 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Dictionary | `DictionaryScreen.kt` | dictionary + ETag | ✅ | Native glass dictionary + refresh/cache parity |
 | Rating | `RatingScreen.kt` | `/api/v3/ios/rating/leaderboard` | ✅ | Native weekly league leaderboard and account stats |
 | Challenges | `ChallengeRunScreen.kt` | challenges APIs | ⬜ | Challenge flow |
-| Referral | profile/rating flows | referral overview | ⬜ | Profile/rating |
+| Referral | profile/rating flows | `/api/v3/ios/referral/overview` | ✅ | Shared referral state + native ShareLink invite flow |
 | Profile | `ProfileScreen.kt` | account + course state | 🟡 | Native glass account/progress/access profile; editable preferences pending |
-| Trial state | `AndroidFeatureApi.kt` | trial status/start | ⬜ | Access state |
-| Subscription state | profile/limit flows | subscription overview | ⬜ | Read-only access state first |
+| Trial state | `AndroidFeatureApi.kt` | `/api/v3/ios/subscription/trial*` | ✅ | Shared trial state/start surfaced in native Profile |
+| Subscription state | profile/limit flows | `/api/v3/ios/subscription/overview` | ✅ | Read-only shared subscription/access state in native Profile |
 | External checkout | Android `direct` flavor | external checkout | ➖ | Do not copy until iOS policy decision |
 | Ads/unlock | `AdScreen.kt` | ad list/view + access ref | ⬜ | iOS channel |
 | AI Voice | `feature/voice/*` | voice APIs | ⬜ | AVAudioRecorder/AVPlayer |
