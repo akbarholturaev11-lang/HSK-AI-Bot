@@ -62,6 +62,8 @@ fun AdScreen(
     modifier: Modifier = Modifier,
 ) {
     val mediaUrl = state.mediaUrl
+    if (state.isLoading || state.unavailable || mediaUrl == null) return
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -70,22 +72,18 @@ fun AdScreen(
             .padding(20.dp),
         contentAlignment = Alignment.Center,
     ) {
-        when {
-            state.isLoading || state.unavailable || mediaUrl == null -> Unit
-
-            else -> HskGlassSurface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                shadowElevation = 8.dp,
-            ) {
-                AdContent(
-                    state = state,
-                    mediaUrl = mediaUrl,
-                    onContinue = onContinue,
-                    onClose = onClose,
-                    onOpenLink = onOpenLink,
-                )
-            }
+        HskGlassSurface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            shadowElevation = 8.dp,
+        ) {
+            AdContent(
+                state = state,
+                mediaUrl = mediaUrl,
+                onContinue = onContinue,
+                onClose = onClose,
+                onOpenLink = onOpenLink,
+            )
         }
     }
 }

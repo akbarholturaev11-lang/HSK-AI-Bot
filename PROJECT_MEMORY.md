@@ -227,28 +227,32 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
-### 2026-09-21 — Android cold start stays on the chosen screen
+### 2026-09-21 — Android ad overlay no longer looks like app restart
 
 Changed:
-- Android no longer opens the `screen_center` ad automatically after cold start.
-  Lesson-end ads remain unchanged.
+- Android keeps the `screen_center` and lesson-end ad placements, but an ad no
+  longer replaces the whole app screen while its media is loading.
+- The ad card is composed as an overlay on top of the current Course/Profile/etc.
+  screen, and no full-screen grey scrim is drawn until real ad media exists.
 - Android startup/loading now uses the HSK AI brand logo instead of a generic
   circular Material spinner, including the pre-Compose window background.
-- Release version was bumped to `1.5.2` / `versionCode 13`.
+- Release version was bumped to `1.5.3` / `versionCode 14`.
 
 Why:
-- Opening an unsolicited center block immediately after launch made the app feel
-  like it was jumping into another section.
+- The emulator capture showed the course screen becoming covered by a grey
+  loading layer, which read as the app opening again. That was ad loading
+  presentation, not the center ad card itself.
 
 Files touched:
 - `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+- `android/app/src/main/java/com/pomp/hskai/feature/ad/AdScreen.kt`
 - `android/app/build.gradle.kts`
 - `android/app/src/main/res/values/themes.xml`
 - `android/app/src/main/res/drawable/splash_window_background.xml`
 
 Risk:
-- Low. This changes startup presentation and removes only the Android cold-start
-  auto-request for `screen_center`; backend ad placement settings are untouched.
+- Low-to-medium. Ad fetching and server counting stay in place; only Android's
+  loading/overlay presentation changed.
 
 ### 2026-09-13 — Android drill isolation and referral parity
 

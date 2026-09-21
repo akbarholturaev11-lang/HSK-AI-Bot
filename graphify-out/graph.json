@@ -3700,7 +3700,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "practice_mistakereviewaudiotest",
-      "community": 83,
+      "community": 89,
       "norm_label": "mistakereviewaudiotest.kt"
     },
     {
@@ -3710,7 +3710,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "practice_mistakereviewaudiotest_mistakereviewaudiotest",
-      "community": 83,
+      "community": 89,
       "norm_label": "mistakereviewaudiotest"
     },
     {
@@ -3720,7 +3720,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "practice_mistakereviewaudiotest_mistakereviewaudiotest_openreview",
-      "community": 83,
+      "community": 89,
       "norm_label": ".openreview()"
     },
     {
@@ -3750,7 +3750,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "practice_mistakereviewaudiotest_mistakereviewaudiotest_the_speaker_asks_the_server_for_the_questions_audio",
-      "community": 83,
+      "community": 89,
       "norm_label": ".the_speaker_asks_the_server_for_the_questions_audio()"
     },
     {
@@ -3760,7 +3760,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "practice_mistakereviewaudiotest_mistakereviewaudiotest_the_speaker_is_busy_while_the_audio_is_still_loading",
-      "community": 83,
+      "community": 89,
       "norm_label": ".the_speaker_is_busy_while_the_audio_is_still_loading()"
     },
     {
@@ -3770,7 +3770,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "practice_mistakereviewaudiotest_mistakereviewaudiotest_a_failed_download_says_so_instead_of_playing_nothing",
-      "community": 83,
+      "community": 89,
       "norm_label": ".a_failed_download_says_so_instead_of_playing_nothing()"
     },
     {
@@ -3780,7 +3780,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest",
-      "community": 83,
+      "community": 267,
       "norm_label": "practicecoachrowtest.kt"
     },
     {
@@ -3790,7 +3790,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest",
-      "community": 83,
+      "community": 267,
       "norm_label": "practicecoachrowtest"
     },
     {
@@ -3800,7 +3800,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_shoot",
-      "community": 83,
+      "community": 267,
       "norm_label": ".shoot()"
     },
     {
@@ -3810,7 +3810,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_drillstate",
-      "community": 83,
+      "community": 267,
       "norm_label": ".drillstate()"
     },
     {
@@ -3820,7 +3820,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_drill",
-      "community": 83,
+      "community": 267,
       "norm_label": ".drill()"
     },
     {
@@ -3830,7 +3830,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_thedrillinstructionisthecoachslineandappearsonlyonce",
-      "community": 83,
+      "community": 267,
       "norm_label": ".thedrillinstructionisthecoachslineandappearsonlyonce()"
     },
     {
@@ -3840,7 +3840,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_thedrillcoachstaysthroughanansweredquestion",
-      "community": 83,
+      "community": 267,
       "norm_label": ".thedrillcoachstaysthroughanansweredquestion()"
     },
     {
@@ -3850,7 +3850,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_thepronunciationdrillkeepsthecharacterfullsize",
-      "community": 83,
+      "community": 267,
       "norm_label": ".thepronunciationdrillkeepsthecharacterfullsize()"
     },
     {
@@ -3860,7 +3860,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_thereviewcategorylinemovesintothebubble",
-      "community": 83,
+      "community": 89,
       "norm_label": ".thereviewcategorylinemovesintothebubble()"
     },
     {
@@ -3880,7 +3880,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "practice_practicecoachrowtest_practicecoachrowtest_assertonce",
-      "community": 83,
+      "community": 267,
       "norm_label": ".assertonce()"
     },
     {
@@ -4890,7 +4890,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "hskai_hskaiapplication",
-      "community": 184,
+      "community": 75,
       "norm_label": "hskaiapplication.kt"
     },
     {
@@ -4900,7 +4900,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "hskai_hskaiapplication_hskaiapplication",
-      "community": 184,
+      "community": 75,
       "norm_label": "hskaiapplication"
     },
     {
@@ -4910,7 +4910,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "application",
-      "community": 184,
+      "community": 75,
       "norm_label": "application"
     },
     {
@@ -4920,7 +4920,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "hskai_hskaiapplication_hskaiapplication_oncreate",
-      "community": 184,
+      "community": 75,
       "norm_label": ".oncreate()"
     },
     {
@@ -4930,7 +4930,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "hskai_hskaiapplication_hskaiapplication_clearwidgetsession",
-      "community": 184,
+      "community": 75,
       "norm_label": ".clearwidgetsession()"
     },
     {
@@ -4950,7 +4950,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "okhttpclient",
-      "community": 184,
+      "community": 75,
       "norm_label": "okhttpclient"
     },
     {
@@ -4960,7 +4960,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "retrofit",
-      "community": 184,
+      "community": 75,
       "norm_label": "retrofit"
     },
     {
@@ -4970,7 +4970,7 @@
       "source_location": "L252",
       "_origin": "ast",
       "id": "hskai_hskaiapplication_hskaiapplication_clearlocaldata",
-      "community": 184,
+      "community": 75,
       "norm_label": ".clearlocaldata()"
     },
     {
@@ -4987,7 +4987,7 @@
       "label": "MainActivity",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L125",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "hskai_mainactivity_mainactivity",
       "community": 78,
@@ -5007,7 +5007,7 @@
       "label": ".attachBaseContext()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L131",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "hskai_mainactivity_mainactivity_attachbasecontext",
       "community": 78,
@@ -5017,7 +5017,7 @@
       "label": ".onCreate()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L135",
+      "source_location": "L137",
       "_origin": "ast",
       "id": "hskai_mainactivity_mainactivity_oncreate",
       "community": 78,
@@ -5027,7 +5027,7 @@
       "label": ".onNewIntent()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L157",
+      "source_location": "L159",
       "_origin": "ast",
       "id": "hskai_mainactivity_mainactivity_onnewintent",
       "community": 78,
@@ -5047,7 +5047,7 @@
       "label": ".recordNativeEntry()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L164",
+      "source_location": "L166",
       "_origin": "ast",
       "id": "hskai_mainactivity_mainactivity_recordnativeentry",
       "community": 78,
@@ -5057,7 +5057,7 @@
       "label": ".deliverDestination()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L177",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "hskai_mainactivity_mainactivity_deliverdestination",
       "community": 78,
@@ -5067,7 +5067,7 @@
       "label": "AppRoot()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L187",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "hskai_mainactivity_approot",
       "community": 78,
@@ -5077,7 +5077,7 @@
       "label": "LessonHost()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1087",
+      "source_location": "L1110",
       "_origin": "ast",
       "id": "hskai_mainactivity_lessonhost",
       "community": 78,
@@ -5097,7 +5097,7 @@
       "label": "PlanChoiceSheet()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1189",
+      "source_location": "L1212",
       "_origin": "ast",
       "id": "hskai_mainactivity_planchoicesheet",
       "community": 78,
@@ -5117,7 +5117,7 @@
       "label": "PinyinPicker()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1265",
+      "source_location": "L1288",
       "_origin": "ast",
       "id": "hskai_mainactivity_pinyinpicker",
       "community": 78,
@@ -5127,7 +5127,7 @@
       "label": "LanguagePicker()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1314",
+      "source_location": "L1337",
       "_origin": "ast",
       "id": "hskai_mainactivity_languagepicker",
       "community": 78,
@@ -5137,7 +5137,7 @@
       "label": "DailyGoalPicker()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1358",
+      "source_location": "L1381",
       "_origin": "ast",
       "id": "hskai_mainactivity_dailygoalpicker",
       "community": 78,
@@ -5147,7 +5147,7 @@
       "label": "openExternal()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1402",
+      "source_location": "L1425",
       "_origin": "ast",
       "id": "hskai_mainactivity_openexternal",
       "community": 78,
@@ -5167,7 +5167,7 @@
       "label": "shareText()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1416",
+      "source_location": "L1439",
       "_origin": "ast",
       "id": "hskai_mainactivity_sharetext",
       "community": 78,
@@ -5177,7 +5177,7 @@
       "label": "lstripAt()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1431",
+      "source_location": "L1454",
       "_origin": "ast",
       "id": "hskai_mainactivity_lstripat",
       "community": 78,
@@ -5187,7 +5187,7 @@
       "label": "AdRequest",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1441",
+      "source_location": "L1466",
       "_origin": "ast",
       "id": "hskai_mainactivity_adrequest",
       "community": 78,
@@ -5197,7 +5197,7 @@
       "label": "LessonLaunch",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1447",
+      "source_location": "L1472",
       "_origin": "ast",
       "id": "hskai_mainactivity_lessonlaunch",
       "community": 78,
@@ -5207,7 +5207,7 @@
       "label": "DrillLaunch",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1452",
+      "source_location": "L1477",
       "_origin": "ast",
       "id": "hskai_mainactivity_drilllaunch",
       "community": 382,
@@ -5217,7 +5217,7 @@
       "label": "rememberSessionViewModelStoreOwner()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1461",
+      "source_location": "L1486",
       "_origin": "ast",
       "id": "hskai_mainactivity_remembersessionviewmodelstoreowner",
       "community": 78,
@@ -5227,7 +5227,7 @@
       "label": "SplashScreen()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1470",
+      "source_location": "L1495",
       "_origin": "ast",
       "id": "hskai_mainactivity_splashscreen",
       "community": 78,
@@ -5237,7 +5237,7 @@
       "label": "OfflineCourseEntry()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1484",
+      "source_location": "L1509",
       "_origin": "ast",
       "id": "hskai_mainactivity_offlinecourseentry",
       "community": 78,
@@ -5247,7 +5247,7 @@
       "label": "BootstrapErrorScreen()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1524",
+      "source_location": "L1549",
       "_origin": "ast",
       "id": "hskai_mainactivity_bootstraperrorscreen",
       "community": 78,
@@ -5257,7 +5257,7 @@
       "label": "LinkViewModelFactory",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1548",
+      "source_location": "L1573",
       "_origin": "ast",
       "id": "hskai_mainactivity_linkviewmodelfactory",
       "community": 78,
@@ -5267,7 +5267,7 @@
       "label": ".create()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
-      "source_location": "L1551",
+      "source_location": "L1576",
       "_origin": "ast",
       "id": "hskai_mainactivity_linkviewmodelfactory_create",
       "community": 77,
@@ -6840,7 +6840,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "network_apiresult_apiresult",
-      "community": 104,
+      "community": 3,
       "norm_label": "apiresult"
     },
     {
@@ -6980,7 +6980,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "response",
-      "community": 492,
+      "community": 104,
       "norm_label": "response"
     },
     {
@@ -8080,7 +8080,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "api_androidcourseapi_androidcourseapi_lesson",
-      "community": 492,
+      "community": 123,
       "norm_label": ".lesson()"
     },
     {
@@ -8390,7 +8390,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "api_androidfeatureapi_androidfeatureapi_voicemessage",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voicemessage()"
     },
     {
@@ -8970,7 +8970,7 @@
       "source_location": "L403",
       "_origin": "ast",
       "id": "api_androidfeaturedto_mistakereviewsessiondto",
-      "community": 83,
+      "community": 89,
       "norm_label": "mistakereviewsessiondto"
     },
     {
@@ -8980,7 +8980,7 @@
       "source_location": "L409",
       "_origin": "ast",
       "id": "api_androidfeaturedto_mistakereviewquestiondto",
-      "community": 83,
+      "community": 89,
       "norm_label": "mistakereviewquestiondto"
     },
     {
@@ -9120,7 +9120,7 @@
       "source_location": "L531",
       "_origin": "ast",
       "id": "api_androidfeaturedto_challengeactionresponse",
-      "community": 104,
+      "community": 3,
       "norm_label": "challengeactionresponse"
     },
     {
@@ -9250,7 +9250,7 @@
       "source_location": "L665",
       "_origin": "ast",
       "id": "api_androidfeaturedto_voicemessagerequest",
-      "community": 104,
+      "community": 3,
       "norm_label": "voicemessagerequest"
     },
     {
@@ -9260,7 +9260,7 @@
       "source_location": "L672",
       "_origin": "ast",
       "id": "api_androidfeaturedto_voicemessageresponse",
-      "community": 104,
+      "community": 3,
       "norm_label": "voicemessageresponse"
     },
     {
@@ -9420,7 +9420,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_androidfoundationapi",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidfoundationapi.kt"
     },
     {
@@ -9430,7 +9430,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "api_androidfoundationapi_androidfoundationapi",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidfoundationapi"
     },
     {
@@ -9440,7 +9440,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "api_androidfoundationapi_androidfoundationapi_foundation",
-      "community": 3,
+      "community": 75,
       "norm_label": ".foundation()"
     },
     {
@@ -9450,7 +9450,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "api_androidfoundationapi_androidfoundationapi_completefoundation",
-      "community": 3,
+      "community": 75,
       "norm_label": ".completefoundation()"
     },
     {
@@ -9460,7 +9460,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_androidonboardingapi",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidonboardingapi.kt"
     },
     {
@@ -9470,7 +9470,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "api_androidonboardingapi_androidonboardingapi",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidonboardingapi"
     },
     {
@@ -9480,7 +9480,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "api_androidonboardingapi_androidonboardingapi_status",
-      "community": 3,
+      "community": 75,
       "norm_label": ".status()"
     },
     {
@@ -9490,7 +9490,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "api_androidonboardingapi_androidonboardingapi_complete",
-      "community": 3,
+      "community": 75,
       "norm_label": ".complete()"
     },
     {
@@ -9500,7 +9500,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_androidstudypreferencesapi",
-      "community": 184,
+      "community": 75,
       "norm_label": "androidstudypreferencesapi.kt"
     },
     {
@@ -9510,7 +9510,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "api_androidstudypreferencesapi_androidstudypreferencesapi",
-      "community": 184,
+      "community": 75,
       "norm_label": "androidstudypreferencesapi"
     },
     {
@@ -9520,7 +9520,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "api_androidstudypreferencesapi_androidstudypreferencesapi_setstudypreferences",
-      "community": 184,
+      "community": 75,
       "norm_label": ".setstudypreferences()"
     },
     {
@@ -9530,7 +9530,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "api_androidstudypreferencesapi_studypreferencesrequestdto",
-      "community": 184,
+      "community": 75,
       "norm_label": "studypreferencesrequestdto"
     },
     {
@@ -9540,7 +9540,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "api_androidstudypreferencesapi_studypreferencesresponsedto",
-      "community": 184,
+      "community": 75,
       "norm_label": "studypreferencesresponsedto"
     },
     {
@@ -9560,7 +9560,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "api_coursedto_localizedtext",
-      "community": 239,
+      "community": 492,
       "norm_label": "localizedtext"
     },
     {
@@ -9570,7 +9570,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "api_coursedto_localizedtext_forlanguage",
-      "community": 239,
+      "community": 492,
       "norm_label": ".forlanguage()"
     },
     {
@@ -9640,7 +9640,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "api_coursedto_courseunitdto",
-      "community": 239,
+      "community": 492,
       "norm_label": "courseunitdto"
     },
     {
@@ -9660,7 +9660,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "api_coursedto_courselessondto",
-      "community": 239,
+      "community": 492,
       "norm_label": "courselessondto"
     },
     {
@@ -9700,7 +9700,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "api_coursedto_courseuserdto",
-      "community": 239,
+      "community": 492,
       "norm_label": "courseuserdto"
     },
     {
@@ -9770,7 +9770,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "api_coursedto_courselessonresponse",
-      "community": 492,
+      "community": 123,
       "norm_label": "courselessonresponse"
     },
     {
@@ -9870,7 +9870,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_foundationdto",
-      "community": 3,
+      "community": 75,
       "norm_label": "foundationdto.kt"
     },
     {
@@ -9880,7 +9880,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_foundationdto_foundationpayloaddto",
-      "community": 3,
+      "community": 75,
       "norm_label": "foundationpayloaddto"
     },
     {
@@ -9890,7 +9890,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "api_foundationdto_foundationresponsedto",
-      "community": 3,
+      "community": 75,
       "norm_label": "foundationresponsedto"
     },
     {
@@ -9900,7 +9900,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "api_foundationdto_foundationcompleterequest",
-      "community": 3,
+      "community": 75,
       "norm_label": "foundationcompleterequest"
     },
     {
@@ -9910,7 +9910,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "api_foundationdto_foundationcompleteresponse",
-      "community": 3,
+      "community": 75,
       "norm_label": "foundationcompleteresponse"
     },
     {
@@ -9920,7 +9920,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_onboardingdto",
-      "community": 3,
+      "community": 75,
       "norm_label": "onboardingdto.kt"
     },
     {
@@ -9930,7 +9930,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_onboardingdto_androidonboardingprofiledto",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidonboardingprofiledto"
     },
     {
@@ -9940,7 +9940,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "api_onboardingdto_androidonboardingstatusdto",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidonboardingstatusdto"
     },
     {
@@ -9950,7 +9950,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "api_onboardingdto_androidonboardingrequestdto",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidonboardingrequestdto"
     },
     {
@@ -9960,7 +9960,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "api_onboardingdto_androidonboardingcompletedto",
-      "community": 3,
+      "community": 75,
       "norm_label": "androidonboardingcompletedto"
     },
     {
@@ -10790,7 +10790,7 @@
       "source_location": "L425",
       "_origin": "ast",
       "id": "repository_courserepository_courserepository_unlocklesson",
-      "community": 492,
+      "community": 3,
       "norm_label": ".unlocklesson()"
     },
     {
@@ -10840,7 +10840,7 @@
       "source_location": "L505",
       "_origin": "ast",
       "id": "repository_courserepository_courserepository_clearcache",
-      "community": 492,
+      "community": 3,
       "norm_label": ".clearcache()"
     },
     {
@@ -10960,7 +10960,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "repository_featurerepository",
-      "community": 104,
+      "community": 3,
       "norm_label": "featurerepository.kt"
     },
     {
@@ -10970,7 +10970,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository",
-      "community": 104,
+      "community": 3,
       "norm_label": "featurerepository"
     },
     {
@@ -10980,7 +10980,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_profile",
-      "community": 104,
+      "community": 3,
       "norm_label": ".profile()"
     },
     {
@@ -10990,7 +10990,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_subscriptionoverview",
-      "community": 104,
+      "community": 3,
       "norm_label": ".subscriptionoverview()"
     },
     {
@@ -11000,7 +11000,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_subscriptionopen",
-      "community": 104,
+      "community": 3,
       "norm_label": ".subscriptionopen()"
     },
     {
@@ -11010,7 +11010,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_trialstatus",
-      "community": 104,
+      "community": 3,
       "norm_label": ".trialstatus()"
     },
     {
@@ -11020,7 +11020,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_trialstart",
-      "community": 104,
+      "community": 3,
       "norm_label": ".trialstart()"
     },
     {
@@ -11030,7 +11030,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_rating",
-      "community": 104,
+      "community": 3,
       "norm_label": ".rating()"
     },
     {
@@ -11040,7 +11040,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_referral",
-      "community": 104,
+      "community": 3,
       "norm_label": ".referral()"
     },
     {
@@ -11050,7 +11050,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_mistakes",
-      "community": 104,
+      "community": 3,
       "norm_label": ".mistakes()"
     },
     {
@@ -11060,7 +11060,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_startmistakereview",
-      "community": 104,
+      "community": 3,
       "norm_label": ".startmistakereview()"
     },
     {
@@ -11070,7 +11070,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_answermistakereview",
-      "community": 104,
+      "community": 3,
       "norm_label": ".answermistakereview()"
     },
     {
@@ -11080,7 +11080,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_completemistakereview",
-      "community": 104,
+      "community": 3,
       "norm_label": ".completemistakereview()"
     },
     {
@@ -11090,7 +11090,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "map",
-      "community": 104,
+      "community": 3,
       "norm_label": "map"
     },
     {
@@ -11100,7 +11100,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_examstart",
-      "community": 104,
+      "community": 3,
       "norm_label": ".examstart()"
     },
     {
@@ -11110,7 +11110,7 @@
       "source_location": "L159",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_examcomplete",
-      "community": 104,
+      "community": 3,
       "norm_label": ".examcomplete()"
     },
     {
@@ -11120,7 +11120,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_practicestart",
-      "community": 104,
+      "community": 3,
       "norm_label": ".practicestart()"
     },
     {
@@ -11130,7 +11130,7 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_practicecomplete",
-      "community": 104,
+      "community": 3,
       "norm_label": ".practicecomplete()"
     },
     {
@@ -11140,7 +11140,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_voicestatus",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voicestatus()"
     },
     {
@@ -11150,7 +11150,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_voicestart",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voicestart()"
     },
     {
@@ -11160,7 +11160,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_voicemessage",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voicemessage()"
     },
     {
@@ -11170,7 +11170,7 @@
       "source_location": "L261",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_voicetypedmessage",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voicetypedmessage()"
     },
     {
@@ -11180,7 +11180,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_challenges",
-      "community": 104,
+      "community": 3,
       "norm_label": ".challenges()"
     },
     {
@@ -11190,7 +11190,7 @@
       "source_location": "L279",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_createchallenge",
-      "community": 104,
+      "community": 3,
       "norm_label": ".createchallenge()"
     },
     {
@@ -11200,7 +11200,7 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_respondtochallenge",
-      "community": 104,
+      "community": 3,
       "norm_label": ".respondtochallenge()"
     },
     {
@@ -11210,7 +11210,7 @@
       "source_location": "L305",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_startchallenge",
-      "community": 104,
+      "community": 3,
       "norm_label": ".startchallenge()"
     },
     {
@@ -11220,7 +11220,7 @@
       "source_location": "L308",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_submitchallenge",
-      "community": 104,
+      "community": 3,
       "norm_label": ".submitchallenge()"
     },
     {
@@ -11230,7 +11230,7 @@
       "source_location": "L324",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_drillgate",
-      "community": 104,
+      "community": 3,
       "norm_label": ".drillgate()"
     },
     {
@@ -11240,7 +11240,7 @@
       "source_location": "L336",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_drillwords",
-      "community": 104,
+      "community": 3,
       "norm_label": ".drillwords()"
     },
     {
@@ -11250,7 +11250,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_reportdrill",
-      "community": 104,
+      "community": 3,
       "norm_label": ".reportdrill()"
     },
     {
@@ -11260,7 +11260,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_scorepronunciation",
-      "community": 104,
+      "community": 3,
       "norm_label": ".scorepronunciation()"
     },
     {
@@ -11270,7 +11270,7 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_voiceend",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voiceend()"
     },
     {
@@ -11280,7 +11280,7 @@
       "source_location": "L395",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_ads",
-      "community": 104,
+      "community": 3,
       "norm_label": ".ads()"
     },
     {
@@ -11290,7 +11290,7 @@
       "source_location": "L406",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_recordadview",
-      "community": 104,
+      "community": 3,
       "norm_label": ".recordadview()"
     },
     {
@@ -11300,7 +11300,7 @@
       "source_location": "L424",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_dismisshint",
-      "community": 104,
+      "community": 3,
       "norm_label": ".dismisshint()"
     },
     {
@@ -11310,7 +11310,7 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_authorized",
-      "community": 104,
+      "community": 3,
       "norm_label": ".authorized()"
     },
     {
@@ -11320,7 +11320,7 @@
       "source_location": "L441",
       "_origin": "ast",
       "id": "repository_featurerepository_featurerepository_tovoicelevel",
-      "community": 104,
+      "community": 3,
       "norm_label": ".tovoicelevel()"
     },
     {
@@ -11877,7 +11877,7 @@
       "label": "AdContent()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/feature/ad/AdScreen.kt",
-      "source_location": "L96",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "ad_adscreen_adcontent",
       "community": 77,
@@ -11887,7 +11887,7 @@
       "label": "AdVideo()",
       "file_type": "code",
       "source_file": "android/app/src/main/java/com/pomp/hskai/feature/ad/AdScreen.kt",
-      "source_location": "L198",
+      "source_location": "L196",
       "_origin": "ast",
       "id": "ad_adscreen_advideo",
       "community": 77,
@@ -12060,7 +12060,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "assistant_assistantapi",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantapi.kt"
     },
     {
@@ -12070,7 +12070,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "assistant_assistantapi_screencontext",
-      "community": 492,
+      "community": 104,
       "norm_label": "screencontext"
     },
     {
@@ -12080,7 +12080,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantinput",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantinput"
     },
     {
@@ -12090,7 +12090,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantaction",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantaction"
     },
     {
@@ -12100,7 +12100,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantsource",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantsource"
     },
     {
@@ -12110,7 +12110,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantconversation",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantconversation"
     },
     {
@@ -12120,7 +12120,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantturn",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantturn"
     },
     {
@@ -12130,7 +12130,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantenvelope",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantenvelope"
     },
     {
@@ -12140,7 +12140,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "assistant_assistantapi_abandonassessment",
-      "community": 492,
+      "community": 104,
       "norm_label": "abandonassessment"
     },
     {
@@ -12150,7 +12150,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi",
-      "community": 492,
+      "community": 104,
       "norm_label": "assistantapi"
     },
     {
@@ -12160,7 +12160,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_status",
-      "community": 492,
+      "community": 104,
       "norm_label": ".status()"
     },
     {
@@ -12170,7 +12170,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_conversations",
-      "community": 492,
+      "community": 104,
       "norm_label": ".conversations()"
     },
     {
@@ -12180,7 +12180,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_create",
-      "community": 492,
+      "community": 104,
       "norm_label": ".create()"
     },
     {
@@ -12190,7 +12190,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_history",
-      "community": 492,
+      "community": 104,
       "norm_label": ".history()"
     },
     {
@@ -12200,7 +12200,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_send",
-      "community": 492,
+      "community": 104,
       "norm_label": ".send()"
     },
     {
@@ -12210,7 +12210,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_lookup",
-      "community": 492,
+      "community": 104,
       "norm_label": ".lookup()"
     },
     {
@@ -12220,7 +12220,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "assistant_assistantapi_assistantapi_abandon",
-      "community": 492,
+      "community": 104,
       "norm_label": ".abandon()"
     },
     {
@@ -17650,7 +17650,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "practice_worddrill_drillquestion",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillquestion"
     },
     {
@@ -17660,7 +17660,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "practice_worddrill_drillquestion_iscorrect",
-      "community": 83,
+      "community": 267,
       "norm_label": ".iscorrect()"
     },
     {
@@ -17700,7 +17700,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "practice_worddrillscreen",
-      "community": 83,
+      "community": 267,
       "norm_label": "worddrillscreen.kt"
     },
     {
@@ -17710,7 +17710,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "practice_worddrillscreen_worddrillscreen",
-      "community": 83,
+      "community": 267,
       "norm_label": "worddrillscreen()"
     },
     {
@@ -17720,7 +17720,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "practice_worddrillscreen_drillwordcard",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillwordcard()"
     },
     {
@@ -17730,7 +17730,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "practice_worddrillscreen_drilltopbar",
-      "community": 83,
+      "community": 267,
       "norm_label": "drilltopbar()"
     },
     {
@@ -17740,7 +17740,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "practice_worddrillscreen_drillquestionbody",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillquestionbody()"
     },
     {
@@ -17750,7 +17750,7 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "practice_worddrillscreen_recognitionoptions",
-      "community": 83,
+      "community": 267,
       "norm_label": "recognitionoptions()"
     },
     {
@@ -17760,7 +17760,7 @@
       "source_location": "L350",
       "_origin": "ast",
       "id": "practice_worddrillscreen_pronunciationcontrols",
-      "community": 83,
+      "community": 267,
       "norm_label": "pronunciationcontrols()"
     },
     {
@@ -17770,7 +17770,7 @@
       "source_location": "L417",
       "_origin": "ast",
       "id": "practice_worddrillscreen_drillfeedback",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillfeedback()"
     },
     {
@@ -17780,7 +17780,7 @@
       "source_location": "L471",
       "_origin": "ast",
       "id": "practice_worddrillscreen_drillsummary",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillsummary()"
     },
     {
@@ -17790,7 +17790,7 @@
       "source_location": "L511",
       "_origin": "ast",
       "id": "practice_worddrillscreen_drillempty",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillempty()"
     },
     {
@@ -17810,7 +17810,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "practice_worddrillviewmodel_drillmode",
-      "community": 83,
+      "community": 267,
       "norm_label": "drillmode"
     },
     {
@@ -17820,7 +17820,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "practice_worddrillviewmodel_worddrilluistate",
-      "community": 83,
+      "community": 267,
       "norm_label": "worddrilluistate"
     },
     {
@@ -22190,7 +22190,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "users_kaijimima1234_desktop_hsk_ai_bot_android_app_src_test_java_com_pomp_hskai_data_repository_coursemappertest_kt",
-      "community": 239,
+      "community": 492,
       "norm_label": "coursemappertest.kt"
     },
     {
@@ -22200,7 +22200,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest",
-      "community": 239,
+      "community": 492,
       "norm_label": "coursemappertest"
     },
     {
@@ -22210,7 +22210,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_server_access_flags_map_to_the_four_domain_states",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`server access flags map to the four domain states`()"
     },
     {
@@ -22220,7 +22220,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_only_premium_states_offer_a_paywall",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`only premium states offer a paywall`()"
     },
     {
@@ -22230,7 +22230,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_completion_allowed_wins_over_every_other_flag",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`completion_allowed wins over every other flag`()"
     },
     {
@@ -22240,7 +22240,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_status_strings_map_to_the_domain_enum_and_unknown_falls_back_to_locked",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`status strings map to the domain enum and unknown falls back to locked`()"
     },
     {
@@ -22250,7 +22250,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_localized_text_follows_the_user_language_and_falls_back_to_russian",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`localized text follows the user language and falls back to russian`()"
     },
     {
@@ -22260,7 +22260,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_total_lessons_come_from_the_payload_and_are_never_assumed",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`total lessons come from the payload and are never assumed`()"
     },
     {
@@ -22270,7 +22270,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_current_lesson_is_the_server_s_current_node_even_when_it_is_a_preview",
-      "community": 239,
+      "community": 492,
       "norm_label": ".`current lesson is the server's current node even when it is a preview`()"
     },
     {
@@ -22280,7 +22280,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_lesson",
-      "community": 239,
+      "community": 492,
       "norm_label": ".lesson()"
     },
     {
@@ -22290,7 +22290,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "repository_coursemappertest_coursemappertest_map",
-      "community": 239,
+      "community": 492,
       "norm_label": ".map()"
     },
     {
@@ -22550,7 +22550,7 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "repository_courserepositorytest_samplemap",
-      "community": 239,
+      "community": 492,
       "norm_label": "samplemap()"
     },
     {
@@ -23040,7 +23040,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "repository_dictionaryrepositorytest_dictionaryapi_lesson",
-      "community": 492,
+      "community": 123,
       "norm_label": ".lesson()"
     },
     {
@@ -23650,7 +23650,7 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "course_skiptestviewmodeltest_skiplessonbody",
-      "community": 492,
+      "community": 123,
       "norm_label": "skiplessonbody()"
     },
     {
@@ -23680,7 +23680,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "course_skiptestviewmodeltest_fakeskipapi_lesson",
-      "community": 492,
+      "community": 123,
       "norm_label": ".lesson()"
     },
     {
@@ -25630,7 +25630,7 @@
       "source_location": "L316",
       "_origin": "ast",
       "id": "limit_subscriptionhandoffviewmodeltest_fakefeatureapi_voicemessage",
-      "community": 104,
+      "community": 3,
       "norm_label": ".voicemessage()"
     },
     {
@@ -26010,7 +26010,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_build_stroke_assets",
-      "community": 231,
+      "community": 4,
       "norm_label": "build_stroke_assets.py"
     },
     {
@@ -26020,7 +26020,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "tools_build_stroke_assets_js_literal",
-      "community": 231,
+      "community": 4,
       "norm_label": "js_literal()"
     },
     {
@@ -26030,7 +26030,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "tools_build_stroke_assets_main",
-      "community": 231,
+      "community": 4,
       "norm_label": "main()"
     },
     {
@@ -26040,7 +26040,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tools_build_stroke_assets_rationale_34",
-      "community": 231,
+      "community": 4,
       "norm_label": "read `const <name>= <json>;` out of one of the mini app's data files."
     },
     {
@@ -57130,7 +57130,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "users_kaijimima1234_desktop_hsk_ai_bot_app_services_course_tutor_service_py",
-      "community": 374,
+      "community": 83,
       "norm_label": "course_tutor_service.py"
     },
     {
@@ -57140,7 +57140,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice",
-      "community": 374,
+      "community": 83,
       "norm_label": "coursetutorservice"
     },
     {
@@ -57160,7 +57160,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_parse",
-      "community": 374,
+      "community": 83,
       "norm_label": "._parse()"
     },
     {
@@ -57170,7 +57170,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_safe",
-      "community": 374,
+      "community": 83,
       "norm_label": "._safe()"
     },
     {
@@ -57180,7 +57180,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_block_by_no",
-      "community": 374,
+      "community": 83,
       "norm_label": "._block_by_no()"
     },
     {
@@ -57190,7 +57190,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_block_words",
-      "community": 374,
+      "community": 83,
       "norm_label": "._block_words()"
     },
     {
@@ -57200,7 +57200,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_block_grammar",
-      "community": 374,
+      "community": 83,
       "norm_label": "._block_grammar()"
     },
     {
@@ -57210,7 +57210,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_lesson_blocks_payload",
-      "community": 374,
+      "community": 83,
       "norm_label": "._lesson_blocks_payload()"
     },
     {
@@ -57220,7 +57220,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_intro",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_intro()"
     },
     {
@@ -57230,7 +57230,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_vocab",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_vocab()"
     },
     {
@@ -57240,7 +57240,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_dialogue",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_dialogue()"
     },
     {
@@ -57250,7 +57250,7 @@
       "source_location": "L254",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_grammar",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_grammar()"
     },
     {
@@ -57260,7 +57260,7 @@
       "source_location": "L283",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_exercise",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_exercise()"
     },
     {
@@ -57270,7 +57270,7 @@
       "source_location": "L328",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_quiz",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_quiz()"
     },
     {
@@ -57280,7 +57280,7 @@
       "source_location": "L362",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_satisfaction_check",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_satisfaction_check()"
     },
     {
@@ -57290,7 +57290,7 @@
       "source_location": "L379",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_review",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_review()"
     },
     {
@@ -57300,7 +57300,7 @@
       "source_location": "L411",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_homework",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_homework()"
     },
     {
@@ -57310,7 +57310,7 @@
       "source_location": "L453",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_vocab_1",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_vocab_1()"
     },
     {
@@ -57320,7 +57320,7 @@
       "source_location": "L472",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_vocab_2",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_vocab_2()"
     },
     {
@@ -57330,7 +57330,7 @@
       "source_location": "L491",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_dialogue_n",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_dialogue_n()"
     },
     {
@@ -57340,7 +57340,7 @@
       "source_location": "L520",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_block_vocab",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_block_vocab()"
     },
     {
@@ -57350,7 +57350,7 @@
       "source_location": "L543",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_prompt_block_grammar",
-      "community": 374,
+      "community": 83,
       "norm_label": "._prompt_block_grammar()"
     },
     {
@@ -57360,7 +57360,7 @@
       "source_location": "L571",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_build_prompt_for_step",
-      "community": 374,
+      "community": 83,
       "norm_label": "._build_prompt_for_step()"
     },
     {
@@ -57380,7 +57380,7 @@
       "source_location": "L651",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_build_homework_evaluation_prompt",
-      "community": 374,
+      "community": 83,
       "norm_label": "._build_homework_evaluation_prompt()"
     },
     {
@@ -57390,7 +57390,7 @@
       "source_location": "L697",
       "_origin": "ast",
       "id": "services_course_tutor_service_coursetutorservice_evaluate_homework",
-      "community": 374,
+      "community": 83,
       "norm_label": ".evaluate_homework()"
     },
     {
@@ -57400,7 +57400,7 @@
       "source_location": "L454",
       "_origin": "ast",
       "id": "services_course_tutor_service_rationale_454",
-      "community": 374,
+      "community": 83,
       "norm_label": "v2: birinchi 8 ta so'z."
     },
     {
@@ -57410,7 +57410,7 @@
       "source_location": "L492",
       "_origin": "ast",
       "id": "services_course_tutor_service_rationale_492",
-      "community": 374,
+      "community": 83,
       "norm_label": "v2/block: n-chi dialog bloki va unga tegishli yangi so'z/grammatika."
     },
     {
@@ -62440,7 +62440,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "users_kaijimima1234_desktop_hsk_ai_bot_app_services_image_analyzer_service_py",
-      "community": 74,
+      "community": 374,
       "norm_label": "image_analyzer_service.py"
     },
     {
@@ -62450,7 +62450,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "services_image_analyzer_service_imageanalyzerservice",
-      "community": 74,
+      "community": 374,
       "norm_label": "imageanalyzerservice"
     },
     {
@@ -62460,7 +62460,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "services_image_analyzer_service_imageanalyzerservice_init",
-      "community": 74,
+      "community": 374,
       "norm_label": ".__init__()"
     },
     {
@@ -62480,7 +62480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "users_kaijimima1234_desktop_hsk_ai_bot_app_services_image_explainer_service_py",
-      "community": 74,
+      "community": 374,
       "norm_label": "image_explainer_service.py"
     },
     {
@@ -62490,7 +62490,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "services_image_explainer_service_imageexplainerservice",
-      "community": 74,
+      "community": 374,
       "norm_label": "imageexplainerservice"
     },
     {
@@ -62500,7 +62500,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "services_image_explainer_service_imageexplainerservice_init",
-      "community": 74,
+      "community": 374,
       "norm_label": ".__init__()"
     },
     {
@@ -62600,7 +62600,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_image_qa_service",
-      "community": 74,
+      "community": 374,
       "norm_label": "image_qa_service.py"
     },
     {
@@ -62610,7 +62610,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "services_image_qa_service_imageqaservice",
-      "community": 74,
+      "community": 374,
       "norm_label": "imageqaservice"
     },
     {
@@ -62620,7 +62620,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "services_image_qa_service_imageqaservice_init",
-      "community": 74,
+      "community": 374,
       "norm_label": ".__init__()"
     },
     {
@@ -62630,7 +62630,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "services_image_qa_service_imageqaservice_download_image_bytes",
-      "community": 74,
+      "community": 374,
       "norm_label": "._download_image_bytes()"
     },
     {
@@ -62640,7 +62640,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "services_image_qa_service_imageqaservice_handle_user_image",
-      "community": 74,
+      "community": 374,
       "norm_label": ".handle_user_image()"
     },
     {
@@ -74790,7 +74790,7 @@
       "source_location": "L3724",
       "_origin": "ast",
       "id": "js_app_ensuregoalstate",
-      "community": 119,
+      "community": 96,
       "norm_label": "ensuregoalstate()"
     },
     {
@@ -74800,7 +74800,7 @@
       "source_location": "L3736",
       "_origin": "ast",
       "id": "js_app_maybeopenonboarding",
-      "community": 119,
+      "community": 96,
       "norm_label": "maybeopenonboarding()"
     },
     {
@@ -74810,7 +74810,7 @@
       "source_location": "L3746",
       "_origin": "ast",
       "id": "js_app_openonboarding",
-      "community": 119,
+      "community": 96,
       "norm_label": "openonboarding()"
     },
     {
@@ -74820,7 +74820,7 @@
       "source_location": "L3757",
       "_origin": "ast",
       "id": "js_app_closeonboarding",
-      "community": 243,
+      "community": 96,
       "norm_label": "closeonboarding()"
     },
     {
@@ -74830,7 +74830,7 @@
       "source_location": "L3771",
       "_origin": "ast",
       "id": "js_app_onboardinggoalstep",
-      "community": 243,
+      "community": 96,
       "norm_label": "onboardinggoalstep()"
     },
     {
@@ -74850,7 +74850,7 @@
       "source_location": "L3856",
       "_origin": "ast",
       "id": "js_app_renderonboarding",
-      "community": 243,
+      "community": 96,
       "norm_label": "renderonboarding()"
     },
     {
@@ -74860,7 +74860,7 @@
       "source_location": "L3878",
       "_origin": "ast",
       "id": "js_app_onboardingback",
-      "community": 243,
+      "community": 96,
       "norm_label": "onboardingback()"
     },
     {
@@ -74870,7 +74870,7 @@
       "source_location": "L3884",
       "_origin": "ast",
       "id": "js_app_confirmonboarding",
-      "community": 243,
+      "community": 96,
       "norm_label": "confirmonboarding()"
     },
     {
@@ -74880,7 +74880,7 @@
       "source_location": "L3901",
       "_origin": "ast",
       "id": "js_app_savegoal",
-      "community": 243,
+      "community": 96,
       "norm_label": "savegoal()"
     },
     {
@@ -75400,7 +75400,7 @@
       "source_location": "L5048",
       "_origin": "ast",
       "id": "js_app_newaiattachmentid",
-      "community": 96,
+      "community": 257,
       "norm_label": "newaiattachmentid()"
     },
     {
@@ -75410,7 +75410,7 @@
       "source_location": "L5055",
       "_origin": "ast",
       "id": "js_app_aiattachmentkind",
-      "community": 96,
+      "community": 257,
       "norm_label": "aiattachmentkind()"
     },
     {
@@ -75420,7 +75420,7 @@
       "source_location": "L5062",
       "_origin": "ast",
       "id": "js_app_aiattachmentlimit",
-      "community": 96,
+      "community": 257,
       "norm_label": "aiattachmentlimit()"
     },
     {
@@ -75430,7 +75430,7 @@
       "source_location": "L5066",
       "_origin": "ast",
       "id": "js_app_formataiattachmentsize",
-      "community": 96,
+      "community": 257,
       "norm_label": "formataiattachmentsize()"
     },
     {
@@ -75440,7 +75440,7 @@
       "source_location": "L5073",
       "_origin": "ast",
       "id": "js_app_aiattachmentlabel",
-      "community": 96,
+      "community": 257,
       "norm_label": "aiattachmentlabel()"
     },
     {
@@ -75450,7 +75450,7 @@
       "source_location": "L5077",
       "_origin": "ast",
       "id": "js_app_revokeaiattachment",
-      "community": 96,
+      "community": 257,
       "norm_label": "revokeaiattachment()"
     },
     {
@@ -75470,7 +75470,7 @@
       "source_location": "L5093",
       "_origin": "ast",
       "id": "js_app_renderaiattachments",
-      "community": 96,
+      "community": 257,
       "norm_label": "renderaiattachments()"
     },
     {
@@ -75480,7 +75480,7 @@
       "source_location": "L5131",
       "_origin": "ast",
       "id": "js_app_removeaiattachment",
-      "community": 96,
+      "community": 257,
       "norm_label": "removeaiattachment()"
     },
     {
@@ -75490,7 +75490,7 @@
       "source_location": "L5139",
       "_origin": "ast",
       "id": "js_app_addaiattachmentfromfile",
-      "community": 96,
+      "community": 257,
       "norm_label": "addaiattachmentfromfile()"
     },
     {
@@ -75500,7 +75500,7 @@
       "source_location": "L5163",
       "_origin": "ast",
       "id": "js_app_addaifiles",
-      "community": 96,
+      "community": 257,
       "norm_label": "addaifiles()"
     },
     {
@@ -75510,7 +75510,7 @@
       "source_location": "L5175",
       "_origin": "ast",
       "id": "js_app_appendaimessageattachments",
-      "community": 96,
+      "community": 257,
       "norm_label": "appendaimessageattachments()"
     },
     {
@@ -115522,20 +115522,20 @@
       "norm_label": "10. recent important changes"
     },
     {
-      "label": "2026-09-21 \u2014 Android cold start stays on the chosen screen",
+      "label": "2026-09-21 \u2014 Android ad overlay no longer looks like app restart",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
       "source_location": "L230",
       "_origin": "ast",
-      "id": "project_memory_2026_09_21_android_cold_start_stays_on_the_chosen_screen",
+      "id": "project_memory_2026_09_21_android_ad_overlay_no_longer_looks_like_app_restart",
       "community": 0,
-      "norm_label": "2026-09-21 \u2014 android cold start stays on the chosen screen"
+      "norm_label": "2026-09-21 \u2014 android ad overlay no longer looks like app restart"
     },
     {
       "label": "2026-09-13 \u2014 Android drill isolation and referral parity",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L253",
+      "source_location": "L257",
       "_origin": "ast",
       "id": "project_memory_2026_09_13_android_drill_isolation_and_referral_parity",
       "community": 0,
@@ -115545,7 +115545,7 @@
       "label": "2026-09-13 \u2014 Android native dictionary detail and writer",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L273",
+      "source_location": "L277",
       "_origin": "ast",
       "id": "project_memory_2026_09_13_android_native_dictionary_detail_and_writer",
       "community": 0,
@@ -115555,7 +115555,7 @@
       "label": "2026-09-12 \u2014 Android rating challenge inbox and learner profile",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L293",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "project_memory_2026_09_12_android_rating_challenge_inbox_and_learner_profile",
       "community": 0,
@@ -115565,7 +115565,7 @@
       "label": "2026-09-12 \u2014 Android single-screen Telegram login and device-language pre-auth",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L312",
+      "source_location": "L316",
       "_origin": "ast",
       "id": "project_memory_2026_09_12_android_single_screen_telegram_login_and_device_language_pre_auth",
       "community": 0,
@@ -115575,7 +115575,7 @@
       "label": "2026-09-11 \u2014 Android Telegram-first account linking",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L338",
+      "source_location": "L342",
       "_origin": "ast",
       "id": "project_memory_2026_09_11_android_telegram_first_account_linking",
       "community": 0,
@@ -115585,7 +115585,7 @@
       "label": "2026-09-09 \u2014 Public SEO boundary",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L361",
+      "source_location": "L365",
       "_origin": "ast",
       "id": "project_memory_2026_09_09_public_seo_boundary",
       "community": 0,
@@ -115595,7 +115595,7 @@
       "label": "2026-09-09 \u2014 Railway Postgres connection stability",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L375",
+      "source_location": "L379",
       "_origin": "ast",
       "id": "project_memory_2026_09_09_railway_postgres_connection_stability",
       "community": 0,
@@ -115605,7 +115605,7 @@
       "label": "2026-09-08 \u2014 Admin AI billing and statistics integrity",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L397",
+      "source_location": "L401",
       "_origin": "ast",
       "id": "project_memory_2026_09_08_admin_ai_billing_and_statistics_integrity",
       "community": 0,
@@ -115615,7 +115615,7 @@
       "label": "2026-09-08 \u2014 Do'st chaqirish havolasi: `ref_` prefiksi olib tashlandi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L418",
+      "source_location": "L422",
       "_origin": "ast",
       "id": "project_memory_2026_09_08_do_st_chaqirish_havolasi_ref_prefiksi_olib_tashlandi",
       "community": 0,
@@ -115625,7 +115625,7 @@
       "label": "2026-09-07 \u2014 Android: qolgan yettita farq yopildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L457",
+      "source_location": "L461",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_android_qolgan_yettita_farq_yopildi",
       "community": 0,
@@ -115635,7 +115635,7 @@
       "label": "2026-09-07 \u2014 Android: uchta backend bo'shlig'i yopildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L500",
+      "source_location": "L504",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_android_uchta_backend_bo_shlig_i_yopildi",
       "community": 0,
@@ -115645,7 +115645,7 @@
       "label": "2026-09-07 \u2014 Android: AI Voice qo'ng'iroq ekrani va matnli navbat",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L545",
+      "source_location": "L549",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_android_ai_voice_qo_ng_iroq_ekrani_va_matnli_navbat",
       "community": 0,
@@ -115655,7 +115655,7 @@
       "label": "2026-09-07 \u2014 Android: Mini App bilan tenglashtirish (birinchi to'lqin)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L580",
+      "source_location": "L584",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_android_mini_app_bilan_tenglashtirish_birinchi_to_lqin",
       "community": 0,
@@ -115665,7 +115665,7 @@
       "label": "2026-09-07 \u2014 Kurs sarlavhasi: umumiy progress o'rniga reja so'qmog'i",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L640",
+      "source_location": "L644",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_kurs_sarlavhasi_umumiy_progress_o_rniga_reja_so_qmog_i",
       "community": 0,
@@ -115675,7 +115675,7 @@
       "label": "2026-09-07 \u2014 AI Voice: haqiqiy qurilmadagi 5 ta nuqson",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L677",
+      "source_location": "L681",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_ai_voice_haqiqiy_qurilmadagi_5_ta_nuqson",
       "community": 0,
@@ -115685,7 +115685,7 @@
       "label": "2026-09-06 \u2014 AI Voice: moslashuv, xato turi va bepul slot",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L715",
+      "source_location": "L719",
       "_origin": "ast",
       "id": "project_memory_2026_09_06_ai_voice_moslashuv_xato_turi_va_bepul_slot",
       "community": 0,
@@ -115695,7 +115695,7 @@
       "label": "2026-09-05 \u2014 Kunlik reja (Daily Plan) va o'quv signallari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L799",
+      "source_location": "L803",
       "_origin": "ast",
       "id": "project_memory_2026_09_05_kunlik_reja_daily_plan_va_o_quv_signallari",
       "community": 0,
@@ -115705,7 +115705,7 @@
       "label": "2026-09-05 \u2014 Yodlash bo'limi tuzatildi (`defer` + parse paytida ushlangan data)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L860",
+      "source_location": "L864",
       "_origin": "ast",
       "id": "project_memory_2026_09_05_yodlash_bo_limi_tuzatildi_defer_parse_paytida_ushlangan_data",
       "community": 0,
@@ -115715,7 +115715,7 @@
       "label": "2026-09-04 \u2014 Android Test markazi Mini App bilan tenglashtirildi (dvigatel + ko'rinish)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L886",
+      "source_location": "L890",
       "_origin": "ast",
       "id": "project_memory_2026_09_04_android_test_markazi_mini_app_bilan_tenglashtirildi_dvigatel_ko_rinish",
       "community": 0,
@@ -115725,7 +115725,7 @@
       "label": "2026-09-04 \u2014 Android Mashq bo'limi Mini App tuzilishiga keltirildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L936",
+      "source_location": "L940",
       "_origin": "ast",
       "id": "project_memory_2026_09_04_android_mashq_bo_limi_mini_app_tuzilishiga_keltirildi",
       "community": 0,
@@ -115735,7 +115735,7 @@
       "label": "2026-09-04 \u2014 Railway RAM: reklama mediasi va admin hisobot detali",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L977",
+      "source_location": "L981",
       "_origin": "ast",
       "id": "project_memory_2026_09_04_railway_ram_reklama_mediasi_va_admin_hisobot_detali",
       "community": 0,
@@ -115745,7 +115745,7 @@
       "label": "2026-09-04 \u2014 Rang palitrasi Mini App bilan aynan tenglashtirildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1016",
+      "source_location": "L1020",
       "_origin": "ast",
       "id": "project_memory_2026_09_04_rang_palitrasi_mini_app_bilan_aynan_tenglashtirildi",
       "community": 0,
@@ -115755,7 +115755,7 @@
       "label": "2026-09-04 \u2014 Uch branchli AI workflow",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1055",
+      "source_location": "L1059",
       "_origin": "ast",
       "id": "project_memory_2026_09_04_uch_branchli_ai_workflow",
       "community": 0,
@@ -115765,7 +115765,7 @@
       "label": "2026-09-03 \u2014 \"Reklama bilan davom etish\" \u2014 oqim yopildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1076",
+      "source_location": "L1080",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_reklama_bilan_davom_etish_oqim_yopildi",
       "community": 0,
@@ -115775,7 +115775,7 @@
       "label": "2026-09-03 \u2014 Mashq bo'limini reklama bilan ochish (server)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1115",
+      "source_location": "L1119",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_mashq_bo_limini_reklama_bilan_ochish_server",
       "community": 0,
@@ -115785,7 +115785,7 @@
       "label": "2026-09-03 \u2014 Android reklama ekrani (Coil + Media3)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1145",
+      "source_location": "L1149",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_reklama_ekrani_coil_media3",
       "community": 0,
@@ -115795,7 +115795,7 @@
       "label": "2026-09-03 \u2014 Reklama: ikki bosqichli oqim va Android klient qatlami",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1180",
+      "source_location": "L1184",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_reklama_ikki_bosqichli_oqim_va_android_klient_qatlami",
       "community": 0,
@@ -115805,7 +115805,7 @@
       "label": "2026-09-03 \u2014 Reklama: Android backend adapteri (kanal bo'yicha filtr)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1223",
+      "source_location": "L1227",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_reklama_android_backend_adapteri_kanal_bo_yicha_filtr",
       "community": 0,
@@ -115815,7 +115815,7 @@
       "label": "2026-09-03 \u2014 Limit haqida bot xabari (90% va 0%)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1262",
+      "source_location": "L1266",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_limit_haqida_bot_xabari_90_va_0",
       "community": 0,
@@ -115825,7 +115825,7 @@
       "label": "2026-09-03 \u2014 Android: Google Play uchun xavfsiz limit bloki",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1315",
+      "source_location": "L1319",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_google_play_uchun_xavfsiz_limit_bloki",
       "community": 0,
@@ -115835,7 +115835,7 @@
       "label": "2026-09-03 \u2014 Limit user vaqt mintaqasida + AI Voice kunlik",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1379",
+      "source_location": "L1383",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_limit_user_vaqt_mintaqasida_ai_voice_kunlik",
       "community": 0,
@@ -115845,7 +115845,7 @@
       "label": "2026-09-03 \u2014 Kunlik limit: sozlanadigan reset soati va `reset_at`",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1441",
+      "source_location": "L1445",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_kunlik_limit_sozlanadigan_reset_soati_va_reset_at",
       "community": 0,
@@ -115855,7 +115855,7 @@
       "label": "2026-09-03 \u2014 Android'da lug'at ekrani (parity Faza 2b)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1480",
+      "source_location": "L1484",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_da_lug_at_ekrani_parity_faza_2b",
       "community": 0,
@@ -115865,7 +115865,7 @@
       "label": "2026-09-03 \u2014 Ieroglif lug'ati backend adapteri (parity Faza 2a)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1518",
+      "source_location": "L1522",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_ieroglif_lug_ati_backend_adapteri_parity_faza_2a",
       "community": 0,
@@ -115875,7 +115875,7 @@
       "label": "2026-09-03 \u2014 Android telefon ekranida lokal bildirishnoma (Faza H, A varianti)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1551",
+      "source_location": "L1555",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_telefon_ekranida_lokal_bildirishnoma_faza_h_a_varianti",
       "community": 0,
@@ -115885,7 +115885,7 @@
       "label": "2026-09-03 \u2014 Android profilida til, bildirishnoma va yordam (parity Faza 2.1)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1597",
+      "source_location": "L1601",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_profilida_til_bildirishnoma_va_yordam_parity_faza_2_1",
       "community": 0,
@@ -115895,7 +115895,7 @@
       "label": "2026-09-03 \u2014 Android'da obuna SOTILMAYDI: limit bloki Telegram'ga uzatadi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1635",
+      "source_location": "L1639",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_da_obuna_sotilmaydi_limit_bloki_telegram_ga_uzatadi",
       "community": 0,
@@ -115905,7 +115905,7 @@
       "label": "2026-09-03 \u2014 Android navigatsiyasi Mini App bilan tenglashtirildi (parity Faza 1)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1686",
+      "source_location": "L1690",
       "_origin": "ast",
       "id": "project_memory_2026_09_03_android_navigatsiyasi_mini_app_bilan_tenglashtirildi_parity_faza_1",
       "community": 0,
@@ -115915,7 +115915,7 @@
       "label": "2026-08-31 \u2014 Duel chaqiruvi uchun 15 daqiqalik anti-spam limit",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1733",
+      "source_location": "L1737",
       "_origin": "ast",
       "id": "project_memory_2026_08_31_duel_chaqiruvi_uchun_15_daqiqalik_anti_spam_limit",
       "community": 0,
@@ -115925,7 +115925,7 @@
       "label": "2026-08-22 \u2014 Admin Mini App statistikasi formula va attribution auditi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1755",
+      "source_location": "L1759",
       "_origin": "ast",
       "id": "project_memory_2026_08_22_admin_mini_app_statistikasi_formula_va_attribution_auditi",
       "community": 0,
@@ -115935,7 +115935,7 @@
       "label": "2026-08-17 \u2014 Eski xatolar uchun material backfill skripti",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1793",
+      "source_location": "L1797",
       "_origin": "ast",
       "id": "project_memory_2026_08_17_eski_xatolar_uchun_material_backfill_skripti",
       "community": 0,
@@ -115945,7 +115945,7 @@
       "label": "2026-08-17 \u2014 Xatolar review'ida javobsiz savollar tuzatildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1816",
+      "source_location": "L1820",
       "_origin": "ast",
       "id": "project_memory_2026_08_17_xatolar_review_ida_javobsiz_savollar_tuzatildi",
       "community": 0,
@@ -115955,7 +115955,7 @@
       "label": "2026-08-17 \u2014 Mini App HTML `no-store` -> `no-cache` (bfcache yoqildi)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1838",
+      "source_location": "L1842",
       "_origin": "ast",
       "id": "project_memory_2026_08_17_mini_app_html_no_store_no_cache_bfcache_yoqildi",
       "community": 0,
@@ -115965,7 +115965,7 @@
       "label": "2026-08-17 \u2014 AI Voice: chat ko'rinishi, hold-to-talk mikrofon va klaviatura (matnli xabar)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1854",
+      "source_location": "L1858",
       "_origin": "ast",
       "id": "project_memory_2026_08_17_ai_voice_chat_ko_rinishi_hold_to_talk_mikrofon_va_klaviatura_matnli_xabar",
       "community": 0,
@@ -115975,7 +115975,7 @@
       "label": "2026-08-16 \u2014 Mashq bo'limlari asosiy Mini App ichiga ko'chirila boshladi (pilot: Ieroglif tanish)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1880",
+      "source_location": "L1884",
       "_origin": "ast",
       "id": "project_memory_2026_08_16_mashq_bo_limlari_asosiy_mini_app_ichiga_ko_chirila_boshladi_pilot_ieroglif_tanish",
       "community": 0,
@@ -115985,7 +115985,7 @@
       "label": "2026-08-16 \u2014 Course Mini App bo'lim ochilishi tezlashtirildi (render-blocking assetlar)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1909",
+      "source_location": "L1913",
       "_origin": "ast",
       "id": "project_memory_2026_08_16_course_mini_app_bo_lim_ochilishi_tezlashtirildi_render_blocking_assetlar",
       "community": 0,
@@ -115995,7 +115995,7 @@
       "label": "2026-08-14 \u2014 `sales_value_v1` HSK path sales experiment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1933",
+      "source_location": "L1937",
       "_origin": "ast",
       "id": "project_memory_2026_08_14_sales_value_v1_hsk_path_sales_experiment",
       "community": 0,
@@ -116005,7 +116005,7 @@
       "label": "2026-08-14 \u2014 Beginner Starter 0 and HSK1 free checkpoint",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1968",
+      "source_location": "L1972",
       "_origin": "ast",
       "id": "project_memory_2026_08_14_beginner_starter_0_and_hsk1_free_checkpoint",
       "community": 0,
@@ -116015,7 +116015,7 @@
       "label": "2026-08-12 \u2014 App ads also run in practice sections and lessons",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L1998",
+      "source_location": "L2002",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_app_ads_also_run_in_practice_sections_and_lessons",
       "community": 0,
@@ -116025,7 +116025,7 @@
       "label": "2026-08-12 \u2014 Course ads accept photos, not only video",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2040",
+      "source_location": "L2044",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_course_ads_accept_photos_not_only_video",
       "community": 0,
@@ -116035,7 +116035,7 @@
       "label": "2026-08-12 \u2014 Desktop course trail road is measured, not guessed",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2084",
+      "source_location": "L2088",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_desktop_course_trail_road_is_measured_not_guessed",
       "community": 0,
@@ -116045,7 +116045,7 @@
       "label": "2026-08-12 \u2014 Blocked users are fully denied across bot and Mini App",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2127",
+      "source_location": "L2131",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_blocked_users_are_fully_denied_across_bot_and_mini_app",
       "community": 0,
@@ -116055,7 +116055,7 @@
       "label": "2026-08-12 \u2014 Desktop notifications use real reminder data",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2174",
+      "source_location": "L2178",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_desktop_notifications_use_real_reminder_data",
       "community": 0,
@@ -116065,7 +116065,7 @@
       "label": "2026-08-12 \u2014 Mini App app promotion is admin-controlled",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2210",
+      "source_location": "L2214",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_mini_app_app_promotion_is_admin_controlled",
       "community": 0,
@@ -116075,7 +116075,7 @@
       "label": "2026-08-11 \u2014 Course v3 lesson access policy is admin-controlled",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2247",
+      "source_location": "L2251",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_course_v3_lesson_access_policy_is_admin_controlled",
       "community": 0,
@@ -116085,7 +116085,7 @@
       "label": "2026-08-11 \u2014 Desktop updater is manual-install only",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2281",
+      "source_location": "L2285",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_updater_is_manual_install_only",
       "community": 0,
@@ -116095,7 +116095,7 @@
       "label": "2026-08-11 \u2014 Mini App ad surfaces show desktop download CTA",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2305",
+      "source_location": "L2309",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_mini_app_ad_surfaces_show_desktop_download_cta",
       "community": 0,
@@ -116105,7 +116105,7 @@
       "label": "2026-08-11 \u2014 Desktop AI context-aware suggestions",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2334",
+      "source_location": "L2338",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_ai_context_aware_suggestions",
       "community": 0,
@@ -116115,7 +116115,7 @@
       "label": "2026-08-11 \u2014 Course notification feed for Telegram and Desktop",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2366",
+      "source_location": "L2370",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_course_notification_feed_for_telegram_and_desktop",
       "community": 0,
@@ -116125,7 +116125,7 @@
       "label": "2026-08-11 \u2014 Desktop lesson full-stage with docked AI tutor",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2401",
+      "source_location": "L2405",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_lesson_full_stage_with_docked_ai_tutor",
       "community": 0,
@@ -116135,7 +116135,7 @@
       "label": "2026-08-11 \u2014 Desktop Practice static v3 fallback",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2431",
+      "source_location": "L2435",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_practice_static_v3_fallback",
       "community": 0,
@@ -116145,7 +116145,7 @@
       "label": "2026-08-11 \u2014 Desktop referral invite modal restored",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2461",
+      "source_location": "L2465",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_referral_invite_modal_restored",
       "community": 0,
@@ -116155,7 +116155,7 @@
       "label": "2026-08-11 \u2014 Desktop course map Duolingo-style vertical path",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2490",
+      "source_location": "L2494",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_course_map_duolingo_style_vertical_path",
       "community": 0,
@@ -116165,7 +116165,7 @@
       "label": "2026-08-09 \u2014 Desktop 1.3: real local AI + stable automatic release/update",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2513",
+      "source_location": "L2517",
       "_origin": "ast",
       "id": "project_memory_2026_08_09_desktop_1_3_real_local_ai_stable_automatic_release_update",
       "community": 0,
@@ -116175,7 +116175,7 @@
       "label": "2026-08-09 \u2014 Android auth-session va deep-link/audio lifecycle himoyasi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2550",
+      "source_location": "L2554",
       "_origin": "ast",
       "id": "project_memory_2026_08_09_android_auth_session_va_deep_link_audio_lifecycle_himoyasi",
       "community": 0,
@@ -116185,7 +116185,7 @@
       "label": "2026-08-08 \u2014 Android native klient: auth adapteri + loyiha poydevori (Phase A-C)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2571",
+      "source_location": "L2575",
       "_origin": "ast",
       "id": "project_memory_2026_08_08_android_native_klient_auth_adapteri_loyiha_poydevori_phase_a_c",
       "community": 0,
@@ -116195,7 +116195,7 @@
       "label": "2026-07-26 \u2014 Dars yakuni reklamasiga ixtiyoriy tashqi CTA",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2677",
+      "source_location": "L2681",
       "_origin": "ast",
       "id": "project_memory_2026_07_26_dars_yakuni_reklamasiga_ixtiyoriy_tashqi_cta",
       "community": 0,
@@ -116205,7 +116205,7 @@
       "label": "2026-07-25 \u2014 Dars yakuni reklamasi (alohida tur) + ostida obuna knopkasi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2697",
+      "source_location": "L2701",
       "_origin": "ast",
       "id": "project_memory_2026_07_25_dars_yakuni_reklamasi_alohida_tur_ostida_obuna_knopkasi",
       "community": 0,
@@ -116215,7 +116215,7 @@
       "label": "2026-07-25 \u2014 Kinematik kirish: yaqin kadr panda + real parvoz sahnasi (osmon/yer/bulut/shamol)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2749",
+      "source_location": "L2753",
       "_origin": "ast",
       "id": "project_memory_2026_07_25_kinematik_kirish_yaqin_kadr_panda_real_parvoz_sahnasi_osmon_yer_bulut_shamol",
       "community": 0,
@@ -116225,7 +116225,7 @@
       "label": "2026-07-24 \u2014 Motivatsion matnlar, panda effektlari kutubxonasi, alangali hafta kalendari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2788",
+      "source_location": "L2792",
       "_origin": "ast",
       "id": "project_memory_2026_07_24_motivatsion_matnlar_panda_effektlari_kutubxonasi_alangali_hafta_kalendari",
       "community": 0,
@@ -116235,7 +116235,7 @@
       "label": "2026-07-24 \u2014 Dars oxirida \"Aralash takror\" + real haftalik streak kalendari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2824",
+      "source_location": "L2828",
       "_origin": "ast",
       "id": "project_memory_2026_07_24_dars_oxirida_aralash_takror_real_haftalik_streak_kalendari",
       "community": 0,
@@ -116245,7 +116245,7 @@
       "label": "2026-07-22 \u2014 Chegirma obunachiga bormaydi + otziv oqimi 2 qadamli, obunachiga alohida",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2858",
+      "source_location": "L2862",
       "_origin": "ast",
       "id": "project_memory_2026_07_22_chegirma_obunachiga_bormaydi_otziv_oqimi_2_qadamli_obunachiga_alohida",
       "community": 0,
@@ -116255,7 +116255,7 @@
       "label": "2026-07-22 \u2014 HSK tests, challenges, and mistake material V2",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2901",
+      "source_location": "L2905",
       "_origin": "ast",
       "id": "project_memory_2026_07_22_hsk_tests_challenges_and_mistake_material_v2",
       "community": 0,
@@ -116265,7 +116265,7 @@
       "label": "2026-07-21 \u2014 Gemini yoqilganda limit tizimi o'zgaradi + bir martalik e'lon",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2921",
+      "source_location": "L2925",
       "_origin": "ast",
       "id": "project_memory_2026_07_21_gemini_yoqilganda_limit_tizimi_o_zgaradi_bir_martalik_e_lon",
       "community": 0,
@@ -116275,7 +116275,7 @@
       "label": "2026-07-21 \u2014 AI provayder: Gemini asosiy + OpenAI zaxira, admin model tanlash, AI Voice tezlashtirildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L2964",
+      "source_location": "L2968",
       "_origin": "ast",
       "id": "project_memory_2026_07_21_ai_provayder_gemini_asosiy_openai_zaxira_admin_model_tanlash_ai_voice_tezlashtirildi",
       "community": 0,
@@ -116285,7 +116285,7 @@
       "label": "2026-07-20 \u2014 DARSLAR MINI-QISMLARGA BO'LINDI (3-4 so'z + checkpoint, flat raqamlash)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3007",
+      "source_location": "L3011",
       "_origin": "ast",
       "id": "project_memory_2026_07_20_darslar_mini_qismlarga_bo_lindi_3_4_so_z_checkpoint_flat_raqamlash",
       "community": 0,
@@ -116295,7 +116295,7 @@
       "label": "2026-07-20 \u2014 Duolingo O'RGATISH USLUBI darslarda + challenge dars-progress gating",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3052",
+      "source_location": "L3056",
       "_origin": "ast",
       "id": "project_memory_2026_07_20_duolingo_o_rgatish_uslubi_darslarda_challenge_dars_progress_gating",
       "community": 0,
@@ -116305,7 +116305,7 @@
       "label": "2026-07-19 \u2014 Mashqlar dars progressiga ham bog'landi (o'rganilmagan dars so'zlari chiqmaydi)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3084",
+      "source_location": "L3088",
       "_origin": "ast",
       "id": "project_memory_2026_07_19_mashqlar_dars_progressiga_ham_bog_landi_o_rganilmagan_dars_so_zlari_chiqmaydi",
       "community": 0,
@@ -116315,7 +116315,7 @@
       "label": "2026-07-19 \u2014 Mashq bo'limlari user'ning haqiqiy HSK darajasiga bog'landi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3114",
+      "source_location": "L3118",
       "_origin": "ast",
       "id": "project_memory_2026_07_19_mashq_bo_limlari_user_ning_haqiqiy_hsk_darajasiga_bog_landi",
       "community": 0,
@@ -116325,7 +116325,7 @@
       "label": "2026-07-19 \u2014 Dars arxetiplari (xilma-xillik) + challenge savol bagi + TTS klient cache",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3143",
+      "source_location": "L3147",
       "_origin": "ast",
       "id": "project_memory_2026_07_19_dars_arxetiplari_xilma_xillik_challenge_savol_bagi_tts_klient_cache",
       "community": 0,
@@ -116335,7 +116335,7 @@
       "label": "2026-07-19 \u2014 Course v3 UI yangilanishi: dofamin effektlar + yangi panda + yo'lakcha bezaklari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3179",
+      "source_location": "L3183",
       "_origin": "ast",
       "id": "project_memory_2026_07_19_course_v3_ui_yangilanishi_dofamin_effektlar_yangi_panda_yo_lakcha_bezaklari",
       "community": 0,
@@ -116345,7 +116345,7 @@
       "label": "2026-07-18 \u2014 Subscription checkout stage analytics",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3215",
+      "source_location": "L3219",
       "_origin": "ast",
       "id": "project_memory_2026_07_18_subscription_checkout_stage_analytics",
       "community": 0,
@@ -116355,7 +116355,7 @@
       "label": "2026-07-18 \u2014 Direct first-lesson activation and exact retention metrics",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3234",
+      "source_location": "L3238",
       "_origin": "ast",
       "id": "project_memory_2026_07_18_direct_first_lesson_activation_and_exact_retention_metrics",
       "community": 0,
@@ -116365,7 +116365,7 @@
       "label": "2026-07-18 \u2014 D1 first-lesson recovery experiment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3255",
+      "source_location": "L3259",
       "_origin": "ast",
       "id": "project_memory_2026_07_18_d1_first_lesson_recovery_experiment",
       "community": 0,
@@ -116375,7 +116375,7 @@
       "label": "2026-07-16 \u2014 To'g'ri bot username + Course Mini App map cold-start retry",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3276",
+      "source_location": "L3280",
       "_origin": "ast",
       "id": "project_memory_2026_07_16_to_g_ri_bot_username_course_mini_app_map_cold_start_retry",
       "community": 0,
@@ -116385,7 +116385,7 @@
       "label": "2026-07-09 \u2014 Subscription Mini App payment UI priority",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3303",
+      "source_location": "L3307",
       "_origin": "ast",
       "id": "project_memory_2026_07_09_subscription_mini_app_payment_ui_priority",
       "community": 0,
@@ -116395,7 +116395,7 @@
       "label": "2026-07-09 \u2014 Course v3 analytics funnel/onboarding/hot-user fixes",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3321",
+      "source_location": "L3325",
       "_origin": "ast",
       "id": "project_memory_2026_07_09_course_v3_analytics_funnel_onboarding_hot_user_fixes",
       "community": 0,
@@ -116405,7 +116405,7 @@
       "label": "2026-07-07 \u2014 Kurs reklamasiga reklama turi (odiy/hamkorlik/bot) + universal knopka",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3342",
+      "source_location": "L3346",
       "_origin": "ast",
       "id": "project_memory_2026_07_07_kurs_reklamasiga_reklama_turi_odiy_hamkorlik_bot_universal_knopka",
       "community": 0,
@@ -116415,7 +116415,7 @@
       "label": "2026-07-02 \u2014 Admin Mini App advanced period statistics",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3375",
+      "source_location": "L3379",
       "_origin": "ast",
       "id": "project_memory_2026_07_02_admin_mini_app_advanced_period_statistics",
       "community": 0,
@@ -116425,7 +116425,7 @@
       "label": "2026-07-02 \u2014 Course ad media DB backup + auto-restore",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3393",
+      "source_location": "L3397",
       "_origin": "ast",
       "id": "project_memory_2026_07_02_course_ad_media_db_backup_auto_restore",
       "community": 0,
@@ -116435,7 +116435,7 @@
       "label": "2026-07-02 \u2014 Course ad black-screen fail-safe + persistent media visibility",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3409",
+      "source_location": "L3413",
       "_origin": "ast",
       "id": "project_memory_2026_07_02_course_ad_black_screen_fail_safe_persistent_media_visibility",
       "community": 0,
@@ -116445,7 +116445,7 @@
       "label": "2026-07-01 \u2014 Admin People hot lead + today-active segments",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3428",
+      "source_location": "L3432",
       "_origin": "ast",
       "id": "project_memory_2026_07_01_admin_people_hot_lead_today_active_segments",
       "community": 0,
@@ -116455,7 +116455,7 @@
       "label": "2026-06-30 \u2014 Kurs reklamasi tilga moslandi (per-language) + admin filter",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3446",
+      "source_location": "L3450",
       "_origin": "ast",
       "id": "project_memory_2026_06_30_kurs_reklamasi_tilga_moslandi_per_language_admin_filter",
       "community": 0,
@@ -116465,7 +116465,7 @@
       "label": "2026-06-30 \u2014 Course v3 grammatika \"ustoz\" + interaktiv dialog (passiv matn olib tashlandi)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3474",
+      "source_location": "L3478",
       "_origin": "ast",
       "id": "project_memory_2026_06_30_course_v3_grammatika_ustoz_interaktiv_dialog_passiv_matn_olib_tashlandi",
       "community": 0,
@@ -116475,7 +116475,7 @@
       "label": "2026-06-30 \u2014 Course v3 Duolingo uslubidagi interaktiv dars formati",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3499",
+      "source_location": "L3503",
       "_origin": "ast",
       "id": "project_memory_2026_06_30_course_v3_duolingo_uslubidagi_interaktiv_dars_formati",
       "community": 0,
@@ -116485,7 +116485,7 @@
       "label": "2026-06-29 \u2014 Voice pronunciation transcript + tolerant pinyin scoring",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3533",
+      "source_location": "L3537",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_voice_pronunciation_transcript_tolerant_pinyin_scoring",
       "community": 0,
@@ -116495,7 +116495,7 @@
       "label": "2026-06-29 \u2014 Course ad video upload root compatibility fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3560",
+      "source_location": "L3564",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_ad_video_upload_root_compatibility_fix",
       "community": 0,
@@ -116505,7 +116505,7 @@
       "label": "2026-06-29 \u2014 Course Mini App section entry speedup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3577",
+      "source_location": "L3581",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_mini_app_section_entry_speedup",
       "community": 0,
@@ -116515,7 +116515,7 @@
       "label": "2026-06-29 \u2014 Xatolar ustida ishlash (Mistake Review) frontendi ulandi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3598",
+      "source_location": "L3602",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_xatolar_ustida_ishlash_mistake_review_frontendi_ulandi",
       "community": 0,
@@ -116525,7 +116525,7 @@
       "label": "2026-06-29 \u2014 New admin Mini App (admin.html) + deep finance stats; old admin-control.html removed",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3623",
+      "source_location": "L3627",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_new_admin_mini_app_admin_html_deep_finance_stats_old_admin_control_html_removed",
       "community": 0,
@@ -116535,7 +116535,7 @@
       "label": "2026-06-29 \u2014 Course Mini App motivation reminder delivery/timezone fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3660",
+      "source_location": "L3664",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_mini_app_motivation_reminder_delivery_timezone_fix",
       "community": 0,
@@ -116545,7 +116545,7 @@
       "label": "2026-06-29 \u2014 Course Mini App rating chat notification scope",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3683",
+      "source_location": "L3687",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_mini_app_rating_chat_notification_scope",
       "community": 0,
@@ -116555,7 +116555,7 @@
       "label": "2026-06-29 \u2014 Course Mini App practice/ad daily limits (server-side paywall)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3705",
+      "source_location": "L3709",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_mini_app_practice_ad_daily_limits_server_side_paywall",
       "community": 0,
@@ -116565,7 +116565,7 @@
       "label": "2026-06-29 \u2014 Soft subscription-expiry churn flow",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3722",
+      "source_location": "L3726",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_soft_subscription_expiry_churn_flow",
       "community": 0,
@@ -116575,7 +116575,7 @@
       "label": "2026-06-29 \u2014 Admin Mini App weekly/monthly/all-time statistics",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3743",
+      "source_location": "L3747",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_admin_mini_app_weekly_monthly_all_time_statistics",
       "community": 0,
@@ -116585,7 +116585,7 @@
       "label": "2026-06-29 \u2014 Course Mini App referral list + weekly rating reset behavior",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3763",
+      "source_location": "L3767",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_mini_app_referral_list_weekly_rating_reset_behavior",
       "community": 0,
@@ -116595,7 +116595,7 @@
       "label": "2026-06-29 \u2014 Access state classifier + Telegram bot block tracking",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3785",
+      "source_location": "L3789",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_access_state_classifier_telegram_bot_block_tracking",
       "community": 0,
@@ -116605,7 +116605,7 @@
       "label": "2026-06-29 \u2014 Course v3 and QA level/language canonical sync",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3819",
+      "source_location": "L3823",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_v3_and_qa_level_language_canonical_sync",
       "community": 0,
@@ -116615,7 +116615,7 @@
       "label": "2026-06-29 \u2014 Mini App slowness + lesson writer/dictionary deep-link fixes",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3838",
+      "source_location": "L3842",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_mini_app_slowness_lesson_writer_dictionary_deep_link_fixes",
       "community": 0,
@@ -116625,7 +116625,7 @@
       "label": "2026-06-29 \u2014 Course ad: admin-controlled duration, end-of-ad subscribe block, advertiser link, no mid-lesson force",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3869",
+      "source_location": "L3873",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_ad_admin_controlled_duration_end_of_ad_subscribe_block_advertiser_link_no_mid_lesson_force",
       "community": 0,
@@ -116635,7 +116635,7 @@
       "label": "2026-06-28 \u2014 Challenge invite deep-link and XP rewards",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3887",
+      "source_location": "L3891",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_challenge_invite_deep_link_and_xp_rewards",
       "community": 0,
@@ -116645,7 +116645,7 @@
       "label": "2026-06-28 \u2014 HSK exam answer hint cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3914",
+      "source_location": "L3918",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_hsk_exam_answer_hint_cleanup",
       "community": 0,
@@ -116655,7 +116655,7 @@
       "label": "2026-06-28 \u2014 Course v3 reward message correctness",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3933",
+      "source_location": "L3937",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_course_v3_reward_message_correctness",
       "community": 0,
@@ -116665,7 +116665,7 @@
       "label": "2026-06-28 \u2014 Course v3 analytics, skip-test unlock, and real fallback cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3956",
+      "source_location": "L3960",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_course_v3_analytics_skip_test_unlock_and_real_fallback_cleanup",
       "community": 0,
@@ -116675,7 +116675,7 @@
       "label": "2026-06-28 \u2014 Course v3 tour narration fixed for Uzbek/Tajik",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L3987",
+      "source_location": "L3991",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_course_v3_tour_narration_fixed_for_uzbek_tajik",
       "community": 0,
@@ -116685,7 +116685,7 @@
       "label": "2026-06-28 \u2014 Course v3 UX fixes: subscription nav, no-ad free fallback, league chat",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4017",
+      "source_location": "L4021",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_course_v3_ux_fixes_subscription_nav_no_ad_free_fallback_league_chat",
       "community": 0,
@@ -116695,7 +116695,7 @@
       "label": "2026-06-28 \u2014 Course free preview gate + ad-supported Premium lesson path",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4058",
+      "source_location": "L4062",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_course_free_preview_gate_ad_supported_premium_lesson_path",
       "community": 0,
@@ -116705,7 +116705,7 @@
       "label": "2026-06-28 \u2014 Free-tier monetization limits",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4089",
+      "source_location": "L4093",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_free_tier_monetization_limits",
       "community": 0,
@@ -116715,7 +116715,7 @@
       "label": "2026-06-28 \u2014 Admin Mini App real action center",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4118",
+      "source_location": "L4122",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_admin_mini_app_real_action_center",
       "community": 0,
@@ -116725,7 +116725,7 @@
       "label": "2026-06-28 \u2014 Legacy Course Mini App URLs now route to Course v3",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4140",
+      "source_location": "L4144",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_legacy_course_mini_app_urls_now_route_to_course_v3",
       "community": 0,
@@ -116735,7 +116735,7 @@
       "label": "2026-06-28 \u2014 Course ad-supported Premium lesson path",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4161",
+      "source_location": "L4165",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_course_ad_supported_premium_lesson_path",
       "community": 0,
@@ -116745,7 +116745,7 @@
       "label": "2026-06-28 \u2014 HSK2-HSK4 memorize data coverage",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4187",
+      "source_location": "L4191",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_hsk2_hsk4_memorize_data_coverage",
       "community": 0,
@@ -116755,7 +116755,7 @@
       "label": "2026-06-28 \u2014 Free-tier monetization limits and Course v3 3-lesson preview gate",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4209",
+      "source_location": "L4213",
       "_origin": "ast",
       "id": "project_memory_2026_06_28_free_tier_monetization_limits_and_course_v3_3_lesson_preview_gate",
       "community": 0,
@@ -116765,7 +116765,7 @@
       "label": "2026-06-27 \u2014 Course v3 paywall to'siq oynasi tiriltirildi (locked dars \u2192 Premium sheet)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4230",
+      "source_location": "L4234",
       "_origin": "ast",
       "id": "project_memory_2026_06_27_course_v3_paywall_to_siq_oynasi_tiriltirildi_locked_dars_premium_sheet",
       "community": 0,
@@ -116775,7 +116775,7 @@
       "label": "2026-06-27 \u2014 Motivatsion eslatmalar (reyting / kunlik maqsad / streak) + admin tahriri",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4264",
+      "source_location": "L4268",
       "_origin": "ast",
       "id": "project_memory_2026_06_27_motivatsion_eslatmalar_reyting_kunlik_maqsad_streak_admin_tahriri",
       "community": 0,
@@ -116785,7 +116785,7 @@
       "label": "2026-06-27 \u2014 HSK lug'at kartasiga strukturali \"eslab qolish\" bo'limlari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4310",
+      "source_location": "L4314",
       "_origin": "ast",
       "id": "project_memory_2026_06_27_hsk_lug_at_kartasiga_strukturali_eslab_qolish_bo_limlari",
       "community": 0,
@@ -116795,7 +116795,7 @@
       "label": "2026-06-27 \u2014 Legacy V2 Mini App removed, bot opens Course v3, subscription paywall rewritten",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4345",
+      "source_location": "L4349",
       "_origin": "ast",
       "id": "project_memory_2026_06_27_legacy_v2_mini_app_removed_bot_opens_course_v3_subscription_paywall_rewritten",
       "community": 0,
@@ -116805,7 +116805,7 @@
       "label": "2026-06-27 \u2014 Course v3 real pronunciation (microphone) scoring",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4389",
+      "source_location": "L4393",
       "_origin": "ast",
       "id": "project_memory_2026_06_27_course_v3_real_pronunciation_microphone_scoring",
       "community": 0,
@@ -116815,7 +116815,7 @@
       "label": "2026-06-27 \u2014 Course v3 HSK exams functional (Test markazi)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4411",
+      "source_location": "L4415",
       "_origin": "ast",
       "id": "project_memory_2026_06_27_course_v3_hsk_exams_functional_test_markazi",
       "community": 0,
@@ -116825,7 +116825,7 @@
       "label": "2026-06-26 \u2014 Course v3 static lesson data files",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4446",
+      "source_location": "L4450",
       "_origin": "ast",
       "id": "project_memory_2026_06_26_course_v3_static_lesson_data_files",
       "community": 0,
@@ -116835,7 +116835,7 @@
       "label": "2026-06-26 \u2014 Course v3 access and progress hardening",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4468",
+      "source_location": "L4472",
       "_origin": "ast",
       "id": "project_memory_2026_06_26_course_v3_access_and_progress_hardening",
       "community": 0,
@@ -116845,7 +116845,7 @@
       "label": "2026-06-26 \u2014 Mode selection required-channel edit resume",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4501",
+      "source_location": "L4505",
       "_origin": "ast",
       "id": "project_memory_2026_06_26_mode_selection_required_channel_edit_resume",
       "community": 0,
@@ -116855,7 +116855,7 @@
       "label": "2026-06-25 \u2014 Subscription entry source analytics",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4521",
+      "source_location": "L4525",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_subscription_entry_source_analytics",
       "community": 0,
@@ -116865,7 +116865,7 @@
       "label": "2026-06-25 \u2014 Admin stats legacy blocks removed",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4541",
+      "source_location": "L4545",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_admin_stats_legacy_blocks_removed",
       "community": 0,
@@ -116875,7 +116875,7 @@
       "label": "2026-06-25 \u2014 Admin course statistics Mini App source fix and Uzbek label cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4556",
+      "source_location": "L4560",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_admin_course_statistics_mini_app_source_fix_and_uzbek_label_cleanup",
       "community": 0,
@@ -116885,7 +116885,7 @@
       "label": "2026-06-26 \u2014 Admin control Mini App",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4583",
+      "source_location": "L4587",
       "_origin": "ast",
       "id": "project_memory_2026_06_26_admin_control_mini_app",
       "community": 0,
@@ -116895,7 +116895,7 @@
       "label": "2026-06-25 \u2014 Course Mini App static data split and HSK1 static lesson pilot",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4603",
+      "source_location": "L4607",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_course_mini_app_static_data_split_and_hsk1_static_lesson_pilot",
       "community": 0,
@@ -116905,7 +116905,7 @@
       "label": "2026-06-25 \u2014 Mini App HSK character dictionary data split",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4624",
+      "source_location": "L4628",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_mini_app_hsk_character_dictionary_data_split",
       "community": 0,
@@ -116915,7 +116915,7 @@
       "label": "2026-06-25 \u2014 Mini App rating profile Telegram chat",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4646",
+      "source_location": "L4650",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_mini_app_rating_profile_telegram_chat",
       "community": 0,
@@ -116925,7 +116925,7 @@
       "label": "2026-06-25 \u2014 Mini App user challenge flow",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4671",
+      "source_location": "L4675",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_mini_app_user_challenge_flow",
       "community": 0,
@@ -116935,7 +116935,7 @@
       "label": "2026-06-25 \u2014 Mini App lesson material journey",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4687",
+      "source_location": "L4691",
       "_origin": "ast",
       "id": "project_memory_2026_06_25_mini_app_lesson_material_journey",
       "community": 0,
@@ -116945,7 +116945,7 @@
       "label": "2026-06-24 \u2014 Mini App server section plan source-of-truth",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4714",
+      "source_location": "L4718",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_mini_app_server_section_plan_source_of_truth",
       "community": 0,
@@ -116955,7 +116955,7 @@
       "label": "2026-06-24 \u2014 Mini App locked lesson readiness jump",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4739",
+      "source_location": "L4743",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_mini_app_locked_lesson_readiness_jump",
       "community": 0,
@@ -116965,7 +116965,7 @@
       "label": "2026-06-24 \u2014 Mini App lesson section source-of-truth fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4763",
+      "source_location": "L4767",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_mini_app_lesson_section_source_of_truth_fix",
       "community": 0,
@@ -116975,7 +116975,7 @@
       "label": "2026-06-24 \u2014 Mini App tests and character dictionary cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4786",
+      "source_location": "L4790",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_mini_app_tests_and_character_dictionary_cleanup",
       "community": 0,
@@ -116985,7 +116985,7 @@
       "label": "2026-06-24 \u2014 AI Voice dialog-count session flow",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4808",
+      "source_location": "L4812",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_ai_voice_dialog_count_session_flow",
       "community": 0,
@@ -116995,7 +116995,7 @@
       "label": "2026-06-24 \u2014 Course section sequence and next-section routing fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4833",
+      "source_location": "L4837",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_course_section_sequence_and_next_section_routing_fix",
       "community": 0,
@@ -117005,7 +117005,7 @@
       "label": "2026-06-24 \u2014 AI Voice paid budget integration",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4856",
+      "source_location": "L4860",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_ai_voice_paid_budget_integration",
       "community": 0,
@@ -117015,7 +117015,7 @@
       "label": "2026-06-23 \u2014 Course lesson quality, AI Voice access, and duplicate UX cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4878",
+      "source_location": "L4882",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_lesson_quality_ai_voice_access_and_duplicate_ux_cleanup",
       "community": 0,
@@ -117025,7 +117025,7 @@
       "label": "2026-06-23 \u2014 Mode selection required-channel gate",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4903",
+      "source_location": "L4907",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_mode_selection_required_channel_gate",
       "community": 0,
@@ -117035,7 +117035,7 @@
       "label": "2026-06-23 \u2014 Course Mini App lesson variety and section unlock recovery",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4925",
+      "source_location": "L4929",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_lesson_variety_and_section_unlock_recovery",
       "community": 0,
@@ -117045,7 +117045,7 @@
       "label": "2026-06-23 \u2014 Mini App reward, league, and AI Voice paywall UX",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4950",
+      "source_location": "L4954",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_mini_app_reward_league_and_ai_voice_paywall_ux",
       "community": 0,
@@ -117055,7 +117055,7 @@
       "label": "2026-06-23 \u2014 Course Mini App migration deploy fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4973",
+      "source_location": "L4977",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_migration_deploy_fix",
       "community": 0,
@@ -117065,7 +117065,7 @@
       "label": "2026-06-23 \u2014 Course Mini App section/chapter/book lesson progression",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L4994",
+      "source_location": "L4998",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_section_chapter_book_lesson_progression",
       "community": 0,
@@ -117075,7 +117075,7 @@
       "label": "2026-06-23 \u2014 Mini App AI Voice embedded UX fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5021",
+      "source_location": "L5025",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_mini_app_ai_voice_embedded_ux_fix",
       "community": 0,
@@ -117085,7 +117085,7 @@
       "label": "2026-06-23 \u2014 Course Mini App V3 navigation, rewards, and training",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5041",
+      "source_location": "L5045",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_v3_navigation_rewards_and_training",
       "community": 0,
@@ -117095,7 +117095,7 @@
       "label": "2026-06-23 \u2014 Course Mini App entry stays in QA mode",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5072",
+      "source_location": "L5076",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_entry_stays_in_qa_mode",
       "community": 0,
@@ -117105,7 +117105,7 @@
       "label": "2026-06-23 \u2014 Course Mini App AI Voice, profile locks, and admin analytics",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5100",
+      "source_location": "L5104",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_ai_voice_profile_locks_and_admin_analytics",
       "community": 0,
@@ -117115,7 +117115,7 @@
       "label": "2026-06-23 \u2014 Server XP, streak, and weekly league",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5125",
+      "source_location": "L5129",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_server_xp_streak_and_weekly_league",
       "community": 0,
@@ -117125,7 +117125,7 @@
       "label": "2026-06-23 \u2014 Server-backed Course Mistake Engine",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5143",
+      "source_location": "L5147",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_server_backed_course_mistake_engine",
       "community": 0,
@@ -117135,7 +117135,7 @@
       "label": "2026-06-23 \u2014 Course Mini App backend foundation",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5172",
+      "source_location": "L5176",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_backend_foundation",
       "community": 0,
@@ -117145,7 +117145,7 @@
       "label": "2026-06-23 \u2014 Course-first HSK AI V2 Mini App and AI Voice",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5202",
+      "source_location": "L5206",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_first_hsk_ai_v2_mini_app_and_ai_voice",
       "community": 0,
@@ -117155,7 +117155,7 @@
       "label": "2026-06-21 \u2014 Course-first onboarding and Duo Mini App adapter",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5231",
+      "source_location": "L5235",
       "_origin": "ast",
       "id": "project_memory_2026_06_21_course_first_onboarding_and_duo_mini_app_adapter",
       "community": 0,
@@ -117165,7 +117165,7 @@
       "label": "2026-06-20 \u2014 Course pilot compact first 3 lessons",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5259",
+      "source_location": "L5263",
       "_origin": "ast",
       "id": "project_memory_2026_06_20_course_pilot_compact_first_3_lessons",
       "community": 0,
@@ -117175,7 +117175,7 @@
       "label": "2026-06-19 \u2014 Daily 3-min onboarding loop",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5284",
+      "source_location": "L5288",
       "_origin": "ast",
       "id": "project_memory_2026_06_19_daily_3_min_onboarding_loop",
       "community": 0,
@@ -117185,7 +117185,7 @@
       "label": "2026-06-19 \u2014 Course Mini App release announcement template",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5317",
+      "source_location": "L5321",
       "_origin": "ast",
       "id": "project_memory_2026_06_19_course_mini_app_release_announcement_template",
       "community": 0,
@@ -117195,7 +117195,7 @@
       "label": "2026-06-19 \u2014 Course Mini App quiz and reinforcement UI",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5336",
+      "source_location": "L5340",
       "_origin": "ast",
       "id": "project_memory_2026_06_19_course_mini_app_quiz_and_reinforcement_ui",
       "community": 0,
@@ -117205,7 +117205,7 @@
       "label": "2026-06-14 \u2014 Release feedback dashboard",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5365",
+      "source_location": "L5369",
       "_origin": "ast",
       "id": "project_memory_2026_06_14_release_feedback_dashboard",
       "community": 0,
@@ -117215,7 +117215,7 @@
       "label": "2026-06-14 \u2014 Feedback prompt delay removed",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5396",
+      "source_location": "L5400",
       "_origin": "ast",
       "id": "project_memory_2026_06_14_feedback_prompt_delay_removed",
       "community": 0,
@@ -117225,7 +117225,7 @@
       "label": "2026-06-13 \u2014 Broadcast and ad campaign CTA buttons",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5413",
+      "source_location": "L5417",
       "_origin": "ast",
       "id": "project_memory_2026_06_13_broadcast_and_ad_campaign_cta_buttons",
       "community": 0,
@@ -117235,7 +117235,7 @@
       "label": "2026-06-13 \u2014 AI level ceiling hardened",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5440",
+      "source_location": "L5444",
       "_origin": "ast",
       "id": "project_memory_2026_06_13_ai_level_ceiling_hardened",
       "community": 0,
@@ -117245,7 +117245,7 @@
       "label": "2026-06-13 \u2014 Help links moved to admin-managed bot settings",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5461",
+      "source_location": "L5465",
       "_origin": "ast",
       "id": "project_memory_2026_06_13_help_links_moved_to_admin_managed_bot_settings",
       "community": 0,
@@ -117255,7 +117255,7 @@
       "label": "2026-06-13 \u2014 Admin user deletion flow simplified and hardened",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5488",
+      "source_location": "L5492",
       "_origin": "ast",
       "id": "project_memory_2026_06_13_admin_user_deletion_flow_simplified_and_hardened",
       "community": 0,
@@ -117265,7 +117265,7 @@
       "label": "2026-06-13 \u2014 Subscription Mini App card payment display cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5512",
+      "source_location": "L5516",
       "_origin": "ast",
       "id": "project_memory_2026_06_13_subscription_mini_app_card_payment_display_cleanup",
       "community": 0,
@@ -117275,7 +117275,7 @@
       "label": "2026-06-13 \u2014 HSK1/HSK2 Mini App quiz and homework flow aligned with HSK4",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5533",
+      "source_location": "L5537",
       "_origin": "ast",
       "id": "project_memory_2026_06_13_hsk1_hsk2_mini_app_quiz_and_homework_flow_aligned_with_hsk4",
       "community": 0,
@@ -117285,7 +117285,7 @@
       "label": "2026-06-12 \u2014 Course text AI separated from QA daily text limit",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5555",
+      "source_location": "L5559",
       "_origin": "ast",
       "id": "project_memory_2026_06_12_course_text_ai_separated_from_qa_daily_text_limit",
       "community": 0,
@@ -117295,7 +117295,7 @@
       "label": "2026-06-12 \u2014 Subscription Mini App referral, QR, and help contact fixes",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5574",
+      "source_location": "L5578",
       "_origin": "ast",
       "id": "project_memory_2026_06_12_subscription_mini_app_referral_qr_and_help_contact_fixes",
       "community": 0,
@@ -117305,7 +117305,7 @@
       "label": "2026-06-12 \u2014 Course grammar and all-level quiz quality tuning",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5598",
+      "source_location": "L5602",
       "_origin": "ast",
       "id": "project_memory_2026_06_12_course_grammar_and_all_level_quiz_quality_tuning",
       "community": 0,
@@ -117315,7 +117315,7 @@
       "label": "2026-06-12 \u2014 Course trial fallback and homework processing feedback",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5627",
+      "source_location": "L5631",
       "_origin": "ast",
       "id": "project_memory_2026_06_12_course_trial_fallback_and_homework_processing_feedback",
       "community": 0,
@@ -117325,7 +117325,7 @@
       "label": "2026-06-12 \u2014 AI usage budget live-rate calculation",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5655",
+      "source_location": "L5659",
       "_origin": "ast",
       "id": "project_memory_2026_06_12_ai_usage_budget_live_rate_calculation",
       "community": 0,
@@ -117335,7 +117335,7 @@
       "label": "2026-06-11 \u2014 Mini App subscription payment/referral repair",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5678",
+      "source_location": "L5682",
       "_origin": "ast",
       "id": "project_memory_2026_06_11_mini_app_subscription_payment_referral_repair",
       "community": 0,
@@ -117345,7 +117345,7 @@
       "label": "2026-06-09 \u2014 Subscription flow moved to Mini App",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5718",
+      "source_location": "L5722",
       "_origin": "ast",
       "id": "project_memory_2026_06_09_subscription_flow_moved_to_mini_app",
       "community": 0,
@@ -117355,7 +117355,7 @@
       "label": "2026-06-07 \u2014 Price-specific Alipay/WeChat QR codes",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5738",
+      "source_location": "L5742",
       "_origin": "ast",
       "id": "project_memory_2026_06_07_price_specific_alipay_wechat_qr_codes",
       "community": 0,
@@ -117365,7 +117365,7 @@
       "label": "2026-06-06 \u2014 Feedback prompt and reward timing",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5764",
+      "source_location": "L5768",
       "_origin": "ast",
       "id": "project_memory_2026_06_06_feedback_prompt_and_reward_timing",
       "community": 0,
@@ -117375,7 +117375,7 @@
       "label": "2026-06-06 \u2014 Feedback limit discount offer",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5788",
+      "source_location": "L5792",
       "_origin": "ast",
       "id": "project_memory_2026_06_06_feedback_limit_discount_offer",
       "community": 0,
@@ -117385,7 +117385,7 @@
       "label": "2026-06-06 \u2014 Image caption as AI command",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5809",
+      "source_location": "L5813",
       "_origin": "ast",
       "id": "project_memory_2026_06_06_image_caption_as_ai_command",
       "community": 0,
@@ -117395,7 +117395,7 @@
       "label": "2026-06-05 \u2014 Command/menu input cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5833",
+      "source_location": "L5837",
       "_origin": "ast",
       "id": "project_memory_2026_06_05_command_menu_input_cleanup",
       "community": 0,
@@ -117405,7 +117405,7 @@
       "label": "2026-06-04 \u2014 Localized TJS card subscription blocks",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5851",
+      "source_location": "L5855",
       "_origin": "ast",
       "id": "project_memory_2026_06_04_localized_tjs_card_subscription_blocks",
       "community": 0,
@@ -117415,7 +117415,7 @@
       "label": "2026-05-25 \u2014 Course narrative text formatting",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5870",
+      "source_location": "L5874",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_course_narrative_text_formatting",
       "community": 0,
@@ -117425,7 +117425,7 @@
       "label": "2026-05-25 \u2014 Referral trial active access",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5885",
+      "source_location": "L5889",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_referral_trial_active_access",
       "community": 0,
@@ -117435,7 +117435,7 @@
       "label": "2026-05-25 \u2014 Referral bonus usage is lifetime",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5924",
+      "source_location": "L5928",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_referral_bonus_usage_is_lifetime",
       "community": 0,
@@ -117445,7 +117445,7 @@
       "label": "2026-05-24 \u2014 Dynamic course dialogue audio admin",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5943",
+      "source_location": "L5947",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_dynamic_course_dialogue_audio_admin",
       "community": 0,
@@ -117455,7 +117455,7 @@
       "label": "2026-05-24 \u2014 HSK4 upper lesson localization quality",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5966",
+      "source_location": "L5970",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_hsk4_upper_lesson_localization_quality",
       "community": 0,
@@ -117465,7 +117465,7 @@
       "label": "2026-05-24 \u2014 Course level completion upgrade flow",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L5987",
+      "source_location": "L5991",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_course_level_completion_upgrade_flow",
       "community": 0,
@@ -117475,7 +117475,7 @@
       "label": "2026-05-24 \u2014 Course block AI context",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6010",
+      "source_location": "L6014",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_course_block_ai_context",
       "community": 0,
@@ -117485,7 +117485,7 @@
       "label": "2026-05-24 \u2014 HSK3 block lesson completion",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6022",
+      "source_location": "L6026",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_hsk3_block_lesson_completion",
       "community": 0,
@@ -117495,7 +117495,7 @@
       "label": "2026-05-24 \u2014 Block grammar de-duplication",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6045",
+      "source_location": "L6049",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_block_grammar_de_duplication",
       "community": 0,
@@ -117505,7 +117505,7 @@
       "label": "2026-05-24 \u2014 HSK4 \u4e0a first 3 lessons block format",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6084",
+      "source_location": "L6088",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_hsk4_\u4e0a_first_3_lessons_block_format",
       "community": 0,
@@ -117515,7 +117515,7 @@
       "label": "2026-05-24 \u2014 HSK4 \u4e0a lessons 4-6 PDF alignment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6103",
+      "source_location": "L6107",
       "_origin": "ast",
       "id": "project_memory_2026_05_24_hsk4_\u4e0a_lessons_4_6_pdf_alignment",
       "community": 0,
@@ -117525,7 +117525,7 @@
       "label": "2026-05-25 \u2014 HSK4 \u4e0a lessons 7-10 PDF alignment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6123",
+      "source_location": "L6127",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_hsk4_\u4e0a_lessons_7_10_pdf_alignment",
       "community": 0,
@@ -117535,7 +117535,7 @@
       "label": "2026-05-25 \u2014 HSK4 \u4e0b lessons 11-13 PDF alignment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6143",
+      "source_location": "L6147",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_hsk4_\u4e0b_lessons_11_13_pdf_alignment",
       "community": 0,
@@ -117545,7 +117545,7 @@
       "label": "2026-05-25 \u2014 HSK4 Mini App support range",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6163",
+      "source_location": "L6167",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_hsk4_mini_app_support_range",
       "community": 0,
@@ -117555,7 +117555,7 @@
       "label": "2026-05-25 \u2014 HSK4 \u4e0b lessons 14-16 PDF alignment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6177",
+      "source_location": "L6181",
       "_origin": "ast",
       "id": "project_memory_2026_05_25_hsk4_\u4e0b_lessons_14_16_pdf_alignment",
       "community": 0,
@@ -117565,7 +117565,7 @@
       "label": "2026-05-28 \u2014 HSK4 \u4e0b lessons 17-20 PDF alignment",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6197",
+      "source_location": "L6201",
       "_origin": "ast",
       "id": "project_memory_2026_05_28_hsk4_\u4e0b_lessons_17_20_pdf_alignment",
       "community": 0,
@@ -117575,7 +117575,7 @@
       "label": "2026-06-04 \u2014 Localized admin messaging and TJS card subscriptions",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6217",
+      "source_location": "L6221",
       "_origin": "ast",
       "id": "project_memory_2026_06_04_localized_admin_messaging_and_tjs_card_subscriptions",
       "community": 0,
@@ -117585,7 +117585,7 @@
       "label": "2026-06-11 \u2014 Menu subscription WebApp auth fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6244",
+      "source_location": "L6248",
       "_origin": "ast",
       "id": "project_memory_2026_06_11_menu_subscription_webapp_auth_fix",
       "community": 0,
@@ -117595,7 +117595,7 @@
       "label": "2026-06-11 \u2014 New user course trial funnel and channel checkpoint",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6260",
+      "source_location": "L6264",
       "_origin": "ast",
       "id": "project_memory_2026_06_11_new_user_course_trial_funnel_and_channel_checkpoint",
       "community": 0,
@@ -117605,7 +117605,7 @@
       "label": "2026-06-12 \u2014 One-time onboarding tips and trial voice sample",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6296",
+      "source_location": "L6300",
       "_origin": "ast",
       "id": "project_memory_2026_06_12_one_time_onboarding_tips_and_trial_voice_sample",
       "community": 0,
@@ -117615,7 +117615,7 @@
       "label": "2026-06-19 \u2014 Direct AI message draft",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6316",
+      "source_location": "L6320",
       "_origin": "ast",
       "id": "project_memory_2026_06_19_direct_ai_message_draft",
       "community": 0,
@@ -117625,7 +117625,7 @@
       "label": "2026-06-21 - Conversion funnel tracking and course-first recovery",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6341",
+      "source_location": "L6345",
       "_origin": "ast",
       "id": "project_memory_2026_06_21_conversion_funnel_tracking_and_course_first_recovery",
       "community": 0,
@@ -117635,7 +117635,7 @@
       "label": "2026-06-23 - Course Mini App onboarding migration",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6379",
+      "source_location": "L6383",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_course_mini_app_onboarding_migration",
       "community": 0,
@@ -117645,7 +117645,7 @@
       "label": "2026-06-23 - Server-graded interactive lesson flow",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6402",
+      "source_location": "L6406",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_server_graded_interactive_lesson_flow",
       "community": 0,
@@ -117655,7 +117655,7 @@
       "label": "2026-06-23 - Server-backed Test and Training",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6421",
+      "source_location": "L6425",
       "_origin": "ast",
       "id": "project_memory_2026_06_23_server_backed_test_and_training",
       "community": 0,
@@ -117665,7 +117665,7 @@
       "label": "2026-06-24 \u2014 Referral `/start` onboarding resume fix",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6435",
+      "source_location": "L6439",
       "_origin": "ast",
       "id": "project_memory_2026_06_24_referral_start_onboarding_resume_fix",
       "community": 0,
@@ -117675,7 +117675,7 @@
       "label": "2026-06-29 \u2014 Feedback notifications to admin group",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6465",
+      "source_location": "L6469",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_feedback_notifications_to_admin_group",
       "community": 0,
@@ -117685,7 +117685,7 @@
       "label": "2026-06-29 \u2014 Course reminder goal and Mini App CTA update",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6489",
+      "source_location": "L6493",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_course_reminder_goal_and_mini_app_cta_update",
       "community": 0,
@@ -117695,7 +117695,7 @@
       "label": "2026-06-29 \u2014 Challenge level-matched questions",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6517",
+      "source_location": "L6521",
       "_origin": "ast",
       "id": "project_memory_2026_06_29_challenge_level_matched_questions",
       "community": 0,
@@ -117705,7 +117705,7 @@
       "label": "hsk-data.js ikkiga bo'lindi \u2014 mashq sahifalari yuklanish tezligi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6539",
+      "source_location": "L6543",
       "_origin": "ast",
       "id": "project_memory_hsk_data_js_ikkiga_bo_lindi_mashq_sahifalari_yuklanish_tezligi",
       "community": 0,
@@ -117715,7 +117715,7 @@
       "label": "2026-07-28 \u2014 Pomp HSK AI Desktop original loyihaga birlashtirildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6565",
+      "source_location": "L6569",
       "_origin": "ast",
       "id": "project_memory_2026_07_28_pomp_hsk_ai_desktop_original_loyihaga_birlashtirildi",
       "community": 0,
@@ -117725,7 +117725,7 @@
       "label": "2026-08-08 \u2014 Desktop 1.2.0: content view CSS to'ldirildi, brend nomi \"HSK AI\"",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6724",
+      "source_location": "L6728",
       "_origin": "ast",
       "id": "project_memory_2026_08_08_desktop_1_2_0_content_view_css_to_ldirildi_brend_nomi_hsk_ai",
       "community": 0,
@@ -117735,7 +117735,7 @@
       "label": "2026-08-09 \u2014 macOS AI runtime arm64 slice manbadan quriladi, minimum 13.3",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6773",
+      "source_location": "L6777",
       "_origin": "ast",
       "id": "project_memory_2026_08_09_macos_ai_runtime_arm64_slice_manbadan_quriladi_minimum_13_3",
       "community": 0,
@@ -117745,7 +117745,7 @@
       "label": "2026-08-09 \u2014 Desktop AI Voice real ovozli suhbatga ulandi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6821",
+      "source_location": "L6825",
       "_origin": "ast",
       "id": "project_memory_2026_08_09_desktop_ai_voice_real_ovozli_suhbatga_ulandi",
       "community": 0,
@@ -117755,7 +117755,7 @@
       "label": "2026-08-09 \u2014 Desktop Lug'at, Praktika va Reyting real backendga ulandi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6882",
+      "source_location": "L6886",
       "_origin": "ast",
       "id": "project_memory_2026_08_09_desktop_lug_at_praktika_va_reyting_real_backendga_ulandi",
       "community": 0,
@@ -117765,7 +117765,7 @@
       "label": "2026-08-10 \u2014 Desktop profili demo tartibiga keltirildi, maqsad onboardingga ko'chdi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L6951",
+      "source_location": "L6955",
       "_origin": "ast",
       "id": "project_memory_2026_08_10_desktop_profili_demo_tartibiga_keltirildi_maqsad_onboardingga_ko_chdi",
       "community": 0,
@@ -117775,7 +117775,7 @@
       "label": "2026-08-11 \u2014 Qolgan desktop bo'limlari demo-parityga yaqinlashtirildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7041",
+      "source_location": "L7045",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_qolgan_desktop_bo_limlari_demo_parityga_yaqinlashtirildi",
       "community": 0,
@@ -117785,7 +117785,7 @@
       "label": "2026-08-11 \u2014 Desktop native API allowlist AI Voice'ni bloklamasligi tuzatildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7073",
+      "source_location": "L7077",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_native_api_allowlist_ai_voice_ni_bloklamasligi_tuzatildi",
       "community": 0,
@@ -117795,7 +117795,7 @@
       "label": "2026-08-11 \u2014 Android 1.1 native Mini App parity foundation",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7105",
+      "source_location": "L7109",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_android_1_1_native_mini_app_parity_foundation",
       "community": 0,
@@ -117805,7 +117805,7 @@
       "label": "2026-08-11 \u2014 Desktop 1.3.4 release bump",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7140",
+      "source_location": "L7144",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_1_3_4_release_bump",
       "community": 0,
@@ -117815,7 +117815,7 @@
       "label": "2026-08-11 \u2014 Desktop rating fallback and API envelope",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7150",
+      "source_location": "L7154",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_rating_fallback_and_api_envelope",
       "community": 0,
@@ -117825,7 +117825,7 @@
       "label": "2026-08-12 \u2014 Course ad/limit offer copy cleanup",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7181",
+      "source_location": "L7185",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_course_ad_limit_offer_copy_cleanup",
       "community": 0,
@@ -117835,7 +117835,7 @@
       "label": "2026-08-12 \u2014 Desktop 1.3.6 Today AI quick card olib tashlandi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7210",
+      "source_location": "L7214",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_desktop_1_3_6_today_ai_quick_card_olib_tashlandi",
       "community": 0,
@@ -117845,7 +117845,7 @@
       "label": "2026-08-11 \u2014 Desktop AI drawer answer quality pass",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7231",
+      "source_location": "L7235",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_ai_drawer_answer_quality_pass",
       "community": 0,
@@ -117855,7 +117855,7 @@
       "label": "2026-08-11 \u2014 Desktop 1.3.5 release bump",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7257",
+      "source_location": "L7261",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_1_3_5_release_bump",
       "community": 0,
@@ -117865,7 +117865,7 @@
       "label": "2026-08-11 \u2014 Desktop AI media composer guardrail",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7268",
+      "source_location": "L7272",
       "_origin": "ast",
       "id": "project_memory_2026_08_11_desktop_ai_media_composer_guardrail",
       "community": 0,
@@ -117875,7 +117875,7 @@
       "label": "2026-08-12 \u2014 macOS AI Voice mikrofoni: hardened runtime entitlement",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7287",
+      "source_location": "L7291",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_macos_ai_voice_mikrofoni_hardened_runtime_entitlement",
       "community": 0,
@@ -117885,7 +117885,7 @@
       "label": "2026-08-12 \u2014 STT prompt echo, desktop bildirishnoma va feed tili",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7326",
+      "source_location": "L7330",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_stt_prompt_echo_desktop_bildirishnoma_va_feed_tili",
       "community": 0,
@@ -117895,7 +117895,7 @@
       "label": "2026-08-12 \u2014 Noldan boshlovchi uchun tanishtiruv kartalari (hsk1 1-qism)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7374",
+      "source_location": "L7378",
       "_origin": "ast",
       "id": "project_memory_2026_08_12_noldan_boshlovchi_uchun_tanishtiruv_kartalari_hsk1_1_qism",
       "community": 0,
@@ -117905,7 +117905,7 @@
       "label": "2026-08-13 \u2014 QA rejimiga kirishda AI suhbatni o'zi boshlaydi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7421",
+      "source_location": "L7425",
       "_origin": "ast",
       "id": "project_memory_2026_08_13_qa_rejimiga_kirishda_ai_suhbatni_o_zi_boshlaydi",
       "community": 0,
@@ -117915,7 +117915,7 @@
       "label": "2026-08-13 \u2014 Mini App: chap chetdan orqaga swipe + yagona goBack",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7464",
+      "source_location": "L7468",
       "_origin": "ast",
       "id": "project_memory_2026_08_13_mini_app_chap_chetdan_orqaga_swipe_yagona_goback",
       "community": 0,
@@ -117925,7 +117925,7 @@
       "label": "2026-08-14 \u2014 O'lik kod tozalandi (78 ta'rif, 5 modul, 128 i18n kaliti)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7504",
+      "source_location": "L7508",
       "_origin": "ast",
       "id": "project_memory_2026_08_14_o_lik_kod_tozalandi_78_ta_rif_5_modul_128_i18n_kaliti",
       "community": 0,
@@ -117935,7 +117935,7 @@
       "label": "2026-08-14 \u2014 QA kirish savoli kurs lug'atiga o'tdi (takror 3 \u2192 1842)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7541",
+      "source_location": "L7545",
       "_origin": "ast",
       "id": "project_memory_2026_08_14_qa_kirish_savoli_kurs_lug_atiga_o_tdi_takror_3_1842",
       "community": 0,
@@ -117945,7 +117945,7 @@
       "label": "2026-08-14 \u2014 Admin Mini App: profil konteksti va bitta userga chegirma",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7575",
+      "source_location": "L7579",
       "_origin": "ast",
       "id": "project_memory_2026_08_14_admin_mini_app_profil_konteksti_va_bitta_userga_chegirma",
       "community": 0,
@@ -117955,7 +117955,7 @@
       "label": "2026-08-14 \u2014 Chegirma tarjimasi va admin amallari xabarlari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7613",
+      "source_location": "L7617",
       "_origin": "ast",
       "id": "project_memory_2026_08_14_chegirma_tarjimasi_va_admin_amallari_xabarlari",
       "community": 0,
@@ -117965,7 +117965,7 @@
       "label": "2026-08-13 \u2014 Access: vaqtinchalik bonus, free rejim qamrovi, bepul chegara, chegirma xabari",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7643",
+      "source_location": "L7647",
       "_origin": "ast",
       "id": "project_memory_2026_08_13_access_vaqtinchalik_bonus_free_rejim_qamrovi_bepul_chegara_chegirma_xabari",
       "community": 0,
@@ -117975,7 +117975,7 @@
       "label": "11. Known Problems",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7698",
+      "source_location": "L7702",
       "_origin": "ast",
       "id": "project_memory_11_known_problems",
       "community": 92,
@@ -117985,7 +117985,7 @@
       "label": "Problem 1",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7700",
+      "source_location": "L7704",
       "_origin": "ast",
       "id": "project_memory_problem_1",
       "community": 92,
@@ -117995,7 +117995,7 @@
       "label": "Problem 2",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7711",
+      "source_location": "L7715",
       "_origin": "ast",
       "id": "project_memory_problem_2",
       "community": 92,
@@ -118005,7 +118005,7 @@
       "label": "Problem 3",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7726",
+      "source_location": "L7730",
       "_origin": "ast",
       "id": "project_memory_problem_3",
       "community": 92,
@@ -118015,7 +118015,7 @@
       "label": "12. Next Planned Work",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7739",
+      "source_location": "L7743",
       "_origin": "ast",
       "id": "project_memory_12_next_planned_work",
       "community": 92,
@@ -118025,7 +118025,7 @@
       "label": "Android klientini Mini App bilan tenglashtirish",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7750",
+      "source_location": "L7754",
       "_origin": "ast",
       "id": "project_memory_android_klientini_mini_app_bilan_tenglashtirish",
       "community": 92,
@@ -118035,7 +118035,7 @@
       "label": "13. Required Environment Variables",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7796",
+      "source_location": "L7800",
       "_origin": "ast",
       "id": "project_memory_13_required_environment_variables",
       "community": 92,
@@ -118045,7 +118045,7 @@
       "label": "14. AI Assistant Instructions",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7811",
+      "source_location": "L7815",
       "_origin": "ast",
       "id": "project_memory_14_ai_assistant_instructions",
       "community": 220,
@@ -118055,7 +118055,7 @@
       "label": "2026-09-07 \u2014 Isolated local voice studio",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7829",
+      "source_location": "L7833",
       "_origin": "ast",
       "id": "project_memory_2026_09_07_isolated_local_voice_studio",
       "community": 220,
@@ -118065,7 +118065,7 @@
       "label": "2026-09-09 \u2014 One limit authority: the admin panel",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7844",
+      "source_location": "L7848",
       "_origin": "ast",
       "id": "project_memory_2026_09_09_one_limit_authority_the_admin_panel",
       "community": 220,
@@ -118075,7 +118075,7 @@
       "label": "2026-09-10 \u2014 Practice gate latency guard",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7901",
+      "source_location": "L7905",
       "_origin": "ast",
       "id": "project_memory_2026_09_10_practice_gate_latency_guard",
       "community": 220,
@@ -118085,7 +118085,7 @@
       "label": "2026-09-10 \u2014 Lesson start limit reservation and completion retry",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7931",
+      "source_location": "L7935",
       "_origin": "ast",
       "id": "project_memory_2026_09_10_lesson_start_limit_reservation_and_completion_retry",
       "community": 220,
@@ -118095,7 +118095,7 @@
       "label": "2026-09-11 \u2014 Native Android Smart Widget",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L7971",
+      "source_location": "L7975",
       "_origin": "ast",
       "id": "project_memory_2026_09_11_native_android_smart_widget",
       "community": 220,
@@ -118105,7 +118105,7 @@
       "label": "2026-09-11 \u2014 Native Android limit overlay and panda reactions",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8000",
+      "source_location": "L8004",
       "_origin": "ast",
       "id": "project_memory_2026_09_11_native_android_limit_overlay_and_panda_reactions",
       "community": 220,
@@ -118115,7 +118115,7 @@
       "label": "2026-09-13 \u2014 Native Android context-aware AI assistant",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8028",
+      "source_location": "L8032",
       "_origin": "ast",
       "id": "project_memory_2026_09_13_native_android_context_aware_ai_assistant",
       "community": 220,
@@ -118125,7 +118125,7 @@
       "label": "2026-09-14 \u2014 Practice/lesson completion effects + mistake review audio contract",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8063",
+      "source_location": "L8067",
       "_origin": "ast",
       "id": "project_memory_2026_09_14_practice_lesson_completion_effects_mistake_review_audio_contract",
       "community": 220,
@@ -118135,7 +118135,7 @@
       "label": "2026-09-14 \u2014 One Chinese voice on Android, and it is cached",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8091",
+      "source_location": "L8095",
       "_origin": "ast",
       "id": "project_memory_2026_09_14_one_chinese_voice_on_android_and_it_is_cached",
       "community": 220,
@@ -118145,7 +118145,7 @@
       "label": "2026-09-14 \u2014 Practice deep links reach the tool they name",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8144",
+      "source_location": "L8148",
       "_origin": "ast",
       "id": "project_memory_2026_09_14_practice_deep_links_reach_the_tool_they_name",
       "community": 220,
@@ -118155,7 +118155,7 @@
       "label": "2026-09-14 \u2014 A lesson you already opened reopens without a network",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8201",
+      "source_location": "L8205",
       "_origin": "ast",
       "id": "project_memory_2026_09_14_a_lesson_you_already_opened_reopens_without_a_network",
       "community": 220,
@@ -118165,7 +118165,7 @@
       "label": "2026-09-14 \u2014 New-word card and pair matching copied from the Mini App",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8271",
+      "source_location": "L8275",
       "_origin": "ast",
       "id": "project_memory_2026_09_14_new_word_card_and_pair_matching_copied_from_the_mini_app",
       "community": 220,
@@ -118175,7 +118175,7 @@
       "label": "2026-09-14 \u2014 `Gapni tuzing` became a gap fill, on Android only",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8333",
+      "source_location": "L8337",
       "_origin": "ast",
       "id": "project_memory_2026_09_14_gapni_tuzing_became_a_gap_fill_on_android_only",
       "community": 220,
@@ -118185,7 +118185,7 @@
       "label": "2026-09-15 \u2014 The bot hands out the Android APK",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8386",
+      "source_location": "L8390",
       "_origin": "ast",
       "id": "project_memory_2026_09_15_the_bot_hands_out_the_android_apk",
       "community": 220,
@@ -118195,7 +118195,7 @@
       "label": "2026-09-15 \u2014 The direct build can update itself, the Play build cannot",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8504",
+      "source_location": "L8508",
       "_origin": "ast",
       "id": "project_memory_2026_09_15_the_direct_build_can_update_itself_the_play_build_cannot",
       "community": 220,
@@ -118205,7 +118205,7 @@
       "label": "2026-09-15 \u2014 An Android release publishes itself, like the desktop one",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8582",
+      "source_location": "L8586",
       "_origin": "ast",
       "id": "project_memory_2026_09_15_an_android_release_publishes_itself_like_the_desktop_one",
       "community": 220,
@@ -118215,7 +118215,7 @@
       "label": "2026-09-16 \u2014 Reklama boshqaruvi bitta bo'limga yig'ildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8644",
+      "source_location": "L8648",
       "_origin": "ast",
       "id": "project_memory_2026_09_16_reklama_boshqaruvi_bitta_bo_limga_yig_ildi",
       "community": 220,
@@ -118225,7 +118225,7 @@
       "label": "2026-09-16 \u2014 Rolik endi yopish vaqtini ham, kunlik chegarani ham belgilamaydi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8691",
+      "source_location": "L8695",
       "_origin": "ast",
       "id": "project_memory_2026_09_16_rolik_endi_yopish_vaqtini_ham_kunlik_chegarani_ham_belgilamaydi",
       "community": 220,
@@ -118235,7 +118235,7 @@
       "label": "2026-09-16 \u2014 Ilovani reklama qilishning ikkinchi yo'li olib tashlandi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8727",
+      "source_location": "L8731",
       "_origin": "ast",
       "id": "project_memory_2026_09_16_ilovani_reklama_qilishning_ikkinchi_yo_li_olib_tashlandi",
       "community": 220,
@@ -118245,7 +118245,7 @@
       "label": "2026-09-16 \u2014 Joy bir marta so'raladi: kalit va qoida bitta kartada",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8787",
+      "source_location": "L8791",
       "_origin": "ast",
       "id": "project_memory_2026_09_16_joy_bir_marta_so_raladi_kalit_va_qoida_bitta_kartada",
       "community": 220,
@@ -118255,7 +118255,7 @@
       "label": "2026-09-16 \u2014 Android promo tugmasi: muammoning qolgan yarmi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8828",
+      "source_location": "L8832",
       "_origin": "ast",
       "id": "project_memory_2026_09_16_android_promo_tugmasi_muammoning_qolgan_yarmi",
       "community": 220,
@@ -118265,7 +118265,7 @@
       "label": "2026-09-16 \u2014 Dars yakunidagi ilova promosi hech qachon chiqmasdi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8854",
+      "source_location": "L8858",
       "_origin": "ast",
       "id": "project_memory_2026_09_16_dars_yakunidagi_ilova_promosi_hech_qachon_chiqmasdi",
       "community": 220,
@@ -118275,7 +118275,7 @@
       "label": "2026-09-18 \u2014 App reklamasi: uchta sabab, uchtasi ham boshqa qatlamda",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8894",
+      "source_location": "L8898",
       "_origin": "ast",
       "id": "project_memory_2026_09_18_app_reklamasi_uchta_sabab_uchtasi_ham_boshqa_qatlamda",
       "community": 220,
@@ -118285,7 +118285,7 @@
       "label": "2026-09-18 \u2014 Profildagi \u00abHSK AI ilovalari\u00bb endi yuklab olish sahifasini ochadi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L8985",
+      "source_location": "L8989",
       "_origin": "ast",
       "id": "project_memory_2026_09_18_profildagi_hsk_ai_ilovalari_endi_yuklab_olish_sahifasini_ochadi",
       "community": 220,
@@ -118295,7 +118295,7 @@
       "label": "2026-09-18 \u2014 Mini App profilidagi karta endi hamma ilovalarga eshik",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9056",
+      "source_location": "L9060",
       "_origin": "ast",
       "id": "project_memory_2026_09_18_mini_app_profilidagi_karta_endi_hamma_ilovalarga_eshik",
       "community": 220,
@@ -118305,7 +118305,7 @@
       "label": "2026-09-18 \u2014 Bot profili va sahifa eski holiga qaytarildi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9102",
+      "source_location": "L9106",
       "_origin": "ast",
       "id": "project_memory_2026_09_18_bot_profili_va_sahifa_eski_holiga_qaytarildi",
       "community": 220,
@@ -118315,7 +118315,7 @@
       "label": "2026-09-18 \u2014 Kartadagi platformalar bir qatorda, Android fayli chatga",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9138",
+      "source_location": "L9142",
       "_origin": "ast",
       "id": "project_memory_2026_09_18_kartadagi_platformalar_bir_qatorda_android_fayli_chatga",
       "community": 220,
@@ -118325,7 +118325,7 @@
       "label": "2026-09-18 \u2014 Bot profilidagi tugma Mini App kartasini ochadi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9185",
+      "source_location": "L9189",
       "_origin": "ast",
       "id": "project_memory_2026_09_18_bot_profilidagi_tugma_mini_app_kartasini_ochadi",
       "community": 220,
@@ -118335,7 +118335,7 @@
       "label": "2026-09-19 \u2014 Widget pandasi darsga chaqiradi (holatga bog'liq reaksiya)",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9215",
+      "source_location": "L9219",
       "_origin": "ast",
       "id": "project_memory_2026_09_19_widget_pandasi_darsga_chaqiradi_holatga_bog_liq_reaksiya",
       "community": 220,
@@ -118345,7 +118345,7 @@
       "label": "2026-09-19 \u2014 Yangi versiya haqida bitta bildirishnoma, ikki versiya orqada qolganga doimiy qator",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9286",
+      "source_location": "L9290",
       "_origin": "ast",
       "id": "project_memory_2026_09_19_yangi_versiya_haqida_bitta_bildirishnoma_ikki_versiya_orqada_qolganga_doimiy_qator",
       "community": 220,
@@ -118355,7 +118355,7 @@
       "label": "2026-09-19 \u2014 Bildirishnoma ruxsati onboardingda bir marta so'raladi",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9355",
+      "source_location": "L9359",
       "_origin": "ast",
       "id": "project_memory_2026_09_19_bildirishnoma_ruxsati_onboardingda_bir_marta_so_raladi",
       "community": 220,
@@ -118365,7 +118365,7 @@
       "label": "2026-09-20 \u2014 Reklama umuman chiqmasdi: bitta nom, uchta qatlam",
       "file_type": "document",
       "source_file": "PROJECT_MEMORY.md",
-      "source_location": "L9408",
+      "source_location": "L9412",
       "_origin": "ast",
       "id": "project_memory_2026_09_20_reklama_umuman_chiqmasdi_bitta_nom_uchta_qatlam",
       "community": 220,
@@ -121696,7 +121696,7 @@
       "file_type": "rationale",
       "source_file": "app/services/course_tutor_service.py",
       "source_location": "L330",
-      "community": 374,
+      "community": 83,
       "norm_label": "v2: n-chi dialog bloki (grammar_notes inline).",
       "community_name": "Community 56",
       "id": "services_course_tutor_service_rationale_330"
@@ -121896,7 +121896,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 374,
+      "community": 83,
       "norm_label": "str",
       "community_name": "Community 242",
       "id": "str"
@@ -494335,9 +494335,9 @@
       "source_file": "PROJECT_MEMORY.md",
       "source_location": "L230",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "project_memory_10_recent_important_changes",
-      "target": "project_memory_2026_09_21_android_cold_start_stays_on_the_chosen_screen"
+      "target": "project_memory_2026_09_21_android_ad_overlay_no_longer_looks_like_app_restart",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -497751,5 +497751,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "a94af3c291ec716880623f32429acecf4de58c42"
+  "built_at_commit": "f67a5dc4184d7e03268cf3492a3cba9a5f10ab08"
 }

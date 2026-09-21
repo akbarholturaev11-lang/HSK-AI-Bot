@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
@@ -119,6 +120,7 @@ import java.util.UUID
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 import com.pomp.hskai.widget.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -334,6 +336,7 @@ private fun AppRoot(
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
+            var screenCenterAdAsked by rememberSaveable { mutableStateOf(false) }
             // Shown once, right after onboarding, and only to someone who has
             // just been through it — `launch` is set by the completion call
             // and stays null for an account that was already onboarded.
@@ -502,6 +505,23 @@ private fun AppRoot(
             // in the moment before the store has been read.
             val notificationPrimerSeen by app.appSettings.notificationPrimerSeen
                 .collectAsStateWithLifecycle(initialValue = true)
+            LaunchedEffect(
+                onboardingState.completed,
+                notificationPrimerSeen,
+                widgetSession.reminderEnabled,
+            ) {
+                if (
+                    !screenCenterAdAsked &&
+                    onboardingState.completed &&
+                    (notificationPrimerSeen || widgetSession.reminderEnabled)
+                ) {
+                    screenCenterAdAsked = true
+                    delay(SCREEN_CENTER_AD_DELAY_MS)
+                    if (adRequest == null) {
+                        adRequest = AdRequest(placement = AdViewModel.PLACEMENT_SCREEN_CENTER)
+                    }
+                }
+            }
             LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
@@ -643,7 +663,6 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            val ad = adRequest
             if (onboardingState.loading) {
                 SplashScreen()
             } else if (!onboardingState.completed) {
@@ -670,31 +689,6 @@ private fun AppRoot(
                     onSkip = {
                         scope.launch { app.appSettings.setNotificationPrimerSeen() }
                     },
-                )
-            } else if (ad != null) {
-                val adViewModel: AdViewModel = viewModel(
-                    key = "ad-${ad.requestId}",
-                    viewModelStoreOwner = sessionOwner,
-                    factory = AdViewModel.Factory(
-                        repository = app.featureRepository,
-                        placement = ad.placement,
-                        lessonOrder = ad.lessonOrder,
-                    ),
-                )
-                val adState by adViewModel.state.collectAsStateWithLifecycle()
-                // An ad opens nothing. It is shown, counted by the server, and
-                // closed — whether it was watched, skipped or never arrived.
-                // Everything that used to hang off it (attempt tokens, access
-                // references, a section reopening) is gone: hitting a limit
-                // shows the paywall, not a video.
-                LaunchedEffect(adState.finished, adState.unavailable) {
-                    if (adState.finished || adState.unavailable) adRequest = null
-                }
-                AdScreen(
-                    state = adState,
-                    onContinue = adViewModel::onContinue,
-                    onClose = { adRequest = null },
-                    onOpenLink = { url -> openExternal(context, url) },
                 )
             } else if (ratingChallengesOpen) {
                 RatingChallengesScreen(
@@ -883,199 +877,228 @@ private fun AppRoot(
                     voiceState.hasSession &&
                     voiceState.result == null
 
-                MainScaffold(
-                    selectedTab = selectedTab,
-                    onTabSelected = { selectedTab = it },
-                    bottomBarVisible = !voiceCallActive,
-                ) { tab, contentModifier ->
-                    when (tab) {
-                        MainTab.COURSE -> CourseScreen(
-                            state = courseState,
-                            dailyGoal = dailyGoal,
-                            limit = limitGate,
-                            hints = hints,
-                            onDismissHint = hintsViewModel::dismiss,
-                            onLesson = { lesson -> launchLesson(lesson) },
-                            onLockedLesson = { lesson -> skipTestLesson = lesson },
-                            onTodayTask = ::openTodayTask,
-                            onOpenGoal = { goalPickerOpen = true },
-                            onOpenChest = courseViewModel::openRewardChest,
-                            onChestRewardConsumed = courseViewModel::consumeChestReward,
-                            onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
-                            onRetry = courseViewModel::load,
-                            modifier = contentModifier,
-                        )
+                Box(Modifier.fillMaxSize()) {
+                    MainScaffold(
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it },
+                        bottomBarVisible = !voiceCallActive,
+                    ) { tab, contentModifier ->
+                        when (tab) {
+                            MainTab.COURSE -> CourseScreen(
+                                state = courseState,
+                                dailyGoal = dailyGoal,
+                                limit = limitGate,
+                                hints = hints,
+                                onDismissHint = hintsViewModel::dismiss,
+                                onLesson = { lesson -> launchLesson(lesson) },
+                                onLockedLesson = { lesson -> skipTestLesson = lesson },
+                                onTodayTask = ::openTodayTask,
+                                onOpenGoal = { goalPickerOpen = true },
+                                onOpenChest = courseViewModel::openRewardChest,
+                                onChestRewardConsumed = courseViewModel::consumeChestReward,
+                                onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
+                                onRetry = courseViewModel::load,
+                                modifier = contentModifier,
+                            )
 
-                        MainTab.PRACTICE -> PracticeScreen(
-                            state = practiceState,
-                            level = currentLevel,
-                            language = currentLanguage,
-                            limit = limitGate,
-                            hints = hints,
-                            onDismissHint = hintsViewModel::dismiss,
-                            onDismissLimit = practiceViewModel::dismissLimit,
-                            onOpenDictionary = { dictionaryOpen = true },
-                            onStartPractice = { tool, level, language ->
-                                practiceViewModel.startPractice(tool, level, language)
-                            },
-                            onSelectPracticeOption = practiceViewModel::selectPracticeOption,
-                            onAdvancePractice = practiceViewModel::advancePractice,
-                            onResetPractice = practiceViewModel::resetPractice,
-                            onStartMistakeReview = practiceViewModel::startMistakeReview,
-                            onAnswerReview = practiceViewModel::answerReview,
-                            onAdvanceReview = practiceViewModel::advanceReview,
-                            onResetReview = practiceViewModel::resetReview,
-                            onSpeakReview = practiceViewModel::playReviewAudio,
-                            onStartExam = { examLevel ->
-                                practiceViewModel.startExam(examLevel, currentLanguage)
-                            },
-                            onSelectExamOption = practiceViewModel::selectExamOption,
-                            onAdvanceExam = practiceViewModel::advanceExam,
-                            onResetExam = practiceViewModel::resetExam,
-                            onOpenDrill = ::launchDrill,
-                            request = practiceRequest,
-                            onRequestConsumed = { practiceRequest = null },
-                            modifier = contentModifier,
-                        )
+                            MainTab.PRACTICE -> PracticeScreen(
+                                state = practiceState,
+                                level = currentLevel,
+                                language = currentLanguage,
+                                limit = limitGate,
+                                hints = hints,
+                                onDismissHint = hintsViewModel::dismiss,
+                                onDismissLimit = practiceViewModel::dismissLimit,
+                                onOpenDictionary = { dictionaryOpen = true },
+                                onStartPractice = { tool, level, language ->
+                                    practiceViewModel.startPractice(tool, level, language)
+                                },
+                                onSelectPracticeOption = practiceViewModel::selectPracticeOption,
+                                onAdvancePractice = practiceViewModel::advancePractice,
+                                onResetPractice = practiceViewModel::resetPractice,
+                                onStartMistakeReview = practiceViewModel::startMistakeReview,
+                                onAnswerReview = practiceViewModel::answerReview,
+                                onAdvanceReview = practiceViewModel::advanceReview,
+                                onResetReview = practiceViewModel::resetReview,
+                                onSpeakReview = practiceViewModel::playReviewAudio,
+                                onStartExam = { examLevel ->
+                                    practiceViewModel.startExam(examLevel, currentLanguage)
+                                },
+                                onSelectExamOption = practiceViewModel::selectExamOption,
+                                onAdvanceExam = practiceViewModel::advanceExam,
+                                onResetExam = practiceViewModel::resetExam,
+                                onOpenDrill = ::launchDrill,
+                                request = practiceRequest,
+                                onRequestConsumed = { practiceRequest = null },
+                                modifier = contentModifier,
+                            )
 
-                        MainTab.VOICE -> VoiceScreen(
-                            state = voiceState,
-                            level = currentLevel,
-                            language = currentLanguage,
-                            limit = limitGate,
-                            hints = hints,
-                            onDismissHint = hintsViewModel::dismiss,
-                            subtitlesOn = voiceSubtitles,
-                            slowSpeech = voiceSlowSpeech,
-                            onToggleSubtitles = { on ->
-                                scope.launch { app.appSettings.setVoiceSubtitles(on) }
-                            },
-                            onToggleSlowSpeech = { slow ->
-                                scope.launch { app.appSettings.setVoiceSlowSpeech(slow) }
-                            },
-                            onSelectRole = voiceViewModel::selectRole,
-                            onStartSession = voiceViewModel::startSession,
-                            onToggleRecording = voiceViewModel::toggleRecording,
-                            onSendText = voiceViewModel::sendTypedMessage,
-                            onEndSession = voiceViewModel::endSession,
-                            onSwapPartner = { role ->
-                                voiceViewModel.swapPartner(role, currentLevel, currentLanguage)
-                            },
-                            onReset = voiceViewModel::reset,
-                            modifier = contentModifier,
-                        )
+                            MainTab.VOICE -> VoiceScreen(
+                                state = voiceState,
+                                level = currentLevel,
+                                language = currentLanguage,
+                                limit = limitGate,
+                                hints = hints,
+                                onDismissHint = hintsViewModel::dismiss,
+                                subtitlesOn = voiceSubtitles,
+                                slowSpeech = voiceSlowSpeech,
+                                onToggleSubtitles = { on ->
+                                    scope.launch { app.appSettings.setVoiceSubtitles(on) }
+                                },
+                                onToggleSlowSpeech = { slow ->
+                                    scope.launch { app.appSettings.setVoiceSlowSpeech(slow) }
+                                },
+                                onSelectRole = voiceViewModel::selectRole,
+                                onStartSession = voiceViewModel::startSession,
+                                onToggleRecording = voiceViewModel::toggleRecording,
+                                onSendText = voiceViewModel::sendTypedMessage,
+                                onEndSession = voiceViewModel::endSession,
+                                onSwapPartner = { role ->
+                                    voiceViewModel.swapPartner(role, currentLevel, currentLanguage)
+                                },
+                                onReset = voiceViewModel::reset,
+                                modifier = contentModifier,
+                            )
 
-                        MainTab.RATING -> RatingScreen(
-                            state = ratingState,
-                            hints = hints,
-                            onDismissHint = hintsViewModel::dismiss,
-                            onSelectTab = ratingViewModel::selectTab,
-                            onOpenChallenges = { ratingChallengesOpen = true },
-                            onOpenUser = { user ->
-                                ratingViewModel.clearChallengeFeedback()
-                                ratingUserOpen = user
-                            },
-                            onInviteFriends = { link -> shareText(context, link) },
-                            onChallenge = { ref ->
-                                ratingViewModel.challenge(ref, currentLevel, currentLanguage)
-                            },
-                            onRetry = ratingViewModel::load,
-                            modifier = contentModifier,
-                        )
+                            MainTab.RATING -> RatingScreen(
+                                state = ratingState,
+                                hints = hints,
+                                onDismissHint = hintsViewModel::dismiss,
+                                onSelectTab = ratingViewModel::selectTab,
+                                onOpenChallenges = { ratingChallengesOpen = true },
+                                onOpenUser = { user ->
+                                    ratingViewModel.clearChallengeFeedback()
+                                    ratingUserOpen = user
+                                },
+                                onInviteFriends = { link -> shareText(context, link) },
+                                onChallenge = { ref ->
+                                    ratingViewModel.challenge(ref, currentLevel, currentLanguage)
+                                },
+                                onRetry = ratingViewModel::load,
+                                modifier = contentModifier,
+                            )
 
-                        MainTab.PROFILE -> ProfileScreen(
-                            account = state.account,
-                            state = profileState,
-                            settings = settingsState,
-                            hints = hints,
-                            onDismissHint = hintsViewModel::dismiss,
-                            courseProgress = courseState.map?.progress,
-                            courseUser = courseState.map?.user,
-                            onOpenMistakes = {
-                                practiceRequest = PracticeRequest.MISTAKES
-                                selectedTab = MainTab.PRACTICE
-                            },
-                            onOpenFriends = {
-                                ratingViewModel.selectTab(RatingTab.FRIENDS)
-                                selectedTab = MainTab.RATING
-                            },
-                            dailyXp = courseState.map?.progress?.dailyXp ?: 0,
-                            dailyGoal = dailyGoal,
-                            notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
-                            onOpenGoal = { goalPickerOpen = true },
-                            onOpenLanguage = { languagePickerOpen = true },
-                            onToggleNotifications = settingsViewModel::setNotifications,
-                            onOpenWidget = { widgetSetupOpen = true },
-                            onOpenSupport = { url -> openExternal(context, url) },
-                            onRefresh = profileViewModel::load,
-                            onLogout = { signOut(false) },
-                            onUnlinkDevice = { signOut(true) },
-                            modifier = contentModifier,
-                        )
-                    }
-                }
-
-                if (widgetSetupOpen) {
-                    WidgetSetupSheet(
-                        reminderEnabled = widgetSession.reminderEnabled,
-                        onReminder = toggleLocalReminder,
-                        onDismiss = { widgetSetupOpen = false },
-                    )
-                } else if (studySetupState.visible) {
-                    StudySetupSheet(
-                        language = currentLanguage,
-                        state = studySetupState,
-                        onDismiss = studySetupViewModel::dismiss,
-                        onGoal = studySetupViewModel::chooseGoal,
-                        onTime = studySetupViewModel::chooseTime,
-                        onFocus = studySetupViewModel::chooseFocus,
-                    )
-                } else {
-                    if (languagePickerOpen) {
-                        LanguagePicker(
-                            current = state.account.language,
-                            onPick = { language ->
-                                languagePickerOpen = false
-                                settingsViewModel.setLanguage(language)
-                            },
-                            onDismiss = { languagePickerOpen = false },
-                        )
+                            MainTab.PROFILE -> ProfileScreen(
+                                account = state.account,
+                                state = profileState,
+                                settings = settingsState,
+                                hints = hints,
+                                onDismissHint = hintsViewModel::dismiss,
+                                courseProgress = courseState.map?.progress,
+                                courseUser = courseState.map?.user,
+                                onOpenMistakes = {
+                                    practiceRequest = PracticeRequest.MISTAKES
+                                    selectedTab = MainTab.PRACTICE
+                                },
+                                onOpenFriends = {
+                                    ratingViewModel.selectTab(RatingTab.FRIENDS)
+                                    selectedTab = MainTab.RATING
+                                },
+                                dailyXp = courseState.map?.progress?.dailyXp ?: 0,
+                                dailyGoal = dailyGoal,
+                                notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
+                                onOpenGoal = { goalPickerOpen = true },
+                                onOpenLanguage = { languagePickerOpen = true },
+                                onToggleNotifications = settingsViewModel::setNotifications,
+                                onOpenWidget = { widgetSetupOpen = true },
+                                onOpenSupport = { url -> openExternal(context, url) },
+                                onRefresh = profileViewModel::load,
+                                onLogout = { signOut(false) },
+                                onUnlinkDevice = { signOut(true) },
+                                modifier = contentModifier,
+                            )
+                        }
                     }
 
-                    if (planChoiceOpen) {
-                        PlanChoiceSheet(
-                            isStarting = profileState.trialStarting,
-                            onStartTrial = {
-                                planChoiceOpen = false
-                                profileViewModel.startTrial()
-                            },
-                            // Left out entirely in the Google Play build,
-                            // which may not send a learner out of the app to
-                            // pay. The gate is what knows that, not this file.
-                            onSubscribe = if (limitGate.state.canSubscribe) {
-                                {
+                    if (widgetSetupOpen) {
+                        WidgetSetupSheet(
+                            reminderEnabled = widgetSession.reminderEnabled,
+                            onReminder = toggleLocalReminder,
+                            onDismiss = { widgetSetupOpen = false },
+                        )
+                    } else if (studySetupState.visible) {
+                        StudySetupSheet(
+                            language = currentLanguage,
+                            state = studySetupState,
+                            onDismiss = studySetupViewModel::dismiss,
+                            onGoal = studySetupViewModel::chooseGoal,
+                            onTime = studySetupViewModel::chooseTime,
+                            onFocus = studySetupViewModel::chooseFocus,
+                        )
+                    } else {
+                        if (languagePickerOpen) {
+                            LanguagePicker(
+                                current = state.account.language,
+                                onPick = { language ->
+                                    languagePickerOpen = false
+                                    settingsViewModel.setLanguage(language)
+                                },
+                                onDismiss = { languagePickerOpen = false },
+                            )
+                        }
+
+                        if (planChoiceOpen) {
+                            PlanChoiceSheet(
+                                isStarting = profileState.trialStarting,
+                                onStartTrial = {
                                     planChoiceOpen = false
-                                    limitGate.actions.onUnlock()
-                                }
-                            } else {
-                                null
-                            },
-                            onDismiss = { planChoiceOpen = false },
-                        )
+                                    profileViewModel.startTrial()
+                                },
+                                // Left out entirely in the Google Play build,
+                                // which may not send a learner out of the app to
+                                // pay. The gate is what knows that, not this file.
+                                onSubscribe = if (limitGate.state.canSubscribe) {
+                                    {
+                                        planChoiceOpen = false
+                                        limitGate.actions.onUnlock()
+                                    }
+                                } else {
+                                    null
+                                },
+                                onDismiss = { planChoiceOpen = false },
+                            )
+                        }
+
+                        if (goalPickerOpen) {
+                            DailyGoalPicker(
+                                current = dailyGoal,
+                                onPick = { value ->
+                                    goalPickerOpen = false
+                                    // Written locally at once so the profile does
+                                    // not lag behind the tap, and sent on, because
+                                    // the Mini App reads the same number.
+                                    scope.launch { app.appSettings.setDailyGoal(value) }
+                                    studySetupViewModel.chooseDailyGoalXp(value)
+                                },
+                                onDismiss = { goalPickerOpen = false },
+                            )
+                        }
                     }
 
-                    if (goalPickerOpen) {
-                        DailyGoalPicker(
-                            current = dailyGoal,
-                            onPick = { value ->
-                                goalPickerOpen = false
-                                // Written locally at once so the profile does
-                                // not lag behind the tap, and sent on, because
-                                // the Mini App reads the same number.
-                                scope.launch { app.appSettings.setDailyGoal(value) }
-                                studySetupViewModel.chooseDailyGoalXp(value)
-                            },
-                            onDismiss = { goalPickerOpen = false },
+                    val ad = adRequest
+                    if (ad != null) {
+                        val adViewModel: AdViewModel = viewModel(
+                            key = "ad-${ad.requestId}",
+                            viewModelStoreOwner = sessionOwner,
+                            factory = AdViewModel.Factory(
+                                repository = app.featureRepository,
+                                placement = ad.placement,
+                                lessonOrder = ad.lessonOrder,
+                            ),
+                        )
+                        val adState by adViewModel.state.collectAsStateWithLifecycle()
+                        // The learner keeps seeing the current app screen while
+                        // media loads. The card appears only when the ad is
+                        // real, which avoids the full-screen grey reopening
+                        // effect seen in the emulator capture.
+                        LaunchedEffect(adState.finished, adState.unavailable) {
+                            if (adState.finished || adState.unavailable) adRequest = null
+                        }
+                        AdScreen(
+                            state = adState,
+                            onContinue = adViewModel::onContinue,
+                            onClose = { adRequest = null },
+                            onOpenLink = { url -> openExternal(context, url) },
                         )
                     }
                 }
@@ -1429,6 +1452,8 @@ private fun shareText(context: Context, text: String): Boolean {
 }
 
 private fun String.lstripAt(): String = removePrefix("@")
+
+private const val SCREEN_CENTER_AD_DELAY_MS = 700L
 
 /**
  * One ad to show, in one of the two places the product has left: after a

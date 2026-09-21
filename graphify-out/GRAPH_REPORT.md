@@ -1,16 +1,16 @@
 # Graph Report - HSK AI bot  (2026-09-21)
 
 ## Corpus Check
-- 2427 files · ~6,051,124 words
+- 2427 files · ~6,051,202 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 12188 nodes · 35530 edges · 505 communities (408 shown, 97 thin omitted)
+- 12188 nodes · 35530 edges · 503 communities (406 shown, 97 thin omitted)
 - Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 4886 edges (avg confidence: 0.62)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a94af3c2`
+- Built from commit: `f67a5dc4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -177,7 +177,6 @@
 - [[_COMMUNITY_Community 228|Community 228]]
 - [[_COMMUNITY_Community 229|Community 229]]
 - [[_COMMUNITY_Community 230|Community 230]]
-- [[_COMMUNITY_Community 231|Community 231]]
 - [[_COMMUNITY_Community 232|Community 232]]
 - [[_COMMUNITY_Community 233|Community 233]]
 - [[_COMMUNITY_Community 234|Community 234]]
@@ -185,7 +184,6 @@
 - [[_COMMUNITY_Community 236|Community 236]]
 - [[_COMMUNITY_Community 237|Community 237]]
 - [[_COMMUNITY_Community 238|Community 238]]
-- [[_COMMUNITY_Community 239|Community 239]]
 - [[_COMMUNITY_Community 240|Community 240]]
 - [[_COMMUNITY_Community 241|Community 241]]
 - [[_COMMUNITY_Community 242|Community 242]]
@@ -436,7 +434,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (505 total, 97 thin omitted)
+## Communities (503 total, 97 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.01
@@ -451,12 +449,12 @@ Cohesion: 0.05
 Nodes (42): _activation_funnel(), AdminMiniAppService, _ago(), _amount_to_usd(), _as_utc(), _bot_block_filter(), _bot_not_blocked_filter(), _cohort_retention() (+34 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.07
-Nodes (23): AndroidFoundationApi, AndroidOnboardingApi, FoundationCompleteRequest, FoundationCompleteResponse, FoundationPayloadDto, FoundationResponseDto, AndroidOnboardingCompleteDto, AndroidOnboardingProfileDto (+15 more)
+Cohesion: 0.06
+Nodes (19): ChallengeActionResponse, VoiceMessageRequest, VoiceMessageResponse, ApiError, Map, apiCall(), ApiResult, Failure (+11 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.02
-Nodes (69): Json, CourseLesson, seed(), seed(), seed(), seed(), seed(), seed() (+61 more)
+Nodes (72): Json, CourseLesson, seed(), seed(), seed(), seed(), seed(), seed() (+64 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.06
@@ -627,12 +625,12 @@ Cohesion: 0.05
 Nodes (37): app, security, windows, withGlobalTauri, build, frontendDist, bundle, active (+29 more)
 
 ### Community 74 - "Community 74"
-Cohesion: 0.06
-Nodes (15): MessageRepository, AccessService, Bugun (UTC) yuborilgan ovozli xabarlar soni (QA ovoz + tarjimon ovoz)., ensure_admin_active(), is_admin_user(), Adminlarni doim cheksiz 'active' obuna holatida ushlab turish yordamchisi.  Admi, Admin foydalanuvchini cheksiz 'active' holatga keltiradi.      O'zgarish bo'lsa, gemini_active() (+7 more)
+Cohesion: 0.08
+Nodes (12): MessageRepository, AccessService, Bugun (UTC) yuborilgan ovozli xabarlar soni (QA ovoz + tarjimon ovoz)., ensure_admin_active(), is_admin_user(), Adminlarni doim cheksiz 'active' obuna holatida ushlab turish yordamchisi.  Admi, Admin foydalanuvchini cheksiz 'active' holatga keltiradi.      O'zgarish bo'lsa, gemini_active() (+4 more)
 
 ### Community 75 - "Community 75"
-Cohesion: 0.15
-Nodes (3): Preferences, CredentialStore, SecureCredentialStore
+Cohesion: 0.05
+Nodes (20): AndroidFoundationApi, AndroidOnboardingApi, AndroidStudyPreferencesApi, StudyPreferencesRequestDto, StudyPreferencesResponseDto, FoundationCompleteRequest, FoundationCompleteResponse, FoundationPayloadDto (+12 more)
 
 ### Community 76 - "Community 76"
 Cohesion: 0.08
@@ -663,8 +661,8 @@ Cohesion: 0.14
 Nodes (14): _access_token(), create_desktop_subscription_router(), DesktopSubscriptionEmptyRequest, DesktopSubscriptionEventRequest, DesktopSubscriptionQuoteRequest, DesktopSubscriptionSubmitRequest, _error_response(), _validate_receipt_data_url() (+6 more)
 
 ### Community 83 - "Community 83"
-Cohesion: 0.13
-Nodes (16): MistakeReviewQuestionDto, MistakeReviewSessionDto, MistakeReviewAudioTest, PracticeCoachRowTest, DrillQuestion, DrillEmpty(), DrillFeedback(), DrillQuestionBody() (+8 more)
+Cohesion: 0.19
+Nodes (5): CourseTutorService, V2: n-chi dialog bloki (grammar_notes inline)., V2: birinchi 8 ta so'z., V2/block: n-chi dialog bloki va unga tegishli yangi so'z/grammatika., str
 
 ### Community 84 - "Community 84"
 Cohesion: 0.11
@@ -687,8 +685,8 @@ Cohesion: 0.12
 Nodes (7): EntitlementShadowService, Shu harakat uchun dvigatel qaror qabul qiladimi yoki faqat kuzatadimi., Har `(action, client)` uchun namuna va nomuvofiqlik soni., Nomuvofiqlik misollari — adminga nima farq qilganini ko'rsatish uchun., DisagreementReportTests, Shadow solishtiruvi — ko'chirishning o'lchov asbobi.  Uchta narsa tekshiriladi v, RolloutSettingTests
 
 ### Community 89 - "Community 89"
-Cohesion: 0.08
-Nodes (37): MistakeItemDto, CodeBlock(), copyCode(), ExpiredBlock(), formatRemaining(), LinkScreen(), LoadingBlock(), openTelegram() (+29 more)
+Cohesion: 0.07
+Nodes (40): MistakeItemDto, MistakeReviewQuestionDto, MistakeReviewSessionDto, CodeBlock(), copyCode(), ExpiredBlock(), formatRemaining(), LinkScreen() (+32 more)
 
 ### Community 90 - "Community 90"
 Cohesion: 0.06
@@ -712,7 +710,7 @@ Nodes (16): AndroidReleaseManifest, AndroidReleaseManifestError, AndroidReleaseM
 
 ### Community 96 - "Community 96"
 Cohesion: 0.03
-Nodes (105): $(), addAiAttachmentFromFile(), addAiFiles(), AI_RECORDER_TYPES, aiAttachmentKind(), aiAttachmentLabel(), aiAttachmentLimit(), appendAiMessageAttachments() (+97 more)
+Nodes (103): $(), AI_RECORDER_TYPES, applyRailWidth(), bindDesktopUpdateEvents(), bindEvents(), bindLocalAiEvents(), closeAi(), closeNotifications() (+95 more)
 
 ### Community 97 - "Community 97"
 Cohesion: 0.13
@@ -743,8 +741,8 @@ Cohesion: 0.15
 Nodes (10): availableMethods(), availablePlans(), DesktopSubscriptionController, fileDataUrl(), METHOD_ORDER, node(), normalizedDate(), PLAN_ORDER (+2 more)
 
 ### Community 104 - "Community 104"
-Cohesion: 0.02
-Nodes (83): AndroidAdViewRequest, AndroidHintDismissRequest, AndroidFeatureApi, AndroidAdDto, AndroidAdListResponse, AndroidAdViewRequest, AndroidAdViewResponse, AndroidBillingDto (+75 more)
+Cohesion: 0.03
+Nodes (87): AndroidAdViewRequest, AndroidHintDismissRequest, AndroidFeatureApi, AndroidAdDto, AndroidAdListResponse, AndroidAdViewRequest, AndroidAdViewResponse, AndroidBillingDto (+79 more)
 
 ### Community 105 - "Community 105"
 Cohesion: 0.07
@@ -799,8 +797,8 @@ Cohesion: 0.13
 Nodes (5): SubscriptionChurnService, _Result, _Scalars, _Session, SubscriptionChurnServiceTests
 
 ### Community 119 - "Community 119"
-Cohesion: 0.09
-Nodes (45): applyStaticText(), boot(), browserSpeakChinese(), changeLanguage(), checkForUpdates(), clearAuthTimers(), ensureGoalState(), enterWorkspace() (+37 more)
+Cohesion: 0.10
+Nodes (42): applyStaticText(), boot(), browserSpeakChinese(), changeLanguage(), checkForUpdates(), clearAuthTimers(), enterWorkspace(), errorMessage() (+34 more)
 
 ### Community 120 - "Community 120"
 Cohesion: 0.67
@@ -812,7 +810,7 @@ Nodes (5): downgrade(), _find_duplicate_open_payout(), _has_column(), _has_index
 
 ### Community 123 - "Community 123"
 Cohesion: 0.04
-Nodes (22): AdWatch, DrillWordDto, errorResponse(), Int, DictionaryDao, DictionaryMetaEntity, DictionaryWordEntity, ApiErrorMappingTest (+14 more)
+Nodes (24): AdWatch, DrillWordDto, CourseLessonResponse, errorResponse(), skipLessonBody(), Int, DictionaryDao, DictionaryMetaEntity (+16 more)
 
 ### Community 124 - "Community 124"
 Cohesion: 0.11
@@ -915,8 +913,8 @@ Cohesion: 0.16
 Nodes (19): AssistantFailure, AssistantRepository, AssistantState, AssistantStore, attach(), conversations(), discard(), edit() (+11 more)
 
 ### Community 184 - "Community 184"
-Cohesion: 0.09
-Nodes (13): AndroidStudyPreferencesApi, StudyPreferencesRequestDto, StudyPreferencesResponseDto, Application, StudySetupStage, StudySetupUiState, StudySetupViewModel, StudySetupViewModelTest (+5 more)
+Cohesion: 0.14
+Nodes (6): StudySetupStage, StudySetupUiState, StudySetupViewModel, StudySetupViewModelTest, CourseStudySetup, StudyPreferencesRepository
 
 ### Community 185 - "Community 185"
 Cohesion: 0.09
@@ -1038,10 +1036,6 @@ Nodes (10): _as_utc(), build_foundation_metrics(), CourseMiniAppAdminAnalyticsSe
 Cohesion: 0.05
 Nodes (32): ALLOWED_COMMANDS, assertExternalUrl(), assertLanguage(), assertLocalAiRequest(), assertSubscriptionSelection(), AUDIO_PREFIXES, CARD_COUNTRIES, COMMANDS (+24 more)
 
-### Community 231 - "Community 231"
-Cohesion: 0.67
-Nodes (3): js_literal(), main(), Read `const <name>= <json>;` out of one of the Mini App's data files.
-
 ### Community 232 - "Community 232"
 Cohesion: 0.11
 Nodes (51): CallbackQuery, admin_commission_mode_keyboard(), admin_deadline_keyboard(), admin_partner_approve(), admin_partner_back_keyboard(), admin_partner_block(), admin_partner_commission_mode(), admin_partner_commission_mode_select() (+43 more)
@@ -1066,10 +1060,6 @@ Nodes (18): _DownloadPageHandler, _page(), test_macos_download_keeps_default_act
 Cohesion: 0.13
 Nodes (8): CourseLessonMistakeMaterialError, CourseLessonMistakeMaterialService, Server-authoritative material for Course v3 lesson mistakes.  The lesson UI repo, `dialog_cloze` qatorlarini o'qiladigan matnga aylantiradi.          Bo'sh (`blan, Raised when the canonical lesson source itself cannot be loaded., Return only verified wrong answers from the canonical lesson JSON.          Inva, CourseLessonMistakeMaterialServiceTests, ValueError
 
-### Community 239 - "Community 239"
-Cohesion: 0.20
-Nodes (6): CourseLessonDto, CourseUnitDto, CourseUserDto, LocalizedText, CourseMapperTest, sampleMap()
-
 ### Community 240 - "Community 240"
 Cohesion: 0.04
 Nodes (63): _android_stroke_char(), _android_stroke_file(), _android_tts_file(), _android_tts_text(), AndroidCourseCompleteRequest, AndroidFoundationCompleteRequest, AndroidLessonUnlockRequest, AndroidOnboardingRequest (+55 more)
@@ -1083,8 +1073,8 @@ Cohesion: 0.20
 Nodes (8): GlanceAppWidget, GlanceId, TextView, View, HskAiSmartWidget, WidgetContent(), WidgetLayoutTest, WidgetSession
 
 ### Community 243 - "Community 243"
-Cohesion: 0.16
-Nodes (17): closeOnboarding(), confirmOnboarding(), copyAuthCode(), copyReferralLink(), onboardingBack(), onboardingGoalStep(), openExternalUrl(), openLesson() (+9 more)
+Cohesion: 0.29
+Nodes (11): copyAuthCode(), copyReferralLink(), openExternalUrl(), openLesson(), referralShareMessage(), referralShareText(), shareReferralToTelegram(), shareReferralToWhatsapp() (+3 more)
 
 ### Community 244 - "Community 244"
 Cohesion: 0.14
@@ -1131,8 +1121,8 @@ Cohesion: 0.16
 Nodes (7): AdCampaign, AdCampaignDelivery, AdCampaignRepository, encode_languages(), AdCampaignService, AdSendResult, send_ad_payload()
 
 ### Community 257 - "Community 257"
-Cohesion: 0.11
-Nodes (34): activeViewLabel(), aiInstallIsActive(), aiIsReady(), aiPromptSuggestion(), boundedAiText(), buildAiScreenContext(), cancelAiInstall(), cancelAiRecording() (+26 more)
+Cohesion: 0.08
+Nodes (45): activeViewLabel(), addAiAttachmentFromFile(), addAiFiles(), aiAttachmentKind(), aiAttachmentLabel(), aiAttachmentLimit(), aiInstallIsActive(), aiIsReady() (+37 more)
 
 ### Community 258 - "Community 258"
 Cohesion: 0.04
@@ -1167,8 +1157,8 @@ Cohesion: 0.22
 Nodes (4): Limit konfiguratsiyasi — ma'lumot sifatida.  Ikki xil xatti-harakat ataylab farq, _Repo, SaveConfigTests, _service()
 
 ### Community 267 - "Community 267"
-Cohesion: 0.08
-Nodes (31): PracticeQuestionDto, PracticeSessionDto, HskCharacter, HskCharacterMood, HskCharacterReaction, hskReactionFor(), ListeningQuestionTest, onAllNodesWithTextCount() (+23 more)
+Cohesion: 0.06
+Nodes (44): PracticeQuestionDto, PracticeSessionDto, HskCharacter, HskCharacterMood, HskCharacterReaction, hskReactionFor(), ListeningQuestionTest, onAllNodesWithTextCount() (+36 more)
 
 ### Community 268 - "Community 268"
 Cohesion: 0.27
@@ -1455,8 +1445,8 @@ Cohesion: 0.32
 Nodes (5): announce_if_needed(), _deliver_all(), Gemini yoqilganda bir martalik e'lon (limit o'zgardi) xabari.  Mantiq (foydalanu, Scheduler har tsiklda chaqiradi. Shart bajarilsa yetkazishni bir marta boshlaydi, _text_for_language()
 
 ### Community 374 - "Community 374"
-Cohesion: 0.05
-Nodes (17): AIService, Umumiy chat chaqiruvi — Gemini asosiy, OpenAI zaxira (provayder zanjiri orqali)., Remove the STT prompt from a transcript that echoed it back.      The echo can l, _strip_prompt_echo(), CourseTutorService, V2: n-chi dialog bloki (grammar_notes inline)., V2: birinchi 8 ta so'z., V2/block: n-chi dialog bloki va unga tegishli yangi so'z/grammatika. (+9 more)
+Cohesion: 0.06
+Nodes (15): AIService, Umumiy chat chaqiruvi — Gemini asosiy, OpenAI zaxira (provayder zanjiri orqali)., Remove the STT prompt from a transcript that echoed it back.      The echo can l, _strip_prompt_echo(), DiscountTranslationService, ImageAnalyzerService, ImageExplainerService, ImageQAService (+7 more)
 
 ### Community 380 - "Community 380"
 Cohesion: 0.70
@@ -1600,7 +1590,7 @@ Nodes (14): lesson_stage(), lesson_warning_threshold(), LimitNotificationService
 
 ### Community 492 - "Community 492"
 Cohesion: 0.04
-Nodes (38): AndroidCourseApi, CourseCompleteRequest, CourseCompleteResponse, CourseFoundationDto, CourseLessonLimitDto, CourseLessonResponse, CourseMapDto, CourseMilestoneDto (+30 more)
+Nodes (32): AndroidCourseApi, CourseCompleteRequest, CourseCompleteResponse, CourseFoundationDto, CourseLessonDto, CourseLessonLimitDto, CourseMapDto, CourseMilestoneDto (+24 more)
 
 ### Community 494 - "Community 494"
 Cohesion: 0.50
@@ -1634,7 +1624,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.070) - this node is a cross-community bridge._
 - **Why does `state` connect `Community 6` to `Community 96`?**
   _High betweenness centrality (0.067) - this node is a cross-community bridge._
-- **Why does `HskAiApplication` connect `Community 184` to `Community 3`, `Community 484`, `Community 261`, `Community 4`, `Community 487`, `Community 104`, `Community 75`, `Community 492`, `Community 108`, `Community 78`, `Community 268`, `Community 44`, `Community 90`, `Community 123`?**
+- **Why does `HskAiApplication` connect `Community 75` to `Community 3`, `Community 484`, `Community 261`, `Community 4`, `Community 487`, `Community 108`, `Community 492`, `Community 78`, `Community 268`, `Community 44`, `Community 184`, `Community 90`, `Community 123`?**
   _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Are the 131 inferred relationships involving `UserRepository` (e.g. with `AbandonInput` and `AndroidCourseCompleteRequest`) actually correct?**
   _`UserRepository` has 131 INFERRED edges - model-reasoned connections that need verification._
