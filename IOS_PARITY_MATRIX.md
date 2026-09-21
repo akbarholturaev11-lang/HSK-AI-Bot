@@ -36,7 +36,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | AI Assistant | `feature/assistant/*` | `/api/v3/ios/assistant/*` | ✅ | Native glass chat, shared conversations/history, idempotent request IDs and processing polling |
 | Study reminders | WorkManager notifications | preferences/local state | ✅ | Daily local UNCalendarNotificationTrigger + persisted opt-in |
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
-| Smart widget | Glance widget | local/shared state | ⬜ | WidgetKit |
+| Smart widget | Glance widget | local/shared state | 🟡 | WidgetKit extension + Course deep link + hourly timeline; account progress projection still pending shared App Group state |
 | Deep links | `DeepLinkRouter.kt` | — | ✅ | `pomp-hsk-ai://` native tab routing + XCTest coverage |
 | UZ localization | `values/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
 | RU localization | `values-ru/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |

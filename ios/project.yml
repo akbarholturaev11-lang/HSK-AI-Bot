@@ -49,6 +49,22 @@ targets:
             CFBundleURLSchemes:
               - pomp-hsk-ai
 
+  HSKAIWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: HSKAIWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pomp.hskai.widget
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: HSK AI
+        INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        SKIP_INSTALL: YES
+    dependencies:
+      - sdk: SwiftUI.framework
+      - sdk: WidgetKit.framework
+
   HSKAITests:
     type: bundle.unit-test
     platform: iOS
