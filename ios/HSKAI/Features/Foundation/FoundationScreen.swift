@@ -315,6 +315,37 @@ struct FoundationScreen: View {
                     .foregroundStyle(HSKColors.inkSecondary)
                     .multilineTextAlignment(.center)
 
+                if !card.objectives.isEmpty {
+                    VStack(spacing: 9) {
+                        ForEach(card.objectives, id: \.id) { objective in
+                            let mastered = model.masteredObjectives.contains(objective.id)
+                            HStack(spacing: 10) {
+                                Image(systemName: mastered ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(mastered ? HSKColors.jade : HSKColors.inkSecondary.opacity(0.45))
+                                Text(objective.label)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(HSKColors.ink)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 11)
+                            .background(
+                                .ultraThinMaterial,
+                                in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                    .stroke(
+                                        mastered
+                                            ? HSKColors.jade.opacity(0.40)
+                                            : Color.white.opacity(0.42),
+                                        lineWidth: 0.8
+                                    )
+                            )
+                        }
+                    }
+                }
+
                 HSKGlassPill {
                     Text("\(model.masteredObjectives.count)/\(model.requiredObjectives.count)")
                         .font(.headline.monospacedDigit())

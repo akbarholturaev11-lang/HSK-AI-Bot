@@ -32,6 +32,11 @@ struct FoundationExample: Sendable, Equatable {
     let translation: String
 }
 
+struct FoundationObjective: Sendable, Equatable {
+    let id: String
+    let label: String
+}
+
 struct FoundationInfoCard: Sendable, Equatable {
     let id: String
     let type: String
@@ -40,6 +45,7 @@ struct FoundationInfoCard: Sendable, Equatable {
     let audioText: String
     let naturalPinyin: String
     let examples: [FoundationExample]
+    let objectives: [FoundationObjective]
 }
 
 struct FoundationChoiceCard: Sendable, Equatable {
@@ -149,6 +155,14 @@ enum FoundationParser {
             examples = [single]
         }
 
+        let objectives = card.array("objectives").compactMap { raw -> FoundationObjective? in
+            guard let object = raw.objectValue else { return nil }
+            let objectiveId = object.string("objective_id")
+            let label = object.localized("label", language: language)
+            guard !objectiveId.isEmpty, !label.isEmpty else { return nil }
+            return FoundationObjective(id: objectiveId, label: label)
+        }
+
         return FoundationInfoCard(
             id: id,
             type: type,
@@ -156,7 +170,8 @@ enum FoundationParser {
             text: card.localized("text", language: language),
             audioText: card.string("audio_text"),
             naturalPinyin: card.string("natural_pinyin"),
-            examples: examples
+            examples: examples,
+            objectives: objectives
         )
     }
 

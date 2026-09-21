@@ -80,6 +80,44 @@ final class LessonParserTests: XCTestCase {
         XCTAssertEqual(builder.materialRef, "lesson:hsk1:1:section:1:card:2")
     }
 
+
+    func testFoundationResultKeepsLocalizedObjectiveLabels() throws {
+        let json = """
+        {
+          "id":"starter0_hsk1",
+          "version":1,
+          "required_objectives":["meaning","listen","build"],
+          "cards":[{
+            "type":"result",
+            "card_id":"starter0_result",
+            "title":{"uz":"Natija","ru":"Результат","tj":"Натиҷа"},
+            "text":{"uz":"Tayyor","ru":"Готово","tj":"Тайёр"},
+            "objectives":[
+              {
+                "objective_id":"meaning",
+                "label":{"uz":"Ma'no","ru":"Значение","tj":"Маъно"}
+              },
+              {
+                "objective_id":"listen",
+                "label":{"uz":"Eshitish","ru":"Слух","tj":"Шунидан"}
+              }
+            ]
+          }]
+        }
+        """
+
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let payload = try decoder.decode(IOSFoundationPayload.self, from: Data(json.utf8))
+        let cards = FoundationParser.parse(payload, language: "tj")
+
+        guard case .result(let result) = cards.first else {
+            return XCTFail("Expected result card")
+        }
+        XCTAssertEqual(result.objectives.map(\.id), ["meaning", "listen"])
+        XCTAssertEqual(result.objectives.map(\.label), ["Маъно", "Шунидан"])
+    }
+
     func testFoundationParserCoversRequiredObjectiveCards() throws {
         let json = """
         {
