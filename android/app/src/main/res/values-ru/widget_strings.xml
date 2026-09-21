@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_lesson_short">Урок %1$d</string>
     <string name="widget_name">HSK AI — Панда</string>
     <string name="widget_description">Урок, XP и серия — на главном экране</string>
     <string name="widget_unlinked">Подключите аккаунт</string>
     <string name="widget_stale">Обновим прогресс?</string>
     <string name="widget_foundation">Начнём с основ</string>
-    <string name="widget_complete">План дня выполнен!</string>
-    <string name="widget_streak">Сохраним серию?</string>
     <string name="widget_continue">Продолжим урок</string>
     <string name="widget_stats">%1$d XP · %2$d дн.</string>
     <string name="widget_lesson">%1$s · Урок %2$d</string>
@@ -28,7 +25,34 @@
     <string name="widget_setup_manual_step_1">Удерживайте главный экран</string>
     <string name="widget_setup_manual_step_2">Откройте Виджеты → HSK AI</string>
     <string name="widget_setup_manual_step_3">Выберите виджет с пандой</string>
-    <string name="widget_streak_risk">Серия может прерваться сегодня</string>
-    <string name="widget_goal_left">До цели %1$d XP</string>
     <string name="widget_stats_goal">%1$d/%2$d XP · %3$d дн.</string>
+    <string name="widget_morning_01">Доброе утро! Начнём?</string>
+    <string name="widget_morning_02">Новый день — новые слова</string>
+    <string name="widget_morning_03">Начнём с малого</string>
+    <string name="widget_day_01">Я готов, а вы?</string>
+    <string name="widget_day_02">Хватит и 5 минут</string>
+    <string name="widget_day_03">Откроем урок?</string>
+    <string name="widget_waiting_01">Всё ещё жду…</string>
+    <string name="widget_waiting_02">Панда заскучал</string>
+    <string name="widget_waiting_03">Полдня уже прошло</string>
+    <string name="widget_waiting_04">Всего один урок</string>
+    <string name="widget_evening_01">Вечер, а урока нет</string>
+    <string name="widget_evening_02">Забыли про сегодня?</string>
+    <string name="widget_evening_03">День подходит к концу</string>
+    <string name="widget_evening_04">Ещё успеете</string>
+    <string name="widget_late_01">Времени всё меньше</string>
+    <string name="widget_late_02">Оставьте пять минут</string>
+    <string name="widget_late_03">Серия под угрозой</string>
+    <string name="widget_late_04">Пока не поздно…</string>
+    <string name="widget_critical_01">Последний шанс!</string>
+    <string name="widget_critical_02">Успейте до полуночи!</string>
+    <string name="widget_critical_03">Панда в панике!</string>
+    <string name="widget_critical_04">Сегодня ещё пусто!</string>
+    <string name="widget_critical_05">Быстро — один урок!</string>
+    <string name="widget_completed_01">Сегодня сделано!</string>
+    <string name="widget_completed_02">Панда доволен</string>
+    <string name="widget_completed_03">Отличная работа!</string>
+    <string name="widget_completed_04">Отдыхайте, вы справились</string>
+    <string name="widget_completed_05">День закрыт!</string>
+    <string name="widget_milestone">%1$d дней подряд!</string>
 </resources>

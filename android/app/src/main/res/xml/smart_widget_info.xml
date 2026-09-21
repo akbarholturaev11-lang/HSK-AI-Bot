@@ -5,5 +5,5 @@
     android:resizeMode="horizontal|vertical" android:widgetCategory="home_screen"
     android:updatePeriodMillis="0" android:initialLayout="@layout/smart_widget_preview"
     android:previewLayout="@layout/smart_widget_preview"
-    android:previewImage="@drawable/widget_panda_invite"
+    android:previewImage="@drawable/widget_panda_d01"
     android:description="@string/widget_description" />

@@ -602,6 +602,51 @@ Qamrov: `PracticeCharacterParityTest` (7 ta) va
 `tests/test_course_character_assets.py` (imtihonda personaj yo'qligi,
 sahifalarning ulanishi, zinapoya va yakun chegaralari).
 
+### 3.15 Widget V2: bitta holat dvigateli, 28 variant — 2026-09-22
+
+Eski widget'da panda **ikki xil qoida** bo'yicha tanlanardi: kunduzgi
+90 daqiqalik rotatsiya (`WidgetReaction.DAYTIME_ROTATION`, 09:00–19:00) va
+uning ustiga yopishtirilgan istisnolar (19:00 da XP yo'q bo'lsa `worried`,
+22:00 dan keyin `sleepy`). Ya'ni bugun darsini qilmagan odamni soat 22:00 da
+panda **uxlab** kutib olardi.
+
+**Endi bitta dvigatel bor** — `WidgetVisualResolver`. U faqat ikki narsani
+o'qiydi: foydalanuvchining mahalliy soati va bugungi dars bajarilganmi.
+
+| Vaqt | Holat | Urgency |
+|---|---|---|
+| 05:00–09:59 | `MORNING` | 0 |
+| 10:00–13:59 | `DAY` | 1 |
+| 14:00–17:59 | `WAITING` | 2 |
+| 18:00–19:59 | `EVENING` | 3 |
+| 20:00–21:59 | `LATE` | 4 |
+| 22:00–23:59 | `CRITICAL` | 5 |
+| 00:00–04:59 | yangi kun → `MORNING` | 0 |
+
+Ustuvorlik: `SPECIAL > COMPLETED > vaqt`. Dars bajarilsa — soat nechchi
+bo'lishidan qat'i nazar `COMPLETED`. 22:00 da `sleepy` yo'q.
+
+**Kirish holatlari ajratildi.** `WidgetMood` o'rniga `WidgetAccess`
+(`UNLINKED`/`STALE`/`FOUNDATION`/`ACTIVE`). Ular kayfiyat emas, shuning uchun
+kayfiyat dvigateliga aralashmaydi.
+
+**Rasm tanlovi deterministik.** `FNV-1a(epoch|mahalliy sana|holat) % variants`.
+Bir kun ichida bir holat → doim bir xil rasm; widget har soat qayta
+chizilganda panda miltillamaydi. `epoch` — `WidgetSession.epoch`, qurilma
+o'zi yaratgan UUID; widget xotirasiga foydalanuvchi ID qo'shilmadi.
+
+**Matn rasmdan ajratilgan.** Har variantning o'z string resursi bor
+(`widget_morning_01` … `widget_completed_05`), uchchala tilda.
+
+Tafsilot: `ANDROID_SMART_WIDGET.md`.
+
+**OCHIQ:** 28 ta rasmdan hozircha **10 tasi** haqiqiy
+(`res/drawable-nodpi/widget_panda_*.webp`). Qolgan 18 slot vaqtincha eski
+vektor nusxalari (`res/drawable/widget_panda_*.xml`) bilan to'ldirilgan —
+build va testlar o'tadi, lekin **bu rasmlar tarqatishga tayyor emas**.
+Yetishmayotganlar: `m03`, `d02`, `d03`, `w03`, `w04`, `e02`, `e03`, `e04`,
+`l02`, `l03`, `l04`, `c02`, `c03`, `c04`, `c05`, `ok03`, `ok04`, `ok05`.
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.

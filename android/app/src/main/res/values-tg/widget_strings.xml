@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_lesson_short">Дарси %1$d</string>
     <string name="widget_name">HSK AI — Панда</string>
     <string name="widget_description">Дарс, XP ва силсила — дар экрани асосӣ</string>
     <string name="widget_unlinked">Ҳисобро пайваст кунед</string>
     <string name="widget_stale">Пешрафтро нав кунем?</string>
     <string name="widget_foundation">Аз асосҳо оғоз мекунем</string>
-    <string name="widget_complete">Нақшаи рӯз иҷро шуд!</string>
-    <string name="widget_streak">Силсиларо нигоҳ дорем?</string>
     <string name="widget_continue">Дарсро идома диҳед</string>
     <string name="widget_stats">%1$d XP · %2$d рӯз</string>
     <string name="widget_lesson">%1$s · Дарси %2$d</string>
@@ -28,7 +25,34 @@
     <string name="widget_setup_manual_step_1">Экрани асосиро нигоҳ доред</string>
     <string name="widget_setup_manual_step_2">Виҷетҳо → HSK AI-ро кушоед</string>
     <string name="widget_setup_manual_step_3">Виҷети пандаро интихоб кунед</string>
-    <string name="widget_streak_risk">Силсила имрӯз шикаста шуда метавонад</string>
-    <string name="widget_goal_left">То ҳадаф %1$d XP</string>
     <string name="widget_stats_goal">%1$d/%2$d XP · %3$d рӯз</string>
+    <string name="widget_morning_01">Субҳ ба хайр! Оғоз кунем?</string>
+    <string name="widget_morning_02">Рӯзи нав — калимаҳои нав</string>
+    <string name="widget_morning_03">Аз қадами хурд оғоз мекунем</string>
+    <string name="widget_day_01">Ман тайёрам, шумо чӣ?</string>
+    <string name="widget_day_02">5 дақиқа ҳам кифоя аст</string>
+    <string name="widget_day_03">Дарсро кушоем?</string>
+    <string name="widget_waiting_01">Ҳанӯз интизорам…</string>
+    <string name="widget_waiting_02">Панда дилгир шуд</string>
+    <string name="widget_waiting_03">Нисфи рӯз гузашт</string>
+    <string name="widget_waiting_04">Ҳамагӣ як дарс</string>
+    <string name="widget_evening_01">Бегоҳ шуд, дарс не</string>
+    <string name="widget_evening_02">Имрӯзро фаромӯш кардед?</string>
+    <string name="widget_evening_03">Рӯз ба охир мерасад</string>
+    <string name="widget_evening_04">Ҳанӯз мерасед</string>
+    <string name="widget_late_01">Вақт кам мондааст</string>
+    <string name="widget_late_02">Панҷ дақиқа ҷудо кунед</string>
+    <string name="widget_late_03">Силсила дар хатар аст</string>
+    <string name="widget_late_04">То дер нашудааст…</string>
+    <string name="widget_critical_01">Имкони охирин!</string>
+    <string name="widget_critical_02">То нимашаб расед!</string>
+    <string name="widget_critical_03">Панда дар воҳима!</string>
+    <string name="widget_critical_04">Имрӯз ҳанӯз холӣ!</string>
+    <string name="widget_critical_05">Зуд — як дарс!</string>
+    <string name="widget_completed_01">Имрӯз иҷро шуд!</string>
+    <string name="widget_completed_02">Панда хурсанд аст</string>
+    <string name="widget_completed_03">Кори аъло!</string>
+    <string name="widget_completed_04">Дам гиред, тавонистед</string>
+    <string name="widget_completed_05">Рӯз баста шуд!</string>
+    <string name="widget_milestone">%1$d рӯз пайдарпай!</string>
 </resources>

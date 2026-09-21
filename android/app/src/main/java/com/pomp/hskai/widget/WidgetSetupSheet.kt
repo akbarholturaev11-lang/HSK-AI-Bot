@@ -324,7 +324,7 @@ private fun WidgetPreviewCard() {
             }
 
             Image(
-                painter = painterResource(R.drawable.widget_panda_focus),
+                painter = painterResource(R.drawable.widget_panda_d01),
                 contentDescription = null,
                 modifier = Modifier
                     .size(88.dp)
