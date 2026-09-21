@@ -640,12 +640,17 @@ o'zi yaratgan UUID; widget xotirasiga foydalanuvchi ID qo'shilmadi.
 
 Tafsilot: `ANDROID_SMART_WIDGET.md`.
 
-**OCHIQ:** 28 ta rasmdan hozircha **10 tasi** haqiqiy
-(`res/drawable-nodpi/widget_panda_*.webp`). Qolgan 18 slot vaqtincha eski
-vektor nusxalari (`res/drawable/widget_panda_*.xml`) bilan to'ldirilgan —
-build va testlar o'tadi, lekin **bu rasmlar tarqatishga tayyor emas**.
-Yetishmayotganlar: `m03`, `d02`, `d03`, `w03`, `w04`, `e02`, `e03`, `e04`,
-`l02`, `l03`, `l04`, `c02`, `c03`, `c04`, `c05`, `ok03`, `ok04`, `ok05`.
+**Rasmlar:** 28 tasi ham o'rnida —
+`res/drawable-nodpi/widget_panda_*.webp`, jami ~500 KB (512px, WebP q90;
+manba 2048px, git'dan tashqarida). Hammasi bitta 3D uslubda va **matnsiz**:
+yozuv string resursidan keladi, shuning uchun bir rasm uch tilga xizmat
+qiladi. Eski 2D vektorlardan faqat `widget_panda_cheer/streak/worried`
+qoldi — ular widget'niki emas, bildirishnoma va `HskCelebration` niki.
+
+Rasm tanlashda qoida: avval **kayfiyat**, keyin **rasmdagi yorug'lik**.
+Tunggi osmon `DAY` holatida turgani xatodek ko'rinadi, shuning uchun
+kunduzgi rasmlar MORNING/DAY/WAITING'da, to'q sariq EVENING'da, tunggilar
+LATE'da, qizil dramatiklar CRITICAL'da.
 
 ### 3.11 Boshqa ochiqlar
 

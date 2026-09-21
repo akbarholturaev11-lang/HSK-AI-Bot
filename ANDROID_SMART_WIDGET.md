@@ -63,7 +63,12 @@ SPECIAL  >  COMPLETED  >  TIME STATE
 ### 28 ta rasm va deterministik tanlov
 
 Har holatning o‘z rasm oilasi bor: `M01–M03`, `D01–D03`, `W01–W04`,
-`E01–E04`, `L01–L04`, `C01–C05`, `OK01–OK05` — jami 28 ta.
+`E01–E04`, `L01–L04`, `C01–C05`, `OK01–OK05` — jami 28 ta, `drawable-nodpi`
+ichida 512px WebP (hammasi ~500 KB).
+
+Yangi rasm qo‘yayotganda ikki narsaga qarang: **kayfiyat** holatga mos
+keladimi, va **rasmdagi yorug‘lik** holatning soatiga mos keladimi. Tunggi
+osmon `DAY` da turgani kayfiyat to‘g‘ri bo‘lsa ham xatodek ko‘rinadi.
 
 Variant tasodifiy emas. Widget har soatda, har soat o‘zgarganda va launcher
 qayta ishga tushganda qayta chiziladi; tasodifiy tanlov pandani
