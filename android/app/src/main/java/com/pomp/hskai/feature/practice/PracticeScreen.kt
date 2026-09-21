@@ -74,6 +74,10 @@ import com.pomp.hskai.feature.assistant.practiceAssistantContext
 import com.pomp.hskai.core.navigation.PracticeTool
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.feature.lesson.LessonCharacter
+import com.pomp.hskai.feature.lesson.LessonCharacterMood
+import com.pomp.hskai.feature.lesson.LessonCharacterReaction
+import com.pomp.hskai.feature.lesson.LessonCharacterStage
 
 @Composable
 fun PracticeScreen(
@@ -457,7 +461,16 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.questionIndex + 1, session.questions.size), onCancel) {
-        PracticeQuestionCard(question, state.selectedIndex, state.isReviewAudioLoading, onSpeak, onSelect)
+        val picked = state.selectedIndex
+        val correct = picked?.let { it == question.answerIndex }
+        PracticeCharacterCoach(
+            character = LessonCharacter.Monkey,
+            answered = picked != null,
+            correct = correct,
+            neutral = false,
+            reactionKey = question.id to picked,
+        )
+        PracticeQuestionCard(question, picked, state.isReviewAudioLoading, onSpeak, onSelect)
         PrimaryAction(if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.selectedIndex != null && !state.isCompleting) { onAdvance(language) }
     }
 }
@@ -471,6 +484,13 @@ private fun ReviewRun(state: PracticeUiState, onSelect: (Int) -> Unit, onAdvance
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.reviewIndex + 1, session.questions.size), onCancel) {
+        PracticeCharacterCoach(
+            character = LessonCharacter.Rabbit,
+            answered = state.reviewFeedback != null,
+            correct = state.reviewFeedback?.correct,
+            neutral = false,
+            reactionKey = question.id to state.reviewFeedback?.correct,
+        )
         ReviewQuestionCard(question, state.reviewSelectedIndex, state.reviewFeedback, state.isReviewAudioLoading, onSpeak, onSelect)
         PrimaryAction(if (state.reviewIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.reviewFeedback != null && !state.isCompleting, onAdvance)
     }
@@ -485,6 +505,15 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
     QuestionShell(stringResource(R.string.practice_progress, state.examIndex + 1, session.questions.size), onCancel) {
+        // Exam questions intentionally do not reveal whether the selected
+        // answer is correct before submission. The coach stays neutral/proud.
+        PracticeCharacterCoach(
+            character = LessonCharacter.Monkey,
+            answered = state.examSelectedIndex != null,
+            correct = null,
+            neutral = true,
+            reactionKey = question.id to state.examSelectedIndex,
+        )
         HskGlassSurface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -534,6 +563,41 @@ private fun examSectionLabel(section: String): Int = when (section) {
     "listening" -> R.string.test_center_section_listening
     "writing" -> R.string.test_center_section_writing
     else -> R.string.test_center_section_reading
+}
+
+@Composable
+private fun PracticeCharacterCoach(
+    character: LessonCharacter,
+    answered: Boolean,
+    correct: Boolean?,
+    neutral: Boolean,
+    reactionKey: Any?,
+) {
+    val mood = when {
+        !answered -> LessonCharacterMood.Idle
+        neutral -> LessonCharacterMood.Proud
+        correct == true -> LessonCharacterMood.Correct
+        else -> LessonCharacterMood.Wrong
+    }
+    val reaction = when {
+        !answered -> null
+        neutral -> LessonCharacterReaction.Proud
+        correct == true -> LessonCharacterReaction.Jump
+        else -> LessonCharacterReaction.Wrong
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        LessonCharacterStage(
+            character = character,
+            mood = mood,
+            reaction = reaction,
+            reactionKey = reactionKey,
+            modifier = Modifier.size(58.dp),
+        )
+    }
 }
 
 @Composable
