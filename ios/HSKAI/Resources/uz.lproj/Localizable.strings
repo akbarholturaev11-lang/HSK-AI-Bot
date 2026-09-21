@@ -133,3 +133,9 @@
 "exam_start_error" = "HSK testini ochib bo‘lmadi.";
 "exam_save_error" = "Test natijasini saqlab bo‘lmadi.";
 "exam_abandoned_error" = "Bu test urinishini davom ettirib bo‘lmaydi. Yangisini boshlang.";
+
+"dictionary_search" = "Hanzi, pinyin yoki ma’no";
+"dictionary_all_words" = "Lug‘at";
+"dictionary_filter_all" = "Barchasi";
+"dictionary_empty" = "Bu filtr bo‘yicha so‘z topilmadi.";
+"dictionary_load_error" = "Lug‘atni yuklab bo‘lmadi.";

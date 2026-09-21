@@ -70,6 +70,14 @@ struct IOSCourseAPI: Sendable {
         )
     }
 
+    func dictionary() async throws -> IOSDictionaryResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.get(
+            "/api/v3/ios/dictionary",
+            bearerToken: token
+        )
+    }
+
     func lesson(
         order: Int,
         accessRef: String = ""

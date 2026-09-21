@@ -133,3 +133,9 @@
 "exam_start_error" = "Тести HSK кушода нашуд.";
 "exam_save_error" = "Натиҷаи тест сабт нашуд.";
 "exam_abandoned_error" = "Ин кӯшиши тестро идома додан мумкин нест. Тести нав оғоз кунед.";
+
+"dictionary_search" = "Иероглиф, пинйин ё маъно";
+"dictionary_all_words" = "Луғат";
+"dictionary_filter_all" = "Ҳама";
+"dictionary_empty" = "Бо ин филтр калима ёфт нашуд.";
+"dictionary_load_error" = "Луғат бор карда нашуд.";

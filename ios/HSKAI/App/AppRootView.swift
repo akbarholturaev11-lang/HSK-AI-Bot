@@ -20,6 +20,7 @@ struct AppRootView: View {
                 MainShellView(
                     account: account,
                     courseModel: model.courseViewModel,
+                    dictionaryModel: model.dictionaryViewModel,
                     practiceModel: model.practiceViewModel,
                     mistakesModel: model.mistakesViewModel,
                     examModel: model.examViewModel

@@ -3,6 +3,7 @@ import SwiftUI
 struct MainShellView: View {
     let account: LinkedAccount
     @ObservedObject var courseModel: CourseViewModel
+    @ObservedObject var dictionaryModel: DictionaryViewModel
     @ObservedObject var practiceModel: PracticeViewModel
     @ObservedObject var mistakesModel: MistakesViewModel
     @ObservedObject var examModel: ExamViewModel
@@ -21,7 +22,7 @@ struct MainShellView: View {
             )
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
 
-            ShellPlaceholder(titleKey: "tab_dictionary", systemImage: "character.book.closed.fill")
+            DictionaryScreen(model: dictionaryModel)
                 .tabItem { Label("tab_dictionary", systemImage: "character.book.closed.fill") }
 
             ShellPlaceholder(titleKey: "tab_rating", systemImage: "trophy.fill")

@@ -35,6 +35,7 @@ final class AppModel: ObservableObject {
     private let authSession: AuthSession
     private let courseAPI: IOSCourseAPI
     let courseViewModel: CourseViewModel
+    let dictionaryViewModel: DictionaryViewModel
     let practiceViewModel: PracticeViewModel
     let mistakesViewModel: MistakesViewModel
     let examViewModel: ExamViewModel
@@ -49,6 +50,7 @@ final class AppModel: ObservableObject {
         self.authSession = authSession
         self.courseAPI = courseAPI
         self.courseViewModel = CourseViewModel(api: courseAPI)
+        self.dictionaryViewModel = DictionaryViewModel(api: courseAPI)
         let practiceAPI = IOSPracticeAPI(client: client, authSession: authSession)
         self.practiceViewModel = PracticeViewModel(api: practiceAPI)
         self.mistakesViewModel = MistakesViewModel(api: practiceAPI)
@@ -171,6 +173,7 @@ final class AppModel: ObservableObject {
         link = LinkPresentation()
         onboarding = OnboardingPresentation()
         courseViewModel.reset()
+        dictionaryViewModel.reset()
         practiceViewModel.reset()
         mistakesViewModel.reset()
         examViewModel.resetToCenter()

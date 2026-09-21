@@ -133,3 +133,9 @@
 "exam_start_error" = "Не удалось открыть HSK-тест.";
 "exam_save_error" = "Не удалось сохранить результат теста.";
 "exam_abandoned_error" = "Эту попытку нельзя продолжить. Начните новый тест.";
+
+"dictionary_search" = "Иероглиф, пиньинь или значение";
+"dictionary_all_words" = "Словарь";
+"dictionary_filter_all" = "Все";
+"dictionary_empty" = "По этому фильтру слов не найдено.";
+"dictionary_load_error" = "Не удалось загрузить словарь.";
