@@ -18,21 +18,21 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Lesson engine | `feature/lesson/*` | iOS lesson + complete | ✅ | Glass SwiftUI engine; choice/builder/match/grammar/vocab/pronunciation + checkpoint exit-ticket |
 | TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | shared course audio | 🟡 | Mandarin playback wired; server-byte cache/interruption parity pending |
 | Hanzi stroke | `StrokeAnimation.kt` | `/api/v3/android/stroke` | ⬜ | Native/embedded renderer |
-| Practice | `PracticeScreen.kt` | `/api/v3/ios/practice/*` | 🟡 | Native glass placement session + server completion; drills/exams pending |
+| Practice | `PracticeScreen.kt` | `/api/v3/ios/practice/*` | ✅ | Native glass placement, mistakes, exams, recognition and pronunciation drills |
 | Mistakes | `MistakesScreen.kt` | `/api/v3/ios/mistakes/*` | ✅ | Overview pagination + server-graded review + completion/result |
-| Word drill | `WordDrillScreen.kt` | gate/words/report | ⬜ | Drill feature |
-| Exams/tests | Android feature API | exams start/complete | ⬜ | Exam feature |
-| Dictionary | `DictionaryScreen.kt` | dictionary + ETag | ⬜ | Dictionary feature/cache |
-| Rating | `RatingScreen.kt` | leaderboard | ⬜ | Rating feature |
+| Word drill | `WordDrillScreen.kt` | gate/words/report | ✅ | Adaptive server plan + local dictionary distractors + mastery reporting |
+| Exams/tests | Android feature API | exams start/complete | ✅ | Native exam center/session/completion |
+| Dictionary | `DictionaryScreen.kt` | dictionary + ETag | ✅ | Native glass dictionary + refresh/cache parity |
+| Rating | `RatingScreen.kt` | `/api/v3/ios/rating/leaderboard` | ✅ | Native weekly league leaderboard and account stats |
 | Challenges | `ChallengeRunScreen.kt` | challenges APIs | ⬜ | Challenge flow |
 | Referral | profile/rating flows | referral overview | ⬜ | Profile/rating |
-| Profile | `ProfileScreen.kt` | profile/overview/preferences | ⬜ | Profile feature |
+| Profile | `ProfileScreen.kt` | account + course state | 🟡 | Native glass account/progress/access profile; editable preferences pending |
 | Trial state | `AndroidFeatureApi.kt` | trial status/start | ⬜ | Access state |
 | Subscription state | profile/limit flows | subscription overview | ⬜ | Read-only access state first |
 | External checkout | Android `direct` flavor | external checkout | ➖ | Do not copy until iOS policy decision |
 | Ads/unlock | `AdScreen.kt` | ad list/view + access ref | ⬜ | iOS channel |
 | AI Voice | `feature/voice/*` | voice APIs | ⬜ | AVAudioRecorder/AVPlayer |
-| Pronunciation | voice/practice flows | voice pronounce | ⬜ | Voice/practice |
+| Pronunciation | voice/practice flows | `/api/v3/ios/voice/pronounce` | ✅ | AVAudioRecorder + shared scoring + adaptive mastery reporting |
 | AI Assistant | `feature/assistant/*` | Android assistant API | ⬜ | Assistant feature |
 | Study reminders | WorkManager notifications | preferences/local state | ⬜ | local notification scheduling |
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
