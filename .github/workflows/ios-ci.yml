@@ -107,6 +107,7 @@ jobs:
             app/api/ios_practice.py \
           app/api/ios_social.py \
           app/api/ios_subscription.py \
+          app/api/ios_challenges.py \
             app/services/desktop_auth_service.py \
             app/bot/handlers/desktop_auth.py
 
