@@ -10,7 +10,7 @@ import logging
 from typing import Callable, Literal
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.api.desktop_course import (
@@ -22,6 +22,9 @@ from app.api.desktop_course import (
 from app.services.android_course_service import AndroidCourseService
 from app.services.desktop_auth_service import DesktopAuthError
 from app.services.desktop_course_service import DesktopCourseError
+from app.repositories.user_repo import UserRepository
+from app.services.course_v3_dictionary import dictionary_for_language, dictionary_version
+from app.services.desktop_auth_service import DesktopAuthService
 
 
 logger = logging.getLogger(__name__)
@@ -223,6 +226,42 @@ def create_ios_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("iOS course completion failed")
+            return _unavailable()
+
+
+    @router.get("/api/v3/ios/dictionary")
+    async def ios_dictionary(request: Request):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("ios_request_invalid", status_code=422)
+            token = bearer_access_token(request)
+            async with session_factory() as session:
+                context = await DesktopAuthService(session, settings_obj).authenticate(token)
+                user = await UserRepository(session).get_by_telegram_id(
+                    int(context.user.telegram_id)
+                )
+                language = getattr(user, "language", None)
+
+            version = dictionary_version()
+            etag = f'W/"dictionary-{version}"'
+            if version and request.headers.get("If-None-Match") == etag:
+                return Response(
+                    status_code=304,
+                    headers={"ETag": etag, "Cache-Control": "private, max-age=0"},
+                )
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "version": version,
+                    "language": str(language or "ru"),
+                    "words": dictionary_for_language(language),
+                },
+                headers={"ETag": etag, "Cache-Control": "private, max-age=0"},
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS dictionary failed")
             return _unavailable()
 
     return router

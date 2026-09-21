@@ -1,7 +1,7 @@
 import unittest
 from contextlib import asynccontextmanager
 from types import SimpleNamespace
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -132,6 +132,41 @@ class IOSCourseTransportTests(unittest.IsolatedAsyncioTestCase):
             speaking_bonus=True,
             event_id="ios:foundation:12345678",
         )
+
+
+    async def test_dictionary_uses_shared_course_dictionary(self):
+        service = SimpleNamespace()
+        fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
+        user = SimpleNamespace(language="uz")
+
+        with (
+            patch(
+                "app.api.ios_course.DesktopAuthService.authenticate",
+                new=AsyncMock(return_value=fake_context),
+            ),
+            patch(
+                "app.api.ios_course.UserRepository.get_by_telegram_id",
+                new=AsyncMock(return_value=user),
+            ),
+            patch(
+                "app.api.ios_course.dictionary_version",
+                return_value="abc123",
+            ),
+            patch(
+                "app.api.ios_course.dictionary_for_language",
+                return_value=[{"h": "你", "p": "nǐ", "m": "sen", "lv": "1"}],
+            ) as dictionary,
+        ):
+            async with await self._client(service) as client:
+                response = await client.get(
+                    "/api/v3/ios/dictionary",
+                    headers={"Authorization": "Bearer access-token"},
+                )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("abc123", response.json()["version"])
+        self.assertEqual("你", response.json()["words"][0]["h"])
+        dictionary.assert_called_once_with("uz")
 
     async def test_lesson_fetch_passes_access_ref(self):
         service = SimpleNamespace(lesson=AsyncMock(return_value={
