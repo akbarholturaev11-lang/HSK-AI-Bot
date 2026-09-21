@@ -76,13 +76,57 @@ class LessonCharacterParityTest {
                 ),
             ),
         )
+        assertEquals(
+            LessonCharacter.Crane,
+            lessonCharacterFor(
+                ChoiceCard(
+                    materialRef = "gap",
+                    kind = ChoiceKind.GAP_FILL,
+                    title = "Fill",
+                    prompt = "我____学生",
+                    options = listOf("是", "有"),
+                    correctIndex = 0,
+                    explanation = "",
+                ),
+            ),
+        )
+        assertEquals(
+            LessonCharacter.Monkey,
+            lessonCharacterFor(
+                ChoiceCard(
+                    materialRef = "dialog",
+                    kind = ChoiceKind.DIALOG_CLOZE,
+                    title = "Dialog",
+                    prompt = "你好",
+                    options = listOf("你好", "再见"),
+                    correctIndex = 0,
+                    explanation = "",
+                ),
+            ),
+        )
+        assertEquals(
+            LessonCharacter.Rabbit,
+            lessonCharacterFor(
+                ChoiceCard(
+                    materialRef = "review",
+                    kind = ChoiceKind.MEANING,
+                    title = "Review",
+                    prompt = "学",
+                    options = listOf("o‘rganmoq", "yemoq"),
+                    correctIndex = 0,
+                    explanation = "",
+                    reviewOrigin = "previous",
+                ),
+            ),
+        )
     }
 
     @Test
     fun feedback_reactions_match_the_mini_app_heart_rules() {
-        assertEquals(LessonCharacterReaction.Jump, lessonReactionFor(correct = true, hearts = 5))
-        assertEquals(LessonCharacterReaction.Wrong, lessonReactionFor(correct = false, hearts = 4))
-        assertEquals(LessonCharacterReaction.OneHeart, lessonReactionFor(correct = false, hearts = 1))
-        assertEquals(LessonCharacterReaction.Wrong, lessonReactionFor(correct = false, hearts = 0))
+        assertEquals(LessonCharacterReaction.Jump, lessonReactionFor(correct = true, hearts = 5, streak = 3))
+        assertEquals(LessonCharacterReaction.Celebrate, lessonReactionFor(correct = true, hearts = 5, streak = 4))
+        assertEquals(LessonCharacterReaction.Wrong, lessonReactionFor(correct = false, hearts = 4, streak = 0))
+        assertEquals(LessonCharacterReaction.OneHeart, lessonReactionFor(correct = false, hearts = 1, streak = 0))
+        assertEquals(LessonCharacterReaction.Wrong, lessonReactionFor(correct = false, hearts = 0, streak = 0))
     }
 }
