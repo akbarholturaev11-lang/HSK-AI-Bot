@@ -10,7 +10,7 @@ from app.api.ios_practice import create_ios_practice_router
 
 
 class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
-    async def _client(self, service):
+    async def _client(self, service, mistake_service=None):
         @asynccontextmanager
         async def session_factory():
             yield object()
@@ -21,6 +21,9 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
                 session_factory=session_factory,
                 settings_obj=SimpleNamespace(),
                 service_factory=lambda *_args, **_kwargs: service,
+                mistake_service_factory=lambda *_args, **_kwargs: (
+                    mistake_service if mistake_service is not None else SimpleNamespace()
+                ),
             )
         )
         return AsyncClient(
@@ -128,6 +131,75 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
             ],
             access_ref="",
             ad_supported=False,
+        )
+
+
+    async def test_mistakes_overview_delegates_pagination(self):
+        service = SimpleNamespace()
+        mistake_service = SimpleNamespace(
+            overview=AsyncMock(return_value={
+                "ok": True,
+                "summary": {"total": 1, "categories": {"grammar": 1}},
+                "items": [],
+            })
+        )
+        fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
+
+        with patch(
+            "app.api.ios_practice.DesktopAuthService.authenticate",
+            new=AsyncMock(return_value=fake_context),
+        ):
+            async with await self._client(service, mistake_service) as client:
+                response = await client.get(
+                    "/api/v3/ios/mistakes?category=grammar&limit=30&offset=0",
+                    headers={"Authorization": "Bearer access-token"},
+                )
+
+        self.assertEqual(200, response.status_code)
+        mistake_service.overview.assert_awaited_once_with(
+            123456,
+            category="grammar",
+            limit="30",
+            offset="0",
+        )
+
+    async def test_mistake_review_answer_uses_server_grading(self):
+        service = SimpleNamespace()
+        mistake_service = SimpleNamespace(
+            answer_review_question=AsyncMock(return_value={
+                "ok": True,
+                "question_id": "mistake-q1",
+                "selected_index": 1,
+                "correct": False,
+                "correct_index": 0,
+                "correct_answer": "你好",
+                "explanation": "你好 = Salom",
+            })
+        )
+        fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
+
+        with patch(
+            "app.api.ios_practice.DesktopAuthService.authenticate",
+            new=AsyncMock(return_value=fake_context),
+        ):
+            async with await self._client(service, mistake_service) as client:
+                response = await client.post(
+                    "/api/v3/ios/mistakes/review/answer",
+                    headers={"Authorization": "Bearer access-token"},
+                    json={
+                        "session_id": "session-123",
+                        "question_id": "mistake-q1",
+                        "selected_index": 1,
+                    },
+                )
+
+        self.assertEqual(200, response.status_code)
+        self.assertFalse(response.json()["correct"])
+        mistake_service.answer_review_question.assert_awaited_once_with(
+            123456,
+            session_id="session-123",
+            question_id="mistake-q1",
+            selected_index=1,
         )
 
     async def test_training_rejects_unknown_skill_before_service(self):
