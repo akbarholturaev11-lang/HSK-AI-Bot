@@ -6,7 +6,7 @@
         of the default Material blue/white flash.
     -->
     <style name="Theme.PompHskAi" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">@color/pomp_paper</item>
+        <item name="android:windowBackground">@drawable/splash_window_background</item>
         <item name="android:statusBarColor">@color/pomp_paper</item>
         <item name="android:navigationBarColor">@color/pomp_paper</item>
         <item name="android:windowLightStatusBar">true</item>

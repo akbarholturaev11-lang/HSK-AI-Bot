@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -54,6 +53,7 @@ import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
+import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.navigation.DeepLinkRouter
 import com.pomp.hskai.core.notify.StudyNotifications
 import com.pomp.hskai.core.notify.StudyReminderScheduler
@@ -119,7 +119,6 @@ import java.util.UUID
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 import com.pomp.hskai.widget.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -512,10 +511,6 @@ private fun AppRoot(
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
-            // Asked at most once per launch. Not a limit — the daily cap is
-            // the server's — only a guard against asking again every time the
-            // learner comes back to the main screen.
-            var screenCenterAsked by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
@@ -881,27 +876,6 @@ private fun AppRoot(
                     },
                 )
             } else {
-                // The Mini App's `playScreenCenter`: one block in the middle of
-                // the screen when the app opens, whatever section is showing.
-                //
-                // Asked once per launch and only once the learner is actually
-                // on the main screen — a lesson or an ad opening straight away
-                // is something they chose, and it outranks this. Everything
-                // that decides whether it appears at all is on the server:
-                // whether the place is switched on, whether this learner is in
-                // its audience, and the two-a-day cap, which is counted per
-                // Telegram account rather than per device.
-                LaunchedEffect(Unit) {
-                    if (!screenCenterAsked) {
-                        screenCenterAsked = true
-                        delay(SCREEN_CENTER_AD_DELAY_MS)
-                        if (openLesson == null && adRequest == null && !widgetSetupOpen && !planChoiceOpen) {
-                            adRequest = AdRequest(
-                                placement = AdViewModel.PLACEMENT_SCREEN_CENTER,
-                            )
-                        }
-                    }
-                }
                 // A running AI Voice conversation takes the whole screen:
                 // the tabs are not a place to leave a call from, the Close
                 // button is, and the Mini App shows no tabs there either.
@@ -1457,14 +1431,6 @@ private fun shareText(context: Context, text: String): Boolean {
 private fun String.lstripAt(): String = removePrefix("@")
 
 /**
- * How long after the main screen appears the centre ad is asked for.
- *
- * Long enough that the screen the learner opened is drawn and readable
- * first: an ad landing on top of a blank screen reads as a broken app.
- */
-private const val SCREEN_CENTER_AD_DELAY_MS = 700L
-
-/**
  * One ad to show, in one of the two places the product has left: after a
  * lesson, or in the centre of the screen.
  *
@@ -1509,7 +1475,7 @@ private fun SplashScreen() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CircularProgressIndicator(color = PompColors.Cinnabar)
+            HskBrandLoader()
         }
     }
 }
