@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.core.design.PompColors
@@ -94,10 +95,16 @@ fun HskGlassButton(
         enabled = enabled,
         interactionSource = interaction,
         shape = RoundedCornerShape(16.dp),
+        // Composited onto the page instead of left translucent. A Surface
+        // that lets light through also lets its own elevation shadow through,
+        // and the shadow's inner edge showed as a hard white band across the
+        // button, right under the label. The colour on screen is identical —
+        // this is the same blend, done once here rather than by the compositor
+        // over whatever happens to be behind.
         color = if (PompColors.IsDark) {
-            PompColors.PaperRaised.copy(alpha = 0.86f)
+            PompColors.PaperRaised.copy(alpha = 0.86f).compositeOver(PompColors.Paper)
         } else {
-            Color.White.copy(alpha = 0.66f)
+            Color.White.copy(alpha = 0.66f).compositeOver(PompColors.Paper)
         },
         contentColor = if (enabled) PompColors.Ink else PompColors.InkDisabled,
         border = BorderStroke(
