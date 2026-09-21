@@ -69,7 +69,7 @@ class CourseViewModel(
                         !previous.isStale &&
                         !result.value.isStale
                     ) {
-                        findNewlyUnlockedLesson(previous.map, result.value.map)
+                        findNewlyUnlockedLesson(previous.map.lessons, result.value.map.lessons)
                     } else {
                         null
                     }
@@ -137,21 +137,6 @@ class CourseViewModel(
         _state.update { it.copy(unlockedLessonOrder = null) }
     }
 
-    private fun findNewlyUnlockedLesson(
-        previous: com.pomp.hskai.domain.model.CourseMap,
-        current: com.pomp.hskai.domain.model.CourseMap,
-    ): Int? {
-        val oldByOrder = previous.lessons.associateBy { it.order }
-        return current.lessons
-            .asSequence()
-            .filter { lesson ->
-                oldByOrder[lesson.order]?.status == com.pomp.hskai.domain.model.LessonStatus.LOCKED &&
-                    lesson.status != com.pomp.hskai.domain.model.LessonStatus.LOCKED
-            }
-            .minByOrNull { it.order }
-            ?.order
-    }
-
     class Factory(
         private val repository: CourseRepository,
     ) : ViewModelProvider.Factory {
@@ -160,3 +145,19 @@ class CourseViewModel(
             CourseViewModel(repository) as T
     }
 }
+
+internal fun findNewlyUnlockedLesson(
+    previous: List<com.pomp.hskai.domain.model.CourseLesson>,
+    current: List<com.pomp.hskai.domain.model.CourseLesson>,
+): Int? {
+    val oldByOrder = previous.associateBy { it.order }
+    return current
+        .asSequence()
+        .filter { lesson ->
+            oldByOrder[lesson.order]?.status == com.pomp.hskai.domain.model.LessonStatus.LOCKED &&
+                lesson.status != com.pomp.hskai.domain.model.LessonStatus.LOCKED
+        }
+        .minByOrNull { it.order }
+        ?.order
+}
+
