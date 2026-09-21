@@ -4,6 +4,7 @@ struct CourseScreen: View {
     @ObservedObject var model: CourseViewModel
     let account: LinkedAccount
     let onTodayTask: (IOSCourseTodayTask) -> Void
+    @Binding var openCurrentLessonRequest: Int
 
     @State private var foundationModel: FoundationViewModel?
     @State private var showingFoundation = false
@@ -90,6 +91,9 @@ struct CourseScreen: View {
         .task(id: account.deviceId) {
             await model.load(scope: account.deviceId)
         }
+        .onChange(of: openCurrentLessonRequest) { _, _ in
+            openCurrentLesson()
+        }
         .fullScreenCover(isPresented: $showingLesson) {
             if let lessonModel {
                 LessonScreen(
@@ -122,6 +126,19 @@ struct CourseScreen: View {
                 )
             }
         }
+    }
+    private func openCurrentLesson() {
+        guard let map = model.map else { return }
+        if map.foundation?.required == true && map.foundation?.completed != true {
+            foundationModel = FoundationViewModel(api: model.api, language: map.user.language)
+            showingFoundation = true
+            return
+        }
+        let lessons = map.units.flatMap(\.lessons)
+        guard let lesson = lessons.first(where: { $0.status.lowercased() == "current" })
+                ?? lessons.first(where: { $0.completionAllowed && $0.status.lowercased() != "locked" }) else { return }
+        lessonModel = LessonViewModel(api: model.api, lessonOrder: lesson.order, language: map.user.language)
+        showingLesson = true
     }
 }
 

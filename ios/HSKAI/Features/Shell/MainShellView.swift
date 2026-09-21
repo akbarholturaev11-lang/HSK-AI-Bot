@@ -22,12 +22,13 @@ struct MainShellView: View {
     @State private var requestedVoiceRole: String?
     @State private var showingAssistant = false
     @State private var showingAd = false
+    @State private var openCurrentLessonRequest = 0
 
     var body: some View {
         TabView(selection: $selection) {
-            CourseScreen(model: courseModel, account: account) { task in
+            CourseScreen(model: courseModel, account: account, onTodayTask: { task in
                 routeTodayTask(task)
-            }
+            }, openCurrentLessonRequest: $openCurrentLessonRequest)
                 .tabItem { Label("tab_course", systemImage: "map.fill") }
                 .tag(IOSDeepLinkDestination.course)
 
@@ -89,6 +90,7 @@ struct MainShellView: View {
         switch task.type {
         case "continue_lesson":
             selection = .course
+            openCurrentLessonRequest += 1
         case "mistake_review":
             practiceRequest = .mistakes
             selection = .practice
