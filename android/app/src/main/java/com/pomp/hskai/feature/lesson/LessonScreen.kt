@@ -2,7 +2,13 @@ package com.pomp.hskai.feature.lesson
 
 import com.pomp.hskai.core.network.ApiError
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +62,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.PI
+import kotlin.math.sin
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassButton
@@ -248,6 +259,17 @@ private fun LessonBody(
     // had much to say. It is measured instead.
     val density = LocalDensity.current
     var footerHeight by remember { mutableStateOf(0.dp) }
+
+    val lessonEntryKey = state.lesson?.let { it.level to it.order }
+    var entryVisible by remember(lessonEntryKey) { mutableStateOf(true) }
+    val entryAlpha = remember(lessonEntryKey) { Animatable(1f) }
+    LaunchedEffect(lessonEntryKey) {
+        if (lessonEntryKey == null) return@LaunchedEffect
+        delay(720)
+        entryAlpha.animateTo(0f, tween(durationMillis = 360))
+        entryVisible = false
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             LessonTopBar(
@@ -350,6 +372,13 @@ private fun LessonBody(
                     onAdvance = onAdvance,
                 )
             }
+        }
+
+        if (entryVisible && lessonEntryKey != null) {
+            LessonEntryOverlay(
+                alpha = entryAlpha.value,
+                key = lessonEntryKey,
+            )
         }
 
         if (writeTarget != null) {
@@ -459,14 +488,217 @@ private fun LessonTopBar(
             tint = PompColors.InkDisabled,
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-            Icon(Icons.Filled.Favorite, contentDescription = null, tint = heartColor, modifier = Modifier.size(15.dp))
-            Text(
-                text = hearts.toString(),
-                style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
-                fontWeight = FontWeight.Medium,
-                color = heartColor,
+        AnimatedHeartCounter(
+            hearts = hearts,
+            heartColor = heartColor,
+        )
+    }
+}
+
+@Composable
+private fun AnimatedHeartCounter(
+    hearts: Int,
+    heartColor: Color,
+) {
+    var previous by remember { mutableStateOf(hearts) }
+    val scale = remember { Animatable(1f) }
+    val rotation = remember { Animatable(0f) }
+    val alpha = remember { Animatable(1f) }
+    val glow = remember { Animatable(0f) }
+
+    LaunchedEffect(hearts) {
+        if (hearts < previous) {
+            scale.snapTo(1f)
+            rotation.snapTo(0f)
+            alpha.snapTo(1f)
+            glow.snapTo(0f)
+            when (hearts) {
+                1 -> coroutineScope {
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 2200
+                                1f at 0
+                                1.16f at 550
+                                1f at 1100
+                                1.16f at 1650
+                                1f at 2200
+                            },
+                        )
+                    }
+                    launch {
+                        glow.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 2200
+                                0f at 0
+                                .45f at 550
+                                0f at 1100
+                                .45f at 1650
+                                0f at 2200
+                            },
+                        )
+                    }
+                }
+                0 -> coroutineScope {
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 500
+                                1f at 0
+                                .88f at 200
+                                1f at 500
+                            },
+                        )
+                    }
+                    launch {
+                        alpha.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 500
+                                1f at 0
+                                .70f at 200
+                                1f at 500
+                            },
+                        )
+                    }
+                }
+                else -> coroutineScope {
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 420
+                                1f at 0
+                                1.18f at 126
+                                1f at 420
+                            },
+                        )
+                    }
+                    launch {
+                        rotation.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 420
+                                0f at 0
+                                -8f at 126
+                                0f at 420
+                            },
+                        )
+                    }
+                }
+            }
+        }
+        previous = hearts
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        modifier = Modifier.graphicsLayer { this.alpha = alpha.value },
+    ) {
+        Box(
+            modifier = Modifier.size(21.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (glow.value > 0f) {
+                Canvas(Modifier.fillMaxSize()) {
+                    drawCircle(
+                        color = PompColors.Cinnabar.copy(alpha = glow.value),
+                        radius = size.minDimension * .48f,
+                    )
+                }
+            }
+            Icon(
+                Icons.Filled.Favorite,
+                contentDescription = null,
+                tint = heartColor,
+                modifier = Modifier
+                    .size(15.dp)
+                    .graphicsLayer {
+                        scaleX = scale.value
+                        scaleY = scale.value
+                        rotationZ = rotation.value
+                    },
             )
+        }
+        Text(
+            text = hearts.toString(),
+            style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
+            fontWeight = FontWeight.Medium,
+            color = heartColor,
+        )
+    }
+}
+
+@Composable
+private fun LessonEntryOverlay(
+    alpha: Float,
+    key: Any,
+) {
+    val phase by rememberInfiniteTransition(label = "lesson-entry-dots").animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 900),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "lesson-entry-dot-phase",
+    )
+    Surface(
+        color = PompColors.Paper,
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                this.alpha = alpha
+                scaleX = 1f + (1f - alpha) * .012f
+                scaleY = 1f + (1f - alpha) * .012f
+            },
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            LessonCharacterStage(
+                character = LessonCharacter.Panda,
+                mood = LessonCharacterMood.Loading,
+                reaction = LessonCharacterReaction.Pop,
+                reactionKey = key,
+                modifier = Modifier.size(width = 148.dp, height = 164.dp),
+            )
+            Spacer(Modifier.height(9.dp))
+            Text(
+                text = stringResource(R.string.lesson_entry_title),
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
+                fontWeight = FontWeight.Bold,
+                color = PompColors.Ink,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.lesson_entry_subtitle),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(10.dp))
+            Canvas(Modifier.size(width = 42.dp, height = 12.dp)) {
+                repeat(3) { index ->
+                    val local = ((phase + index * .22f) % 1f)
+                    val wave = ((sin(local * 2f * PI).toFloat() + 1f) / 2f)
+                    drawCircle(
+                        color = PompColors.Cinnabar.copy(alpha = .35f + wave * .65f),
+                        radius = 2.5.dp.toPx(),
+                        center = Offset(
+                            x = 7.dp.toPx() + index * 14.dp.toPx(),
+                            y = size.height / 2f - wave * 2.dp.toPx(),
+                        ),
+                    )
+                }
+            }
         }
     }
 }
