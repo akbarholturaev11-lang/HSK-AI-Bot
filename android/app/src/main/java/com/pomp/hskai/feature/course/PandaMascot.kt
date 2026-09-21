@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
@@ -170,31 +171,42 @@ fun CoursePandaMascot(
                     transformOrigin = TransformOrigin(0.5f, 1f)
                 },
         ) {
-            val unit = size.width / ART_W
-            fun x(v: Float) = v * unit
-            fun y(v: Float) = v * (size.height / ART_H)
+            // Bitta, bir xil masshtab: eni va bo'yi alohida masshtablanganda
+            // faqat balandlik berilgan quti (`Modifier.height(...)`) pandani
+            // ekran eni bo'ylab cho'zib yuborardi — yopiq darsni ochish
+            // oynasida u shunday buzilgan edi. Chizma qutining markaziga
+            // tushadi, ya'ni qanday quti berilsa ham nisbat saqlanadi.
+            val fit = minOf(size.width / ART_W, size.height / ART_H)
+            fun x(v: Float) = v * fit
+            fun y(v: Float) = v * fit
 
-            // The ground shadow does not travel with the body — it flattens as
-            // the body rises, which is what sells the hop.
-            drawOval(
-                color = INK.copy(alpha = 0.20f),
-                topLeft = Offset(x(50f - 30f * shadow), y(98f)),
-                size = Size(x(60f * shadow), y(9f)),
-            )
+            translate(
+                left = (size.width - ART_W * fit) / 2f,
+                top = (size.height - ART_H * fit) / 2f,
+            ) {
 
-            rotate(nod, pivot = Offset(x(50f), y(95f))) {
-                drawFeet(::x, ::y, mood)
-                // Osilgan qo'l tanadan OLDIN — yelkasi tanaga kirib turadi.
-                drawLoweredArms(::x, ::y, mood)
-                drawBody(::x, ::y)
-                drawScarf(::x, ::y)
-                drawEars(::x, ::y)
-                drawHead(::x, ::y)
-                drawFace(::x, ::y, mood, blink, speak)
-                // Ko'tarilgan qo'l bosh CHIZILGANDAN KEYIN — aks holda u
-                // boshning ortida qolib ko'rinmaydi va quvonch yo'qoladi.
-                drawRaisedArms(::x, ::y, mood)
-                if (celebrating) drawSparkles(::x, ::y)
+                // The ground shadow does not travel with the body — it flattens as
+                // the body rises, which is what sells the hop.
+                drawOval(
+                    color = INK.copy(alpha = 0.20f),
+                    topLeft = Offset(x(50f - 30f * shadow), y(98f)),
+                    size = Size(x(60f * shadow), y(9f)),
+                )
+
+                rotate(nod, pivot = Offset(x(50f), y(95f))) {
+                    drawFeet(::x, ::y, mood)
+                    // Osilgan qo'l tanadan OLDIN — yelkasi tanaga kirib turadi.
+                    drawLoweredArms(::x, ::y, mood)
+                    drawBody(::x, ::y)
+                    drawScarf(::x, ::y)
+                    drawEars(::x, ::y)
+                    drawHead(::x, ::y)
+                    drawFace(::x, ::y, mood, blink, speak)
+                    // Ko'tarilgan qo'l bosh CHIZILGANDAN KEYIN — aks holda u
+                    // boshning ortida qolib ko'rinmaydi va quvonch yo'qoladi.
+                    drawRaisedArms(::x, ::y, mood)
+                    if (celebrating) drawSparkles(::x, ::y)
+                }
             }
         }
     }
