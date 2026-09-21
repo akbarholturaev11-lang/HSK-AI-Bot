@@ -2,6 +2,9 @@ import SwiftUI
 
 struct RatingScreen: View {
     @ObservedObject var model: RatingViewModel
+    @ObservedObject var challengeModel: ChallengeViewModel
+    let account: LinkedAccount
+    @State private var showingChallenges = false
 
     var body: some View {
         NavigationStack {
@@ -108,10 +111,12 @@ struct RatingScreen: View {
                     .padding(24)
                 }
             }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button { showingChallenges = true } label: { Image(systemName: "person.2.fill") } } }
             .navigationTitle("tab_rating")
             .navigationBarTitleDisplayMode(.inline)
         }
         .task { if model.rating == nil { await model.load() } }
+        .sheet(isPresented: $showingChallenges, onDismiss: { challengeModel.reset() }) { ChallengesSheet(model: challengeModel, account: account, onClose: { showingChallenges = false }) }
     }
 
     private func stat(_ icon: String, value: Int, label: LocalizedStringKey) -> some View {

@@ -11,6 +11,7 @@ struct MainShellView: View {
     @ObservedObject var pronunciationDrillModel: PronunciationDrillViewModel
     @ObservedObject var ratingModel: RatingViewModel
     @ObservedObject var subscriptionModel: SubscriptionViewModel
+    @ObservedObject var challengeModel: ChallengeViewModel
     @ObservedObject var reminderManager: StudyReminderManager
     let onLogout: () -> Void
     @State private var selection: IOSDeepLinkDestination = .course
@@ -36,7 +37,7 @@ struct MainShellView: View {
                 .tabItem { Label("tab_dictionary", systemImage: "character.book.closed.fill") }
                 .tag(IOSDeepLinkDestination.dictionary)
 
-            RatingScreen(model: ratingModel)
+            RatingScreen(model: ratingModel, challengeModel: challengeModel, account: account)
                 .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
                 .tag(IOSDeepLinkDestination.rating)
 

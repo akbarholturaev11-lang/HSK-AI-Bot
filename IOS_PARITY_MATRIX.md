@@ -24,7 +24,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Exams/tests | Android feature API | exams start/complete | ✅ | Native exam center/session/completion |
 | Dictionary | `DictionaryScreen.kt` | dictionary + ETag | ✅ | Native glass dictionary + refresh/cache parity |
 | Rating | `RatingScreen.kt` | `/api/v3/ios/rating/leaderboard` | ✅ | Native weekly league leaderboard and account stats |
-| Challenges | `ChallengeRunScreen.kt` | challenges APIs | ⬜ | Challenge flow |
+| Challenges | `ChallengeRunScreen.kt` | `/api/v3/ios/challenges*` | ✅ | Native list/accept/decline/start/quiz/submit flow backed by shared service |
 | Referral | profile/rating flows | `/api/v3/ios/referral/overview` | ✅ | Shared referral state + native ShareLink invite flow |
 | Profile | `ProfileScreen.kt` | account + course state | 🟡 | Native glass account/progress/access profile; editable preferences pending |
 | Trial state | `AndroidFeatureApi.kt` | `/api/v3/ios/subscription/trial*` | ✅ | Shared trial state/start surfaced in native Profile |

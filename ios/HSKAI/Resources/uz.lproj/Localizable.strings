@@ -187,3 +187,13 @@
 "reminder_permission_denied" = "Bildirishnomalarga ruxsat berilmagan.";
 "reminder_notification_title" = "HSK AI";
 "reminder_notification_body" = "Bugungi xitoy tili mashg‘ulotini davom ettiring.";
+"challenge_title" = "Bellashuvlar";
+"challenge_empty" = "Hozircha bellashuv yo‘q.";
+"challenge_accept" = "Qabul qilish";
+"challenge_decline" = "Rad etish";
+"challenge_start" = "Boshlash";
+"challenge_load_error" = "Bellashuvlar yuklanmadi.";
+"challenge_action_error" = "Amal bajarilmadi.";
+"challenge_status_pending" = "Kutilmoqda";
+"challenge_status_active" = "Faol";
+"challenge_status_finished" = "Tugagan";

@@ -187,3 +187,13 @@
 "reminder_permission_denied" = "Нет разрешения на уведомления.";
 "reminder_notification_title" = "HSK AI";
 "reminder_notification_body" = "Продолжите сегодняшнее занятие китайским.";
+"challenge_title" = "Соревнования";
+"challenge_empty" = "Соревнований пока нет.";
+"challenge_accept" = "Принять";
+"challenge_decline" = "Отклонить";
+"challenge_start" = "Начать";
+"challenge_load_error" = "Не удалось загрузить соревнования.";
+"challenge_action_error" = "Не удалось выполнить действие.";
+"challenge_status_pending" = "Ожидает";
+"challenge_status_active" = "Активно";
+"challenge_status_finished" = "Завершено";

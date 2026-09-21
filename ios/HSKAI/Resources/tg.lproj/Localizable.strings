@@ -187,3 +187,13 @@
 "reminder_permission_denied" = "Иҷозати огоҳинома дода нашуд.";
 "reminder_notification_title" = "HSK AI";
 "reminder_notification_body" = "Машқи имрӯзаи забони чиниро идома диҳед.";
+"challenge_title" = "Мусобиқаҳо";
+"challenge_empty" = "Ҳоло мусобиқа нест.";
+"challenge_accept" = "Қабул кардан";
+"challenge_decline" = "Рад кардан";
+"challenge_start" = "Оғоз кардан";
+"challenge_load_error" = "Мусобиқаҳо бор нашуданд.";
+"challenge_action_error" = "Амал иҷро нашуд.";
+"challenge_status_pending" = "Дар интизорӣ";
+"challenge_status_active" = "Фаъол";
+"challenge_status_finished" = "Анҷомшуда";

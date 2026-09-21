@@ -43,6 +43,7 @@ final class AppModel: ObservableObject {
     let pronunciationDrillViewModel: PronunciationDrillViewModel
     let ratingViewModel: RatingViewModel
     let subscriptionViewModel: SubscriptionViewModel
+    let challengeViewModel: ChallengeViewModel
     let reminderManager = StudyReminderManager()
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
@@ -71,6 +72,7 @@ final class AppModel: ObservableObject {
         self.ratingViewModel = RatingViewModel(
             api: IOSSocialAPI(client: client, authSession: authSession)
         )
+        self.challengeViewModel = ChallengeViewModel(api: IOSChallengeAPI(client: client, authSession: authSession))
         self.subscriptionViewModel = SubscriptionViewModel(
             api: IOSSubscriptionAPI(client: client, authSession: authSession)
         )
@@ -200,6 +202,7 @@ final class AppModel: ObservableObject {
         pronunciationDrillViewModel.reset()
         ratingViewModel.reset()
         subscriptionViewModel.reset()
+        challengeViewModel.reset()
         phase = .signedOut
     }
 
