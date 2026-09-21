@@ -17,7 +17,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Daily goal/preferences | `StudySetup*` | `/api/v3/ios/preferences/study` | ✅ | Native Profile daily minutes, XP goal and preferred-focus controls backed by shared preferences |
 | Lesson engine | `feature/lesson/*` | iOS lesson + complete | ✅ | Glass SwiftUI engine; choice/builder/match/grammar/vocab/pronunciation + checkpoint exit-ticket |
 | TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | shared course audio | 🟡 | Mandarin playback wired; server-byte cache/interruption parity pending |
-| Hanzi stroke | `StrokeAnimation.kt` | `/api/v3/android/stroke` | ⬜ | Native/embedded renderer |
+| Hanzi stroke | `StrokeAnimation.kt` | local character rendering | 🟡 | Native glass character practice/animation surface in lessons + dictionary; exact per-stroke path dataset still platform-specific/pending |
 | Practice | `PracticeScreen.kt` | `/api/v3/ios/practice/*` | ✅ | Native glass placement, mistakes, exams, recognition and pronunciation drills |
 | Mistakes | `MistakesScreen.kt` | `/api/v3/ios/mistakes/*` | ✅ | Overview pagination + server-graded review + completion/result |
 | Word drill | `WordDrillScreen.kt` | gate/words/report | ✅ | Adaptive server plan + local dictionary distractors + mastery reporting |

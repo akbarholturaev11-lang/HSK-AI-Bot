@@ -229,3 +229,8 @@
 "assistant_placeholder" = "Savolingizni yozing…";
 "assistant_disabled" = "AI Yordamchi hozir mavjud emas.";
 "assistant_unavailable" = "AI Yordamchi bilan bog‘lanib bo‘lmadi.";
+"stroke_title" = "Ieroglif yozilishi";
+"stroke_play" = "Ko‘rsatish";
+"stroke_playing" = "Ko‘rsatilmoqda";
+"stroke_reset" = "Qayta";
+"stroke_unavailable" = "Bu matn uchun ieroglif topilmadi.";

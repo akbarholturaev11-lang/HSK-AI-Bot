@@ -229,3 +229,8 @@
 "assistant_placeholder" = "Напишите вопрос…";
 "assistant_disabled" = "AI Помощник сейчас недоступен.";
 "assistant_unavailable" = "Не удалось связаться с AI Помощником.";
+"stroke_title" = "Написание иероглифа";
+"stroke_play" = "Показать";
+"stroke_playing" = "Показ";
+"stroke_reset" = "Сначала";
+"stroke_unavailable" = "Для этого текста иероглиф не найден.";

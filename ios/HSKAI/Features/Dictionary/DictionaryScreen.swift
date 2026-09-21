@@ -16,7 +16,7 @@ struct DictionaryScreen: View {
             .task { await model.load() }
             .sheet(item: $selectedWord) { word in
                 wordSheet(word)
-                    .presentationDetents([.medium])
+                    .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
                     .presentationBackground(.ultraThinMaterial)
             }
@@ -165,6 +165,7 @@ struct DictionaryScreen: View {
                         .font(.caption.bold())
                         .foregroundStyle(HSKColors.ink)
                 }
+                HanziStrokeView(text: word.hanzi)
             }
             .padding(30)
         }

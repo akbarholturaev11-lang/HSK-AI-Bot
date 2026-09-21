@@ -229,3 +229,8 @@
 "assistant_placeholder" = "Саволатонро нависед…";
 "assistant_disabled" = "Ёвари AI ҳоло дастрас нест.";
 "assistant_unavailable" = "Пайваст шудан ба Ёвари AI нашуд.";
+"stroke_title" = "Навишти иероглиф";
+"stroke_play" = "Нишон додан";
+"stroke_playing" = "Намоиш";
+"stroke_reset" = "Аз нав";
+"stroke_unavailable" = "Барои ин матн иероглиф ёфт нашуд.";

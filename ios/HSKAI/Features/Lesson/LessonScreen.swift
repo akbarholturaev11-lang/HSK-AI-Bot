@@ -186,6 +186,8 @@ struct LessonScreen: View {
                     Label("foundation_listen", systemImage: "speaker.wave.2.fill")
                 }
                 .buttonStyle(HSKGlassSecondaryButtonStyle())
+
+                HanziStrokeView(text: card.hanzi)
             }
             .frame(maxWidth: .infinity)
         }
