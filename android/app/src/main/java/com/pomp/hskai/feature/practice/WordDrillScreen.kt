@@ -51,6 +51,10 @@ import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.wordDrillAssistantContext
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.feature.lesson.LessonCharacter
+import com.pomp.hskai.feature.lesson.LessonCharacterMood
+import com.pomp.hskai.feature.lesson.LessonCharacterReaction
+import com.pomp.hskai.feature.lesson.LessonCharacterStage
 
 /**
  * The Mini App's adaptive drill screen.
@@ -183,7 +187,46 @@ private fun DrillQuestionBody(
             fontWeight = FontWeight.Medium,
             color = PompColors.InkSecondary,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
+
+        val coach = if (state.mode == DrillMode.PRONUNCIATION) {
+            LessonCharacter.Panda
+        } else {
+            LessonCharacter.Monkey
+        }
+        val coachMood = when {
+            state.isRecording || state.isScoring -> LessonCharacterMood.Loading
+            !state.isAnswered -> LessonCharacterMood.Idle
+            state.wasCorrect -> LessonCharacterMood.Correct
+            else -> LessonCharacterMood.Wrong
+        }
+        val coachReaction = when {
+            state.isRecording || state.isScoring -> LessonCharacterReaction.Loader
+            !state.isAnswered -> null
+            state.wasCorrect -> LessonCharacterReaction.Jump
+            else -> LessonCharacterReaction.Wrong
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            LessonCharacterStage(
+                character = coach,
+                mood = coachMood,
+                reaction = coachReaction,
+                reactionKey = listOf(
+                    state.index,
+                    state.isRecording,
+                    state.isScoring,
+                    state.isAnswered,
+                    state.wasCorrect,
+                ),
+                modifier = Modifier.size(72.dp),
+            )
+        }
+
+        Spacer(Modifier.height(4.dp))
 
         HskGlassSurface(
             modifier = Modifier.fillMaxWidth(),
