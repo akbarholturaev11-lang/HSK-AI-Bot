@@ -29,11 +29,11 @@ final class PronunciationDrillViewModel: ObservableObject {
     init(
         practiceAPI: IOSPracticeAPI,
         courseAPI: IOSCourseAPI,
-        recorder: MandarinAudioRecorder = MandarinAudioRecorder()
+        recorder: MandarinAudioRecorder? = nil
     ) {
         self.practiceAPI = practiceAPI
         self.courseAPI = courseAPI
-        self.recorder = recorder
+        self.recorder = recorder ?? MandarinAudioRecorder()
     }
 
     var current: IOSDrillQuestion? {
