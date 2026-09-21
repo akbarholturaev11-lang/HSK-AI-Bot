@@ -5,11 +5,13 @@ struct PracticeScreen: View {
     @ObservedObject var mistakesModel: MistakesViewModel
     @ObservedObject var examModel: ExamViewModel
     @ObservedObject var wordDrillModel: WordDrillViewModel
+    @ObservedObject var pronunciationDrillModel: PronunciationDrillViewModel
     let account: LinkedAccount
 
     @State private var showingMistakes = false
     @State private var showingExams = false
     @State private var showingRecognition = false
+    @State private var showingPronunciation = false
 
     var body: some View {
         NavigationStack {
@@ -52,6 +54,15 @@ struct PracticeScreen: View {
                 model: wordDrillModel,
                 account: account,
                 onClose: { showingRecognition = false }
+            )
+        }
+        .fullScreenCover(isPresented: $showingPronunciation, onDismiss: {
+            pronunciationDrillModel.reset()
+        }) {
+            PronunciationDrillScreen(
+                model: pronunciationDrillModel,
+                account: account,
+                onClose: { showingPronunciation = false }
             )
         }
     }
@@ -195,10 +206,24 @@ struct PracticeScreen: View {
                             .padding(.vertical, 7)
                         }
                         .buttonStyle(.plain)
-                        pendingRow(
-                            icon: "mic.fill",
-                            title: "practice_pronunciation_title"
-                        )
+                        Button {
+                            showingPronunciation = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "mic.fill")
+                                    .foregroundStyle(HSKColors.jade)
+                                    .frame(width: 28)
+                                Text("practice_pronunciation_title")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(HSKColors.ink)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(HSKColors.inkSecondary)
+                            }
+                            .padding(.vertical, 7)
+                        }
+                        .buttonStyle(.plain)
                         Button {
                             showingMistakes = true
                         } label: {

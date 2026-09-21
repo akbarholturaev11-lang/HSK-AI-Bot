@@ -145,3 +145,12 @@
 "drill_complete_title" = "Машқ анҷом ёфт";
 "drill_limit_reached" = "Кӯшиши ройгони ин машқ истифода шуд.";
 "drill_load_error" = "Машқ бор карда нашуд.";
+
+"drill_pronunciation_prompt" = "Иероглифро бо овоз талаффуз кунед";
+"pronunciation_listening" = "Гӯш карда истодаам…";
+"pronunciation_checking" = "Талаффуз санҷида мешавад…";
+"pronunciation_tap_mic" = "Пахш карда талаффуз кунед";
+"pronunciation_skip" = "Ҳоло гап зада наметавонам";
+"pronunciation_permission_denied" = "Иҷозати микрофон дода нашуд.";
+"pronunciation_score_error" = "Талаффуз санҷида нашуд. Боз кӯшиш кунед.";
+"drill_pronunciation_complete" = "Машқи талаффуз анҷом ёфт";

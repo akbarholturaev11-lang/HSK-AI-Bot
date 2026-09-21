@@ -40,6 +40,7 @@ final class AppModel: ObservableObject {
     let mistakesViewModel: MistakesViewModel
     let examViewModel: ExamViewModel
     let wordDrillViewModel: WordDrillViewModel
+    let pronunciationDrillViewModel: PronunciationDrillViewModel
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
     private var didRestore = false
@@ -57,6 +58,10 @@ final class AppModel: ObservableObject {
         self.mistakesViewModel = MistakesViewModel(api: practiceAPI)
         self.examViewModel = ExamViewModel(api: practiceAPI)
         self.wordDrillViewModel = WordDrillViewModel(
+            practiceAPI: practiceAPI,
+            courseAPI: courseAPI
+        )
+        self.pronunciationDrillViewModel = PronunciationDrillViewModel(
             practiceAPI: practiceAPI,
             courseAPI: courseAPI
         )
@@ -183,6 +188,7 @@ final class AppModel: ObservableObject {
         mistakesViewModel.reset()
         examViewModel.resetToCenter()
         wordDrillViewModel.reset()
+        pronunciationDrillViewModel.reset()
         phase = .signedOut
     }
 

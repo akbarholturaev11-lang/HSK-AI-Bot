@@ -145,3 +145,12 @@
 "drill_complete_title" = "Тренировка завершена";
 "drill_limit_reached" = "Бесплатная попытка для этой тренировки уже использована.";
 "drill_load_error" = "Не удалось загрузить тренировку.";
+
+"drill_pronunciation_prompt" = "Произнесите иероглиф вслух";
+"pronunciation_listening" = "Слушаю…";
+"pronunciation_checking" = "Проверяю произношение…";
+"pronunciation_tap_mic" = "Нажмите и произнесите";
+"pronunciation_skip" = "Сейчас не могу говорить";
+"pronunciation_permission_denied" = "Нет доступа к микрофону.";
+"pronunciation_score_error" = "Не удалось проверить произношение. Попробуйте ещё раз.";
+"drill_pronunciation_complete" = "Тренировка произношения завершена";

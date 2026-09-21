@@ -145,3 +145,12 @@
 "drill_complete_title" = "Mashq tugadi";
 "drill_limit_reached" = "Bu mashq uchun bepul urinish ishlatildi.";
 "drill_load_error" = "Mashqni yuklab bo‘lmadi.";
+
+"drill_pronunciation_prompt" = "Ieroglifni ovoz chiqarib ayting";
+"pronunciation_listening" = "Tinglayapman…";
+"pronunciation_checking" = "Talaffuz tekshirilmoqda…";
+"pronunciation_tap_mic" = "Bosib, talaffuz qiling";
+"pronunciation_skip" = "Hozir gapira olmayman";
+"pronunciation_permission_denied" = "Mikrofon ruxsati berilmadi.";
+"pronunciation_score_error" = "Talaffuzni tekshirib bo‘lmadi. Qayta urinib ko‘ring.";
+"drill_pronunciation_complete" = "Talaffuz mashqi tugadi";
