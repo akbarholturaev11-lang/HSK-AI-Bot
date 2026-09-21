@@ -52,6 +52,13 @@ from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthServi
 logger = logging.getLogger(__name__)
 
 
+class IOSVoiceMessageRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    session_id: str = Field(min_length=8, max_length=120)
+    audio_data_url: str = Field(default="", max_length=8_000_000)
+    text: str = Field(default="", max_length=1200)
+
+
 class IOSDrillGateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     feature: str = Field(min_length=1, max_length=24)
@@ -414,6 +421,31 @@ def create_ios_practice_router(
                 )
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, VoicePracticeError) as exc:
+            return _error_response(exc)
+
+
+    @router.post("/api/v3/ios/voice/message")
+    async def ios_voice_message(request: Request):
+        try:
+            payload = await _validated_payload(
+                request, IOSVoiceMessageRequest,
+                max_body_bytes=MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
+            )
+            typed = payload.text.strip()
+            if bool(typed) == bool(payload.audio_data_url):
+                raise DesktopPracticeError("ios_voice_request_invalid", status_code=422)
+            if typed:
+                audio_bytes, filename = b"", ""
+            else:
+                audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await voice_service_factory(session).process_message(
+                    telegram_id, session_id=payload.session_id,
+                    audio_bytes=audio_bytes, filename=filename, text=typed,
+                )
+            return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopPracticeError, VoicePracticeError) as exc:
             return _error_response(exc)
 
     @router.post("/api/v3/ios/voice/session/end")
