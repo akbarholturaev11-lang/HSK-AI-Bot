@@ -3,6 +3,7 @@ import SwiftUI
 struct ProfileScreen: View {
     let account: LinkedAccount
     @ObservedObject var courseModel: CourseViewModel
+    @ObservedObject var subscriptionModel: SubscriptionViewModel
     let onLogout: () -> Void
 
     var body: some View {
@@ -47,6 +48,33 @@ struct ProfileScreen: View {
                             }
                         }
 
+                        HSKGlassCard(cornerRadius: 24, padding: 18, tint: HSKColors.auroraBlue) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Label("subscription_title", systemImage: "sparkles")
+                                    .font(.headline)
+                                    .foregroundStyle(HSKColors.ink)
+                                if subscriptionModel.isLoading && subscriptionModel.overview == nil {
+                                    ProgressView().tint(HSKColors.cinnabar)
+                                } else {
+                                    Text(subscriptionModel.overview?.status ?? account.accessState)
+                                        .font(.title3.bold())
+                                        .foregroundStyle(HSKColors.cinnabarDark)
+                                    if subscriptionModel.trial?.available == true && subscriptionModel.trial?.active != true {
+                                        Button("subscription_start_trial") {
+                                            Task { await subscriptionModel.startTrial() }
+                                        }
+                                        .buttonStyle(HSKGlassSecondaryButtonStyle())
+                                    }
+                                    if let errorKey = subscriptionModel.errorKey {
+                                        Text(LocalizedStringKey(errorKey))
+                                            .font(.footnote)
+                                            .foregroundStyle(HSKColors.flame)
+                                    }
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
                         HSKGlassCard(cornerRadius: 24, padding: 18) {
                             VStack(spacing: 14) {
                                 row("globe", "profile_language", account.language.uppercased())
@@ -70,6 +98,7 @@ struct ProfileScreen: View {
             .navigationTitle("tab_profile")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .task { if subscriptionModel.overview == nil { await subscriptionModel.load() } }
     }
 
     private func pill(_ key: String) -> some View {

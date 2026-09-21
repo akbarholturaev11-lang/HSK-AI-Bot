@@ -175,3 +175,8 @@
 "referral_title" = "Пригласить друзей";
 "referral_progress_format" = "%d / %d активных друзей";
 "referral_share" = "Поделиться ссылкой";
+
+"subscription_title" = "Подписка и доступ";
+"subscription_start_trial" = "Начать бесплатный пробный период";
+"subscription_load_error" = "Не удалось загрузить состояние подписки.";
+"subscription_trial_error" = "Не удалось запустить пробный период.";

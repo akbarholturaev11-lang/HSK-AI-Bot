@@ -175,3 +175,8 @@
 "referral_title" = "Do‘stlarni taklif qilish";
 "referral_progress_format" = "%d / %d faol do‘st";
 "referral_share" = "Taklif havolasini ulashish";
+
+"subscription_title" = "Obuna va kirish";
+"subscription_start_trial" = "Bepul sinovni boshlash";
+"subscription_load_error" = "Obuna holatini yuklab bo‘lmadi.";
+"subscription_trial_error" = "Sinov rejimini ishga tushirib bo‘lmadi.";

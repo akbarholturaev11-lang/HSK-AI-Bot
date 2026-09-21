@@ -175,3 +175,8 @@
 "referral_title" = "Дӯстонро даъват кунед";
 "referral_progress_format" = "%d / %d дӯсти фаъол";
 "referral_share" = "Пайванди даъватро фиристед";
+
+"subscription_title" = "Обуна ва дастрасӣ";
+"subscription_start_trial" = "Оғози давраи озмоишии ройгон";
+"subscription_load_error" = "Ҳолати обуна бор карда нашуд.";
+"subscription_trial_error" = "Давраи озмоишӣ оғоз нашуд.";

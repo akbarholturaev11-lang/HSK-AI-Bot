@@ -10,6 +10,7 @@ struct MainShellView: View {
     @ObservedObject var wordDrillModel: WordDrillViewModel
     @ObservedObject var pronunciationDrillModel: PronunciationDrillViewModel
     @ObservedObject var ratingModel: RatingViewModel
+    @ObservedObject var subscriptionModel: SubscriptionViewModel
     let onLogout: () -> Void
 
     var body: some View {
@@ -33,7 +34,7 @@ struct MainShellView: View {
             RatingScreen(model: ratingModel)
                 .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
 
-            ProfileScreen(account: account, courseModel: courseModel, onLogout: onLogout)
+            ProfileScreen(account: account, courseModel: courseModel, subscriptionModel: subscriptionModel, onLogout: onLogout)
                 .tabItem { Label("tab_profile", systemImage: "person.crop.circle.fill") }
         }
         .tint(HSKColors.cinnabar)

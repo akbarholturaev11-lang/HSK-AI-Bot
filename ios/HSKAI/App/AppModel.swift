@@ -42,6 +42,7 @@ final class AppModel: ObservableObject {
     let wordDrillViewModel: WordDrillViewModel
     let pronunciationDrillViewModel: PronunciationDrillViewModel
     let ratingViewModel: RatingViewModel
+    let subscriptionViewModel: SubscriptionViewModel
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
     private var didRestore = false
@@ -68,6 +69,9 @@ final class AppModel: ObservableObject {
         )
         self.ratingViewModel = RatingViewModel(
             api: IOSSocialAPI(client: client, authSession: authSession)
+        )
+        self.subscriptionViewModel = SubscriptionViewModel(
+            api: IOSSubscriptionAPI(client: client, authSession: authSession)
         )
     }
 
@@ -194,6 +198,7 @@ final class AppModel: ObservableObject {
         wordDrillViewModel.reset()
         pronunciationDrillViewModel.reset()
         ratingViewModel.reset()
+        subscriptionViewModel.reset()
         phase = .signedOut
     }
 
