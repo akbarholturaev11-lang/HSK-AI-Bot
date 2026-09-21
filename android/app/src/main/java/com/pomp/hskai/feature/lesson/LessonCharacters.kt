@@ -89,26 +89,13 @@ internal fun LessonCharacterStage(
     var warning by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
-    val idleTransition = rememberInfiniteTransition(label = "lesson-character-idle")
-    val breathe by idleTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1350),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "lesson-character-breathe",
-    )
-    val loadingWiggle by idleTransition.animateFloat(
-        initialValue = -2f,
-        targetValue = 2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 900),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "lesson-character-loading-prop",
-    )
-    val breathing = mood == LessonCharacterMood.Idle || mood == LessonCharacterMood.Loading
+    // Keep the persistent in-card coach cheap and deterministic. The previous
+    // infinite transitions ran for every exercise card (including audio/voice
+    // cards) even when no reaction was happening, which is unnecessary work
+    // in the lesson hot path and can destabilize older/emulated devices.
+    val breathing = false
+    val breathe = 0f
+    val loadingWiggle = 0f
 
     LaunchedEffect(reaction, reactionKey) {
         if (reaction == null) return@LaunchedEffect
