@@ -234,3 +234,8 @@
 "stroke_playing" = "Показ";
 "stroke_reset" = "Сначала";
 "stroke_unavailable" = "Для этого текста иероглиф не найден.";
+"ad_title" = "Реклама";
+"ad_ready" = "Можно продолжить";
+"ad_wait" = "%d сек.";
+"ad_more" = "Подробнее";
+"ad_continue" = "Можно продолжить";

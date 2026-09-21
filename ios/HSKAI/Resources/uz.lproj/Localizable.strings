@@ -234,3 +234,8 @@
 "stroke_playing" = "Ko‘rsatilmoqda";
 "stroke_reset" = "Qayta";
 "stroke_unavailable" = "Bu matn uchun ieroglif topilmadi.";
+"ad_title" = "Reklama";
+"ad_ready" = "Davom etish mumkin";
+"ad_wait" = "%d soniya";
+"ad_more" = "Batafsil";
+"ad_continue" = "Davom etish mumkin";

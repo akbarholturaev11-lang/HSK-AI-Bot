@@ -30,7 +30,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Trial state | `AndroidFeatureApi.kt` | `/api/v3/ios/subscription/trial*` | ✅ | Shared trial state/start surfaced in native Profile |
 | Subscription state | profile/limit flows | `/api/v3/ios/subscription/overview` | ✅ | Read-only shared subscription/access state in native Profile |
 | External checkout | Android `direct` flavor | external checkout | ➖ | Do not copy until iOS policy decision |
-| Ads/unlock | `AdScreen.kt` | ad list/view + access ref | ⬜ | iOS channel |
+| Ads/unlock | `AdScreen.kt` | `/api/v3/ios/ad`, `/api/v3/ios/ad/view` | ✅ | iOS-safe ad channel, shared placement/cap/view tracking; ads do not unlock paid features |
 | AI Voice | `feature/voice/*` | `/api/v3/ios/voice/*` | ✅ | Native role picker, typed/microphone turns, suggestions, TTS reply and session summary |
 | Pronunciation | voice/practice flows | `/api/v3/ios/voice/pronounce` | ✅ | AVAudioRecorder + shared scoring + adaptive mastery reporting |
 | AI Assistant | `feature/assistant/*` | `/api/v3/ios/assistant/*` | ✅ | Native glass chat, shared conversations/history, idempotent request IDs and processing polling |

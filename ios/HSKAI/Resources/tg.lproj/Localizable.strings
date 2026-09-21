@@ -234,3 +234,8 @@
 "stroke_playing" = "Намоиш";
 "stroke_reset" = "Аз нав";
 "stroke_unavailable" = "Барои ин матн иероглиф ёфт нашуд.";
+"ad_title" = "Реклама";
+"ad_ready" = "Давом додан мумкин";
+"ad_wait" = "%d сония";
+"ad_more" = "Муфассал";
+"ad_continue" = "Давом додан мумкин";

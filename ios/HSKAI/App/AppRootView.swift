@@ -31,6 +31,7 @@ struct AppRootView: View {
                     challengeModel: model.challengeViewModel,
                     voiceModel: model.voiceViewModel,
                     assistantModel: model.assistantViewModel,
+                    adModel: model.adViewModel,
                     reminderManager: model.reminderManager
                 ) {
                     Task { await model.logout() }

@@ -14,12 +14,14 @@ struct MainShellView: View {
     @ObservedObject var challengeModel: ChallengeViewModel
     @ObservedObject var voiceModel: VoiceViewModel
     @ObservedObject var assistantModel: AssistantViewModel
+    @ObservedObject var adModel: AdViewModel
     @ObservedObject var reminderManager: StudyReminderManager
     let onLogout: () -> Void
     @State private var selection: IOSDeepLinkDestination = .course
     @State private var practiceRequest: IOSPracticeLaunch?
     @State private var requestedVoiceRole: String?
     @State private var showingAssistant = false
+    @State private var showingAd = false
 
     var body: some View {
         TabView(selection: $selection) {
@@ -63,6 +65,11 @@ struct MainShellView: View {
                 .buttonStyle(HSKGlassIconButtonStyle()).padding(.trailing,18).padding(.bottom,74)
         }
         .sheet(isPresented: $showingAssistant) { AssistantScreen(model: assistantModel, onClose: { showingAssistant = false }) }
+        .task {
+            await adModel.load(placement: "screen_center")
+            if !adModel.unavailable, adModel.ad != nil { showingAd = true }
+        }
+        .fullScreenCover(isPresented: $showingAd) { AdOverlay(model: adModel, onClose: { showingAd = false }) }
         .onChange(of: requestedVoiceRole) { _, role in
             guard let role, !role.isEmpty else { return }
             Task {

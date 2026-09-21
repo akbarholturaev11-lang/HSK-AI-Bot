@@ -29,6 +29,7 @@ from app.api.ios_social import create_ios_social_router
 from app.api.ios_subscription import create_ios_subscription_router
 from app.api.ios_challenges import create_ios_challenge_router
 from app.api.ios_assistant import create_ios_assistant_router
+from app.api.ios_ads import create_ios_ads_router
 from app.api.android_course import create_android_course_router
 from app.api.android_events import create_android_events_router
 from app.api.android_features import create_android_features_router
