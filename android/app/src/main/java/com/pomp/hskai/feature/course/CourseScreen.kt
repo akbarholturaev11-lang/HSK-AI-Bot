@@ -53,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -742,6 +743,7 @@ private fun UnlockingLessonNode(
     }
 
     val haptics = LocalHapticFeedback.current
+    val density = LocalDensity.current
     val nodeScale = remember(lesson.order) { Animatable(.78f) }
     val ringScale = remember(lesson.order) { Animatable(.60f) }
     val ringAlpha = remember(lesson.order) { Animatable(0f) }
@@ -860,7 +862,7 @@ private fun UnlockingLessonNode(
                     alpha = lockAlpha.value
                     scaleX = lockScale.value
                     scaleY = lockScale.value
-                    translationY = lockY.value
+                    translationY = with(density) { lockY.value.dp.toPx() }
                     rotationZ = -16f * (1f - lockAlpha.value)
                 },
         ) {
