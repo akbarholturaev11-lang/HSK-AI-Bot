@@ -9,6 +9,7 @@ struct MainShellView: View {
     @ObservedObject var examModel: ExamViewModel
     @ObservedObject var wordDrillModel: WordDrillViewModel
     @ObservedObject var pronunciationDrillModel: PronunciationDrillViewModel
+    @ObservedObject var ratingModel: RatingViewModel
     let onLogout: () -> Void
 
     var body: some View {
@@ -29,7 +30,7 @@ struct MainShellView: View {
             DictionaryScreen(model: dictionaryModel)
                 .tabItem { Label("tab_dictionary", systemImage: "character.book.closed.fill") }
 
-            ShellPlaceholder(titleKey: "tab_rating", systemImage: "trophy.fill")
+            RatingScreen(model: ratingModel)
                 .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
 
             ProfileShellPlaceholder(account: account, onLogout: onLogout)

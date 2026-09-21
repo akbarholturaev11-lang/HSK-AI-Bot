@@ -25,7 +25,8 @@ struct AppRootView: View {
                     mistakesModel: model.mistakesViewModel,
                     examModel: model.examViewModel,
                     wordDrillModel: model.wordDrillViewModel,
-                    pronunciationDrillModel: model.pronunciationDrillViewModel
+                    pronunciationDrillModel: model.pronunciationDrillViewModel,
+                    ratingModel: model.ratingViewModel
                 ) {
                     Task { await model.logout() }
                 }

@@ -154,3 +154,10 @@
 "pronunciation_permission_denied" = "Mikrofon ruxsati berilmadi.";
 "pronunciation_score_error" = "Talaffuzni tekshirib bo‘lmadi. Qayta urinib ko‘ring.";
 "drill_pronunciation_complete" = "Talaffuz mashqi tugadi";
+
+"rating_league" = "Liga";
+"rating_rank_format" = "%d / %d-o‘rin";
+"rating_weekly_xp" = "Hafta";
+"rating_daily_xp" = "Bugun";
+"rating_streak" = "Seriya";
+"rating_load_error" = "Reytingni yuklab bo‘lmadi.";

@@ -154,3 +154,10 @@
 "pronunciation_permission_denied" = "Иҷозати микрофон дода нашуд.";
 "pronunciation_score_error" = "Талаффуз санҷида нашуд. Боз кӯшиш кунед.";
 "drill_pronunciation_complete" = "Машқи талаффуз анҷом ёфт";
+
+"rating_league" = "Лига";
+"rating_rank_format" = "%d аз %d";
+"rating_weekly_xp" = "Ҳафта";
+"rating_daily_xp" = "Имрӯз";
+"rating_streak" = "Силсила";
+"rating_load_error" = "Рейтинг бор карда нашуд.";

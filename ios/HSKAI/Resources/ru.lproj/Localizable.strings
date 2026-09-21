@@ -154,3 +154,10 @@
 "pronunciation_permission_denied" = "Нет доступа к микрофону.";
 "pronunciation_score_error" = "Не удалось проверить произношение. Попробуйте ещё раз.";
 "drill_pronunciation_complete" = "Тренировка произношения завершена";
+
+"rating_league" = "Лига";
+"rating_rank_format" = "%d из %d";
+"rating_weekly_xp" = "Неделя";
+"rating_daily_xp" = "Сегодня";
+"rating_streak" = "Серия";
+"rating_load_error" = "Не удалось загрузить рейтинг.";
