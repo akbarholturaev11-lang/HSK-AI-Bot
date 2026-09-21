@@ -249,5 +249,58 @@ class EveryNameUsedInsideTheModuleExistsTests(unittest.TestCase):
         )
 
 
+class AdAudienceIsTheServersDecisionTests(unittest.TestCase):
+    """Reklama kimga chiqishini admin sozlamasi hal qiladi, klient emas.
+
+    Admin panelda joy auditoriyasi ikki xil: "Faqat bepul foydalanuvchilarga"
+    va "Hammaga". Ikkinchisi Mini App'da O'LIK boshqaruv edi: dars yakunidagi
+    reklama `isPaidUser()` bilan klientda to'silgani uchun admin "Hammaga" ni
+    tanlasa ham obunachi hech qachon reklamani ko'rmasdi va admin o'zining
+    reklamasini sinab ham ko'ra olmasdi. Android bu tekshiruvni hech qachon
+    qilmagan — qaror serverda.
+    """
+
+    COURSE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+    def _lesson_end_fn(self) -> str:
+        start = self.COURSE.index("function playLessonEndAd(")
+        return self.COURSE[start : self.COURSE.index("\n}", start)]
+
+    def test_the_lesson_end_ad_is_not_blocked_for_subscribers_by_the_client(self):
+        self.assertNotIn("isPaidUser()||", self._lesson_end_fn())
+
+    def test_the_pending_flag_is_not_blocked_for_subscribers_either(self):
+        # `_pendingLessonEndAd` nolga tushsa, reklama chaqiruvga ham yetmaydi.
+        line = next(
+            row
+            for row in self.COURSE.splitlines()
+            if "window._pendingLessonEndAd=" in row and "Number(cur" in row
+        )
+        self.assertNotIn("isPaidUser()", line)
+
+    def test_the_subscribe_card_is_still_hidden_from_subscribers(self):
+        # Obunachi reklamani ko'rsa ham, unga "obuna bo'ling" deyilmaydi.
+        self.assertIn("paid:isPaidUser()", self._lesson_end_fn())
+        self.assertIn("e.sub.hidden=!!CFG.paid", ADS)
+
+    def test_a_deep_link_defers_the_centre_ad_instead_of_dropping_it(self):
+        """`resume=1` bilan ochilgan sessiya reklamasiz qolmasin.
+
+        Profildagi tugma Mini App'ni har doim `resume=1` bilan ochadi, ya'ni
+        har doim darsga tushadi. Ilgari markazdagi reklama bunday sessiyada
+        butunlay tashlab yuborilardi va hech qachon chiqmasdi.
+        """
+        start = self.COURSE.index("function maybeShowAppOpenAd(")
+        body = self.COURSE[start : self.COURSE.index("\n}", start)]
+        self.assertIn("CENTER_AD_PENDING=true", body)
+        self.assertIn("function flushPendingCenterAd(", self.COURSE)
+        # Varaq yopilganda qayta uriniladi.
+        close = self.COURSE.index("closeSheet:function()")
+        self.assertIn(
+            "flushPendingCenterAd();",
+            self.COURSE[close : self.COURSE.index("openPaywall:function(", close)],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

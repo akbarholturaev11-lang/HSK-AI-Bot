@@ -24,7 +24,11 @@
      server faqat `dars_yakuni` turidagi reklamani qaytaradi, oxirida esa
      obuna knopkasi va sozlangan bo'lsa tashqi CTA chiqadi).
      lessonOrder — dars yakunida qaysi qism edi. */
-  var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", slot:"", lessonOrder:0, onSubscribe:null, onOffer:null};
+  /* `paid` — reklamani KO'RSATISH shartimas, faqat dars yakunidagi obuna
+     kartasini chizish uchun. Kimga reklama tegishini SERVER hal qiladi
+     (`ad_placements_v1` dagi `audience`), shuning uchun obunachi ham
+     reklama olishi mumkin — u holda unga "obuna bo'ling" demaymiz. */
+  var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", slot:"", lessonOrder:0, paid:false, onSubscribe:null, onOffer:null};
   function isLessonEnd(){return CFG.slot==="lesson_end"}
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
@@ -598,13 +602,16 @@
     /* Dars yakunida obuna taklifi chiqadi — bu joyning butun ma'nosi.
        Ekran markazida esa chiqmaydi: u shunchaki reklama. */
     if(isLessonEnd()){
-      e.sub.hidden=false;
+      /* Obunachiga obuna taklif qilinmaydi. Joy auditoriyasi "hammaga"
+         bo'lsa u ham reklamani ko'radi — lekin ostida to'lov kartasi emas,
+         faqat reklamaning o'zi va ilova promosi qoladi. */
+      e.sub.hidden=!!CFG.paid;
       e.sub.textContent=String(t.adSubPay||"");
       e.sub.onclick=function(){
         closeCenterAd();
         if(typeof CFG.onSubscribe==="function")CFG.onSubscribe();
       };
-      if(typeof CFG.onOffer==="function"){try{CFG.onOffer()}catch(err){}}
+      if(!CFG.paid&&typeof CFG.onOffer==="function"){try{CFG.onOffer()}catch(err){}}
       /* Tashqi CTA (hamkorlik havolasi) modalning O'Z tugmasi orqali chiqadi
          — yuqoridagi `e.cta`. Eski overlayning `renderLessonEndExternal` i
          endi ko'rsatilmaydigan elementga yozardi. */

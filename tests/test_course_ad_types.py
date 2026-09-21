@@ -225,8 +225,20 @@ class CentreAdFlowTests(unittest.TestCase):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertIn("maybeShowAppOpenAd", html)
         self.assertIn("CourseAds.playScreenCenter()", html)
-        # Dars, chellenj yoki tur ochilayotgan bo'lsa reklama chiqmaydi.
-        self.assertIn("if(ctx&&(ctx.lesson>0||ctx.challenge>0||ctx.tour))return;", html)
+        # Dars, chellenj yoki tur ochilayotgan bo'lsa reklama ularning
+        # ustiga chiqmaydi — lekin TASHLAB HAM yuborilmaydi: kechiktiriladi
+        # va o'quvchi varaqni yopib qaytganda chiqadi. Profildagi tugma
+        # Mini App'ni har doim `resume=1` bilan ochgani uchun eski "return"
+        # markazdagi reklamani butun sessiya davomida o'chirib qo'yardi.
+        self.assertIn(
+            "if(ctx&&(ctx.lesson>0||ctx.challenge>0||ctx.tour)){CENTER_AD_PENDING=true;return}",
+            html,
+        )
+        close = html.index("closeSheet:function()")
+        self.assertIn(
+            "flushPendingCenterAd();",
+            html[close : html.index("openPaywall:function(", close)],
+        )
 
     def test_the_download_block_inside_the_ad_is_only_mounted_at_lesson_end(self):
         """Ilgari bu yerda `screen_center_ad` ga tushadigan tarmoq bor edi.
