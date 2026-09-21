@@ -501,14 +501,14 @@ internal fun HskCharacterStage(
             }
         ) {
             when (character) {
-                HskCharacter.Panda -> drawPanda(mood)
-                HskCharacter.Dragon -> drawDragon(mood)
-                HskCharacter.Crane -> drawCrane(mood)
-                HskCharacter.Monkey -> drawMonkey(mood)
-                HskCharacter.Rabbit -> drawRabbit(mood)
-            }
-            if (mood == HskCharacterMood.Loading) {
-                drawLoadingBook(rotation = loadingWiggle)
+                // The book each character reads while loading sits at a
+                // different spot on each of them, so it is drawn inside the
+                // character rather than pasted at one shared coordinate.
+                HskCharacter.Panda -> drawPanda(mood, loadingWiggle)
+                HskCharacter.Dragon -> drawDragon(mood, loadingWiggle)
+                HskCharacter.Crane -> drawCrane(mood, loadingWiggle)
+                HskCharacter.Monkey -> drawMonkey(mood, loadingWiggle)
+                HskCharacter.Rabbit -> drawRabbit(mood, loadingWiggle)
             }
         }
     }
@@ -547,12 +547,15 @@ internal fun HskCoachRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Big enough to be a character rather than an icon: at 62.dp the face
+        // was a smudge and the point of having a cast was lost. The bubble
+        // takes whatever is left, which is still ~200.dp on a 360.dp screen.
         HskCharacterStage(
             character = character,
             mood = mood,
             reaction = reaction,
             reactionKey = reactionKey,
-            modifier = Modifier.size(62.dp),
+            modifier = Modifier.size(96.dp),
         )
         if (text.isNotBlank()) {
             Surface(
@@ -594,97 +597,348 @@ internal fun HskCoachRow(
     }
 }
 
-private val Ink=Color(0xFF29241F); private val Fur=Color(0xFFFFFDF7); private val Cream=Color(0xFFFFF2D9)
-private fun DrawScope.sx(v:Float)=v*size.width/110f
-private fun DrawScope.sy(v:Float)=v*size.height/112f
-private fun DrawScope.eyes(mood:HskCharacterMood,l:Float,r:Float,y:Float,color:Color){
-    if(mood==HskCharacterMood.Celebrate||mood==HskCharacterMood.Correct){
-        listOf(l,r).forEach{cx-> val p=Path().apply{moveTo(sx(cx-4),sy(y));quadraticBezierTo(sx(cx),sy(y-4),sx(cx+4),sy(y))};drawPath(p,color,style=Stroke(width=sx(2f),cap=StrokeCap.Round))}
-    }else{
-        drawCircle(color,sx(2.4f),Offset(sx(l),sy(y)));drawCircle(color,sx(2.4f),Offset(sx(r),sy(y)))
+/*
+ * The cast, drawn.
+ *
+ * This is a port of the SVG in `app/static/assets/characters/hsk-character-pack.js`,
+ * and it is deliberately literal: the same coordinates, the same outlines, the
+ * same viewBox per character. The first port dropped all three and the result
+ * showed it — the crane and the rabbit are white animals, and without their
+ * outlines they simply vanished into the cream page, while a single shared
+ * viewBox of 110 squashed the panda (100 wide) by a tenth.
+ *
+ * Two rules keep it honest:
+ *  - every character declares the viewBox its SVG declares;
+ *  - a shape that is stroked in the SVG is stroked here, at the same width.
+ */
+
+private class CharPen(val ds: DrawScope, private val vw: Float, private val vh: Float) {
+    /** viewBox X -> pixels. Linear, so it scales relative deltas too. */
+    fun x(v: Float) = v * ds.size.width / vw
+    fun y(v: Float) = v * ds.size.height / vh
+
+    /**
+     * Stroke widths are authored in viewBox units. Scaling them by the smaller
+     * axis keeps an outline the same weight relative to the drawing instead of
+     * fattening it when the box is stretched.
+     */
+    fun w(v: Float) = v * minOf(ds.size.width / vw, ds.size.height / vh)
+
+    fun oval(color: Color, cx: Float, cy: Float, rx: Float, ry: Float) {
+        ds.drawOval(color, Offset(x(cx - rx), y(cy - ry)), Size(x(rx * 2), y(ry * 2)))
     }
-}
-private fun DrawScope.mouth(mood:HskCharacterMood,cx:Float,cy:Float,color:Color){
-    when(mood){
-        HskCharacterMood.Wrong,HskCharacterMood.OneHeart-> { val p=Path().apply{moveTo(sx(cx-5),sy(cy+3));quadraticBezierTo(sx(cx),sy(cy-2),sx(cx+5),sy(cy+3))};drawPath(p,color,style=Stroke(width=sx(2f),cap=StrokeCap.Round))}
-        HskCharacterMood.Celebrate,HskCharacterMood.Correct->drawOval(Color(0xFF9A4036),Offset(sx(cx-5),sy(cy-2)),Size(sx(10f),sy(7f)))
-        else->{val p=Path().apply{moveTo(sx(cx-5),sy(cy));quadraticBezierTo(sx(cx),sy(cy+5),sx(cx+5),sy(cy))};drawPath(p,color,style=Stroke(width=sx(2f),cap=StrokeCap.Round))}
-    }
-}
-private fun DrawScope.drawLoadingBook(rotation: Float) {
-    val cx = sx(52f)
-    val cy = sy(86f)
-    rotate(rotation, pivot = Offset(cx, cy)) {
-        val left = Path().apply {
-            moveTo(sx(35f), sy(78f))
-            quadraticBezierTo(sx(44f), sy(76f), sx(52f), sy(82f))
-            lineTo(sx(52f), sy(95f))
-            quadraticBezierTo(sx(44f), sy(89f), sx(35f), sy(91f))
-            close()
-        }
-        val right = Path().apply {
-            moveTo(sx(52f), sy(82f))
-            quadraticBezierTo(sx(61f), sy(76f), sx(70f), sy(79f))
-            lineTo(sx(70f), sy(92f))
-            quadraticBezierTo(sx(61f), sy(89f), sx(52f), sy(95f))
-            close()
-        }
-        drawPath(left, Color(0xFFFFF4DE))
-        drawPath(right, Color(0xFFFFE7B0))
-        drawPath(left, Ink, style = Stroke(width = sx(1.6f)))
-        drawPath(right, Ink, style = Stroke(width = sx(1.6f)))
-        drawLine(
-            color = Color(0xFFE04A40),
-            start = Offset(sx(52f), sy(82f)),
-            end = Offset(sx(52f), sy(95f)),
-            strokeWidth = sx(1.5f),
+
+    fun ovalOutlined(fill: Color, stroke: Color, width: Float, cx: Float, cy: Float, rx: Float, ry: Float) {
+        oval(fill, cx, cy, rx, ry)
+        ds.drawOval(
+            stroke,
+            Offset(x(cx - rx), y(cy - ry)),
+            Size(x(rx * 2), y(ry * 2)),
+            style = Stroke(width = w(width)),
         )
+    }
+
+    fun fill(path: Path, color: Color) = ds.drawPath(path, color)
+
+    fun outline(path: Path, color: Color, width: Float, cap: StrokeCap = StrokeCap.Butt) =
+        ds.drawPath(path, color, style = Stroke(width = w(width), cap = cap))
+
+    fun stroked(path: Path, color: Color, width: Float, cap: StrokeCap = StrokeCap.Round) =
+        ds.drawPath(path, color, style = Stroke(width = w(width), cap = cap))
+
+    fun path(build: PathBuilder.() -> Unit): Path {
+        val p = Path()
+        PathBuilder(this, p).build()
+        return p
+    }
+
+    fun rotated(degrees: Float, cx: Float, cy: Float, block: () -> Unit) {
+        ds.rotate(degrees, Offset(x(cx), y(cy))) { block() }
     }
 }
 
-private fun DrawScope.drawPanda(m:HskCharacterMood){
-    drawOval(Ink.copy(alpha=.18f),Offset(sx(23f),sy(103f)),Size(sx(54f),sy(6f)))
-    drawOval(Fur,Offset(sx(27f),sy(56f)),Size(sx(46f),sy(43f)));drawOval(Cream,Offset(sx(36f),sy(70f)),Size(sx(28f),sy(21f)))
-    drawCircle(Ink,sx(12f),Offset(sx(28f),sy(18f)));drawCircle(Ink,sx(12f),Offset(sx(72f),sy(18f)))
-    drawCircle(Ink,sx(30f),Offset(sx(50f),sy(40f)));drawCircle(Fur,sx(27.5f),Offset(sx(50f),sy(40f)))
-    rotate(-12f,Offset(sx(38f),sy(38f))){drawOval(Ink,Offset(sx(29f),sy(26f)),Size(sx(18f),sy(24f)))}
-    rotate(12f,Offset(sx(62f),sy(38f))){drawOval(Ink,Offset(sx(53f),sy(26f)),Size(sx(18f),sy(24f)))}
-    eyes(m,38f,62f,38f,Color.White);drawOval(Cream,Offset(sx(39f),sy(49f)),Size(sx(22f),sy(16f)));mouth(m,50f,59f,Ink)
-    val up=m==HskCharacterMood.Celebrate||m==HskCharacterMood.Correct
-    val p1=Path().apply{moveTo(sx(34f),sy(70f));quadraticBezierTo(sx(if(up)17f else 20f),sy(if(up)43f else 87f),sx(if(up)24f else 30f),sy(if(up)38f else 91f))}
-    val p2=Path().apply{moveTo(sx(66f),sy(70f));quadraticBezierTo(sx(if(up)83f else 80f),sy(if(up)43f else 87f),sx(if(up)76f else 70f),sy(if(up)38f else 91f))}
-    drawPath(p1,Ink,style=Stroke(width=sx(10f),cap=StrokeCap.Round));drawPath(p2,Ink,style=Stroke(width=sx(10f),cap=StrokeCap.Round))
+/** Mirrors the SVG path commands so the coordinates can be copied verbatim. */
+private class PathBuilder(private val pen: CharPen, private val p: Path) {
+    fun m(vx: Float, vy: Float) = p.moveTo(pen.x(vx), pen.y(vy))
+    fun l(vx: Float, vy: Float) = p.lineTo(pen.x(vx), pen.y(vy))
+    fun rl(dx: Float, dy: Float) = p.relativeLineTo(pen.x(dx), pen.y(dy))
+    fun rq(dx1: Float, dy1: Float, dx2: Float, dy2: Float) =
+        p.relativeQuadraticTo(pen.x(dx1), pen.y(dy1), pen.x(dx2), pen.y(dy2))
+    fun c(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) =
+        p.cubicTo(pen.x(x1), pen.y(y1), pen.x(x2), pen.y(y2), pen.x(x3), pen.y(y3))
+    fun close() = p.close()
 }
-private fun DrawScope.drawDragon(m:HskCharacterMood){
-    val red=Color(0xFFD84A3F);val dark=Color(0xFFA92F2A);val gold=Color(0xFFF1BE4A)
-    drawOval(Ink.copy(alpha=.18f),Offset(sx(27f),sy(104f)),Size(sx(68f),sy(6f)))
-    val tail=Path().apply{moveTo(sx(79f),sy(95f));cubicTo(sx(42f),sy(107f),sx(24f),sy(89f),sx(36f),sy(72f));cubicTo(sx(48f),sy(56f),sx(80f),sy(70f),sx(74f),sy(52f))}
-    drawPath(tail,dark,style=Stroke(width=sx(21f),cap=StrokeCap.Round));drawPath(tail,red,style=Stroke(width=sx(15f),cap=StrokeCap.Round))
-    drawOval(red,Offset(sx(27f),sy(32f)),Size(sx(46f),sy(38f)));drawOval(Cream,Offset(sx(36f),sy(42f)),Size(sx(28f),sy(16f)))
-    eyes(m,40f,60f,48f,Ink);mouth(m,50f,65f,Ink)
-    val horn=Path().apply{moveTo(sx(34f),sy(34f));lineTo(sx(26f),sy(21f));lineTo(sx(40f),sy(28f));moveTo(sx(63f),sy(33f));lineTo(sx(72f),sy(19f));lineTo(sx(70f),sy(35f))}
-    drawPath(horn,gold,style=Stroke(width=sx(3f),cap=StrokeCap.Round))
+
+private val ShadowInk = Color(0xFF211D17)
+
+private fun CharPen.shadow(cx: Float, cy: Float, rx: Float, ry: Float) {
+    oval(ShadowInk.copy(alpha = .16f), cx, cy, rx, ry)
 }
-private fun DrawScope.drawCrane(m:HskCharacterMood){
-    val white=Color(0xFFFFFDF8);val gray=Color(0xFFD8D7D2);val red=Color(0xFFD74A42);val gold=Color(0xFFE8B84B)
-    drawOval(Ink.copy(alpha=.18f),Offset(sx(26f),sy(104f)),Size(sx(50f),sy(5f)))
-    drawOval(white,Offset(sx(29f),sy(57f)),Size(sx(46f),sy(40f)));drawOval(gray.copy(alpha=.8f),Offset(sx(51f),sy(62f)),Size(sx(20f),sy(31f)))
-    val neck=Path().apply{moveTo(sx(53f),sy(64f));cubicTo(sx(44f),sy(49f),sx(46f),sy(34f),sx(52f),sy(25f));cubicTo(sx(57f),sy(17f),sx(65f),sy(18f),sx(69f),sy(25f))}
-    drawPath(neck,white,style=Stroke(width=sx(13f),cap=StrokeCap.Round));drawCircle(white,sx(10f),Offset(sx(61f),sy(25f)));drawCircle(red,sx(5f),Offset(sx(61f),sy(16f)))
-    eyes(m,59f,64f,25f,Ink);val beak=Path().apply{moveTo(sx(70f),sy(25f));lineTo(sx(88f),sy(29f));lineTo(sx(70f),sy(34f));close()};drawPath(beak,gold)
+
+/**
+ * Eyes, by mood — the SVG's `eyes()`, including the white catchlight that
+ * makes a face look alive rather than printed.
+ */
+private fun CharPen.eyes(mood: HskCharacterMood, x1: Float, x2: Float, yv: Float, ink: Color) {
+    when (mood) {
+        HskCharacterMood.Celebrate, HskCharacterMood.Proud -> {
+            listOf(x1, x2).forEach { cx ->
+                stroked(path { m(cx - 5f, yv + 1f); rq(5f, -6f, 10f, 0f) }, ink, 2.7f)
+            }
+        }
+        HskCharacterMood.Wrong, HskCharacterMood.OneHeart -> {
+            oval(ink, x1, yv, 3.3f, 4.4f)
+            oval(ink, x2, yv, 3.3f, 4.4f)
+            listOf(x1, x2).forEach { cx ->
+                stroked(path { m(cx - 5f, yv - 7f); rq(5f, -3f, 10f, 0f) }, ink, 2f)
+            }
+        }
+        HskCharacterMood.Dismissive -> {
+            stroked(path { m(x1 - 5f, yv); rl(10f, 0f) }, ink, 2.5f)
+            oval(ink, x2 + 1f, yv, 3.2f, 4f)
+        }
+        else -> {
+            oval(ink, x1, yv, 3.5f, 4.5f)
+            oval(ink, x2, yv, 3.5f, 4.5f)
+            oval(Color.White, x1 + 1f, yv - 1f, 1f, 1f)
+            oval(Color.White, x2 + 1f, yv - 1f, 1f, 1f)
+        }
+    }
 }
-private fun DrawScope.drawMonkey(m:HskCharacterMood){
-    val fur=Color(0xFFD7A250);val dark=Color(0xFF9D6B35);val face=Color(0xFFFFE4BB)
-    val tail=Path().apply{moveTo(sx(76f),sy(78f));quadraticBezierTo(sx(99f),sy(71f),sx(94f),sy(90f));quadraticBezierTo(sx(89f),sy(107f),sx(73f),sy(98f))}
-    drawPath(tail,dark,style=Stroke(width=sx(9f),cap=StrokeCap.Round));drawOval(fur,Offset(sx(25f),sy(56f)),Size(sx(50f),sy(46f)))
-    drawCircle(dark,sx(10f),Offset(sx(25f),sy(39f)));drawCircle(dark,sx(10f),Offset(sx(75f),sy(39f)));drawOval(fur,Offset(sx(23f),sy(18f)),Size(sx(54f),sy(50f)));drawOval(face,Offset(sx(32f),sy(30f)),Size(sx(36f),sy(34f)))
-    eyes(m,42f,58f,43f,Ink);mouth(m,50f,57f,Ink)
+
+/** Mouth, by mood — the SVG's `mouth()`. */
+private fun CharPen.mouth(mood: HskCharacterMood, cx: Float, cy: Float, ink: Color, accent: Color) {
+    when (mood) {
+        HskCharacterMood.Celebrate, HskCharacterMood.Correct ->
+            fill(
+                path {
+                    m(cx - 7f, cy - 2f); rq(7f, 10f, 14f, 0f); rq(-7f, 4f, -14f, 0f); close()
+                },
+                accent,
+            )
+        HskCharacterMood.Wrong, HskCharacterMood.OneHeart ->
+            stroked(path { m(cx - 6f, cy + 3f); rq(6f, -6f, 12f, 0f) }, ink, 2.3f)
+        HskCharacterMood.Dismissive ->
+            stroked(path { m(cx - 6f, cy); rq(6f, 2f, 12f, 0f) }, ink, 2.2f)
+        else ->
+            stroked(path { m(cx - 6f, cy); rq(6f, 5f, 12f, 0f) }, ink, 2.3f)
+    }
 }
-private fun DrawScope.drawRabbit(m:HskCharacterMood){
-    val white=Color(0xFFF8F3E8);val depth=Color(0xFFDDD0BD);val pink=Color(0xFFE9A8B2);val jade=Color(0xFF55A47A)
-    drawOval(white,Offset(sx(27f),sy(57f)),Size(sx(46f),sy(46f)));drawOval(depth,Offset(sx(52f),sy(62f)),Size(sx(18f),sy(35f)))
-    rotate(-8f,Offset(sx(37f),sy(20f))){drawOval(white,Offset(sx(27f),sy(-2f)),Size(sx(20f),sy(44f)));drawOval(pink.copy(alpha=.7f),Offset(sx(33f),sy(5f)),Size(sx(8f),sy(30f)))}
-    rotate(8f,Offset(sx(63f),sy(20f))){drawOval(white,Offset(sx(53f),sy(-2f)),Size(sx(20f),sy(44f)));drawOval(pink.copy(alpha=.7f),Offset(sx(59f),sy(5f)),Size(sx(8f),sy(30f)))}
-    drawCircle(white,sx(27f),Offset(sx(50f),sy(48f)));eyes(m,41f,59f,47f,Ink);drawCircle(pink,sx(3f),Offset(sx(50f),sy(55f)));mouth(m,50f,62f,Ink)
-    drawCircle(jade,sx(7f),Offset(sx(80f),sy(89f)))
+
+private fun CharPen.loadingBook(cxv: Float, cyv: Float, rotation: Float) {
+    rotated(rotation, cxv, cyv) {
+        val left = path {
+            m(cxv - 19f, cyv - 10f); rq(10f, -5f, 19f, 1f); rl(0f, 25f); rq(-9f, -6f, -19f, -1f); close()
+        }
+        val right = path {
+            m(cxv + 19f, cyv - 10f); rq(-10f, -5f, -19f, 1f); rl(0f, 25f); rq(9f, -6f, 19f, -1f); close()
+        }
+        fill(left, Color(0xFFFFF8E8)); fill(right, Color(0xFFFFF8E8))
+        outline(left, Color(0xFFA8782B), 2f); outline(right, Color(0xFFA8782B), 2f)
+        stroked(path { m(cxv, cyv - 9f); rl(0f, 25f) }, Color(0xFFD5A84C), 1.5f)
+    }
+}
+
+// --------------------------------------------------------------------------
+// panda — viewBox 0 0 100 110, role main_coach
+// --------------------------------------------------------------------------
+private fun DrawScope.drawPanda(m: HskCharacterMood, wiggle: Float) {
+    val pen = CharPen(this, 100f, 110f)
+    val ink = Color(0xFF29241F); val fur = Color(0xFFFFFDF7)
+    val depth = Color(0xFFD9BE94); val cream = Color(0xFFFFF2D9); val accent = Color(0xFF9A4036)
+    with(pen) {
+        shadow(50f, 103f, 27f, 5f)
+
+        val up = m == HskCharacterMood.Celebrate || m == HskCharacterMood.Correct
+        val proud = m == HskCharacterMood.Proud
+        val armL = when {
+            up -> path { m(35f, 69f); rq(-17f, -8f, -18f, -26f); rq(7f, -5f, 12f, 1f); rq(2f, 12f, 12f, 18f); close() }
+            proud -> path { m(34f, 70f); rq(4f, 14f, 16f, 12f); rq(-5f, -8f, -11f, -15f); close() }
+            else -> path { m(34f, 70f); rq(-13f, 3f, -14f, 17f); rq(7f, 5f, 13f, 0f); rq(1f, -9f, 5f, -13f); close() }
+        }
+        val armR = when {
+            up -> path { m(65f, 69f); rq(17f, -8f, 18f, -26f); rq(-7f, -5f, -12f, 1f); rq(-2f, 12f, -12f, 18f); close() }
+            proud -> path { m(66f, 70f); rq(-4f, 14f, -16f, 12f); rq(5f, -8f, 11f, -15f); close() }
+            else -> path { m(66f, 70f); rq(13f, 3f, 14f, 17f); rq(-7f, 5f, -13f, 0f); rq(-1f, -9f, -5f, -13f); close() }
+        }
+        fill(armL, ink); fill(armR, ink)
+        oval(ink, 38f, 98f, 9f, 6f); oval(ink, 62f, 98f, 9f, 6f)
+
+        fill(path { m(31f, 96f); rq(-6f, -28f, 9f, -39f); rl(22f, 0f); rq(16f, 10f, 9f, 39f); rq(-20f, 9f, -40f, 0f); close() }, depth)
+        val belly = path { m(28f, 94f); rq(-4f, -26f, 9f, -35f); rl(26f, 0f); rq(13f, 9f, 9f, 35f); rq(-22f, 8f, -44f, 0f); close() }
+        fill(belly, fur); outline(belly, ink, 3f)
+        oval(cream, 50f, 80f, 14f, 10f)
+        oval(Color.White.copy(alpha = .75f), 43f, 71f, 9f, 4f)
+
+        oval(ink, 28f, 18f, 12f, 12f); oval(ink, 72f, 18f, 12f, 12f)
+        ovalOutlined(fur, ink, 3f, 50f, 40f, 29f, 29f)
+        fill(path { m(62f, 14f); rq(17f, 13f, 16f, 28f); rq(-2f, 18f, -19f, 25f); rq(12f, -18f, 3f, -53f); close() }, depth)
+
+        rotated(-12f, 38f, 38f) { oval(ink, 38f, 38f, 9f, 12f) }
+        rotated(12f, 62f, 38f) { oval(ink, 62f, 38f, 9f, 12f) }
+        eyes(m, 38f, 62f, 38f, Color.White)
+        oval(cream, 50f, 53f, 11f, 8f)
+        fill(path { m(46f, 49f); rq(4f, -3f, 8f, 0f); rq(-2f, 4f, -4f, 4f); rq(-2f, 0f, -4f, -4f); close() }, ink)
+        mouth(m, 50f, 57f, ink, accent)
+        oval(Color(0xFFF2B4BC), 30f, 50f, 4.5f, 3f); oval(Color(0xFFF2B4BC), 70f, 50f, 4.5f, 3f)
+        if (m == HskCharacterMood.Loading) loadingBook(50f, 82f, wiggle)
+    }
+}
+
+// --------------------------------------------------------------------------
+// dragon — viewBox 0 0 110 112, role energy_milestone
+// --------------------------------------------------------------------------
+private fun DrawScope.drawDragon(m: HskCharacterMood, wiggle: Float) {
+    val pen = CharPen(this, 110f, 112f)
+    val red = Color(0xFFD84A3F); val deep = Color(0xFFA92F2A); val gold = Color(0xFFF1BE4A)
+    val ink = Color(0xFF30251F); val cream = Color(0xFFFFF3D7)
+    with(pen) {
+        shadow(61f, 104f, 34f, 5f)
+        stroked(path { m(79f, 95f); c(42f, 107f, 24f, 89f, 36f, 72f); c(48f, 56f, 80f, 70f, 74f, 52f); c(68f, 34f, 40f, 42f, 34f, 58f) }, deep, 21f)
+        stroked(path { m(79f, 92f); c(46f, 102f, 31f, 87f, 41f, 74f); c(51f, 62f, 75f, 73f, 69f, 53f); c(64f, 39f, 45f, 44f, 39f, 58f) }, red, 15f)
+        stroked(path { m(77f, 91f); c(49f, 97f, 39f, 86f, 46f, 76f); c(52f, 68f, 69f, 76f, 64f, 54f) }, gold.copy(alpha = .8f), 4f)
+
+        val spikes = path {
+            m(31f, 58f); rq(-12f, -9f, -8f, -22f); rl(8f, 6f); rq(-2f, -13f, 8f, -20f); rl(4f, 10f)
+            rq(6f, -13f, 17f, -11f); rl(-1f, 11f); rq(14f, -6f, 20f, 4f); rl(-9f, 7f); rq(11f, 4f, 8f, 14f); rl(-12f, -2f)
+        }
+        fill(spikes, red); outline(spikes, deep, 2.5f)
+
+        oval(red, 50f, 51f, 23f, 19f)
+        oval(Color(0xFFF37A6D), 42f, 43f, 10f, 6f)
+        val horns = path { m(34f, 34f); l(26f, 21f); l(40f, 28f); m(63f, 33f); l(72f, 19f); l(70f, 35f) }
+        fill(horns, gold); outline(horns, ink, 2f)
+        oval(cream, 39f, 48f, 7f, 8f); oval(cream, 61f, 48f, 7f, 8f)
+        eyes(m, 40f, 60f, 48f, ink)
+        oval(cream, 50f, 61f, 14f, 9f)
+        oval(ink, 44f, 59f, 1.6f, 1.6f); oval(ink, 56f, 59f, 1.6f, 1.6f)
+        mouth(m, 50f, 65f, ink, Color(0xFF742820))
+        stroked(path { m(30f, 58f); rq(-14f, 1f, -20f, -6f) }, ink, 1.4f)
+        stroked(path { m(31f, 62f); rq(-14f, 6f, -21f, 3f) }, ink, 1.4f)
+        stroked(path { m(70f, 58f); rq(14f, 1f, 20f, -6f) }, ink, 1.4f)
+        stroked(path { m(69f, 62f); rq(14f, 6f, 21f, 3f) }, ink, 1.4f)
+        if (m == HskCharacterMood.Loading) loadingBook(57f, 87f, wiggle)
+    }
+}
+
+// --------------------------------------------------------------------------
+// crane — viewBox 0 0 100 112, role grammar_precision
+// --------------------------------------------------------------------------
+private fun DrawScope.drawCrane(m: HskCharacterMood, wiggle: Float) {
+    val pen = CharPen(this, 100f, 112f)
+    val white = Color(0xFFFFFDF8); val shade = Color(0xFFD8D7D2)
+    val ink = Color(0xFF28231F); val red = Color(0xFFD74A42); val gold = Color(0xFFE8B84B)
+    val leg = Color(0xFF9E7040)
+    with(pen) {
+        shadow(51f, 105f, 25f, 4f)
+        // Legs and feet: without these the bird floats, and it is the first
+        // thing the eye reads as "wrong" even before the missing outlines.
+        stroked(path { m(50f, 93f); rq(-4f, 11f, -3f, 15f) }, leg, 3f)
+        stroked(path { m(58f, 92f); rq(3f, 11f, 2f, 16f) }, leg, 3f)
+        stroked(path { m(44f, 108f); rl(-10f, 0f) }, leg, 2f)
+        stroked(path { m(46f, 108f); rl(8f, 0f) }, leg, 2f)
+        stroked(path { m(60f, 108f); rl(-7f, 0f) }, leg, 2f)
+        stroked(path { m(60f, 108f); rl(11f, 0f) }, leg, 2f)
+
+        val celebrating = m == HskCharacterMood.Celebrate
+        val wingL = if (celebrating) {
+            path { m(48f, 69f); rq(-27f, -20f, -34f, -3f); rq(15f, 12f, 35f, 15f); close() }
+        } else {
+            path { m(42f, 71f); rq(-20f, 3f, -22f, 19f); rq(16f, 2f, 29f, -7f); close() }
+        }
+        val wingR = if (celebrating) {
+            path { m(55f, 69f); rq(28f, -20f, 35f, -3f); rq(-16f, 12f, -36f, 15f); close() }
+        } else {
+            path { m(59f, 71f); rq(18f, 4f, 20f, 18f); rq(-14f, 3f, -27f, -6f); close() }
+        }
+        fill(wingL, white); outline(wingL, ink, 2f)
+        fill(wingR, white); outline(wingR, ink, 2f)
+
+        ovalOutlined(white, ink, 2.4f, 52f, 77f, 23f, 20f)
+        fill(path { m(57f, 59f); rq(18f, 8f, 18f, 23f); rq(-8f, 14f, -24f, 15f); rq(12f, -17f, 6f, -38f); close() }, shade)
+
+        val neck = path { m(53f, 64f); c(44f, 49f, 46f, 34f, 52f, 25f); c(57f, 17f, 65f, 18f, 69f, 25f); c(62f, 31f, 61f, 42f, 64f, 58f) }
+        fill(neck, white); outline(neck, ink, 2.5f)
+
+        ovalOutlined(white, ink, 2.4f, 61f, 25f, 10f, 10f)
+        fill(path { m(55f, 17f); rq(7f, -8f, 14f, 0f) }, red)
+        eyes(m, 59f, 64f, 25f, ink)
+        val beak = path { m(70f, 25f); rl(18f, 4f); rl(-18f, 5f); close() }
+        fill(beak, gold); outline(beak, ink, 1.7f)
+        mouth(m, 62f, 33f, ink, red)
+        if (m == HskCharacterMood.Loading) loadingBook(48f, 83f, wiggle)
+    }
+}
+
+// --------------------------------------------------------------------------
+// monkey — viewBox 0 0 105 112, role drill_dialogue
+// --------------------------------------------------------------------------
+private fun DrawScope.drawMonkey(m: HskCharacterMood, wiggle: Float) {
+    val pen = CharPen(this, 105f, 112f)
+    val fur = Color(0xFFD7A250); val deep = Color(0xFF9D6B35)
+    val ink = Color(0xFF30251E); val face = Color(0xFFFFE4BB); val accent = Color(0xFF8C3E32)
+    with(pen) {
+        shadow(50f, 104f, 28f, 5f)
+        stroked(path { m(76f, 78f); rq(23f, -7f, 18f, 12f); rq(-5f, 17f, -21f, 8f) }, deep, 9f)
+
+        val celebrating = m == HskCharacterMood.Celebrate
+        if (celebrating) {
+            stroked(path { m(34f, 70f); rq(-15f, -10f, -13f, -26f) }, deep, 10f)
+            stroked(path { m(66f, 70f); rq(15f, -10f, 13f, -26f) }, deep, 10f)
+        } else {
+            stroked(path { m(34f, 70f); rq(-12f, 6f, -10f, 18f) }, deep, 10f)
+            stroked(path { m(66f, 70f); rq(12f, 6f, 10f, 18f) }, deep, 10f)
+        }
+
+        ovalOutlined(fur, ink, 2.6f, 50f, 79f, 25f, 23f)
+        oval(deep, 60f, 82f, 13f, 18f)
+        oval(deep, 38f, 99f, 9f, 6f); oval(deep, 62f, 99f, 9f, 6f)
+        oval(deep, 25f, 39f, 10f, 10f); oval(deep, 75f, 39f, 10f, 10f)
+        ovalOutlined(fur, ink, 2.6f, 50f, 43f, 27f, 25f)
+        fill(
+            path { m(31f, 35f); rq(19f, -22f, 38f, 0f); rq(-6f, -7f, -10f, 1f); rq(-9f, -8f, -18f, 0f); rq(-5f, -8f, -10f, -1f); close() },
+            Color(0xFFF0C77D),
+        )
+        oval(face, 50f, 47f, 18f, 17f)
+        eyes(m, 42f, 58f, 43f, ink)
+        oval(ink, 50f, 51f, 4f, 3f)
+        mouth(m, 50f, 57f, ink, accent)
+        if (m == HskCharacterMood.Loading) loadingBook(51f, 84f, wiggle)
+    }
+}
+
+// --------------------------------------------------------------------------
+// rabbit — viewBox 0 0 100 112, role memory_warning
+// --------------------------------------------------------------------------
+private fun DrawScope.drawRabbit(m: HskCharacterMood, wiggle: Float) {
+    val pen = CharPen(this, 100f, 112f)
+    val white = Color(0xFFF8F3E8); val depth = Color(0xFFDDD0BD)
+    val ink = Color(0xFF302A24); val pink = Color(0xFFE9A8B2)
+    val jade = Color(0xFF55A47A); val accent = Color(0xFF8D4038)
+    with(pen) {
+        shadow(50f, 105f, 27f, 5f)
+        rotated(-8f, 37f, 20f) {
+            ovalOutlined(white, ink, 2.4f, 37f, 20f, 10f, 22f)
+            oval(pink.copy(alpha = .7f), 37f, 20f, 4f, 15f)
+        }
+        rotated(8f, 63f, 20f) {
+            ovalOutlined(white, ink, 2.4f, 63f, 20f, 10f, 22f)
+            oval(pink.copy(alpha = .7f), 63f, 20f, 4f, 15f)
+        }
+        ovalOutlined(white, ink, 2.6f, 50f, 80f, 25f, 23f)
+        fill(path { m(58f, 59f); rq(18f, 10f, 16f, 29f); rq(-9f, 11f, -24f, 14f); rq(12f, -20f, 8f, -43f); close() }, depth)
+        ovalOutlined(white, ink, 2f, 34f, 100f, 10f, 6f)
+        ovalOutlined(white, ink, 2f, 66f, 100f, 10f, 6f)
+        ovalOutlined(white, ink, 2.6f, 50f, 48f, 27f, 27f)
+        oval(Color.White.copy(alpha = .8f), 41f, 37f, 10f, 6f)
+        eyes(m, 41f, 59f, 47f, ink)
+        fill(path { m(46f, 55f); rq(4f, -3f, 8f, 0f); rq(-2f, 4f, -4f, 4f); rq(-2f, 0f, -4f, -4f); close() }, pink)
+        mouth(m, 50f, 62f, ink, accent)
+        val arm = path { m(69f, 71f); rq(12f, 4f, 15f, 15f); rq(-8f, 4f, -15f, -2f); close() }
+        fill(arm, white); outline(arm, ink, 2f)
+        oval(jade, 80f, 89f, 7f, 7f)
+        stroked(path { m(80f, 82f); rl(0f, 14f) }, Color(0xFFD9F0E3).copy(alpha = .7f), 1.5f)
+        stroked(path { m(73f, 89f); rl(14f, 0f) }, Color(0xFFD9F0E3).copy(alpha = .7f), 1.5f)
+        if (m == HskCharacterMood.Loading) loadingBook(49f, 84f, wiggle)
+    }
 }

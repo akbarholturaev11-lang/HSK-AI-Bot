@@ -22,11 +22,13 @@
 
 .pcoach-dock.on { display: flex; }
 
+/* Big enough to be a character rather than an icon: at 62px the face was a
+   smudge and the point of having a cast was lost. */
 .pcoach {
-  width: 62px;
-  height: 68px;
-  min-height: 68px;
-  flex: 0 0 62px;
+  width: 92px;
+  height: 100px;
+  min-height: 100px;
+  flex: 0 0 92px;
   display: grid;
   place-items: center;
 }
@@ -69,9 +71,9 @@
 }
 
 .pcoach-dock.hero .pcoach {
-  width: 132px;
-  height: 140px;
-  min-height: 140px;
+  width: 168px;
+  height: 180px;
+  min-height: 180px;
   flex: 0 0 auto;
 }
 
@@ -84,11 +86,11 @@
 }
 
 @media (max-height: 650px) {
-  .pcoach-dock.hero .pcoach { width: 104px; height: 112px; min-height: 112px; }
+  .pcoach-dock.hero .pcoach { width: 132px; height: 142px; min-height: 142px; }
 }
 
 /* A short phone gives its height to the question, not to the coach. */
 @media (max-height: 650px) {
-  .pcoach { width: 52px; height: 56px; min-height: 56px; flex-basis: 52px; }
+  .pcoach { width: 76px; height: 82px; min-height: 82px; flex-basis: 76px; }
   .pcoach-bubble { font-size: 12px; padding: 8px 11px; }
 }

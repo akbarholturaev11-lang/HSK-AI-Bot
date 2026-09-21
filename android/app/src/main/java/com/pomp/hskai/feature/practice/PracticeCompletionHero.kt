@@ -198,7 +198,7 @@ private fun CompletionCharacter(reaction: PracticeCompletionReaction, pulseKey: 
         mood = completionMoodFor(reaction),
         reaction = completionReactionFor(reaction),
         reactionKey = reaction to pulseKey,
-        modifier = Modifier.size(152.dp),
+        modifier = Modifier.size(176.dp),
     )
 }
 
