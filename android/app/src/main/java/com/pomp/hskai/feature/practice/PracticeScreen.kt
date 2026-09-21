@@ -57,10 +57,15 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskCharacter
+import com.pomp.hskai.core.design.components.HskCharacterMood
+import com.pomp.hskai.core.design.components.HskCharacterReaction
+import com.pomp.hskai.core.design.components.HskCoachRow
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.design.components.hskReactionFor
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
@@ -456,10 +461,58 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
     // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
-    QuestionShell(stringResource(R.string.practice_progress, state.questionIndex + 1, session.questions.size), onCancel) {
+    // The progress line moves into the coach's bubble, so the shell's own
+    // header keeps only the way out. The exams, which have no coach, still
+    // pass their title and still show it.
+    val progress = stringResource(R.string.practice_progress, state.questionIndex + 1, session.questions.size)
+    QuestionShell(title = "", onCancel = onCancel) {
+        // The placement test answers each question on the spot — the right
+        // option and its explanation are already on screen — so a coach that
+        // reacts gives nothing away. The HSK exams withhold that until the
+        // end and deliberately have no coach at all.
+        val answered = state.selectedIndex != null
+        val isCorrect = answered && question.answerIndex == state.selectedIndex
+        PracticeCoachRow(
+            character = practiceCharacterFor(question),
+            mood = practiceMoodFor(if (answered) isCorrect else null),
+            reaction = if (answered) {
+                hskReactionFor(correct = isCorrect, streak = state.practiceStreak)
+            } else {
+                null
+            },
+            reactionKey = state.questionIndex to state.selectedIndex,
+            text = progress,
+        )
+        Spacer(Modifier.height(6.dp))
         PracticeQuestionCard(question, state.selectedIndex, state.isReviewAudioLoading, onSpeak, onSelect)
         PrimaryAction(if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.selectedIndex != null && !state.isCompleting) { onAdvance(language) }
     }
+}
+
+/**
+ * The coach's place on a practice question: the same row the lesson uses
+ * ([HskCoachRow]), so a learner moving between the two sees one character
+ * saying one kind of thing rather than two conventions.
+ *
+ * [text] is the screen's own context line, moved here instead of duplicated.
+ */
+@Composable
+internal fun PracticeCoachRow(
+    character: HskCharacter,
+    mood: HskCharacterMood,
+    reaction: HskCharacterReaction?,
+    reactionKey: Any?,
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    HskCoachRow(
+        character = character,
+        mood = mood,
+        reaction = reaction,
+        reactionKey = reactionKey,
+        text = text,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -545,14 +598,23 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
             .padding(start = 20.dp, end = 20.dp, top = 20.dp)
             .padding(bottom = 20.dp + LocalMainBottomInset.current),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
+        Row(
+            Modifier.fillMaxWidth(),
+            // A blank title means the coach is carrying it (see PracticeRun);
+            // the close button then keeps to its own side rather than
+            // drifting left into the gap an empty label leaves behind.
+            horizontalArrangement = if (title.isBlank()) Arrangement.End else Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (title.isNotBlank()) {
+                Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
+            }
             HskGlassButton(
                 text = stringResource(R.string.action_close),
                 onClick = onCancel,
             )
         }
-        Spacer(Modifier.height(16.dp)); content()
+        Spacer(Modifier.height(if (title.isBlank()) 6.dp else 16.dp)); content()
     }
 }
 

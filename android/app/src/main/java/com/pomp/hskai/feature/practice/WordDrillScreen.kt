@@ -47,6 +47,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.design.components.hskReactionFor
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.wordDrillAssistantContext
 import com.pomp.hskai.feature.limit.LimitGate
@@ -170,8 +171,20 @@ private fun DrillQuestionBody(
             .fillMaxSize()
             .padding(horizontal = 18.dp),
     ) {
-        Spacer(Modifier.height(10.dp))
-        Text(
+        Spacer(Modifier.height(6.dp))
+
+        // The drill's instruction is what the coach is saying — it used to be
+        // a grey line on its own above the card. Recognition is the crane's
+        // precision work, pronunciation the monkey's dialogue drill.
+        PracticeCoachRow(
+            character = drillCharacterFor(state.mode),
+            mood = practiceMoodFor(if (state.isAnswered) state.wasCorrect else null),
+            reaction = if (state.isAnswered) {
+                hskReactionFor(correct = state.wasCorrect, streak = state.answerStreak)
+            } else {
+                null
+            },
+            reactionKey = state.index to state.isAnswered,
             text = stringResource(
                 if (state.mode == DrillMode.RECOGNITION) {
                     R.string.drill_recognition_prompt
@@ -179,11 +192,8 @@ private fun DrillQuestionBody(
                     R.string.drill_pronunciation_prompt
                 }
             ),
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-            fontWeight = FontWeight.Medium,
-            color = PompColors.InkSecondary,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
 
         HskGlassSurface(
             modifier = Modifier.fillMaxWidth(),

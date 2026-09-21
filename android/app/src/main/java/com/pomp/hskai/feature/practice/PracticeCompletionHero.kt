@@ -1,9 +1,5 @@
 package com.pomp.hskai.feature.practice
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,17 +22,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskCelebrationStage
+import com.pomp.hskai.core.design.components.HskCharacterStage
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.HskStreakCelebration
-import kotlinx.coroutines.delay
 
 /**
  * The flame screen after a practice round, on the same stage a lesson uses.
@@ -140,8 +131,8 @@ internal fun PracticeCompletionHero(
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CompletionPanda(
-                drawable = pandaFor(outcome.reaction),
+            CompletionCharacter(
+                reaction = outcome.reaction,
                 pulseKey = outcome.score * 101 + outcome.total,
             )
             Spacer(Modifier.height(10.dp))
@@ -192,38 +183,22 @@ private fun completionTitle(outcome: PracticeCompletionOutcome): String = when {
     else -> stringResource(R.string.practice_result_title)
 }
 
-private fun pandaFor(reaction: PracticeCompletionReaction): Int = when (reaction) {
-    PracticeCompletionReaction.CELEBRATE -> R.drawable.widget_panda_celebrate
-    PracticeCompletionReaction.CHEER -> R.drawable.widget_panda_cheer
-    PracticeCompletionReaction.CALM -> R.drawable.widget_panda_calm
-    PracticeCompletionReaction.FOCUS -> R.drawable.widget_panda_focus
-}
-
+/**
+ * The face that closes a session.
+ *
+ * This used to be one of four flat `widget_panda_*` drawables — the widget's
+ * artwork, borrowed. The lesson now ends on the live cast, and a session that
+ * ended with a drawn panda while the lesson ended with a moving one read as
+ * two different apps. Same renderer, same timings, one character system.
+ */
 @Composable
-private fun CompletionPanda(drawable: Int, pulseKey: Int) {
-    var entered by remember(drawable, pulseKey) { mutableStateOf(false) }
-    LaunchedEffect(drawable, pulseKey) {
-        entered = false
-        delay(40)
-        entered = true
-    }
-    val scale by animateFloatAsState(
-        targetValue = if (entered) 1f else 0.72f,
-        animationSpec = tween(480, easing = FastOutSlowInEasing),
-        label = "practice-panda-scale",
-    )
-    val alpha by animateFloatAsState(
-        targetValue = if (entered) 1f else 0f,
-        animationSpec = tween(240),
-        label = "practice-panda-alpha",
-    )
-    Image(
-        painter = painterResource(drawable),
-        contentDescription = null,
-        modifier = Modifier
-            .size(152.dp)
-            .scale(scale)
-            .alpha(alpha),
+private fun CompletionCharacter(reaction: PracticeCompletionReaction, pulseKey: Int) {
+    HskCharacterStage(
+        character = completionCharacterFor(reaction),
+        mood = completionMoodFor(reaction),
+        reaction = completionReactionFor(reaction),
+        reactionKey = reaction to pulseKey,
+        modifier = Modifier.size(152.dp),
     )
 }
 

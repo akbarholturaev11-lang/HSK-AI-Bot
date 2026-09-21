@@ -34,6 +34,12 @@ data class WordDrillUiState(
     val isAnswered: Boolean = false,
     val wasCorrect: Boolean = false,
     val correctCount: Int = 0,
+    /**
+     * Correct answers in a row, for the coach only: four of them turn its
+     * reaction from a jump into a celebration, the same ladder the lesson
+     * climbs. [correctCount] is the score and keeps counting; this resets.
+     */
+    val answerStreak: Int = 0,
     /** Pronunciation only: recording, scoring, and the score that came back. */
     val isRecording: Boolean = false,
     val isScoring: Boolean = false,
@@ -152,6 +158,7 @@ class WordDrillViewModel(
                 isAnswered = true,
                 wasCorrect = correct,
                 correctCount = it.correctCount + if (correct) 1 else 0,
+                answerStreak = if (correct) it.answerStreak + 1 else 0,
             )
         }
     }
@@ -196,6 +203,7 @@ class WordDrillViewModel(
                             wasCorrect = passed,
                             spokenScore = scored.value.score,
                             correctCount = it.correctCount + if (passed) 1 else 0,
+                            answerStreak = if (passed) it.answerStreak + 1 else 0,
                         )
                     }
                 }

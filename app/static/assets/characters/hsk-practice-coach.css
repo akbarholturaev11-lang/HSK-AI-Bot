@@ -1,0 +1,94 @@
+/* The coach row: character on the left, what it is telling you on the right.
+   Shared by the practice pages (mistakes, recognition, pronunciation) and,
+   through the same markup, by the lesson in course-v3.html.
+
+   It replaced a dock that put the character alone at the right edge with a
+   name tag beside it. That read as a sticker pasted onto the page: the
+   character sat in empty space, and the tag said who it was rather than
+   anything worth knowing. Here the character is attached to the sentence it
+   is saying, and that sentence is the question's own instruction — text the
+   page was already showing somewhere else. Nothing new is said, so nothing
+   new has to be translated.
+
+   Colours come from each page's own `:root` (--card, --line, --ink2), which
+   are identical across the practice pages and the course. */
+
+.pcoach-dock {
+  margin: 4px 18px 10px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.pcoach-dock.on { display: flex; }
+
+.pcoach {
+  width: 62px;
+  height: 68px;
+  min-height: 68px;
+  flex: 0 0 62px;
+  display: grid;
+  place-items: center;
+}
+
+.pcoach > .hsk-character { width: 100%; height: 100%; }
+
+/* The notched top-left corner is the course's existing speech-bubble shape
+   (`.teach-bub` in course-v3.html), reused rather than reinvented so a
+   drill's coach and the lesson's grammar teacher speak in the same shape.
+   The notch does the pointing, so there is no tail pseudo-element to keep
+   aligned — and the character stays OUTSIDE any clipping box, because a
+   jump or a celebration would otherwise be cut off at the avatar's edge. */
+.pcoach-bubble {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 4px 16px 16px 16px;
+  padding: 11px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink2);
+}
+
+/* An empty bubble is a box of nothing — hide it and let the character stand
+   on its own rather than pointing at blank space. */
+.pcoach-dock.mute .pcoach-bubble { display: none; }
+.pcoach-dock.mute { justify-content: flex-start; }
+
+/* The closing screen. Beside a question the coach is a small aside, but at
+   the end of a session it IS the screen — a 62px character next to a big
+   score reads as an afterthought. Here it stands up full size and centred,
+   with its line underneath, the way the Android completion hero already
+   does at 152.dp. */
+.pcoach-dock.hero {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 18px 4px;
+}
+
+.pcoach-dock.hero .pcoach {
+  width: 132px;
+  height: 140px;
+  min-height: 140px;
+  flex: 0 0 auto;
+}
+
+.pcoach-dock.hero .pcoach-bubble {
+  flex: 0 1 auto;
+  max-width: 300px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 16px;
+}
+
+@media (max-height: 650px) {
+  .pcoach-dock.hero .pcoach { width: 104px; height: 112px; min-height: 112px; }
+}
+
+/* A short phone gives its height to the question, not to the coach. */
+@media (max-height: 650px) {
+  .pcoach { width: 52px; height: 56px; min-height: 56px; flex-basis: 52px; }
+  .pcoach-bubble { font-size: 12px; padding: 8px 11px; }
+}

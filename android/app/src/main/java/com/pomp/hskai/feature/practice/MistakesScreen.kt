@@ -69,6 +69,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.design.components.hskReactionFor
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
@@ -513,19 +514,29 @@ internal fun MistakesReviewRun(
             }
         }
 
+        // A review is the rabbit's ground (`memory_warning`), but a mistake
+        // keeps the subject it came from — see `mistakeCharacterFor`. The
+        // verdict is the server's, so the coach only reacts once it lands.
+        //
+        // The category-and-position line used to sit above the question in
+        // small red caps; it is the coach's line now, moved rather than
+        // repeated. The question itself stays where it was, full size.
+        PracticeCoachRow(
+            character = mistakeCharacterFor(question.category),
+            mood = practiceMoodFor(state.reviewFeedback?.correct),
+            reaction = state.reviewFeedback?.let {
+                hskReactionFor(correct = it.correct, streak = state.reviewStreak)
+            },
+            reactionKey = state.reviewIndex to state.reviewFeedback?.correct,
+            text = "${mistakeCategoryLabel(question.category)} · ${stringResource(R.string.mistakes_question)} ${state.reviewIndex + 1} ${stringResource(R.string.mistakes_of)} ${session.questions.size}",
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+
         LazyColumn(
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp),
         ) {
             item {
-                Text(
-                    text = "${mistakeCategoryLabel(question.category)} · ${stringResource(R.string.mistakes_question)} ${state.reviewIndex + 1} ${stringResource(R.string.mistakes_of)} ${session.questions.size}",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 0.4.sp,
-                    color = PompColors.Cinnabar,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
                 Text(
                     text = question.prompt,
                     fontSize = 26.sp,

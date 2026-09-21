@@ -221,12 +221,24 @@ button{cursor:pointer}
 .fheart{display:flex;align-items:center;gap:3px;color:var(--cin);font-size:15px;font-weight:500}
 .fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fstage b{font-size:12px;color:var(--ink);font-weight:600;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fcoach-dock{min-height:78px;margin:0 18px 2px;display:none;align-items:center;justify-content:flex-end;gap:8px;pointer-events:none}
+/* Murabbiy qatori: chapda personaj, o'ngda u aytayotgan gap.
+   Ilgari personaj o'ng chetda YOLG'IZ turardi, yonida esa uning ISMI
+   yozilgan yorliq bor edi — ya'ni bo'sh joyda osilgan stikerga o'xshardi va
+   yorliq foydali hech narsa demasdi. Endi personaj o'z gapiga ulangan, gap
+   esa kartaning o'z ko'rsatmasi (`.qq`) — sahifada allaqachon bor matn,
+   ko'chiriladi, takrorlanmaydi. Yangi matn yo'q = yangi tarjima ham yo'q.
+   Mashq sahifalari ayni qatorni `hsk-practice-coach.css` dan oladi. */
+.fcoach-dock{margin:4px 18px 8px;display:none;align-items:center;gap:10px}
 .fcoach-dock.on{display:flex}
-.fcoach-label{max-width:130px;padding:6px 9px;border:1px solid var(--line);border-radius:11px;background:var(--card);color:var(--ink2);font-size:10px;font-weight:600;line-height:1.25;text-align:right;box-shadow:0 4px 12px rgba(33,29,23,.05)}
-.fcoach{width:70px;height:76px;min-height:76px;flex:0 0 70px;display:grid;place-items:center}
+.fcoach{width:62px;height:68px;min-height:68px;flex:0 0 62px;display:grid;place-items:center}
 .fcoach>.hsk-character{width:100%;height:100%}
-@media(max-height:650px){.fcoach-dock{min-height:64px}.fcoach{width:58px;height:62px;min-height:62px;flex-basis:58px}.fcoach-label{font-size:9px}}
+/* Pufak shakli `.teach-bub` dan olingan: burchagi kesilgan, ya'ni personajga
+   "qaraydi" — alohida uchburchak kerak emas. Personaj esa pufakdan TASHQARIDA
+   va hech qanday kesuvchi quti ichida emas: sakrash/bayram animatsiyasi
+   doira chetida qirqilib qolmasin. */
+.fcoach-bubble{flex:1 1 auto;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:11px 14px;font-size:13px;line-height:1.45;color:var(--ink2)}
+.fcoach-dock.mute .fcoach-bubble{display:none}
+@media(max-height:650px){.fcoach{width:52px;height:56px;min-height:56px;flex-basis:52px}.fcoach-bubble{font-size:12px;padding:8px 11px}}
 .fbody{flex:1;min-height:0;overflow-y:auto;padding:10px 18px 20px}
 .kicker{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 11px;border-radius:12px;margin:4px 0 14px}
 .k-word{background:var(--cinbg);color:var(--cin2)}.k-gram{background:#E7F0F8;color:#2F6F9E}.k-dia{background:var(--jadebg);color:var(--jade)}.k-check{background:var(--goldbg);color:var(--gold)}
@@ -1186,7 +1198,7 @@ button{cursor:pointer}
   <div class="flow" id="flow">
     <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
-    <div class="fcoach-dock" id="f-coach-dock" aria-hidden="true"><span class="fcoach-label" id="f-coach-label"></span><div class="fcoach hsk-character-stage" id="f-coach"></div></div>
+    <div class="fcoach-dock" id="f-coach-dock"><div class="fcoach hsk-character-stage" id="f-coach" aria-hidden="true"></div><p class="fcoach-bubble" id="f-coach-bubble"></p></div>
     <div class="fbody" id="f-body"></div>
     <button class="fcta" id="f-cta" onclick="Flow.next()"></button>
     <button class="writebtn" id="writebtn" onclick="App.openWriter(writeChar)" style="display:none" aria-label="Yozilishi"><span class="penwrap"><i class="ti ti-pencil"></i></span></button>
@@ -3120,22 +3132,37 @@ function lessonCardHasEmbeddedCoach(card){
   var t=String(card&&card.type||"");
   return t==="_basics"||t==="_grammar"||t==="pronunciation";
 }
+/* Murabbiyning gapi kartaning O'Z ko'rsatmasi (`.qq`). U karta chizilgandan
+   keyin ko'chiriladi — `renderLessonCoach` kartadan OLDIN chaqiriladi, ya'ni
+   shu payt `#f-body` da hali oldingi kartaning matni turadi. Mikrotask
+   `renderFlowCard` qaytgach, lekin ekran chizilgunga qadar ishlaydi, shuning
+   uchun ko'z bilan hech qanday sakrash ko'rinmaydi.
+   Ko'chiriladi — nusxalanmaydi: asl `.qq` yashiriladi, aks holda bitta gap
+   ekranda ikki marta turardi. */
+function syncLessonCoachLine(){
+  var dock=$("#f-coach-dock"),bubble=$("#f-coach-bubble");
+  if(!dock||!bubble)return;
+  var q=document.querySelector("#f-body .qq");
+  var text=q?String(q.textContent||"").trim():"";
+  if(q&&text)q.style.display="none";
+  bubble.textContent=text;
+  dock.classList.toggle("mute",!text);
+}
 function renderLessonCoach(card,mood){
-  var dock=$("#f-coach-dock"),host=$("#f-coach"),label=$("#f-coach-label");
+  var dock=$("#f-coach-dock"),host=$("#f-coach");
   if(!dock||!host)return;
   if(lessonCardHasEmbeddedCoach(card)){dock.classList.remove("on");host.innerHTML="";return}
   var id=feedbackCharacterId(card,true);
   dock.classList.add("on");
-  if(label)label.textContent=lessonCharacterLabel(id);
   host.innerHTML=lessonCharacterHtml(id,mood||"idle");
   host.setAttribute("data-character",id);
+  Promise.resolve().then(syncLessonCoachLine);
 }
 function reactLessonCoach(card,ok,reaction){
-  var dock=$("#f-coach-dock"),host=$("#f-coach"),label=$("#f-coach-label");
+  var dock=$("#f-coach-dock"),host=$("#f-coach");
   if(!dock||!host||lessonCardHasEmbeddedCoach(card))return;
   var id=feedbackCharacterId(card,ok);
   dock.classList.add("on");
-  if(label)label.textContent=lessonCharacterLabel(id);
   if(window.HSKCharacters&&HSKCharacters.mount)HSKCharacters.mount(host,id,feedbackMoodFromReaction(reaction));
   else host.innerHTML=lessonCharacterHtml(id,feedbackMoodFromReaction(reaction));
   host.setAttribute("data-character",id);

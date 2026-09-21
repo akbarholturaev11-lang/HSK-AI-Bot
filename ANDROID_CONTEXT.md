@@ -516,6 +516,72 @@ Yon ta'sir: `tests/test_trial_entry_points.py` dagi
 yangi haqiqatni qotiradi: profilda karta yo'q, lekin `startTrial`
 `LimitGate` ga ulangan.
 
+### 3.14 Personajlar mashqqa ham chiqdi, murabbiy qatori qayta ishlandi — 2026-09-21
+
+Dars 2026-09-20 da Mini App personajlar to'plamini oldi (5 personaj, 8
+kayfiyat, 11 reaksiya). Mashq esa olmadi: savollarda personaj umuman yo'q
+edi, yakunda esa hali ham **widget'ning statik `widget_panda_*` rasmi**
+turardi. Ya'ni bitta ilova ichida ikki xil dunyo edi.
+
+**Chizuvchi umumiy joyga chiqarildi.** `LessonCharacters.kt` dagi renderer
+`core/design/components/HskCharacters.kt` ga ko'chdi (`HskCharacter`,
+`HskCharacterMood`, `HskCharacterReaction`, `HskCharacterStage`,
+`hskReactionFor`). Dars fayli typealias qoldirdi — `LessonScreen.kt` va yangi
+kelgan `LessonCharacterParityTest` **o'zgarishsiz** ishlaydi. Sabab 3.7 dagi
+bilan bir xil: ikki nusxa vaqt o'tib bir-biridan ajraladi.
+
+**Qaysi ekranga qaysi personaj** — `feature/practice/PracticeCharacters.kt`.
+Tanlov ta'mga emas, paketdagi **rolga** asoslanadi
+(`hsk-character-pack.js` dagi `CAST`):
+
+| rol | personaj | nimani oladi |
+|---|---|---|
+| `main_coach` | Panda | o'qiladigan savol |
+| `grammar_precision` | Crane | grammatika, ieroglif tanish |
+| `drill_dialogue` | Monkey | tinglash, talaffuz |
+| `memory_warning` | Rabbit | xato takrori |
+| `energy_milestone` | Dragon | kuchli natija bilan yakun |
+
+**HSK imtihonlarida personaj ATAYLAB yo'q.** Imtihon to'g'ri javobni oxirigacha
+yashiradi (`ExamRun` ikkala holat uchun ham `false` uzatadi); javobga
+reaksiya qiladigan murabbiy esa javobni oshkor qilardi. Daraja aniqlash
+testida bor, chunki u har savoldan keyin javobni va izohni o'zi ko'rsatadi.
+
+**Mashqda `hearts` yo'q**, ya'ni "oxirgi yurak" pog'onasiga yetib bo'lmaydi —
+zinapoya ayri emas, umumiy. `practiceStreak` / `reviewStreak` /
+`answerStreak` faqat 4 ketma-ket to'g'ri javobdagi bayram uchun; ball
+serverda hisoblanadi.
+
+**Murabbiy qatori qayta ishlandi (ikkala klientda).** Ilgari personaj o'ng
+chetda YOLG'IZ turardi va yonida uning ISMI yozilgan yorliq bor edi — bo'sh
+joyda osilgan stikerga o'xshardi, yorliq esa foydali hech narsa demasdi.
+Endi: chapda personaj, o'ngda gap pufagi, ichida **ekranning o'z ko'rsatma
+qatori**. Pufak shakli `.teach-bub` dan olingan (burchagi kesilgan).
+
+Matn **ko'chiriladi, nusxalanmaydi** — shuning uchun yangi satr ham, yangi
+tarjima ham yo'q:
+
+| Ekran | Murabbiy nimani aytadi | Qayerdan olindi |
+|---|---|---|
+| Dars | kartaning `title` si | `CardTitle` (`LocalLessonCoachLine` orqali o'chadi) |
+| Xatolarim | `kategoriya · Savol N / M` | savol ustidagi qizil qator |
+| Ieroglif/talaffuz | bo'limning ko'rsatmasi | karta ustidagi kulrang qator |
+| Daraja testi | `N / M` | `QuestionShell` sarlavhasi |
+
+**Diqqat:** personaj hech qanday kesuvchi quti (`overflow:hidden`, doira
+avatar) ichiga solinmasin — sakrash va bayram animatsiyasi chetidan
+qirqiladi. Shuning uchun u pufakdan tashqarida turadi.
+
+Mini App tomonida ayni qator `app/static/assets/characters/hsk-practice-coach.{css,js}`
+da, uchala mashq sahifasi shundan foydalanadi. **Yangi fayl
+`COURSE_CHARACTER_ASSETS` allowlist'iga qo'shilishi SHART** (`app/main.py`),
+aks holda 404 bo'ladi va murabbiy jimgina ko'rinmay qoladi — sahifalar
+`window.PracticeCoach` ni tekshiradi.
+
+Qamrov: `PracticeCharacterParityTest` (7 ta) va
+`tests/test_course_character_assets.py` (imtihonda personaj yo'qligi,
+sahifalarning ulanishi, zinapoya va yakun chegaralari).
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.

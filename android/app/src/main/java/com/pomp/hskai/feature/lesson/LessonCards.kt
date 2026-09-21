@@ -71,6 +71,9 @@ import com.pomp.hskai.domain.model.UnsupportedCard
 @Composable
 internal fun CardTitle(text: String) {
     if (text.isBlank()) return
+    // The coach above the card is already saying this line; printing it here
+    // too would put the same sentence on screen twice.
+    if (text == LocalLessonCoachLine.current) return
     Text(text = text, style = MaterialTheme.typography.labelLarge, color = PompColors.CinnabarDark)
     Spacer(Modifier.height(8.dp))
 }

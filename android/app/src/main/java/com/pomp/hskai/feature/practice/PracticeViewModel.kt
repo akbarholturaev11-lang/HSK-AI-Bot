@@ -73,12 +73,21 @@ data class PracticeUiState(
     val questionIndex: Int = 0,
     val selectedIndex: Int? = null,
     val answers: Map<String, Int> = emptyMap(),
+    /**
+     * Correct answers in a row, for the coach only: four of them turn its
+     * reaction from a jump into a celebration, the same ladder the lesson
+     * climbs (`hskReactionFor`). Nothing is scored from it — the server
+     * grades the session from [answers].
+     */
+    val practiceStreak: Int = 0,
     val result: PracticeCompleteResponse? = null,
     val reviewSession: MistakeReviewSessionDto? = null,
     val reviewIndex: Int = 0,
     val reviewSelectedIndex: Int? = null,
     val reviewFeedback: MistakeReviewAnswerResponse? = null,
     val reviewAnswers: Map<String, Int> = emptyMap(),
+    /** Correct answers in a row in the mistake review; see [practiceStreak]. */
+    val reviewStreak: Int = 0,
     val reviewResult: MistakeReviewCompleteResponse? = null,
     /** A listening question is waiting for its audio from the server. */
     val isReviewAudioLoading: Boolean = false,
@@ -267,6 +276,7 @@ class PracticeViewModel(
                         isStarting = false,
                         session = result.value.session,
                         questionIndex = 0,
+                        practiceStreak = 0,
                     )
                 }
 
@@ -414,8 +424,18 @@ class PracticeViewModel(
     }
 
     fun selectPracticeOption(index: Int) {
-        if (_state.value.selectedIndex != null) return
-        _state.update { it.copy(selectedIndex = index) }
+        val current = _state.value
+        if (current.selectedIndex != null) return
+        // The pick is final the moment it lands (the guard above locks it), so
+        // this is where the run of correct answers grows or resets.
+        val question = current.session?.questions?.getOrNull(current.questionIndex)
+        val correct = question != null && question.answerIndex == index
+        _state.update {
+            it.copy(
+                selectedIndex = index,
+                practiceStreak = if (correct) it.practiceStreak + 1 else 0,
+            )
+        }
     }
 
     fun advancePractice(language: String) {
@@ -470,6 +490,7 @@ class PracticeViewModel(
                 questionIndex = 0,
                 selectedIndex = null,
                 answers = emptyMap(),
+                practiceStreak = 0,
                 result = null,
                 error = null,
             )
@@ -531,6 +552,7 @@ class PracticeViewModel(
                         isStarting = false,
                         reviewSession = result.value.session,
                         reviewIndex = 0,
+                        reviewStreak = 0,
                     )
                 }
 
@@ -559,6 +581,8 @@ class PracticeViewModel(
                     it.copy(
                         reviewFeedback = result.value,
                         reviewAnswers = it.reviewAnswers + (question.id to index),
+                        // The server, not the client, decides a review answer.
+                        reviewStreak = if (result.value.correct) it.reviewStreak + 1 else 0,
                     )
                 }
 
@@ -617,6 +641,7 @@ class PracticeViewModel(
                 reviewSelectedIndex = null,
                 reviewFeedback = null,
                 reviewAnswers = emptyMap(),
+                reviewStreak = 0,
                 reviewResult = null,
                 error = null,
             )

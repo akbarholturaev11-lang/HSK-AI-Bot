@@ -51,6 +51,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .done button{width:100%;max-width:280px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
 .loading{margin:auto;color:var(--ink3)}
 </style>
+<link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-practice-coach.css?v=20260921a">
 <link href="/course_v3_data/desktop-download.css?v=20260920-1" rel="stylesheet">
 </head>
 <body>
@@ -63,12 +66,17 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
     <div class="hint" id="hint"></div>
     <button class="skip" id="skip" onclick="skipWord()"><span id="skiptxt"></span> <i class="ti ti-player-skip-forward"></i></button>
   </div>
-  <div class="done" id="done"><div class="st han">音</div><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
+  <!-- Bayram belgisi (音 doira) olib tashlandi: yakunda uning o'rnida
+       personaj turadi, ikkalasi bir xil narsani aytardi. -->
+  <div class="done" id="done"><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
 </div>
 <script defer src="hsk-words.js?v=20260905"></script>
 <script defer src="/course_v3_data/lesson_gate.js?v=20260905"></script>
 <script defer src="/course_v3_data/ads.js?v=20260921-1"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20260920-1"></script>
+<script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -106,6 +114,9 @@ function runGate(ref){
 }
 function showLimit(){SCRIPTS_READY.then(showLimitNow)}
 function showLimitNow(){
+  /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
+     unda savol ham, personaj ham yo'q. */
+  if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
   var d=document.getElementById('done');
   var adBtn="";
@@ -138,6 +149,9 @@ var TOTAL=10,list=[],i=0,okCount=0,busy=false;
    yuborish" bosilsa `i` IKKI marta oshib ketardi — reklama oralig'i
    indeksi o'tkazib yuborilar va oxirgi savol chizilmasdi. */
 var MAX_TRIES=3,tries=0,advancing=false;
+/* Talaffuz = `drill_dialogue` roli (hsk-character-pack.js dagi CAST).
+   Android ham aynan shu rolni beradi (PracticeCharacters.kt). */
+var COACH="monkey";
 /* Sessiya natijalari — interval takrori uchun. Talaffuz TO'G'RILIGINI
    server o'zi baholaydi, shuning uchun bu yerdan faqat `correct:false`
    yuboriladi: o'tkazib yuborish va 3 urinishdan keyingi taslim. */
@@ -216,14 +230,23 @@ function load(){
   /* Takror so'zda kichik belgi — o'quvchi moslashuvni KO'RSIN. */
   document.getElementById('cnt').innerHTML=(i+1)+' / '+list.length
     +(w.review?' <span class="pill" style="margin-left:6px">'+L.review+'</span>':'');
-  document.getElementById('hint').textContent=L.hint;
+  if(window.PracticeCoach)PracticeCoach.idle(COACH);
+  setHint(L.hint);
 }
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
 // Real pronunciation check: record mic -> server speech-to-text -> character-match score.
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null,MAX_REC_MS=4000,MIN_BYTES=1200;
 function setRec(on){var mw=document.getElementById('micwrap');if(on){mw.classList.add('rec');document.getElementById('mic').classList.add('rec')}else{mw.classList.remove('rec');document.getElementById('mic').classList.remove('rec')}}
-function setHint(t){document.getElementById('hint').textContent=t||""}
+/* Murabbiyning gapi shu yerdan o'tadi: tinglash, tahlil, qayta urinish,
+   mikrofon xatosi — hammasi. Bo'sh matn pufakni yo'q qiladi va personaj
+   yolg'iz qoladi, shuning uchun bo'sh bo'lsa umumiy ko'rsatmaga qaytadi.
+   Personaj paketi yuklanmasa — eski `#hint` qatori ishlayveradi. */
+function setHint(t){
+  var v=t||L.hint,el=document.getElementById('hint');
+  if(window.PracticeCoach&&window.PracticeCoach.say){PracticeCoach.say(v);if(el)el.textContent=""}
+  else if(el)el.textContent=v;
+}
 function pickMime(){var c=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/aac","audio/ogg;codecs=opus"];
   if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return"";
   for(var k=0;k<c.length;k++){if(MediaRecorder.isTypeSupported(c[k]))return c[k]}return""}
@@ -262,6 +285,7 @@ function onStopped(){
 function applyScore(score,heard){
   var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
   var he=document.getElementById('heard');if(he)he.textContent=heard?(L.heard+' '+heard):"";
+  if(window.PracticeCoach)PracticeCoach.answer(COACH,ok);
   if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';
     advance(1100);
   }else{
@@ -290,6 +314,9 @@ function skipWord(){
   /* O'tkazib yuborish ham XATO hisoblanadi — so'z ertaga qaytadi. */
   var w=list[i];
   if(w)RESULTS.push({hanzi:w.h,correct:false});
+  /* Ketma-ketlik uziladi, lekin personaj "xato" deb chayqalmaydi:
+     o'tkazib yuborish — o'quvchining tanlovi, xato javob emas. */
+  if(window.PracticeCoach)PracticeCoach.reset();
   advance(0);
 }
 function finish(){
@@ -297,6 +324,7 @@ function finish(){
   document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
   document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);
+  if(window.PracticeCoach)PracticeCoach.finish(okCount,list.length,L.doneSub);
   reportResults();}
 function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){
   // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
@@ -326,6 +354,7 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function
   list=planList(res&&res[2],pool);
   if(!list.length)list=shuffle(pool.slice()).slice(0,TOTAL).map(function(w){return {h:w.h,p:w.p,m:w.m,review:false}});
   i=0;okCount=0;busy=false;tries=0;advancing=false;
+  if(window.PracticeCoach){PracticeCoach.init({after:".top",lang:LANG});PracticeCoach.reset()}
   document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';
   document.getElementById('skiptxt').textContent=L.skip;
   load();

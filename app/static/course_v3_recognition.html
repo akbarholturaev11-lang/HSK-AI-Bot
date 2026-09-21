@@ -18,7 +18,6 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .pbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .35s}
 .pill{font-size:12px;font-weight:500;color:var(--cin2);background:var(--cinbg);border-radius:14px;padding:5px 11px}
 .body{flex:1;padding:8px 18px 0}
-.lead{font-size:13px;color:var(--ink2);text-align:center;margin:12px 0 10px}
 .target{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;text-align:center;margin-bottom:6px}
 .target .py{font-size:27px;color:var(--cin2);font-weight:500;line-height:1.2}
 .target .mn{font-size:15px;color:var(--ink);margin-top:9px;padding-top:10px;border-top:1px solid var(--line);line-height:1.45}
@@ -36,6 +35,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .done button{width:100%;max-width:280px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
 .loading{padding:60px 20px;text-align:center;color:var(--ink3)}
 </style>
+<link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-practice-coach.css?v=20260921a">
 <link href="/course_v3_data/desktop-download.css?v=20260920-1" rel="stylesheet">
 </head>
 <body>
@@ -47,6 +49,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/course_v3_data/lesson_gate.js?v=20260905"></script>
 <script defer src="/course_v3_data/ads.js?v=20260921-1"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20260920-1"></script>
+<script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -89,6 +94,9 @@ function runGate(ref){
 }
 function showLimit(){SCRIPTS_READY.then(showLimitNow)}
 function showLimitNow(){
+  /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
+     unda savol ham, personaj ham yo'q. */
+  if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=L.limitSub;
@@ -120,6 +128,8 @@ function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
 var TOTAL=10,pool=[],quiz=[],qi=0,score=0,answered=false;
+/* Tanish = `grammar_precision` roli (hsk-character-pack.js dagi CAST). */
+var COACH="crane";
 /* Sessiya natijalari. Xatolar "Xatolarim" bo'limiga, natijalar esa interval
    takroriga yoziladi (to'g'ri javob so'zni siyraklashtiradi, xato uni bugunga
    qaytaradi). Server FAQAT ieroglifni qabul qiladi — savol va to'g'ri javobni
@@ -236,10 +246,15 @@ function render(){
   var q=quiz[qi];
   /* Takror so'zda kichik belgi — o'quvchi moslashuvni KO'RSIN. Yangi
      so'zda hech narsa ko'rsatilmaydi. */
-  var mark=q.review?' <span class="pill" style="margin-left:6px">'+L.review+'</span>':'';
-  document.getElementById("body").innerHTML='<div class="lead">'+L.lead+mark+'</div>'
-    +'<div class="target"><div class="py">'+q.py+'</div><div class="mn">'+q.mn+'</div><button class="au" onclick="speak(\''+q.zh+'\')"><i class="ti ti-volume"></i>'+L.listen+'</button></div>'
+  var mark=q.review?" · "+L.review:"";
+  document.getElementById("body").innerHTML=
+    '<div class="target"><div class="py">'+q.py+'</div><div class="mn">'+q.mn+'</div><button class="au" onclick="speak(\''+q.zh+'\')"><i class="ti ti-volume"></i>'+L.listen+'</button></div>'
     +'<div class="grid">'+q.opts.map(function(o,k){return '<button class="tile" data-k="'+k+'" onclick="pick('+k+')"><span class="h han">'+o.h+'</span><span class="p">'+o.p+'</span></button>'}).join("")+'</div>';
+  /* Tanish — aniqlik ishi, ya'ni turnaning (`grammar_precision`) maydoni.
+     Android ham shu rolni beradi (PracticeCharacters.kt).
+     Ko'rsatma endi personajning gapida — yuqorida takrorlanmaydi. Takror
+     belgisi ham o'sha gapning bir qismi (ilgari alohida pill edi). */
+  if(window.PracticeCoach)PracticeCoach.idle(COACH,L.lead+mark);
 }
 function pick(k){
   if(answered)return;answered=true;var q=quiz[qi];
@@ -249,6 +264,7 @@ function pick(k){
   if(!ok)WRONG.push({hanzi:q.zh,selected:String(q.opts[k].h||"").slice(0,64)});
   RESULTS.push({hanzi:q.zh,correct:!!ok});
   if(ok){score++;document.getElementById("score").textContent=score+" ✓"}
+  if(window.PracticeCoach)PracticeCoach.answer(COACH,ok);
   beep(ok?[660,880]:[200,150]);haptic(ok);
   setTimeout(function(){qi++;render()},1050);
 }
@@ -256,11 +272,19 @@ function finish(){
   /* Reklama bilan kirilgan sessiya: oxirida majburiy yakuniy reklama. */
   reportWrong();
   document.getElementById("prog").style.width="100%";
-  document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
+  /* Yakuniy izoh endi personajning gapida — bu yerda takrorlanmaydi.
+     Tugma yuqorisidagi bo'shliq `p` bilan birga ketmasligi uchun qo'lda. */
+  /* Bayram belgisi (✓ doira) olib tashlandi: endi uning o'rnida personaj
+     turibdi va ikkalasi bir xil narsani aytardi. Limit ekranidagi `.st`
+     (qulf) joyida qoladi — u boshqa holat va unda personaj yo'q. */
+  document.getElementById("body").innerHTML='<div class="done"><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><button style="margin-top:20px" onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
+  if(window.PracticeCoach)PracticeCoach.finish(score,quiz.length,L.doneSub);
   beep([523,659,784,1046]);haptic(true);
 }
 function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
-var targets=pool.length>=4?planTargets(res&&res[2]):[];makeQuiz(targets);qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()})}
+var targets=pool.length>=4?planTargets(res&&res[2]):[];makeQuiz(targets);qi=0;score=0;document.getElementById("score").textContent="0 ✓";
+if(window.PracticeCoach){PracticeCoach.init({after:".top",lang:LANG});PracticeCoach.reset()}
+render()})}
 gateStart();
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">

@@ -43,6 +43,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,7 @@ import kotlin.math.PI
 import kotlin.math.sin
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskCoachRow
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskPrimaryButton
@@ -316,24 +318,24 @@ private fun LessonBody(
                 checked.isCorrect -> LessonCharacterMood.Correct
                 else -> LessonCharacterMood.Wrong
             }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                LessonCharacterStage(
-                    character = coachCharacter,
-                    mood = coachMood,
-                    reaction = coachReaction,
-                    reactionKey = state.cardIndex to checked?.isCorrect,
-                    modifier = Modifier.size(74.dp),
-                )
-            }
+            // The coach says the card's own instruction instead of standing
+            // alone beside a name tag. `CardTitle` reads the same line out of
+            // LocalLessonCoachLine and skips it, so it is moved, not doubled.
+            val coachLine = lessonCoachLine(card, state.currentSectionTitle)
+            HskCoachRow(
+                character = coachCharacter,
+                mood = coachMood,
+                reaction = coachReaction,
+                reactionKey = state.cardIndex to checked?.isCorrect,
+                text = coachLine,
+                modifier = Modifier.padding(horizontal = 18.dp),
+            )
 
             // The card sits in the middle of the free space instead of clinging to
             // the top-left corner; longer decks still scroll normally.
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
               val viewport = maxHeight
+              CompositionLocalProvider(LocalLessonCoachLine provides coachLine) {
               Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -378,6 +380,7 @@ private fun LessonBody(
                     )
                 }
                 Spacer(Modifier.height(24.dp))
+              }
               }
             }
 
