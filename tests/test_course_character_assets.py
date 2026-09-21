@@ -138,13 +138,31 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
         """An exam withholds the verdict until the end.
 
         A coach that reacts to an answer would hand over the answer, so the
-        test centre deliberately has no character at all. Android keeps the
-        same rule in `PracticeCharacters.kt` (ExamRun has no coach row).
+        HSK exams deliberately have no character. The placement test shares
+        the page but not the rule: it shows the right answer after every
+        question, so a coach there gives nothing away — which is exactly the
+        split Android draws in `PracticeCharacters.kt`.
+
+        Asserting on the page as a whole would therefore be wrong now; the
+        two renderers are what has to differ.
         """
         source = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
 
-        self.assertNotIn("PracticeCoach", source)
-        self.assertNotIn("/assets/characters/", source)
+        def body(name: str) -> str:
+            """The source of one top-level `function name(` up to the next."""
+            start = source.index(f"function {name}(")
+            rest = source[start + 1:]
+            end = rest.find("\nfunction ")
+            return rest if end < 0 else rest[:end]
+
+        self.assertNotIn("PracticeCoach", body("exRender"))
+        self.assertNotIn("PracticeCoach", body("exPick"))
+        self.assertNotIn("PracticeCoach", body("renderExamResult"))
+
+        placement = body("pRender")
+        self.assertIn("PracticeCoach.init(", placement)
+        self.assertIn('PracticeCoach.idle("panda"', placement)
+        self.assertIn("PracticeCoach.beside(", placement)
 
     def test_the_shared_coach_climbs_the_same_ladder_as_the_lesson(self):
         source = Path(

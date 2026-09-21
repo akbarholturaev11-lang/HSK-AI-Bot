@@ -252,7 +252,12 @@ function renderQuestion(){
   $("rv-body").innerHTML='<div class="rv-prompt">'+esc(q.prompt)+'</div>'+material+interaction+'<div id="rv-fb"></div>';
   $("rv-foot").innerHTML=isBuilderFormat(q.format)?'<button id="rv-builder-submit" disabled onclick="submitBuilder()"><i class="ti ti-check"></i> '+esc(L.check)+'</button>':"";
   if(isBuilderFormat(q.format))renderBuilderState();
-  if(window.PracticeCoach)PracticeCoach.idle(coachFor(q.category),RV.headline);
+  if(window.PracticeCoach){
+    PracticeCoach.idle(coachFor(q.category),RV.headline);
+    /* Savol personajning YONIDA: savol matni va material uning o'ng
+       ustuniga ko'chadi, javob tugmalari pastda to'liq enda qoladi. */
+    PracticeCoach.beside(document.querySelectorAll("#rv-body > .rv-prompt, #rv-body > .rv-material"));
+  }
 }
 function jsq(s){return String(s==null?"":s).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/[\r\n]/g," ").replace(/</g,"\\u003c")}
 function speakMistake(text){

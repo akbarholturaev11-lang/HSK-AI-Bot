@@ -111,11 +111,14 @@
    * render, so the node handed over here is always a fresh one and the slot
    * is emptied first. Passing nothing returns to the plain row.
    */
-  function beside(node) {
+  function beside(nodes) {
     if (!dock || !slotEl) return;
     slotEl.innerHTML = "";
-    if (!node) { dock.classList.remove("beside"); return; }
-    slotEl.appendChild(node);
+    // One node, or a NodeList/array of them — a question is sometimes a
+    // prompt AND the material under it.
+    var list = !nodes ? [] : (nodes.nodeType ? [nodes] : Array.prototype.slice.call(nodes));
+    if (!list.length) { dock.classList.remove("beside"); return; }
+    for (var i = 0; i < list.length; i++) slotEl.appendChild(list[i]);
     dock.classList.add("beside");
   }
 

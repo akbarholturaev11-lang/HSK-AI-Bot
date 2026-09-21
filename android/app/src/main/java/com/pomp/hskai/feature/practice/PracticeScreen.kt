@@ -60,6 +60,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskCharacter
 import com.pomp.hskai.core.design.components.HskCharacterMood
 import com.pomp.hskai.core.design.components.HskCharacterReaction
+import com.pomp.hskai.core.design.components.HskCoachBeside
 import com.pomp.hskai.core.design.components.HskCoachRow
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
@@ -461,18 +462,19 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
     // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
-    // The progress line moves into the coach's bubble, so the shell's own
-    // header keeps only the way out. The exams, which have no coach, still
-    // pass their title and still show it.
     val progress = stringResource(R.string.practice_progress, state.questionIndex + 1, session.questions.size)
-    QuestionShell(title = "", onCancel = onCancel) {
+    QuestionShell(title = progress, onCancel = onCancel) {
         // The placement test answers each question on the spot — the right
         // option and its explanation are already on screen — so a coach that
         // reacts gives nothing away. The HSK exams withhold that until the
         // end and deliberately have no coach at all.
+        //
+        // The coach says the question's instruction and the sentence stands
+        // next to it; the options stay full width below, where they need the
+        // room. The instruction used to be the card's own bold headline.
         val answered = state.selectedIndex != null
         val isCorrect = answered && question.answerIndex == state.selectedIndex
-        PracticeCoachRow(
+        HskCoachBeside(
             character = practiceCharacterFor(question),
             mood = practiceMoodFor(if (answered) isCorrect else null),
             reaction = if (answered) {
@@ -481,11 +483,60 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
                 null
             },
             reactionKey = state.questionIndex to state.selectedIndex,
-            text = progress,
-        )
-        Spacer(Modifier.height(6.dp))
-        PracticeQuestionCard(question, state.selectedIndex, state.isReviewAudioLoading, onSpeak, onSelect)
+            text = question.prompt.ifBlank { progress },
+        ) {
+            PracticeQuestionMaterial(question, state.isReviewAudioLoading, onSpeak)
+        }
+        Spacer(Modifier.height(14.dp))
+        PracticeQuestionOptions(question, state.selectedIndex, onSelect)
         PrimaryAction(if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.selectedIndex != null && !state.isCompleting) { onAdvance(language) }
+    }
+}
+
+/**
+ * What the question gives the learner to work on — the sentence, or the
+ * speaker when it is a listening question. The instruction is not here: the
+ * coach is saying it.
+ *
+ * Blank material (a bare prompt with nothing to read) draws nothing, so the
+ * coach is not left pointing at an empty card.
+ */
+@Composable
+private fun PracticeQuestionMaterial(
+    question: PracticeQuestionDto,
+    isAudioLoading: Boolean,
+    onSpeak: (String) -> Unit,
+) {
+    if (question.sentence.isBlank() && question.audioText.isBlank()) return
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 7.dp,
+    ) {
+        Column(
+            Modifier.padding(horizontal = 14.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            QuestionText("", question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
+        }
+    }
+}
+
+/** The answers, and the explanation once one has been picked. */
+@Composable
+private fun PracticeQuestionOptions(
+    question: PracticeQuestionDto,
+    selectedIndex: Int?,
+    onSelect: (Int) -> Unit,
+) {
+    question.options.forEachIndexed { index, option ->
+        val isPicked = selectedIndex == index
+        val isCorrect = selectedIndex != null && question.answerIndex == index
+        OptionRow(option, isPicked, isCorrect, isPicked && !isCorrect, selectedIndex == null) { onSelect(index) }
+    }
+    if (selectedIndex != null && question.explanation.isNotBlank()) {
+        Spacer(Modifier.height(10.dp))
+        Text(question.explanation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
     }
 }
 
@@ -513,20 +564,6 @@ internal fun PracticeCoachRow(
         text = text,
         modifier = modifier,
     )
-}
-
-@Composable
-private fun ReviewRun(state: PracticeUiState, onSelect: (Int) -> Unit, onAdvance: () -> Unit, onCancel: () -> Unit, onSpeak: (String) -> Unit) {
-    val session = state.reviewSession ?: return
-    val question = session.questions.getOrNull(state.reviewIndex) ?: return
-    // A listening question that has to be asked for is half a question. The
-    // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
-    // does this; advancing stops the previous one in the view model.
-    LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
-    QuestionShell(stringResource(R.string.practice_progress, state.reviewIndex + 1, session.questions.size), onCancel) {
-        ReviewQuestionCard(question, state.reviewSelectedIndex, state.reviewFeedback, state.isReviewAudioLoading, onSpeak, onSelect)
-        PrimaryAction(if (state.reviewIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.reviewFeedback != null && !state.isCompleting, onAdvance)
-    }
 }
 
 @Composable
@@ -615,52 +652,6 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
             )
         }
         Spacer(Modifier.height(if (title.isBlank()) 6.dp else 16.dp)); content()
-    }
-}
-
-@Composable
-private fun PracticeQuestionCard(question: PracticeQuestionDto, selectedIndex: Int?, isAudioLoading: Boolean, onSpeak: (String) -> Unit, onSelect: (Int) -> Unit) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 7.dp,
-    ) {
-        Column(Modifier.padding(18.dp)) {
-            QuestionText(question.prompt, question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
-            Spacer(Modifier.height(14.dp))
-            question.options.forEachIndexed { index, option ->
-                val isPicked = selectedIndex == index
-                val isCorrect = selectedIndex != null && question.answerIndex == index
-                OptionRow(option, isPicked, isCorrect, isPicked && !isCorrect, selectedIndex == null) { onSelect(index) }
-            }
-            if (selectedIndex != null && question.explanation.isNotBlank()) {
-                Spacer(Modifier.height(10.dp)); Text(question.explanation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ReviewQuestionCard(question: MistakeReviewQuestionDto, selectedIndex: Int?, feedback: MistakeReviewAnswerResponse?, isAudioLoading: Boolean, onSpeak: (String) -> Unit, onSelect: (Int) -> Unit) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 7.dp,
-    ) {
-        Column(Modifier.padding(18.dp)) {
-            QuestionText(question.prompt, question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
-            Spacer(Modifier.height(14.dp))
-            question.options.forEachIndexed { index, option ->
-                val isPicked = selectedIndex == index
-                val isCorrect = feedback?.correctIndex == index
-                OptionRow(option, isPicked, feedback != null && isCorrect, feedback != null && isPicked && !isCorrect, feedback == null) { onSelect(index) }
-            }
-            if (feedback != null) {
-                Spacer(Modifier.height(10.dp))
-                Text(if (feedback.correct) stringResource(R.string.lesson_correct) else stringResource(R.string.lesson_wrong), style = MaterialTheme.typography.titleSmall, color = if (feedback.correct) PompColors.Jade else PompColors.Flame)
-                Text(feedback.explanation.ifBlank { feedback.correctAnswer }, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-            }
-        }
     }
 }
 

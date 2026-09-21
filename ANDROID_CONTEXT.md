@@ -558,6 +558,26 @@ joyda osilgan stikerga o'xshardi, yorliq esa foydali hech narsa demasdi.
 Endi: chapda personaj, o'ngda gap pufagi, ichida **ekranning o'z ko'rsatma
 qatori**. Pufak shakli `.teach-bub` dan olingan (burchagi kesilgan).
 
+**Savol murabbiyning YONIDA turadi** (`HskCoachBeside`): chapda baland
+personaj (120×152.dp), o'ngda uning gapi va uning ostida savol materiali.
+Javob variantlari pastda, **to'liq enda** — ular ekrandagi eng keng narsa va
+tor ustundan birinchi bo'lib aziyat chekadi. Shu sababdan savol kartalari
+ikkiga bo'lindi: `ChoiceCardMaterial` / `ChoiceCardOptions` (dars) va
+`PracticeQuestionMaterial` / `PracticeQuestionOptions` (daraja testi).
+
+Darsda bu **faqat `ChoiceCard`** uchun — qolgan turlar (o'rgatuvchi kartalar,
+quruvchi, juftlik) murabbiyni tepada saqlaydi, chunki ularda yoniga
+qo'yadigan narsa yo'q.
+
+Mini App'da ayni narsa: savol kartasi murabbiyning o'ng ustuniga
+**ko'chiriladi** (`PracticeCoach.beside`, darsda `syncLessonCoachLine`),
+nusxalanmaydi — sahifalar markupni har savolda qaytadan quradi.
+
+**Diqqat — chizma nisbati.** `CharPen` yagona, bir xil masshtab beradi va
+chizmani qutiga markazlashtiradi. Eni va bo'yi alohida masshtablanganda
+118×150 qutida turnaning bo'yni o'ndan bir uzayib ketgan edi. Shu sababdan
+yo'l buyruqlarida absolyut (`px`/`py`) va nisbiy (`w`) o'lchovlar ajratilgan.
+
 Matn **ko'chiriladi, nusxalanmaydi** — shuning uchun yangi satr ham, yangi
 tarjima ham yo'q:
 

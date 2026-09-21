@@ -68,6 +68,7 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskCoachBeside
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.hskReactionFor
 import com.pomp.hskai.core.design.PompTextStyles
@@ -521,39 +522,40 @@ internal fun MistakesReviewRun(
         // The category-and-position line used to sit above the question in
         // small red caps; it is the coach's line now, moved rather than
         // repeated. The question itself stays where it was, full size.
-        PracticeCoachRow(
-            character = mistakeCharacterFor(question.category),
-            mood = practiceMoodFor(state.reviewFeedback?.correct),
-            reaction = state.reviewFeedback?.let {
-                hskReactionFor(correct = it.correct, streak = state.reviewStreak)
-            },
-            reactionKey = state.reviewIndex to state.reviewFeedback?.correct,
-            text = "${mistakeCategoryLabel(question.category)} · ${stringResource(R.string.mistakes_question)} ${state.reviewIndex + 1} ${stringResource(R.string.mistakes_of)} ${session.questions.size}",
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
-
         LazyColumn(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp),
         ) {
             item {
-                Text(
-                    text = question.prompt,
-                    fontSize = 26.sp,
-                    lineHeight = 35.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = PompColors.Ink,
-                    modifier = Modifier.padding(bottom = 20.dp),
-                )
-                if (question.audioText.isNotBlank() || question.sentence.isNotBlank() || question.pinyin.isNotBlank()) {
-                    ReviewMaterial(
-                        question = question,
-                        isAudioLoading = state.isReviewAudioLoading,
-                        audioError = state.reviewAudioError,
-                        onSpeak = { onSpeak(question.audioText) },
+                // The coach stands beside the question; the answers keep the
+                // full width below. The prompt shrinks from 26sp to 20sp in
+                // the narrower column — still the largest thing in it.
+                HskCoachBeside(
+                    character = mistakeCharacterFor(question.category),
+                    mood = practiceMoodFor(state.reviewFeedback?.correct),
+                    reaction = state.reviewFeedback?.let {
+                        hskReactionFor(correct = it.correct, streak = state.reviewStreak)
+                    },
+                    reactionKey = state.reviewIndex to state.reviewFeedback?.correct,
+                    text = "${mistakeCategoryLabel(question.category)} · ${stringResource(R.string.mistakes_question)} ${state.reviewIndex + 1} ${stringResource(R.string.mistakes_of)} ${session.questions.size}",
+                ) {
+                    Text(
+                        text = question.prompt,
+                        fontSize = 20.sp,
+                        lineHeight = 27.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = PompColors.Ink,
                     )
-                    Spacer(Modifier.height(16.dp))
+                    if (question.audioText.isNotBlank() || question.sentence.isNotBlank() || question.pinyin.isNotBlank()) {
+                        ReviewMaterial(
+                            question = question,
+                            isAudioLoading = state.isReviewAudioLoading,
+                            audioError = state.reviewAudioError,
+                            onSpeak = { onSpeak(question.audioText) },
+                        )
+                    }
                 }
+                Spacer(Modifier.height(16.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     question.options.forEachIndexed { index, option ->
                         MistakeReviewOption(

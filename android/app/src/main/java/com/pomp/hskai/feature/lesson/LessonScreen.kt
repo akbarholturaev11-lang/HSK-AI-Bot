@@ -73,6 +73,7 @@ import kotlin.math.PI
 import kotlin.math.sin
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskCoachBeside
 import com.pomp.hskai.core.design.components.HskCoachRow
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
@@ -322,14 +323,20 @@ private fun LessonBody(
             // alone beside a name tag. `CardTitle` reads the same line out of
             // LocalLessonCoachLine and skips it, so it is moved, not doubled.
             val coachLine = lessonCoachLine(card, state.currentSectionTitle)
-            HskCoachRow(
-                character = coachCharacter,
-                mood = coachMood,
-                reaction = coachReaction,
-                reactionKey = state.cardIndex to checked?.isCorrect,
-                text = coachLine,
-                modifier = Modifier.padding(horizontal = 18.dp),
-            )
+            // A question card stands the coach BESIDE it (further down, where
+            // the material and the answers can be split). Everything else —
+            // the teaching cards and the builders — keeps the coach above,
+            // because there is nothing there to put beside it.
+            if (card !is ChoiceCard) {
+                HskCoachRow(
+                    character = coachCharacter,
+                    mood = coachMood,
+                    reaction = coachReaction,
+                    reactionKey = state.cardIndex to checked?.isCorrect,
+                    text = coachLine,
+                    modifier = Modifier.padding(horizontal = 18.dp),
+                )
+            }
 
             // The card sits in the middle of the free space instead of clinging to
             // the top-left corner; longer decks still scroll normally.
@@ -355,15 +362,31 @@ private fun LessonBody(
                     )
                     is GrammarCard -> GrammarCardView(card, pinyin)
                     is PronunciationCard -> PronunciationCardView(card, pinyin, state.isAudioLoading, onPlayAudio, onAcknowledge)
-                    is ChoiceCard -> ChoiceCardView(
-                        card = card,
-                        pinyin = pinyin,
-                        selectedIndex = selectedIndex,
-                        isAnswered = state.isAnswered,
-                        isAudioLoading = state.isAudioLoading,
-                        onPlayAudio = onPlayAudio,
-                        onSelect = { index -> selectedIndex = index; onAnswerChoice(card, index) },
-                    )
+                    is ChoiceCard -> {
+                        // Coach on the left with the question beside it; the
+                        // answers below at full width.
+                        HskCoachBeside(
+                            character = coachCharacter,
+                            mood = coachMood,
+                            reaction = coachReaction,
+                            reactionKey = state.cardIndex to checked?.isCorrect,
+                            text = coachLine,
+                        ) {
+                            ChoiceCardMaterial(
+                                card = card,
+                                pinyin = pinyin,
+                                isAudioLoading = state.isAudioLoading,
+                                onPlayAudio = onPlayAudio,
+                            )
+                        }
+                        Spacer(Modifier.height(14.dp))
+                        ChoiceCardOptions(
+                            card = card,
+                            selectedIndex = selectedIndex,
+                            isAnswered = state.isAnswered,
+                            onSelect = { index -> selectedIndex = index; onAnswerChoice(card, index) },
+                        )
+                    }
                     is SentenceBuilderCard -> SentenceBuilderCardView(card, state.isAnswered) { onAnswerBuilder(card, it) }
                     is ReverseBuilderCard -> ReverseBuilderCardView(card, pinyin, state.isAnswered) { onAnswerBuilder(card, it) }
                     is MatchPairsCard -> MatchPairsCardView(card, state.isAnswered) { onAnswerPairs(card, it) }

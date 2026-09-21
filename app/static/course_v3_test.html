@@ -63,6 +63,9 @@ h1{font-size:23px}
 .pl .opt small{display:block;font-size:12px;color:var(--ink2);font-weight:400;margin-top:2px}
 .pl .opt .py{font-size:12px;color:var(--cin2);font-weight:400;margin-left:4px}
 </style>
+<link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
+<link rel="stylesheet" href="/assets/characters/hsk-practice-coach.css?v=20260921a">
 <link href="/course_v3_data/desktop-download.css?v=20260920-1" rel="stylesheet">
 </head>
 <body>
@@ -85,6 +88,9 @@ h1{font-size:23px}
 </div>
 <script defer src="/course_v3_data/ads.js?v=20260921-1"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20260920-1"></script>
+<script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -166,7 +172,7 @@ function renderHub(){
   }).join("");
   $("e-title").textContent=L.eTitle;$("e-sub").textContent=L.eSub;$("e-back").textContent=L.eBack;
 }
-function showHub(){$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on");$("exam").classList.remove("on")}
+function showHub(){if(window.PracticeCoach)PracticeCoach.hide();$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on");$("exam").classList.remove("on")}
 function openExam(which){
   var feature=which==="placement"?"placement":"training_test";
   var accessRef=gateRef(feature+":"+which,true);
@@ -280,8 +286,18 @@ function pRender(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
   var q=PQ[pi];
   $("placement").innerHTML='<div class="ptop"><button class="ix2" onclick="showHub()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(pi/QP.length*100)+'%"></i></div><span class="lvtag">'+PT.lvl+" "+q.lvl+'</span></div>'
-    +'<div class="qlead">'+PT.lead+'</div><div class="qcard"><div class="h han">'+q.h+'</div><div class="py">'+q.py+'</div></div>'
+    +'<div class="qcard"><div class="h han">'+q.h+'</div><div class="py">'+q.py+'</div></div>'
     +q.o.map(function(o,k){return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="pPick('+k+',this)"><span class="k">'+"ABC"[k]+'</span>'+esc(olang(o))+'</button>'}).join("");
+  /* Daraja aniqlash testida murabbiy BOR: u har savoldan keyin javobni va
+     izohni o'zi ko'rsatadi, ya'ni personaj hech narsani oshkor qilmaydi.
+     HSK imtihonlarida (`exRender`) esa YO'Q va bo'lmasligi ham kerak.
+     `#placement` har chizishda qaytadan quriladi, shuning uchun dok ham
+     qaytadan yasaladi — `init` uzilib qolgan dokni ko'rib qayta quradi. */
+  if(window.PracticeCoach){
+    PracticeCoach.init({after:"#placement .ptop",lang:LANG});
+    PracticeCoach.idle("panda",PT.lead);
+    PracticeCoach.beside(document.querySelector("#placement > .qcard"));
+  }
 }
 function pPick(k,el){
   document.querySelectorAll("#placement .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");

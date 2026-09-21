@@ -238,6 +238,14 @@ button{cursor:pointer}
    doira chetida qirqilib qolmasin. */
 .fcoach-bubble{flex:1 1 auto;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:11px 14px;font-size:13px;line-height:1.45;color:var(--ink2)}
 .fcoach-dock.mute .fcoach-bubble{display:none}
+/* Savol personajning YONIDA: chapda baland personaj, o'ngda uning gapi va
+   uning ostida savol kartasi. Javob tugmalari pastda to'liq enda qoladi —
+   ular ekrandagi eng keng narsa va tor ustundan birinchi bo'lib aziyat
+   chekadi. */
+.fcoach-dock.beside .fcoach{width:118px;height:150px;min-height:150px;flex:0 0 118px}
+.fcoach-col{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px}
+.fcoach-slot:empty{display:none}
+.fcoach-slot>*{margin:0!important}
 @media(max-height:650px){.fcoach{width:76px;height:82px;min-height:82px;flex-basis:76px}.fcoach-bubble{font-size:12px;padding:8px 11px}}
 .fbody{flex:1;min-height:0;overflow-y:auto;padding:10px 18px 20px}
 .kicker{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 11px;border-radius:12px;margin:4px 0 14px}
@@ -1198,7 +1206,7 @@ button{cursor:pointer}
   <div class="flow" id="flow">
     <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
-    <div class="fcoach-dock" id="f-coach-dock"><div class="fcoach hsk-character-stage" id="f-coach" aria-hidden="true"></div><p class="fcoach-bubble" id="f-coach-bubble"></p></div>
+    <div class="fcoach-dock" id="f-coach-dock"><div class="fcoach hsk-character-stage" id="f-coach" aria-hidden="true"></div><div class="fcoach-col"><p class="fcoach-bubble" id="f-coach-bubble"></p><div class="fcoach-slot" id="f-coach-slot"></div></div></div>
     <div class="fbody" id="f-body"></div>
     <button class="fcta" id="f-cta" onclick="Flow.next()"></button>
     <button class="writebtn" id="writebtn" onclick="App.openWriter(writeChar)" style="display:none" aria-label="Yozilishi"><span class="penwrap"><i class="ti ti-pencil"></i></span></button>
@@ -3140,13 +3148,23 @@ function lessonCardHasEmbeddedCoach(card){
    Ko'chiriladi — nusxalanmaydi: asl `.qq` yashiriladi, aks holda bitta gap
    ekranda ikki marta turardi. */
 function syncLessonCoachLine(){
-  var dock=$("#f-coach-dock"),bubble=$("#f-coach-bubble");
+  var dock=$("#f-coach-dock"),bubble=$("#f-coach-bubble"),slot=$("#f-coach-slot");
   if(!dock||!bubble)return;
   var q=document.querySelector("#f-body .qq");
   var text=q?String(q.textContent||"").trim():"";
   if(q&&text)q.style.display="none";
   bubble.textContent=text;
   dock.classList.toggle("mute",!text);
+  /* Savol personajning YONIGA ko'chiriladi: savol kartasi (`.qcard`) yoki
+     dialog (`.dia`) murabbiyning o'ng ustuniga o'tadi, javob tugmalari esa
+     `#f-body` da, to'liq enda qoladi. Kartasi yo'q turlar (quruvchi,
+     juftlik) o'z joyida qoladi — ko'chiradigan narsa yo'q. */
+  if(!slot)return;
+  slot.innerHTML="";
+  var material=document.querySelectorAll("#f-body > .qcard, #f-body > .dia");
+  if(!material.length){dock.classList.remove("beside");return}
+  for(var i=0;i<material.length;i++)slot.appendChild(material[i]);
+  dock.classList.add("beside");
 }
 function renderLessonCoach(card,mood){
   var dock=$("#f-coach-dock"),host=$("#f-coach");

@@ -404,6 +404,27 @@ fun ChoiceCardView(
     onSelect: (Int) -> Unit,
 ) {
     Column {
+        ChoiceCardMaterial(card, pinyin, isAudioLoading, onPlayAudio)
+        ChoiceCardOptions(card, selectedIndex, isAnswered, onSelect)
+    }
+}
+
+/**
+ * What the question gives the learner to work on: the sentence, the dialogue,
+ * or the speaker when it is a listening question.
+ *
+ * Kept apart from [ChoiceCardOptions] so the lesson can stand the coach next
+ * to the question while the answers keep the full width below — they are the
+ * widest thing on the screen and the first to suffer from a narrow column.
+ */
+@Composable
+internal fun ChoiceCardMaterial(
+    card: ChoiceCard,
+    pinyin: PinyinVisibility,
+    isAudioLoading: Boolean,
+    onPlayAudio: (String) -> Unit,
+) {
+    Column {
         CardTitle(card.title)
         when (card.kind) {
             ChoiceKind.LISTENING -> {
@@ -439,7 +460,18 @@ fun ChoiceCardView(
             }
             else -> CardPrompt(card.prompt)
         }
+    }
+}
 
+/** The answers. */
+@Composable
+internal fun ChoiceCardOptions(
+    card: ChoiceCard,
+    selectedIndex: Int?,
+    isAnswered: Boolean,
+    onSelect: (Int) -> Unit,
+) {
+    Column {
         card.options.forEachIndexed { index, option ->
             OptionRow(
                 text = option,

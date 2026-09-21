@@ -65,6 +65,11 @@
    block and simply fills the column. */
 .pcoach-slot:empty { display: none; }
 .pcoach-slot > * { margin: 0 !important; }
+.pcoach-slot > * + * { margin-top: 10px !important; }
+
+/* A 26px prompt written for the full width has to come down to fit the
+   column; it is still the largest thing in it. */
+.pcoach-slot .rv-prompt { font-size: 20px; line-height: 1.35; }
 
 .pcoach-bubble {
   flex: 1 1 auto;
