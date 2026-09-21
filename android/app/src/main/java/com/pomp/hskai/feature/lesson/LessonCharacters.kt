@@ -1,7 +1,6 @@
 package com.pomp.hskai.feature.lesson
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.keyframes
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -187,7 +185,7 @@ private fun DrawScope.drawPanda(m:LessonCharacterMood){
     drawOval(Ink.copy(alpha=.18f),Offset(sx(23f),sy(103f)),Size(sx(54f),sy(6f)))
     drawOval(Fur,Offset(sx(27f),sy(56f)),Size(sx(46f),sy(43f)));drawOval(Cream,Offset(sx(36f),sy(70f)),Size(sx(28f),sy(21f)))
     drawCircle(Ink,sx(12f),Offset(sx(28f),sy(18f)));drawCircle(Ink,sx(12f),Offset(sx(72f),sy(18f)))
-    drawCircle(Fur,sx(29f),Offset(sx(50f),sy(40f)),style=Stroke(width=sx(3f)));drawCircle(Fur,sx(27.5f),Offset(sx(50f),sy(40f)))
+    drawCircle(Ink,sx(30f),Offset(sx(50f),sy(40f)));drawCircle(Fur,sx(27.5f),Offset(sx(50f),sy(40f)))
     rotate(-12f,Offset(sx(38f),sy(38f))){drawOval(Ink,Offset(sx(29f),sy(26f)),Size(sx(18f),sy(24f)))}
     rotate(12f,Offset(sx(62f),sy(38f))){drawOval(Ink,Offset(sx(53f),sy(26f)),Size(sx(18f),sy(24f)))}
     eyes(m,38f,62f,38f,Color.White);drawOval(Cream,Offset(sx(39f),sy(49f)),Size(sx(22f),sy(16f)));mouth(m,50f,59f,Ink)
