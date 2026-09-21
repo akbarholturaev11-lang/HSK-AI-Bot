@@ -84,7 +84,7 @@ Implementation status: in progress. Placement practice and server-graded mistake
 - [x] Practice start/complete (placement flow).
 - [x] Mistakes overview + server-graded review + completion.
 - [x] Exam/test center with shared assessment lifecycle.
-- [ ] Recognition/word drill (server gate/word-plan/report transport is ready; native drill UI pending).
+- [x] Recognition/word drill with shared adaptive gate/word-plan/report lifecycle.
 - [ ] Pronunciation drill.
 - [x] Placement/mistakes result, retry and error states.
 
