@@ -37,6 +37,7 @@ final class AppModel: ObservableObject {
     let courseViewModel: CourseViewModel
     let practiceViewModel: PracticeViewModel
     let mistakesViewModel: MistakesViewModel
+    let examViewModel: ExamViewModel
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
     private var didRestore = false
@@ -51,6 +52,7 @@ final class AppModel: ObservableObject {
         let practiceAPI = IOSPracticeAPI(client: client, authSession: authSession)
         self.practiceViewModel = PracticeViewModel(api: practiceAPI)
         self.mistakesViewModel = MistakesViewModel(api: practiceAPI)
+        self.examViewModel = ExamViewModel(api: practiceAPI)
     }
 
     func restoreSession() async {
@@ -171,6 +173,7 @@ final class AppModel: ObservableObject {
         courseViewModel.reset()
         practiceViewModel.reset()
         mistakesViewModel.reset()
+        examViewModel.resetToCenter()
         phase = .signedOut
     }
 

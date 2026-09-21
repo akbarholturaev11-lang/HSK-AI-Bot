@@ -21,7 +21,8 @@ struct AppRootView: View {
                     account: account,
                     courseModel: model.courseViewModel,
                     practiceModel: model.practiceViewModel,
-                    mistakesModel: model.mistakesViewModel
+                    mistakesModel: model.mistakesViewModel,
+                    examModel: model.examViewModel
                 ) {
                     Task { await model.logout() }
                 }

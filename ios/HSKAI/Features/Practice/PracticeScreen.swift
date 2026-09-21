@@ -3,9 +3,11 @@ import SwiftUI
 struct PracticeScreen: View {
     @ObservedObject var model: PracticeViewModel
     @ObservedObject var mistakesModel: MistakesViewModel
+    @ObservedObject var examModel: ExamViewModel
     let account: LinkedAccount
 
     @State private var showingMistakes = false
+    @State private var showingExams = false
 
     var body: some View {
         NavigationStack {
@@ -32,6 +34,13 @@ struct PracticeScreen: View {
             MistakesScreen(
                 model: mistakesModel,
                 onClose: { showingMistakes = false }
+            )
+        }
+        .fullScreenCover(isPresented: $showingExams) {
+            ExamScreen(
+                model: examModel,
+                account: account,
+                onClose: { showingExams = false }
             )
         }
     }
@@ -103,6 +112,44 @@ struct PracticeScreen: View {
 
                             Image(systemName: "chevron.right")
                                 .font(.subheadline.weight(.bold))
+                                .foregroundStyle(HSKColors.inkSecondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    showingExams = true
+                } label: {
+                    HSKGlassCard(
+                        cornerRadius: 24,
+                        padding: 18,
+                        tint: HSKColors.auroraMint
+                    ) {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(HSKColors.jade.opacity(0.14))
+                                    .frame(width: 54, height: 54)
+                                Image(systemName: "checkmark.seal.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(HSKColors.jade)
+                            }
+
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("exam_center_title")
+                                    .font(.headline)
+                                    .foregroundStyle(HSKColors.ink)
+                                Text("exam_center_row_body")
+                                    .font(.caption)
+                                    .foregroundStyle(HSKColors.inkSecondary)
+                                    .multilineTextAlignment(.leading)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption.bold())
                                 .foregroundStyle(HSKColors.inkSecondary)
                         }
                     }

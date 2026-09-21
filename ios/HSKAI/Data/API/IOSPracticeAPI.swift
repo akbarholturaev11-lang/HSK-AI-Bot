@@ -27,6 +27,51 @@ struct IOSPracticeAPI: Sendable {
         )
     }
 
+    func startExam(
+        level: String,
+        language: String,
+        accessRef: String = "",
+        adSupported: Bool = false
+    ) async throws -> IOSExamStartResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/exams/start",
+            body: IOSExamStartRequest(
+                level: level,
+                language: language,
+                accessRef: accessRef,
+                adSupported: adSupported
+            ),
+            bearerToken: token
+        )
+    }
+
+    func completeExam(
+        session: IOSExamSession,
+        language: String,
+        answers: [String: Int]
+    ) async throws -> IOSExamCompleteResponse {
+        let token = try await authSession.bearerToken()
+        let ordered = session.questions.compactMap { question -> IOSExamAnswer? in
+            guard let selected = answers[question.id] else { return nil }
+            return IOSExamAnswer(
+                questionId: question.id,
+                selectedIndex: selected
+            )
+        }
+
+        return try await client.post(
+            "/api/v3/ios/exams/complete",
+            body: IOSExamCompleteRequest(
+                sessionId: session.id,
+                level: session.level,
+                language: language,
+                answers: ordered
+            ),
+            bearerToken: token
+        )
+    }
+
     func mistakes(
         category: String? = nil,
         limit: Int = 100,

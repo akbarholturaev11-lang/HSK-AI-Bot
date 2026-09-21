@@ -116,3 +116,20 @@
 "mistakes_review_empty" = "Ҳоло барои такрор хато нест.";
 "mistakes_review_done" = "Машқи хатоҳо анҷом ёфт";
 "mistakes_remaining" = "Хатоҳои фаъоли боқимонда: %d";
+
+"exam_center_title" = "Маркази тестҳои HSK";
+"exam_center_intro" = "Тести ҳақиқии HSK-ро аз сервер интихоб кунед. Натиҷа ва холҳои бахшҳоро сервер ҳисоб мекунад.";
+"exam_center_row_body" = "Тестҳои HSK 1–4 ва натиҷаҳои бахшҳо.";
+"exam_current_level" = "Сатҳи шумо";
+"exam_meta" = "%d савол · %d дақиқа";
+"exam_session_meta" = "%d дақиқа · холи гузариш %d%%";
+"exam_section_listening" = "Шунидан";
+"exam_section_reading" = "Хондан";
+"exam_section_writing" = "Навиштан";
+"exam_finish" = "Анҷоми тест";
+"exam_passed" = "Аз тест гузаштед";
+"exam_not_passed" = "Ин дафъа нагузаштед";
+"exam_result_score" = "%d / %d дуруст";
+"exam_start_error" = "Тести HSK кушода нашуд.";
+"exam_save_error" = "Натиҷаи тест сабт нашуд.";
+"exam_abandoned_error" = "Ин кӯшиши тестро идома додан мумкин нест. Тести нав оғоз кунед.";

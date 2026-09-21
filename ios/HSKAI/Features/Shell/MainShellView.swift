@@ -5,6 +5,7 @@ struct MainShellView: View {
     @ObservedObject var courseModel: CourseViewModel
     @ObservedObject var practiceModel: PracticeViewModel
     @ObservedObject var mistakesModel: MistakesViewModel
+    @ObservedObject var examModel: ExamViewModel
     let onLogout: () -> Void
 
     var body: some View {
@@ -15,6 +16,7 @@ struct MainShellView: View {
             PracticeScreen(
                 model: practiceModel,
                 mistakesModel: mistakesModel,
+                examModel: examModel,
                 account: account
             )
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }

@@ -116,3 +116,20 @@
 "mistakes_review_empty" = "Сейчас нет ошибок для повторения.";
 "mistakes_review_done" = "Работа над ошибками завершена";
 "mistakes_remaining" = "Осталось активных ошибок: %d";
+
+"exam_center_title" = "Центр тестов HSK";
+"exam_center_intro" = "Выберите настоящий HSK-тест с сервера. Итог и баллы по разделам рассчитывает сервер.";
+"exam_center_row_body" = "Тесты HSK 1–4 и результаты по разделам.";
+"exam_current_level" = "Ваш уровень";
+"exam_meta" = "%d вопросов · %d мин";
+"exam_session_meta" = "%d мин · проходной балл %d%%";
+"exam_section_listening" = "Аудирование";
+"exam_section_reading" = "Чтение";
+"exam_section_writing" = "Письмо";
+"exam_finish" = "Завершить тест";
+"exam_passed" = "Тест пройден";
+"exam_not_passed" = "В этот раз не пройден";
+"exam_result_score" = "%d / %d правильно";
+"exam_start_error" = "Не удалось открыть HSK-тест.";
+"exam_save_error" = "Не удалось сохранить результат теста.";
+"exam_abandoned_error" = "Эту попытку нельзя продолжить. Начните новый тест.";
