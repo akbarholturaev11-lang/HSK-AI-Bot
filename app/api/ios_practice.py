@@ -16,6 +16,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.api.desktop_voice import (
     DesktopVoicePronounceRequest,
+    DesktopVoiceStartRequest,
+    DesktopVoiceEndRequest,
     MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
     _decode_audio_data_url,
     _validated_payload as _validated_voice_payload,
@@ -388,6 +390,42 @@ def create_ios_practice_router(
             logger.exception("iOS drill report failed")
             return _error_response(DesktopPracticeError("ios_practice_unavailable", status_code=503))
 
+
+
+    @router.get("/api/v3/ios/voice/status")
+    async def ios_voice_status(request: Request):
+        try:
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await voice_service_factory(session).user_status(telegram_id)
+            return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, VoicePracticeError) as exc:
+            return _error_response(exc)
+
+    @router.post("/api/v3/ios/voice/session/start")
+    async def ios_voice_start(request: Request):
+        try:
+            payload = await _validated_voice_payload(request, DesktopVoiceStartRequest)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await voice_service_factory(session).start_session(
+                    telegram_id, role=payload.role, level=payload.level,
+                    language=payload.language, voice=payload.voice,
+                )
+            return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, VoicePracticeError) as exc:
+            return _error_response(exc)
+
+    @router.post("/api/v3/ios/voice/session/end")
+    async def ios_voice_end(request: Request):
+        try:
+            payload = await _validated_voice_payload(request, DesktopVoiceEndRequest)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await voice_service_factory(session).end_session(telegram_id, payload.session_id)
+            return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, VoicePracticeError) as exc:
+            return _error_response(exc)
 
     @router.post("/api/v3/ios/voice/pronounce")
     async def ios_voice_pronounce(request: Request):
