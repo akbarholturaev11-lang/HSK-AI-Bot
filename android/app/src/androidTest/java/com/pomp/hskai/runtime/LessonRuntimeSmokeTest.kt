@@ -9,10 +9,16 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pomp.hskai.core.design.PompHskAiTheme
+import com.pomp.hskai.core.settings.PinyinVisibility
+import com.pomp.hskai.domain.model.Lesson
+import com.pomp.hskai.domain.model.LessonSection
+import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.feature.lesson.LessonCharacter
 import com.pomp.hskai.feature.lesson.LessonCharacterMood
 import com.pomp.hskai.feature.lesson.LessonCharacterReaction
 import com.pomp.hskai.feature.lesson.LessonCharacterStage
+import com.pomp.hskai.feature.lesson.LessonScreen
+import com.pomp.hskai.feature.lesson.LessonUiState
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.practice.DrillMode
 import com.pomp.hskai.feature.practice.DrillQuestion
@@ -30,6 +36,7 @@ class LessonRuntimeSmokeTest {
 
     @Test
     fun every_character_and_loading_animation_composes_on_android() {
+        compose.mainClock.autoAdvance = false
         compose.setContent {
             PompHskAiTheme {
                 Column {
@@ -51,7 +58,67 @@ class LessonRuntimeSmokeTest {
     }
 
     @Test
+    fun real_lesson_screen_with_pronunciation_card_enters_and_survives_entry_animation() {
+        compose.mainClock.autoAdvance = false
+        val pronunciation = PronunciationCard(
+            materialRef = "lesson:hsk1:1:section:1:card:1",
+            phrase = "胖",
+            pinyin = "pàng",
+            translation = "фарбеҳ",
+        )
+        val lesson = Lesson(
+            level = "hsk1",
+            order = 1,
+            sourceLesson = 1,
+            part = 1,
+            partCount = 1,
+            isCheckpoint = false,
+            title = "Lesson 1",
+            subtitle = "",
+            sections = listOf(
+                LessonSection(
+                    sectionNo = 1,
+                    title = "Pronunciation",
+                    purpose = "practice",
+                    cards = listOf(pronunciation),
+                ),
+            ),
+        )
+
+        compose.setContent {
+            PompHskAiTheme {
+                LessonScreen(
+                    state = LessonUiState(
+                        isLoading = false,
+                        lesson = lesson,
+                        completionAllowed = true,
+                    ),
+                    pinyin = PinyinVisibility.ALL,
+                    onAnswerChoice = { _, _ -> },
+                    onAnswerBuilder = { _, _ -> },
+                    onAnswerPairs = { _, _ -> },
+                    onAcknowledge = {},
+                    onAdvance = {},
+                    onPlayAudio = {},
+                    onRetryCompletion = {},
+                    onOpenPinyinSettings = {},
+                    onOpenWriter = {},
+                    onShowWriterCharacter = {},
+                    onCloseWriter = {},
+                    onExit = {},
+                )
+            }
+        }
+
+        compose.mainClock.advanceTimeBy(1_500)
+        compose.onNodeWithText("胖").assertIsDisplayed()
+        compose.onNodeWithText("pàng").assertIsDisplayed()
+        compose.waitForIdle()
+    }
+
+    @Test
     fun pronunciation_drill_from_the_reported_screen_composes_without_crashing() {
+        compose.mainClock.autoAdvance = false
         compose.setContent {
             PompHskAiTheme {
                 WordDrillScreen(
@@ -87,6 +154,7 @@ class LessonRuntimeSmokeTest {
 
     @Test
     fun recognition_drill_feedback_composes_with_character_reaction() {
+        compose.mainClock.autoAdvance = false
         val question = DrillQuestion(
             hanzi = "学",
             pinyin = "xué",
