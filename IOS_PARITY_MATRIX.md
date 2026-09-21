@@ -13,7 +13,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Notification primer | `NotificationPrimerScreen.kt` | preferences | ✅ | Native permission request is user-triggered from Profile reminder control |
 | Course map | `CourseScreen.kt` | `GET /api/v3/ios/course/map` | ✅ | Native XP/streak/league/today/unit rendering |
 | Cached-first course | `CourseRepository.kt` | same | ✅ | Device/account-scoped disk cache + network revalidate |
-| Today plan | `TodayPlanCard.kt` | map `today` block | 🟡 | Summary rendered; task routing/actions pending |
+| Today plan | `TodayPlanCard.kt` | map `today` block | ✅ | Actionable task nodes + next-task CTA route to lesson/practice/mistakes/exam/drills/AI Voice |
 | Daily goal/preferences | `StudySetup*` | `/api/v3/ios/preferences/study` | ✅ | Native Profile daily minutes, XP goal and preferred-focus controls backed by shared preferences |
 | Lesson engine | `feature/lesson/*` | iOS lesson + complete | ✅ | Glass SwiftUI engine; choice/builder/match/grammar/vocab/pronunciation + checkpoint exit-ticket |
 | TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | shared course audio | 🟡 | Mandarin playback wired; server-byte cache/interruption parity pending |

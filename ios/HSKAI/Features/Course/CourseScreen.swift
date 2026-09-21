@@ -3,6 +3,7 @@ import SwiftUI
 struct CourseScreen: View {
     @ObservedObject var model: CourseViewModel
     let account: LinkedAccount
+    let onTodayTask: (IOSCourseTodayTask) -> Void
 
     @State private var foundationModel: FoundationViewModel?
     @State private var showingFoundation = false
@@ -47,7 +48,7 @@ struct CourseScreen: View {
                             }
 
                             if let today = map.today, !today.tasks.isEmpty {
-                                TodayPlanSummary(today: today)
+                                TodayPlanSummary(today: today, onTask: onTodayTask)
                             }
 
                             ForEach(map.units) { unit in
@@ -194,6 +195,7 @@ private struct CourseSummaryCard: View {
 
 private struct TodayPlanSummary: View {
     let today: IOSCourseToday
+    let onTask: (IOSCourseTodayTask) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -210,6 +212,9 @@ private struct TodayPlanSummary: View {
 
             HStack(spacing: 8) {
                 ForEach(Array(today.tasks.prefix(4))) { task in
+                    Button {
+                        if !task.done && task.available { onTask(task) }
+                    } label: {
                     VStack(spacing: 5) {
                         Image(systemName: taskIcon(task))
                             .font(.subheadline.weight(.semibold))
@@ -222,7 +227,28 @@ private struct TodayPlanSummary: View {
                             .lineLimit(1)
                     }
                     .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(task.done || !task.available)
                 }
+            }
+
+            if let next = today.tasks.first(where: { !$0.done && $0.available }) {
+                Button {
+                    onTask(next)
+                } label: {
+                    HStack(spacing: 7) {
+                        Text("today_plan_go").font(.subheadline.weight(.semibold))
+                        Image(systemName: "arrow.right")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(HSKGlassSecondaryButtonStyle())
+            } else if today.complete {
+                Label("today_plan_done", systemImage: "checkmark.circle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(HSKColors.jade)
+                    .frame(maxWidth: .infinity)
             }
         }
         .padding(16)

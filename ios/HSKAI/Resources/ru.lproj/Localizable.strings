@@ -223,3 +223,5 @@
 "profile_focus_grammar" = "Грамматика";
 "profile_preferences_saved" = "Сохранено";
 "action_save" = "Сохранить";
+"today_plan_go" = "Продолжить";
+"today_plan_done" = "План на сегодня выполнен";

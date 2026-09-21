@@ -16,10 +16,14 @@ struct MainShellView: View {
     @ObservedObject var reminderManager: StudyReminderManager
     let onLogout: () -> Void
     @State private var selection: IOSDeepLinkDestination = .course
+    @State private var practiceRequest: IOSPracticeLaunch?
+    @State private var requestedVoiceRole: String?
 
     var body: some View {
         TabView(selection: $selection) {
-            CourseScreen(model: courseModel, account: account)
+            CourseScreen(model: courseModel, account: account) { task in
+                routeTodayTask(task)
+            }
                 .tabItem { Label("tab_course", systemImage: "map.fill") }
                 .tag(IOSDeepLinkDestination.course)
 
@@ -30,6 +34,8 @@ struct MainShellView: View {
                 wordDrillModel: wordDrillModel,
                 pronunciationDrillModel: pronunciationDrillModel,
                 voiceModel: voiceModel,
+                launchRequest: practiceRequest,
+                onLaunchRequestConsumed: { practiceRequest = nil },
                 account: account
             )
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
@@ -50,12 +56,46 @@ struct MainShellView: View {
         .tint(HSKColors.cinnabar)
         .toolbarBackground(.ultraThinMaterial, for: .tabBar)
         .toolbarBackground(.visible, for: .tabBar)
+        .onChange(of: requestedVoiceRole) { _, role in
+            guard let role, !role.isEmpty else { return }
+            Task {
+                await voiceModel.start(role: role, account: account)
+                requestedVoiceRole = nil
+            }
+        }
         .onOpenURL { url in
             if let destination = IOSDeepLinkRouter.destination(for: url) {
                 selection = destination
             }
         }
     }
+
+    private func routeTodayTask(_ task: IOSCourseTodayTask) {
+        guard task.available, !task.done else { return }
+        switch task.type {
+        case "continue_lesson":
+            selection = .course
+        case "mistake_review":
+            practiceRequest = .mistakes
+            selection = .practice
+        case "mock_exam":
+            practiceRequest = .exams
+            selection = .practice
+        case "skill_drill":
+            practiceRequest = task.skill == "pronunciation" ? .pronunciation : .recognition
+            selection = .practice
+        case "voice_dialog":
+            requestedVoiceRole = task.role
+            practiceRequest = .voice
+            selection = .practice
+        default:
+            break
+        }
+    }
+}
+
+enum IOSPracticeLaunch: Equatable, Sendable {
+    case mistakes, exams, recognition, pronunciation, voice
 }
 
 private struct ShellPlaceholder: View {

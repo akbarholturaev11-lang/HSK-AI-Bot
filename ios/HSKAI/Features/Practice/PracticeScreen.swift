@@ -7,6 +7,8 @@ struct PracticeScreen: View {
     @ObservedObject var wordDrillModel: WordDrillViewModel
     @ObservedObject var pronunciationDrillModel: PronunciationDrillViewModel
     @ObservedObject var voiceModel: VoiceViewModel
+    let launchRequest: IOSPracticeLaunch?
+    let onLaunchRequestConsumed: () -> Void
     let account: LinkedAccount
 
     @State private var showingMistakes = false
@@ -57,6 +59,17 @@ struct PracticeScreen: View {
                 account: account,
                 onClose: { showingRecognition = false }
             )
+        }
+        .onChange(of: launchRequest) { _, request in
+            guard let request else { return }
+            switch request {
+            case .mistakes: showingMistakes = true
+            case .exams: showingExams = true
+            case .recognition: showingRecognition = true
+            case .pronunciation: showingPronunciation = true
+            case .voice: showingVoice = true
+            }
+            onLaunchRequestConsumed()
         }
         .fullScreenCover(isPresented: $showingVoice, onDismiss: { voiceModel.reset() }) { VoiceScreen(model: voiceModel, account: account, onClose: { showingVoice = false }) }
         .fullScreenCover(isPresented: $showingPronunciation, onDismiss: {
