@@ -12,7 +12,7 @@ from app.api.ios_practice import create_ios_practice_router
 class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
     async def _client(
         self, service, mistake_service=None, exam_service=None,
-        mastery_service=None, drill_service=None,
+        mastery_service=None, drill_service=None, voice_service=None,
     ):
         @asynccontextmanager
         async def session_factory():
@@ -35,6 +35,9 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
                 ),
                 drill_service_factory=lambda *_args, **_kwargs: (
                     drill_service if drill_service is not None else SimpleNamespace()
+                ),
+                voice_service_factory=lambda *_args, **_kwargs: (
+                    voice_service if voice_service is not None else SimpleNamespace()
                 ),
             )
         )
@@ -237,6 +240,45 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
         mastery_service.record_drill.assert_awaited_once_with(
             user, skill="recognition", results=[{"hanzi": "你", "correct": False}]
         )
+
+
+    async def test_pronunciation_delegates_audio_to_shared_voice_service(self):
+        service = SimpleNamespace()
+        voice_service = SimpleNamespace(
+            score_pronunciation=AsyncMock(return_value={
+                "ok": True, "score": 86, "passed": True,
+                "heard": "你", "message": "",
+            })
+        )
+        fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
+        audio = "data:audio/mp4;base64,QUJDRA=="
+
+        with patch(
+            "app.api.ios_practice.DesktopAuthService.authenticate",
+            new=AsyncMock(return_value=fake_context),
+        ):
+            async with await self._client(service, voice_service=voice_service) as client:
+                response = await client.post(
+                    "/api/v3/ios/voice/pronounce",
+                    headers={"Authorization": "Bearer access-token"},
+                    json={
+                        "target": "你",
+                        "target_pinyin": "nǐ",
+                        "language": "uz",
+                        "level": "hsk1",
+                        "audio_data_url": audio,
+                    },
+                )
+
+        self.assertEqual(200, response.status_code)
+        voice_service.score_pronunciation.assert_awaited_once()
+        call = voice_service.score_pronunciation.await_args
+        self.assertEqual(123456, call.args[0])
+        self.assertEqual("你", call.kwargs["target"])
+        self.assertEqual("nǐ", call.kwargs["target_pinyin"])
+        self.assertEqual(b"ABCD", call.kwargs["audio_bytes"])
+        self.assertEqual("uz", call.kwargs["language"])
+        self.assertEqual("hsk1", call.kwargs["level"])
 
     async def test_exam_start_preserves_assessment_lifecycle(self):
         service = SimpleNamespace()

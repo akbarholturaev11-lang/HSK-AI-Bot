@@ -14,6 +14,12 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.api.desktop_voice import (
+    DesktopVoicePronounceRequest,
+    MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
+    _decode_audio_data_url,
+    _validated_payload as _validated_voice_payload,
+)
 from app.api.desktop_practice import (
     DesktopPracticeCompleteRequest,
     DesktopPracticeError,
@@ -31,6 +37,7 @@ from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_word_mastery_service import CourseWordMasteryService
+from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.repositories.user_repo import UserRepository
 from app.services.assistant_assessment_service import (
     assessment_abandoned,
@@ -177,6 +184,7 @@ def create_ios_practice_router(
     exam_service_factory: Callable[..., CourseHskExamService] = CourseHskExamService,
     mastery_service_factory: Callable[..., CourseWordMasteryService] = CourseWordMasteryService,
     drill_service_factory: Callable[..., CourseDrillSignalService] = CourseDrillSignalService,
+    voice_service_factory: Callable[..., VoicePracticeService] = VoicePracticeService,
 ) -> APIRouter:
     router = APIRouter(tags=["ios-practice"])
 
@@ -379,6 +387,37 @@ def create_ios_practice_router(
         except Exception:
             logger.exception("iOS drill report failed")
             return _error_response(DesktopPracticeError("ios_practice_unavailable", status_code=503))
+
+
+    @router.post("/api/v3/ios/voice/pronounce")
+    async def ios_voice_pronounce(request: Request):
+        """Score one native iOS pronunciation sample with the shared voice service."""
+        try:
+            payload = await _validated_voice_payload(
+                request,
+                DesktopVoicePronounceRequest,
+                max_body_bytes=MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
+            )
+            audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await voice_service_factory(session).score_pronunciation(
+                    telegram_id,
+                    target=payload.target,
+                    target_pinyin=payload.target_pinyin,
+                    audio_bytes=audio_bytes,
+                    filename=filename,
+                    language=payload.language,
+                    level=payload.level,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopPracticeError, VoicePracticeError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("iOS voice pronounce failed")
+            return _error_response(
+                DesktopPracticeError("ios_voice_unavailable", status_code=503)
+            )
 
     @router.post("/api/v3/ios/exams/start")
     async def ios_exam_start(request: Request):
