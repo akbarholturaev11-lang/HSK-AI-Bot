@@ -139,3 +139,9 @@
 "dictionary_filter_all" = "Barchasi";
 "dictionary_empty" = "Bu filtr bo‘yicha so‘z topilmadi.";
 "dictionary_load_error" = "Lug‘atni yuklab bo‘lmadi.";
+
+"drill_recognition_prompt" = "Pinyin va ma’noga mos ieroglifni tanlang";
+"drill_review_word" = "Takrorlash";
+"drill_complete_title" = "Mashq tugadi";
+"drill_limit_reached" = "Bu mashq uchun bepul urinish ishlatildi.";
+"drill_load_error" = "Mashqni yuklab bo‘lmadi.";

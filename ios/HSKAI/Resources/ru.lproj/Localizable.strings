@@ -139,3 +139,9 @@
 "dictionary_filter_all" = "Все";
 "dictionary_empty" = "По этому фильтру слов не найдено.";
 "dictionary_load_error" = "Не удалось загрузить словарь.";
+
+"drill_recognition_prompt" = "Выберите иероглиф по пиньиню и значению";
+"drill_review_word" = "Повторение";
+"drill_complete_title" = "Тренировка завершена";
+"drill_limit_reached" = "Бесплатная попытка для этой тренировки уже использована.";
+"drill_load_error" = "Не удалось загрузить тренировку.";

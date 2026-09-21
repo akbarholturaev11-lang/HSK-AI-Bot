@@ -139,3 +139,9 @@
 "dictionary_filter_all" = "Ҳама";
 "dictionary_empty" = "Бо ин филтр калима ёфт нашуд.";
 "dictionary_load_error" = "Луғат бор карда нашуд.";
+
+"drill_recognition_prompt" = "Иероглифи мувофиқро аз рӯи пинйин ва маъно интихоб кунед";
+"drill_review_word" = "Такрор";
+"drill_complete_title" = "Машқ анҷом ёфт";
+"drill_limit_reached" = "Кӯшиши ройгони ин машқ истифода шуд.";
+"drill_load_error" = "Машқ бор карда нашуд.";

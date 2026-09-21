@@ -23,7 +23,8 @@ struct AppRootView: View {
                     dictionaryModel: model.dictionaryViewModel,
                     practiceModel: model.practiceViewModel,
                     mistakesModel: model.mistakesViewModel,
-                    examModel: model.examViewModel
+                    examModel: model.examViewModel,
+                    wordDrillModel: model.wordDrillViewModel
                 ) {
                     Task { await model.logout() }
                 }

@@ -4,10 +4,12 @@ struct PracticeScreen: View {
     @ObservedObject var model: PracticeViewModel
     @ObservedObject var mistakesModel: MistakesViewModel
     @ObservedObject var examModel: ExamViewModel
+    @ObservedObject var wordDrillModel: WordDrillViewModel
     let account: LinkedAccount
 
     @State private var showingMistakes = false
     @State private var showingExams = false
+    @State private var showingRecognition = false
 
     var body: some View {
         NavigationStack {
@@ -41,6 +43,15 @@ struct PracticeScreen: View {
                 model: examModel,
                 account: account,
                 onClose: { showingExams = false }
+            )
+        }
+        .fullScreenCover(isPresented: $showingRecognition, onDismiss: {
+            wordDrillModel.reset()
+        }) {
+            WordDrillScreen(
+                model: wordDrillModel,
+                account: account,
+                onClose: { showingRecognition = false }
             )
         }
     }
@@ -166,10 +177,24 @@ struct PracticeScreen: View {
                             icon: "character.book.closed.fill",
                             title: "tab_dictionary"
                         )
-                        pendingRow(
-                            icon: "eye.fill",
-                            title: "practice_recognition_title"
-                        )
+                        Button {
+                            showingRecognition = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "eye.fill")
+                                    .foregroundStyle(HSKColors.cinnabarDark)
+                                    .frame(width: 28)
+                                Text("practice_recognition_title")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(HSKColors.ink)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(HSKColors.inkSecondary)
+                            }
+                            .padding(.vertical, 7)
+                        }
+                        .buttonStyle(.plain)
                         pendingRow(
                             icon: "mic.fill",
                             title: "practice_pronunciation_title"

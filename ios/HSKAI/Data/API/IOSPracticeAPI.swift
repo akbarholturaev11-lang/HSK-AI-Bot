@@ -4,6 +4,52 @@ struct IOSPracticeAPI: Sendable {
     let client: APIClient
     let authSession: AuthSession
 
+    func drillGate(
+        feature: String,
+        ref: String,
+        accessRef: String = ""
+    ) async throws -> IOSDrillGateResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/practice/gate",
+            body: IOSDrillGateRequest(feature: feature, ref: ref, accessRef: accessRef),
+            bearerToken: token
+        )
+    }
+
+    func drillWords(
+        feature: String,
+        limit: Int = 10
+    ) async throws -> IOSDrillWordsResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/practice/words",
+            body: IOSDrillWordsRequest(feature: feature, limit: min(30, max(1, limit))),
+            bearerToken: token
+        )
+    }
+
+    func reportDrill(
+        feature: String,
+        level: String,
+        language: String,
+        mistakes: [IOSDrillMistake],
+        results: [IOSDrillResult]
+    ) async throws -> IOSDrillReportResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/practice/report",
+            body: IOSDrillReportRequest(
+                feature: feature,
+                level: level,
+                language: language,
+                mistakes: mistakes,
+                results: results
+            ),
+            bearerToken: token
+        )
+    }
+
     func start(
         mode: String,
         level: String,
