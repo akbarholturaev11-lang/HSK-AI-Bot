@@ -22,4 +22,6 @@
     <string name="today_task_talk">Suhbat</string>
     <string name="today_task_chars">Ieroglif</string>
     <string name="today_task_pron">Talaffuz</string>
+    <string name="lesson_entry_title">Dars tayyorlanmoqda</string>
+    <string name="lesson_entry_subtitle">Panda siz bilan boshlaydi</string>
 </resources>
