@@ -32,6 +32,28 @@ struct RatingScreen: View {
                                 stat("calendar", value: rating.streak, label: "rating_streak")
                             }
 
+                            if let referral = model.referral {
+                                HSKGlassCard(cornerRadius: 24, padding: 18, tint: HSKColors.auroraBlue) {
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        Label("referral_title", systemImage: "person.2.badge.plus")
+                                            .font(.headline)
+                                            .foregroundStyle(HSKColors.ink)
+                                        Text(String(format: NSLocalizedString("referral_progress_format", comment: ""), referral.activated, referral.trialRequired))
+                                            .font(.subheadline)
+                                            .foregroundStyle(HSKColors.inkSecondary)
+                                        ProgressView(value: Double(referral.activated), total: Double(max(1, referral.trialRequired)))
+                                            .tint(HSKColors.jade)
+                                        if !referral.link.isEmpty {
+                                            ShareLink(item: referral.link) {
+                                                Label("referral_share", systemImage: "square.and.arrow.up")
+                                                    .frame(maxWidth: .infinity)
+                                            }
+                                            .buttonStyle(HSKGlassSecondaryButtonStyle())
+                                        }
+                                    }
+                                }
+                            }
+
                             VStack(spacing: 10) {
                                 ForEach(rating.leaderboard) { entry in
                                     HSKGlassCard(

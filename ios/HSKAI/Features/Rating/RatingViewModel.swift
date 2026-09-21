@@ -4,6 +4,7 @@ import Foundation
 final class RatingViewModel: ObservableObject {
     @Published private(set) var rating: IOSRatingResponse?
     @Published private(set) var isLoading = false
+    @Published private(set) var referral: IOSReferralResponse?
     @Published private(set) var errorKey: String?
 
     private let api: IOSSocialAPI
@@ -18,6 +19,7 @@ final class RatingViewModel: ObservableObject {
             let response = try await api.rating()
             guard response.ok else { throw RatingViewModelError.invalidPayload }
             rating = response
+            referral = try? await api.referral()
         } catch {
             errorKey = "rating_load_error"
         }
@@ -26,6 +28,7 @@ final class RatingViewModel: ObservableObject {
 
     func reset() {
         rating = nil
+        referral = nil
         isLoading = false
         errorKey = nil
     }

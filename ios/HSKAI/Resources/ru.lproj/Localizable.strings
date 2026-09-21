@@ -171,3 +171,7 @@
 "profile_language" = "Язык";
 "profile_level" = "Уровень";
 "profile_access" = "Доступ";
+
+"referral_title" = "Пригласить друзей";
+"referral_progress_format" = "%d / %d активных друзей";
+"referral_share" = "Поделиться ссылкой";

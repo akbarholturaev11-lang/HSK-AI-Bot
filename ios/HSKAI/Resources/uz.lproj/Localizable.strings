@@ -171,3 +171,7 @@
 "profile_language" = "Til";
 "profile_level" = "Daraja";
 "profile_access" = "Kirish holati";
+
+"referral_title" = "Do‘stlarni taklif qilish";
+"referral_progress_format" = "%d / %d faol do‘st";
+"referral_share" = "Taklif havolasini ulashish";

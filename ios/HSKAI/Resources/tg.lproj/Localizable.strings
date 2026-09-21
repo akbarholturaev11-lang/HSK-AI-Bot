@@ -171,3 +171,7 @@
 "profile_language" = "Забон";
 "profile_level" = "Сатҳ";
 "profile_access" = "Дастрасӣ";
+
+"referral_title" = "Дӯстонро даъват кунед";
+"referral_progress_format" = "%d / %d дӯсти фаъол";
+"referral_share" = "Пайванди даъватро фиристед";
