@@ -69,21 +69,24 @@ Implementation status: in progress.
 - [x] Course map transport + native rendering.
 - [x] Account-scoped cached-first rendering + background refresh.
 - [ ] Today plan summary + XP/streak/league done; task actions, daily-goal editing, gates and reward chest remain.
-- Lesson fetch and completion idempotency.
-- Lesson cards: text, vocabulary, MCQ, listening, matching, sentence gap, grammar/explanation and completion.
-- Server TTS playback/cache.
-- Hanzi stroke data/rendering.
+- [x] Lesson fetch + server-authoritative idempotent completion.
+- [x] Native glass lesson cards: vocabulary, grammar, pronunciation, choice/listening, matching, sentence/reverse builder, checkpoint exit-ticket and completion.
+- [x] Mandarin playback foundation is wired for lesson/foundation text.
+- [ ] Server TTS byte cache parity and audio interruption hardening.
+- [ ] Hanzi stroke data/rendering.
 
 Exit gate: a learner can complete a real production lesson end-to-end and progress matches Mini App/Android.
 
 ## Phase 4 — Practice suite
 
-- Practice start/complete.
-- Mistakes overview/review.
-- Exam/test center.
-- Recognition/word drill.
-- Pronunciation drill.
-- Correct result/retry/error states.
+Implementation status: in progress. Placement practice and server-graded mistake review are native/glass and use shared server services.
+
+- [x] Practice start/complete (placement flow).
+- [x] Mistakes overview + server-graded review + completion.
+- [ ] Exam/test center.
+- [ ] Recognition/word drill.
+- [ ] Pronunciation drill.
+- [x] Placement/mistakes result, retry and error states.
 
 Exit gate: all learning-result writes are server-authoritative and survive relaunch.
 

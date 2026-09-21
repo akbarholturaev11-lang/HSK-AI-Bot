@@ -15,11 +15,11 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Cached-first course | `CourseRepository.kt` | same | ✅ | Device/account-scoped disk cache + network revalidate |
 | Today plan | `TodayPlanCard.kt` | map `today` block | 🟡 | Summary rendered; task routing/actions pending |
 | Daily goal/preferences | `StudySetup*` | study preferences | ⬜ | Profile/course settings |
-| Lesson engine | `feature/lesson/*` | lesson + complete | ⬜ | Native SwiftUI cards |
-| TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | `/api/v3/android/tts` | ⬜ | AVPlayer + disk cache |
+| Lesson engine | `feature/lesson/*` | iOS lesson + complete | ✅ | Glass SwiftUI engine; choice/builder/match/grammar/vocab/pronunciation + checkpoint exit-ticket |
+| TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | shared course audio | 🟡 | Mandarin playback wired; server-byte cache/interruption parity pending |
 | Hanzi stroke | `StrokeAnimation.kt` | `/api/v3/android/stroke` | ⬜ | Native/embedded renderer |
-| Practice | `PracticeScreen.kt` | practice start/complete | ⬜ | Practice feature |
-| Mistakes | `MistakesScreen.kt` | mistakes + review APIs | ⬜ | Mistakes feature |
+| Practice | `PracticeScreen.kt` | `/api/v3/ios/practice/*` | 🟡 | Native glass placement session + server completion; drills/exams pending |
+| Mistakes | `MistakesScreen.kt` | `/api/v3/ios/mistakes/*` | ✅ | Overview pagination + server-graded review + completion/result |
 | Word drill | `WordDrillScreen.kt` | gate/words/report | ⬜ | Drill feature |
 | Exams/tests | Android feature API | exams start/complete | ⬜ | Exam feature |
 | Dictionary | `DictionaryScreen.kt` | dictionary + ETag | ⬜ | Dictionary feature/cache |
@@ -38,10 +38,10 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
 | Smart widget | Glance widget | local/shared state | ⬜ | WidgetKit |
 | Deep links | `DeepLinkRouter.kt` | — | ⬜ | URL routing |
-| UZ localization | `values/` | language preference | 🟡 | Auth/onboarding/course strings present |
-| RU localization | `values-ru/` | language preference | 🟡 | Auth/onboarding/course strings present |
-| TJ localization | `values-tg/` | language preference | 🟡 | Auth/onboarding/course strings present |
-| Unit tests | Android JVM tests | — | 🟡 | Network/auth/course-model XCTest added; broader coverage pending |
+| UZ localization | `values/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
+| RU localization | `values-ru/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
+| TJ localization | `values-tg/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
+| Unit tests | Android JVM tests | — | 🟡 | Network/auth/course/lesson/Foundation/practice/mistakes XCTest coverage; broader feature coverage pending |
 | UI smoke tests | Android instrumentation | — | ⬜ | XCUITest |
 
 ## Backend cleanup rule
