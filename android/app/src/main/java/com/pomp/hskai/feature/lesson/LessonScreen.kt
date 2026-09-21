@@ -332,6 +332,11 @@ private fun LessonBody(
             // the material and the answers can be split). Everything else —
             // the teaching cards and the builders — keeps the coach above,
             // because there is nothing there to put beside it.
+            // The entry cinematic is already a character on screen. Composing
+            // the persistent coach underneath it means two character
+            // compositions alive at once (origin/main ff230ab7); the slot is
+            // held open so nothing jumps when the cinematic ends.
+            val coachReady = !entryVisible
             if (showPersistentCoach && card !is ChoiceCard) {
                 HskCoachRow(
                     character = coachCharacter,
@@ -340,6 +345,7 @@ private fun LessonBody(
                     reactionKey = state.cardIndex to checked?.isCorrect,
                     text = coachLine,
                     modifier = Modifier.padding(horizontal = 18.dp),
+                    showCharacter = coachReady,
                 )
             }
 
@@ -376,6 +382,7 @@ private fun LessonBody(
                             reaction = coachReaction,
                             reactionKey = state.cardIndex to checked?.isCorrect,
                             text = coachLine,
+                            showCharacter = coachReady,
                         ) {
                             ChoiceCardMaterial(
                                 card = card,

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -481,25 +482,48 @@ internal fun HskCharacterStage(
         if (warning) HskCharacterWarningRing()
         Canvas(
             Modifier.fillMaxSize().graphicsLayer {
+                val breathScale = if (breathing) 1f + .018f * breathe else 1f
                 translationX = with(density) { x.value.dp.toPx() }
                 translationY = with(density) {
                     (y.value + if (breathing) -2f * breathe else 0f).dp.toPx()
                 }
-                scaleX = scale.value
-                scaleY = scale.value * if (breathing) 1f + .018f * breathe else 1f
-                rotationZ = rotation.value
-                this.alpha = alpha.value
+                // Clamped so a mid-flight animation value can never hand the
+                // compositor a degenerate transform (origin/main bf559138).
+                scaleX = scale.value.coerceIn(.05f, 2f)
+                scaleY = (scale.value * breathScale).coerceIn(.05f, 2f)
+                rotationZ = rotation.value.coerceIn(-180f, 180f)
+                this.alpha = alpha.value.coerceIn(0f, 1f)
             }
         ) {
-            when (character) {
-                // The book each character reads while loading sits at a
-                // different spot on each of them, so it is drawn inside the
-                // character rather than pasted at one shared coordinate.
-                HskCharacter.Panda -> drawPanda(mood, loadingWiggle)
-                HskCharacter.Dragon -> drawDragon(mood, loadingWiggle)
-                HskCharacter.Crane -> drawCrane(mood, loadingWiggle)
-                HskCharacter.Monkey -> drawMonkey(mood, loadingWiggle)
-                HskCharacter.Rabbit -> drawRabbit(mood, loadingWiggle)
+            // A zero or non-finite box would divide straight into NaN inside
+            // CharPen and hand NaN coordinates to every draw call.
+            if (
+                !size.width.isFinite() ||
+                !size.height.isFinite() ||
+                size.width <= 0f ||
+                size.height <= 0f
+            ) return@Canvas
+
+            // Character art is presentation only. A malformed or unsupported
+            // Canvas operation must never take the lesson process down — it
+            // leaves a faint placeholder instead (origin/main bf559138).
+            runCatching {
+                when (character) {
+                    // The book each character reads while loading sits at a
+                    // different spot on each of them, so it is drawn inside the
+                    // character rather than pasted at one shared coordinate.
+                    HskCharacter.Panda -> drawPanda(mood, loadingWiggle)
+                    HskCharacter.Dragon -> drawDragon(mood, loadingWiggle)
+                    HskCharacter.Crane -> drawCrane(mood, loadingWiggle)
+                    HskCharacter.Monkey -> drawMonkey(mood, loadingWiggle)
+                    HskCharacter.Rabbit -> drawRabbit(mood, loadingWiggle)
+                }
+            }.onFailure {
+                drawCircle(
+                    color = ShadowInk.copy(alpha = .10f),
+                    radius = size.minDimension * .28f,
+                    center = center,
+                )
             }
         }
     }
@@ -532,6 +556,7 @@ internal fun HskCoachRow(
     reactionKey: Any?,
     text: String,
     modifier: Modifier = Modifier,
+    showCharacter: Boolean = true,
 ) {
     Row(
         modifier = modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -541,13 +566,17 @@ internal fun HskCoachRow(
         // Big enough to be a character rather than an icon: at 62.dp the face
         // was a smudge and the point of having a cast was lost. The bubble
         // takes whatever is left, which is still ~200.dp on a 360.dp screen.
-        HskCharacterStage(
-            character = character,
-            mood = mood,
-            reaction = reaction,
-            reactionKey = reactionKey,
-            modifier = Modifier.size(96.dp),
-        )
+        if (showCharacter) {
+            HskCharacterStage(
+                character = character,
+                mood = mood,
+                reaction = reaction,
+                reactionKey = reactionKey,
+                modifier = Modifier.size(96.dp),
+            )
+        } else {
+            Spacer(Modifier.size(96.dp))
+        }
         if (text.isNotBlank()) HskCoachBubble(text, Modifier.weight(1f))
     }
 }
@@ -569,6 +598,7 @@ internal fun HskCoachBeside(
     reactionKey: Any?,
     text: String,
     modifier: Modifier = Modifier,
+    showCharacter: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Row(
@@ -576,13 +606,19 @@ internal fun HskCoachBeside(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        HskCharacterStage(
-            character = character,
-            mood = mood,
-            reaction = reaction,
-            reactionKey = reactionKey,
-            modifier = Modifier.size(width = 120.dp, height = 152.dp),
-        )
+        if (showCharacter) {
+            HskCharacterStage(
+                character = character,
+                mood = mood,
+                reaction = reaction,
+                reactionKey = reactionKey,
+                modifier = Modifier.size(width = 120.dp, height = 152.dp),
+            )
+        } else {
+            // The slot is held open so nothing shifts when the character
+            // arrives; only the composition is skipped.
+            Spacer(Modifier.size(width = 120.dp, height = 152.dp))
+        }
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp),

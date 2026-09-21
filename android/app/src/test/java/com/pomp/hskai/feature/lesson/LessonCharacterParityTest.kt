@@ -4,8 +4,11 @@ import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.ChoiceKind
 import com.pomp.hskai.domain.model.GrammarCard
 import com.pomp.hskai.domain.model.MatchPairsCard
+import com.pomp.hskai.domain.model.NewWordCard
+import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
+import com.pomp.hskai.domain.model.UnsupportedCard
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -116,6 +119,39 @@ class LessonCharacterParityTest {
                     correctIndex = 0,
                     explanation = "",
                     reviewOrigin = "previous",
+                ),
+            ),
+        )
+        assertEquals(
+            LessonCharacter.Panda,
+            lessonCharacterFor(
+                NewWordCard(
+                    materialRef = "word",
+                    number = 1,
+                    hanzi = "胖",
+                    pinyin = "pàng",
+                    partOfSpeech = "adj.",
+                    meaning = "semiz",
+                ),
+            ),
+        )
+        assertEquals(
+            LessonCharacter.Panda,
+            lessonCharacterFor(
+                PronunciationCard(
+                    materialRef = "pronunciation",
+                    phrase = "胖",
+                    pinyin = "pàng",
+                    translation = "semiz",
+                ),
+            ),
+        )
+        assertEquals(
+            LessonCharacter.Panda,
+            lessonCharacterFor(
+                UnsupportedCard(
+                    materialRef = "future",
+                    rawType = "future_card",
                 ),
             ),
         )
