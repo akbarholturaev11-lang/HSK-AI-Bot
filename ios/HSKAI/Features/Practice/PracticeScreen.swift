@@ -6,12 +6,14 @@ struct PracticeScreen: View {
     @ObservedObject var examModel: ExamViewModel
     @ObservedObject var wordDrillModel: WordDrillViewModel
     @ObservedObject var pronunciationDrillModel: PronunciationDrillViewModel
+    @ObservedObject var voiceModel: VoiceViewModel
     let account: LinkedAccount
 
     @State private var showingMistakes = false
     @State private var showingExams = false
     @State private var showingRecognition = false
     @State private var showingPronunciation = false
+    @State private var showingVoice = false
 
     var body: some View {
         NavigationStack {
@@ -56,6 +58,7 @@ struct PracticeScreen: View {
                 onClose: { showingRecognition = false }
             )
         }
+        .fullScreenCover(isPresented: $showingVoice, onDismiss: { voiceModel.reset() }) { VoiceScreen(model: voiceModel, account: account, onClose: { showingVoice = false }) }
         .fullScreenCover(isPresented: $showingPronunciation, onDismiss: {
             pronunciationDrillModel.reset()
         }) {
@@ -184,10 +187,13 @@ struct PracticeScreen: View {
                             .font(.headline)
                             .foregroundStyle(HSKColors.ink)
 
-                        pendingRow(
-                            icon: "character.book.closed.fill",
-                            title: "tab_dictionary"
-                        )
+                        Button { showingVoice = true } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "waveform.circle.fill").foregroundStyle(HSKColors.cinnabarDark).frame(width: 28)
+                                Text("voice_title").font(.subheadline.weight(.semibold)).foregroundStyle(HSKColors.ink)
+                                Spacer(); Image(systemName: "chevron.right").font(.caption.weight(.bold)).foregroundStyle(HSKColors.inkSecondary)
+                            }.padding(.vertical, 7)
+                        }.buttonStyle(.plain)
                         Button {
                             showingRecognition = true
                         } label: {

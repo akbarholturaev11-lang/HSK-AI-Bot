@@ -198,3 +198,17 @@
 "challenge_status_active" = "Фаъол";
 "challenge_status_finished" = "Анҷомшуда";
 "challenge_invite" = "Мусобиқа";
+"voice_title" = "AI Voice";
+"voice_remaining" = "Суҳбатҳои имрӯз";
+"voice_role_lily" = "Лили — дӯст";
+"voice_role_chen" = "Чен — сафар";
+"voice_role_xiao_mei" = "Сяо Мэй — донишҷӯ";
+"voice_role_teacher_li" = "Устод Ли";
+"voice_role_manager_wang" = "Менеҷер Ван";
+"voice_type_placeholder" = "Ба чинӣ нависед…";
+"voice_end" = "Анҷоми суҳбат";
+"voice_complete" = "Суҳбат анҷом ёфт";
+"voice_load_error" = "AI Voice бор нашуд.";
+"voice_start_error" = "Суҳбат оғоз нашуд.";
+"voice_message_error" = "Паём фиристода нашуд.";
+"voice_end_error" = "Суҳбат анҷом дода нашуд.";

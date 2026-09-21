@@ -12,6 +12,7 @@ struct MainShellView: View {
     @ObservedObject var ratingModel: RatingViewModel
     @ObservedObject var subscriptionModel: SubscriptionViewModel
     @ObservedObject var challengeModel: ChallengeViewModel
+    @ObservedObject var voiceModel: VoiceViewModel
     @ObservedObject var reminderManager: StudyReminderManager
     let onLogout: () -> Void
     @State private var selection: IOSDeepLinkDestination = .course
@@ -28,6 +29,7 @@ struct MainShellView: View {
                 examModel: examModel,
                 wordDrillModel: wordDrillModel,
                 pronunciationDrillModel: pronunciationDrillModel,
+                voiceModel: voiceModel,
                 account: account
             )
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }

@@ -198,3 +198,17 @@
 "challenge_status_active" = "Faol";
 "challenge_status_finished" = "Tugagan";
 "challenge_invite" = "Bellashish";
+"voice_title" = "AI Voice";
+"voice_remaining" = "Bugungi suhbatlar";
+"voice_role_lily" = "Lily — do‘st";
+"voice_role_chen" = "Chen — sayohat";
+"voice_role_xiao_mei" = "Xiao Mei — talaba";
+"voice_role_teacher_li" = "Li ustoz";
+"voice_role_manager_wang" = "Wang menejer";
+"voice_type_placeholder" = "Xitoycha yozing…";
+"voice_end" = "Suhbatni tugatish";
+"voice_complete" = "Suhbat tugadi";
+"voice_load_error" = "AI Voice holati yuklanmadi.";
+"voice_start_error" = "Suhbat boshlanmadi.";
+"voice_message_error" = "Xabar yuborilmadi.";
+"voice_end_error" = "Suhbatni yakunlab bo‘lmadi.";

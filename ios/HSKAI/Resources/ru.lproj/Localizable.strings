@@ -198,3 +198,17 @@
 "challenge_status_active" = "Активно";
 "challenge_status_finished" = "Завершено";
 "challenge_invite" = "Вызвать";
+"voice_title" = "AI Voice";
+"voice_remaining" = "Диалоги на сегодня";
+"voice_role_lily" = "Лили — друг";
+"voice_role_chen" = "Чэнь — путешествия";
+"voice_role_xiao_mei" = "Сяо Мэй — студентка";
+"voice_role_teacher_li" = "Учитель Ли";
+"voice_role_manager_wang" = "Менеджер Ван";
+"voice_type_placeholder" = "Напишите по-китайски…";
+"voice_end" = "Завершить разговор";
+"voice_complete" = "Разговор завершён";
+"voice_load_error" = "Не удалось загрузить AI Voice.";
+"voice_start_error" = "Не удалось начать разговор.";
+"voice_message_error" = "Не удалось отправить сообщение.";
+"voice_end_error" = "Не удалось завершить разговор.";

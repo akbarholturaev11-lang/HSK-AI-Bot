@@ -31,7 +31,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Subscription state | profile/limit flows | `/api/v3/ios/subscription/overview` | ✅ | Read-only shared subscription/access state in native Profile |
 | External checkout | Android `direct` flavor | external checkout | ➖ | Do not copy until iOS policy decision |
 | Ads/unlock | `AdScreen.kt` | ad list/view + access ref | ⬜ | iOS channel |
-| AI Voice | `feature/voice/*` | voice APIs | ⬜ | AVAudioRecorder/AVPlayer |
+| AI Voice | `feature/voice/*` | `/api/v3/ios/voice/*` | ✅ | Native role picker, typed/microphone turns, suggestions, TTS reply and session summary |
 | Pronunciation | voice/practice flows | `/api/v3/ios/voice/pronounce` | ✅ | AVAudioRecorder + shared scoring + adaptive mastery reporting |
 | AI Assistant | `feature/assistant/*` | Android assistant API | ⬜ | Assistant feature |
 | Study reminders | WorkManager notifications | preferences/local state | ✅ | Daily local UNCalendarNotificationTrigger + persisted opt-in |
