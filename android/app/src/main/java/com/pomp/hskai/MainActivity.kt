@@ -927,6 +927,7 @@ private fun AppRoot(
                             onOpenGoal = { goalPickerOpen = true },
                             onOpenChest = courseViewModel::openRewardChest,
                             onChestRewardConsumed = courseViewModel::consumeChestReward,
+                            onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
                             onRetry = courseViewModel::load,
                             modifier = contentModifier,
                         )
