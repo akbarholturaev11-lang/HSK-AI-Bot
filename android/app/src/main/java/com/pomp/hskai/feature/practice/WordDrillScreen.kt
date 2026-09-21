@@ -45,6 +45,7 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskCoachBeside
+import com.pomp.hskai.core.design.components.HskCoachRow
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
@@ -123,6 +124,58 @@ fun WordDrillScreen(
     }
 }
 
+/**
+ * The word under drill.
+ *
+ * [compact] is the version that fits in the column beside the coach, for
+ * recognition. Pronunciation asks the learner to SAY the character, so it
+ * gets the full width and the large hanzi.
+ */
+@Composable
+private fun DrillWordCard(mode: DrillMode, question: DrillQuestion, compact: Boolean) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 6.dp,
+    ) {
+        Column(
+            // Without the full width there is nothing to centre WITHIN: the
+            // column shrinks to its widest line and sits against the left
+            // edge, which is why the drilled character used to hug the side
+            // of its own card.
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = if (compact) 18.dp else 24.dp,
+                    horizontal = if (compact) 14.dp else 18.dp,
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (mode == DrillMode.PRONUNCIATION) {
+                Text(
+                    text = question.hanzi,
+                    style = PompTextStyles.hanziLarge,
+                    color = PompColors.Ink,
+                )
+            }
+            Text(
+                text = question.pinyin,
+                style = PompTextStyles.pinyin.copy(fontSize = 17.sp),
+                fontWeight = FontWeight.Medium,
+                color = PompColors.CinnabarDark,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = question.meaning,
+                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+                color = PompColors.Ink,
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
 @Composable
 private fun DrillTopBar(progress: Float, onClose: () -> Unit) {
     Row(
@@ -174,60 +227,47 @@ private fun DrillQuestionBody(
     ) {
         Spacer(Modifier.height(6.dp))
 
-        // The coach stands BESIDE the question: a tall character down the
-        // left, its line and the word itself stacked to the right. The
-        // answers stay full width below — they are the widest thing here.
-        // Recognition is the crane's precision work, pronunciation the
-        // monkey's dialogue drill.
-        HskCoachBeside(
-            character = drillCharacterFor(state.mode),
-            mood = practiceMoodFor(if (state.isAnswered) state.wasCorrect else null),
-            reaction = if (state.isAnswered) {
-                hskReactionFor(correct = state.wasCorrect, streak = state.answerStreak)
-            } else {
-                null
-            },
-            reactionKey = state.index to state.isAnswered,
-            text = stringResource(
-                if (state.mode == DrillMode.RECOGNITION) {
-                    R.string.drill_recognition_prompt
-                } else {
-                    R.string.drill_pronunciation_prompt
-                }
-            ),
-        ) {
-        HskGlassSurface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            shadowElevation = 6.dp,
-        ) {
-            Column(
-                modifier = Modifier.padding(vertical = 18.dp, horizontal = 14.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if (state.mode == DrillMode.PRONUNCIATION) {
-                    Text(
-                        text = question.hanzi,
-                        style = PompTextStyles.hanziLarge,
-                        color = PompColors.Ink,
-                    )
-                }
-                Text(
-                    text = question.pinyin,
-                    style = PompTextStyles.pinyin.copy(fontSize = 17.sp),
-                    fontWeight = FontWeight.Medium,
-                    color = PompColors.CinnabarDark,
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = question.meaning,
-                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                    color = PompColors.Ink,
-                    textAlign = TextAlign.Center,
-                )
-            }
+        val character = drillCharacterFor(state.mode)
+        val mood = practiceMoodFor(if (state.isAnswered) state.wasCorrect else null)
+        val reaction = if (state.isAnswered) {
+            hskReactionFor(correct = state.wasCorrect, streak = state.answerStreak)
+        } else {
+            null
         }
+        val reactionKey = state.index to state.isAnswered
+        val instruction = stringResource(
+            if (state.mode == DrillMode.RECOGNITION) {
+                R.string.drill_recognition_prompt
+            } else {
+                R.string.drill_pronunciation_prompt
+            }
+        )
+
+        // Recognition reads the word and picks a character, so the coach can
+        // stand beside a compact card. Pronunciation SPEAKS the character —
+        // it is the whole point of the screen and has to be big and centred,
+        // which a column beside the coach cannot give it. Squeezing it in
+        // there left a postage-stamp 钱 above a screenful of nothing.
+        if (state.mode == DrillMode.RECOGNITION) {
+            HskCoachBeside(
+                character = character,
+                mood = mood,
+                reaction = reaction,
+                reactionKey = reactionKey,
+                text = instruction,
+            ) {
+                DrillWordCard(state.mode, question, compact = true)
+            }
+        } else {
+            HskCoachRow(
+                character = character,
+                mood = mood,
+                reaction = reaction,
+                reactionKey = reactionKey,
+                text = instruction,
+            )
+            Spacer(Modifier.height(10.dp))
+            DrillWordCard(state.mode, question, compact = false)
         }
 
         Spacer(Modifier.height(18.dp))

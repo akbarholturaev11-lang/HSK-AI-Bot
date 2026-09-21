@@ -61,9 +61,12 @@ class PracticeCoachRowTest {
 
     // ---- recognition drill -------------------------------------------------
 
-    private fun drillState(answered: Boolean) = WordDrillUiState(
+    private fun drillState(
+        answered: Boolean,
+        mode: DrillMode = DrillMode.RECOGNITION,
+    ) = WordDrillUiState(
         isLoading = false,
-        mode = DrillMode.RECOGNITION,
+        mode = mode,
         questions = listOf(
             DrillQuestion(
                 hanzi = "好",
@@ -80,9 +83,9 @@ class PracticeCoachRowTest {
     )
 
     @Composable
-    private fun drill(answered: Boolean) {
+    private fun drill(answered: Boolean, mode: DrillMode = DrillMode.RECOGNITION) {
         WordDrillScreen(
-            state = drillState(answered),
+            state = drillState(answered, mode),
             limit = LimitGate(),
             onChoose = {},
             onSpeak = {},
@@ -120,6 +123,31 @@ class PracticeCoachRowTest {
         // A reaction must not blank the bubble and leave the character alone.
         compose.onNodeWithText(instruction).assertIsDisplayed()
         shoot("drill-answered")
+    }
+
+    @Test
+    fun thePronunciationDrillKeepsTheCharacterFullSize() {
+        compose.setContent {
+            PompHskAiTheme { drill(answered = false, mode = DrillMode.PRONUNCIATION) }
+        }
+
+        val instruction = InstrumentationRegistry.getInstrumentation()
+            .targetContext
+            .getString(com.pomp.hskai.R.string.drill_pronunciation_prompt)
+
+        shoot("pron-idle")
+        compose.onNodeWithText(instruction).assertIsDisplayed()
+
+        // The whole screen is "say this character", so it must be on it, at
+        // full width. Standing it in the narrow column beside the coach once
+        // shrank it to a postage stamp above a screenful of nothing.
+        compose.onNodeWithText("好").assertIsDisplayed()
+        val hanzi = compose.onNodeWithText("好").fetchSemanticsNode().boundsInRoot
+        val root = compose.onRoot().fetchSemanticsNode().boundsInRoot
+        org.junit.Assert.assertTrue(
+            "the drilled character must be centred, not pushed into a side column",
+            kotlin.math.abs(hanzi.center.x - root.center.x) < root.width * 0.12f,
+        )
     }
 
     // ---- mistake review ----------------------------------------------------
