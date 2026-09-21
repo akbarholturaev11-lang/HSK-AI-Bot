@@ -477,6 +477,45 @@ o'zi ortiqcha edi.
 
 Kartalardagi `HskGlassSurface` ga tegilmadi — u yerda to'g'ri ishlaydi.
 
+### 3.13 Ilova umuman kompilyatsiya qilmasdi — TUZATILDI 2026-09-21
+
+`main` 2026-09-20 dan beri **ikkala flavourda ham yiqilardi**, ya'ni yangi
+APK chiqarib bo'lmasdi:
+
+```
+LessonLimitCompat.kt:54:13  No value passed for parameter 'limit'
+```
+
+Sabab — bir xil nomli **ikkita** `LessonScreen` composable'i. Asli
+`LessonScreen.kt` da, ikkinchisi `LessonLimitCompat.kt` da: u chegara
+overlay'ini qo'shish uchun birinchisini o'rab turardi (`458ee7a7`,
+`67a937ac` — main sinxronidan keyin tiklangan edi).
+
+3.12 dagi yozish varag'i ishi `LessonScreen.kt` ga `onShowWriterCharacter`
+parametrini qo'shdi, o'rovchiga esa qo'shmadi. Shundan keyin:
+
+- `MainActivity` yangi parametrni uzatgani uchun Kotlin **asl** funksiyani
+  tanladi — ya'ni o'rovchi chetlab o'tildi va **chegara bloki jim
+  yo'qoldi** (dars limitida trial/obuna tugmalari o'rniga quruq matn);
+- o'rovchining ichidagi chaqiruv esa endi o'zini chaqirardi — kompilyatsiya
+  xatosi.
+
+`LessonLimitCompat.kt` o'chirildi, `SectionLimitOverlay` esa
+`LessonScreen.kt` ning o'z ichiga ko'chirildi — Kurs xaritasi, Mashq va AI
+Voice qanday qilsa shunday. `limit` endi rostdan ishlatiladi, ilgari u
+`ignoredLimit` deb chetga surib qo'yilgan edi.
+
+**Qoida:** bitta paketda bir xil nomli ikkita composable qilmang. Overload
+tanlovi jim o'zgaradi — `check_named_arguments.py` ham,
+`check_unresolved_references.py` ham buni ko'rmaydi, chunki ikkala nom ham
+mavjud.
+
+Yon ta'sir: `tests/test_trial_entry_points.py` dagi
+`test_the_profile_offers_the_trial` 3.5.1 dan beri eskirgan edi (profildan
+`TrialCard` ataylab olib tashlangan, test esa uni talab qilardi). Endi test
+yangi haqiqatni qotiradi: profilda karta yo'q, lekin `startTrial`
+`LimitGate` ga ulangan.
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.

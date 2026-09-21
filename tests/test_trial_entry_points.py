@@ -6,7 +6,8 @@ xususiyat emas. Shu fayl to'rtala kirish nuqtasi joyida turganini tekshiradi:
 * onboardingdan keyingi tanlov ekrani,
 * limitga urilgandagi paywall,
 * obuna sahifasi,
-* profil kartasi.
+* profil kartasi (Mini App'da; Android profilidan u 2026-09-20 da olib
+  tashlandi — sabab `ANDROID_CONTEXT.md` §3.5.1 da).
 
 Ustiga bitta qat'iy qoida: klient "bu odam trial ola oladimi" degan qarorni
 O'ZI qabul qilmaydi. Bir Telegram akkaunt bir marta trial olishi kerak va
@@ -121,9 +122,26 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
                 self.assertIn("limit.actions.onStartTrial", source)
                 self.assertIn("R.string.limit_try_trial", source)
 
-    def test_the_profile_offers_the_trial(self):
-        self.assertIn("TrialCard(", ANDROID_PROFILE)
-        self.assertIn("onStartTrial", ANDROID_PROFILE)
+    def test_the_profile_no_longer_carries_its_own_trial_card(self):
+        """2026-09-20: profildagi karta ATAYLAB olib tashlandi.
+
+        Sabab `ANDROID_CONTEXT.md` §3.5.1 da: profil uchta blokdan tozalandi
+        va `TrialCard` shulardan biri edi. Trial yo'qolgani yo'q — limitga
+        urilgandagi paywall uni ikkala flavourda ham taklif qiladi, ya'ni u
+        aynan konversiya bo'ladigan joyda qoladi (yuqoridagi test).
+
+        Bu yerda ikki narsa qotiriladi: karta qaytib kelib qolmasin (u bilan
+        birga `ProfileScreen` ga o'lik `onStartTrial` parametri ham
+        qaytadi), va shu bilan birga trialga YO'L uzilib qolmasin.
+        """
+        self.assertNotIn("TrialCard(", ANDROID_PROFILE)
+        self.assertNotIn("onStartTrial", ANDROID_PROFILE)
+
+    def test_the_trial_is_still_reachable_from_the_limit_gate(self):
+        # Karta ketdi, lekin `startTrial` o'z joyida va `LimitGate` ga
+        # ulangan — aks holda paywalldagi tugma hech narsa qilmaydi.
+        self.assertIn("fun startTrial()", _android_profile_view_model())
+        self.assertIn("onStartTrial = profileViewModel::startTrial", ANDROID_MAIN)
 
     def test_the_client_never_decides_eligibility_on_its_own(self):
         # Serverdan kelgan bayroq O'QILADI, klient o'zi hisoblamaydi.
@@ -143,6 +161,12 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
 
 def _android_api() -> str:
     return (ANDROID / "data/api/AndroidFeatureApi.kt").read_text(encoding="utf-8")
+
+
+def _android_profile_view_model() -> str:
+    return (ANDROID / "feature/profile/ProfileViewModel.kt").read_text(
+        encoding="utf-8"
+    )
 
 
 class TheServerDecidesTests(unittest.TestCase):

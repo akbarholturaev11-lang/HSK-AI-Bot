@@ -74,6 +74,7 @@ import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
 import com.pomp.hskai.domain.model.UnsupportedCard
 import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
 @Composable
 internal fun PrimaryAction(
@@ -117,41 +118,62 @@ fun LessonScreen(
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    @Suppress("UNUSED_VARIABLE")
-    val ignoredLimit = limit
     val outcome = state.outcome
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        when {
-            state.isLoading -> Centered { HskBrandLoader() }
-            state.lesson == null -> Centered {
-                Text(
-                    text = (state.error as? ApiError.LimitReached)?.limitText
-                        ?: stringResource(state.error?.messageRes ?: R.string.error_unknown),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = PompColors.InkSecondary,
-                    textAlign = TextAlign.Center,
+    Box(modifier = modifier.fillMaxSize()) {
+        Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
+            when {
+                state.isLoading -> Centered { HskBrandLoader() }
+                state.lesson == null -> Centered {
+                    Text(
+                        text = (state.error as? ApiError.LimitReached)?.limitText
+                            ?: stringResource(state.error?.messageRes ?: R.string.error_unknown),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = PompColors.InkSecondary,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    SecondaryAction(stringResource(R.string.action_close), onExit)
+                }
+                outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
+                outcome is LessonOutcome.Completed ->
+                    CompletedBlock(outcome, state.rankBoard, onExit)
+                outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
+                else -> LessonBody(
+                    state = state,
+                    pinyin = pinyin,
+                    onAnswerChoice = onAnswerChoice,
+                    onAnswerBuilder = onAnswerBuilder,
+                    onAnswerPairs = onAnswerPairs,
+                    onAcknowledge = onAcknowledge,
+                    onAdvance = onAdvance,
+                    onPlayAudio = onPlayAudio,
+                    onOpenPinyinSettings = onOpenPinyinSettings,
+                    onOpenWriter = onOpenWriter,
+                    onShowWriterCharacter = onShowWriterCharacter,
+                    onCloseWriter = onCloseWriter,
+                    onExit = onExit,
                 )
-                Spacer(Modifier.height(16.dp))
-                SecondaryAction(stringResource(R.string.action_close), onExit)
             }
-            outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
-            outcome is LessonOutcome.Completed ->
-                CompletedBlock(outcome, state.rankBoard, onExit)
-            outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
-            else -> LessonBody(
-                state = state,
-                pinyin = pinyin,
-                onAnswerChoice = onAnswerChoice,
-                onAnswerBuilder = onAnswerBuilder,
-                onAnswerPairs = onAnswerPairs,
-                onAcknowledge = onAcknowledge,
-                onAdvance = onAdvance,
-                onPlayAudio = onPlayAudio,
-                onOpenPinyinSettings = onOpenPinyinSettings,
-                onOpenWriter = onOpenWriter,
-                onShowWriterCharacter = onShowWriterCharacter,
-                onCloseWriter = onCloseWriter,
-                onExit = onExit,
+        }
+
+        /* Chegara tugaganda dars ustida AMALIY blok chiqadi — quruq matn
+           emas, `LimitGate` bergan trial/obuna tugmalari bilan. Kurs
+           xaritasi, Mashq va AI Voice bir xil `SectionLimitOverlay` ni
+           ko'rsatadi; dars ham shundan chetda qolmasin.
+
+           Ilgari bu blok `LessonLimitCompat.kt` dagi bir xil nomli ikkinchi
+           `LessonScreen` da edi. Ikkita bir xil nomli composable — tuzoq:
+           chaqiruvga yangi parametr qo'shilishi bilan Kotlin ikkinchisini
+           tanlab qo'ydi va blok jim yo'qoldi. Shuning uchun u shu yerda. */
+        val spent = state.error as? ApiError.LimitReached
+        if (spent != null && limit != null) {
+            SectionLimitOverlay(
+                sectionTitle = stringResource(R.string.nav_course),
+                limit = limit,
+                reason = spent.limitText ?: stringResource(R.string.limit_lesson_reason),
+                // Qachon ochilishini server aytadi, bu yerda hisoblanmaydi.
+                resetAt = spent.resetAt,
+                onClose = onExit,
             )
         }
     }
