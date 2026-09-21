@@ -419,9 +419,18 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
         self.assertEqual(by_client["android"]["revenue_usd"], 50.0)
         self.assertEqual(by_client["desktop"]["payments"], 1)
         self.assertEqual(by_client["desktop"]["revenue_usd"], 70.0)
+        # Tug'ilganidan beri yiqilardi (`7c3e03df`): bosh harfli
+        # "approved Payment" kartada emas, `explain` matnida. Ikkalasi ham
+        # tekshiriladi — karta pul qayerdan sanalganini aytadi, `explain`
+        # esa uchala klient bitta jadvaldan o'qishini aytadi, ya'ni shu
+        # testning asl da'vosini.
+        self.assertIn(
+            "approved payment",
+            weekly["client_business"]["cards"][0]["note"],
+        )
         self.assertIn(
             "approved Payment",
-            weekly["client_business"]["cards"][0]["note"],
+            weekly["client_business"]["explain"],
         )
 
 

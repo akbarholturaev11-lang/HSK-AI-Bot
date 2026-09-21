@@ -18,8 +18,11 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         root = Path("app/static/assets/characters")
 
+        # `\\?` ortiqcha ekranlash edi: u "ixtiyoriy teskari chiziq" degani,
+        # `?` belgisi emas — shuning uchun `?v=` hech qachon mos kelmasdi va
+        # bu da'vo tug'ilganidan beri bo'sh to'plamni solishtirib yiqilardi.
         refs = set(
-            re.findall(r"/assets/characters/([^?\\\"']+)\\?v=[^\\\"']+", html)
+            re.findall(r"/assets/characters/([^?\"']+)\?v=[^\"']+", html)
         )
         self.assertEqual(refs, set(CHARACTER_ASSETS))
 
