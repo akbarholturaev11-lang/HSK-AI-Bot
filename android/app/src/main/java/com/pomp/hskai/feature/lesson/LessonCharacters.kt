@@ -46,11 +46,23 @@ internal fun lessonCharacterFor(card: com.pomp.hskai.domain.model.LessonCard): L
     is com.pomp.hskai.domain.model.SentenceBuilderCard,
     is com.pomp.hskai.domain.model.ReverseBuilderCard,
     is com.pomp.hskai.domain.model.MatchPairsCard -> LessonCharacter.Monkey
+    is com.pomp.hskai.domain.model.ChoiceCard -> when {
+        card.isReviewCard -> LessonCharacter.Rabbit
+        card.kind == com.pomp.hskai.domain.model.ChoiceKind.GAP_FILL -> LessonCharacter.Crane
+        card.kind == com.pomp.hskai.domain.model.ChoiceKind.DIALOG_CLOZE ||
+            card.kind == com.pomp.hskai.domain.model.ChoiceKind.QUICK_QUIZ -> LessonCharacter.Monkey
+        else -> LessonCharacter.Panda
+    }
     else -> LessonCharacter.Panda
 }
 
-internal fun lessonReactionFor(correct: Boolean, hearts: Int): LessonCharacterReaction = when {
+internal fun lessonReactionFor(
+    correct: Boolean,
+    hearts: Int,
+    streak: Int = 0,
+): LessonCharacterReaction = when {
     !correct && hearts == 1 -> LessonCharacterReaction.OneHeart
+    correct && streak >= 4 -> LessonCharacterReaction.Celebrate
     correct -> LessonCharacterReaction.Jump
     else -> LessonCharacterReaction.Wrong
 }
