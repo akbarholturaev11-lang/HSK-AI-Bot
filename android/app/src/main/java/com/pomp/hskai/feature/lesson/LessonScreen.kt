@@ -62,8 +62,6 @@ import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.settings.PinyinVisibility
-import com.pomp.hskai.feature.course.CoursePandaMascot
-import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.GrammarCard
 import com.pomp.hskai.domain.model.LessonCard
@@ -264,6 +262,29 @@ private fun LessonBody(
                 title = state.currentSectionTitle,
             )
             if (state.isStale) StaleBanner()
+
+            val coachCharacter = lessonCharacterFor(card)
+            val checked = state.answer as? AnswerState.Checked
+            val coachReaction = checked?.let { lessonReactionFor(it.isCorrect, state.hearts) }
+            val coachMood = when {
+                checked == null -> LessonCharacterMood.Idle
+                !checked.isCorrect && state.hearts == 1 -> LessonCharacterMood.OneHeart
+                checked.isCorrect -> LessonCharacterMood.Correct
+                else -> LessonCharacterMood.Wrong
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                LessonCharacterStage(
+                    character = coachCharacter,
+                    mood = coachMood,
+                    reaction = coachReaction,
+                    reactionKey = state.cardIndex to checked?.isCorrect,
+                    modifier = Modifier.size(74.dp),
+                )
+            }
 
             // The card sits in the middle of the free space instead of clinging to
             // the top-left corner; longer decks still scroll normally.
@@ -494,13 +515,8 @@ private fun FooterBar(
                 modifier = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 18.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // The panda answers back: cheering when right, explaining when
-                    // wrong. A wrong answer is never met with a scolding face.
-                    CoursePandaMascot(
-                        mood = if (answer.isCorrect) PandaMood.Celebrate else PandaMood.Talk,
-                        modifier = Modifier.size(54.dp),
-                    )
-                    Spacer(Modifier.size(10.dp))
+                    // The persistent coach above owns the feedback reaction.
+                    // Do not draw a second legacy panda in the footer.
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = stringResource(if (answer.isCorrect) R.string.lesson_correct else R.string.lesson_wrong),
