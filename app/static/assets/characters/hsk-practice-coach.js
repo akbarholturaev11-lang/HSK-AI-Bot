@@ -30,6 +30,7 @@
   var dock = null;
   var host = null;
   var bubbleEl = null;
+  var slotEl = null;
   var lang = "ru";
   var streak = 0;
   var current = "panda";
@@ -87,10 +88,35 @@
     bubbleEl = document.createElement("p");
     bubbleEl.className = "pcoach-bubble";
 
+    /* The column to the coach's right: its line, and — in "beside" mode —
+       the question itself underneath. */
+    var col = document.createElement("div");
+    col.className = "pcoach-col";
+    slotEl = document.createElement("div");
+    slotEl.className = "pcoach-slot";
+    col.appendChild(bubbleEl);
+    col.appendChild(slotEl);
+
     dock.appendChild(host);
-    dock.appendChild(bubbleEl);
+    dock.appendChild(col);
     anchor.parentNode.insertBefore(dock, anchor.nextSibling);
     return dock;
+  }
+
+  /**
+   * Stand the coach BESIDE the question: [node] is moved into the column at
+   * the coach's right, under its line.
+   *
+   * Moved, not copied — the pages rebuild their question markup on every
+   * render, so the node handed over here is always a fresh one and the slot
+   * is emptied first. Passing nothing returns to the plain row.
+   */
+  function beside(node) {
+    if (!dock || !slotEl) return;
+    slotEl.innerHTML = "";
+    if (!node) { dock.classList.remove("beside"); return; }
+    slotEl.appendChild(node);
+    dock.classList.add("beside");
   }
 
   /** Waiting for an answer. [text] is the question's own instruction. */
@@ -161,12 +187,17 @@
     show(picked.id, picked.reaction, arguments.length > 2 ? text : "");
     // After `show`, which clears it: the closing screen is the one place the
     // coach is the subject rather than an aside.
-    if (dock) dock.classList.add("hero");
+    // The closing screen has no question to stand beside.
+    if (dock) { dock.classList.remove("beside"); dock.classList.add("hero"); }
+    if (slotEl) slotEl.innerHTML = "";
     return picked;
   }
 
   function hide() {
-    if (dock) dock.classList.remove("on");
+    if (dock) dock.classList.remove("on", "beside", "hero");
+    // The question that was standing next to the coach goes with it; leaving
+    // it parked in the slot is how a stale card survives a screen change.
+    if (slotEl) slotEl.innerHTML = "";
   }
 
   function reset() {
@@ -183,6 +214,7 @@
     init: init,
     idle: idle,
     say: say,
+    beside: beside,
     answer: answer,
     show: show,
     celebrate: celebrate,

@@ -41,6 +41,31 @@
    The notch does the pointing, so there is no tail pseudo-element to keep
    aligned — and the character stays OUTSIDE any clipping box, because a
    jump or a celebration would otherwise be cut off at the avatar's edge. */
+/* "Beside" mode: the coach stands down the left and the question sits next to
+   it, under the line the coach is saying. The answers stay full width below
+   — they are the widest thing on the screen. */
+.pcoach-dock.beside { align-items: center; }
+
+.pcoach-dock.beside .pcoach {
+  width: 118px;
+  height: 150px;
+  min-height: 150px;
+  flex: 0 0 118px;
+}
+
+.pcoach-col {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* The question card, once it has moved in here, stops being a full-width
+   block and simply fills the column. */
+.pcoach-slot:empty { display: none; }
+.pcoach-slot > * { margin: 0 !important; }
+
 .pcoach-bubble {
   flex: 1 1 auto;
   min-width: 0;

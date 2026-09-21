@@ -101,10 +101,12 @@ class PracticeCoachRowTest {
             .targetContext
             .getString(com.pomp.hskai.R.string.drill_recognition_prompt)
 
+        // Capture before asserting: when this fails, the picture is the only
+        // thing that says whether the line is missing or merely clipped.
+        shoot("drill-idle")
         compose.onNodeWithText(instruction).assertIsDisplayed()
         // Two would mean the old grey line came back underneath the bubble.
         assertOnce(instruction)
-        shoot("drill-idle")
     }
 
     @Test

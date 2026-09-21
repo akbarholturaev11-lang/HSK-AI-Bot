@@ -12,6 +12,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -557,27 +559,73 @@ internal fun HskCoachRow(
             reactionKey = reactionKey,
             modifier = Modifier.size(96.dp),
         )
-        if (text.isNotBlank()) {
-            Surface(
-                color = PompColors.PaperRaised,
-                border = BorderStroke(1.dp, PompColors.Divider),
-                shape = RoundedCornerShape(
-                    topStart = 4.dp,
-                    topEnd = 16.dp,
-                    bottomEnd = 16.dp,
-                    bottomStart = 16.dp,
-                ),
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                    lineHeight = 19.sp,
-                    color = PompColors.InkSecondary,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
-                )
-            }
+        if (text.isNotBlank()) HskCoachBubble(text, Modifier.weight(1f))
+    }
+}
+
+/**
+ * The coach standing BESIDE the question rather than above it: a tall
+ * character down the left, and to its right the line it is saying with the
+ * question itself underneath.
+ *
+ * The answers stay full width below this row — they are the widest thing on
+ * the screen and squeezing them into the remaining column would cost more
+ * than the character gains.
+ */
+@Composable
+internal fun HskCoachBeside(
+    character: HskCharacter,
+    mood: HskCharacterMood,
+    reaction: HskCharacterReaction?,
+    reactionKey: Any?,
+    text: String,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        HskCharacterStage(
+            character = character,
+            mood = mood,
+            reaction = reaction,
+            reactionKey = reactionKey,
+            modifier = Modifier.size(width = 120.dp, height = 152.dp),
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            HskCoachBubble(text)
+            content()
         }
+    }
+}
+
+/** The coach's speech bubble on its own, for layouts that place it by hand. */
+@Composable
+internal fun HskCoachBubble(text: String, modifier: Modifier = Modifier) {
+    if (text.isBlank()) return
+    Surface(
+        color = PompColors.PaperRaised,
+        border = BorderStroke(1.dp, PompColors.Divider),
+        shape = RoundedCornerShape(
+            topStart = 4.dp,
+            topEnd = 16.dp,
+            bottomEnd = 16.dp,
+            bottomStart = 16.dp,
+        ),
+        modifier = modifier,
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+            lineHeight = 19.sp,
+            color = PompColors.InkSecondary,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
+        )
     }
 }
 
@@ -612,28 +660,36 @@ internal fun HskCoachRow(
  *  - a shape that is stroked in the SVG is stroked here, at the same width.
  */
 
-private class CharPen(val ds: DrawScope, private val vw: Float, private val vh: Float) {
-    /** viewBox X -> pixels. Linear, so it scales relative deltas too. */
-    fun x(v: Float) = v * ds.size.width / vw
-    fun y(v: Float) = v * ds.size.height / vh
+/**
+ * Maps the SVG's viewBox onto the Canvas.
+ *
+ * The scale is UNIFORM and the drawing is centred, so a character keeps its
+ * proportions whatever box the layout hands it — a tall slot makes the
+ * character bigger, never stretched. Getting this wrong is subtle and ugly:
+ * a crane in a 118x150 box came out a tenth too long in the neck.
+ */
+private class CharPen(val ds: DrawScope, vw: Float, vh: Float) {
+    private val s = minOf(ds.size.width / vw, ds.size.height / vh)
+    private val ox = (ds.size.width - vw * s) / 2f
+    private val oy = (ds.size.height - vh * s) / 2f
 
-    /**
-     * Stroke widths are authored in viewBox units. Scaling them by the smaller
-     * axis keeps an outline the same weight relative to the drawing instead of
-     * fattening it when the box is stretched.
-     */
-    fun w(v: Float) = v * minOf(ds.size.width / vw, ds.size.height / vh)
+    /** viewBox point -> pixels (absolute). */
+    fun px(v: Float) = ox + v * s
+    fun py(v: Float) = oy + v * s
+
+    /** viewBox length -> pixels. Use for sizes, deltas and stroke widths. */
+    fun w(v: Float) = v * s
 
     fun oval(color: Color, cx: Float, cy: Float, rx: Float, ry: Float) {
-        ds.drawOval(color, Offset(x(cx - rx), y(cy - ry)), Size(x(rx * 2), y(ry * 2)))
+        ds.drawOval(color, Offset(px(cx - rx), py(cy - ry)), Size(w(rx * 2), w(ry * 2)))
     }
 
     fun ovalOutlined(fill: Color, stroke: Color, width: Float, cx: Float, cy: Float, rx: Float, ry: Float) {
         oval(fill, cx, cy, rx, ry)
         ds.drawOval(
             stroke,
-            Offset(x(cx - rx), y(cy - ry)),
-            Size(x(rx * 2), y(ry * 2)),
+            Offset(px(cx - rx), py(cy - ry)),
+            Size(w(rx * 2), w(ry * 2)),
             style = Stroke(width = w(width)),
         )
     }
@@ -653,19 +709,23 @@ private class CharPen(val ds: DrawScope, private val vw: Float, private val vh: 
     }
 
     fun rotated(degrees: Float, cx: Float, cy: Float, block: () -> Unit) {
-        ds.rotate(degrees, Offset(x(cx), y(cy))) { block() }
+        ds.rotate(degrees, Offset(px(cx), py(cy))) { block() }
     }
 }
 
-/** Mirrors the SVG path commands so the coordinates can be copied verbatim. */
+/**
+ * Mirrors the SVG path commands so the coordinates can be copied verbatim.
+ * Absolute commands go through [CharPen.px]/[CharPen.py]; relative ones are
+ * lengths and go through [CharPen.w], which is why they are kept apart.
+ */
 private class PathBuilder(private val pen: CharPen, private val p: Path) {
-    fun m(vx: Float, vy: Float) = p.moveTo(pen.x(vx), pen.y(vy))
-    fun l(vx: Float, vy: Float) = p.lineTo(pen.x(vx), pen.y(vy))
-    fun rl(dx: Float, dy: Float) = p.relativeLineTo(pen.x(dx), pen.y(dy))
+    fun m(vx: Float, vy: Float) = p.moveTo(pen.px(vx), pen.py(vy))
+    fun l(vx: Float, vy: Float) = p.lineTo(pen.px(vx), pen.py(vy))
+    fun rl(dx: Float, dy: Float) = p.relativeLineTo(pen.w(dx), pen.w(dy))
     fun rq(dx1: Float, dy1: Float, dx2: Float, dy2: Float) =
-        p.relativeQuadraticTo(pen.x(dx1), pen.y(dy1), pen.x(dx2), pen.y(dy2))
+        p.relativeQuadraticTo(pen.w(dx1), pen.w(dy1), pen.w(dx2), pen.w(dy2))
     fun c(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) =
-        p.cubicTo(pen.x(x1), pen.y(y1), pen.x(x2), pen.y(y2), pen.x(x3), pen.y(y3))
+        p.cubicTo(pen.px(x1), pen.py(y1), pen.px(x2), pen.py(y2), pen.px(x3), pen.py(y3))
     fun close() = p.close()
 }
 

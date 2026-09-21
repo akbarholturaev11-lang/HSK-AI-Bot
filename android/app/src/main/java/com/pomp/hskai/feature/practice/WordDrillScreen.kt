@@ -44,6 +44,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskCoachBeside
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
@@ -173,10 +174,12 @@ private fun DrillQuestionBody(
     ) {
         Spacer(Modifier.height(6.dp))
 
-        // The drill's instruction is what the coach is saying — it used to be
-        // a grey line on its own above the card. Recognition is the crane's
-        // precision work, pronunciation the monkey's dialogue drill.
-        PracticeCoachRow(
+        // The coach stands BESIDE the question: a tall character down the
+        // left, its line and the word itself stacked to the right. The
+        // answers stay full width below — they are the widest thing here.
+        // Recognition is the crane's precision work, pronunciation the
+        // monkey's dialogue drill.
+        HskCoachBeside(
             character = drillCharacterFor(state.mode),
             mood = practiceMoodFor(if (state.isAnswered) state.wasCorrect else null),
             reaction = if (state.isAnswered) {
@@ -192,16 +195,14 @@ private fun DrillQuestionBody(
                     R.string.drill_pronunciation_prompt
                 }
             ),
-        )
-        Spacer(Modifier.height(8.dp))
-
+        ) {
         HskGlassSurface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
             shadowElevation = 6.dp,
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 24.dp, horizontal = 18.dp),
+                modifier = Modifier.padding(vertical = 18.dp, horizontal = 14.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if (state.mode == DrillMode.PRONUNCIATION) {
@@ -226,6 +227,7 @@ private fun DrillQuestionBody(
                     textAlign = TextAlign.Center,
                 )
             }
+        }
         }
 
         Spacer(Modifier.height(18.dp))

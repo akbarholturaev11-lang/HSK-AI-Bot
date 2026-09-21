@@ -254,7 +254,12 @@ function render(){
      Android ham shu rolni beradi (PracticeCharacters.kt).
      Ko'rsatma endi personajning gapida — yuqorida takrorlanmaydi. Takror
      belgisi ham o'sha gapning bir qismi (ilgari alohida pill edi). */
-  if(window.PracticeCoach)PracticeCoach.idle(COACH,L.lead+mark);
+  if(window.PracticeCoach){
+    PracticeCoach.idle(COACH,L.lead+mark);
+    /* Savol personajning YONIDA tursin: so'z kartasi uning o'ng ustuniga
+       ko'chiriladi, variantlar esa pastda to'liq enda qoladi. */
+    PracticeCoach.beside(document.querySelector("#body .target"));
+  }
 }
 function pick(k){
   if(answered)return;answered=true;var q=quiz[qi];
