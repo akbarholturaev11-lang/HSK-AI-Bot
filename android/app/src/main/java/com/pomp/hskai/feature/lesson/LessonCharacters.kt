@@ -470,25 +470,43 @@ internal fun LessonCharacterStage(
         if (warning) LessonWarningRing()
         Canvas(
             Modifier.fillMaxSize().graphicsLayer {
+                val breathScale = if (breathing) 1f + .018f * breathe else 1f
                 translationX = with(density) { x.value.dp.toPx() }
                 translationY = with(density) {
                     (y.value + if (breathing) -2f * breathe else 0f).dp.toPx()
                 }
-                scaleX = scale.value
-                scaleY = scale.value * if (breathing) 1f + .018f * breathe else 1f
-                rotationZ = rotation.value
-                this.alpha = alpha.value
+                scaleX = scale.value.coerceIn(.05f, 2f)
+                scaleY = (scale.value * breathScale).coerceIn(.05f, 2f)
+                rotationZ = rotation.value.coerceIn(-180f, 180f)
+                this.alpha = alpha.value.coerceIn(0f, 1f)
             }
         ) {
-            when (character) {
-                LessonCharacter.Panda -> drawPanda(mood)
-                LessonCharacter.Dragon -> drawDragon(mood)
-                LessonCharacter.Crane -> drawCrane(mood)
-                LessonCharacter.Monkey -> drawMonkey(mood)
-                LessonCharacter.Rabbit -> drawRabbit(mood)
-            }
-            if (mood == LessonCharacterMood.Loading) {
-                drawLoadingBook(rotation = loadingWiggle)
+            if (
+                !size.width.isFinite() ||
+                !size.height.isFinite() ||
+                size.width <= 0f ||
+                size.height <= 0f
+            ) return@Canvas
+
+            // Character art is presentation only. A malformed/unsupported
+            // Canvas operation must never take the lesson process down.
+            runCatching {
+                when (character) {
+                    LessonCharacter.Panda -> drawPanda(mood)
+                    LessonCharacter.Dragon -> drawDragon(mood)
+                    LessonCharacter.Crane -> drawCrane(mood)
+                    LessonCharacter.Monkey -> drawMonkey(mood)
+                    LessonCharacter.Rabbit -> drawRabbit(mood)
+                }
+                if (mood == LessonCharacterMood.Loading) {
+                    drawLoadingBook(rotation = loadingWiggle)
+                }
+            }.onFailure {
+                drawCircle(
+                    color = Ink.copy(alpha = .10f),
+                    radius = size.minDimension * .28f,
+                    center = center,
+                )
             }
         }
     }
