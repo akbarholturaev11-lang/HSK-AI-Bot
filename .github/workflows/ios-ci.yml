@@ -67,6 +67,19 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build
 
+      - name: Check iOS localization key parity
+        run: |
+          python3 - <<'PY'
+          import re, pathlib
+          base=pathlib.Path("ios/HSKAI/Resources")
+          sets={}
+          for lang in ("uz","ru","tg"):
+              text=(base/f"{lang}.lproj/Localizable.strings").read_text()
+              sets[lang]=set(re.findall(r'^"([^"]+)"\\s*=', text, re.M))
+          assert sets["uz"] == sets["ru"] == sets["tg"], {k: len(v) for k,v in sets.items()}
+          print("localization keys:", len(sets["uz"]))
+          PY
+
       - name: Run iOS unit tests
         working-directory: ios
         run: |

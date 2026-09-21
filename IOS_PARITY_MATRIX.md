@@ -38,9 +38,9 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
 | Smart widget | Glance widget | local/shared state | 🟡 | WidgetKit extension + Course deep link + hourly timeline; account progress projection still pending shared App Group state |
 | Deep links | `DeepLinkRouter.kt` | — | ✅ | `pomp-hsk-ai://` native tab routing + XCTest coverage |
-| UZ localization | `values/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
-| RU localization | `values-ru/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
-| TJ localization | `values-tg/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
+| UZ localization | `values/` | language preference | ✅ | 226/226 iOS localization keys present; parity key-set audit clean |
+| RU localization | `values-ru/` | language preference | ✅ | 226/226 iOS localization keys present; parity key-set audit clean |
+| TJ localization | `values-tg/` | language preference | ✅ | 226/226 iOS localization keys present; parity key-set audit clean |
 | Unit tests | Android JVM tests | — | 🟡 | Network/auth/course/lesson/Foundation/practice/mistakes XCTest coverage; broader feature coverage pending |
 | UI smoke tests | Android instrumentation | — | ⬜ | XCUITest |
 
