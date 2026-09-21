@@ -56,6 +56,54 @@ class IOSSocialTransportTests(unittest.IsolatedAsyncioTestCase):
             user, limit=50, timezone_offset_minutes=480
         )
 
+    async def test_referral_uses_shared_referral_service(self):
+        user = SimpleNamespace(id=7, telegram_id=123, referral_code="ABC123")
+        context = SimpleNamespace(user=SimpleNamespace(telegram_id=123))
+        service = SimpleNamespace(
+            list_miniapp_referrals=AsyncMock(return_value=[{
+                "name": "Friend", "status": "active", "joined_at": "2026-09-01",
+                "activated_at": "2026-09-02", "course_level": "hsk1",
+                "completed_lessons": 2, "is_paid": False,
+            }]),
+            get_trial_activation_progress=AsyncMock(return_value=1),
+        )
+        session = MagicMock()
+        session.commit = AsyncMock()
+
+        @asynccontextmanager
+        async def session_factory():
+            yield session
+
+        app = FastAPI()
+        app.include_router(create_ios_social_router(
+            session_factory=session_factory,
+            settings_obj=SimpleNamespace(
+                DESKTOP_AUTH_SIGNING_SECRET="secret",
+                BOT_USERNAME="hsk_ai_bot",
+            ),
+            referral_service_factory=lambda *_: service,
+        ))
+
+        with (
+            patch("app.api.ios_social.DesktopAuthService.authenticate",
+                  new=AsyncMock(return_value=context)),
+            patch("app.api.ios_social.UserRepository.get_by_telegram_id",
+                  new=AsyncMock(return_value=user)),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=app),
+                                   base_url="https://testserver") as client:
+                response = await client.get(
+                    "/api/v3/ios/referral/overview?tz=480",
+                    headers={"Authorization": "Bearer token"},
+                )
+
+        self.assertEqual(200, response.status_code)
+        payload = response.json()
+        self.assertEqual("ABC123", payload["code"])
+        self.assertEqual(1, payload["activated"])
+        self.assertEqual("Friend", payload["items"][0]["name"])
+        self.assertNotIn("telegram_id", payload["items"][0])
+
 
 if __name__ == "__main__":
     unittest.main()
