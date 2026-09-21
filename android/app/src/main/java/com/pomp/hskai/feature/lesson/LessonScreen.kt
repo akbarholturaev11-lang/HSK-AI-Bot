@@ -294,40 +294,47 @@ private fun LessonBody(
             if (state.isStale) StaleBanner()
 
             val checked = state.answer as? AnswerState.Checked
-            val coachCharacter = if (
-                checked != null &&
-                !checked.isCorrect &&
-                state.hearts == 1
-            ) {
-                LessonCharacter.Rabbit
-            } else {
-                lessonCharacterFor(card)
-            }
-            val coachReaction = checked?.let {
-                lessonReactionFor(
-                    correct = it.isCorrect,
-                    hearts = state.hearts,
-                    streak = state.answerStreak,
-                )
-            }
-            val coachMood = when {
-                checked == null -> LessonCharacterMood.Idle
-                !checked.isCorrect && state.hearts == 1 -> LessonCharacterMood.OneHeart
-                checked.isCorrect -> LessonCharacterMood.Correct
-                else -> LessonCharacterMood.Wrong
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                LessonCharacterStage(
-                    character = coachCharacter,
-                    mood = coachMood,
-                    reaction = coachReaction,
-                    reactionKey = state.cardIndex to checked?.isCorrect,
-                    modifier = Modifier.size(74.dp),
-                )
+            // Pronunciation/audio exercises own the center of the screen and may
+            // activate microphone/audio resources. Do not keep a second animated
+            // coach composition alive above those exercises; the entry/finish
+            // cinematics still use the shared character system.
+            val showPersistentCoach = card !is PronunciationCard
+            if (showPersistentCoach) {
+                val coachCharacter = if (
+                    checked != null &&
+                    !checked.isCorrect &&
+                    state.hearts == 1
+                ) {
+                    LessonCharacter.Rabbit
+                } else {
+                    lessonCharacterFor(card)
+                }
+                val coachReaction = checked?.let {
+                    lessonReactionFor(
+                        correct = it.isCorrect,
+                        hearts = state.hearts,
+                        streak = state.answerStreak,
+                    )
+                }
+                val coachMood = when {
+                    checked == null -> LessonCharacterMood.Idle
+                    !checked.isCorrect && state.hearts == 1 -> LessonCharacterMood.OneHeart
+                    checked.isCorrect -> LessonCharacterMood.Correct
+                    else -> LessonCharacterMood.Wrong
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    LessonCharacterStage(
+                        character = coachCharacter,
+                        mood = coachMood,
+                        reaction = coachReaction,
+                        reactionKey = state.cardIndex to checked?.isCorrect,
+                        modifier = Modifier.size(74.dp),
+                    )
+                }
             }
 
             // The card sits in the middle of the free space instead of clinging to
