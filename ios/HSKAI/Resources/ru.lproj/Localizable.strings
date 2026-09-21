@@ -106,3 +106,13 @@
 "practice_result_title" = "Результат";
 "practice_result_score" = "%d / %d правильно";
 "action_done" = "Готово";
+
+"mistakes_title" = "Ошибки";
+"mistakes_active_count" = "активных ошибок";
+"mistakes_start_review" = "Повторить ошибки";
+"mistakes_load_error" = "Не удалось загрузить ошибки.";
+"mistakes_review_error" = "Ошибка во время работы над ошибками.";
+"mistakes_review_save_error" = "Не удалось сохранить результат.";
+"mistakes_review_empty" = "Сейчас нет ошибок для повторения.";
+"mistakes_review_done" = "Работа над ошибками завершена";
+"mistakes_remaining" = "Осталось активных ошибок: %d";

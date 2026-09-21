@@ -106,3 +106,13 @@
 "practice_result_title" = "Натиҷа";
 "practice_result_score" = "%d / %d дуруст";
 "action_done" = "Тайёр";
+
+"mistakes_title" = "Хатоҳо";
+"mistakes_active_count" = "хатои фаъол";
+"mistakes_start_review" = "Такрори хатоҳо";
+"mistakes_load_error" = "Хатоҳо бор карда нашуданд.";
+"mistakes_review_error" = "Ҳангоми машқи хатоҳо мушкил рух дод.";
+"mistakes_review_save_error" = "Натиҷаи машқ сабт нашуд.";
+"mistakes_review_empty" = "Ҳоло барои такрор хато нест.";
+"mistakes_review_done" = "Машқи хатоҳо анҷом ёфт";
+"mistakes_remaining" = "Хатоҳои фаъоли боқимонда: %d";

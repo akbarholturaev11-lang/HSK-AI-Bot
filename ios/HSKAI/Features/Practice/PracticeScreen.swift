@@ -2,7 +2,10 @@ import SwiftUI
 
 struct PracticeScreen: View {
     @ObservedObject var model: PracticeViewModel
+    @ObservedObject var mistakesModel: MistakesViewModel
     let account: LinkedAccount
+
+    @State private var showingMistakes = false
 
     var body: some View {
         NavigationStack {
@@ -24,6 +27,12 @@ struct PracticeScreen: View {
             }
             .navigationTitle("tab_practice")
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .fullScreenCover(isPresented: $showingMistakes) {
+            MistakesScreen(
+                model: mistakesModel,
+                onClose: { showingMistakes = false }
+            )
         }
     }
 
@@ -118,10 +127,24 @@ struct PracticeScreen: View {
                             icon: "mic.fill",
                             title: "practice_pronunciation_title"
                         )
-                        pendingRow(
-                            icon: "exclamationmark.triangle.fill",
-                            title: "practice_mistakes_title"
-                        )
+                        Button {
+                            showingMistakes = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(HSKColors.flame)
+                                    .frame(width: 28)
+                                Text("practice_mistakes_title")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(HSKColors.ink)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(HSKColors.inkSecondary)
+                            }
+                            .padding(.vertical, 7)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }

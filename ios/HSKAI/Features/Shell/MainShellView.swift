@@ -4,6 +4,7 @@ struct MainShellView: View {
     let account: LinkedAccount
     @ObservedObject var courseModel: CourseViewModel
     @ObservedObject var practiceModel: PracticeViewModel
+    @ObservedObject var mistakesModel: MistakesViewModel
     let onLogout: () -> Void
 
     var body: some View {
@@ -11,7 +12,11 @@ struct MainShellView: View {
             CourseScreen(model: courseModel, account: account)
                 .tabItem { Label("tab_course", systemImage: "map.fill") }
 
-            PracticeScreen(model: practiceModel, account: account)
+            PracticeScreen(
+                model: practiceModel,
+                mistakesModel: mistakesModel,
+                account: account
+            )
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
 
             ShellPlaceholder(titleKey: "tab_dictionary", systemImage: "character.book.closed.fill")

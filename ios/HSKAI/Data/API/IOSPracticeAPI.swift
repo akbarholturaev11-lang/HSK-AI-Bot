@@ -27,6 +27,78 @@ struct IOSPracticeAPI: Sendable {
         )
     }
 
+    func mistakes(
+        category: String? = nil,
+        limit: Int = 100,
+        offset: Int = 0
+    ) async throws -> IOSMistakesOverviewResponse {
+        let token = try await authSession.bearerToken()
+        var query = [
+            URLQueryItem(name: "limit", value: String(min(100, max(1, limit)))),
+            URLQueryItem(name: "offset", value: String(max(0, offset))),
+        ]
+        if let category, !category.isEmpty, category != "all" {
+            query.append(URLQueryItem(name: "category", value: category))
+        }
+        return try await client.get(
+            "/api/v3/ios/mistakes",
+            bearerToken: token,
+            queryItems: query
+        )
+    }
+
+    func startMistakeReview() async throws -> IOSMistakeReviewStartResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/mistakes/review/start",
+            body: IOSMistakeReviewStartRequest(
+                adSupported: false,
+                accessRef: ""
+            ),
+            bearerToken: token
+        )
+    }
+
+    func answerMistakeReview(
+        sessionId: String,
+        questionId: String,
+        selectedIndex: Int
+    ) async throws -> IOSMistakeReviewAnswerResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/mistakes/review/answer",
+            body: IOSMistakeReviewAnswerRequest(
+                sessionId: sessionId,
+                questionId: questionId,
+                selectedIndex: selectedIndex
+            ),
+            bearerToken: token
+        )
+    }
+
+    func completeMistakeReview(
+        sessionId: String,
+        answers: [String: Int],
+        questions: [IOSMistakeReviewQuestion]
+    ) async throws -> IOSMistakeReviewCompleteResponse {
+        let token = try await authSession.bearerToken()
+        let ordered = questions.compactMap { question -> IOSMistakeReviewCompleteAnswer? in
+            guard let selected = answers[question.id] else { return nil }
+            return IOSMistakeReviewCompleteAnswer(
+                questionId: question.id,
+                selectedIndex: selected
+            )
+        }
+        return try await client.post(
+            "/api/v3/ios/mistakes/review/complete",
+            body: IOSMistakeReviewCompleteRequest(
+                sessionId: sessionId,
+                answers: ordered
+            ),
+            bearerToken: token
+        )
+    }
+
     func complete(
         session: IOSPracticeSession,
         language: String,

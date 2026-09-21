@@ -106,3 +106,13 @@
 "practice_result_title" = "Natija";
 "practice_result_score" = "%d / %d to‘g‘ri";
 "action_done" = "Tayyor";
+
+"mistakes_title" = "Xatolar";
+"mistakes_active_count" = "faol xato";
+"mistakes_start_review" = "Xatolarni takrorlash";
+"mistakes_load_error" = "Xatolarni yuklab bo‘lmadi.";
+"mistakes_review_error" = "Xatolar mashqida xatolik yuz berdi.";
+"mistakes_review_save_error" = "Mashq natijasini saqlab bo‘lmadi.";
+"mistakes_review_empty" = "Hozir takrorlash uchun xato yo‘q.";
+"mistakes_review_done" = "Xatolar mashqi tugadi";
+"mistakes_remaining" = "Qolgan faol xatolar: %d";

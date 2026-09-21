@@ -20,7 +20,8 @@ struct AppRootView: View {
                 MainShellView(
                     account: account,
                     courseModel: model.courseViewModel,
-                    practiceModel: model.practiceViewModel
+                    practiceModel: model.practiceViewModel,
+                    mistakesModel: model.mistakesViewModel
                 ) {
                     Task { await model.logout() }
                 }
