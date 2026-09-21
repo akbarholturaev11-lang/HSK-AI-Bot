@@ -85,6 +85,8 @@ data class LessonUiState(
     val answer: AnswerState = AnswerState.Unanswered,
     val correctCount: Int = 0,
     val gradedAnswered: Int = 0,
+    /** Consecutive correct answers, matching Mini App Flow.streak. */
+    val answerStreak: Int = 0,
     val isSubmitting: Boolean = false,
     val previewCardLimit: Int = 0,
     val completionAllowed: Boolean = false,
@@ -418,6 +420,7 @@ class LessonViewModel(
                 answer = AnswerState.Checked(correct, explanation),
                 correctCount = it.correctCount + if (correct) 1 else 0,
                 gradedAnswered = it.gradedAnswered + 1,
+                answerStreak = if (correct) it.answerStreak + 1 else 0,
                 hearts = if (correct) it.hearts else (it.hearts - 1).coerceAtLeast(0),
             )
         }
