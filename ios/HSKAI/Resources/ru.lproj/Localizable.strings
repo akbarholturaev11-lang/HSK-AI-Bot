@@ -225,3 +225,7 @@
 "action_save" = "Сохранить";
 "today_plan_go" = "Продолжить";
 "today_plan_done" = "План на сегодня выполнен";
+"assistant_title" = "AI Помощник";
+"assistant_placeholder" = "Напишите вопрос…";
+"assistant_disabled" = "AI Помощник сейчас недоступен.";
+"assistant_unavailable" = "Не удалось связаться с AI Помощником.";

@@ -33,7 +33,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Ads/unlock | `AdScreen.kt` | ad list/view + access ref | ⬜ | iOS channel |
 | AI Voice | `feature/voice/*` | `/api/v3/ios/voice/*` | ✅ | Native role picker, typed/microphone turns, suggestions, TTS reply and session summary |
 | Pronunciation | voice/practice flows | `/api/v3/ios/voice/pronounce` | ✅ | AVAudioRecorder + shared scoring + adaptive mastery reporting |
-| AI Assistant | `feature/assistant/*` | Android assistant API | ⬜ | Assistant feature |
+| AI Assistant | `feature/assistant/*` | `/api/v3/ios/assistant/*` | ✅ | Native glass chat, shared conversations/history, idempotent request IDs and processing polling |
 | Study reminders | WorkManager notifications | preferences/local state | ✅ | Daily local UNCalendarNotificationTrigger + persisted opt-in |
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
 | Smart widget | Glance widget | local/shared state | ⬜ | WidgetKit |

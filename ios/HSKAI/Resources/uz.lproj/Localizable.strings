@@ -225,3 +225,7 @@
 "action_save" = "Saqlash";
 "today_plan_go" = "Davom etish";
 "today_plan_done" = "Bugungi reja bajarildi";
+"assistant_title" = "AI Yordamchi";
+"assistant_placeholder" = "Savolingizni yozing…";
+"assistant_disabled" = "AI Yordamchi hozir mavjud emas.";
+"assistant_unavailable" = "AI Yordamchi bilan bog‘lanib bo‘lmadi.";

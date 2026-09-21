@@ -225,3 +225,7 @@
 "action_save" = "Сабт кардан";
 "today_plan_go" = "Идома додан";
 "today_plan_done" = "Нақшаи имрӯз иҷро шуд";
+"assistant_title" = "Ёвари AI";
+"assistant_placeholder" = "Саволатонро нависед…";
+"assistant_disabled" = "Ёвари AI ҳоло дастрас нест.";
+"assistant_unavailable" = "Пайваст шудан ба Ёвари AI нашуд.";

@@ -45,6 +45,7 @@ final class AppModel: ObservableObject {
     let subscriptionViewModel: SubscriptionViewModel
     let challengeViewModel: ChallengeViewModel
     let voiceViewModel: VoiceViewModel
+    let assistantViewModel: AssistantViewModel
     let reminderManager = StudyReminderManager()
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
@@ -75,6 +76,7 @@ final class AppModel: ObservableObject {
         )
         self.challengeViewModel = ChallengeViewModel(api: IOSChallengeAPI(client: client, authSession: authSession))
         self.voiceViewModel = VoiceViewModel(api: IOSVoiceAPI(client: client, authSession: authSession))
+        self.assistantViewModel = AssistantViewModel(api: IOSAssistantAPI(client: client, authSession: authSession))
         self.subscriptionViewModel = SubscriptionViewModel(
             api: IOSSubscriptionAPI(client: client, authSession: authSession)
         )
@@ -206,6 +208,7 @@ final class AppModel: ObservableObject {
         subscriptionViewModel.reset()
         challengeViewModel.reset()
         voiceViewModel.reset()
+        assistantViewModel.reset()
         phase = .signedOut
     }
 
