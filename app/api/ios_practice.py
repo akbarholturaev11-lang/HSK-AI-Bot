@@ -26,10 +26,41 @@ from app.api.desktop_practice import (
 )
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_hsk_exam_service import CourseHskExamService
+from app.services.assistant_assessment_service import (
+    assessment_abandoned,
+    assessment_finished,
+    assessment_started,
+)
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 
 
 logger = logging.getLogger(__name__)
+
+
+class IOSExamStartRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    level: str = Field(min_length=1, max_length=16)
+    language: str = Field(default="", max_length=8)
+    access_ref: str = Field(default="", max_length=160)
+    ad_supported: bool = False
+
+
+class IOSExamAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    question_id: str = Field(min_length=1, max_length=160)
+    selected_index: int = Field(ge=0, le=32)
+
+
+class IOSExamCompleteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    session_id: str = Field(min_length=8, max_length=120)
+    level: str = Field(default="", max_length=16)
+    language: str = Field(default="", max_length=8)
+    answers: list[IOSExamAnswer] = Field(default_factory=list, max_length=100)
 
 
 class IOSMistakeReviewStartRequest(BaseModel):
@@ -104,13 +135,17 @@ def create_ios_practice_router(
     bot=None,
     service_factory: Callable[..., CourseMiniAppPracticeService] = CourseMiniAppPracticeService,
     mistake_service_factory: Callable[..., CourseMistakeService] = CourseMistakeService,
+    exam_service_factory: Callable[..., CourseHskExamService] = CourseHskExamService,
 ) -> APIRouter:
     router = APIRouter(tags=["ios-practice"])
 
-    async def _telegram_id(session, request: Request) -> int:
-        context = await DesktopAuthService(session, settings_obj).authenticate(
+    async def _context(session, request: Request):
+        return await DesktopAuthService(session, settings_obj).authenticate(
             _access_token(request)
         )
+
+    async def _telegram_id(session, request: Request) -> int:
+        context = await _context(session, request)
         return int(context.user.telegram_id)
 
     def _service(session):
@@ -199,6 +234,101 @@ def create_ios_practice_router(
                 DesktopPracticeError("ios_practice_unavailable", status_code=503)
             )
 
+
+
+    @router.post("/api/v3/ios/exams/start")
+    async def ios_exam_start(request: Request):
+        try:
+            payload = await _validated_payload(request, IOSExamStartRequest)
+            async with session_factory() as session:
+                context = await _context(session, request)
+                result = await exam_service_factory(session).start(
+                    int(context.user.telegram_id),
+                    level=payload.level,
+                    lang=payload.language,
+                    access_ref=payload.access_ref,
+                    ad_supported=payload.ad_supported,
+                )
+                session_id = str((result.get("session") or {}).get("id", ""))
+                if session_id and await assessment_abandoned(
+                    session,
+                    int(context.user.id),
+                    session_id,
+                ):
+                    raise DesktopPracticeError(
+                        "assistant_assessment_abandoned",
+                        status_code=409,
+                    )
+                await assessment_started(
+                    session,
+                    int(context.user.id),
+                    "exam",
+                    result,
+                )
+            return _service_response(result)
+        except (DesktopAuthError, DesktopPracticeError) as exc:
+            return _error_response(exc)
+        except ValueError:
+            return _error_response(
+                DesktopPracticeError("ios_exam_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("iOS exam start failed")
+            return _error_response(
+                DesktopPracticeError("ios_exam_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/ios/exams/complete")
+    async def ios_exam_complete(request: Request):
+        try:
+            payload = await _validated_payload(
+                request,
+                IOSExamCompleteRequest,
+                max_body_bytes=MAX_DESKTOP_PRACTICE_COMPLETE_BODY_BYTES,
+            )
+            async with session_factory() as session:
+                context = await _context(session, request)
+                if await assessment_abandoned(
+                    session,
+                    int(context.user.id),
+                    payload.session_id,
+                ):
+                    raise DesktopPracticeError(
+                        "assistant_assessment_abandoned",
+                        status_code=409,
+                    )
+
+                result = await exam_service_factory(session).complete(
+                    int(context.user.telegram_id),
+                    session_id=payload.session_id,
+                    answers=[
+                        {
+                            "question_id": item.question_id,
+                            "selected_index": int(item.selected_index),
+                        }
+                        for item in payload.answers
+                    ],
+                    level=payload.level or None,
+                    lang=payload.language or None,
+                )
+                if result.get("ok"):
+                    await assessment_finished(
+                        session,
+                        int(context.user.id),
+                        payload.session_id,
+                    )
+            return _service_response(result)
+        except (DesktopAuthError, DesktopPracticeError) as exc:
+            return _error_response(exc)
+        except ValueError:
+            return _error_response(
+                DesktopPracticeError("ios_exam_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("iOS exam complete failed")
+            return _error_response(
+                DesktopPracticeError("ios_exam_unavailable", status_code=503)
+            )
 
     @router.get("/api/v3/ios/mistakes")
     async def ios_mistakes(request: Request):

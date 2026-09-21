@@ -10,7 +10,7 @@ from app.api.ios_practice import create_ios_practice_router
 
 
 class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
-    async def _client(self, service, mistake_service=None):
+    async def _client(self, service, mistake_service=None, exam_service=None):
         @asynccontextmanager
         async def session_factory():
             yield object()
@@ -23,6 +23,9 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
                 service_factory=lambda *_args, **_kwargs: service,
                 mistake_service_factory=lambda *_args, **_kwargs: (
                     mistake_service if mistake_service is not None else SimpleNamespace()
+                ),
+                exam_service_factory=lambda *_args, **_kwargs: (
+                    exam_service if exam_service is not None else SimpleNamespace()
                 ),
             )
         )
@@ -133,6 +136,131 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
             ad_supported=False,
         )
 
+
+
+    async def test_exam_start_preserves_assessment_lifecycle(self):
+        service = SimpleNamespace()
+        exam_service = SimpleNamespace(
+            start=AsyncMock(return_value={
+                "ok": True,
+                "session": {
+                    "id": "exam-session-123",
+                    "level": "hsk3",
+                    "duration_min": 35,
+                    "pass_score": 60,
+                    "questions": [],
+                },
+            })
+        )
+        fake_context = SimpleNamespace(
+            user=SimpleNamespace(id=77, telegram_id=123456)
+        )
+
+        with (
+            patch(
+                "app.api.ios_practice.DesktopAuthService.authenticate",
+                new=AsyncMock(return_value=fake_context),
+            ),
+            patch(
+                "app.api.ios_practice.assessment_abandoned",
+                new=AsyncMock(return_value=False),
+            ) as abandoned,
+            patch(
+                "app.api.ios_practice.assessment_started",
+                new=AsyncMock(),
+            ) as started,
+        ):
+            async with await self._client(service, exam_service=exam_service) as client:
+                response = await client.post(
+                    "/api/v3/ios/exams/start",
+                    headers={"Authorization": "Bearer access-token"},
+                    json={
+                        "level": "hsk3",
+                        "language": "uz",
+                        "access_ref": "",
+                        "ad_supported": False,
+                    },
+                )
+
+        self.assertEqual(200, response.status_code)
+        exam_service.start.assert_awaited_once_with(
+            123456,
+            level="hsk3",
+            lang="uz",
+            access_ref="",
+            ad_supported=False,
+        )
+        abandoned.assert_awaited_once_with(
+            unittest.mock.ANY,
+            77,
+            "exam-session-123",
+        )
+        started.assert_awaited_once_with(
+            unittest.mock.ANY,
+            77,
+            "exam",
+            unittest.mock.ANY,
+        )
+
+    async def test_exam_complete_finishes_assessment(self):
+        service = SimpleNamespace()
+        exam_service = SimpleNamespace(
+            complete=AsyncMock(return_value={
+                "ok": True,
+                "score": 10,
+                "total": 12,
+                "percent": 83,
+                "pass_score": 60,
+                "passed": True,
+                "section_scores": {},
+                "wrong_items": [],
+            })
+        )
+        fake_context = SimpleNamespace(
+            user=SimpleNamespace(id=77, telegram_id=123456)
+        )
+
+        with (
+            patch(
+                "app.api.ios_practice.DesktopAuthService.authenticate",
+                new=AsyncMock(return_value=fake_context),
+            ),
+            patch(
+                "app.api.ios_practice.assessment_abandoned",
+                new=AsyncMock(return_value=False),
+            ),
+            patch(
+                "app.api.ios_practice.assessment_finished",
+                new=AsyncMock(),
+            ) as finished,
+        ):
+            async with await self._client(service, exam_service=exam_service) as client:
+                response = await client.post(
+                    "/api/v3/ios/exams/complete",
+                    headers={"Authorization": "Bearer access-token"},
+                    json={
+                        "session_id": "exam-session-123",
+                        "level": "hsk3",
+                        "language": "ru",
+                        "answers": [
+                            {"question_id": "q1", "selected_index": 1}
+                        ],
+                    },
+                )
+
+        self.assertEqual(200, response.status_code)
+        exam_service.complete.assert_awaited_once_with(
+            123456,
+            session_id="exam-session-123",
+            answers=[{"question_id": "q1", "selected_index": 1}],
+            level="hsk3",
+            lang="ru",
+        )
+        finished.assert_awaited_once_with(
+            unittest.mock.ANY,
+            77,
+            "exam-session-123",
+        )
 
     async def test_mistakes_overview_delegates_pagination(self):
         service = SimpleNamespace()
