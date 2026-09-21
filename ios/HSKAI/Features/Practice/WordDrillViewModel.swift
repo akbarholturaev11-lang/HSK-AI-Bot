@@ -83,7 +83,7 @@ final class WordDrillViewModel: ObservableObject {
             phase = .running
         } catch let error as APIError {
             phase = .idle
-            if case .httpStatus(let status, _) = error, status == 403 {
+            if case .httpStatus(let status) = error, status == 403 {
                 limitReached = true
             } else {
                 errorKey = "drill_load_error"
