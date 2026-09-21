@@ -316,18 +316,22 @@ private fun LessonBody(
                 checked.isCorrect -> LessonCharacterMood.Correct
                 else -> LessonCharacterMood.Wrong
             }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                LessonCharacterStage(
-                    character = coachCharacter,
-                    mood = coachMood,
-                    reaction = coachReaction,
-                    reactionKey = state.cardIndex to checked?.isCorrect,
-                    modifier = Modifier.size(74.dp),
-                )
+            if (!entryVisible) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    LessonCharacterStage(
+                        character = coachCharacter,
+                        mood = coachMood,
+                        reaction = coachReaction,
+                        reactionKey = state.cardIndex to checked?.isCorrect,
+                        modifier = Modifier.size(74.dp),
+                    )
+                }
+            } else {
+                Spacer(Modifier.height(78.dp))
             }
 
             // The card sits in the middle of the free space instead of clinging to
