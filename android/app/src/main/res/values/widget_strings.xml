@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_lesson_short">%1$d-dars</string>
     <string name="widget_name">HSK AI — Panda</string>
     <string name="widget_description">Dars, XP va streak — bosh ekranda</string>
     <string name="widget_unlinked">Hisobni ulang</string>
     <string name="widget_stale">Yangilab olamizmi?</string>
     <string name="widget_foundation">Asoslardan boshlaymiz</string>
-    <string name="widget_complete">Bugun uddaladingiz!</string>
-    <string name="widget_streak">Streakni saqlaymizmi?</string>
     <string name="widget_continue">Darsni davom ettiring</string>
     <string name="widget_stats">%1$d XP · %2$d kun</string>
     <string name="widget_lesson">%1$s · %2$d-dars</string>
@@ -28,7 +25,34 @@
     <string name="widget_setup_manual_step_1">Bosh ekranni bosib turing</string>
     <string name="widget_setup_manual_step_2">Widgetlar → HSK AI ni oching</string>
     <string name="widget_setup_manual_step_3">Panda widgetini tanlang</string>
-    <string name="widget_streak_risk">Streak bugun uzilishi mumkin</string>
-    <string name="widget_goal_left">Maqsadgacha %1$d XP</string>
     <string name="widget_stats_goal">%1$d/%2$d XP · %3$d kun</string>
+    <string name="widget_morning_01">Xayrli tong! Boshladikmi?</string>
+    <string name="widget_morning_02">Yangi kun — yangi so‘zlar</string>
+    <string name="widget_morning_03">Kichik qadamdan boshlaymiz</string>
+    <string name="widget_day_01">Men tayyorman, siz-chi?</string>
+    <string name="widget_day_02">5 daqiqa ham yetadi</string>
+    <string name="widget_day_03">Darsni ochamizmi?</string>
+    <string name="widget_waiting_01">Hali ham kutyapman…</string>
+    <string name="widget_waiting_02">Panda zerikdi</string>
+    <string name="widget_waiting_03">Kunning yarmi o‘tdi</string>
+    <string name="widget_waiting_04">Bor-yo‘g‘i bitta dars</string>
+    <string name="widget_evening_01">Kech kirdi, dars esa yo‘q</string>
+    <string name="widget_evening_02">Bugunni unutdingizmi?</string>
+    <string name="widget_evening_03">Kun tugab bormoqda</string>
+    <string name="widget_evening_04">Hali ulgurasiz</string>
+    <string name="widget_late_01">Vaqt kam qoldi</string>
+    <string name="widget_late_02">Besh daqiqa ajrating</string>
+    <string name="widget_late_03">Streak xavf ostida</string>
+    <string name="widget_late_04">Kech bo‘lmasdan…</string>
+    <string name="widget_critical_01">Oxirgi imkoniyat!</string>
+    <string name="widget_critical_02">Yarim tungacha ulguring!</string>
+    <string name="widget_critical_03">Panda vahimada!</string>
+    <string name="widget_critical_04">Bugun hali bo‘sh!</string>
+    <string name="widget_critical_05">Tez — bitta dars!</string>
+    <string name="widget_completed_01">Bugun bajarildi!</string>
+    <string name="widget_completed_02">Panda xursand</string>
+    <string name="widget_completed_03">Zo‘r ish bo‘ldi!</string>
+    <string name="widget_completed_04">Dam oling, uddaladingiz</string>
+    <string name="widget_completed_05">Kun yopildi!</string>
+    <string name="widget_milestone">%1$d kun ketma-ket!</string>
 </resources>

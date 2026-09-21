@@ -67,3 +67,7 @@ branch-backups/
 # file anyone wants.
 * 2.md
 * 2.py
+
+# Widget panda artwork masters (1254px PNG). Kept out of git like the
+# signing key: the shipped copies are the WebP files in the APK.
+Widjetlar/

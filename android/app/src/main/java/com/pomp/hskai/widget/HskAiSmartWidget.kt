@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,14 +56,12 @@ class HskAiSmartWidget : GlanceAppWidget() {
             val now = remember(session.snapshot) { java.time.ZonedDateTime.now() }
             val dark = theme == AppThemeMode.DARK || (theme == AppThemeMode.SYSTEM &&
                 context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
-            val mood = WidgetStateResolver.resolve(session.linked, session.snapshot, now)
             WidgetContent(
                 context = AppLocale.wrap(context),
                 session = session,
-                mood = mood,
+                access = WidgetStateResolver.resolve(session.linked, session.snapshot, now),
                 dark = dark,
-                reaction = WidgetStateResolver.reaction(mood, session.snapshot, now),
-                prompt = WidgetStateResolver.prompt(mood, session.snapshot, now),
+                visual = WidgetVisualResolver.resolve(session.snapshot, session.epoch, now),
             )
         }
     }
@@ -73,37 +72,22 @@ class HskAiSmartWidget : GlanceAppWidget() {
 internal fun WidgetContent(
     context: Context,
     session: WidgetSession,
-    mood: WidgetMood,
+    access: WidgetAccess,
     dark: Boolean,
-    reaction: WidgetReaction = WidgetStateResolver.reaction(mood, session.snapshot),
-    prompt: WidgetPrompt = WidgetStateResolver.prompt(mood, session.snapshot),
+    visual: WidgetVisual = WidgetVisualResolver.resolve(session.snapshot, session.epoch),
 ) {
     val size = LocalSize.current
     val compact = size.height < 110.dp
     val wide = size.width >= 260.dp
     val palette = PompColors.paletteFor(dark)
-    val title = context.getString(when (mood) {
-        WidgetMood.UNLINKED -> R.string.widget_unlinked
-        WidgetMood.STALE -> R.string.widget_stale
-        WidgetMood.FOUNDATION -> R.string.widget_foundation
-        WidgetMood.COMPLETE -> R.string.widget_complete
-        WidgetMood.STREAK -> R.string.widget_streak
-        WidgetMood.CONTINUE -> R.string.widget_continue
-    })
-    val art = when (reaction) {
-        WidgetReaction.CALM -> R.drawable.widget_panda_calm
-        // The original invite art is the panda's friendly wave and remains
-        // the preview image shown by the add-widget sheet.
-        WidgetReaction.WAVE -> R.drawable.widget_panda_invite
-        WidgetReaction.THINKING -> R.drawable.widget_panda_thinking
-        WidgetReaction.FOCUS -> R.drawable.widget_panda_focus
-        WidgetReaction.CHEER -> R.drawable.widget_panda_cheer
-        WidgetReaction.STREAK -> R.drawable.widget_panda_streak
-        WidgetReaction.CELEBRATE -> R.drawable.widget_panda_celebrate
-        WidgetReaction.WORRIED -> R.drawable.widget_panda_worried
-        WidgetReaction.SLEEPY -> R.drawable.widget_panda_sleepy
-    }
-    val fresh = mood != WidgetMood.UNLINKED && mood != WidgetMood.STALE
+    // One engine chose the state, one table chose the drawing and the line.
+    // This function only places them.
+    val asset = WidgetArt.assetFor(access, visual)
+    val milestone = visual.special
+        ?.takeIf { access == WidgetAccess.ACTIVE && it.kind == WidgetSpecialKind.MILESTONE }
+    val message = if (milestone != null) context.getString(asset.text, milestone.days)
+        else context.getString(asset.text)
+    val fresh = access == WidgetAccess.FOUNDATION || access == WidgetAccess.ACTIVE
     val snapshot = session.snapshot
     // Today against today's goal is what decides whether to open the app;
     // the lifetime total is kept only while the goal is still unknown.
@@ -113,41 +97,56 @@ internal fun WidgetContent(
             context.getString(R.string.widget_stats_goal, snapshot.dailyXp, snapshot.goalXp, snapshot.streak)
         else -> context.getString(R.string.widget_stats, snapshot.xp, snapshot.streak)
     }
-    val call = when (prompt) {
-        is WidgetPrompt.StreakAtRisk -> context.getString(R.string.widget_streak_risk)
-        is WidgetPrompt.GoalLeft -> context.getString(R.string.widget_goal_left, prompt.xp)
-        is WidgetPrompt.Mood -> title
-    }
     val lesson = if (fresh && snapshot?.lessonOrder != null)
         context.getString(R.string.widget_lesson, snapshot.level.uppercase(), snapshot.lessonOrder) else "HSK AI"
     // Every tap goes through CurrentLesson; MainActivity performs the fresh bearer/access check.
     val action = actionStartActivity(WidgetIntents.open(context, "widget"))
-    Row(
-        modifier = GlanceModifier.fillMaxSize().appWidgetBackground().background(palette.paper)
-            .cornerRadius(20.dp).clickable(action).padding(if (wide) 12.dp else 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (compact || wide) {
-            Image(ImageProvider(art), title, GlanceModifier.size(if (compact) 28.dp else 90.dp))
-            Spacer(GlanceModifier.width(if (compact) 6.dp else 12.dp))
-        }
-        Column(GlanceModifier.defaultWeight(), verticalAlignment = Alignment.CenterVertically) {
-            if (!compact) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (!wide) {
-                        Image(ImageProvider(art), null, GlanceModifier.size(30.dp))
-                        Spacer(GlanceModifier.width(4.dp))
-                    }
-                    Text(lesson, style = TextStyle(color = ColorProvider(palette.cinnabar), fontSize = 11.sp, fontWeight = FontWeight.Bold), maxLines = 2)
-                }
+    val frame = GlanceModifier.fillMaxSize().appWidgetBackground().background(palette.paper)
+        .cornerRadius(20.dp).clickable(action).padding(if (compact) 6.dp else 8.dp)
+    // The panda is the widget. Text is what is left over, not the other way
+    // round: the smallest size carries the drawing and one line, and only the
+    // widest one has room for the lesson label as well.
+    if (wide) {
+        Row(modifier = frame, verticalAlignment = Alignment.CenterVertically) {
+            Panda(asset, message, 88.dp)
+            Spacer(GlanceModifier.width(12.dp))
+            Column(GlanceModifier.defaultWeight(), verticalAlignment = Alignment.CenterVertically) {
+                Text(lesson, style = TextStyle(color = ColorProvider(palette.cinnabar), fontSize = 11.sp, fontWeight = FontWeight.Bold), maxLines = 1)
                 Spacer(GlanceModifier.height(4.dp))
+                Text(message, style = TextStyle(color = ColorProvider(palette.ink), fontSize = 16.sp, fontWeight = FontWeight.Bold), maxLines = 2)
+                Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 11.sp), maxLines = 1)
             }
-            val heading = if (compact && fresh && snapshot?.lessonOrder != null)
-                context.getString(R.string.widget_lesson_short, snapshot.lessonOrder) else call
-            Text(heading, style = TextStyle(color = ColorProvider(palette.ink), fontSize = (if (compact) 12 else 15).sp, fontWeight = FontWeight.Bold), maxLines = if (compact) 1 else 2)
-            Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 11.sp), maxLines = 1)
+        }
+    } else if (compact) {
+        Row(modifier = frame, verticalAlignment = Alignment.CenterVertically) {
+            Panda(asset, message, 32.dp)
+            Spacer(GlanceModifier.width(6.dp))
+            Column(GlanceModifier.defaultWeight(), verticalAlignment = Alignment.CenterVertically) {
+                Text(message, style = TextStyle(color = ColorProvider(palette.ink), fontSize = 12.sp, fontWeight = FontWeight.Bold), maxLines = 1)
+                Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 10.sp), maxLines = 1)
+            }
+        }
+    } else {
+        Column(
+            modifier = frame,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Panda(asset, message, 44.dp)
+            Spacer(GlanceModifier.height(4.dp))
+            Text(message, style = TextStyle(color = ColorProvider(palette.ink), fontSize = 12.sp, fontWeight = FontWeight.Bold), maxLines = 2)
+            Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 10.sp), maxLines = 1)
         }
     }
+}
+
+/** One drawing, one size. [WidgetAsset.drawable] is where motion will arrive. */
+@Composable
+private fun Panda(asset: WidgetAsset, description: String, size: Dp) {
+    // The artwork is a square painted scene, so it is rounded to sit inside
+    // the widget frame rather than on top of it. Pre-31 launchers ignore the
+    // radius and show the square; nothing else changes.
+    Image(ImageProvider(asset.drawable()), description, GlanceModifier.size(size).cornerRadius(14.dp))
 }
 
 class HskAiWidgetReceiver : GlanceAppWidgetReceiver() {
