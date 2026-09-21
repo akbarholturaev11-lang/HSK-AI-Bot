@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: android-runtime-smoke-fix
+  cancel-in-progress: true
+
 jobs:
   runtime-smoke:
     runs-on: ubuntu-latest
