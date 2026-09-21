@@ -27,6 +27,11 @@ from app.api.desktop_practice import (
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_hsk_exam_service import CourseHskExamService
+from app.services.course_access_policy_service import CourseAccessPolicyService
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_drill_signal_service import CourseDrillSignalService
+from app.services.course_word_mastery_service import CourseWordMasteryService
+from app.repositories.user_repo import UserRepository
 from app.services.assistant_assessment_service import (
     assessment_abandoned,
     assessment_finished,
@@ -36,6 +41,40 @@ from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthServi
 
 
 logger = logging.getLogger(__name__)
+
+
+class IOSDrillGateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    feature: str = Field(min_length=1, max_length=24)
+    ref: str = Field(default="", max_length=48)
+    access_ref: str = Field(default="", max_length=160)
+
+
+class IOSDrillWordsRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    feature: str = Field(min_length=1, max_length=24)
+    limit: int = Field(default=10, ge=1, le=30)
+
+
+class IOSDrillMistakeEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    hanzi: str = Field(min_length=1, max_length=16)
+    selected: str = Field(default="", max_length=64)
+
+
+class IOSDrillResultEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    hanzi: str = Field(min_length=1, max_length=16)
+    correct: bool = False
+
+
+class IOSDrillReportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    feature: str = Field(min_length=1, max_length=24)
+    level: str = Field(default="", max_length=16)
+    language: str = Field(default="", max_length=8)
+    mistakes: list[IOSDrillMistakeEntry] = Field(default_factory=list, max_length=30)
+    results: list[IOSDrillResultEntry] = Field(default_factory=list, max_length=30)
 
 
 class IOSExamStartRequest(BaseModel):
@@ -136,6 +175,8 @@ def create_ios_practice_router(
     service_factory: Callable[..., CourseMiniAppPracticeService] = CourseMiniAppPracticeService,
     mistake_service_factory: Callable[..., CourseMistakeService] = CourseMistakeService,
     exam_service_factory: Callable[..., CourseHskExamService] = CourseHskExamService,
+    mastery_service_factory: Callable[..., CourseWordMasteryService] = CourseWordMasteryService,
+    drill_service_factory: Callable[..., CourseDrillSignalService] = CourseDrillSignalService,
 ) -> APIRouter:
     router = APIRouter(tags=["ios-practice"])
 
@@ -147,6 +188,20 @@ def create_ios_practice_router(
     async def _telegram_id(session, request: Request) -> int:
         context = await _context(session, request)
         return int(context.user.telegram_id)
+
+    async def _user(session, request: Request):
+        context = await _context(session, request)
+        user = await UserRepository(session).get_by_telegram_id(int(context.user.telegram_id))
+        if not user:
+            raise DesktopPracticeError("ios_user_not_found", status_code=404)
+        return user
+
+    @staticmethod
+    def _drill_feature(value: str) -> str:
+        feature = str(value or "").strip().lower()
+        if feature not in {"recognition", "pronunciation"}:
+            raise DesktopPracticeError("ios_practice_request_invalid", status_code=422)
+        return feature
 
     def _service(session):
         return (
@@ -235,6 +290,95 @@ def create_ios_practice_router(
             )
 
 
+
+
+    @router.post("/api/v3/ios/practice/gate")
+    async def ios_drill_gate(request: Request):
+        try:
+            payload = await _validated_payload(request, IOSDrillGateRequest)
+            feature = _drill_feature(payload.feature)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                access = CourseMiniAppAccessService(session)
+                policy = await CourseAccessPolicyService(session).get_policy()
+                if getattr(user, "status", "") != "blocked" and policy.free_active:
+                    return JSONResponse(content={
+                        "ok": True, "allowed": True,
+                        "is_paid": access.is_paid_user(user), "policy_free": True,
+                    }, headers={"Cache-Control": "no-store"})
+                result = await access.consume_daily_use(
+                    user, feature_key=feature, ref=payload.ref.strip() or None,
+                    lifetime=True, notify_bot=bot,
+                )
+                await session.commit()
+                if not result.get("allowed"):
+                    return JSONResponse(status_code=403, content={
+                        "ok": False,
+                        "error": result.get("error") or "free_feature_limit_reached",
+                        "allowed": False,
+                        "is_paid": bool(result.get("is_paid", False)),
+                        "remaining": result.get("remaining"),
+                        "reset_at": result.get("reset_at"),
+                    }, headers={"Cache-Control": "no-store"})
+            return JSONResponse(content={
+                "ok": True, "allowed": True,
+                "is_paid": bool(result.get("is_paid", False)),
+                "remaining": result.get("remaining"),
+            }, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopPracticeError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("iOS drill gate failed")
+            return _error_response(DesktopPracticeError("ios_practice_unavailable", status_code=503))
+
+    @router.post("/api/v3/ios/practice/words")
+    async def ios_drill_words(request: Request):
+        try:
+            payload = await _validated_payload(request, IOSDrillWordsRequest)
+            feature = _drill_feature(payload.feature)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                plan = await mastery_service_factory(session).drill_words(
+                    user, skill=feature, limit=payload.limit,
+                )
+                await session.commit()
+            return JSONResponse(content={"ok": True, **plan}, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopPracticeError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("iOS drill words failed")
+            return _error_response(DesktopPracticeError("ios_practice_unavailable", status_code=503))
+
+    @router.post("/api/v3/ios/practice/report")
+    async def ios_drill_report(request: Request):
+        try:
+            payload = await _validated_payload(request, IOSDrillReportRequest)
+            feature = _drill_feature(payload.feature)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                recorded = 0
+                if payload.mistakes:
+                    recorded = await drill_service_factory(session).record(
+                        user, feature=feature,
+                        level=payload.level or str(getattr(user, "level", "") or ""),
+                        language=payload.language or str(getattr(user, "language", "") or ""),
+                        entries=[{"hanzi": x.hanzi, "selected": x.selected} for x in payload.mistakes],
+                    )
+                scheduled = 0
+                if payload.results:
+                    scheduled = await mastery_service_factory(session).record_drill(
+                        user, skill=feature,
+                        results=[{"hanzi": x.hanzi, "correct": x.correct} for x in payload.results],
+                    )
+                await session.commit()
+            return JSONResponse(content={
+                "ok": True, "recorded": recorded, "scheduled": scheduled,
+            }, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopPracticeError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("iOS drill report failed")
+            return _error_response(DesktopPracticeError("ios_practice_unavailable", status_code=503))
 
     @router.post("/api/v3/ios/exams/start")
     async def ios_exam_start(request: Request):

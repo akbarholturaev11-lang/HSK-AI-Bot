@@ -10,7 +10,10 @@ from app.api.ios_practice import create_ios_practice_router
 
 
 class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
-    async def _client(self, service, mistake_service=None, exam_service=None):
+    async def _client(
+        self, service, mistake_service=None, exam_service=None,
+        mastery_service=None, drill_service=None,
+    ):
         @asynccontextmanager
         async def session_factory():
             yield object()
@@ -26,6 +29,12 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
                 ),
                 exam_service_factory=lambda *_args, **_kwargs: (
                     exam_service if exam_service is not None else SimpleNamespace()
+                ),
+                mastery_service_factory=lambda *_args, **_kwargs: (
+                    mastery_service if mastery_service is not None else SimpleNamespace()
+                ),
+                drill_service_factory=lambda *_args, **_kwargs: (
+                    drill_service if drill_service is not None else SimpleNamespace()
                 ),
             )
         )
@@ -137,6 +146,97 @@ class IOSPracticeTransportTests(unittest.IsolatedAsyncioTestCase):
         )
 
 
+
+
+    async def test_drill_words_use_server_mastery_plan(self):
+        service = SimpleNamespace()
+        mastery_service = SimpleNamespace(drill_words=AsyncMock(return_value={
+            "skill": "recognition", "day": "2026-09-21",
+            "words": [{"zh": "你", "kind": "new", "box": 0}],
+        }))
+        fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
+        user = SimpleNamespace(id=77, telegram_id=123456, level="hsk3", language="uz")
+        fake_session = unittest.mock.MagicMock()
+        fake_session.commit = AsyncMock()
+
+        @asynccontextmanager
+        async def session_factory():
+            yield fake_session
+
+        app = FastAPI()
+        app.include_router(create_ios_practice_router(
+            session_factory=session_factory,
+            settings_obj=SimpleNamespace(),
+            service_factory=lambda *_args, **_kwargs: service,
+            mastery_service_factory=lambda *_args, **_kwargs: mastery_service,
+        ))
+        with (
+            patch("app.api.ios_practice.DesktopAuthService.authenticate",
+                  new=AsyncMock(return_value=fake_context)),
+            patch("app.api.ios_practice.UserRepository.get_by_telegram_id",
+                  new=AsyncMock(return_value=user)),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=app),
+                                   base_url="https://testserver") as client:
+                response = await client.post(
+                    "/api/v3/ios/practice/words",
+                    headers={"Authorization": "Bearer access-token"},
+                    json={"feature": "recognition", "limit": 10},
+                )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("你", response.json()["words"][0]["zh"])
+        mastery_service.drill_words.assert_awaited_once_with(
+            user, skill="recognition", limit=10
+        )
+
+    async def test_drill_report_keeps_server_side_mistake_rebuild(self):
+        service = SimpleNamespace()
+        mastery_service = SimpleNamespace(record_drill=AsyncMock(return_value=1))
+        drill_service = SimpleNamespace(record=AsyncMock(return_value=1))
+        fake_context = SimpleNamespace(user=SimpleNamespace(telegram_id=123456))
+        user = SimpleNamespace(id=77, telegram_id=123456, level="hsk3", language="uz")
+        fake_session = unittest.mock.MagicMock()
+        fake_session.commit = AsyncMock()
+
+        @asynccontextmanager
+        async def session_factory():
+            yield fake_session
+
+        app = FastAPI()
+        app.include_router(create_ios_practice_router(
+            session_factory=session_factory,
+            settings_obj=SimpleNamespace(),
+            service_factory=lambda *_args, **_kwargs: service,
+            mastery_service_factory=lambda *_args, **_kwargs: mastery_service,
+            drill_service_factory=lambda *_args, **_kwargs: drill_service,
+        ))
+        with (
+            patch("app.api.ios_practice.DesktopAuthService.authenticate",
+                  new=AsyncMock(return_value=fake_context)),
+            patch("app.api.ios_practice.UserRepository.get_by_telegram_id",
+                  new=AsyncMock(return_value=user)),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=app),
+                                   base_url="https://testserver") as client:
+                response = await client.post(
+                    "/api/v3/ios/practice/report",
+                    headers={"Authorization": "Bearer access-token"},
+                    json={
+                        "feature": "recognition", "level": "hsk3", "language": "uz",
+                        "mistakes": [{"hanzi": "你", "selected": "好"}],
+                        "results": [{"hanzi": "你", "correct": False}],
+                    },
+                )
+
+        self.assertEqual(200, response.status_code)
+        drill_service.record.assert_awaited_once_with(
+            user, feature="recognition", level="hsk3", language="uz",
+            entries=[{"hanzi": "你", "selected": "好"}],
+        )
+        mastery_service.record_drill.assert_awaited_once_with(
+            user, skill="recognition", results=[{"hanzi": "你", "correct": False}]
+        )
 
     async def test_exam_start_preserves_assessment_lifecycle(self):
         service = SimpleNamespace()
