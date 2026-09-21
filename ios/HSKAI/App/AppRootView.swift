@@ -27,7 +27,8 @@ struct AppRootView: View {
                     wordDrillModel: model.wordDrillViewModel,
                     pronunciationDrillModel: model.pronunciationDrillViewModel,
                     ratingModel: model.ratingViewModel,
-                    subscriptionModel: model.subscriptionViewModel
+                    subscriptionModel: model.subscriptionViewModel,
+                    reminderManager: model.reminderManager
                 ) {
                     Task { await model.logout() }
                 }

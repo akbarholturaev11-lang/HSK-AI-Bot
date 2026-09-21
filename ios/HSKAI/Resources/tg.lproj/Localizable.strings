@@ -180,3 +180,10 @@
 "subscription_start_trial" = "Оғози давраи озмоишии ройгон";
 "subscription_load_error" = "Ҳолати обуна бор карда нашуд.";
 "subscription_trial_error" = "Давраи озмоишӣ оғоз нашуд.";
+
+"reminder_title" = "Ёдрасии омӯзиш";
+"reminder_description" = "Ҳар рӯз соати 19:00 идомаи дарсро ёдрас мекунад.";
+"reminder_toggle" = "Ёдрасии ҳаррӯза";
+"reminder_permission_denied" = "Иҷозати огоҳинома дода нашуд.";
+"reminder_notification_title" = "HSK AI";
+"reminder_notification_body" = "Машқи имрӯзаи забони чиниро идома диҳед.";

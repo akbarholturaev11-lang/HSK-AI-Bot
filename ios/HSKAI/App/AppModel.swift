@@ -43,6 +43,7 @@ final class AppModel: ObservableObject {
     let pronunciationDrillViewModel: PronunciationDrillViewModel
     let ratingViewModel: RatingViewModel
     let subscriptionViewModel: SubscriptionViewModel
+    let reminderManager = StudyReminderManager()
     private var pendingLink: PendingLink?
     private var pollingTask: Task<Void, Never>?
     private var didRestore = false

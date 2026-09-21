@@ -180,3 +180,10 @@
 "subscription_start_trial" = "Bepul sinovni boshlash";
 "subscription_load_error" = "Obuna holatini yuklab bo‘lmadi.";
 "subscription_trial_error" = "Sinov rejimini ishga tushirib bo‘lmadi.";
+
+"reminder_title" = "O‘qish eslatmasi";
+"reminder_description" = "Har kuni soat 19:00 da darsni davom ettirishni eslatadi.";
+"reminder_toggle" = "Kunlik eslatma";
+"reminder_permission_denied" = "Bildirishnomalarga ruxsat berilmagan.";
+"reminder_notification_title" = "HSK AI";
+"reminder_notification_body" = "Bugungi xitoy tili mashg‘ulotini davom ettiring.";

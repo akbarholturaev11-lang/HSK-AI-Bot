@@ -180,3 +180,10 @@
 "subscription_start_trial" = "Начать бесплатный пробный период";
 "subscription_load_error" = "Не удалось загрузить состояние подписки.";
 "subscription_trial_error" = "Не удалось запустить пробный период.";
+
+"reminder_title" = "Напоминание об учёбе";
+"reminder_description" = "Каждый день в 19:00 напоминает продолжить занятие.";
+"reminder_toggle" = "Ежедневное напоминание";
+"reminder_permission_denied" = "Нет разрешения на уведомления.";
+"reminder_notification_title" = "HSK AI";
+"reminder_notification_body" = "Продолжите сегодняшнее занятие китайским.";

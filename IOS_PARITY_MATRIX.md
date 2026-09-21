@@ -10,7 +10,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Telegram link auth | `LinkScreen.kt`, `AndroidAuthApi.kt` | `/api/v3/ios-auth/*` | 🟡 | First-class iOS transport + Telegram flow; physical-device smoke pending |
 | Bootstrap/session restore | `AuthRepository.kt` | `/api/v3/ios/bootstrap` | ✅ | RAM access token + rotating Keychain refresh token |
 | Onboarding | `feature/onboarding/*` | `/api/v3/ios/course/onboarding` | 🟡 | Level/goal native flow done; remaining preferences/notification primer pending |
-| Notification primer | `NotificationPrimerScreen.kt` | preferences | ⬜ | UNUserNotificationCenter |
+| Notification primer | `NotificationPrimerScreen.kt` | preferences | ✅ | Native permission request is user-triggered from Profile reminder control |
 | Course map | `CourseScreen.kt` | `GET /api/v3/ios/course/map` | ✅ | Native XP/streak/league/today/unit rendering |
 | Cached-first course | `CourseRepository.kt` | same | ✅ | Device/account-scoped disk cache + network revalidate |
 | Today plan | `TodayPlanCard.kt` | map `today` block | 🟡 | Summary rendered; task routing/actions pending |
@@ -34,7 +34,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | AI Voice | `feature/voice/*` | voice APIs | ⬜ | AVAudioRecorder/AVPlayer |
 | Pronunciation | voice/practice flows | `/api/v3/ios/voice/pronounce` | ✅ | AVAudioRecorder + shared scoring + adaptive mastery reporting |
 | AI Assistant | `feature/assistant/*` | Android assistant API | ⬜ | Assistant feature |
-| Study reminders | WorkManager notifications | preferences/local state | ⬜ | local notification scheduling |
+| Study reminders | WorkManager notifications | preferences/local state | ✅ | Daily local UNCalendarNotificationTrigger + persisted opt-in |
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
 | Smart widget | Glance widget | local/shared state | ⬜ | WidgetKit |
 | Deep links | `DeepLinkRouter.kt` | — | ✅ | `pomp-hsk-ai://` native tab routing + XCTest coverage |

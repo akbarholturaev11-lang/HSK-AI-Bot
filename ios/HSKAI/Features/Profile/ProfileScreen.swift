@@ -4,6 +4,7 @@ struct ProfileScreen: View {
     let account: LinkedAccount
     @ObservedObject var courseModel: CourseViewModel
     @ObservedObject var subscriptionModel: SubscriptionViewModel
+    @ObservedObject var reminderManager: StudyReminderManager
     let onLogout: () -> Void
 
     var body: some View {
@@ -82,6 +83,36 @@ struct ProfileScreen: View {
                                 row("graduationcap.fill", "profile_level", account.level.uppercased())
                                 Divider().opacity(0.35)
                                 row("checkmark.shield.fill", "profile_access", account.accessState)
+                            }
+                        }
+
+                        HSKGlassCard(cornerRadius: 24, padding: 18, tint: HSKColors.auroraMint) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Label("reminder_title", systemImage: "bell.badge.fill")
+                                    .font(.headline)
+                                    .foregroundStyle(HSKColors.ink)
+                                Text("reminder_description")
+                                    .font(.footnote)
+                                    .foregroundStyle(HSKColors.inkSecondary)
+                                Toggle(
+                                    "reminder_toggle",
+                                    isOn: Binding(
+                                        get: { reminderManager.enabled },
+                                        set: { enabled in
+                                            if enabled {
+                                                Task { await reminderManager.enable() }
+                                            } else {
+                                                reminderManager.disable()
+                                            }
+                                        }
+                                    )
+                                )
+                                .tint(HSKColors.jade)
+                                if reminderManager.permissionDenied {
+                                    Text("reminder_permission_denied")
+                                        .font(.footnote)
+                                        .foregroundStyle(HSKColors.flame)
+                                }
                             }
                         }
 
