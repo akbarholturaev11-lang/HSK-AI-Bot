@@ -42,7 +42,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | RU localization | `values-ru/` | language preference | ✅ | 226/226 iOS localization keys present; parity key-set audit clean |
 | TJ localization | `values-tg/` | language preference | ✅ | 226/226 iOS localization keys present; parity key-set audit clean |
 | Unit tests | Android JVM tests | — | 🟡 | Network/auth/course/lesson/Foundation/practice/mistakes XCTest coverage; broader feature coverage pending |
-| UI smoke tests | Android instrumentation | — | ⬜ | XCUITest |
+| UI smoke tests | Android instrumentation | — | 🟡 | XCUITest launch smoke added; physical-device smoke remains external |
 
 ## Backend cleanup rule
 

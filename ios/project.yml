@@ -20,6 +20,7 @@ targets:
     scheme:
       testTargets:
         - HSKAITests
+        - HSKAIUITests
     sources:
       - path: HSKAI
         excludes:
@@ -75,4 +76,16 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.pomp.hskai.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  HSKAIUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: HSKAIUITests
+    dependencies:
+      - target: HSKAI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pomp.hskai.uitests
         GENERATE_INFOPLIST_FILE: YES
