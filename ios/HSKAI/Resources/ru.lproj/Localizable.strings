@@ -89,3 +89,20 @@
 "lesson_completed_title" = "Урок завершён";
 "lesson_completed_body" = "Результат сохранён.";
 "lesson_score_format" = "Правильно: %d из %d";
+
+"practice_title" = "Практика";
+"practice_intro" = "Проверьте знания и определите направление для следующих упражнений.";
+"practice_placement_title" = "Проверка уровня";
+"practice_placement_body" = "Короткая серия вопросов по вашему текущему уровню HSK.";
+"practice_more_title" = "Следующие разделы практики";
+"practice_recognition_title" = "Распознавание иероглифов";
+"practice_pronunciation_title" = "Произношение";
+"practice_mistakes_title" = "Работа над ошибками";
+"practice_next_stage" = "Следующий этап";
+"practice_start_error" = "Не удалось открыть практику. Попробуйте ещё раз.";
+"practice_save_error" = "Не удалось сохранить результат. Попробуйте ещё раз.";
+"practice_limit_error" = "Бесплатный лимит практики на сегодня исчерпан.";
+"practice_access_error" = "Доступ к этой практике не подтверждён.";
+"practice_result_title" = "Результат";
+"practice_result_score" = "%d / %d правильно";
+"action_done" = "Готово";

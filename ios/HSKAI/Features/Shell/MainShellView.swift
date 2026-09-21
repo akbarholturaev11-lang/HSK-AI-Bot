@@ -3,6 +3,7 @@ import SwiftUI
 struct MainShellView: View {
     let account: LinkedAccount
     @ObservedObject var courseModel: CourseViewModel
+    @ObservedObject var practiceModel: PracticeViewModel
     let onLogout: () -> Void
 
     var body: some View {
@@ -10,7 +11,7 @@ struct MainShellView: View {
             CourseScreen(model: courseModel, account: account)
                 .tabItem { Label("tab_course", systemImage: "map.fill") }
 
-            ShellPlaceholder(titleKey: "tab_practice", systemImage: "brain.head.profile")
+            PracticeScreen(model: practiceModel, account: account)
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
 
             ShellPlaceholder(titleKey: "tab_dictionary", systemImage: "character.book.closed.fill")

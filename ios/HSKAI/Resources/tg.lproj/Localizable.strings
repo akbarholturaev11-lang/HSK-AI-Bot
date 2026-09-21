@@ -89,3 +89,20 @@
 "lesson_completed_title" = "Дарс анҷом ёфт";
 "lesson_completed_body" = "Натиҷа сабт шуд.";
 "lesson_score_format" = "%d аз %d ҷавоб дуруст";
+
+"practice_title" = "Машқ";
+"practice_intro" = "Дониши худро санҷед ва самти машқҳои навбатиро муайян кунед.";
+"practice_placement_title" = "Санҷиши сатҳ";
+"practice_placement_body" = "Якчанд саволи кӯтоҳ аз сатҳи ҳозираи HSK-и шумо.";
+"practice_more_title" = "Бахшҳои навбатии машқ";
+"practice_recognition_title" = "Шинохти иероглиф";
+"practice_pronunciation_title" = "Талаффуз";
+"practice_mistakes_title" = "Такрори хатоҳо";
+"practice_next_stage" = "Марҳилаи навбатӣ";
+"practice_start_error" = "Машқ кушода нашуд. Аз нав кӯшиш кунед.";
+"practice_save_error" = "Натиҷа сабт нашуд. Аз нав кӯшиш кунед.";
+"practice_limit_error" = "Лимити ройгони машқи имрӯз ба охир расид.";
+"practice_access_error" = "Дастрасӣ ба ин машқ тасдиқ нашуд.";
+"practice_result_title" = "Натиҷа";
+"practice_result_score" = "%d / %d дуруст";
+"action_done" = "Тайёр";

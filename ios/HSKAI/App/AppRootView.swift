@@ -19,7 +19,8 @@ struct AppRootView: View {
             case .main(let account):
                 MainShellView(
                     account: account,
-                    courseModel: model.courseViewModel
+                    courseModel: model.courseViewModel,
+                    practiceModel: model.practiceViewModel
                 ) {
                     Task { await model.logout() }
                 }
