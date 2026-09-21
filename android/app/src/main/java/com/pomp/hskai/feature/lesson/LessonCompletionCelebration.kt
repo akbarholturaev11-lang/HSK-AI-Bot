@@ -46,7 +46,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
-import com.pomp.hskai.core.design.components.HskCelebrationPanda
 import com.pomp.hskai.core.design.components.HskCelebrationStage
 import com.pomp.hskai.core.design.components.HskStageInkMuted
 import com.pomp.hskai.core.design.components.HskStageInkOn
@@ -190,9 +189,12 @@ private fun CompletionScene(outcome: LessonOutcome.Completed) {
     val graded = outcome.graded
     val accuracy = if (graded > 0) outcome.correct * 100 / graded else -1
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        HskCelebrationPanda(
-            drawable = R.drawable.widget_panda_celebrate,
-            pulseKey = gamification.awardedXp,
+        LessonCharacterStage(
+            character = LessonCharacter.Panda,
+            mood = LessonCharacterMood.Celebrate,
+            reaction = LessonCharacterReaction.Land,
+            reactionKey = gamification.awardedXp,
+            modifier = Modifier.size(112.dp),
         )
         Spacer(Modifier.height(14.dp))
         Text(
@@ -332,9 +334,12 @@ private fun StatTile(label: String, value: String, accent: Color, modifier: Modi
 @Composable
 private fun RankUpScene(rankUp: LessonRankUp, board: LessonRankBoard?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        HskCelebrationPanda(
-            drawable = R.drawable.widget_panda_cheer,
-            pulseKey = rankUp.before * 1000 + rankUp.after,
+        LessonCharacterStage(
+            character = LessonCharacter.Dragon,
+            mood = LessonCharacterMood.Celebrate,
+            reaction = LessonCharacterReaction.Celebrate,
+            reactionKey = rankUp.before * 1000 + rankUp.after,
+            modifier = Modifier.size(118.dp),
         )
         Spacer(Modifier.height(14.dp))
         Text(
