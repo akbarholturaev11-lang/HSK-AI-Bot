@@ -2,13 +2,18 @@ package com.pomp.hskai.feature.lesson
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -84,6 +89,26 @@ internal fun LessonCharacterStage(
     var warning by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
+    val idleTransition = rememberInfiniteTransition(label = "lesson-character-idle")
+    val breathe by idleTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1350),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "lesson-character-breathe",
+    )
+    val loadingWiggle by idleTransition.animateFloat(
+        initialValue = -2f,
+        targetValue = 2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 900),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "lesson-character-loading-prop",
+    )
+    val breathing = mood == LessonCharacterMood.Idle || mood == LessonCharacterMood.Loading
 
     LaunchedEffect(reaction, reactionKey) {
         if (reaction == null) return@LaunchedEffect
@@ -446,9 +471,11 @@ internal fun LessonCharacterStage(
         Canvas(
             Modifier.fillMaxSize().graphicsLayer {
                 translationX = with(density) { x.value.dp.toPx() }
-                translationY = with(density) { y.value.dp.toPx() }
+                translationY = with(density) {
+                    (y.value + if (breathing) -2f * breathe else 0f).dp.toPx()
+                }
                 scaleX = scale.value
-                scaleY = scale.value
+                scaleY = scale.value * if (breathing) 1f + .018f * breathe else 1f
                 rotationZ = rotation.value
                 this.alpha = alpha.value
             }
@@ -459,6 +486,9 @@ internal fun LessonCharacterStage(
                 LessonCharacter.Crane -> drawCrane(mood)
                 LessonCharacter.Monkey -> drawMonkey(mood)
                 LessonCharacter.Rabbit -> drawRabbit(mood)
+            }
+            if (mood == LessonCharacterMood.Loading) {
+                drawLoadingBook(rotation = loadingWiggle)
             }
         }
     }
@@ -497,6 +527,37 @@ private fun DrawScope.mouth(mood:LessonCharacterMood,cx:Float,cy:Float,color:Col
         else->{val p=Path().apply{moveTo(sx(cx-5),sy(cy));quadraticBezierTo(sx(cx),sy(cy+5),sx(cx+5),sy(cy))};drawPath(p,color,style=Stroke(width=sx(2f),cap=StrokeCap.Round))}
     }
 }
+private fun DrawScope.drawLoadingBook(rotation: Float) {
+    val cx = sx(52f)
+    val cy = sy(86f)
+    rotate(rotation, pivot = Offset(cx, cy)) {
+        val left = Path().apply {
+            moveTo(sx(35f), sy(78f))
+            quadraticBezierTo(sx(44f), sy(76f), sx(52f), sy(82f))
+            lineTo(sx(52f), sy(95f))
+            quadraticBezierTo(sx(44f), sy(89f), sx(35f), sy(91f))
+            close()
+        }
+        val right = Path().apply {
+            moveTo(sx(52f), sy(82f))
+            quadraticBezierTo(sx(61f), sy(76f), sx(70f), sy(79f))
+            lineTo(sx(70f), sy(92f))
+            quadraticBezierTo(sx(61f), sy(89f), sx(52f), sy(95f))
+            close()
+        }
+        drawPath(left, Color(0xFFFFF4DE))
+        drawPath(right, Color(0xFFFFE7B0))
+        drawPath(left, Ink, style = Stroke(width = sx(1.6f)))
+        drawPath(right, Ink, style = Stroke(width = sx(1.6f)))
+        drawLine(
+            color = Color(0xFFE04A40),
+            start = Offset(sx(52f), sy(82f)),
+            end = Offset(sx(52f), sy(95f)),
+            strokeWidth = sx(1.5f),
+        )
+    }
+}
+
 private fun DrawScope.drawPanda(m:LessonCharacterMood){
     drawOval(Ink.copy(alpha=.18f),Offset(sx(23f),sy(103f)),Size(sx(54f),sy(6f)))
     drawOval(Fur,Offset(sx(27f),sy(56f)),Size(sx(46f),sy(43f)));drawOval(Cream,Offset(sx(36f),sy(70f)),Size(sx(28f),sy(21f)))
