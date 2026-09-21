@@ -111,26 +111,15 @@ internal fun HskCharacterStage(
     var warning by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
-    val idleTransition = rememberInfiniteTransition(label = "hsk-character-idle")
-    val breathe by idleTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1350),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "hsk-character-breathe",
-    )
-    val loadingWiggle by idleTransition.animateFloat(
-        initialValue = -2f,
-        targetValue = 2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 900),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "hsk-character-loading-prop",
-    )
-    val breathing = mood == HskCharacterMood.Idle || mood == HskCharacterMood.Loading
+    // Keep the persistent coach cheap and deterministic (origin/main 7e88bc00).
+    // The idle transitions ran forever on every card — including audio and
+    // microphone ones — even with no reaction in flight; that is work the
+    // lesson hot path does not need, and it can destabilize older or emulated
+    // devices. Reactions themselves still animate: they are one-shot and only
+    // run when an answer lands.
+    val breathing = false
+    val breathe = 0f
+    val loadingWiggle = 0f
 
     LaunchedEffect(reaction, reactionKey) {
         if (reaction == null) return@LaunchedEffect

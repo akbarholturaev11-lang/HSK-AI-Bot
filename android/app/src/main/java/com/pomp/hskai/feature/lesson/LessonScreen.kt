@@ -323,11 +323,16 @@ private fun LessonBody(
             // alone beside a name tag. `CardTitle` reads the same line out of
             // LocalLessonCoachLine and skips it, so it is moved, not doubled.
             val coachLine = lessonCoachLine(card, state.currentSectionTitle)
+            // Pronunciation/audio exercises own the centre of the screen and
+            // may activate microphone/audio resources; no persistent coach
+            // composition stays alive above them. The entry and finish
+            // cinematics still use the shared character system.
+            val showPersistentCoach = card !is PronunciationCard
             // A question card stands the coach BESIDE it (further down, where
             // the material and the answers can be split). Everything else —
             // the teaching cards and the builders — keeps the coach above,
             // because there is nothing there to put beside it.
-            if (card !is ChoiceCard) {
+            if (showPersistentCoach && card !is ChoiceCard) {
                 HskCoachRow(
                     character = coachCharacter,
                     mood = coachMood,
