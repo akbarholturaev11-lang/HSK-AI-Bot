@@ -212,3 +212,14 @@
 "voice_start_error" = "Не удалось начать разговор.";
 "voice_message_error" = "Не удалось отправить сообщение.";
 "voice_end_error" = "Не удалось завершить разговор.";
+"profile_study_preferences" = "Настройки обучения";
+"profile_daily_minutes" = "Время в день";
+"profile_daily_goal" = "Дневная цель";
+"profile_focus" = "Основной фокус";
+"profile_focus_none" = "Смешанный";
+"profile_focus_speaking" = "Разговор";
+"profile_focus_listening" = "Аудирование";
+"profile_focus_vocabulary" = "Словарь";
+"profile_focus_grammar" = "Грамматика";
+"profile_preferences_saved" = "Сохранено";
+"action_save" = "Сохранить";

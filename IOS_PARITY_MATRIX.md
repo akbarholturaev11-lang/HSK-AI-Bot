@@ -14,7 +14,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Course map | `CourseScreen.kt` | `GET /api/v3/ios/course/map` | ✅ | Native XP/streak/league/today/unit rendering |
 | Cached-first course | `CourseRepository.kt` | same | ✅ | Device/account-scoped disk cache + network revalidate |
 | Today plan | `TodayPlanCard.kt` | map `today` block | 🟡 | Summary rendered; task routing/actions pending |
-| Daily goal/preferences | `StudySetup*` | study preferences | ⬜ | Profile/course settings |
+| Daily goal/preferences | `StudySetup*` | `/api/v3/ios/preferences/study` | ✅ | Native Profile daily minutes, XP goal and preferred-focus controls backed by shared preferences |
 | Lesson engine | `feature/lesson/*` | iOS lesson + complete | ✅ | Glass SwiftUI engine; choice/builder/match/grammar/vocab/pronunciation + checkpoint exit-ticket |
 | TTS/audio | `LessonAudioPlayer.kt`, `TtsCache.kt` | shared course audio | 🟡 | Mandarin playback wired; server-byte cache/interruption parity pending |
 | Hanzi stroke | `StrokeAnimation.kt` | `/api/v3/android/stroke` | ⬜ | Native/embedded renderer |
@@ -26,7 +26,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Rating | `RatingScreen.kt` | `/api/v3/ios/rating/leaderboard` | ✅ | Native weekly league leaderboard and account stats |
 | Challenges | `ChallengeRunScreen.kt` | `/api/v3/ios/challenges*` | ✅ | Native list/accept/decline/start/quiz/submit flow backed by shared service |
 | Referral | profile/rating flows | `/api/v3/ios/referral/overview` | ✅ | Shared referral state + native ShareLink invite flow |
-| Profile | `ProfileScreen.kt` | account + course state | 🟡 | Native glass account/progress/access profile; editable preferences pending |
+| Profile | `ProfileScreen.kt` | account + course state | ✅ | Native glass account/progress/access profile + editable shared study preferences |
 | Trial state | `AndroidFeatureApi.kt` | `/api/v3/ios/subscription/trial*` | ✅ | Shared trial state/start surfaced in native Profile |
 | Subscription state | profile/limit flows | `/api/v3/ios/subscription/overview` | ✅ | Read-only shared subscription/access state in native Profile |
 | External checkout | Android `direct` flavor | external checkout | ➖ | Do not copy until iOS policy decision |

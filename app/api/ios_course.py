@@ -56,6 +56,15 @@ class IOSOnboardingRequest(BaseModel):
     activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
 
 
+class IOSStudyPreferencesRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    goal: Literal["hsk_exam", "study_china", "work_china", "daily_communication", "travel"] | None = None
+    daily_minutes: Literal[5, 10, 15, 20, 30] | None = None
+    daily_goal_xp: int | None = Field(default=None, ge=10, le=500)
+    preferred_focus: Literal["speaking", "listening", "vocabulary", "grammar", "none"] | None = None
+
+
 class IOSFoundationCompleteRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -144,6 +153,29 @@ def create_ios_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("iOS onboarding completion failed")
+            return _unavailable()
+
+    @router.post("/api/v3/ios/preferences/study")
+    async def ios_study_preferences(request: Request):
+        try:
+            payload = await validated_course_payload(request, IOSStudyPreferencesRequest)
+            if all(value is None for value in (
+                payload.goal, payload.daily_minutes, payload.daily_goal_xp, payload.preferred_focus
+            )):
+                raise DesktopCourseError("ios_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).set_study_preferences(
+                    bearer_access_token(request),
+                    goal=payload.goal,
+                    daily_minutes=payload.daily_minutes,
+                    preferred_focus=payload.preferred_focus,
+                    daily_goal_xp=payload.daily_goal_xp,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("iOS study preferences update failed")
             return _unavailable()
 
     @router.get("/api/v3/ios/course/foundation")

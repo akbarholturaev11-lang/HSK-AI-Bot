@@ -212,3 +212,14 @@
 "voice_start_error" = "Suhbat boshlanmadi.";
 "voice_message_error" = "Xabar yuborilmadi.";
 "voice_end_error" = "Suhbatni yakunlab bo‘lmadi.";
+"profile_study_preferences" = "O‘qish sozlamalari";
+"profile_daily_minutes" = "Kunlik vaqt";
+"profile_daily_goal" = "Kunlik maqsad";
+"profile_focus" = "Asosiy yo‘nalish";
+"profile_focus_none" = "Aralash";
+"profile_focus_speaking" = "Gapirish";
+"profile_focus_listening" = "Tinglash";
+"profile_focus_vocabulary" = "Lug‘at";
+"profile_focus_grammar" = "Grammatika";
+"profile_preferences_saved" = "Saqlandi";
+"action_save" = "Saqlash";

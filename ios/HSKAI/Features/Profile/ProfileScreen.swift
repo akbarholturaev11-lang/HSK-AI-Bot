@@ -6,6 +6,11 @@ struct ProfileScreen: View {
     @ObservedObject var subscriptionModel: SubscriptionViewModel
     @ObservedObject var reminderManager: StudyReminderManager
     let onLogout: () -> Void
+    @State private var dailyMinutes = 10
+    @State private var dailyGoalXp = 30
+    @State private var preferredFocus = "none"
+    @State private var savingPreferences = false
+    @State private var preferencesSaved = false
 
     var body: some View {
         NavigationStack {
@@ -37,6 +42,43 @@ struct ProfileScreen: View {
 
                         if let progress = courseModel.map?.progress {
                             HSKGlassCard(cornerRadius: 24, padding: 18, tint: HSKColors.auroraMint) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Label("profile_study_preferences", systemImage: "slider.horizontal.3")
+                                    .font(.headline).foregroundStyle(HSKColors.ink)
+                                Picker("profile_daily_minutes", selection: $dailyMinutes) {
+                                    ForEach([5, 10, 15, 20, 30], id: \.self) { Text("\($0) min").tag($0) }
+                                }.pickerStyle(.segmented)
+                                Stepper(value: $dailyGoalXp, in: 10...200, step: 10) {
+                                    HStack { Text("profile_daily_goal"); Spacer(); Text("\(dailyGoalXp) XP").fontWeight(.semibold) }
+                                }
+                                Picker("profile_focus", selection: $preferredFocus) {
+                                    Text("profile_focus_none").tag("none")
+                                    Text("profile_focus_speaking").tag("speaking")
+                                    Text("profile_focus_listening").tag("listening")
+                                    Text("profile_focus_vocabulary").tag("vocabulary")
+                                    Text("profile_focus_grammar").tag("grammar")
+                                }
+                                Button(preferencesSaved ? "profile_preferences_saved" : "action_save") {
+                                    Task {
+                                        savingPreferences = true
+                                        preferencesSaved = false
+                                        do {
+                                            _ = try await courseModel.api.updateStudyPreferences(
+                                                dailyMinutes: dailyMinutes,
+                                                dailyGoalXp: dailyGoalXp,
+                                                preferredFocus: preferredFocus
+                                            )
+                                            preferencesSaved = true
+                                        } catch {}
+                                        savingPreferences = false
+                                    }
+                                }
+                                .buttonStyle(HSKGlassSecondaryButtonStyle())
+                                .disabled(savingPreferences)
+                            }
+                        }
+
+                        HSKGlassCard(cornerRadius: 24, padding: 18, tint: HSKColors.auroraMint) {
                                 VStack(spacing: 14) {
                                     row("bolt.fill", "profile_xp", "\(progress.xp)")
                                     Divider().opacity(0.35)

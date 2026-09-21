@@ -127,3 +127,14 @@ struct IOSCourseTodayTask: Codable, Sendable, Equatable, Identifiable {
         [type, ref ?? "", skill ?? "", role ?? ""].joined(separator: ":")
     }
 }
+
+struct IOSStudyPreferencesRequest: Encodable, Sendable {
+    let goal: String?
+    let dailyMinutes: Int?
+    let dailyGoalXp: Int?
+    let preferredFocus: String?
+}
+
+struct IOSStudyPreferencesResponse: Decodable, Sendable {
+    let ok: Bool
+}

@@ -45,6 +45,25 @@ struct IOSCourseAPI: Sendable {
         )
     }
 
+    func updateStudyPreferences(
+        goal: String? = nil,
+        dailyMinutes: Int? = nil,
+        dailyGoalXp: Int? = nil,
+        preferredFocus: String? = nil
+    ) async throws -> IOSStudyPreferencesResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/preferences/study",
+            body: IOSStudyPreferencesRequest(
+                goal: goal,
+                dailyMinutes: dailyMinutes,
+                dailyGoalXp: dailyGoalXp,
+                preferredFocus: preferredFocus
+            ),
+            bearerToken: token
+        )
+    }
+
     func foundation() async throws -> IOSFoundationResponse {
         let token = try await authSession.bearerToken()
         return try await client.get(

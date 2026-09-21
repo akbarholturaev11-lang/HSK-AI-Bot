@@ -94,6 +94,20 @@ class IOSCourseTransportTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(200, response.status_code)
         service.complete_onboarding.assert_awaited_once()
 
+    async def test_study_preferences_delegate_to_shared_service(self):
+        service = SimpleNamespace(set_study_preferences=AsyncMock(return_value={"ok": True}))
+        async with await self._client(service) as client:
+            response = await client.post(
+                "/api/v3/ios/preferences/study",
+                headers={"Authorization": "Bearer access-token"},
+                json={"daily_minutes": 20, "daily_goal_xp": 50, "preferred_focus": "speaking"},
+            )
+        self.assertEqual(200, response.status_code)
+        service.set_study_preferences.assert_awaited_once_with(
+            "access-token", goal=None, daily_minutes=20,
+            preferred_focus="speaking", daily_goal_xp=50,
+        )
+
     async def test_foundation_load_uses_shared_foundation_service(self):
         service = SimpleNamespace(foundation=AsyncMock(return_value={
             "ok": True,

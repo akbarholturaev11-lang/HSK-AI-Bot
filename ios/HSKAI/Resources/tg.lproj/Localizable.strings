@@ -212,3 +212,14 @@
 "voice_start_error" = "Суҳбат оғоз нашуд.";
 "voice_message_error" = "Паём фиристода нашуд.";
 "voice_end_error" = "Суҳбат анҷом дода нашуд.";
+"profile_study_preferences" = "Танзимоти омӯзиш";
+"profile_daily_minutes" = "Вақти ҳаррӯза";
+"profile_daily_goal" = "Ҳадафи рӯз";
+"profile_focus" = "Самти асосӣ";
+"profile_focus_none" = "Омехта";
+"profile_focus_speaking" = "Гуфтугӯ";
+"profile_focus_listening" = "Шунидан";
+"profile_focus_vocabulary" = "Луғат";
+"profile_focus_grammar" = "Грамматика";
+"profile_preferences_saved" = "Сабт шуд";
+"action_save" = "Сабт кардан";
