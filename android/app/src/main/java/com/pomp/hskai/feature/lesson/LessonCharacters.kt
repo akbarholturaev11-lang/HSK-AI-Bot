@@ -2,7 +2,6 @@ package com.pomp.hskai.feature.lesson
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -24,6 +23,10 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -68,6 +71,8 @@ internal fun LessonCharacterStage(
     var burst by remember { mutableStateOf(false) }
     var warning by remember { mutableStateOf(false) }
 
+    val density = LocalDensity.current
+
     LaunchedEffect(reaction, reactionKey) {
         if (reaction == null) return@LaunchedEffect
         y.snapTo(0f); x.snapTo(0f); scale.snapTo(1f); rotation.snapTo(0f); alpha.snapTo(1f)
@@ -75,51 +80,350 @@ internal fun LessonCharacterStage(
         when (reaction) {
             LessonCharacterReaction.Pop -> {
                 alpha.snapTo(0f); y.snapTo(12f); scale.snapTo(.62f)
-                alpha.animateTo(1f, tween(180))
-                y.animateTo(0f, tween(380, easing = FastOutSlowInEasing))
-                scale.animateTo(1f, tween(380, easing = FastOutSlowInEasing))
+                coroutineScope {
+                    launch {
+                        alpha.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 560
+                                0f at 0
+                                1f at 325
+                                1f at 560
+                            },
+                        )
+                    }
+                    launch {
+                        y.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 560
+                                12f at 0
+                                -7f at 325
+                                0f at 560
+                            },
+                        )
+                    }
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 560
+                                .62f at 0
+                                1.08f at 325
+                                1f at 560
+                            },
+                        )
+                    }
+                }
             }
-            LessonCharacterReaction.Jump -> {
-                y.animateTo(-24f, keyframes { durationMillis = 720; 0f at 0; 5f at 115; -24f at 346; 2f at 590; 0f at 720 })
-                scale.animateTo(1f, keyframes { durationMillis = 720; 1f at 0; .94f at 115; 1.08f at 346; .96f at 590; 1f at 720 })
+            LessonCharacterReaction.Jump -> coroutineScope {
+                launch {
+                    y.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 720
+                            0f at 0
+                            5f at 115
+                            -24f at 346
+                            2f at 590
+                            0f at 720
+                        },
+                    )
+                }
+                launch {
+                    scale.animateTo(
+                        1f,
+                        keyframes {
+                            durationMillis = 720
+                            1f at 0
+                            .88f at 115
+                            1.08f at 346
+                            .94f at 590
+                            1f at 720
+                        },
+                    )
+                }
             }
             LessonCharacterReaction.Laugh -> {
-                rotation.animateTo(0f, keyframes { durationMillis = 820; 0f at 0; -4f at 164; 4f at 312; -3f at 459; 3f at 607; 0f at 820 })
+                rotation.animateTo(
+                    0f,
+                    keyframes {
+                        durationMillis = 820
+                        0f at 0
+                        -4f at 164
+                        4f at 312
+                        -3f at 459
+                        3f at 607
+                        0f at 820
+                    },
+                )
             }
-            LessonCharacterReaction.Proud -> {
-                y.animateTo(0f, keyframes { durationMillis = 620; 0f at 0; -5f at 236; -4f at 446; 0f at 620 })
-                scale.animateTo(1f, keyframes { durationMillis = 620; 1f at 0; 1.03f at 236; 1.025f at 446; 1f at 620 })
+            LessonCharacterReaction.Proud -> coroutineScope {
+                launch {
+                    y.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 620
+                            0f at 0
+                            -5f at 236
+                            -4f at 446
+                            0f at 620
+                        },
+                    )
+                }
+                launch {
+                    rotation.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 620
+                            0f at 0
+                            3f at 236
+                            1f at 446
+                            0f at 620
+                        },
+                    )
+                }
+                launch {
+                    scale.animateTo(
+                        1f,
+                        keyframes {
+                            durationMillis = 620
+                            1f at 0
+                            1.03f at 236
+                            1.025f at 446
+                            1f at 620
+                        },
+                    )
+                }
             }
-            LessonCharacterReaction.Dismiss -> {
-                x.animateTo(0f, keyframes { durationMillis = 720; 0f at 0; -5f at 245; -3f at 504; 0f at 720 })
-                rotation.animateTo(0f, keyframes { durationMillis = 720; 0f at 0; -5f at 245; -3f at 504; 0f at 720 })
+            LessonCharacterReaction.Dismiss -> coroutineScope {
+                launch {
+                    x.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 720
+                            0f at 0
+                            -5f at 245
+                            -3f at 504
+                            0f at 720
+                        },
+                    )
+                }
+                launch {
+                    rotation.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 720
+                            0f at 0
+                            -5f at 245
+                            -3f at 504
+                            0f at 720
+                        },
+                    )
+                }
             }
-            LessonCharacterReaction.Wrong -> {
-                x.animateTo(0f, keyframes { durationMillis = 540; 0f at 0; -7f at 124; 6f at 232; -3f at 335; 2f at 432; 0f at 540 })
-                rotation.animateTo(0f, keyframes { durationMillis = 540; 0f at 0; -3f at 124; 2f at 232; -1f at 335; 0f at 540 })
+            LessonCharacterReaction.Wrong -> coroutineScope {
+                launch {
+                    x.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 540
+                            0f at 0
+                            -7f at 124
+                            6f at 232
+                            -3f at 335
+                            2f at 432
+                            0f at 540
+                        },
+                    )
+                }
+                launch {
+                    rotation.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 540
+                            0f at 0
+                            -3f at 124
+                            2f at 232
+                            -1f at 335
+                            0f at 540
+                        },
+                    )
+                }
+                launch {
+                    scale.animateTo(
+                        1f,
+                        keyframes {
+                            durationMillis = 540
+                            1f at 0
+                            .98f at 124
+                            1f at 540
+                        },
+                    )
+                }
             }
             LessonCharacterReaction.OneHeart -> {
                 warning = true
-                x.animateTo(0f, keyframes { durationMillis = 980; 0f at 0; -4f at 118; 4f at 265; -3f at 412; 2f at 568; 0f at 764 })
-                scale.animateTo(1f, keyframes { durationMillis = 980; 1f at 0; .96f at 118; 1.07f at 265; .98f at 412; 1.05f at 568; 1f at 764 })
+                coroutineScope {
+                    launch {
+                        x.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 980
+                                0f at 0
+                                -4f at 118
+                                4f at 265
+                                -3f at 412
+                                2f at 568
+                                0f at 764
+                                0f at 980
+                            },
+                        )
+                    }
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 980
+                                1f at 0
+                                .96f at 118
+                                1.07f at 265
+                                .98f at 412
+                                1.05f at 568
+                                1f at 764
+                                1f at 980
+                            },
+                        )
+                    }
+                }
                 warning = false
             }
             LessonCharacterReaction.Celebrate -> {
                 burst = true
-                y.animateTo(0f, keyframes { durationMillis = 1080; 0f at 0; 6f at 130; -28f at 432; -8f at 680; 3f at 907; 0f at 1080 })
-                scale.animateTo(1f, keyframes { durationMillis = 1080; 1f at 0; .86f at 130; 1.08f at 432; 1.02f at 680; .93f at 907; 1f at 1080 })
-                rotation.animateTo(0f, keyframes { durationMillis = 1080; 0f at 0; -5f at 432; 4f at 680; 0f at 907 })
+                coroutineScope {
+                    launch {
+                        y.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 1080
+                                0f at 0
+                                6f at 130
+                                -28f at 432
+                                -8f at 680
+                                3f at 907
+                                0f at 1080
+                            },
+                        )
+                    }
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 1080
+                                1f at 0
+                                .86f at 130
+                                1.08f at 432
+                                1.02f at 680
+                                .93f at 907
+                                1f at 1080
+                            },
+                        )
+                    }
+                    launch {
+                        rotation.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 1080
+                                0f at 0
+                                -5f at 432
+                                4f at 680
+                                0f at 907
+                                0f at 1080
+                            },
+                        )
+                    }
+                }
                 burst = false
             }
-            LessonCharacterReaction.Loader -> y.animateTo(0f, keyframes { durationMillis = 1200; 0f at 0; -5f at 600; 0f at 1200 })
-            LessonCharacterReaction.Exit -> {
-                y.animateTo(-24f, tween(520, easing = EaseOut)); scale.animateTo(.86f, tween(520)); alpha.animateTo(0f, tween(520))
+            LessonCharacterReaction.Loader -> coroutineScope {
+                launch {
+                    y.animateTo(
+                        0f,
+                        keyframes {
+                            durationMillis = 1200
+                            0f at 0
+                            -5f at 600
+                            0f at 1200
+                        },
+                    )
+                }
+                launch {
+                    rotation.animateTo(
+                        -1f,
+                        keyframes {
+                            durationMillis = 1200
+                            -1f at 0
+                            1.5f at 600
+                            -1f at 1200
+                        },
+                    )
+                }
+                launch {
+                    scale.animateTo(
+                        1f,
+                        keyframes {
+                            durationMillis = 1200
+                            1f at 0
+                            1.015f at 600
+                            1f at 1200
+                        },
+                    )
+                }
+            }
+            LessonCharacterReaction.Exit -> coroutineScope {
+                launch { y.animateTo(-24f, tween(520, easing = EaseOut)) }
+                launch { scale.animateTo(.86f, tween(520, easing = EaseOut)) }
+                launch { alpha.animateTo(0f, tween(520, easing = EaseOut)) }
             }
             LessonCharacterReaction.Land -> {
                 alpha.snapTo(0f); y.snapTo(-110f); scale.snapTo(.88f)
-                alpha.animateTo(1f, tween(300))
-                y.animateTo(0f, keyframes { durationMillis = 820; -110f at 0; 7f at 476; -8f at 640; 0f at 820 })
-                scale.animateTo(1f, keyframes { durationMillis = 820; .88f at 0; .78f at 476; 1.04f at 640; 1f at 820 })
+                coroutineScope {
+                    launch {
+                        alpha.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 820
+                                0f at 0
+                                1f at 476
+                                1f at 820
+                            },
+                        )
+                    }
+                    launch {
+                        y.animateTo(
+                            0f,
+                            keyframes {
+                                durationMillis = 820
+                                -110f at 0
+                                7f at 476
+                                -8f at 640
+                                0f at 820
+                            },
+                        )
+                    }
+                    launch {
+                        scale.animateTo(
+                            1f,
+                            keyframes {
+                                durationMillis = 820
+                                .88f at 0
+                                .78f at 476
+                                1.04f at 640
+                                1f at 820
+                            },
+                        )
+                    }
+                }
             }
         }
     }
@@ -129,8 +433,8 @@ internal fun LessonCharacterStage(
         if (warning) LessonWarningRing()
         Canvas(
             Modifier.fillMaxSize().graphicsLayer {
-                translationX = x.value
-                translationY = y.value
+                translationX = with(density) { x.value.dp.toPx() }
+                translationY = with(density) { y.value.dp.toPx() }
                 scaleX = scale.value
                 scaleY = scale.value
                 rotationZ = rotation.value
