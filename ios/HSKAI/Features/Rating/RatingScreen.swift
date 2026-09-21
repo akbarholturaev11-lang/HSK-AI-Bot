@@ -86,9 +86,21 @@ struct RatingScreen: View {
                                                     .foregroundStyle(HSKColors.inkSecondary)
                                             }
                                             Spacer()
-                                            Text("\(entry.xp) XP")
-                                                .font(.subheadline.monospacedDigit().weight(.bold))
-                                                .foregroundStyle(HSKColors.ink)
+                                            VStack(alignment: .trailing, spacing: 5) {
+                                                Text("\(entry.xp) XP")
+                                                    .font(.subheadline.monospacedDigit().weight(.bold))
+                                                    .foregroundStyle(HSKColors.ink)
+                                                if !entry.isCurrentUser && !entry.challengeRef.isEmpty {
+                                                    Button("challenge_invite") {
+                                                        Task {
+                                                            await challengeModel.create(ref: entry.challengeRef, account: account)
+                                                            showingChallenges = true
+                                                        }
+                                                    }
+                                                    .font(.caption.bold())
+                                                    .buttonStyle(.borderless)
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -197,3 +197,4 @@
 "challenge_status_pending" = "Ожидает";
 "challenge_status_active" = "Активно";
 "challenge_status_finished" = "Завершено";
+"challenge_invite" = "Вызвать";
