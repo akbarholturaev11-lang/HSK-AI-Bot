@@ -66,6 +66,7 @@ data class LessonRankUp(
 @Composable
 internal fun LessonCompletionCelebration(
     outcome: LessonOutcome.Completed,
+    isCheckpoint: Boolean = false,
     /** Named rows for the board; null while it loads, or when it never came. */
     rankBoard: LessonRankBoard? = null,
     rankUp: LessonRankUp? = null,
@@ -156,7 +157,7 @@ internal fun LessonCompletionCelebration(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             when (active) {
-                                CelebrationScene.COMPLETE -> CompletionScene(outcome)
+                                CelebrationScene.COMPLETE -> CompletionScene(outcome, isCheckpoint)
                                 CelebrationScene.STREAK -> HskStreakCelebration(outcome.gamification)
                                 CelebrationScene.RANK_UP ->
                                     verifiedRankUp?.let { RankUpScene(it, rankBoard) }
@@ -184,17 +185,24 @@ internal fun LessonCompletionCelebration(
 private enum class CelebrationScene { COMPLETE, STREAK, RANK_UP }
 
 @Composable
-private fun CompletionScene(outcome: LessonOutcome.Completed) {
+private fun CompletionScene(
+    outcome: LessonOutcome.Completed,
+    isCheckpoint: Boolean,
+) {
     val gamification = outcome.gamification
     val graded = outcome.graded
     val accuracy = if (graded > 0) outcome.correct * 100 / graded else -1
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         LessonCharacterStage(
-            character = LessonCharacter.Panda,
+            character = if (isCheckpoint) LessonCharacter.Dragon else LessonCharacter.Panda,
             mood = LessonCharacterMood.Celebrate,
-            reaction = LessonCharacterReaction.Land,
+            reaction = if (isCheckpoint) {
+                LessonCharacterReaction.Celebrate
+            } else {
+                LessonCharacterReaction.Land
+            },
             reactionKey = gamification.awardedXp,
-            modifier = Modifier.size(112.dp),
+            modifier = Modifier.size(if (isCheckpoint) 118.dp else 112.dp),
         )
         Spacer(Modifier.height(14.dp))
         Text(
