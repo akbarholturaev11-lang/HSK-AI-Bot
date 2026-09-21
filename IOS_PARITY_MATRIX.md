@@ -37,7 +37,7 @@ Status legend: ✅ done · 🟡 in progress · ⬜ not started · ➖ intentiona
 | Study reminders | WorkManager notifications | preferences/local state | ⬜ | local notification scheduling |
 | Android APK updater | direct flavor update code | Android release manifest | ➖ | Not applicable on iOS |
 | Smart widget | Glance widget | local/shared state | ⬜ | WidgetKit |
-| Deep links | `DeepLinkRouter.kt` | — | ⬜ | URL routing |
+| Deep links | `DeepLinkRouter.kt` | — | ✅ | `pomp-hsk-ai://` native tab routing + XCTest coverage |
 | UZ localization | `values/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
 | RU localization | `values-ru/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |
 | TJ localization | `values-tg/` | language preference | 🟡 | Auth/onboarding/course/Foundation/lesson/practice/mistakes strings present |

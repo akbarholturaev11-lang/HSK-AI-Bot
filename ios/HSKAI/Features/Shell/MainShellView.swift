@@ -12,11 +12,13 @@ struct MainShellView: View {
     @ObservedObject var ratingModel: RatingViewModel
     @ObservedObject var subscriptionModel: SubscriptionViewModel
     let onLogout: () -> Void
+    @State private var selection: IOSDeepLinkDestination = .course
 
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             CourseScreen(model: courseModel, account: account)
                 .tabItem { Label("tab_course", systemImage: "map.fill") }
+                .tag(IOSDeepLinkDestination.course)
 
             PracticeScreen(
                 model: practiceModel,
@@ -27,19 +29,28 @@ struct MainShellView: View {
                 account: account
             )
                 .tabItem { Label("tab_practice", systemImage: "brain.head.profile") }
+                .tag(IOSDeepLinkDestination.practice)
 
             DictionaryScreen(model: dictionaryModel)
                 .tabItem { Label("tab_dictionary", systemImage: "character.book.closed.fill") }
+                .tag(IOSDeepLinkDestination.dictionary)
 
             RatingScreen(model: ratingModel)
                 .tabItem { Label("tab_rating", systemImage: "trophy.fill") }
+                .tag(IOSDeepLinkDestination.rating)
 
             ProfileScreen(account: account, courseModel: courseModel, subscriptionModel: subscriptionModel, onLogout: onLogout)
                 .tabItem { Label("tab_profile", systemImage: "person.crop.circle.fill") }
+                .tag(IOSDeepLinkDestination.profile)
         }
         .tint(HSKColors.cinnabar)
         .toolbarBackground(.ultraThinMaterial, for: .tabBar)
         .toolbarBackground(.visible, for: .tabBar)
+        .onOpenURL { url in
+            if let destination = IOSDeepLinkRouter.destination(for: url) {
+                selection = destination
+            }
+        }
     }
 }
 
