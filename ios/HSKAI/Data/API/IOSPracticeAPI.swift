@@ -50,6 +50,27 @@ struct IOSPracticeAPI: Sendable {
         )
     }
 
+    func scorePronunciation(
+        target: String,
+        targetPinyin: String,
+        language: String,
+        level: String,
+        audioDataUrl: String
+    ) async throws -> IOSPronunciationResponse {
+        let token = try await authSession.bearerToken()
+        return try await client.post(
+            "/api/v3/ios/voice/pronounce",
+            body: IOSPronunciationRequest(
+                target: target,
+                targetPinyin: targetPinyin,
+                language: language,
+                level: level,
+                audioDataUrl: audioDataUrl
+            ),
+            bearerToken: token
+        )
+    }
+
     func start(
         mode: String,
         level: String,

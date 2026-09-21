@@ -60,3 +60,19 @@ struct IOSDrillReportResponse: Decodable, Sendable, Equatable {
     let recorded: Int
     let scheduled: Int
 }
+
+struct IOSPronunciationRequest: Encodable, Sendable {
+    let target: String
+    let targetPinyin: String
+    let language: String
+    let level: String
+    let audioDataUrl: String
+}
+
+struct IOSPronunciationResponse: Decodable, Sendable, Equatable {
+    let ok: Bool
+    let score: Int
+    let passed: Bool
+    let heard: String
+    let message: String
+}
