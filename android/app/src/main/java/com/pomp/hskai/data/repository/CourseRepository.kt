@@ -187,8 +187,42 @@ class CourseRepository(
                 )
             }
         } ?: ApiResult.Failure(ApiError.Timeout)
-        if (result is ApiResult.Failure) notifySessionExpired(result.error)
-        return result
+
+        if (
+            result is ApiResult.Success &&
+            result.value.ok &&
+            result.value.foundation.completed
+        ) {
+            return result
+        }
+        if (result is ApiResult.Failure && result.error is ApiError.SessionExpired) {
+            notifySessionExpired(result.error)
+            return result
+        }
+
+        /*
+         * A slow connection can lose the POST response after the server has
+         * already committed the idempotent event. Re-read the canonical status
+         * before telling the learner to retry; otherwise Continue appears
+         * stuck even though Starter 0 is complete on the server.
+         */
+        val confirmed = foundation()
+        if (confirmed is ApiResult.Success && confirmed.value.status.completed) {
+            return ApiResult.Success(
+                FoundationCompleteResponse(
+                    ok = true,
+                    duplicate = true,
+                    foundation = confirmed.value.status,
+                )
+            )
+        }
+
+        val failure = when (result) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> ApiResult.Failure(ApiError.Unknown)
+        }
+        notifySessionExpired(failure.error)
+        return failure
     }
 
     suspend fun lesson(
@@ -535,7 +569,7 @@ class CourseRepository(
         private const val DEFAULT_TTS_RATE = "-10%"
         private const val FOUNDATION_ID = "starter0_hsk1"
         private const val FOUNDATION_VERSION = 1
-        private const val FOUNDATION_SAVE_TIMEOUT_MILLIS = 12_000L
+        private const val FOUNDATION_SAVE_TIMEOUT_MILLIS = 30_000L
         private val FOUNDATION_REQUIRED_OBJECTIVES = listOf("meaning", "build", "listen")
         private val CJK = Regex("[\\u4E00-\\u9FFF]")
 
