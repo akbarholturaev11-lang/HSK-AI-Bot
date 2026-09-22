@@ -178,27 +178,54 @@ _COPY = {
 _ANDROID_COPY = {
     "uz": {
         "choose_language": "📱 <b>HSK AI Android ilovasi</b>\n\nIlovadagi tilni tanlang:",
-        "enter_code": (
-            "🔐 <b>Android ilovasidagi 8 belgili kodni yuboring</b>\n\n"
-            "Kod ilovada ko‘rsatilgan. Uni shu chatga qo‘lda yuboring."
+        "confirm": (
+            "📱 <b>Android ilovasini ulash</b>\n\n"
+            "Qurilma: <b>{platform}</b>\n"
+            "Versiya: <b>{version}</b>\n\n"
+            "Ilovani o‘zingiz ochgan bo‘lsangizgina tasdiqlang."
         ),
-        "invalid": "Bu ulash havolasi yoki kod eskirgan. Ilovadan qayta boshlang.",
+        "approve": "✅ Tasdiqlash",
+        "cancel": "Bekor qilish",
+        "ok": (
+            "✅ <b>Android ilovasi ulandi</b>\n\n"
+            "HSK AI ilovasiga qayting — hisobingiz avtomatik ochiladi."
+        ),
+        "cancelled": "Ulash bekor qilindi. Bu havola endi ishlamaydi.",
+        "invalid": "Bu ulash havolasi eskirgan. Ilovadan qayta boshlang.",
     },
     "ru": {
         "choose_language": "📱 <b>Приложение HSK AI для Android</b>\n\nВыберите язык приложения:",
-        "enter_code": (
-            "🔐 <b>Отправьте 8-символьный код из Android-приложения</b>\n\n"
-            "Код показан в приложении. Отправьте его в этот чат вручную."
+        "confirm": (
+            "📱 <b>Подключение приложения на Android</b>\n\n"
+            "Устройство: <b>{platform}</b>\n"
+            "Версия: <b>{version}</b>\n\n"
+            "Подтверждайте, только если вы сами открыли приложение."
         ),
-        "invalid": "Ссылка или код подключения истекли. Начните заново в приложении.",
+        "approve": "✅ Подтвердить",
+        "cancel": "Отменить",
+        "ok": (
+            "✅ <b>Приложение на Android подключено</b>\n\n"
+            "Вернитесь в HSK AI — аккаунт откроется автоматически."
+        ),
+        "cancelled": "Подключение отменено. Эта ссылка больше не работает.",
+        "invalid": "Ссылка подключения истекла. Начните заново в приложении.",
     },
     "tj": {
         "choose_language": "📱 <b>Барномаи HSK AI барои Android</b>\n\nЗабони барномаро интихоб кунед:",
-        "enter_code": (
-            "🔐 <b>Рамзи 8-аломатиро аз барномаи Android фиристед</b>\n\n"
-            "Рамз дар барнома нишон дода шудааст. Онро ба ин чат дастӣ фиристед."
+        "confirm": (
+            "📱 <b>Пайваст кардани барномаи Android</b>\n\n"
+            "Дастгоҳ: <b>{platform}</b>\n"
+            "Версия: <b>{version}</b>\n\n"
+            "Танҳо агар барномаро худатон кушода бошед, тасдиқ кунед."
         ),
-        "invalid": "Истинод ё рамзи пайвастшавӣ гузаштааст. Аз барнома аз нав оғоз кунед.",
+        "approve": "✅ Тасдиқ кардан",
+        "cancel": "Бекор кардан",
+        "ok": (
+            "✅ <b>Барномаи Android пайваст шуд</b>\n\n"
+            "Ба барномаи HSK AI баргардед — ҳисоб худкор кушода мешавад."
+        ),
+        "cancelled": "Пайвастшавӣ бекор шуд. Ин истинод дигар кор намекунад.",
+        "invalid": "Истиноди пайвастшавӣ гузаштааст. Аз барнома аз нав оғоз кунед.",
     },
 }
 
@@ -328,22 +355,67 @@ def _android_language(user) -> str:
     return value if value in _ANDROID_COPY else "ru"
 
 
-async def _begin_android_code_entry(
+async def _android_language_for(session, telegram_id: int) -> str:
+    """The Android wording for a chat, including one with no account yet."""
+
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    return _android_language(user)
+
+
+def _android_confirmation_keyboard(language: str, request_id: str) -> InlineKeyboardMarkup:
+    copy = _ANDROID_COPY[language]
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=copy["approve"],
+                    callback_data=f"android_link:approve:{request_id}",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=copy["cancel"],
+                    callback_data=f"android_link:cancel:{request_id}",
+                )
+            ],
+        ]
+    )
+
+
+async def _send_android_confirmation(
     message: Message,
     state: FSMContext,
+    session,
     request_id: str,
+    telegram_id: int,
     language: str,
 ) -> None:
+    """Show the one thing the Android learner has to do: confirm this device.
+
+    No code is asked for. The request id arrives in the deep link, and opening
+    that link reserves the request to this Telegram user, so only this chat can
+    approve or cancel it.
+    """
+
+    try:
+        confirmation = await DesktopAuthService(session, settings).link_request_confirmation(
+            link_request_id=request_id,
+            telegram_id=telegram_id,
+            platform="android",
+        )
+    except DesktopAuthError:
+        await state.clear()
+        await message.answer(_ANDROID_COPY[language]["invalid"], parse_mode="HTML")
+        return
+
     await state.clear()
-    await state.set_state(DesktopLinkStates.waiting_code)
-    await state.update_data(
-        android_link_request_id=request_id,
-        desktop_link_invalid_attempts=0,
-        desktop_link_prompted=True,
-    )
     await message.answer(
-        _ANDROID_COPY[language]["enter_code"],
+        _ANDROID_COPY[language]["confirm"].format(
+            platform=_platform_label(confirmation["platform"]),
+            version=confirmation["app_version"],
+        ),
         parse_mode="HTML",
+        reply_markup=_android_confirmation_keyboard(language, request_id),
     )
 
 
@@ -388,7 +460,14 @@ async def begin_android_link(
         )
         return
 
-    await _begin_android_code_entry(message, state, request_id, _android_language(user))
+    await _send_android_confirmation(
+        message=message,
+        state=state,
+        session=session,
+        request_id=request_id,
+        telegram_id=message.from_user.id,
+        language=_android_language(user),
+    )
 
 
 @router.callback_query(
@@ -417,18 +496,59 @@ async def choose_android_link_language(
     # remaining course questions after the account is linked.
     user.learning_mode = ONBOARDING_MODE_CHOICE_MODE
     await session.commit()
+    await callback.answer()
+    await _send_android_confirmation(
+        message=callback.message,
+        state=state,
+        session=session,
+        request_id=request_id,
+        telegram_id=callback.from_user.id,
+        language=language,
+    )
+
+
+@router.callback_query(F.data.regexp(r"^android_link:approve:[0-9a-fA-F-]{36}$"))
+async def confirm_android_link(callback: CallbackQuery, session) -> None:
+    """The single tap the Android learner makes in Telegram."""
+
+    language = await _android_language_for(session, callback.from_user.id)
+    request_id = str(callback.data or "").rsplit(":", 1)[-1]
     try:
-        await DesktopAuthService(session, settings).link_request_preview(
+        await DesktopAuthService(session, settings).approve_link_request(
             link_request_id=request_id,
+            telegram_id=callback.from_user.id,
             platform="android",
         )
     except DesktopAuthError:
-        await state.clear()
         await callback.answer(_ANDROID_COPY[language]["invalid"], show_alert=True)
         return
-
+    if callback.message:
+        await callback.message.edit_text(
+            _ANDROID_COPY[language]["ok"],
+            parse_mode="HTML",
+        )
     await callback.answer()
-    await _begin_android_code_entry(callback.message, state, request_id, language)
+
+
+@router.callback_query(F.data.regexp(r"^android_link:cancel:[0-9a-fA-F-]{36}$"))
+async def cancel_android_link(callback: CallbackQuery, session) -> None:
+    language = await _android_language_for(session, callback.from_user.id)
+    request_id = str(callback.data or "").rsplit(":", 1)[-1]
+    try:
+        await DesktopAuthService(session, settings).cancel_link_request(
+            link_request_id=request_id,
+            telegram_id=callback.from_user.id,
+            platform="android",
+        )
+    except DesktopAuthError:
+        await callback.answer(_ANDROID_COPY[language]["invalid"], show_alert=True)
+        return
+    if callback.message:
+        await callback.message.edit_text(
+            _ANDROID_COPY[language]["cancelled"],
+            parse_mode="HTML",
+        )
+    await callback.answer()
 
 
 @router.message(
@@ -460,24 +580,13 @@ async def receive_desktop_link_code(
     if display_code is None:
         await _register_invalid_attempt(message, state, language)
         return
-    state_data = await state.get_data()
-    android_request_id = str(
-        state_data.get("android_link_request_id") or ""
-    ).strip()
     try:
-        service = DesktopAuthService(session, settings)
-        if android_request_id:
-            preview = await service.link_request_preview_for_code(
-                link_request_id=android_request_id,
-                display_code=display_code,
-                telegram_id=message.from_user.id,
-            )
-            preview["display_code"] = display_code
-        else:
-            preview = await service.link_preview(
-                display_code=display_code,
-                telegram_id=message.from_user.id,
-            )
+        # Manual code entry is the desktop flow only. Android carries its
+        # request id in the deep link and never shows a code.
+        preview = await DesktopAuthService(session, settings).link_preview(
+            display_code=display_code,
+            telegram_id=message.from_user.id,
+        )
     except DesktopAuthError:
         await _register_invalid_attempt(message, state, language)
         return

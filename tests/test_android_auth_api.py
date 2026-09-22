@@ -24,7 +24,6 @@ from sqlalchemy.pool import StaticPool
 from app.api.android_auth import AndroidLinkStartRequest, create_android_auth_router
 from app.api.desktop_auth import DesktopLinkStartRequest
 from app.bot.fsm.android_auth import AndroidLinkStates
-from app.bot.fsm.desktop_auth import DesktopLinkStates
 from app.bot.handlers import desktop_auth as desktop_auth_handler
 from app.db.base import Base
 from app.db.models.course_miniapp_event import (
@@ -200,30 +199,22 @@ class AndroidAuthServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn(started["display_code"], started["bot_deep_link"])
         self.assertNotIn(started["polling_secret"], started["bot_deep_link"])
 
-    async def test_android_request_payload_still_requires_the_display_code(self):
+    async def test_android_links_from_the_deep_link_without_a_display_code(self):
         async with self.sessions() as session:
             service = DesktopAuthService(session, _settings())
             started = await self._start(session, platform="android")
 
-            preview = await service.link_request_preview(
+            confirmation = await service.link_request_confirmation(
                 link_request_id=started["link_request_id"],
-                platform="android",
-            )
-            self.assertEqual("android", preview["platform"])
-            with self.assertRaises(DesktopAuthError):
-                await service.link_request_preview_for_code(
-                    link_request_id=started["link_request_id"],
-                    display_code="BADCODE1",
-                    telegram_id=1001,
-                )
-            preview_with_code = await service.link_request_preview_for_code(
-                link_request_id=started["link_request_id"],
-                display_code=started["display_code"],
                 telegram_id=1001,
             )
-            self.assertEqual(started["display_code"], preview_with_code["display_code"])
-            approved = await service.approve_link(
-                display_code=started["display_code"],
+            self.assertEqual("android", confirmation["platform"])
+            self.assertEqual("1.0.0", confirmation["app_version"])
+            # Nothing in the confirmation is a code the learner has to read.
+            self.assertNotIn("display_code", confirmation)
+
+            approved = await service.approve_link_request(
+                link_request_id=started["link_request_id"],
                 telegram_id=1001,
             )
             self.assertTrue(approved["ok"])
@@ -233,6 +224,69 @@ class AndroidAuthServiceTests(unittest.IsolatedAsyncioTestCase):
             )
 
         self.assertEqual("linked", linked["status"])
+
+    async def test_a_second_telegram_user_cannot_take_over_the_deep_link(self):
+        """Opening the link reserves it; only that chat may approve or cancel."""
+
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, platform="android")
+
+            await service.link_request_confirmation(
+                link_request_id=started["link_request_id"],
+                telegram_id=1001,
+            )
+            for call in (
+                lambda: service.link_request_confirmation(
+                    link_request_id=started["link_request_id"],
+                    telegram_id=2002,
+                ),
+                lambda: service.approve_link_request(
+                    link_request_id=started["link_request_id"],
+                    telegram_id=2002,
+                ),
+                lambda: service.cancel_link_request(
+                    link_request_id=started["link_request_id"],
+                    telegram_id=2002,
+                ),
+            ):
+                with self.assertRaises(DesktopAuthError) as blocked:
+                    await call()
+                self.assertEqual("desktop_link_invalid", blocked.exception.code)
+                self.assertEqual(403, blocked.exception.status_code)
+
+    async def test_android_confirmation_refuses_a_desktop_request(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, platform="macos")
+            with self.assertRaises(DesktopAuthError) as rejected:
+                await service.link_request_confirmation(
+                    link_request_id=started["link_request_id"],
+                    telegram_id=1001,
+                )
+
+        self.assertEqual("desktop_link_invalid", rejected.exception.code)
+        self.assertEqual(403, rejected.exception.status_code)
+
+    async def test_cancelled_android_request_can_no_longer_be_approved(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, platform="android")
+            await service.link_request_confirmation(
+                link_request_id=started["link_request_id"],
+                telegram_id=1001,
+            )
+            await service.cancel_link_request(
+                link_request_id=started["link_request_id"],
+                telegram_id=1001,
+            )
+            with self.assertRaises(DesktopAuthError) as blocked:
+                await service.approve_link_request(
+                    link_request_id=started["link_request_id"],
+                    telegram_id=1001,
+                )
+
+        self.assertEqual("desktop_link_consumed", blocked.exception.code)
 
     async def test_android_request_payload_cannot_preview_desktop_request(self):
         async with self.sessions() as session:
@@ -584,7 +638,7 @@ class AndroidBotConfirmationTests(unittest.IsolatedAsyncioTestCase):
             onboarding.return_value.get_or_create_user = AsyncMock(
                 return_value=(user, False)
             )
-            service.return_value.link_request_preview = AsyncMock(
+            service.return_value.link_request_confirmation = AsyncMock(
                 return_value={
                     "platform": "android",
                     "app_version": "1.0.0",
@@ -597,8 +651,103 @@ class AndroidBotConfirmationTests(unittest.IsolatedAsyncioTestCase):
             )
 
         self.assertEqual(user.language, "uz")
-        self.assertEqual(state.state, DesktopLinkStates.waiting_code.state)
+        # The chat is left in no state at all: nothing more is typed into it.
+        self.assertIsNone(state.state)
         callback.message.answer.assert_awaited_once()
+        text, kwargs = callback.message.answer.await_args
+        self.assertIn("Android", text[0])
+        buttons = [
+            button.callback_data
+            for row in kwargs["reply_markup"].inline_keyboard
+            for button in row
+        ]
+        self.assertEqual(
+            [
+                "android_link:approve:3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+                "android_link:cancel:3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            ],
+            buttons,
+        )
+
+    async def test_returning_android_user_gets_the_confirmation_at_once(self):
+        state = self._State()
+        message = self._AndroidMessage(
+            "/start android_link_3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+        )
+        user = SimpleNamespace(language="uz", learning_mode="ready")
+        with patch.object(desktop_auth_handler, "OnboardingService") as onboarding, patch.object(
+            desktop_auth_handler, "DesktopAuthService"
+        ) as service, patch.object(
+            desktop_auth_handler,
+            "onboarding_stage",
+            return_value="ready",
+        ):
+            onboarding.return_value.get_or_create_user = AsyncMock(
+                return_value=(user, False)
+            )
+            service.return_value.link_request_preview = AsyncMock(
+                return_value={"platform": "android", "app_version": "1.6.3"}
+            )
+            service.return_value.link_request_confirmation = AsyncMock(
+                return_value={"platform": "android", "app_version": "1.6.3"}
+            )
+            await desktop_auth_handler.begin_android_link(message, state, object())
+
+        self.assertIsNone(state.state)
+        self.assertEqual(1, len(message.answers))
+        text, kwargs = message.answers[0]
+        self.assertIn("1.6.3", text)
+        self.assertIn("reply_markup", kwargs)
+
+    def test_android_copy_asks_for_no_code_in_any_language(self):
+        for language, copy in desktop_auth_handler._ANDROID_COPY.items():
+            with self.subTest(language=language):
+                for key in ("confirm", "approve", "cancel", "ok", "cancelled"):
+                    self.assertIn(key, copy)
+                    self.assertTrue(copy[key].strip())
+                lowered = copy["confirm"].lower()
+                for word in ("kod", "код", "рамз", "code"):
+                    self.assertNotIn(word, lowered)
+
+    async def test_approving_from_the_chat_approves_that_request(self):
+        callback = self._Callback(
+            "android_link:approve:3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+        )
+        approve = AsyncMock(return_value={"ok": True, "platform": "android"})
+        with patch.object(
+            desktop_auth_handler,
+            "_android_language_for",
+            new=AsyncMock(return_value="uz"),
+        ), patch.object(desktop_auth_handler, "DesktopAuthService") as service:
+            service.return_value.approve_link_request = approve
+            await desktop_auth_handler.confirm_android_link(callback, object())
+
+        approve.assert_awaited_once_with(
+            link_request_id="3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            telegram_id=1001,
+            platform="android",
+        )
+        callback.message.edit_text.assert_awaited_once()
+
+    async def test_cancelling_from_the_chat_cancels_that_request(self):
+        callback = self._Callback(
+            "android_link:cancel:3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+        )
+        cancel = AsyncMock(return_value={"ok": True})
+        with patch.object(
+            desktop_auth_handler,
+            "_android_language_for",
+            new=AsyncMock(return_value="ru"),
+        ), patch.object(desktop_auth_handler, "DesktopAuthService") as service:
+            service.return_value.cancel_link_request = cancel
+            await desktop_auth_handler.cancel_android_link(callback, object())
+
+        cancel.assert_awaited_once_with(
+            link_request_id="3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            telegram_id=1001,
+            platform="android",
+        )
+        callback.message.edit_text.assert_awaited_once()
 
 
 if __name__ == "__main__":

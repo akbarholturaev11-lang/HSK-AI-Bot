@@ -750,10 +750,23 @@ class DesktopAuthProviderFlowGuardTests(unittest.IsolatedAsyncioTestCase):
                     ),
                 ),
                 (
-                    "link_request_preview_for_code",
-                    lambda: service.link_request_preview_for_code(
+                    "link_request_confirmation",
+                    lambda: service.link_request_confirmation(
                         link_request_id=started["link_request_id"],
-                        display_code=probe_code,
+                        telegram_id=1001,
+                    ),
+                ),
+                (
+                    "approve_link_request",
+                    lambda: service.approve_link_request(
+                        link_request_id=started["link_request_id"],
+                        telegram_id=1001,
+                    ),
+                ),
+                (
+                    "cancel_link_request",
+                    lambda: service.cancel_link_request(
+                        link_request_id=started["link_request_id"],
                         telegram_id=1001,
                     ),
                 ),

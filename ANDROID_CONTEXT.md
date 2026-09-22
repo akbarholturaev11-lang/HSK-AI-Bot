@@ -12,7 +12,8 @@ hozirgi holat va hali ochiq muammolar.
 
 Native Kotlin/Compose klient, `android/` papkasida. Bot, Mini App, macOS va
 Windows bilan **bir xil backend**, bir xil Telegram akkaunt, bir xil obuna va
-progress. Kirish — Telegram orqali ulash kodi bilan (`LinkScreen`).
+progress. Kirish — `LinkScreen` dagi uchta karta: Telegram (kodsiz,
+botdagi bitta tasdiq), Google va Apple (server taklif qilsa).
 
 **Ikkita flavour, va bu farq muhim:**
 
@@ -601,6 +602,54 @@ aks holda 404 bo'ladi va murabbiy jimgina ko'rinmay qoladi — sahifalar
 Qamrov: `PracticeCharacterParityTest` (7 ta) va
 `tests/test_course_character_assets.py` (imtihonda personaj yo'qligi,
 sahifalarning ulanishi, zinapoya va yakun chegaralari).
+
+### 3.17 Kirish ekrani: uchta karta, kodsiz Telegram — 2026-09-22
+
+Login ekrani qayta yozildi. Endi u: tepada `HSK AI` + til almashtirgich
+(UZ/RU/TJ), panda (kitob bilan, `HskCharacterStage(Panda, Loading)` — yangi
+rasm fayli emas), «Xush kelibsiz» / «Kirish yo'lini tanlang», uchta karta
+(Telegram doim, Google/Apple faqat server taklif qilsa) va pastda bitta izoh
+qatori. Ranglar — bizning paletka, `check_palette_matches_miniapp.py` o'tadi.
+
+**8 belgili kod endi hech qayerda ko'rinmaydi.** Ilgari: ilova kodni
+ko'rsatardi → bot kodni qo'lda so'rardi → tasdiq. Endi: karta bosiladi →
+`android_link_<request id>` deep-link Telegramni ochadi → bot to'g'ridan-to'g'ri
+qurilma va versiyani ko'rsatib «Tasdiqlash» tugmasini beradi → ilova o'sha
+polling orqali sessiyani oladi. Yangi user uchun avvalgidek avval til
+tanlanadi, keyin shu tasdiq chiqadi.
+
+Qayerda:
+- `feature/auth/LinkScreen.kt` (to'liq qayta yozilgan),
+  `feature/auth/LinkViewModel.kt` (`continueWithTelegram`, `dismissWaiting`,
+  `pendingTelegramUrl`), `MainActivity.kt` (til tanlash, link endi faqat karta
+  bosilganda so'raladi)
+- `core/i18n/AppLocale.kt` — `choose()` / `current()`: kirishdan oldin tanlangan
+  til `clear()` dan omon qoladi; kirgandan keyin `sync()` akkaunt tili bilan
+  uni almashtiradi (til baribir serverniki)
+- `res/drawable/ic_brand_{telegram,google,apple}.xml` — Apple `PompColors.Ink`
+  bilan bo'yaladi (Apple faqat qora yoki oq ruxsat beradi), qolgani bo'yalmaydi
+- Bot: `app/bot/handlers/desktop_auth.py` — `_send_android_confirmation`,
+  `android_link:approve|cancel:<uuid>`; servis:
+  `link_request_confirmation` / `approve_link_request` / `cancel_link_request`.
+  `link_request_preview_for_code` o'chirildi (endi chaqiruvchisi yo'q).
+
+Bilib qo'yish kerak:
+- **Xavfsizlik farqi shu yerda.** Ilgari havolani birovga yuborish yetmasdi —
+  kodni ilovadan ko'rish kerak edi. Endi Android havolasi tasdiq ekranigacha
+  olib boradi, shuning uchun ekran qurilma va versiyani nomlaydi va
+  birinchi ochgan Telegram akkauntiga band qilinadi. Desktop yo'li (`macos`,
+  `windows`) o'zgarmagan: u hamon kodni qo'lda so'raydi.
+- Link faqat karta bosilganda so'raladi (ilgari ekran ochilishida). Shuning
+  uchun tilni almashtirish (ekran `recreate` bo'ladi) endi bekorga link
+  yaratmaydi va `desktop_link_rate_limited` ga urilmaydi.
+- Wordmark chapda: uchta til kodi bilan bitta qatorda markazga sig'maydi
+  (360dp telefon).
+
+Qamrov: `LinkScreenProviderTest` (7 ta), `tests/test_android_auth_api.py`
+(kodsiz ulash, band qilingan havolani boshqa akkaunt ololmasligi, desktop
+so'rovini rad etish, bekor qilingandan keyin tasdiqlab bo'lmasligi, bot
+tugmalari) va `tests/test_desktop_auth_service.py` dagi OAuth qator qo'riqchisi
+yangi uchta metodni ham qamraydi.
 
 ### 3.16 Google va Apple bilan kirish — 2026-09-22
 

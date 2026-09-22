@@ -239,17 +239,26 @@ private fun AppRoot(
                 app.clearLocalData()
                 if (AppLocale.clear(localeHost)) {
                     (localeHost as? Activity)?.recreate()
-                } else if (linkState.pending == null && !linkState.isRequestingCode) {
-                    viewModel.requestCode()
+                } else {
+                    // The link itself is reserved only when a provider is
+                    // tapped, so switching language here costs no link row.
                     viewModel.loadProviders()
                 }
             }
             LinkScreen(
                 state = linkState,
-                onRequestCode = viewModel::requestCode,
+                language = AppLocale.current(localeHost),
+                onLanguageSelected = { language ->
+                    if (AppLocale.choose(localeHost, language)) {
+                        (localeHost as? Activity)?.recreate()
+                    }
+                },
+                onContinueWithTelegram = viewModel::continueWithTelegram,
                 onSignInWithGoogle = viewModel::signInWithGoogle,
                 onSignInWithApple = viewModel::signInWithApple,
                 onBrowserUrlOpened = viewModel::browserUrlOpened,
+                onTelegramUrlOpened = viewModel::telegramUrlOpened,
+                onDismissWaiting = viewModel::dismissWaiting,
             )
         }
 

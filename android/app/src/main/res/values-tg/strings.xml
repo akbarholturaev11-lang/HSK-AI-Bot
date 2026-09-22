@@ -5,26 +5,14 @@
     <string name="onboarding_language_subtitle">Курс, тарҷумаҳо ва ёдоварӣ бо ҳамин забон мешаванд.</string>
     <string name="action_continue">Идома додан</string>
 
-    <string name="auth_welcome_title">Роҳи HSK-и шумо аз ҳамин ҷо оғоз мешавад</string>
-    <string name="auth_single_subtitle">Тавассути Telegram бехатар ворид шавед — бе парол ва қадамҳои зиёдатӣ.</string>
-    <string name="auth_login">Ба курс ворид шудан</string>
-    <string name="auth_register">Сохтани ҳисоби нав</string>
-    <string name="link_title">Тавассути Telegram ҳисоб созед ё ворид шавед</string>
-    <string name="link_subtitle">Парол лозим нест. Ҳисоби нав тавассути Telegram сохта мешавад ё курси мавҷуда ба ин дастгоҳ пайваст мегардад.</string>
-    <string name="link_step_1">Telegram-ро кушоед</string>
-    <string name="link_step_2">Забонро интихоб кунед</string>
-    <string name="link_step_3">Рамзро фиристед ва пайвасти Android-ро тасдиқ кунед</string>
-    <string name="link_code_label">Рамзи пайвасти шумо</string>
-    <string name="link_code_instruction">Рамзро ба бот фиристед — курс дар ҳамин дастгоҳ кушода мешавад.</string>
-    <string name="link_code_copied">Рамз нусха шуд</string>
-    <string name="link_open_telegram">Кушодани Telegram</string>
-    <string name="link_waiting">Тасдиқи Telegram-ро интизорем…</string>
-    <string name="link_expires_in">Рамз боз %1$s амал мекунад</string>
-    <string name="link_expired">Ин рамз кӯҳна шуд. Рамзи нав гиред.</string>
-    <string name="link_new_code">Сохтани рамзи нав</string>
-    <string name="link_success">Ҳисоб пайваст шуд</string>
-    <string name="link_telegram_missing">Барномаи Telegram ёфт нашуд. Рамзро тавассути браузер фиристода метавонед.</string>
-    <string name="link_security_note">Рамз танҳо барои пайваст кардани ҳамин дастгоҳ истифода мешавад.</string>
+    <!-- Login screen: welcome and the three ways in -->
+    <string name="auth_welcome_greeting">Хуш омадед</string>
+    <string name="auth_choose_method">Роҳи воридшавиро интихоб кунед</string>
+    <string name="auth_tagline">Ояндаи беҳтар — бо дониш</string>
+    <string name="auth_waiting_telegram">Тасдиқро дар Telegram интизорем…</string>
+    <string name="auth_open_telegram_again">Telegram-ро аз нав кушоед</string>
+    <string name="cd_language_switch">Забон</string>
+    <string name="auth_link_expired">Мӯҳлати пайвастшавӣ гузашт. Аз нав кӯшиш кунед.</string>
 
     <string name="synced_title">Ҳисоб пайваст шуд</string>
     <string name="synced_access_paid">Обуна фаъол</string>
@@ -73,7 +61,6 @@
     <string name="error_referral_unavailable">Рӯйхати дӯстон бор нашуд. Боз кӯшиш кунед.</string>
 
     <string name="cd_app_logo">Логотипи Pomp HSK AI</string>
-    <string name="cd_copy_code">Нусхабардории рамзи пайвастшавӣ</string>
 
     <string name="today_continue">Идома додан</string>
     <string name="today_streak">Рӯзҳои пайдарпай</string>
@@ -406,9 +393,6 @@
     <string name="plan_choice_pay">Pro гирифтан</string>
     <string name="plan_choice_later">Ҳозир ройгон идома медиҳам</string>
     <string name="hint_open">Шарҳ</string>
-    <string name="auth_continue_google">Бо Google идома додан</string>
-    <string name="auth_continue_apple">Бо Apple идома додан</string>
-    <string name="auth_provider_divider">ё</string>
     <string name="auth_provider_waiting">Интизори тасдиқ…</string>
     <string name="error_provider_cancelled">Вуруд бекор карда шуд.</string>
     <string name="error_provider_unavailable">Ин усул ҳоло дастрас нест. Тавассути Telegram ворид шавед.</string>
@@ -430,6 +414,5 @@
     <string name="profile_identity_unlinked">Ҷудо шуд. Дар дастгоҳҳои дигар аз ҳисоб баромадед.</string>
     <string name="profile_identity_connect_provider">Пайваст кардани %1$s</string>
     <string name="error_account_blocked">Ин ҳисоб аз ҷониби администратор маҳдуд шудааст. Ба дастгирӣ нависед.</string>
-    <string name="auth_multi_subtitle">Тавассути Telegram, Google ё Apple бехатар ворид шавед.</string>
     <string name="profile_social_title">HSK AI дар шабакаҳои иҷтимоӣ</string>
 </resources>

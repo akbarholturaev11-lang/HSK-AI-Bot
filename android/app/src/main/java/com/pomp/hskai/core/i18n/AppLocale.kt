@@ -21,6 +21,7 @@ object AppLocale {
 
     private const val PREFERENCES = "pomp_app_locale"
     private const val KEY_LANGUAGE = "android_tag"
+    private const val KEY_CHOSEN = "chosen_on_login"
 
     /** The language on screen, or null while the account has never been read. */
     fun stored(context: Context): AppLanguage? {
@@ -48,15 +49,57 @@ object AppLocale {
             .getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
             .edit()
             .putString(KEY_LANGUAGE, language.androidTag)
+            // The account has spoken, so a choice made on the login screen is
+            // no longer what decides the language.
+            .remove(KEY_CHOSEN)
             .apply()
         return current != language
     }
 
-    /** Clears the account override so unauthenticated screens follow the device locale. */
-    fun clear(context: Context): Boolean {
-        val hadOverride = stored(context) != null
+    /**
+     * Records a language picked on the login screen, where there is no
+     * account yet to own it.
+     *
+     * Unlike [sync] this survives [clear], because the learner picked it
+     * while signed out — that is the only state the login screen has. The
+     * first [sync] after signing in replaces it with the account's language.
+     */
+    fun choose(context: Context, language: AppLanguage): Boolean {
+        val current = stored(context)
         context
             .getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_LANGUAGE, language.androidTag)
+            .putBoolean(KEY_CHOSEN, true)
+            .apply()
+        return current != language
+    }
+
+    /**
+     * The language the signed-out screens are in.
+     *
+     * Without an override Android resolves the strings itself, and for a
+     * device set to a language this app does not translate that is the
+     * default resource folder — Uzbek. [AppLanguage.DEFAULT] is the backend's
+     * fallback, which is a different question and would mislabel the switch.
+     */
+    fun current(context: Context): AppLanguage {
+        stored(context)?.let { return it }
+        val device = Locale.getDefault().language.lowercase(Locale.ROOT)
+        return AppLanguage.entries.firstOrNull { it.androidTag == device }
+            ?: AppLanguage.UZBEK
+    }
+
+    /**
+     * Clears the account override so unauthenticated screens follow the
+     * device locale. A language picked on the login screen is kept: it was
+     * chosen for exactly this state.
+     */
+    fun clear(context: Context): Boolean {
+        val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        if (preferences.getBoolean(KEY_CHOSEN, false)) return false
+        val hadOverride = stored(context) != null
+        preferences
             .edit()
             .remove(KEY_LANGUAGE)
             .apply()

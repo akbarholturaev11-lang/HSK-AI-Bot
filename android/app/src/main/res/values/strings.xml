@@ -20,27 +20,20 @@
     <string name="language_tj" translatable="false">Тоҷикӣ</string>
     <string name="action_continue">Davom etish</string>
 
-    <!-- Onboarding: Telegram linking -->
-    <string name="auth_welcome_title">HSK yo‘lingiz shu yerdan boshlanadi</string>
-    <string name="auth_single_subtitle">Telegram orqali xavfsiz kiring — parol va ortiqcha qadamlar yo‘q.</string>
-    <string name="auth_login">Kursga kirish</string>
-    <string name="auth_register">Yangi akkaunt ochish</string>
-    <string name="link_title">Telegram orqali akkaunt oching yoki kiring</string>
-    <string name="link_subtitle">Parol kerak emas. Telegram orqali yangi akkaunt yaratiladi yoki mavjud kursingiz shu qurilmaga ulanadi.</string>
-    <string name="link_step_1">Telegramni oching</string>
-    <string name="link_step_2">Tilni tanlang</string>
-    <string name="link_step_3">Kodni yuboring va Android ulashni tasdiqlang</string>
-    <string name="link_code_label">Sizning ulash kodingiz</string>
-    <string name="link_code_instruction">Kodni botga yuboring — kurs shu qurilmada ochiladi.</string>
-    <string name="link_code_copied">Kod nusxalandi</string>
-    <string name="link_open_telegram">Telegramni ochish</string>
-    <string name="link_waiting">Telegramdagi tasdiqni kutyapmiz…</string>
-    <string name="link_expires_in">Kod yana %1$s ishlaydi</string>
-    <string name="link_expired">Bu kod eskirdi. Yangisini oling.</string>
-    <string name="link_new_code">Yangi kod yaratish</string>
-    <string name="link_success">Hisob ulandi</string>
-    <string name="link_telegram_missing">Telegram ilovasi topilmadi. Kodni brauzer orqali yuborishingiz mumkin.</string>
-    <string name="link_security_note">Kod faqat shu qurilmani ulash uchun ishlaydi.</string>
+    <!-- Login screen: welcome and the three ways in -->
+    <string name="auth_welcome_greeting">Xush kelibsiz</string>
+    <string name="auth_choose_method">Kirish yo\u2018lini tanlang</string>
+    <string name="auth_tagline">Yaxshiroq kelajak \u2014 bilim bilan</string>
+    <string name="auth_continue_telegram" translatable="false">Telegram</string>
+    <string name="auth_continue_google_short" translatable="false">Google</string>
+    <string name="auth_continue_apple_short" translatable="false">Apple</string>
+    <string name="auth_waiting_telegram">Telegramdagi tasdiqni kutyapmiz\u2026</string>
+    <string name="auth_open_telegram_again">Telegramni qayta ochish</string>
+    <string name="cd_language_switch">Til</string>
+    <string name="language_code_uz" translatable="false">UZ</string>
+    <string name="language_code_ru" translatable="false">RU</string>
+    <string name="language_code_tj" translatable="false">TJ</string>
+    <string name="auth_link_expired">Ulanish muddati tugadi. Qaytadan urinib ko\u2018ring.</string>
 
     <!-- Synced account summary -->
     <string name="synced_title">Hisobingiz ulandi</string>
@@ -95,7 +88,6 @@
 
     <!-- Accessibility -->
     <string name="cd_app_logo">Pomp HSK AI logotipi</string>
-    <string name="cd_copy_code">Ulash kodini nusxalash</string>
 
     <!-- Bugun -->
     <string name="today_continue">Davom etish</string>
@@ -439,9 +431,6 @@
     <string name="plan_choice_pay">Pro olish</string>
     <string name="plan_choice_later">Hozircha bepul davom etaman</string>
     <string name="hint_open">Tushuntirish</string>
-    <string name="auth_continue_google">Google bilan davom etish</string>
-    <string name="auth_continue_apple">Apple bilan davom etish</string>
-    <string name="auth_provider_divider">yoki</string>
     <string name="auth_provider_waiting">Tasdiqlash kutilmoqda…</string>
     <string name="error_provider_cancelled">Kirish bekor qilindi.</string>
     <string name="error_provider_unavailable">Bu usul hozir mavjud emas. Telegram orqali kiring.</string>
@@ -463,6 +452,5 @@
     <string name="profile_identity_unlinked">Uzildi. Boshqa qurilmalarda hisobdan chiqdingiz.</string>
     <string name="profile_identity_connect_provider">%1$s ni ulash</string>
     <string name="error_account_blocked">Bu hisob administrator tomonidan cheklangan. Qo‘llab-quvvatlashga yozing.</string>
-    <string name="auth_multi_subtitle">Telegram, Google yoki Apple orqali xavfsiz kiring.</string>
     <string name="profile_social_title">HSK AI ijtimoiy tarmoqlarda</string>
 </resources>
