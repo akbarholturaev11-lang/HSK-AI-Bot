@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Instagram brand mark. The gradient and the white glyph are the logo's own
+     colours, so this drawable is used untinted. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M7.8,2h8.4A5.8,5.8 0 0 1 22,7.8v8.4A5.8,5.8 0 0 1 16.2,22H7.8A5.8,5.8 0 0 1 2,16.2V7.8A5.8,5.8 0 0 1 7.8,2z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="7"
+                android:centerY="23"
+                android:gradientRadius="30"
+                android:startColor="#FDF497"
+                android:centerColor="#FD5949"
+                android:endColor="#285AEB" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M9.5,5.6h5A3.9,3.9 0 0 1 18.4,9.5v5A3.9,3.9 0 0 1 14.5,18.4h-5A3.9,3.9 0 0 1 5.6,14.5v-5A3.9,3.9 0 0 1 9.5,5.6z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.7" />
+    <path
+        android:pathData="M12,8.7A3.3,3.3 0 1 1 11.99,8.7z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.7" />
+    <path
+        android:pathData="M17.1,5.75A1.15,1.15 0 1 1 17.09,5.75z"
+        android:fillColor="#FFFFFF" />
+</vector>

@@ -426,9 +426,11 @@ button{cursor:pointer}
 .srow-sub b{display:block;color:var(--ink);font-size:13px;font-weight:600}
 .srow-sub span{display:block;margin-top:2px;color:var(--ink2);font-size:12px;line-height:1.45}
 .social-row{display:flex;gap:10px;justify-content:center;padding:2px 0 4px}
-.social-btn{flex:1;max-width:96px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s ease,color .12s ease,border-color .12s ease}
+.social-btn{flex:1;max-width:96px;height:54px;border-radius:15px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease}
+.social-btn svg{display:block}
 .social-btn:active{transform:scale(.95)}
-.social-btn:hover{color:var(--cin);border-color:var(--cin)}
+/* Logolar o'z rangida — hover faqat ramkani ko'taradi, rangga tegmaydi. */
+.social-btn:hover{border-color:var(--ink3);box-shadow:0 2px 10px rgba(33,29,23,.07)}
 .pgoal{display:flex;align-items:center;gap:14px;margin:14px 16px 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
 .pgoal .ring{width:56px;height:56px;flex-shrink:0}
 .pgoal .gt b{font-size:15px;font-weight:500}.pgoal .gt small{font-size:12px;color:var(--ink2);display:block;margin-top:2px}
@@ -1500,6 +1502,7 @@ var App={
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
   openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
   closeSheet:function(){
+    SETTINGS_SHEET=false;
     $("#sheet").classList.remove("on");stopSheetPromo();
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
@@ -1872,6 +1875,7 @@ var App={
   openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
+  openSettings:function(){SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml())},
   openSocial:function(id){
     var item=null;
     for(var i=0;i<SOCIAL_LINKS.length;i++){if(SOCIAL_LINKS[i].id===id){item=SOCIAL_LINKS[i];break}}
@@ -1885,17 +1889,17 @@ var App={
   connectIdentity:function(provider){
     if(SIGNIN_STATE.busy)return;
     var p=pl();
-    SIGNIN_STATE.busy=provider;SIGNIN_STATE.note="";renderProfile();
+    SIGNIN_STATE.busy=provider;SIGNIN_STATE.note="";refreshSettingsRows();
     _apiPost("/api/v3/native-auth/identities/link/start",{
       platform:"miniapp",app_version:"1.0.0",provider:provider,mode:"browser_redirect"
     }).then(function(r){return r.json()}).then(function(d){
       if(!d||!d.ok||!d.authorize_url||d.authorize_url.indexOf("https://")!==0){
-        SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;renderProfile();return;
+        SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;renderPrefreshSettingsRows();
       }
       openSupportLink(d.authorize_url);
       pollSignInLink({id:d.link_request_id,secret:d.polling_secret},Date.now()+Math.max(60,Number(d.expires_in)||600)*1000);
     }).catch(function(){
-      SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;renderProfile();
+      SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();
     });
   },
   unlinkIdentity:function(identityId){
@@ -1910,19 +1914,21 @@ var App={
   },
   _doUnlink:function(identityId){
     var p=pl();
-    SIGNIN_STATE.busy="unlink";SIGNIN_STATE.note="";renderProfile();
+    SIGNIN_STATE.busy="unlink";SIGNIN_STATE.note="";refreshSettingsRows();
     _apiPost("/api/v3/native-auth/identities/unlink",{identity_id:identityId})
       .then(function(r){return r.json()}).then(function(d){
         SIGNIN_STATE.busy="";
         SIGNIN_STATE.note=(d&&d.ok)?"":p.linkFail;
         loadSignInMethods();
       }).catch(function(){
-        SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;renderProfile();
+        SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();
       });
   },
   notifToggle:function(){if(notifOn){App.confirmNotifOff()}else{App.applyNotif(true)}},
-  applyNotif:function(on){notifOn=on;if(MAP)MAP.notify={enabled:on};renderProfile();if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
-  confirmNotifOff:function(){var w={uz:{title:"Bildirishnomalarni o'chirasizmi?",body:"Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",keep:"Yoqilgan qoldirish",off:"O'chirish"},ru:{title:"Отключить уведомления?",body:"Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",keep:"Оставить включёнными",off:"Отключить"},tj:{title:"Огоҳиҳоро хомӯш мекунед?",body:"Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",keep:"Фаъол мондан",off:"Хомӯш кардан"}}[LANG]||{};App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-bell-off"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="App.closeSheet()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:8px" onclick="App.closeSheet();App.applyNotif(false)">'+esc(w.off)+'</button>')},
+  applyNotif:function(on){var back=SETTINGS_SHEET;notifOn=on;if(MAP)MAP.notify={enabled:on};renderProfile();
+    if(back)App.openSettings();
+    if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
+  confirmNotifOff:function(){var w={uz:{title:"Bildirishnomalarni o'chirasizmi?",body:"Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",keep:"Yoqilgan qoldirish",off:"O'chirish"},ru:{title:"Отключить уведомления?",body:"Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",keep:"Оставить включёнными",off:"Отключить"},tj:{title:"Огоҳиҳоро хомӯш мекунед?",body:"Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",keep:"Фаъол мондан",off:"Хомӯш кардан"}}[LANG]||{};App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-bell-off"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="backToSettingsOrClose()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:8px" onclick="App.applyNotif(false)">'+esc(w.off)+'</button>')},
   avatarEdit:function(){var t=T();var note=LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi";App.openSheet('<div class="shead"><div class="pav" style="margin:0 auto;cursor:default">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'</div><div class="tr" style="margin-top:10px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
   /* Duolingo uslubi: pinyin ko'rsatish sozlamasi (dars oqimida) */
   pinyinSheet:function(){
@@ -1939,8 +1945,9 @@ var App={
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
       +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
   /* Tanlov endi SERVERDA saqlanadi — ilgari u faqat shu sessiyada yashardi. */
-  pickGoal:function(v){dailyGoal=v;App.closeSheet();renderProfile();
-    savePreferences({daily_goal_xp:v}).then(function(){renderProfile()})},
+  pickGoal:function(v){var back=SETTINGS_SHEET;dailyGoal=v;renderProfile();
+    if(back)App.openSettings();else App.closeSheet();
+    savePreferences({daily_goal_xp:v}).then(function(){renderProfile();if(SETTINGS_SHEET)App.openSettings()})},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
   pickStudyGoal:function(k){App.closeSheet();
@@ -1969,7 +1976,8 @@ var App={
   langPicker:function(){var t=T();var names={uz:"O'zbekcha",ru:"Русский",tj:"Тоҷикӣ"};
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+t.lang+'</div></div>'
       +["uz","ru","tj"].map(function(l){return '<button class="sec'+(l===LANG?' cur':'')+'" style="width:100%;margin-bottom:8px" onclick="App.pickLang(\''+l+'\')"><span class="si2">'+(l===LANG?'<i class="ti ti-check"></i>':'')+'</span><b>'+names[l]+'</b></button>'}).join(""));},
-  pickLang:function(l){App.closeSheet();App.setLang(l);
+  pickLang:function(l){var back=SETTINGS_SHEET;App.closeSheet();App.setLang(l);
+    if(back)App.openSettings();
     /* Tilni botga ham yozamiz — QA rejim va Kurs rejim bir xil tilda ochiladi. */
     if(INIT_DATA)_apiPost("/api/v3/language",{language:l}).catch(function(){})}
 };
@@ -5203,9 +5211,9 @@ function openInviteSheet(){
 }
 
 /* ---------- Profile ---------- */
-function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",goalTitle:"Цель",settings:"Настройки",signin:"Способы входа",signinSub:"Один аккаунт, несколько способов входа",connect:"Подключить",connected:"Подключено",disconnect:"Отключить",unlinkWarn:"После отключения вы выйдете из аккаунта на других устройствах.",linkWait:"Подтвердите вход в браузере…",linkFail:"Не удалось подключить. Попробуйте ещё раз.",linkDone:"Подключено",social:"HSK AI в соцсетях"},
-  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",goalTitle:"Maqsad",settings:"Sozlamalar",signin:"Kirish usullari",signinSub:"Bitta akkaunt, bir nechta kirish usuli",connect:"Ulash",connected:"Ulangan",disconnect:"Uzish",unlinkWarn:"Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",linkWait:"Brauzerda tasdiqlashni kuting…",linkFail:"Ulab bo'lmadi. Qayta urinib ko'ring.",linkDone:"Ulandi",social:"HSK AI ijtimoiy tarmoqlarda"},
-  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",goalTitle:"Ҳадаф",settings:"Танзимот",signin:"Усулҳои вуруд",signinSub:"Як ҳисоб, якчанд усули вуруд",connect:"Пайваст кардан",connected:"Пайваст аст",disconnect:"Ҷудо кардан",unlinkWarn:"Пас аз ҷудо кардан дар дастгоҳҳои дигар аз ҳисоб мебароед.",linkWait:"Дар браузер тасдиқро интизор шавед…",linkFail:"Пайваст карда нашуд. Боз кӯшиш кунед.",linkDone:"Пайваст шуд",social:"HSK AI дар шабакаҳои иҷтимоӣ"}}[LANG]}
+function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",goalTitle:"Цель",settings:"Настройки",settingsSub:"Язык, уведомления, цель, способы входа",signin:"Способы входа",signinSub:"Один аккаунт, несколько способов входа",connect:"Подключить",connected:"Подключено",disconnect:"Отключить",unlinkWarn:"После отключения вы выйдете из аккаунта на других устройствах.",linkWait:"Подтвердите вход в браузере…",linkFail:"Не удалось подключить. Попробуйте ещё раз.",linkDone:"Подключено",social:"HSK AI в соцсетях"},
+  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",goalTitle:"Maqsad",settings:"Sozlamalar",settingsSub:"Til, bildirishnoma, maqsad, kirish usullari",signin:"Kirish usullari",signinSub:"Bitta akkaunt, bir nechta kirish usuli",connect:"Ulash",connected:"Ulangan",disconnect:"Uzish",unlinkWarn:"Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",linkWait:"Brauzerda tasdiqlashni kuting…",linkFail:"Ulab bo'lmadi. Qayta urinib ko'ring.",linkDone:"Ulandi",social:"HSK AI ijtimoiy tarmoqlarda"},
+  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",goalTitle:"Ҳадаф",settings:"Танзимот",settingsSub:"Забон, огоҳиҳо, ҳадаф, усулҳои вуруд",signin:"Усулҳои вуруд",signinSub:"Як ҳисоб, якчанд усули вуруд",connect:"Пайваст кардан",connected:"Пайваст аст",disconnect:"Ҷудо кардан",unlinkWarn:"Пас аз ҷудо кардан дар дастгоҳҳои дигар аз ҳисоб мебароед.",linkWait:"Дар браузер тасдиқро интизор шавед…",linkFail:"Пайваст карда нашуд. Боз кӯшиш кунед.",linkDone:"Пайваст шуд",social:"HSK AI дар шабакаҳои иҷтимоӣ"}}[LANG]}
 /* Maqsad kodini (onboardingdagi tanlov) o'qiladigan nomga aylantiradi.
    Nomlar `studySetupT().goals` da — onboarding bilan AYNI manba, shunda
    profildagi maqsad tanlov ekranidagidek yoziladi. */
@@ -5372,11 +5380,34 @@ function proProfileCard(){
 /* ---------- Kirish usullari (Google / Apple) + ijtimoiy tarmoqlar ---------- */
 
 /* HSK AI rasmiy sahifalari. Ro'yxat shu yerda — havola o'zgarsa bitta joyda
-   tuzatiladi va `openSupportLink` orqali Telegram tashqarisida ochiladi. */
+   tuzatiladi va `openSupportLink` orqali Telegram tashqarisida ochiladi.
+
+   Ikonkalar — haqiqiy brend logolari, inline SVG. Tabler'ning bir rangli
+   glifi o'rniga shu: qatordagi uchta tugma bir xil ko'rinib qolmasin va
+   odam qaysi biri ekanini o'qimasdan bilsin. Mini App'da tungi rejim yo'q,
+   shuning uchun ranglar sobit. */
+var SOCIAL_ICONS={
+  instagram:'<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">'
+    +'<defs><radialGradient id="ig-g" cx="30%" cy="107%" r="150%">'
+    +'<stop offset="0" stop-color="#FDF497"/><stop offset=".26" stop-color="#FD5949"/>'
+    +'<stop offset=".6" stop-color="#D6249F"/><stop offset="1" stop-color="#285AEB"/>'
+    +'</radialGradient></defs>'
+    +'<rect x="2" y="2" width="20" height="20" rx="5.8" fill="url(#ig-g)"/>'
+    +'<rect x="5.6" y="5.6" width="12.8" height="12.8" rx="3.9" fill="none" stroke="#fff" stroke-width="1.7"/>'
+    +'<circle cx="12" cy="12" r="3.3" fill="none" stroke="#fff" stroke-width="1.7"/>'
+    +'<circle cx="17.1" cy="6.9" r="1.15" fill="#fff"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">'
+    +'<path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.82-2.47V9.69a5.7 5.7 0 1 0 4.91 5.64V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.24-1.48z" fill="#25F4EE" transform="translate(-1.1 -1)"/>'
+    +'<path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.82-2.47V9.69a5.7 5.7 0 1 0 4.91 5.64V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.24-1.48z" fill="#FE2C55" transform="translate(1.1 1)"/>'
+    +'<path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.82-2.47V9.69a5.7 5.7 0 1 0 4.91 5.64V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.24-1.48z" fill="#111"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">'
+    +'<path d="M23.5 6.9a3 3 0 0 0-2.12-2.13C19.5 4.25 12 4.25 12 4.25s-7.5 0-9.38.52A3 3 0 0 0 .5 6.9C0 8.79 0 12 0 12s0 3.21.5 5.1a3 3 0 0 0 2.12 2.13c1.88.52 9.38.52 9.38.52s7.5 0 9.38-.52a3 3 0 0 0 2.12-2.13C24 15.21 24 12 24 12s0-3.21-.5-5.1z" fill="#FF0000"/>'
+    +'<path d="M9.55 15.57V8.43L15.82 12z" fill="#fff"/></svg>'
+};
 var SOCIAL_LINKS=[
-  {id:"instagram",icon:"ti-brand-instagram",label:"Instagram",url:"https://www.instagram.com/hskai.app"},
-  {id:"tiktok",icon:"ti-brand-tiktok",label:"TikTok",url:"https://www.tiktok.com/@hsk.ai"},
-  {id:"youtube",icon:"ti-brand-youtube",label:"YouTube",url:"https://youtube.com/@hskai_app"}
+  {id:"instagram",label:"Instagram",url:"https://www.instagram.com/hskai.app"},
+  {id:"tiktok",label:"TikTok",url:"https://www.tiktok.com/@hsk.ai"},
+  {id:"youtube",label:"YouTube",url:"https://youtube.com/@hskai_app"}
 ];
 
 /* Serverning provider ro'yxati va ulangan identity'lar. Yuklanmaguncha
@@ -5407,8 +5438,36 @@ function socialLinksHtml(){
   var p=pl();
   return '<div class="sech">'+esc(p.social)+'</div>'
     +'<div class="social-row">'+SOCIAL_LINKS.map(function(x){
-      return '<button class="social-btn" aria-label="'+esc(x.label)+'" onclick="App.openSocial(\''+esc(x.id)+'\')"><i class="ti '+x.icon+'"></i></button>';
+      return '<button class="social-btn" aria-label="'+esc(x.label)+'" onclick="App.openSocial(\''+esc(x.id)+'\')">'+(SOCIAL_ICONS[x.id]||"")+'</button>';
     }).join("")+'</div>';
+}
+
+/* Sozlamalar varaq ichida ochiladi — profil sahifasi uzun ro'yxat bo'lib
+   ketmasin va Android'dagi kabi bitta kirish nuqtasi bo'lsin. */
+var SETTINGS_SHEET=false;
+
+function settingsSheetHtml(){
+  var t=T(),p=pl();
+  return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(p.settings)+'</div></div>'
+    +'<div class="set" style="margin:0">'
+    +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+t.lang+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
+    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+    +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
+    +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
+    +signInMethodsRowsHtml()
+    +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
+    +'</div>';
+}
+
+/* Varaq ichidan boshqa varaq ochilsa (til, maqsad, bildirishnoma tasdig'i),
+   tugagach foydalanuvchi bo'shliqqa emas, sozlamalarga qaytadi. */
+function refreshSettingsRows(){
+  if(SCREEN==="profile")renderProfile();
+  if(SETTINGS_SHEET)App.openSettings();
+}
+
+function backToSettingsOrClose(){
+  if(SETTINGS_SHEET)App.openSettings();else App.closeSheet();
 }
 
 /* Provider ro'yxati va ulangan identity'lar. Xatolik jim o'tkaziladi:
@@ -5425,6 +5484,7 @@ function loadSignInMethods(){
     SIGNIN_STATE.identities=(ident&&ident.ok&&Array.isArray(ident.identities))?ident.identities:[];
     SIGNIN_STATE.loaded=true;
     if(SCREEN==="profile")renderProfile();
+    if(SETTINGS_SHEET)App.openSettings();
   }).catch(function(){});
 }
 
@@ -5440,7 +5500,7 @@ function pollSignInLink(pending,deadline){
       .then(function(d){
         var p=pl();
         if(d&&d.status==="linked"){SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkDone;loadSignInMethods();return}
-        if(d&&(d.status==="failed"||d.status==="expired")){SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;if(SCREEN==="profile")renderProfile();return}
+        if(d&&(d.status==="failed"||d.status==="expired")){SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();return}
         pollSignInLink(pending,deadline);
       })
       .catch(function(){pollSignInLink(pending,deadline)});
@@ -5470,13 +5530,7 @@ function renderProfile(){
     /* Bitta «Sozlamalar» bo'limi: til, bildirishnoma, maqsad, kirish usullari
        va yordam. Ilgari sarlavha `p.goalSet.split(" ")[0]` edi — u so'zning
        faqat birinchi qismini ko'rsatib, «Ҳадафи» kabi chala matn chiqarardi. */
-    +'<div class="sech">'+p.settings+'</div>'
-    +'<div class="set"><button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+t.lang+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
-    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
-    +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
-    +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
-    +signInMethodsRowsHtml()
-    +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button></div>'
+    +rowCard("t-blue",'<i class="ti ti-settings"></i>',p.settings,p.settingsSub,"App.openSettings()")
     +socialLinksHtml()
     +'<div style="height:14px"></div>';
   if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();

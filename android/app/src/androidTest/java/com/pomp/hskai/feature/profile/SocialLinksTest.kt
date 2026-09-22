@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.profile
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -39,8 +40,10 @@ class SocialLinksTest {
 
         compose.onNodeWithText(strings.getString(R.string.profile_social_title))
             .assertIsDisplayed()
+        // The marks carry their brand colours, so the name lives in the
+        // content description — which is also what a screen reader announces.
         listOf("Instagram", "TikTok", "YouTube").forEach { label ->
-            compose.onNodeWithText(label).assertIsDisplayed()
+            compose.onNodeWithContentDescription(label).assertIsDisplayed()
         }
     }
 
@@ -55,14 +58,14 @@ class SocialLinksTest {
             "YouTube" to "https://youtube.com/@hskai_app",
         ).forEach { (label, expected) ->
             opened.clear()
-            compose.onNodeWithText(label).performClick()
+            compose.onNodeWithContentDescription(label).performClick()
             assertEquals(listOf(expected), opened)
         }
     }
 
     @Test
     fun everyLinkIsAnHttpsUrlAndDistinct() {
-        val urls = SOCIAL_LINKS.map { it.second }
+        val urls = SOCIAL_LINKS.map { it.third }
         assertEquals(urls.size, urls.toSet().size)
         urls.forEach { assertEquals(true, it.startsWith("https://")) }
         // No tracking or session parameters: those are personal to whoever

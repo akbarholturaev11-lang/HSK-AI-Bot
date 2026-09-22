@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.profile
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -539,17 +541,17 @@ private fun ProfileSettingsSheet(
 
 /** HSK AI rasmiy sahifalari, Mini App profilidagi qator bilan bir xil. */
 internal val SOCIAL_LINKS = listOf(
-    "Instagram" to "https://www.instagram.com/hskai.app",
-    "TikTok" to "https://www.tiktok.com/@hsk.ai",
-    "YouTube" to "https://youtube.com/@hskai_app",
+    Triple("Instagram", R.drawable.ic_brand_instagram, "https://www.instagram.com/hskai.app"),
+    Triple("TikTok", R.drawable.ic_brand_tiktok, "https://www.tiktok.com/@hsk.ai"),
+    Triple("YouTube", R.drawable.ic_brand_youtube, "https://youtube.com/@hskai_app"),
 )
 
 /**
  * Links to the official HSK AI pages.
  *
- * Named rather than drawn: Material Icons carries no brand logos, and a
- * stand-in glyph (a camera for Instagram, a note for TikTok) reads as the
- * wrong thing. The name is unambiguous and needs no trademark assets.
+ * The marks are drawn untinted, in the brands' own colours, the same way the
+ * Mini App renders them: three identical grey glyphs in a row are read as one
+ * button repeated, not as three destinations.
  *
  * Internal rather than private so the row can be tested on its own: inside the
  * profile's LazyColumn it is off-screen and never composed, so a test of the
@@ -568,22 +570,21 @@ internal fun SocialLinksRow(onOpen: (String) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            SOCIAL_LINKS.forEach { (label, url) ->
+            SOCIAL_LINKS.forEach { (label, icon, url) ->
                 Surface(
                     color = PompColors.PaperRaised,
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(1.dp, PompColors.Divider),
                     modifier = Modifier
                         .weight(1f)
-                        .heightIn(min = 52.dp)
+                        .heightIn(min = 54.dp)
                         .clickable { onOpen(url) },
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            label,
-                            color = PompColors.Ink,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
+                        Image(
+                            painter = painterResource(icon),
+                            contentDescription = label,
+                            modifier = Modifier.size(26.dp),
                         )
                     }
                 }
