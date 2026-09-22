@@ -93,7 +93,17 @@ def _error(error: DesktopAuthError) -> JSONResponse:
 async def _validated_payload(
     request: Request,
     model_type: type[PayloadModel],
+    *,
+    max_bytes: int = MAX_DESKTOP_AUTH_BODY_BYTES,
 ) -> PayloadModel:
+    """Parse a bounded JSON body.
+
+    ``max_bytes`` is raised only for payloads that legitimately need it — an
+    OIDC ID token runs around a kilobyte — and never for the existing link and
+    refresh endpoints, whose secrets are fixed-size.
+    """
+
+    limit = max(256, int(max_bytes))
     content_type = str(request.headers.get("Content-Type", "") or "")
     if content_type.split(";", 1)[0].strip().lower() != "application/json":
         raise DesktopAuthError("desktop_request_invalid", status_code=415)
@@ -101,7 +111,7 @@ async def _validated_payload(
     content_length = str(request.headers.get("Content-Length", "") or "").strip()
     if content_length:
         try:
-            if int(content_length) > MAX_DESKTOP_AUTH_BODY_BYTES:
+            if int(content_length) > limit:
                 raise DesktopAuthError("desktop_request_too_large", status_code=413)
         except ValueError as exc:
             raise DesktopAuthError("desktop_request_invalid", status_code=400) from exc
@@ -109,7 +119,7 @@ async def _validated_payload(
     body = bytearray()
     async for chunk in request.stream():
         body.extend(chunk)
-        if len(body) > MAX_DESKTOP_AUTH_BODY_BYTES:
+        if len(body) > limit:
             raise DesktopAuthError("desktop_request_too_large", status_code=413)
     try:
         return model_type.model_validate_json(bytes(body))

@@ -227,6 +227,89 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-22 — Google and Apple sign-in as linked identities (Phase 1)
+
+Changed:
+- New `user_identities` table (migration `0082_user_identities`): one row per
+  `(provider, subject)`, `UNIQUE (provider, subject_hash)` and
+  `UNIQUE (user_id, provider)`. The provider `sub` is stored only as a keyed
+  HMAC. `users.telegram_id` is NOT touched — Telegram stays the only user
+  factory in this phase.
+- `desktop_link_requests` gains `flow`, `intent`, `bind_user_id`,
+  `link_failure_code`. Existing rows default to `telegram`/`signin`, so the
+  Telegram flow is unchanged.
+- No new token path. A Google/Apple flow only marks the link row approved; the
+  client then calls the unchanged `link/status`, and `DesktopAuthService.poll_link`
+  mints the same device + session + token pair. Every existing bearer route is
+  untouched.
+- New backend modules: `oidc_verifier.py` (shared RS256 verification with a
+  pinned JWKS cache), `google_auth.py`, `apple_auth.py`,
+  `identity_link_service.py`, `native_oauth_service.py`, `api/native_oauth.py`
+  (9 endpoints under `/api/v3/native-auth/`).
+- Android: Credential Manager for Google (no `google-services.json`, Web client
+  id only), Custom Tabs for Apple, provider buttons on the login screen and a
+  "sign-in methods" sheet in Profile.
+- Telegram Mini App profile: the four separate blocks under "Do'stlar" are now
+  one "Sozlamalar" section (language, notifications, daily goal, sign-in
+  methods, help), followed by an "HSK AI in social networks" row with
+  Instagram / TikTok / YouTube. The section header used to be
+  `p.goalSet.split(" ")[0]`, which printed a truncated word ("Ҳадафи").
+  Linking from the Mini App authenticates with initData; the `miniapp`
+  platform is accepted only on link rows and can never mint a session.
+  Unlinking asks for confirmation first, because it signs the account out on
+  every other device.
+- Desktop (macOS + Windows): `desktop_oauth_providers` / `desktop_oauth_start` /
+  `desktop_oauth_open` commands, a pinned `is_allowed_oauth_authorize_url`
+  validator, two provider buttons. The webview never sees an OAuth URL or secret.
+- `requirements.txt` now pins `google-auth` and `cryptography`, which were only
+  transitive through `google-genai`.
+
+Why:
+- Telegram was the only way in. `DESKTOP_AUTH_CONTRACT.md` already required any
+  future provider login to be an identity linked to the same internal user, so
+  subscription and progress cannot split across accounts.
+
+Files touched:
+- `alembic/versions/0082_user_identities.py`, `app/db/models/user_identity.py`,
+  `app/db/models/desktop.py`, `app/services/desktop_auth_service.py`,
+  `app/api/desktop_auth.py`, `app/api/native_oauth.py`, `app/config.py`,
+  `.env.example`, `requirements.txt`
+- `android/` auth, profile, DTOs, gradle catalog, uz/ru/tg strings
+- `desktop/src-tauri/src/lib.rs`, `desktop/ui/{index.html,js/*}`
+
+Risk:
+- HIGH — this is authentication. Three guards carry the whole safety story and
+  each is covered by a test: `poll_link` rejects `intent != "signin"` (without
+  it "connect Google" would issue a session to whoever owns that Google
+  account); the bot's approve/preview/cancel paths reject a non-Telegram flow;
+  the OAuth callback rejects a Telegram row.
+- Account resolution NEVER reads an email — matching on one would be
+  subscription takeover. A device already bound to a user does not authorise
+  linking an unknown identity. Identities are never reassigned between users.
+- A blocked account is refused at sign-in AND at link time (`user_blocked` 403).
+  This was a real gap found in review: the bot middleware stops every handler
+  for a blocked user, so the Telegram flow can never mint a new session, but a
+  provider flow has no bot step and would have reopened that door.
+- Verified against a real database that a Google-minted session is
+  byte-identical to a Telegram one on bootstrap, profile, referral overview,
+  subscription overview and course map, and that writes land on the same
+  users.id.
+- Fail-closed everywhere: blank client ids hide the provider, a weak
+  `DESKTOP_AUTH_SIGNING_SECRET` still 503s the whole feature.
+- No payment or subscription logic changed.
+
+Follow-up:
+- Provider credentials are not set in any environment yet, so the feature is
+  invisible until `GOOGLE_OAUTH_ENABLED` / `APPLE_OAUTH_ENABLED` and the client
+  ids are configured. `OAUTH_REDIRECT_BASE_URL` must be an https origin with no
+  path.
+- Register OAuth clients: two Android clients (`com.pomp.hskai` with the upload
+  and Play signing SHA-1s, and `com.pomp.hskai.debug`), one Google Web client
+  for desktop, one Apple Services ID.
+- Phase 2 (Telegram-less accounts) is NOT in this change. It needs
+  `users.telegram_id` AND `desktop_devices.telegram_id` nullable, plus an audit
+  of every telegram_id-keyed table and bot notification path.
+
 ### 2026-09-21 — Android ad overlay no longer looks like app restart
 
 Changed:

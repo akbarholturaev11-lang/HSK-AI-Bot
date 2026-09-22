@@ -41,6 +41,16 @@ sealed interface ApiError {
         override val messageRes: Int,
     ) : ApiError
 
+    /** The user dismissed the provider sheet. Shown as nothing, not an error. */
+    data object ProviderCancelled : ApiError {
+        override val messageRes = R.string.error_provider_cancelled
+    }
+
+    /** No account on the device, or the provider refused before we asked. */
+    data object ProviderUnavailable : ApiError {
+        override val messageRes = R.string.error_provider_unavailable
+    }
+
     data object Unknown : ApiError {
         override val messageRes = R.string.error_unknown
     }
@@ -73,7 +83,42 @@ sealed interface ApiError {
 
                 "desktop_auth_unavailable",
                 "android_auth_unavailable",
+                "oauth_unavailable",
                 -> R.string.error_auth_unavailable
+
+                // Phase 1: a provider identity only ever attaches to an account
+                // Telegram already created, so this is the one the user sees
+                // most and it must point at the fix, not just fail.
+                "oauth_telegram_account_required" -> R.string.error_oauth_needs_telegram
+                "oauth_identity_bound_to_other_user" -> R.string.error_oauth_other_account
+                "oauth_identity_already_linked" -> R.string.error_oauth_already_linked
+                "oauth_last_identity" -> R.string.error_oauth_last_identity
+                "oauth_identity_not_found" -> R.string.error_oauth_not_found
+                "oauth_provider_unconfigured",
+                "oauth_provider_unsupported",
+                "oauth_mode_unsupported",
+                -> R.string.error_provider_unavailable
+
+                "oauth_cancelled" -> R.string.error_provider_cancelled
+
+                "oauth_state_invalid",
+                "oauth_token_invalid",
+                "oauth_nonce_mismatch",
+                "oauth_exchange_failed",
+                "oauth_link_failed",
+                "oidc_token_invalid",
+                "oidc_token_stale",
+                "oidc_nonce_mismatch",
+                "oidc_alg_unsupported",
+                "oidc_token_malformed",
+                "oidc_key_unknown",
+                "oidc_jwks_unavailable",
+                "oidc_jwks_invalid",
+                "oidc_key_unsupported",
+                "oidc_provider_unconfigured",
+                -> R.string.error_oauth_failed
+
+                "oauth_link_rate_limited" -> R.string.error_link_rate_limited
 
                 "free_feature_limit_reached",
                 "LIMIT_EXCEEDED",
@@ -110,9 +155,17 @@ sealed interface ApiError {
                 "android_voice_unavailable",
                 -> R.string.error_voice_unavailable
 
+                // Admin-blocked account. The Telegram flow never reaches the
+                // approval step while blocked; a provider flow is refused here
+                // instead, so the reason must be stated rather than shown as a
+                // generic failure.
+                "user_blocked" -> R.string.error_account_blocked
+
                 "desktop_request_invalid",
                 "desktop_request_too_large",
                 "desktop_platform_invalid",
+                "desktop_link_flow_invalid",
+                "desktop_link_intent_invalid",
                 "android_request_invalid",
                 "android_request_too_large",
                 -> R.string.error_unknown

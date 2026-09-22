@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PersonOutline
@@ -61,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
+import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
@@ -109,10 +111,16 @@ fun ProfileScreen(
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
     modifier: Modifier = Modifier,
+    identities: IdentitiesUiState = IdentitiesUiState(),
+    onLoadIdentities: () -> Unit = {},
+    onConnectIdentity: (AuthProvider) -> Unit = {},
+    onDisconnectIdentity: (String) -> Unit = {},
+    onIdentitiesBrowserOpened: () -> Unit = {},
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true)
     var settingsOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
+    var identitiesOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
@@ -224,8 +232,23 @@ fun ProfileScreen(
             onToggleNotifications = onToggleNotifications,
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
+            onOpenIdentities = {
+                settingsOpen = false
+                identitiesOpen = true
+                onLoadIdentities()
+            },
             onLogout = { settingsOpen = false; onLogout() },
             onUnlinkDevice = { settingsOpen = false; onUnlinkDevice() },
+        )
+    }
+
+    if (identitiesOpen) {
+        IdentitiesSheet(
+            state = identities,
+            onConnect = onConnectIdentity,
+            onDisconnect = onDisconnectIdentity,
+            onBrowserUrlOpened = onIdentitiesBrowserOpened,
+            onDismiss = { identitiesOpen = false },
         )
     }
 
@@ -464,6 +487,7 @@ private fun ProfileSettingsSheet(
     onToggleNotifications: (Boolean) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
+    onOpenIdentities: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
 ) {
@@ -489,6 +513,10 @@ private fun ProfileSettingsSheet(
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal), true, onOpenGoal) {
                         Row(verticalAlignment = Alignment.CenterVertically) { Text("$dailyGoal XP", color = PompColors.InkDisabled, fontSize = 13.sp); Spacer(Modifier.width(4.dp)); SettingsChevron() }
+                    }
+                    SettingsDivider()
+                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_identities_title), true, onOpenIdentities) {
+                        SettingsChevron()
                     }
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.HelpOutline, stringResource(R.string.profile_help), supportUrl.isNotBlank(), { onOpenSupport(supportUrl) }) {

@@ -29,6 +29,30 @@ class DesktopLinkRequest(Base):
     installation_key_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     platform: Mapped[str] = mapped_column(String(16), nullable=False)
     app_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    # How this row is approved. "telegram" is the bot confirmation flow;
+    # "google"/"apple" are approved by a verified provider token. The Telegram
+    # bot must never approve a non-telegram row and an OAuth callback must
+    # never approve a telegram row.
+    flow: Mapped[str] = mapped_column(
+        String(16), default="telegram", server_default="telegram", nullable=False
+    )
+    # "signin" rows may be exchanged for a session by poll_link. "link" rows
+    # attach an identity to an ALREADY authenticated user and must never mint
+    # tokens — otherwise "connect Google" becomes "issue a session to whoever
+    # owns that Google account".
+    intent: Mapped[str] = mapped_column(
+        String(16), default="signin", server_default="signin", nullable=False
+    )
+    # Set to the caller's users.id for intent="link" so the callback cannot be
+    # redirected onto a different account.
+    bind_user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True
+    )
+    # Stable error code surfaced to the client when status becomes "failed",
+    # so the app can show a translated reason instead of a generic failure.
+    link_failure_code: Mapped[Optional[str]] = mapped_column(
+        String(48), nullable=True
+    )
     status: Mapped[str] = mapped_column(
         String(16), default="pending", index=True, nullable=False
     )

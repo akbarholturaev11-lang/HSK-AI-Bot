@@ -35,3 +35,4 @@ from .subscription_entry_event import SubscriptionEntryEvent
 from .course_ad import CourseAdCreative, CourseAdView
 from .desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from .entitlement_shadow_event import EntitlementShadowEvent
+from .user_identity import UserIdentity

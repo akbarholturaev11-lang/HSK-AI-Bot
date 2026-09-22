@@ -6,8 +6,13 @@ import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.core.storage.CredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
+import com.pomp.hskai.data.api.IdentityLinkStatusRequest
+import com.pomp.hskai.data.api.IdentityUnlinkRequest
 import com.pomp.hskai.data.api.LinkStartRequest
 import com.pomp.hskai.data.api.LinkStatusRequest
+import com.pomp.hskai.data.api.NativeOAuthApi
+import com.pomp.hskai.data.api.OAuthAssertRequest
+import com.pomp.hskai.data.api.OAuthStartRequest
 import com.pomp.hskai.data.api.RefreshRequest
 import com.pomp.hskai.data.api.RevokeRequest
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +34,8 @@ class AuthRepository(
     private val api: AndroidAuthApi,
     private val store: CredentialStore,
     private val appVersion: String,
+    private val oauthApi: NativeOAuthApi? = null,
+    private val googleIdTokens: GoogleIdTokenProvider? = null,
     private val now: () -> Long = System::currentTimeMillis,
     private val onSessionCleared: suspend () -> Unit = {},
     private val onSessionLinked: suspend () -> Unit = {},
@@ -120,6 +127,215 @@ class AuthRepository(
                     ApiResult.Success(accepted)
                 }
             }
+        }
+    }
+
+    // -------------------------------------------------------- provider login
+
+    /** Providers this build and this server can actually offer, in UI order. */
+    suspend fun availableProviders(): List<AuthProvider> {
+        val oauth = oauthApi ?: return emptyList()
+        val result = apiCall { oauth.providers() }
+        val offered = when (result) {
+            is ApiResult.Failure -> return emptyList()
+            is ApiResult.Success -> result.value.providers
+        }
+        return offered.mapNotNull(AuthProvider::fromWire).filter { provider ->
+            // Google additionally needs a client id compiled into this build;
+            // without one the sheet would open and immediately fail.
+            provider != AuthProvider.GOOGLE || googleIdTokens?.isAvailable == true
+        }
+    }
+
+    /**
+     * Signs in with Google through Credential Manager.
+     *
+     * Ends by returning a [PendingLink] the caller polls exactly like the
+     * Telegram flow — the tokens still come from `link/status`, never from an
+     * OAuth endpoint.
+     */
+    suspend fun startGoogleSignIn(bindToCurrentAccount: Boolean = false): ApiResult<PendingLink> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        val google = googleIdTokens ?: return ApiResult.Failure(ApiError.Unknown)
+        val pending = when (
+            val started = startProviderLink(
+                oauth = oauth,
+                provider = AuthProvider.GOOGLE,
+                mode = MODE_NATIVE_ID_TOKEN,
+                bindToCurrentAccount = bindToCurrentAccount,
+            )
+        ) {
+            is ApiResult.Failure -> return started
+            is ApiResult.Success -> started.value
+        }
+
+        val idToken = when (val token = google.idToken(pending.nonce)) {
+            is GoogleIdTokenResult.Success -> token.idToken
+            GoogleIdTokenResult.Cancelled -> return ApiResult.Failure(ApiError.ProviderCancelled)
+            GoogleIdTokenResult.Unavailable -> return ApiResult.Failure(ApiError.ProviderUnavailable)
+            GoogleIdTokenResult.Failed -> return ApiResult.Failure(ApiError.Unknown)
+        }
+
+        val asserted = apiCall {
+            oauth.oauthAssert(
+                OAuthAssertRequest(
+                    linkRequestId = pending.linkRequestId,
+                    pollingSecret = pending.pollingSecret,
+                    provider = AuthProvider.GOOGLE.wire,
+                    idToken = idToken,
+                )
+            )
+        }
+        return when (asserted) {
+            is ApiResult.Failure -> asserted
+            is ApiResult.Success ->
+                if (!asserted.value.ok) ApiResult.Failure(ApiError.Unknown)
+                else ApiResult.Success(pending)
+        }
+    }
+
+    /**
+     * Starts an Apple sign-in. The caller opens [PendingLink.authorizeUrl] in a
+     * Custom Tab and keeps polling; the browser leg finishes on the server, so
+     * no inbound deep link and no new allowlisted destination are needed.
+     */
+    suspend fun startAppleSignIn(bindToCurrentAccount: Boolean = false): ApiResult<PendingLink> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        return startProviderLink(
+            oauth = oauth,
+            provider = AuthProvider.APPLE,
+            mode = MODE_BROWSER_REDIRECT,
+            bindToCurrentAccount = bindToCurrentAccount,
+        )
+    }
+
+    private suspend fun startProviderLink(
+        oauth: NativeOAuthApi,
+        provider: AuthProvider,
+        mode: String,
+        bindToCurrentAccount: Boolean,
+    ): ApiResult<PendingLink> {
+        val body = OAuthStartRequest(
+            appVersion = appVersion,
+            installationKey = store.installationKey(),
+            provider = provider.wire,
+            mode = mode,
+        )
+        val result = if (bindToCurrentAccount) {
+            val token = when (val access = accessToken()) {
+                is ApiResult.Failure -> return access
+                is ApiResult.Success -> access.value
+            }
+            apiCall { oauth.identityLinkStart("Bearer $token", body) }
+        } else {
+            apiCall { oauth.oauthStart(body) }
+        }
+        return when (result) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> {
+                val payload = result.value
+                val usable = payload.ok &&
+                    payload.linkRequestId.isNotEmpty() &&
+                    payload.pollingSecret.isNotEmpty() &&
+                    when (mode) {
+                        MODE_NATIVE_ID_TOKEN -> payload.nonce.isNotEmpty()
+                        else -> payload.authorizeUrl.startsWith("https://")
+                    }
+                if (!usable) {
+                    ApiResult.Failure(ApiError.Unknown)
+                } else {
+                    ApiResult.Success(
+                        PendingLink(
+                            linkRequestId = payload.linkRequestId,
+                            displayCode = "",
+                            pollingSecret = payload.pollingSecret,
+                            botDeepLink = "",
+                            expiresAtMillis = now() + payload.expiresIn * 1_000L,
+                            provider = provider,
+                            nonce = payload.nonce,
+                            authorizeUrl = payload.authorizeUrl,
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------ linked identities
+
+    suspend fun linkedIdentities(): ApiResult<List<LinkedIdentity>> {
+        val oauth = oauthApi ?: return ApiResult.Success(emptyList())
+        val token = when (val access = accessToken()) {
+            is ApiResult.Failure -> return access
+            is ApiResult.Success -> access.value
+        }
+        return when (val result = apiCall { oauth.identities("Bearer $token") }) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> ApiResult.Success(
+                result.value.identities.mapNotNull { dto ->
+                    AuthProvider.fromWire(dto.provider)?.let { provider ->
+                        LinkedIdentity(
+                            id = dto.id,
+                            provider = provider,
+                            emailMasked = dto.emailMasked,
+                            displayName = dto.displayName,
+                        )
+                    }
+                }
+            )
+        }
+    }
+
+    /** One poll of an `intent=link` attempt. Never returns a session token. */
+    suspend fun pollIdentityLink(pending: PendingLink): ApiResult<String> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        val token = when (val access = accessToken()) {
+            is ApiResult.Failure -> return access
+            is ApiResult.Success -> access.value
+        }
+        val result = apiCall {
+            oauth.identityLinkStatus(
+                "Bearer $token",
+                IdentityLinkStatusRequest(
+                    linkRequestId = pending.linkRequestId,
+                    pollingSecret = pending.pollingSecret,
+                ),
+            )
+        }
+        return when (result) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> {
+                val body = result.value
+                if (body.status == "failed") {
+                    ApiResult.Failure(ApiError.fromCode(body.error))
+                } else {
+                    ApiResult.Success(body.status)
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes a provider identity.
+     *
+     * Returns how many other sessions the server revoked, so the UI can tell
+     * the user they were signed out elsewhere instead of letting that happen
+     * silently.
+     */
+    suspend fun unlinkIdentity(identityId: String): ApiResult<Int> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        val token = when (val access = accessToken()) {
+            is ApiResult.Failure -> return access
+            is ApiResult.Success -> access.value
+        }
+        val result = apiCall {
+            oauth.identityUnlink("Bearer $token", IdentityUnlinkRequest(identityId))
+        }
+        return when (result) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success ->
+                if (!result.value.ok) ApiResult.Failure(ApiError.Unknown)
+                else ApiResult.Success(result.value.sessionsRevoked)
         }
     }
 
@@ -259,6 +475,11 @@ class AuthRepository(
      */
     suspend fun invalidateSession() {
         refreshMutex.withLock { clearLocalSession() }
+    }
+
+    private companion object {
+        const val MODE_NATIVE_ID_TOKEN = "native_id_token"
+        const val MODE_BROWSER_REDIRECT = "browser_redirect"
     }
 
     private suspend fun clearLocalSession(unlinkDevice: Boolean = false) {

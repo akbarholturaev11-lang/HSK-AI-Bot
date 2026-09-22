@@ -12,7 +12,9 @@ import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.network.OriginGuardInterceptor
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.storage.SecureCredentialStore
+import com.pomp.hskai.core.auth.CredentialManagerGoogleIdTokenProvider
 import com.pomp.hskai.data.api.AndroidAuthApi
+import com.pomp.hskai.data.api.NativeOAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
@@ -144,6 +146,13 @@ class HskAiApplication : Application() {
             api = retrofit.create(AndroidAuthApi::class.java),
             store = credentialStore,
             appVersion = BuildConfig.VERSION_NAME,
+            oauthApi = retrofit.create(NativeOAuthApi::class.java),
+            // A blank client id leaves the provider reporting itself
+            // unavailable, so the Google button is simply never shown.
+            googleIdTokens = CredentialManagerGoogleIdTokenProvider(
+                context = this,
+                webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
+            ),
             onSessionCleared = ::clearWidgetSession,
             onSessionLinked = { widgetStore.linked(newSession = true) },
             onAuthenticated = {

@@ -602,6 +602,47 @@ Qamrov: `PracticeCharacterParityTest` (7 ta) va
 `tests/test_course_character_assets.py` (imtihonda personaj yo'qligi,
 sahifalarning ulanishi, zinapoya va yakun chegaralari).
 
+### 3.16 Google va Apple bilan kirish — 2026-09-22
+
+Kirish endi faqat Telegram emas. Login ekranida Telegram kartasining ostida
+"Google bilan davom etish" va "Apple bilan davom etish" tugmalari chiqadi,
+profilda esa "Kirish usullari" varag'i bor (ulash/uzish).
+
+**Eng muhim narsa: yangi token yo'li YO'Q.** Google/Apple oqimi serverdagi
+`desktop_link_requests` qatorini `approved` qiladi, keyin ilova **o'zgarmagan**
+`android-auth/link/status` ni chaqiradi va tokenni o'sha yerdan oladi. Ya'ni
+sessiya yaratiladigan joy bitta bo'lib qoldi (`AuthRepository.pollLink`).
+
+Qayerda:
+- `core/auth/GoogleIdTokenProvider.kt` — Credential Manager. Interfeys orqali,
+  shuning uchun JVM testda emulyatorsiz sinaladi.
+- `core/auth/AuthRepository.kt` — `startGoogleSignIn`, `startAppleSignIn`,
+  `availableProviders`, `linkedIdentities`, `unlinkIdentity`.
+- `data/api/NativeOAuthApi.kt` + `NativeOAuthDto.kt`
+- `feature/auth/LinkScreen.kt` + `LinkViewModel.kt` — tugmalar va holat.
+- `feature/profile/IdentitiesSheet.kt` + `IdentitiesViewModel.kt`
+
+Bilib qo'yish kerak:
+- **`google-services.json` KERAK EMAS** va `google-services` plagini ham yo'q.
+  Credential Manager faqat **Web client id** ni oladi
+  (`POMP_GOOGLE_WEB_CLIENT_ID` → `BuildConfig.GOOGLE_WEB_CLIENT_ID`).
+- Bu qiymat `require()` qilinmagan: bo'sh bo'lsa Google tugmasi **ko'rinmaydi**,
+  build yiqilmaydi. Shuning uchun hozirgi build'larda hech narsa o'zgarmaydi.
+- Apple'ning native SDK'si yo'q — u Custom Tabs'da ochiladi va natija
+  allaqachon ishlab turgan polling orqali qaytadi. **`DeepLinkRouter.kt` ga
+  tegilmagan**: allowlist ataylab qattiq, App Links qo'shish hujum yuzasini
+  kengaytirardi va hech narsa bermasdi.
+- OAuth client'lari uchun 2 ta fingerprint kerak: `com.pomp.hskai` (upload key
+  SHA-1 + Play App Signing yoqilgan bo'lsa Play SHA-1) va
+  `com.pomp.hskai.debug`. `play` va `direct` bir xil `applicationId` ishlatadi,
+  shuning uchun ular uchun alohida client kerak emas.
+- Hozircha Telegramsiz akkaunt ochib bo'lmaydi. Noma'lum Google/Apple akkaunt
+  `oauth_telegram_account_required` oladi va ilova "avval Telegram orqali
+  kiring, keyin profilda ulang" deydi.
+
+Qamrov: `AuthRepositoryOauthTest` (13 ta), `check_strings_translated.py` va
+`check_flavor_parity.py` o'tadi.
+
 ### 3.15 Widget V2: bitta holat dvigateli, 28 variant — 2026-09-22
 
 Eski widget'da panda **ikki xil qoida** bo'yicha tanlanardi: kunduzgi

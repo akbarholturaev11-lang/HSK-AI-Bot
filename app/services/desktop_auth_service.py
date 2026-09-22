@@ -32,6 +32,26 @@ ANDROID_LINK_PREFIX = "android_link_"
 # set stays separate so desktop consumers (downloads, release manifest, admin
 # desktop statistics) keep their current meaning and are not silently widened.
 NATIVE_PLATFORMS = DESKTOP_PLATFORMS | MOBILE_PLATFORMS
+# The Telegram Mini App can attach a provider identity to the account it is
+# already signed into. It is NOT a native platform: it has no installation of
+# its own, never owns a device row and can never be exchanged for a session,
+# so it is allowed only on intent="link" rows.
+WEB_PLATFORMS = frozenset({"miniapp"})
+LINK_ONLY_PLATFORMS = WEB_PLATFORMS
+
+# How a link request is approved. The Telegram bot may only ever touch a
+# "telegram" row, and an OAuth callback may only ever touch a provider row.
+# Crossing those two would let one approval channel confirm the other's rows.
+TELEGRAM_FLOW = "telegram"
+OAUTH_FLOWS = frozenset({"google", "apple"})
+LINK_FLOWS = frozenset({TELEGRAM_FLOW}) | OAUTH_FLOWS
+
+# "signin" rows may be exchanged for a session. "link" rows only attach an
+# identity to an already authenticated user and must NEVER mint tokens.
+SIGNIN_INTENT = "signin"
+LINK_INTENT = "link"
+LINK_INTENTS = frozenset({SIGNIN_INTENT, LINK_INTENT})
+
 logger = logging.getLogger(__name__)
 
 # A transaction-scoped PostgreSQL advisory lock makes the unauthenticated
@@ -109,6 +129,43 @@ class DesktopAuthService:
             f"{purpose}:{value}".encode(),
             hashlib.sha256,
         ).hexdigest()
+
+    @staticmethod
+    def _require_telegram_flow(link_request) -> None:
+        """The Telegram bot may only act on rows it is meant to approve.
+
+        Without this the bot confirmation screen could approve, preview or
+        cancel a Google/Apple row, which would hand a provider sign-in to
+        whoever happened to hold the display code.
+        """
+
+        if str(getattr(link_request, "flow", TELEGRAM_FLOW) or TELEGRAM_FLOW) != TELEGRAM_FLOW:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+
+    def identity_subject_hash(self, provider: str, subject: str) -> str:
+        """Keyed hash of a provider ``sub`` claim.
+
+        The raw subject is never stored: lookups are exact-match only, so a
+        database dump must not hand out directly usable, cross-service
+        linkable Google/Apple account identifiers.
+        """
+
+        return self._hash(
+            "identity-subject", f"{str(provider).strip().lower()}:{subject}"
+        )
+
+    def identity_email_hash(self, email: str) -> str | None:
+        """Keyed hash of an email address, for abuse analytics only.
+
+        Account resolution must never read this value. An email address is
+        attacker-influenceable, provider-scoped and recyclable, so matching on
+        it would turn a provider login into account takeover.
+        """
+
+        normalized = str(email or "").strip().lower()
+        if not normalized:
+            return None
+        return self._hash("identity-email", normalized)
 
     def _link_ttl(self) -> int:
         return max(
@@ -283,10 +340,32 @@ class DesktopAuthService:
         platform: str,
         app_version: str,
         installation_key: str,
+        flow: str = TELEGRAM_FLOW,
+        intent: str = SIGNIN_INTENT,
+        bind_user_id: int | None = None,
     ) -> dict[str, Any]:
         self._signing_secret()
-        if platform not in NATIVE_PLATFORMS:
+        if platform not in NATIVE_PLATFORMS | LINK_ONLY_PLATFORMS:
             raise DesktopAuthError("desktop_platform_invalid", status_code=422)
+        # A Mini App row exists only to attach an identity. Allowing it to sign
+        # in would mean minting a session for a platform that owns no device.
+        if platform in LINK_ONLY_PLATFORMS and intent != LINK_INTENT:
+            raise DesktopAuthError("desktop_platform_invalid", status_code=422)
+        if flow not in LINK_FLOWS:
+            raise DesktopAuthError("desktop_link_flow_invalid", status_code=422)
+        if intent not in LINK_INTENTS:
+            raise DesktopAuthError("desktop_link_intent_invalid", status_code=422)
+        # A "link" row attaches an identity to one specific authenticated user,
+        # so it is meaningless — and unsafe — without that binding. Conversely a
+        # "signin" row must not carry one, or a callback could be steered onto
+        # someone else's account.
+        if intent == LINK_INTENT and not bind_user_id:
+            raise DesktopAuthError("desktop_link_intent_invalid", status_code=422)
+        if intent == SIGNIN_INTENT and bind_user_id:
+            raise DesktopAuthError("desktop_link_intent_invalid", status_code=422)
+        # Only the Telegram bot confirmation flow shows a code to a human.
+        if flow != TELEGRAM_FLOW and intent not in LINK_INTENTS:
+            raise DesktopAuthError("desktop_link_flow_invalid", status_code=422)
         if not 32 <= len(installation_key) <= 200:
             raise DesktopAuthError(
                 "desktop_installation_key_invalid", status_code=422
@@ -345,6 +424,9 @@ class DesktopAuthService:
             installation_key_hash=installation_hash,
             platform=platform,
             app_version=app_version,
+            flow=flow,
+            intent=intent,
+            bind_user_id=int(bind_user_id) if bind_user_id else None,
             status="pending",
             expires_at=now + timedelta(seconds=self._link_ttl()),
         )
@@ -362,17 +444,21 @@ class DesktopAuthService:
             if platform == "android"
             else "desktop_link"
         )
-        return {
+        payload: dict[str, Any] = {
             "ok": True,
             "status": "pending",
             "link_request_id": link_request.id,
-            "display_code": display_code,
             "polling_secret": polling_secret,
-            # The display code remains a manual fallback. Never place it in a
-            # Telegram deep-link, browser history or logs.
-            "bot_deep_link": f"https://t.me/{username}?start={bot_start_payload}",
             "expires_in": self._link_ttl(),
         }
+        if flow == TELEGRAM_FLOW:
+            payload["display_code"] = display_code
+            # The display code remains a manual fallback. Never place it in a
+            # Telegram deep-link, browser history or logs.
+            payload["bot_deep_link"] = (
+                f"https://t.me/{username}?start={bot_start_payload}"
+            )
+        return payload
 
     async def link_request_preview(
         self,
@@ -395,6 +481,7 @@ class DesktopAuthService:
         now = _utcnow()
         if not link_request:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        self._require_telegram_flow(link_request)
         if platform and link_request.platform != platform:
             raise DesktopAuthError("desktop_link_invalid", status_code=403)
         if (_as_utc(link_request.expires_at) or now) <= now:
@@ -435,6 +522,7 @@ class DesktopAuthService:
         now = _utcnow()
         if not link_request or link_request.platform != "android":
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        self._require_telegram_flow(link_request)
         if not hmac.compare_digest(
             str(getattr(link_request, "display_code_hash", "") or ""),
             self._hash("display-code", normalized),
@@ -492,6 +580,7 @@ class DesktopAuthService:
         now = _utcnow()
         if not link_request:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        self._require_telegram_flow(link_request)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
             await self.session.commit()
@@ -556,6 +645,7 @@ class DesktopAuthService:
             or link_request.consumed_at is not None
         ):
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        self._require_telegram_flow(link_request)
         expires_at = _as_utc(link_request.expires_at) or now
         if expires_at <= now:
             raise DesktopAuthError("desktop_link_expired", status_code=410)
@@ -599,6 +689,7 @@ class DesktopAuthService:
         now = _utcnow()
         if not link_request:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        self._require_telegram_flow(link_request)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
             await self.session.commit()
@@ -635,12 +726,27 @@ class DesktopAuthService:
             self._hash("polling", polling_secret),
         ):
             raise DesktopAuthError("desktop_link_invalid", status_code=401)
+        # THE critical guard of the provider-identity feature. A "link" row
+        # exists only to attach a Google/Apple identity to an ALREADY
+        # authenticated user. If one could be polled here it would mint a full
+        # session for whoever owns that provider account — i.e. "connect
+        # Google" would silently become "sign in as this user".
+        if str(getattr(link_request, "intent", SIGNIN_INTENT) or SIGNIN_INTENT) != SIGNIN_INTENT:
+            raise DesktopAuthError("desktop_link_invalid", status_code=409)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
             await self.session.commit()
             raise DesktopAuthError("desktop_link_expired", status_code=410)
         if link_request.consumed_at is not None or link_request.status == "consumed":
             raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        # A provider flow that failed verification reports a specific, stable
+        # reason so the client can show translated copy instead of a generic
+        # error.
+        if link_request.status == "failed":
+            raise DesktopAuthError(
+                str(getattr(link_request, "link_failure_code", "") or "oauth_link_failed"),
+                status_code=409,
+            )
         if link_request.status == "pending":
             return {
                 "ok": True,

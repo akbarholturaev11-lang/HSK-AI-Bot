@@ -5,7 +5,7 @@
     <string name="action_continue">Продолжить</string>
 
     <string name="auth_welcome_title">Ваш путь к HSK начинается здесь</string>
-    <string name="auth_single_subtitle">Войдите безопасно через Telegram — без пароля и лишних шагов.</string>
+    <string name="auth_single_subtitle">Войдите безопасно через Telegram, Google или Apple.</string>
     <string name="auth_login">Перейти к курсу</string>
     <string name="auth_register">Создать новый аккаунт</string>
     <string name="link_title">Создайте аккаунт или войдите через Telegram</string>
@@ -405,4 +405,28 @@
     <string name="plan_choice_pay">Оформить Pro</string>
     <string name="plan_choice_later">Пока продолжу бесплатно</string>
     <string name="hint_open">Пояснение</string>
+    <string name="auth_continue_google">Продолжить с Google</string>
+    <string name="auth_continue_apple">Продолжить с Apple</string>
+    <string name="auth_provider_divider">или</string>
+    <string name="auth_provider_waiting">Ожидаем подтверждение…</string>
+    <string name="error_provider_cancelled">Вход отменён.</string>
+    <string name="error_provider_unavailable">Этот способ сейчас недоступен. Войдите через Telegram.</string>
+    <string name="error_oauth_needs_telegram">Этот аккаунт ещё не подключён. Сначала войдите через Telegram, затем подключите его в профиле.</string>
+    <string name="error_oauth_other_account">Этот аккаунт уже привязан к другому пользователю.</string>
+    <string name="error_oauth_already_linked">Этот способ уже подключён. Сначала отключите его.</string>
+    <string name="error_oauth_last_identity">Это единственный способ входа — его нельзя отключить.</string>
+    <string name="error_oauth_not_found">Такое подключение не найдено.</string>
+    <string name="error_oauth_failed">Не удалось подтвердить вход. Попробуйте ещё раз.</string>
+    <string name="profile_identities_title">Способы входа</string>
+    <string name="profile_identities_explain">Один аккаунт, несколько способов входа. Подписка и прогресс не меняются.</string>
+    <string name="profile_identity_telegram">Telegram</string>
+    <string name="profile_identity_google">Google</string>
+    <string name="profile_identity_apple">Apple</string>
+    <string name="profile_identity_connect">Подключить</string>
+    <string name="profile_identity_disconnect">Отключить</string>
+    <string name="profile_identity_connected">Подключено</string>
+    <string name="profile_identity_unlink_warning">После отключения вы выйдете из аккаунта на других устройствах.</string>
+    <string name="profile_identity_unlinked">Отключено. На других устройствах выполнен выход.</string>
+    <string name="profile_identity_connect_provider">Подключить %1$s</string>
+    <string name="error_account_blocked">Этот аккаунт ограничен администратором. Напишите в поддержку.</string>
 </resources>

@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.profile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.domain.model.CourseProgress
@@ -37,6 +38,11 @@ fun ProfileScreen(
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
     modifier: Modifier = Modifier,
+    identities: IdentitiesUiState = IdentitiesUiState(),
+    onLoadIdentities: () -> Unit = {},
+    onConnectIdentity: (AuthProvider) -> Unit = {},
+    onDisconnectIdentity: (String) -> Unit = {},
+    onIdentitiesBrowserOpened: () -> Unit = {},
 ) {
     ProfileScreen(
         account = account,
@@ -59,5 +65,10 @@ fun ProfileScreen(
         onLogout = onLogout,
         onUnlinkDevice = onUnlinkDevice,
         modifier = modifier,
+        identities = identities,
+        onLoadIdentities = onLoadIdentities,
+        onConnectIdentity = onConnectIdentity,
+        onDisconnectIdentity = onDisconnectIdentity,
+        onIdentitiesBrowserOpened = onIdentitiesBrowserOpened,
     )
 }

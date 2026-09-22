@@ -81,6 +81,25 @@ matches the desktop client's allowlisted origin and is a public value, not a
 secret. Requests to any other host are rejected at runtime by
 `OriginGuardInterceptor`.
 
+`POMP_GOOGLE_WEB_CLIENT_ID` is the OAuth **Web** client id used by Google
+Sign-In. Credential Manager mints an ID token whose audience is that id, which
+is exactly what the server verifies, so the app needs neither the
+`google-services` plugin nor a `google-services.json`. Unlike `POMP_API_ORIGIN`
+it is deliberately not required: leave it blank and the Google button is simply
+never shown, rather than every build failing.
+
+Two Google OAuth Android clients cover every variant, because `play` and
+`direct` share an `applicationId` and only the debug build type suffixes it:
+
+| Package | Certificate fingerprints |
+|---|---|
+| `com.pomp.hskai` | release upload key SHA-1, plus the Play-issued app-signing SHA-1 if Play App Signing is enabled |
+| `com.pomp.hskai.debug` | the local debug keystore SHA-1 |
+
+Apple has no native Android SDK, so Sign in with Apple runs in a Custom Tab
+against an Apple **Services ID** configured on the server. The app never holds
+an Apple secret and needs no extra configuration for it.
+
 ## Release signing
 
 Never committed. Provide either `android/keystore.properties`:

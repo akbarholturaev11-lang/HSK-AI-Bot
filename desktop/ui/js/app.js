@@ -40,6 +40,10 @@ const dom = {
   startLink: $("#start-link"),
   openTelegram: $("#open-telegram"),
   retryLink: $("#retry-link"),
+  authProviders: $("#auth-providers"),
+  authProviderDivider: $("#auth-provider-divider"),
+  authGoogle: $("#auth-google"),
+  authApple: $("#auth-apple"),
   copyCode: $("#copy-code"),
   workspace: $("#workspace"),
   offlinePill: $("#offline-pill"),
@@ -315,6 +319,9 @@ function applyStaticText() {
   dom.startLink.textContent = t("authStart");
   dom.openTelegram.textContent = t("authOpen");
   dom.retryLink.textContent = t("authRetry");
+  dom.authProviderDivider.textContent = t("authProviderDivider");
+  dom.authGoogle.textContent = t("authGoogle");
+  dom.authApple.textContent = t("authApple");
   dom.copyCode.setAttribute("aria-label", t("copyCode"));
   dom.todayLabel.textContent = t("today");
   dom.courseLabel.textContent = t("course");
@@ -793,6 +800,8 @@ function resetAuthForm() {
   dom.openTelegram.disabled = false;
   dom.retryLink.hidden = true;
   dom.retryLink.disabled = false;
+  dom.authGoogle.disabled = false;
+  dom.authApple.disabled = false;
 }
 
 function resetAiSession() {
@@ -843,6 +852,7 @@ function showAuth({ expired = false } = {}) {
     dom.authError.textContent = t("sessionExpired");
   }
   showOnly("auth");
+  refreshAuthProviders();
   dom.startLink.focus();
 }
 
@@ -909,6 +919,76 @@ async function startLink() {
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
   }
+}
+
+/**
+ * Starts a Google or Apple sign-in.
+ *
+ * The browser leg finishes on the server; this window only keeps polling the
+ * same endpoint the Telegram flow polls, so there is one place where a session
+ * is ever collected. The authorization URL never reaches this webview — Rust
+ * holds it and opens the browser itself.
+ */
+async function startProviderLink(provider) {
+  clearAuthTimers();
+  state.telegramOpened = false;
+  dom.authError.textContent = "";
+  dom.authStatus.textContent = t("authStarting");
+  dom.startLink.disabled = true;
+  dom.retryLink.disabled = true;
+  dom.authGoogle.disabled = true;
+  dom.authApple.disabled = true;
+
+  try {
+    const result = await desktopBridge.oauthStart(provider);
+    if (
+      result?.status !== "pending" ||
+      !Number.isFinite(Number(result.expiresIn))
+    ) {
+      throw new Error("desktop_link_payload_invalid");
+    }
+    await desktopBridge.oauthOpen();
+    // A provider row has no display code: nothing to show, nothing to copy.
+    dom.authCodeWrap.hidden = true;
+    dom.startLink.hidden = true;
+    dom.openTelegram.hidden = true;
+    dom.retryLink.hidden = false;
+    dom.retryLink.disabled = false;
+    dom.authStatus.textContent = t("authProviderWaiting");
+    state.authDeadline =
+      Date.now() + Math.max(1, Number(result.expiresIn)) * 1000;
+    updateAuthCountdown();
+    state.authCountdownTimer = setInterval(updateAuthCountdown, 1000);
+    scheduleLinkPoll(2000);
+  } catch (error) {
+    dom.startLink.disabled = false;
+    dom.retryLink.disabled = false;
+    dom.authGoogle.disabled = false;
+    dom.authApple.disabled = false;
+    dom.authStatus.textContent = "";
+    dom.authError.textContent = errorMessage(error);
+  }
+}
+
+/**
+ * Shows only the providers the server actually offers.
+ *
+ * Failure is silent: Telegram always works, so an unreachable probe must not
+ * put an error on the login screen.
+ */
+async function refreshAuthProviders() {
+  let providers = [];
+  try {
+    const result = await desktopBridge.oauthProviders();
+    providers = Array.isArray(result?.providers) ? result.providers : [];
+  } catch (error) {
+    providers = [];
+  }
+  const google = providers.includes("google");
+  const apple = providers.includes("apple");
+  dom.authGoogle.hidden = !google;
+  dom.authApple.hidden = !apple;
+  dom.authProviders.hidden = !google && !apple;
 }
 
 function scheduleLinkPoll(delay = 2500) {
@@ -4255,9 +4335,55 @@ function renderCourseError(error) {
   dom.content.replaceChildren(wrap);
 }
 
+// Provider sign-in failures that need their own copy. Everything else falls
+// through to the generic message: the reason is either not actionable by the
+// learner, or would help someone tune a forgery.
+const PROVIDER_ERROR_TEXT = Object.freeze({
+  oauth_telegram_account_required: "authNeedsTelegram",
+  user_blocked: "accessBlocked",
+});
+const PROVIDER_FAILURE_CODES = new Set([
+  "oauth_state_invalid",
+  "oauth_token_invalid",
+  "oauth_nonce_mismatch",
+  "oauth_exchange_failed",
+  "oauth_link_failed",
+  "oauth_identity_bound_to_other_user",
+  "oauth_identity_already_linked",
+  "oidc_token_invalid",
+  "oidc_token_stale",
+  "oidc_nonce_mismatch",
+  "oidc_alg_unsupported",
+  "oidc_token_malformed",
+  "oidc_key_unknown",
+  "oidc_jwks_unavailable",
+  "oidc_jwks_invalid",
+  "oidc_key_unsupported",
+]);
+
 function errorMessage(error) {
   if (error?.code === "desktop_bridge_unavailable") {
     return t("bridgeUnavailable");
+  }
+  // A dismissed provider sheet is a choice, not a failure worth showing.
+  if (error?.code === "oauth_cancelled") {
+    return "";
+  }
+  const named = PROVIDER_ERROR_TEXT[error?.code];
+  if (named) {
+    return t(named);
+  }
+  if (PROVIDER_FAILURE_CODES.has(error?.code)) {
+    return t("authProviderFailed");
+  }
+  if (
+    error?.code === "oauth_provider_unconfigured" ||
+    error?.code === "oauth_provider_unsupported" ||
+    error?.code === "oauth_mode_unsupported" ||
+    error?.code === "oidc_provider_unconfigured" ||
+    error?.code === "oauth_unavailable"
+  ) {
+    return t("authProviderFailed");
   }
   if (isSessionError(error)) {
     return t("sessionExpired");
@@ -5618,6 +5744,8 @@ function bindEvents() {
     }
   });
   dom.openTelegram.addEventListener("click", openTelegram);
+  dom.authGoogle.addEventListener("click", () => startProviderLink("google"));
+  dom.authApple.addEventListener("click", () => startProviderLink("apple"));
   dom.copyCode.addEventListener("click", copyAuthCode);
   dom.onboardingLater.addEventListener("click", closeOnboarding);
   dom.onboardingBack.addEventListener("click", onboardingBack);

@@ -100,6 +100,28 @@ class Settings(BaseSettings):
     DESKTOP_AUTH_RECORD_RETENTION_DAYS: int = 30
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
 
+    # Google / Apple sign-in. Every provider fails closed: a blank client id
+    # means the provider is omitted from the client's provider list, so the
+    # button is hidden rather than shown and erroring.
+    GOOGLE_OAUTH_ENABLED: bool = False
+    # Credential Manager on Android returns a token minted for the WEB client
+    # id. The desktop client id is separate and must never share an audience.
+    GOOGLE_ANDROID_WEB_CLIENT_ID: str = ""
+    GOOGLE_DESKTOP_CLIENT_ID: str = ""
+    GOOGLE_DESKTOP_CLIENT_SECRET: str = ""
+    APPLE_OAUTH_ENABLED: bool = False
+    APPLE_SERVICE_ID: str = ""
+    APPLE_TEAM_ID: str = ""
+    APPLE_KEY_ID: str = ""
+    # Apple signing key (.p8 contents). Never logged, never echoed.
+    APPLE_PRIVATE_KEY: str = ""
+    # https origin only, no path or query. Provider redirect URIs are built
+    # from this, and both Google and Apple reject non-https redirects.
+    OAUTH_REDIRECT_BASE_URL: str = ""
+    OAUTH_JWKS_CACHE_TTL_SECONDS: int = 3600
+    OAUTH_HTTP_TIMEOUT_SECONDS: float = 8.0
+    OAUTH_ID_TOKEN_MAX_AGE_SECONDS: int = 300
+
     DEFAULT_LANGUAGE: str = "tj"
     LOG_LEVEL: str = "INFO"
     ENABLE_RICH_MESSAGES: bool = True

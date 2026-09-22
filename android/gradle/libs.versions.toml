@@ -33,6 +33,13 @@ datastore = "1.1.4"
 work = "2.10.0"
 glance = "1.1.1"
 
+# Google sign-in runs through Credential Manager, so there is no
+# google-services plugin and no google-services.json: the flow needs only the
+# WEB client id. Custom Tabs carries the Apple flow, which has no native SDK.
+credentials = "1.3.0"
+googleid = "1.1.1"
+browser = "1.8.0"
+
 junit = "4.13.2"
 androidxTestJunit = "1.2.1"
 espresso = "3.6.1"
@@ -57,6 +64,10 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+google-identity-googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }

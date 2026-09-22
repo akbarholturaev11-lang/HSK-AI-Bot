@@ -53,6 +53,14 @@ require(apiOrigin.startsWith("https://")) {
     "POMP_API_ORIGIN must be an https origin. Set it in gradle.properties."
 }
 
+// Google Sign-In uses the WEB client id (Credential Manager mints a token
+// whose `aud` is that id). Deliberately NOT `require`d: an unset value hides
+// the Google button at runtime rather than breaking every build that has not
+// been given OAuth credentials.
+val googleWebClientId: String = (project.findProperty("POMP_GOOGLE_WEB_CLIENT_ID") as String?)
+    ?.trim()
+    .orEmpty()
+
 android {
     namespace = "com.pomp.hskai"
     compileSdk = 36
@@ -76,6 +84,7 @@ android {
 
         buildConfigField("String", "API_ORIGIN", "\"$apiOrigin\"")
         buildConfigField("String", "DEEP_LINK_SCHEME", "\"pomp-hsk-ai\"")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
 
         resourceConfigurations += listOf("uz", "ru", "tg")
     }
@@ -185,6 +194,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.google.identity.googleid)
+    implementation(libs.androidx.browser)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)

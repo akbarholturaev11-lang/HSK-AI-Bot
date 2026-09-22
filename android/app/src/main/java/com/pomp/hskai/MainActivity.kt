@@ -79,6 +79,8 @@ import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
+import com.pomp.hskai.feature.profile.IdentitiesViewModel
+import com.pomp.hskai.feature.profile.IdentitiesViewModelFactory
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
@@ -239,11 +241,15 @@ private fun AppRoot(
                     (localeHost as? Activity)?.recreate()
                 } else if (linkState.pending == null && !linkState.isRequestingCode) {
                     viewModel.requestCode()
+                    viewModel.loadProviders()
                 }
             }
             LinkScreen(
                 state = linkState,
                 onRequestCode = viewModel::requestCode,
+                onSignInWithGoogle = viewModel::signInWithGoogle,
+                onSignInWithApple = viewModel::signInWithApple,
+                onBrowserUrlOpened = viewModel::browserUrlOpened,
             )
         }
 
@@ -314,6 +320,11 @@ private fun AppRoot(
                 factory = ProfileViewModel.Factory(app.featureRepository),
             )
             val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+            val identitiesViewModel: IdentitiesViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = IdentitiesViewModelFactory(app.authRepository),
+            )
+            val identitiesState by identitiesViewModel.state.collectAsStateWithLifecycle()
             val hintsViewModel: HintsViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = HintsViewModel.Factory(app.featureRepository),
@@ -1006,6 +1017,11 @@ private fun AppRoot(
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
                                 modifier = contentModifier,
+                                identities = identitiesState,
+                                onLoadIdentities = identitiesViewModel::refresh,
+                                onConnectIdentity = identitiesViewModel::connect,
+                                onDisconnectIdentity = identitiesViewModel::disconnect,
+                                onIdentitiesBrowserOpened = identitiesViewModel::browserUrlOpened,
                             )
                         }
                     }

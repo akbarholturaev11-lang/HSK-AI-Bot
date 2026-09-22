@@ -22,7 +22,7 @@
 
     <!-- Onboarding: Telegram linking -->
     <string name="auth_welcome_title">HSK yo‘lingiz shu yerdan boshlanadi</string>
-    <string name="auth_single_subtitle">Telegram orqali xavfsiz kiring — parol va ortiqcha qadamlar yo‘q.</string>
+    <string name="auth_single_subtitle">Telegram, Google yoki Apple orqali xavfsiz kiring.</string>
     <string name="auth_login">Kursga kirish</string>
     <string name="auth_register">Yangi akkaunt ochish</string>
     <string name="link_title">Telegram orqali akkaunt oching yoki kiring</string>
@@ -439,4 +439,28 @@
     <string name="plan_choice_pay">Pro olish</string>
     <string name="plan_choice_later">Hozircha bepul davom etaman</string>
     <string name="hint_open">Tushuntirish</string>
+    <string name="auth_continue_google">Google bilan davom etish</string>
+    <string name="auth_continue_apple">Apple bilan davom etish</string>
+    <string name="auth_provider_divider">yoki</string>
+    <string name="auth_provider_waiting">Tasdiqlash kutilmoqda…</string>
+    <string name="error_provider_cancelled">Kirish bekor qilindi.</string>
+    <string name="error_provider_unavailable">Bu usul hozir mavjud emas. Telegram orqali kiring.</string>
+    <string name="error_oauth_needs_telegram">Bu akkaunt hali ulanmagan. Avval Telegram orqali kiring, so‘ng profilda uni ulang.</string>
+    <string name="error_oauth_other_account">Bu akkaunt boshqa foydalanuvchiga ulangan.</string>
+    <string name="error_oauth_already_linked">Bu usul allaqachon ulangan. Avval uzing.</string>
+    <string name="error_oauth_last_identity">Bu yagona kirish usuli — uni uzib bo‘lmaydi.</string>
+    <string name="error_oauth_not_found">Bunday ulanish topilmadi.</string>
+    <string name="error_oauth_failed">Kirishni tasdiqlab bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="profile_identities_title">Kirish usullari</string>
+    <string name="profile_identities_explain">Bitta akkaunt, bir nechta kirish usuli. Obuna va progress o‘zgarmaydi.</string>
+    <string name="profile_identity_telegram">Telegram</string>
+    <string name="profile_identity_google">Google</string>
+    <string name="profile_identity_apple">Apple</string>
+    <string name="profile_identity_connect">Ulash</string>
+    <string name="profile_identity_disconnect">Uzish</string>
+    <string name="profile_identity_connected">Ulangan</string>
+    <string name="profile_identity_unlink_warning">Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.</string>
+    <string name="profile_identity_unlinked">Uzildi. Boshqa qurilmalarda hisobdan chiqdingiz.</string>
+    <string name="profile_identity_connect_provider">%1$s ni ulash</string>
+    <string name="error_account_blocked">Bu hisob administrator tomonidan cheklangan. Qo‘llab-quvvatlashga yozing.</string>
 </resources>

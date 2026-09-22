@@ -27,6 +27,7 @@ from app.api.android_events import create_android_events_router
 from app.api.android_features import create_android_features_router
 from app.api.android_assistant import create_android_assistant_router
 from app.api.desktop_auth import create_desktop_auth_router
+from app.api.native_oauth import create_native_oauth_router
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
@@ -673,6 +674,12 @@ app.include_router(
 )
 app.include_router(
     create_android_auth_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_native_oauth_router(
         session_factory=async_session_maker,
         settings_obj=settings,
     )

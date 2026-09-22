@@ -19,11 +19,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +37,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
+import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassSurface
@@ -51,8 +56,21 @@ fun LinkScreen(
     state: LinkUiState,
     onRequestCode: () -> Unit,
     modifier: Modifier = Modifier,
+    onSignInWithGoogle: () -> Unit = {},
+    onSignInWithApple: () -> Unit = {},
+    onBrowserUrlOpened: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    // Apple has no native SDK, so its leg runs in a Custom Tab. The result
+    // comes back through the poll that is already running, which is why the
+    // app needs no inbound auth deep link and no new allowlisted destination.
+    LaunchedEffect(state.pendingBrowserUrl) {
+        val url = state.pendingBrowserUrl
+        if (!url.isNullOrEmpty()) {
+            openCustomTab(context, url)
+            onBrowserUrlOpened()
+        }
+    }
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(
             modifier = Modifier
@@ -101,7 +119,83 @@ fun LinkScreen(
                         )
                         else -> CodeBlock(state = state, context = context)
                     }
+                    if (state.providers.isNotEmpty() && !state.isLinked) {
+                        ProviderBlock(
+                            state = state,
+                            onSignInWithGoogle = onSignInWithGoogle,
+                            onSignInWithApple = onSignInWithApple,
+                        )
+                    }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Google / Apple entry points.
+ *
+ * Rendered only for providers the server actually offers, so a build without
+ * OAuth credentials shows the unchanged Telegram-only screen rather than
+ * buttons that fail when tapped.
+ */
+@Composable
+private fun ProviderBlock(
+    state: LinkUiState,
+    onSignInWithGoogle: () -> Unit,
+    onSignInWithApple: () -> Unit,
+) {
+    val busy = state.busyProvider
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(Modifier.height(20.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            HorizontalDivider(modifier = Modifier.weight(1f), color = PompColors.InkSecondary.copy(alpha = 0.2f))
+            Text(
+                text = stringResource(R.string.auth_provider_divider),
+                style = MaterialTheme.typography.labelMedium,
+                color = PompColors.InkSecondary,
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
+            HorizontalDivider(modifier = Modifier.weight(1f), color = PompColors.InkSecondary.copy(alpha = 0.2f))
+        }
+        Spacer(Modifier.height(14.dp))
+        state.providers.forEach { provider ->
+            val label = when (provider) {
+                AuthProvider.GOOGLE -> R.string.auth_continue_google
+                AuthProvider.APPLE -> R.string.auth_continue_apple
+                AuthProvider.TELEGRAM -> return@forEach
+            }
+            OutlinedButton(
+                onClick = when (provider) {
+                    AuthProvider.GOOGLE -> onSignInWithGoogle
+                    AuthProvider.APPLE -> onSignInWithApple
+                    AuthProvider.TELEGRAM -> return@forEach
+                },
+                enabled = busy == null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp),
+            ) {
+                Text(
+                    text = stringResource(label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PompColors.Ink,
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+        if (busy != null && busy != AuthProvider.TELEGRAM) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                HskBrandLoader(compact = true)
+                Spacer(Modifier.size(10.dp))
+                Text(
+                    text = stringResource(R.string.auth_provider_waiting),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
             }
         }
     }
@@ -270,6 +364,14 @@ private fun copyCode(context: Context, code: String, label: String) {
     if (code.isEmpty()) return
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
     clipboard?.setPrimaryClip(ClipData.newPlainText(label, code))
+}
+
+/** Opens a provider page in a Custom Tab; the URL is server-built, never user input. */
+private fun openCustomTab(context: Context, url: String) {
+    if (!url.startsWith("https://")) return
+    val intent = CustomTabsIntent.Builder().setShowTitle(true).build()
+    intent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    runCatching { intent.launchUrl(context, Uri.parse(url)) }
 }
 
 private fun openTelegram(context: Context, deepLink: String) {

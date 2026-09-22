@@ -81,6 +81,9 @@ struct PendingLink {
     display_code: String,
     bot_deep_link: String,
     expires_in: u64,
+    /// Provider authorization URL for a Google/Apple flow. Empty for Telegram,
+    /// and never handed to the webview.
+    authorize_url: String,
 }
 
 struct DesktopState {
@@ -124,6 +127,27 @@ struct LinkStartResponse {
     polling_secret: String,
     bot_deep_link: String,
     expires_in: u64,
+}
+
+#[derive(Deserialize)]
+struct OAuthProvidersResponse {
+    #[serde(default)]
+    providers: Vec<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DesktopOAuthProviders {
+    providers: Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct OAuthStartResponse {
+    link_request_id: String,
+    polling_secret: String,
+    expires_in: u64,
+    #[serde(default)]
+    authorize_url: String,
 }
 
 #[derive(Deserialize)]
@@ -230,6 +254,9 @@ fn bounded_timezone_query(raw_timezone: &str) -> bool {
 fn api_url(path: &str) -> Result<String, String> {
     match path {
         "/api/v3/desktop-auth/link/start"
+        | "/api/v3/native-auth/oauth/start"
+        | "/api/v3/native-auth/providers?platform=macos"
+        | "/api/v3/native-auth/providers?platform=windows"
         | "/api/v3/desktop-auth/link/status"
         | "/api/v3/desktop-auth/refresh"
         | "/api/v3/desktop-auth/revoke"
@@ -708,6 +735,30 @@ fn is_allowed_telegram_link(url: &str) -> bool {
         && query.next().is_none()
 }
 
+/// Whether a provider authorization URL may be opened in the system browser.
+///
+/// The webview never sees this URL: Rust holds it in `pending_link` and opens
+/// it itself, exactly like the Telegram deep link. The host and path are
+/// pinned so a compromised or spoofed API response cannot send the user to an
+/// arbitrary site wearing a sign-in prompt.
+fn is_allowed_oauth_authorize_url(url: &str) -> bool {
+    let Ok(parsed) = reqwest::Url::parse(url) else {
+        return false;
+    };
+    let host_and_path_ok = match parsed.host_str() {
+        Some("accounts.google.com") => parsed.path() == "/o/oauth2/v2/auth",
+        Some("appleid.apple.com") => parsed.path() == "/auth/authorize",
+        _ => false,
+    };
+    parsed.scheme() == "https"
+        && host_and_path_ok
+        && parsed.port().is_none()
+        && parsed.username().is_empty()
+        && parsed.password().is_none()
+        && parsed.fragment().is_none()
+        && parsed.query().is_some_and(|query| !query.is_empty())
+}
+
 fn has_only_query_keys(parsed: &reqwest::Url, allowed: &[&str]) -> bool {
     parsed
         .query_pairs()
@@ -959,7 +1010,18 @@ fn contains_sensitive_subscription_field(value: &Value) -> bool {
         Value::Object(items) => items.iter().any(|(key, item)| {
             matches!(
                 key.as_str(),
-                "access_token" | "refresh_token" | "polling_secret" | "installation_key"
+                // Deliberately NOT "code", "state" or "nonce": those are
+                // legitimate subscription words (an access state, a currency
+                // code), and treating them as secrets here would reject valid
+                // payloads. The OAuth values they name never travel through
+                // this envelope — Rust keeps them in `pending_link`.
+                "access_token"
+                    | "refresh_token"
+                    | "polling_secret"
+                    | "installation_key"
+                    | "id_token"
+                    | "code_verifier"
+                    | "authorize_url"
             ) || contains_sensitive_subscription_field(item)
         }),
         _ => false,
@@ -1918,6 +1980,7 @@ async fn desktop_link_start(
         display_code: started.display_code,
         bot_deep_link: started.bot_deep_link,
         expires_in: started.expires_in,
+        authorize_url: String::new(),
     };
     let display = DesktopLinkDisplay {
         status: "pending",
@@ -2023,6 +2086,115 @@ fn desktop_link_open_telegram(
         .map(|pending| pending.bot_deep_link.clone())
         .ok_or_else(|| "desktop_link_not_started".to_string())?;
     if !is_allowed_telegram_link(&url) {
+        return Err("desktop_link_invalid".into());
+    }
+    app.opener()
+        .open_url(url, None::<&str>)
+        .map_err(|_| "desktop_link_open_failed".into())
+}
+
+/// Which providers this deployment can actually offer on this platform.
+///
+/// Fails soft to an empty list: Telegram always works, so an unreachable or
+/// unconfigured provider probe hides the buttons rather than showing an error.
+#[tauri::command]
+async fn desktop_oauth_providers(
+    state: tauri::State<'_, DesktopState>,
+) -> Result<DesktopOAuthProviders, String> {
+    let path = format!("/api/v3/native-auth/providers?platform={}", platform()?);
+    let Ok(url) = api_url(&path) else {
+        return Ok(DesktopOAuthProviders { providers: vec![] });
+    };
+    let Ok(response) = state.client.get(url).send().await else {
+        return Ok(DesktopOAuthProviders { providers: vec![] });
+    };
+    let parsed: Result<OAuthProvidersResponse, String> = decode_response(response).await;
+    let providers = parsed
+        .map(|body| {
+            body.providers
+                .into_iter()
+                .filter(|name| name == "google" || name == "apple")
+                .collect()
+        })
+        .unwrap_or_default();
+    Ok(DesktopOAuthProviders { providers })
+}
+
+/// Starts a Google or Apple sign-in.
+///
+/// Returns only display-safe fields. The polling secret and the authorization
+/// URL stay in native memory, and the session is still collected by the
+/// unchanged `desktop_link_poll`, so this adds no second way to obtain a token.
+#[tauri::command]
+async fn desktop_oauth_start(
+    state: tauri::State<'_, DesktopState>,
+    provider: String,
+) -> Result<DesktopLinkDisplay, String> {
+    if provider != "google" && provider != "apple" {
+        return Err("oauth_provider_unsupported".into());
+    }
+    let response = state
+        .client
+        .post(api_url("/api/v3/native-auth/oauth/start")?)
+        .json(&json!({
+            "platform": platform()?,
+            "app_version": env!("CARGO_PKG_VERSION"),
+            "installation_key": installation_key()?,
+            "provider": provider,
+            "mode": "browser_redirect",
+        }))
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    let started: OAuthStartResponse = decode_response(response).await?;
+    let request_id_valid = started.link_request_id.len() == 36
+        && started
+            .link_request_id
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit() || byte == b'-');
+    if !request_id_valid
+        || !(32..=512).contains(&started.polling_secret.len())
+        || !(1..=3_600).contains(&started.expires_in)
+        || !is_allowed_oauth_authorize_url(&started.authorize_url)
+    {
+        return Err("desktop_api_invalid_response".into());
+    }
+    let pending = PendingLink {
+        link_request_id: started.link_request_id,
+        polling_secret: started.polling_secret,
+        // A provider row has no display code and no Telegram link, and must
+        // never be given one: that would add a second, weaker approval path.
+        display_code: String::new(),
+        bot_deep_link: String::new(),
+        expires_in: started.expires_in,
+        authorize_url: started.authorize_url,
+    };
+    let display = DesktopLinkDisplay {
+        status: "pending",
+        display_code: String::new(),
+        expires_in: pending.expires_in,
+    };
+    *state
+        .pending_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())? = Some(pending);
+    Ok(display)
+}
+
+/// Opens the pending provider page in the system browser.
+#[tauri::command]
+fn desktop_oauth_open(
+    app: tauri::AppHandle,
+    state: tauri::State<'_, DesktopState>,
+) -> Result<(), String> {
+    let url = state
+        .pending_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?
+        .as_ref()
+        .map(|pending| pending.authorize_url.clone())
+        .ok_or_else(|| "desktop_link_not_started".to_string())?;
+    if !is_allowed_oauth_authorize_url(&url) {
         return Err("desktop_link_invalid".into());
     }
     app.opener()
@@ -2558,6 +2730,9 @@ pub fn run() {
             desktop_link_start,
             desktop_link_poll,
             desktop_link_open_telegram,
+            desktop_oauth_providers,
+            desktop_oauth_start,
+            desktop_oauth_open,
             desktop_open_external_url,
             desktop_bootstrap,
             desktop_logout,
@@ -2611,7 +2786,8 @@ pub fn run() {
 mod tests {
     use super::{
         api_url, available_update_status, clear_local_auth_with, course_map_path,
-        current_access_token, is_allowed_external_url, is_allowed_telegram_link,
+        current_access_token, is_allowed_external_url, is_allowed_oauth_authorize_url,
+        is_allowed_telegram_link,
         local_ai_analytics_payload, no_update_status, terminal_link_status,
         validate_checkout_attempt_id, validate_event_id, validate_language, validate_lesson_order,
         validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
@@ -2758,6 +2934,7 @@ mod tests {
             display_code: "ABCD1234".into(),
             bot_deep_link: "https://t.me/test_bot?start=desktop_link".into(),
             expires_in: 300,
+            authorize_url: String::new(),
         });
 
         let result =
@@ -2813,6 +2990,52 @@ mod tests {
         assert!(!is_allowed_telegram_link(
             "https://lookalike.example@t.me/darsi_chini_bot?start=desktop_link"
         ));
+    }
+
+    #[test]
+    fn oauth_authorize_urls_are_pinned_to_the_two_providers() {
+        assert!(is_allowed_oauth_authorize_url(
+            "https://accounts.google.com/o/oauth2/v2/auth?client_id=x&state=y"
+        ));
+        assert!(is_allowed_oauth_authorize_url(
+            "https://appleid.apple.com/auth/authorize?client_id=x&state=y"
+        ));
+        // Wrong host.
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://accounts.google.com.evil.example/o/oauth2/v2/auth?client_id=x"
+        ));
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://evil.example/o/oauth2/v2/auth?client_id=x"
+        ));
+        // Wrong path on the right host.
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://accounts.google.com/logout?client_id=x"
+        ));
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://appleid.apple.com/auth/authorize/extra?client_id=x"
+        ));
+        // Each provider only its own path.
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://appleid.apple.com/o/oauth2/v2/auth?client_id=x"
+        ));
+        // Transport and authority tricks.
+        assert!(!is_allowed_oauth_authorize_url(
+            "http://accounts.google.com/o/oauth2/v2/auth?client_id=x"
+        ));
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://accounts.google.com:8443/o/oauth2/v2/auth?client_id=x"
+        ));
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://evil.example@accounts.google.com/o/oauth2/v2/auth?client_id=x"
+        ));
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://accounts.google.com/o/oauth2/v2/auth?client_id=x#fragment"
+        ));
+        // A parameterless authorize URL cannot be a real request.
+        assert!(!is_allowed_oauth_authorize_url(
+            "https://accounts.google.com/o/oauth2/v2/auth"
+        ));
+        assert!(!is_allowed_oauth_authorize_url("not-a-url"));
         assert!(!is_allowed_telegram_link(
             "https://t.me/bot-name?start=desktop_link"
         ));

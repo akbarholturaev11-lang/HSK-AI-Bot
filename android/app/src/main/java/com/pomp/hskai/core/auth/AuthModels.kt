@@ -43,11 +43,45 @@ sealed interface AuthState {
     data class Authenticated(val account: LinkedAccount) : AuthState
 }
 
-/** A device-link attempt in progress. Secrets stay in memory only. */
+/** How the account is being proven. */
+enum class AuthProvider(val wire: String) {
+    TELEGRAM("telegram"),
+    GOOGLE("google"),
+    APPLE("apple"),
+    ;
+
+    companion object {
+        fun fromWire(value: String?): AuthProvider? =
+            entries.firstOrNull { it.wire == value?.trim()?.lowercase() }
+    }
+}
+
+/**
+ * A link attempt in progress. Secrets stay in memory only.
+ *
+ * All three providers share this type on purpose: whichever way the account is
+ * proven, the session is always collected by polling the same
+ * `android-auth/link/status` endpoint, so there is one polling path in the app.
+ *
+ * [displayCode] and [botDeepLink] are filled only for Telegram; [nonce] only
+ * for a Credential Manager flow; [authorizeUrl] only for a browser flow. None
+ * of them is ever logged.
+ */
 data class PendingLink(
     val linkRequestId: String,
     val displayCode: String,
     val pollingSecret: String,
     val botDeepLink: String,
     val expiresAtMillis: Long,
+    val provider: AuthProvider = AuthProvider.TELEGRAM,
+    val nonce: String = "",
+    val authorizeUrl: String = "",
+)
+
+/** An identity attached to the current account, as the server reports it. */
+data class LinkedIdentity(
+    val id: String,
+    val provider: AuthProvider,
+    val emailMasked: String?,
+    val displayName: String?,
 )

@@ -6,10 +6,10 @@ The Telegram Mini App, bot, backend and desktop client use one canonical
 account, subscription, referral, course-progress and analytics system. The
 desktop client does not create a second account or payment system.
 
-Future Google OAuth or passwordless email login must be modeled as additional
-identities linked to the same internal user. A provider login must never create
-a parallel subscription/progress account when the person already uses
-Telegram; linking or merging requires explicit ownership confirmation.
+Google and Apple sign-in are implemented as additional identities linked to the
+same internal user (see "Provider identity" below). A provider login never
+creates a parallel subscription/progress account; linking requires an
+authenticated session, and identities are never reassigned between users.
 
 No public Pomp DMG, EXE or GGUF artifact is enabled yet. Their source, build
 configuration and release metadata remain in this repository. A local ARM64
@@ -132,6 +132,68 @@ placed in URLs, logs, analytics, local/session storage or JavaScript responses.
 - Download intent, redirect click and verified installation remain distinct
   analytics stages.
 
+## Provider identity
+
+Google and Apple are additional ways to prove an existing account. They are not
+a second account system and they do not mint their own sessions.
+
+- `user_identities` holds one row per `(provider, subject)`. `UNIQUE (provider,
+  subject_hash)` makes an identity belong to at most one internal user,
+  globally; `UNIQUE (user_id, provider)` allows one account per provider per
+  user. The provider `sub` is stored only as a keyed HMAC, so a database dump
+  does not expose usable, cross-service-linkable provider identifiers.
+- `desktop_link_requests` carries `flow` (`telegram` | `google` | `apple`),
+  `intent` (`signin` | `link`) and `bind_user_id`. Existing rows default to
+  `telegram`/`signin`, so the Telegram flow is byte-for-byte unchanged.
+- **One token path.** A provider flow only marks the link row approved. The
+  client then calls the unchanged `link/status`, and `poll_link` mints the same
+  device + session + token pair. No OAuth endpoint returns a token.
+- **Three guards, all fail-closed.** `poll_link` rejects `intent != "signin"`
+  (otherwise "connect Google" would issue a session to whoever owns that Google
+  account); the Telegram bot's approve/preview/cancel paths reject
+  `flow != "telegram"`; the OAuth callback rejects `flow == "telegram"`.
+- **Account resolution never reads an email.** `email_hash` / `email_display`
+  are display and abuse-analytics metadata only. An email address is
+  attacker-influenceable, provider-scoped and recyclable, so matching on it
+  would turn a provider login into subscription takeover.
+- **A bound device is not consent.** An unrecognised identity arriving on a
+  device already signed in as user X is refused with
+  `oauth_telegram_account_required`, never auto-linked. Linking is only ever an
+  explicit, bearer-authenticated action.
+- **Identities are never reassigned.** A `(provider, subject)` already bound to
+  another user returns `oauth_identity_bound_to_other_user`; the row is not
+  moved.
+- **A blocked account cannot sign in or add a provider.** The Telegram flow
+  gets this from `BlockedUserMiddleware`, which stops every bot handler, so a
+  blocked user can never reach the approval step. A provider flow has no bot
+  step, so `resolve_signin` and `link_to_user` refuse a blocked account
+  explicitly with `user_blocked` (403). Without that, a Google account linked
+  before the block would remain a way back in.
+- **Unlink revokes access.** Removing an identity revokes every other session
+  on the account and reports how many, so removed access cannot silently
+  persist. The last remaining identity of a user without `telegram_id` cannot
+  be removed.
+- ID tokens are verified against pinned, hard-coded JWKS URIs with `alg` fixed
+  to RS256, the issuer and this client's own audience only (never a union of
+  audiences, which would allow cross-client replay), a server-derived nonce
+  that must be present, and a maximum `iat` age of 300 seconds.
+- `state`, `nonce` and the PKCE `code_verifier` are derived from the link
+  request id with the server signing secret, never stored. `state` is therefore
+  self-authenticating and single-use; any verification failure burns the row.
+- The native clients never see an OAuth secret. Rust holds the authorization
+  URL and opens the system browser itself, against a compile-time allowlist of
+  `accounts.google.com/o/oauth2/v2/auth` and
+  `appleid.apple.com/auth/authorize`.
+- Phase 1 does not create accounts: Telegram remains the only user factory, and
+  an unknown identity is told to sign in with Telegram once and connect the
+  provider from Profile.
+- The Telegram Mini App can attach a provider from Profile, proving identity
+  with fresh `initData` instead of a bearer token. `miniapp` is not a native
+  platform: it owns no device, is accepted only on `intent="link"` rows, is
+  refused outright by the sign-in endpoint, and its installation key is derived
+  server-side from the account so the per-installation rate limit still
+  applies. It is another client for linking, not another way in.
+
 ## Phase 1 endpoints
 
 - `GET /api/v3/desktop-download/status`
@@ -147,6 +209,18 @@ placed in URLs, logs, analytics, local/session storage or JavaScript responses.
 - `GET /api/v3/desktop/course/lesson/{lesson_order}`
 - `POST /api/v3/desktop/course/complete`
 - `POST /api/v3/desktop/preferences/language`
+- `GET /api/v3/native-auth/providers`
+- `POST /api/v3/native-auth/oauth/start`
+- `POST /api/v3/native-auth/oauth/assert`
+- `GET /api/v3/native-auth/oauth/callback/google`
+- `POST /api/v3/native-auth/oauth/callback/apple`
+- `GET /api/v3/native-auth/identities`
+- `POST /api/v3/native-auth/identities/link/start`
+- `POST /api/v3/native-auth/identities/link/status`
+- `POST /api/v3/native-auth/identities/unlink`
+
+The four `identities` endpoints accept either `Authorization: Bearer` (native
+clients) or a fresh `X-Telegram-Init-Data` header (Mini App).
 
 Handled desktop auth responses, including request-validation errors, use stable
 error codes, `Cache-Control: no-store`, and never echo secret input.

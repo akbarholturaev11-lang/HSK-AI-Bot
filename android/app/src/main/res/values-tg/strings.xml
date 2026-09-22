@@ -6,7 +6,7 @@
     <string name="action_continue">Идома додан</string>
 
     <string name="auth_welcome_title">Роҳи HSK-и шумо аз ҳамин ҷо оғоз мешавад</string>
-    <string name="auth_single_subtitle">Тавассути Telegram бехатар ворид шавед — бе парол ва қадамҳои зиёдатӣ.</string>
+    <string name="auth_single_subtitle">Тавассути Telegram, Google ё Apple бехатар ворид шавед.</string>
     <string name="auth_login">Ба курс ворид шудан</string>
     <string name="auth_register">Сохтани ҳисоби нав</string>
     <string name="link_title">Тавассути Telegram ҳисоб созед ё ворид шавед</string>
@@ -406,4 +406,28 @@
     <string name="plan_choice_pay">Pro гирифтан</string>
     <string name="plan_choice_later">Ҳозир ройгон идома медиҳам</string>
     <string name="hint_open">Шарҳ</string>
+    <string name="auth_continue_google">Бо Google идома додан</string>
+    <string name="auth_continue_apple">Бо Apple идома додан</string>
+    <string name="auth_provider_divider">ё</string>
+    <string name="auth_provider_waiting">Интизори тасдиқ…</string>
+    <string name="error_provider_cancelled">Вуруд бекор карда шуд.</string>
+    <string name="error_provider_unavailable">Ин усул ҳоло дастрас нест. Тавассути Telegram ворид шавед.</string>
+    <string name="error_oauth_needs_telegram">Ин ҳисоб ҳанӯз пайваст нашудааст. Аввал тавассути Telegram ворид шавед, сипас онро дар профил пайваст кунед.</string>
+    <string name="error_oauth_other_account">Ин ҳисоб ба корбари дигар пайваст аст.</string>
+    <string name="error_oauth_already_linked">Ин усул аллакай пайваст аст. Аввал онро ҷудо кунед.</string>
+    <string name="error_oauth_last_identity">Ин ягона усули вуруд аст — онро ҷудо кардан мумкин нест.</string>
+    <string name="error_oauth_not_found">Чунин пайваст ёфт нашуд.</string>
+    <string name="error_oauth_failed">Вурудро тасдиқ кардан нашуд. Боз кӯшиш кунед.</string>
+    <string name="profile_identities_title">Усулҳои вуруд</string>
+    <string name="profile_identities_explain">Як ҳисоб, якчанд усули вуруд. Обуна ва пешрафт тағйир намеёбад.</string>
+    <string name="profile_identity_telegram">Telegram</string>
+    <string name="profile_identity_google">Google</string>
+    <string name="profile_identity_apple">Apple</string>
+    <string name="profile_identity_connect">Пайваст кардан</string>
+    <string name="profile_identity_disconnect">Ҷудо кардан</string>
+    <string name="profile_identity_connected">Пайваст аст</string>
+    <string name="profile_identity_unlink_warning">Пас аз ҷудо кардан шумо дар дастгоҳҳои дигар аз ҳисоб мебароед.</string>
+    <string name="profile_identity_unlinked">Ҷудо шуд. Дар дастгоҳҳои дигар аз ҳисоб баромадед.</string>
+    <string name="profile_identity_connect_provider">Пайваст кардани %1$s</string>
+    <string name="error_account_blocked">Ин ҳисоб аз ҷониби администратор маҳдуд шудааст. Ба дастгирӣ нависед.</string>
 </resources>

@@ -434,6 +434,16 @@ export async function previewInvoke(command, args = {}) {
       };
     case "desktop_link_open_telegram":
       return { ok: true };
+    // The preview offers both providers so the login screen can be reviewed
+    // in full; a real build only shows what the server reports.
+    case "desktop_oauth_providers":
+      return { providers: ["google", "apple"] };
+    case "desktop_oauth_start":
+      previewState.pollCount = 0;
+      // A provider row never carries a display code.
+      return { status: "pending", displayCode: "", expiresIn: 300 };
+    case "desktop_oauth_open":
+      return { ok: true };
     case "desktop_open_external_url":
       return { ok: true };
     case "desktop_link_poll":

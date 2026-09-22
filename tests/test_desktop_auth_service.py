@@ -619,3 +619,211 @@ class DesktopAuthBotManualEntryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(typed.answers), 1)
         self.assertIn("Qurilma: <b>Mac</b>", typed.answers[0][0])
         self.assertIsNotNone(typed.answers[0][1].get("reply_markup"))
+
+
+class DesktopAuthProviderFlowGuardTests(unittest.IsolatedAsyncioTestCase):
+    """The flow/intent separation that makes provider identities safe.
+
+    Two channels can approve a link row: the Telegram bot and an OAuth
+    callback. Each must only ever touch its own rows, and only a "signin" row
+    may be exchanged for a session. Without these guards "connect Google"
+    becomes "issue a session to whoever owns that Google account".
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add_all([_user(1, 1001, "Account A"), _user(2, 1002, "Account B")])
+            await session.commit()
+
+    async def asyncTearDown(self):
+        await self.engine.dispose()
+
+    async def _start(self, session, **kwargs):
+        params = {
+            "platform": "android",
+            "app_version": "1.5.3",
+            "installation_key": "i" * 48,
+        }
+        params.update(kwargs)
+        return await DesktopAuthService(session, _settings()).start_link(**params)
+
+    async def _row(self, session, link_request_id):
+        result = await session.execute(
+            select(DesktopLinkRequest).where(
+                DesktopLinkRequest.id == link_request_id
+            )
+        )
+        return result.scalar_one()
+
+    async def test_existing_telegram_flow_keeps_its_defaults_and_display_code(self):
+        async with self.sessions() as session:
+            started = await self._start(session)
+            row = await self._row(session, started["link_request_id"])
+
+        self.assertEqual(row.flow, "telegram")
+        self.assertEqual(row.intent, "signin")
+        self.assertIsNone(row.bind_user_id)
+        self.assertIn("display_code", started)
+        self.assertIn("bot_deep_link", started)
+
+    async def test_oauth_row_never_exposes_a_display_code_or_bot_link(self):
+        async with self.sessions() as session:
+            started = await self._start(session, flow="google")
+
+        # A provider row is approved by a verified token, never by a human
+        # reading a code out of the UI. Handing one out would create a second,
+        # weaker approval path for the same row.
+        self.assertNotIn("display_code", started)
+        self.assertNotIn("bot_deep_link", started)
+        self.assertIn("polling_secret", started)
+
+    async def test_link_intent_row_cannot_be_exchanged_for_a_session(self):
+        """The single highest-severity guard in the whole feature."""
+
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(
+                session, flow="google", intent="link", bind_user_id=1
+            )
+            # Force the row into the state an approved OAuth callback leaves.
+            row = await self._row(session, started["link_request_id"])
+            row.status = "approved"
+            row.approved_user_id = 1
+            row.approved_telegram_id = 1001
+            await session.commit()
+
+            with self.assertRaises(DesktopAuthError) as blocked:
+                await service.poll_link(
+                    link_request_id=started["link_request_id"],
+                    polling_secret=started["polling_secret"],
+                )
+            self.assertEqual(blocked.exception.code, "desktop_link_invalid")
+            self.assertEqual(blocked.exception.status_code, 409)
+
+            # And nothing was minted.
+            sessions_count = await session.execute(
+                select(func.count()).select_from(DesktopSession)
+            )
+            self.assertEqual(int(sessions_count.scalar() or 0), 0)
+
+    async def test_telegram_bot_cannot_approve_preview_or_cancel_an_oauth_row(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, flow="google")
+            # The bot only ever sees a display code / request id, so simulate it
+            # holding the real ones for a provider row.
+            row = await self._row(session, started["link_request_id"])
+            probe_code = "ABCDEFGH"
+            row.display_code_hash = service._hash("display-code", probe_code)
+            await session.commit()
+
+            for name, call in (
+                (
+                    "approve_link",
+                    lambda: service.approve_link(
+                        display_code=probe_code, telegram_id=1001
+                    ),
+                ),
+                (
+                    "link_preview",
+                    lambda: service.link_preview(
+                        display_code=probe_code, telegram_id=1001
+                    ),
+                ),
+                (
+                    "cancel_link",
+                    lambda: service.cancel_link(
+                        display_code=probe_code, telegram_id=1001
+                    ),
+                ),
+                (
+                    "link_request_preview",
+                    lambda: service.link_request_preview(
+                        link_request_id=started["link_request_id"]
+                    ),
+                ),
+                (
+                    "link_request_preview_for_code",
+                    lambda: service.link_request_preview_for_code(
+                        link_request_id=started["link_request_id"],
+                        display_code=probe_code,
+                        telegram_id=1001,
+                    ),
+                ),
+            ):
+                with self.subTest(method=name):
+                    with self.assertRaises(DesktopAuthError) as blocked:
+                        await call()
+                    self.assertEqual(blocked.exception.code, "desktop_link_invalid")
+                    self.assertEqual(blocked.exception.status_code, 404)
+
+            # The row is untouched: still pending, still unapproved.
+            row = await self._row(session, started["link_request_id"])
+            self.assertEqual(row.status, "pending")
+            self.assertIsNone(row.approved_user_id)
+
+    async def test_failed_provider_row_surfaces_its_stable_reason(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            started = await self._start(session, flow="google")
+            row = await self._row(session, started["link_request_id"])
+            row.status = "failed"
+            row.link_failure_code = "oauth_telegram_account_required"
+            await session.commit()
+
+            with self.assertRaises(DesktopAuthError) as failed:
+                await service.poll_link(
+                    link_request_id=started["link_request_id"],
+                    polling_secret=started["polling_secret"],
+                )
+            self.assertEqual(
+                failed.exception.code, "oauth_telegram_account_required"
+            )
+            self.assertEqual(failed.exception.status_code, 409)
+
+    async def test_start_link_rejects_incoherent_flow_and_intent(self):
+        async with self.sessions() as session:
+            for name, kwargs, code in (
+                ("unknown flow", {"flow": "facebook"}, "desktop_link_flow_invalid"),
+                ("unknown intent", {"intent": "merge"}, "desktop_link_intent_invalid"),
+                (
+                    # Unbound link row: a callback could be steered onto any account.
+                    "link without a user",
+                    {"flow": "google", "intent": "link"},
+                    "desktop_link_intent_invalid",
+                ),
+                (
+                    # Bound signin row: binding is meaningless before sign-in.
+                    "signin with a user",
+                    {"flow": "google", "intent": "signin", "bind_user_id": 1},
+                    "desktop_link_intent_invalid",
+                ),
+            ):
+                with self.subTest(case=name):
+                    with self.assertRaises(DesktopAuthError) as blocked:
+                        await self._start(session, **kwargs)
+                    self.assertEqual(blocked.exception.code, code)
+                    self.assertEqual(blocked.exception.status_code, 422)
+
+    async def test_identity_hashes_are_keyed_stable_and_never_the_raw_value(self):
+        async with self.sessions() as session:
+            service = DesktopAuthService(session, _settings())
+            subject = "108120120120120120120"
+            first = service.identity_subject_hash("google", subject)
+            self.assertEqual(first, service.identity_subject_hash("GOOGLE", subject))
+            self.assertNotIn(subject, first)
+            self.assertEqual(len(first), 64)
+            # The same subject at a different provider is a different identity.
+            self.assertNotEqual(first, service.identity_subject_hash("apple", subject))
+
+            email = service.identity_email_hash("  User@Example.COM ")
+            self.assertEqual(email, service.identity_email_hash("user@example.com"))
+            self.assertNotIn("example.com", email)
+            self.assertIsNone(service.identity_email_hash("   "))
