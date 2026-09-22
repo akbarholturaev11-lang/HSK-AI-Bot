@@ -204,6 +204,10 @@ fun ProfileScreen(
             // no-op here, because Play updates the app itself.
             item { AppUpdateCard() }
             item { SettingsEntryCard(onClick = { settingsOpen = true }) }
+            // `onOpenSupport` is the screen's "open this URL outside the app"
+            // callback (MainActivity wires it to openExternal); the social row
+            // needs exactly that and nothing support-specific.
+            item { SocialLinksRow(onOpen = onOpenSupport) }
 
             state.error?.let { error ->
                 item { ErrorPill(text = stringResource(error.messageRes), onClick = onRefresh) }
@@ -529,6 +533,61 @@ private fun ProfileSettingsSheet(
             OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) { Text(stringResource(R.string.profile_logout), color = PompColors.Ink) }
             Spacer(Modifier.height(10.dp))
             OutlinedButton(onClick = onUnlinkDevice, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) { Text(stringResource(R.string.profile_unlink_device), color = PompColors.Flame) }
+        }
+    }
+}
+
+/** HSK AI rasmiy sahifalari, Mini App profilidagi qator bilan bir xil. */
+internal val SOCIAL_LINKS = listOf(
+    "Instagram" to "https://www.instagram.com/hskai.app",
+    "TikTok" to "https://www.tiktok.com/@hsk.ai",
+    "YouTube" to "https://youtube.com/@hskai_app",
+)
+
+/**
+ * Links to the official HSK AI pages.
+ *
+ * Named rather than drawn: Material Icons carries no brand logos, and a
+ * stand-in glyph (a camera for Instagram, a note for TikTok) reads as the
+ * wrong thing. The name is unambiguous and needs no trademark assets.
+ *
+ * Internal rather than private so the row can be tested on its own: inside the
+ * profile's LazyColumn it is off-screen and never composed, so a test of the
+ * whole screen could not reach it.
+ */
+@Composable
+internal fun SocialLinksRow(onOpen: (String) -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Text(
+            stringResource(R.string.profile_social_title),
+            color = PompColors.InkSecondary,
+            fontSize = 13.sp,
+            modifier = Modifier.padding(start = 2.dp, bottom = 8.dp),
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            SOCIAL_LINKS.forEach { (label, url) ->
+                Surface(
+                    color = PompColors.PaperRaised,
+                    shape = RoundedCornerShape(15.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier
+                        .weight(1f)
+                        .heightIn(min = 52.dp)
+                        .clickable { onOpen(url) },
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            label,
+                            color = PompColors.Ink,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
+                }
+            }
         }
     }
 }

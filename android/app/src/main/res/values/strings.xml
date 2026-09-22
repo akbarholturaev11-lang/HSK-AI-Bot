@@ -464,4 +464,5 @@
     <string name="profile_identity_connect_provider">%1$s ni ulash</string>
     <string name="error_account_blocked">Bu hisob administrator tomonidan cheklangan. Qo‘llab-quvvatlashga yozing.</string>
     <string name="auth_multi_subtitle">Telegram, Google yoki Apple orqali xavfsiz kiring.</string>
+    <string name="profile_social_title">HSK AI ijtimoiy tarmoqlarda</string>
 </resources>

@@ -431,4 +431,5 @@
     <string name="profile_identity_connect_provider">Пайваст кардани %1$s</string>
     <string name="error_account_blocked">Ин ҳисоб аз ҷониби администратор маҳдуд шудааст. Ба дастгирӣ нависед.</string>
     <string name="auth_multi_subtitle">Тавассути Telegram, Google ё Apple бехатар ворид шавед.</string>
+    <string name="profile_social_title">HSK AI дар шабакаҳои иҷтимоӣ</string>
 </resources>

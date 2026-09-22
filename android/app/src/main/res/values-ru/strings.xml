@@ -430,4 +430,5 @@
     <string name="profile_identity_connect_provider">Подключить %1$s</string>
     <string name="error_account_blocked">Этот аккаунт ограничен администратором. Напишите в поддержку.</string>
     <string name="auth_multi_subtitle">Войдите безопасно через Telegram, Google или Apple.</string>
+    <string name="profile_social_title">HSK AI в соцсетях</string>
 </resources>
