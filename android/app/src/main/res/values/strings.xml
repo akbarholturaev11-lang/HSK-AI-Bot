@@ -22,7 +22,7 @@
 
     <!-- Onboarding: Telegram linking -->
     <string name="auth_welcome_title">HSK yo‘lingiz shu yerdan boshlanadi</string>
-    <string name="auth_single_subtitle">Telegram, Google yoki Apple orqali xavfsiz kiring.</string>
+    <string name="auth_single_subtitle">Telegram orqali xavfsiz kiring — parol va ortiqcha qadamlar yo‘q.</string>
     <string name="auth_login">Kursga kirish</string>
     <string name="auth_register">Yangi akkaunt ochish</string>
     <string name="link_title">Telegram orqali akkaunt oching yoki kiring</string>
@@ -463,4 +463,5 @@
     <string name="profile_identity_unlinked">Uzildi. Boshqa qurilmalarda hisobdan chiqdingiz.</string>
     <string name="profile_identity_connect_provider">%1$s ni ulash</string>
     <string name="error_account_blocked">Bu hisob administrator tomonidan cheklangan. Qo‘llab-quvvatlashga yozing.</string>
+    <string name="auth_multi_subtitle">Telegram, Google yoki Apple orqali xavfsiz kiring.</string>
 </resources>

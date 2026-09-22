@@ -95,7 +95,16 @@ fun LinkScreen(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.auth_single_subtitle),
+                // The copy must not promise a provider the screen does not
+                // show. On a build or deployment without OAuth credentials the
+                // buttons are hidden, so the subtitle stays Telegram-only.
+                text = stringResource(
+                    if (state.providers.isEmpty()) {
+                        R.string.auth_single_subtitle
+                    } else {
+                        R.string.auth_multi_subtitle
+                    }
+                ),
                 style = MaterialTheme.typography.bodyLarge,
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,

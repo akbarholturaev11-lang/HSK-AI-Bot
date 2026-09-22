@@ -5,7 +5,7 @@
     <string name="action_continue">Продолжить</string>
 
     <string name="auth_welcome_title">Ваш путь к HSK начинается здесь</string>
-    <string name="auth_single_subtitle">Войдите безопасно через Telegram, Google или Apple.</string>
+    <string name="auth_single_subtitle">Войдите безопасно через Telegram — без пароля и лишних шагов.</string>
     <string name="auth_login">Перейти к курсу</string>
     <string name="auth_register">Создать новый аккаунт</string>
     <string name="link_title">Создайте аккаунт или войдите через Telegram</string>
@@ -429,4 +429,5 @@
     <string name="profile_identity_unlinked">Отключено. На других устройствах выполнен выход.</string>
     <string name="profile_identity_connect_provider">Подключить %1$s</string>
     <string name="error_account_blocked">Этот аккаунт ограничен администратором. Напишите в поддержку.</string>
+    <string name="auth_multi_subtitle">Войдите безопасно через Telegram, Google или Apple.</string>
 </resources>

@@ -6,7 +6,7 @@
     <string name="action_continue">Идома додан</string>
 
     <string name="auth_welcome_title">Роҳи HSK-и шумо аз ҳамин ҷо оғоз мешавад</string>
-    <string name="auth_single_subtitle">Тавассути Telegram, Google ё Apple бехатар ворид шавед.</string>
+    <string name="auth_single_subtitle">Тавассути Telegram бехатар ворид шавед — бе парол ва қадамҳои зиёдатӣ.</string>
     <string name="auth_login">Ба курс ворид шудан</string>
     <string name="auth_register">Сохтани ҳисоби нав</string>
     <string name="link_title">Тавассути Telegram ҳисоб созед ё ворид шавед</string>
@@ -430,4 +430,5 @@
     <string name="profile_identity_unlinked">Ҷудо шуд. Дар дастгоҳҳои дигар аз ҳисоб баромадед.</string>
     <string name="profile_identity_connect_provider">Пайваст кардани %1$s</string>
     <string name="error_account_blocked">Ин ҳисоб аз ҷониби администратор маҳдуд шудааст. Ба дастгирӣ нависед.</string>
+    <string name="auth_multi_subtitle">Тавассути Telegram, Google ё Apple бехатар ворид шавед.</string>
 </resources>
