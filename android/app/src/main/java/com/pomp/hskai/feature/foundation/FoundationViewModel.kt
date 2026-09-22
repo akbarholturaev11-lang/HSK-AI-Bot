@@ -306,11 +306,14 @@ class FoundationViewModel(
                     it.copy(saving = false, error = result.error)
                 }
                 is ApiResult.Success -> _state.update {
+                    val completed = result.value.ok && result.value.foundation.completed
                     it.copy(
                         saving = false,
-                        completed = result.value.ok && result.value.foundation.completed,
-                        required = if (result.value.foundation.completed) false else it.required,
-                        error = if (result.value.ok) null else ApiError.Unknown,
+                        completed = completed,
+                        required = if (completed) false else it.required,
+                        // A transport-level success without a completed server
+                        // state must never leave the CTA silently doing nothing.
+                        error = if (completed) null else ApiError.Unknown,
                     )
                 }
             }
