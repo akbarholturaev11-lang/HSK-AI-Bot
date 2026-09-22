@@ -136,7 +136,10 @@ class SubscriptionMiniAppSubmitTests(unittest.IsolatedAsyncioTestCase):
         # iPhone HEIC yoki brauzer ocholmagan format shu yo'l bilan keladi.
         result = await self._submit("data:image/heic;base64," + base64.b64encode(b"x" * 64).decode())
 
-        self.assertEqual(result, {"ok": False, "error": "invalid_screenshot"})
+        # `reason` Mini App uchun: format muammosi hajm muammosidan farq qiladi.
+        self.assertEqual(
+            result, {"ok": False, "error": "invalid_screenshot", "reason": "format"}
+        )
         self.assertEqual(self.bot.photos, [])
 
     async def test_oversized_screenshot_is_rejected_without_creating_a_payment(self):
@@ -146,7 +149,9 @@ class SubscriptionMiniAppSubmitTests(unittest.IsolatedAsyncioTestCase):
 
         result = await self._submit(oversized)
 
-        self.assertEqual(result, {"ok": False, "error": "invalid_screenshot"})
+        self.assertEqual(
+            result, {"ok": False, "error": "invalid_screenshot", "reason": "too_big"}
+        )
         async with self.sessions() as session:
             payments = (await session.execute(select(Payment))).scalars().all()
         self.assertEqual(payments, [])
@@ -313,7 +318,34 @@ class SubscriptionMiniAppErrorCopyTests(unittest.TestCase):
 
     def test_unsupported_file_is_stopped_before_submit(self):
         self.assertIn("allowedShot(shot)", SUBSCRIPTION_HTML)
-        self.assertIn("SCREENSHOT_MAX_CHARS", SUBSCRIPTION_HTML)
+        # Chegara server bilan bir xil o'lchovda — dekodlangan baytda.
+        self.assertIn("const SCREENSHOT_MAX_BYTES=8*1024*1024;", SUBSCRIPTION_HTML)
+        self.assertIn("dataUrlBytes(shot)>SCREENSHOT_MAX_BYTES", SUBSCRIPTION_HTML)
+
+    def test_rejected_screenshot_says_exactly_what_is_wrong(self):
+        # Format, hajm va o'qish xatosi — har biri o'z matni bilan.
+        for key in ("screenshotTooBig", "screenshotFormat", "screenshotReadFailed"):
+            with self.subTest(key=key):
+                self.assertEqual(SUBSCRIPTION_HTML.count(f"{key}:\""), 3)
+        self.assertIn('text.screenshotFormat.replace("{type}",file.type||"?")', SUBSCRIPTION_HTML)
+        self.assertIn('text.screenshotTooBig.replace("{size}",formatBytes(dataUrlBytes(shot)))', SUBSCRIPTION_HTML)
+        # Sabab toast o'chgach ham ekranda qoladi.
+        self.assertIn("state.screenshotNote", SUBSCRIPTION_HTML)
+        self.assertIn("function rejectScreenshot(note)", SUBSCRIPTION_HTML)
+
+    def test_selected_screenshot_shows_its_real_size(self):
+        for key in ("screenshotReady", "screenshotHeavy"):
+            with self.subTest(key=key):
+                self.assertEqual(SUBSCRIPTION_HTML.count(f"{key}:\""), 3)
+        self.assertIn("function dataUrlBytes(dataUrl)", SUBSCRIPTION_HTML)
+        self.assertIn("function formatBytes(bytes)", SUBSCRIPTION_HTML)
+        self.assertIn("const SCREENSHOT_HEAVY_BYTES=600*1024;", SUBSCRIPTION_HTML)
+
+    def test_server_rejection_reason_reaches_the_user(self):
+        self.assertIn("function serverScreenshotNote(error)", SUBSCRIPTION_HTML)
+        self.assertIn('error.reason==="too_big"', SUBSCRIPTION_HTML)
+        self.assertIn('error.reason==="format"', SUBSCRIPTION_HTML)
+        self.assertIn('apiError(data.error||"api_error",data.support_url,data.reason)', SUBSCRIPTION_HTML)
 
     def test_failed_submit_shows_the_admin_contact_on_screen(self):
         # Xato yuz berganda foydalanuvchi adminga yoza olsin.

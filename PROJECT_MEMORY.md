@@ -9759,3 +9759,54 @@ Diqqat:
 - Kontakt manbasi — admin panel/bot dagi `admin_contact` sozlamasi
   (`ADMIN_CONTACT_KEY`). U bo'sh bo'lsa hech qanday kontakt ko'rsatilmaydi,
   shuning uchun prodda o'sha sozlama to'ldirilgani tekshirilsin.
+
+### 2026-09-22 — Obuna Mini App: rasm rad etilsa — sabab, hajm va yo'l-yo'riq
+
+Foydalanuvchi prodda sinab ko'rdi: siqishdan keyin to'lov so'rovi o'tdi
+(«So'rov yuborildi ✅»), ya'ni sabab haqiqatan yuklash hajmi + sekin tarmoq
+ekan. Keyingi talab: Mini App xatoni AYNAN aytsin, hajm katta bo'lsa —
+hajmni ham ko'rsatsin va nima qilish kerakligini aytsin.
+
+Changed:
+- `renderUploadBox(text)` ajratildi (ilgari o'sha 4 qator `renderPay` ning
+  ikki shoxida takrorlanardi). Endi upload qatori uchta holatni ko'rsatadi:
+  tanlanmagan (eski yo'riqnoma), tanlangan (HAQIQIY hajm: «Hajmi 68 KB —
+  yuborishga tayyor»), rad etilgan (sabab + yo'l-yo'riq). Toast 2 soniyada
+  o'chadi, bu qator esa boshqa rasm tanlangunicha turadi.
+- `state.screenshotNote` + `rejectScreenshot(note)`: rad etish sabablari
+  ajratildi — format (`{type}` bilan: `image/heic`, `application/pdf`),
+  hajm (`{size}` bilan) va o'qish xatosi. Ilgari uchalasi bitta «Bu rasm
+  qabul qilinmadi» edi.
+- `screenshotHeavy`: siqishdan keyin ham 600 KB dan og'ir qolsa (canvas
+  siqa olmagan holat) foydalanuvchi buni YUBORISHDAN OLDIN biladi va
+  Wi-Fi taklif qilinadi.
+- Klient chegarasi endi server bilan bir xil o'lchovda: `SCREENSHOT_MAX_CHARS`
+  (base64 belgilari) o'rniga `SCREENSHOT_MAX_BYTES=8MB` (dekodlangan bayt).
+  Ilgari 7.4 MB rasm «chegara 8 MB» deb rad etilardi — chunki base64 satri
+  ~1.33 barobar uzun.
+- `_decode_screenshot` endi `(payload, reason)` qaytaradi va submit javobiga
+  `reason` («format» yoki «too_big») qo'shiladi; `apiError` uni olib yuradi,
+  `serverScreenshotNote()` esa shu sabab bo'yicha matn tanlaydi. Server
+  «too_big» desa-yu hajm chegaradan kichik bo'lsa — umumiy matn qoladi
+  (chalg'itmaslik uchun).
+- Support varag'idagi sabab oxirida texnik kod turadi (masalan
+  `[payment_submit_failed]`) — foydalanuvchi xabarni adminga yuborganda
+  qaysi nosozlik bo'lgani taxmin qilinmaydi.
+- 5 ta yangi matn uchala tilda: `screenshotReady`, `screenshotHeavy`,
+  `screenshotTooBig`, `screenshotFormat`, `screenshotReadFailed`.
+  Yangi UI bloki, rang yoki CSS qo'shilmadi — mavjud `#uploadText` qatori.
+
+Key files:
+- `app/static/subscription.html`
+- `app/services/subscription_miniapp_service.py` (`_decode_screenshot` → tuple)
+- `tests/test_subscription_miniapp_submit.py`
+
+Verified:
+- Haqiqiy brauzerda (Chromium, 393×780, uz/tj): oddiy skrin → «Hajmi 68 KB
+  — yuborishga tayyor»; HEIC → «...qo'llab-quvvatlanmaydi (image/heic)»;
+  PDF → «(application/pdf)»; 7.4 MB PNG (canvas siqmagan holat majburlandi)
+  → og'irlik ogohlantirishi bilan QABUL qilinadi; server `invalid_screenshot`
+  → qator ekranda qoladi; support varag'ida `[payment_submit_failed]`.
+  JS xatosi yo'q.
+- `tests/test_subscription_miniapp_submit.py` — 14 test; to'liq suite:
+  1584 passed.

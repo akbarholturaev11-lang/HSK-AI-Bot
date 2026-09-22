@@ -214,9 +214,11 @@ class SubscriptionMiniAppService:
                 "already_pending": True,
             }
 
-        screenshot = self._decode_screenshot(screenshot_data_url)
+        screenshot, reject_reason = self._decode_screenshot(screenshot_data_url)
         if not screenshot:
-            return {"ok": False, "error": "invalid_screenshot"}
+            # `reason` Mini App uchun: format muammosimi yoki hajmmi — matn
+            # va yo'riqnoma shunga qarab tanlanadi.
+            return {"ok": False, "error": "invalid_screenshot", "reason": reject_reason}
 
         checkout_info = await self._checkout_info(
             user,
@@ -660,35 +662,41 @@ class SubscriptionMiniAppService:
         return None
 
     @staticmethod
-    def _decode_screenshot(value: str) -> ScreenshotPayload | None:
-        # Rad etish sababi logga yoziladi: Mini App foydalanuvchiga faqat bitta
-        # umumiy matn ko'rsatadi, shuning uchun "nega qabul qilinmadi" degan
-        # savolga javob faqat shu yerdan topiladi. Rasm ma'lumoti yozilmaydi.
+    def _decode_screenshot(value: str) -> tuple[ScreenshotPayload | None, str]:
+        # Rad etish sababi ham logga, ham javobga chiqadi: Mini App shu sabab
+        # bo'yicha foydalanuvchiga AYNAN nima bo'lganini aytadi (format yoki
+        # hajm). Rasm ma'lumotining o'zi hech qayerga yozilmaydi.
         prefix, _, raw_base64 = (value or "").partition(",")
         if not raw_base64 or ";base64" not in prefix:
             logger.warning("payment screenshot rejected: not a base64 data url")
-            return None
+            return None, "format"
         mime_type = prefix.replace("data:", "").replace(";base64", "").strip().lower()
         if mime_type not in {"image/jpeg", "image/jpg", "image/png", "image/webp"}:
             logger.warning("payment screenshot rejected: mime=%s", mime_type)
-            return None
+            return None, "format"
         try:
             data = base64.b64decode(raw_base64, validate=True)
         except Exception:
             logger.warning("payment screenshot rejected: base64 decode failed")
-            return None
-        if not data or len(data) > MAX_SCREENSHOT_BYTES:
+            return None, "format"
+        if not data:
+            logger.warning("payment screenshot rejected: empty image")
+            return None, "format"
+        if len(data) > MAX_SCREENSHOT_BYTES:
             logger.warning(
                 "payment screenshot rejected: bytes=%s limit=%s",
                 len(data),
                 MAX_SCREENSHOT_BYTES,
             )
-            return None
+            return None, "too_big"
         extension = "jpg" if mime_type in {"image/jpeg", "image/jpg"} else mime_type.rsplit("/", 1)[-1]
-        return ScreenshotPayload(
-            data=data,
-            mime_type=mime_type,
-            filename=f"payment.{extension}",
+        return (
+            ScreenshotPayload(
+                data=data,
+                mime_type=mime_type,
+                filename=f"payment.{extension}",
+            ),
+            "",
         )
 
     @staticmethod
