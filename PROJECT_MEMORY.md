@@ -9637,3 +9637,77 @@ Verified:
   "Android", faqat `.quick-platform-android` ko'rinadi, uz/ru/tj matnlari
   to'g'ri; macos/windows avvalgidek; ios'da oyna ochilmaydi; JS xatosi yo'q,
   gorizontal scroll yo'q.
+
+### 2026-09-22 — Obuna Mini App: to'lov so'rovi nega yiqilganini endi aytadi
+
+Muammo: foydalanuvchi karta screenshotini yuborganda faqat «Хатогӣ шуд. Боз
+кӯшиш кунед.» chiqardi va boshqa hech narsa ma'lum bo'lmasdi.
+
+Sabab bitta emas, ikkita edi va ikkalasi ham bir xil ko'rinardi:
+
+**1. Bitta matn — to'rtta boshqa-boshqa sabab.** Chromiumda haqiqiy
+`subscription.html` ni haydab tekshirildi: server 500/502 (JSON o'rniga
+gateway HTML sahifasi), `invalid_screenshot`, `user_blocked` — uchalasi
+ham `errorText()` da xaritalanmagan, ya'ni bitta umumiy `text.error` ga
+tushardi. Ulanish uzilganda esa ekranda brauzerning inglizcha «Failed to
+fetch» matni chiqardi, javob umuman kelmasa — spinner cheksiz aylanardi
+(timeout yo'q edi). Serverda `/api/subscription-miniapp/submit` da na
+`try/except`, na bitta `logger` bor edi — yiqilish hech qanday iz
+qoldirmasdi.
+
+**2. Yuklash hajmi sekin internetga mos emasdi.** `compressDataUrl` bitta
+qadam bilan siqardi: 1600px / sifat 0.82. Sinovda 1080×2400 screenshot shu
+quvurdan **581 KB** bo'lib chiqdi (base64). Foydalanuvchi skrinshotidagi
+tarmoq tezligi — **287 B/s**, ya'ni bunday so'rov ~34 daqiqa yuklanadi va
+gateway uni uzib, HTML 502 qaytaradi → yana o'sha umumiy matn.
+
+Changed:
+- `subscription.html` → `compressDataUrl` pog'onali bo'ldi:
+  `[[1280,0.72],[1100,0.65],[900,0.6],[720,0.55]]`, maqsad ≤300 KB. O'sha
+  1080×2400 screenshot endi **293 KB** (581 KB emas), haqiqiy 720×1280
+  skrin — 91 KB. Kichik rasm qayta kodlanib kattalashib ketmasin deb asl
+  nusxa (faqat allowed format bo'lsa) kichik bo'lganda o'zi qoladi.
+- `api()` ga `AbortController` timeouti: submit 120s, qolganlari 45s.
+  `fetch` rad etsa — `networkError`, abort bo'lsa — `timeoutError`; ya'ni
+  ekranda boshqa inglizcha xabar chiqmaydi va spinner cheksiz aylanmaydi.
+- `errorText()` ga `invalid_screenshot`, `user_blocked`,
+  `payment_submit_failed` qo'shildi; `bad_json` endi `text.error` emas,
+  `serverError` (gateway HTML javobi aynan shu holat).
+- 5 ta yangi matn UCHALA tilda (uz/ru/tj): `networkError`, `timeoutError`,
+  `serverError`, `screenshotInvalid`, `userBlocked`.
+- Screenshot tanlanganda darhol tekshiriladi (`allowedShot` + 8MB):
+  brauzer ocholmagan HEIC/format ilgari faqat «Фиристодан» dan keyin,
+  umumiy matn bilan rad etilardi.
+- `app/main.py` → submit endpointi: body o'qilmasa 400 JSON, kutilmagan
+  istisnoda `logger.exception` + rollback + 500 JSON
+  `payment_submit_failed` (HTML sahifa emas — Mini App uni o'qiy oladi);
+  `ok:false` qaytgan har bir holat `logger.warning` bilan sababi va
+  `telegram_id` si bilan yoziladi.
+- `subscription_miniapp_service.py` → `_decode_screenshot` rad etish
+  sababini (mime / bayt hajmi / base64) logga yozadi; admin xabari
+  yetmaganda `logger.exception`. Rasm ma'lumotining o'zi logga tushmaydi.
+
+Tegilmagan: narx/plan/chegirma hisobi, to'lov tasdiqlash, DB modellari va
+migratsiyalar, QA rejimi, admin panel, Mini App dizayni va oqimi.
+
+Key files:
+- `app/static/subscription.html`
+- `app/main.py` (`/api/subscription-miniapp/submit`)
+- `app/services/subscription_miniapp_service.py`
+- `tests/test_subscription_miniapp_submit.py` (yangi)
+
+Verified:
+- Yangi test fayli eski kodda yiqiladi (`git stash` bilan tekshirildi:
+  14 failed), yangisida o'tadi. To'liq suite: 1580 passed.
+- Haqiqiy brauzerda (Chromium, 393×780, mock API): 502 HTML → «Сервер
+  ҳозир ҷавоб надод…», ulanish uzilishi → «Пайваст қатъ шуд…»,
+  `invalid_screenshot` → «Ин расм қабул нашуд…», `user_blocked` → «Ҳисоби
+  шумо баста шудааст…», HEIC → o'z matni bilan darhol rad, 1.5s timeout →
+  timeout matni aynan chegarada. JS xatosi yo'q.
+
+Diqqat:
+- Prod sababi shu muhitdan isbotlanmadi (Railway'ga chiqish yopiq).
+  Deploydan keyin shu foydalanuvchi bilan qayta sinalsin: endi xato matni
+  aniq sababni aytadi, sabab esa Railway logida
+  `subscription_miniapp_submit ...` qatori bo'lib qoladi.
+- `subscription.html` `no-cache` bilan beriladi, `?v=` bump kerak emas.

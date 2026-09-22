@@ -534,7 +534,12 @@ const I18N={
     quoteError:"To'lov ma'lumotini hozir ochib bo'lmadi. Qayta urinib ko'ring.",
     paymentDetailsMissing:"Karta rekviziti hozircha tayyor emas. Keyinroq urinib ko'ring.",
     adminNotificationFailed:"To'lov so'rovi yuborilmadi. Qayta urinib ko'ring.",
-    invalidTelegram:"Mini appni bot ichidan qayta oching."
+    invalidTelegram:"Mini appni bot ichidan qayta oching.",
+    networkError:"Internet uzildi. Ulanishni tekshirib, qayta yuboring.",
+    timeoutError:"Internet juda sekin — so'rov yuborilmadi. Aloqa yaxshilanganda qayta urinib ko'ring.",
+    serverError:"Server hozir javob bermadi. Bir oz kutib, qayta yuboring.",
+    screenshotInvalid:"Bu rasm qabul qilinmadi. Boshqa screenshot (JPG yoki PNG) tanlang.",
+    userBlocked:"Hisobingiz bloklangan. Support bilan bog'laning."
   },
   ru:{
     title:"Подписка",
@@ -653,7 +658,12 @@ const I18N={
     quoteError:"Не удалось открыть данные оплаты. Попробуйте ещё раз.",
     paymentDetailsMissing:"Реквизиты карты пока не готовы. Попробуйте позже.",
     adminNotificationFailed:"Заявку не удалось отправить. Попробуйте ещё раз.",
-    invalidTelegram:"Откройте mini app из бота."
+    invalidTelegram:"Откройте mini app из бота.",
+    networkError:"Соединение прервалось. Проверьте интернет и отправьте ещё раз.",
+    timeoutError:"Интернет слишком медленный — заявка не ушла. Попробуйте при лучшей связи.",
+    serverError:"Сервер сейчас не ответил. Подождите немного и отправьте ещё раз.",
+    screenshotInvalid:"Это изображение не принято. Выберите другой screenshot (JPG или PNG).",
+    userBlocked:"Ваш аккаунт заблокирован. Свяжитесь с поддержкой."
   },
   tj:{
     title:"Обуна",
@@ -772,7 +782,12 @@ const I18N={
     quoteError:"Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.",
     paymentDetailsMissing:"Реквизити корт ҳоло тайёр нест. Баъдтар кӯшиш кунед.",
     adminNotificationFailed:"Дархости пардохт фиристода нашуд. Боз кӯшиш кунед.",
-    invalidTelegram:"Mini app-ро аз дохили bot кушоед."
+    invalidTelegram:"Mini app-ро аз дохили bot кушоед.",
+    networkError:"Пайваст қатъ шуд. Интернетро тафтиш карда, аз нав фиристед.",
+    timeoutError:"Интернет хеле суст аст — дархост нарафт. Ҳангоми алоқаи беҳтар боз кӯшиш кунед.",
+    serverError:"Сервер ҳозир ҷавоб надод. Каме сабр карда, аз нав фиристед.",
+    screenshotInvalid:"Ин расм қабул нашуд. Screenshot-и дигар (JPG ё PNG) интихоб кунед.",
+    userBlocked:"Ҳисоби шумо баста шудааст. Бо дастгирӣ дар тамос шавед."
   }
 };
 
@@ -914,12 +929,27 @@ function trackSubscriptionStage(stage){
     keepalive:true
   }).catch(()=>null);
 }
-function api(path,body){
+/* Sekin internetda so'rov cheksiz osilib qolmasin: timeout bo'lmasa
+   foydalanuvchi aylanayotgan spinnerdan boshqa hech narsa ko'rmaydi. */
+const API_TIMEOUT_MS=45000;
+const SUBMIT_TIMEOUT_MS=120000;
+function api(path,body,timeoutMs){
+  const limit=timeoutMs||API_TIMEOUT_MS;
+  const controller=typeof AbortController==="function"?new AbortController():null;
+  const timer=controller?setTimeout(()=>controller.abort(),limit):null;
+  const clear=()=>{if(timer)clearTimeout(timer)};
   return fetch(path,{
     method:"POST",
     headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body||{})
+    body:JSON.stringify(body||{}),
+    signal:controller?controller.signal:undefined
+  }).catch(error=>{
+    clear();
+    /* Tarmoq xatosi brauzerdan inglizcha keladi ("Failed to fetch") —
+       foydalanuvchiga o'z tilidagi sabab ko'rsatiladi. */
+    throw new Error(error&&error.name==="AbortError"?tr().timeoutError:tr().networkError);
   }).then(async response=>{
+    clear();
     const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
     if(!response.ok||!data.ok)throw new Error(errorText(data.error||"api_error"));
     return data;
@@ -934,7 +964,11 @@ function errorText(code){
     qr_not_ready:text.qrMissing,
     payment_invalid_plan:text.offerExpired,
     access_start_first:text.invalidTelegram,
-    bad_json:text.error,
+    invalid_screenshot:text.screenshotInvalid,
+    user_blocked:text.userBlocked,
+    payment_submit_failed:text.serverError,
+    /* JSON o'rniga gateway HTML sahifasi qaytgan holat (502/504). */
+    bad_json:text.serverError,
     api_error:text.error
   };
   return errors[code]||text.error;
@@ -1604,7 +1638,7 @@ async function submitPayment(){
       payment_method:state.method,
       card_country:state.method==="visa"?state.country:null,
       screenshot_data_url:state.screenshotDataUrl
-    });
+    },SUBMIT_TIMEOUT_MS);
     state.pending=Boolean(data.already_pending);
     state.pendingPayment=data.already_pending?data:null;
     state.done=!state.pending;
@@ -1733,24 +1767,42 @@ function readFileAsDataUrl(file){
     reader.readAsDataURL(file);
   });
 }
-// Telefon rasmlari 8MB serverchekdan oshib ketmasligi uchun canvasda siqamiz.
+/* Telefon rasmi canvasda siqiladi. Asosiy chek — 8MB server chegarasi emas,
+   YUKLASH VAQTI: sekin mobil internetda 300KB dan katta so'rov gateway
+   timeoutiga borib "Xatolik yuz berdi" bo'lib qaytardi. Shuning uchun
+   pog'onali siqish: karta raqami o'qiladigan eng kichik hajm tanlanadi. */
+const SCREENSHOT_TARGET_CHARS=300*1024;
+const SCREENSHOT_MAX_CHARS=8*1024*1024;
+const SCREENSHOT_STEPS=[[1280,0.72],[1100,0.65],[900,0.6],[720,0.55]];
+function allowedShot(dataUrl){
+  return /^data:image\/(jpeg|jpg|png|webp);base64,/i.test(dataUrl||"");
+}
 function compressDataUrl(dataUrl){
   return new Promise(resolve=>{
     const img=new Image();
     img.onerror=()=>resolve(dataUrl);
     img.onload=()=>{
       try{
-        const max=1600;
-        const scale=Math.min(1,max/Math.max(img.width,img.height));
-        const w=Math.max(1,Math.round(img.width*scale));
-        const h=Math.max(1,Math.round(img.height*scale));
-        const canvas=document.createElement("canvas");
-        canvas.width=w;canvas.height=h;
-        const ctx=canvas.getContext("2d");
-        if(!ctx){resolve(dataUrl);return}
-        ctx.drawImage(img,0,0,w,h);
-        const out=canvas.toDataURL("image/jpeg",0.82);
-        resolve(out&&out.length>60?out:dataUrl);
+        let best="";
+        for(const step of SCREENSHOT_STEPS){
+          const max=step[0],quality=step[1];
+          const scale=Math.min(1,max/Math.max(img.width,img.height));
+          const w=Math.max(1,Math.round(img.width*scale));
+          const h=Math.max(1,Math.round(img.height*scale));
+          const canvas=document.createElement("canvas");
+          canvas.width=w;canvas.height=h;
+          const ctx=canvas.getContext("2d");
+          if(!ctx)break;
+          ctx.drawImage(img,0,0,w,h);
+          const out=canvas.toDataURL("image/jpeg",quality);
+          if(!out||out.length<=60)break;
+          best=out;
+          if(out.length<=SCREENSHOT_TARGET_CHARS)break;
+        }
+        if(!best){resolve(dataUrl);return}
+        /* Kichik rasm qayta kodlanganda kattalashib ketishi mumkin —
+           faqat allowed formatdagi asl nusxa kichik bo'lsa o'sha qoladi. */
+        resolve(allowedShot(dataUrl)&&dataUrl.length<best.length?dataUrl:best);
       }catch(e){resolve(dataUrl);}
     };
     img.src=dataUrl;
@@ -1766,7 +1818,18 @@ $("#receiptInput").addEventListener("change",async event=>{
   }
   try{
     const raw=await readFileAsDataUrl(file);
-    state.screenshotDataUrl=await compressDataUrl(raw);
+    const shot=await compressDataUrl(raw);
+    /* Server faqat jpeg/png/webp va 8MB gacha qabul qiladi. Ilgari bunday
+       rasm faqat "Фиристодан" bosilgandan keyin, umumiy xato matni bilan
+       rad etilardi — endi sabab darhol va aniq aytiladi. */
+    if(!allowedShot(shot)||shot.length>SCREENSHOT_MAX_CHARS){
+      state.screenshotDataUrl="";
+      state.screenshotName="";
+      toast(tr().screenshotInvalid);
+      render();
+      return;
+    }
+    state.screenshotDataUrl=shot;
     state.screenshotName=file.name;
     trackSubscriptionStage("payment_receipt_selected");
     render();

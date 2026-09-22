@@ -4750,20 +4750,64 @@ async def subscription_miniapp_submit(request: Request):
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
 
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception:
+        # Sekin mobil internetda yuklash yarmida uzilsa body to'liq kelmaydi.
+        # Ilgari bu 500 HTML sahifa bo'lib qaytardi, Mini App esa uni faqat
+        # "Xatolik yuz berdi" deb ko'rsata olardi.
+        logger.warning(
+            "subscription_miniapp_submit body unreadable telegram_id=%s", telegram_id
+        )
+        return JSONResponse(
+            status_code=400, content={"ok": False, "error": "payment_submit_failed"}
+        )
+
+    if not isinstance(payload, dict):
+        logger.warning(
+            "subscription_miniapp_submit body is not an object telegram_id=%s", telegram_id
+        )
+        return JSONResponse(
+            status_code=400, content={"ok": False, "error": "payment_submit_failed"}
+        )
+
     attempt_id = _checkout_attempt_id(payload.get("attempt_id"))
     async with async_session_maker() as session:
-        result = await SubscriptionMiniAppService(session).submit(
-            telegram_id=telegram_id,
-            plan_type=str(payload.get("plan_type") or ""),
-            payment_method=str(payload.get("payment_method") or ""),
-            card_country=payload.get("card_country"),
-            screenshot_data_url=str(payload.get("screenshot_data_url") or ""),
-            bot=bot,
-            mode=str(payload.get("mode") or ""),
-            campaign_id=_positive_int(payload.get("campaign_id")),
-            feedback_id=_positive_int(payload.get("feedback_id")),
-        )
+        try:
+            result = await SubscriptionMiniAppService(session).submit(
+                telegram_id=telegram_id,
+                plan_type=str(payload.get("plan_type") or ""),
+                payment_method=str(payload.get("payment_method") or ""),
+                card_country=payload.get("card_country"),
+                screenshot_data_url=str(payload.get("screenshot_data_url") or ""),
+                bot=bot,
+                mode=str(payload.get("mode") or ""),
+                campaign_id=_positive_int(payload.get("campaign_id")),
+                feedback_id=_positive_int(payload.get("feedback_id")),
+            )
+        except Exception:
+            # To'lov yo'li jim yiqilmasin: sabab logda qoladi, Mini App esa
+            # JSON kod oladi va foydalanuvchiga o'z tilida sabab ko'rsatadi.
+            logger.exception(
+                "subscription_miniapp_submit failed telegram_id=%s plan=%s method=%s",
+                telegram_id,
+                _checkout_text(payload.get("plan_type"), 32),
+                _checkout_text(payload.get("payment_method"), 32),
+            )
+            with contextlib.suppress(Exception):
+                await session.rollback()
+            return JSONResponse(
+                status_code=500,
+                content={"ok": False, "error": "payment_submit_failed"},
+            )
+        if not result.get("ok"):
+            logger.warning(
+                "subscription_miniapp_submit rejected telegram_id=%s plan=%s method=%s reason=%s",
+                telegram_id,
+                _checkout_text(payload.get("plan_type"), 32),
+                _checkout_text(payload.get("payment_method"), 32),
+                result.get("error"),
+            )
         if result.get("ok") and result.get("payment_id") and not result.get("already_pending"):
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             await ConversionFunnelService().record(
