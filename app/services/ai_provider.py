@@ -33,6 +33,13 @@ GEMINI_OPENAI_COMPAT_DEFAULT = "https://generativelanguage.googleapis.com/v1beta
 # so'rov jimgina OpenAI zaxirasiga tushardi.
 #
 # Bu ro'yxatdagilar 2026-09-22 da shu API kaliti bilan ketma-ket sinaldi.
+#
+# Standart `gemini-3.5-flash-lite`, `gemini-3.5-flash` emas. Bepul tarifda
+# 8 ta ketma-ket so'rovda flash 7/8 (bitta 429), lite esa 8/8 berdi — ya'ni
+# flash haqiqiy yuklamada vaqti-vaqti bilan baribir OpenAI zaxirasiga
+# tushardi. Narxi ham eski standart `gemini-2.5-flash` bilan bir xil
+# (0.30/2.50), shuning uchun byudjet hisobi o'zgarmaydi. Ko'proq imkoniyat
+# kerak bo'lsa, admin panelidan flash tanlanadi.
 GEMINI_MODEL_OPTIONS = [
     "gemini-3.5-flash-lite",
     "gemini-3.5-flash",
@@ -63,7 +70,7 @@ def gemini_active() -> bool:
 
 def _default_gemini_model() -> str:
     model = (settings.GEMINI_MODEL or "").strip()
-    return model if model in GEMINI_MODEL_OPTIONS else "gemini-3.5-flash"
+    return model if model in GEMINI_MODEL_OPTIONS else "gemini-3.5-flash-lite"
 
 
 def set_active_gemini_model_cache(value: str) -> None:
