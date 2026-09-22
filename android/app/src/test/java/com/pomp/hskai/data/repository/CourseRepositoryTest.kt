@@ -5,6 +5,12 @@ import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidCourseApi
+import com.pomp.hskai.data.api.AndroidFoundationApi
+import com.pomp.hskai.data.api.FoundationCompleteRequest
+import com.pomp.hskai.data.api.FoundationCompleteResponse
+import com.pomp.hskai.data.api.FoundationPayloadDto
+import com.pomp.hskai.data.api.FoundationResponseDto
+import com.pomp.hskai.data.api.CourseFoundationDto
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonDto
@@ -170,6 +176,45 @@ private open class FakeCourseApi : AndroidCourseApi {
     ): Response<DictionaryResponse> = Response.success(DictionaryResponse(ok = true))
 }
 
+private open class FakeFoundationApi(
+    private val completion: FoundationCompleteResponse = FoundationCompleteResponse(
+        ok = true,
+        foundation = CourseFoundationDto(required = true, completed = true, status = "completed"),
+    ),
+    private val statusCompleted: Boolean = true,
+) : AndroidFoundationApi {
+    var foundationCalls = 0
+    var completionCalls = 0
+
+    override suspend fun foundation(
+        authorization: String,
+    ): Response<FoundationResponseDto> {
+        foundationCalls++
+        return Response.success(
+            FoundationResponseDto(
+                ok = true,
+                foundation = FoundationPayloadDto(
+                    requiredObjectives = listOf("meaning", "build", "listen"),
+                    cards = listOf(lessonPayload),
+                ),
+                status = CourseFoundationDto(
+                    required = true,
+                    completed = statusCompleted,
+                    status = if (statusCompleted) "completed" else "required",
+                ),
+            )
+        )
+    }
+
+    override suspend fun completeFoundation(
+        authorization: String,
+        body: FoundationCompleteRequest,
+    ): Response<FoundationCompleteResponse> {
+        completionCalls++
+        return Response.success(completion)
+    }
+}
+
 private fun sampleMap(completed: Int = 2) = CourseMapDto(
     ok = true,
     level = "hsk1",
@@ -256,12 +301,14 @@ class CourseRepositoryTest {
         onSessionExpired: suspend () -> Unit = {},
         ttsCache: TtsCache? = null,
         lessonDao: LessonCacheDao? = null,
+        foundationApi: AndroidFoundationApi? = null,
     ) = CourseRepository(
         api = api,
         accessToken = token,
         dao = dao,
         lessonDao = lessonDao,
         json = json,
+        foundationApi = foundationApi,
         onSessionExpired = onSessionExpired,
         ttsCache = ttsCache,
         now = { 1_700_000_000_000L },
@@ -303,6 +350,56 @@ class CourseRepositoryTest {
         lessonOrder = order,
         language = com.pomp.hskai.core.i18n.AppLanguage.UZBEK,
     )
+
+    @Test
+    fun `a confirmed foundation completion does not make a second request`() = runTest {
+        val foundation = FakeFoundationApi()
+        val repository = repository(
+            api = FakeCourseApi(),
+            dao = FakeCourseMapDao(),
+            foundationApi = foundation,
+        )
+
+        val result = repository.completeFoundation(
+            speakingBonus = false,
+            eventId = "android:foundation:" + "a".repeat(32),
+        )
+
+        assertTrue(result is ApiResult.Success)
+        assertTrue((result as ApiResult.Success).value.foundation.completed)
+        assertEquals(1, foundation.completionCalls)
+        assertEquals(0, foundation.foundationCalls)
+    }
+
+    @Test
+    fun `an incomplete post response is reconciled with server status`() = runTest {
+        val foundation = FakeFoundationApi(
+            completion = FoundationCompleteResponse(
+                ok = true,
+                foundation = CourseFoundationDto(
+                    required = true,
+                    completed = false,
+                    status = "required",
+                ),
+            ),
+            statusCompleted = true,
+        )
+        val repository = repository(
+            api = FakeCourseApi(),
+            dao = FakeCourseMapDao(),
+            foundationApi = foundation,
+        )
+
+        val result = repository.completeFoundation(
+            speakingBonus = false,
+            eventId = "android:foundation:" + "b".repeat(32),
+        )
+
+        assertTrue(result is ApiResult.Success)
+        assertTrue((result as ApiResult.Success).value.foundation.completed)
+        assertEquals(1, foundation.completionCalls)
+        assertEquals(1, foundation.foundationCalls)
+    }
 
     @Test
     fun `a lesson opened online reopens from disk when the network is gone`() = runTest {
