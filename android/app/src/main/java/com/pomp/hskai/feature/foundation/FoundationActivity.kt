@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
 import android.content.pm.PackageManager
+import android.content.Context
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
@@ -27,9 +28,16 @@ import com.pomp.hskai.MainActivity
 import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
+import com.pomp.hskai.core.i18n.AppLocale
 
 /** Full-screen native Starter 0 flow. Not exported; only the course map can open it. */
 class FoundationActivity : ComponentActivity() {
+
+    // Foundation runs in its own activity, so it must apply the same account
+    // locale as MainActivity before Android resolves string resources.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
