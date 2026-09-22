@@ -12,7 +12,7 @@ Android ilovasiga endi Telegram orqali bir qadamda kiring: yangi akkaunt kerak b
 
 ## Try it
 
-Android ilovasini oching → “Telegram orqali davom etish”ni bosing → Telegram’da tilni tanlang → “Androidni ulash”ni tasdiqlang → HSK AI ilovasiga qayting.
+Android ilovasini oching → Telegram kartasini bosing → Telegram’da tilni tanlang (birinchi marta bo‘lsa) → “Tasdiqlash”ni bosing → HSK AI ilovasiga qayting. Kod yozish yo‘q.
 
 ## Feedback and reward
 
@@ -24,4 +24,4 @@ Android ilovasini birinchi marta ochgan yoki hali Telegram akkaunti ulanmagan fo
 
 ## Metrics
 
-Android auth screen view → Telegram deep-link open → bot start → language selected → link approved → Android bootstrap success; fallback manual-code rate, link expiry/cancel rate, auth error rate, first lesson start, 1–5 rating and reward redemption.
+Android auth screen view → provider card tapped → Telegram deep-link open → bot start → language selected → link approved → Android bootstrap success; link expiry/cancel rate, auth error rate, first lesson start, 1–5 rating and reward redemption. There is no manual-code fallback on Android any more, so a rise in cancels is the signal to watch.

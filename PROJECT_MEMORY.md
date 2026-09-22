@@ -9638,6 +9638,72 @@ Verified:
   to'g'ri; macos/windows avvalgidek; ios'da oyna ochilmaydi; JS xatosi yo'q,
   gorizontal scroll yo'q.
 
+---
+
+### 2026-09-22 — Kirish ekrani: uchta karta, Telegram kodsiz
+
+Muammo ikkita edi. Birinchisi — kirish ekrani: 8 belgili kod, uni nusxalash
+tugmasi, taymer, ostida Google/Apple tugmalari. Ya'ni birinchi ekranda odamdan
+kod o'qish so'ralardi. Ikkinchisi — botga o'tgach, bot **yana** o'sha kodni
+qo'lda yozishni so'rardi; odam ilovaga qaytib kodni ko'rib, kelib yozishi
+kerak edi.
+
+Endi kirish ekrani uchta kartadan iborat: Telegram (doim), Google va Apple
+(faqat server `providers` ro'yxatida bo'lsa — ya'ni Apple serverda yo'q bo'lsa
+karta umuman chiqmaydi). Tepada `HSK AI` va til almashtirgich (UZ/RU/TJ),
+markazda kitob o'qiyotgan panda, pastda bitta izoh qatori. Panda — yangi rasm
+fayli emas, ilovaning o'zidagi personaj (`HskCharacterStage(Panda, Loading)`),
+shuning uchun u qorong'i mavzuda ham to'g'ri ko'rinadi va Mini App bilan bir
+xil qoladi. Ranglar bizniki (cinnabar/paper), `check_palette_matches_miniapp.py`
+o'tadi.
+
+Telegram kartasi bosilganda: link so'raladi → `android_link_<request id>`
+deep-link Telegramni ochadi → bot qurilma va versiyani ko'rsatib bitta
+«Tasdiqlash» tugmasini beradi → ilova o'zgarmagan `link/status` pollingi orqali
+sessiyani oladi. Botni ilgari ishlatmagan odamga avvalgidek avval til tanlash
+chiqadi, keyin o'sha tasdiq.
+
+Xavfsizlik tomoni ataylab yozib qo'yiladi: ilgari havolani birovga yuborish
+yetmasdi, chunki kod faqat ilovada ko'rinardi. Endi Android havolasi tasdiq
+ekraniga olib boradi, shuning uchun (a) ekran qurilma va versiyani nomlaydi,
+(b) havolani birinchi ochgan Telegram akkauntiga so'rov band qilinadi va faqat
+o'sha akkaunt tasdiqlay yoki bekor qila oladi, (c) so'rov bir martalik va TTL
+bilan o'chadi, (d) token baribir faqat polling sirini ushlab turgan ilovaga
+beriladi. Desktop (Mac/Windows) yo'li umuman tegilmadi — u hamon kodni qo'lda
+so'raydi.
+
+Yana: link endi ekran ochilishida emas, karta bosilganda so'raladi. Shuning
+uchun tilni almashtirish (ekran qayta quriladi) bekorga link qatori yaratmaydi.
+Kirishdan oldin tanlangan til `AppLocale.choose()` bilan saqlanadi va
+`clear()` dan omon qoladi; kirgandan keyin akkaunt tili (`sync()`) uni
+almashtiradi — til baribir serverniki.
+
+Key files:
+- `android/app/src/main/java/com/pomp/hskai/feature/auth/LinkScreen.kt`
+  (qayta yozilgan), `.../feature/auth/LinkViewModel.kt`, `.../MainActivity.kt`
+- `android/app/src/main/java/com/pomp/hskai/core/i18n/AppLocale.kt`
+- `android/app/src/main/res/drawable/ic_brand_{telegram,google,apple}.xml`
+  (yangi), `res/values{,-ru,-tg}/strings.xml`
+- `app/bot/handlers/desktop_auth.py`, `app/services/desktop_auth_service.py`
+  (`link_request_confirmation`, `approve_link_request`, `cancel_link_request`,
+  umumiy `_approve_locked` / `_cancel_locked`; `link_request_preview_for_code`
+  o'chirildi)
+- `android/app/src/androidTest/.../LinkScreenProviderTest.kt`,
+  `tests/test_android_auth_api.py`, `tests/test_desktop_auth_service.py`
+- Versiya: `1.6.4` / `versionCode 19`
+
+Verified:
+- Android statik tekshiruvlari (7 ta) yashil; Android SDK bu muhitda yo'q,
+  shuning uchun Gradle kompilyatsiyasi CI'da.
+- CI backend to'plami: `pytest` 196 ta test, 13356 subtest — yashil
+  (`test_android_auth_api.py`, `test_desktop_auth_service.py`,
+  `test_android_course_api.py`, `test_desktop_course_api.py` va boshqalar).
+- Yangi testlar: kodsiz ulash oxirigacha (`linked`), band qilingan havolani
+  ikkinchi Telegram akkaunt tasdiqlay/bekor qila olmasligi (403), Android
+  tasdig'i desktop so'rovini rad etishi (403), bekor qilingandan keyin
+  tasdiqlab bo'lmasligi, bot tugmalarining `callback_data` si, va har uchala
+  tilda tasdiq matnida "kod" so'zi yo'qligi.
+
 ### 2026-09-22 — Obuna Mini App: to'lov so'rovi nega yiqilganini endi aytadi
 
 Muammo: foydalanuvchi karta screenshotini yuborganda faqat «Хатогӣ шуд. Боз

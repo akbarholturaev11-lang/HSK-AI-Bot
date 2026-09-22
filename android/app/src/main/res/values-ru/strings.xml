@@ -4,26 +4,14 @@
     <string name="onboarding_language_subtitle">Курс, переводы и напоминания будут на этом языке.</string>
     <string name="action_continue">Продолжить</string>
 
-    <string name="auth_welcome_title">Ваш путь к HSK начинается здесь</string>
-    <string name="auth_single_subtitle">Войдите безопасно через Telegram — без пароля и лишних шагов.</string>
-    <string name="auth_login">Перейти к курсу</string>
-    <string name="auth_register">Создать новый аккаунт</string>
-    <string name="link_title">Создайте аккаунт или войдите через Telegram</string>
-    <string name="link_subtitle">Пароль не нужен. Новый аккаунт создастся через Telegram, а существующий курс подключится к этому устройству.</string>
-    <string name="link_step_1">Откройте Telegram</string>
-    <string name="link_step_2">Выберите язык</string>
-    <string name="link_step_3">Отправьте код и подтвердите подключение Android</string>
-    <string name="link_code_label">Ваш код подключения</string>
-    <string name="link_code_instruction">Отправьте код боту — курс откроется на этом устройстве.</string>
-    <string name="link_code_copied">Код скопирован</string>
-    <string name="link_open_telegram">Открыть Telegram</string>
-    <string name="link_waiting">Ждём подтверждение в Telegram…</string>
-    <string name="link_expires_in">Код активен ещё %1$s</string>
-    <string name="link_expired">Этот код устарел. Получите новый.</string>
-    <string name="link_new_code">Создать новый код</string>
-    <string name="link_success">Аккаунт подключён</string>
-    <string name="link_telegram_missing">Приложение Telegram не найдено. Код можно отправить через браузер.</string>
-    <string name="link_security_note">Код используется только для подключения этого устройства.</string>
+    <!-- Login screen: welcome and the three ways in -->
+    <string name="auth_welcome_greeting">Добро пожаловать</string>
+    <string name="auth_choose_method">Выберите способ входа</string>
+    <string name="auth_tagline">Лучшее будущее — со знаниями</string>
+    <string name="auth_waiting_telegram">Ждём подтверждения в Telegram…</string>
+    <string name="auth_open_telegram_again">Открыть Telegram снова</string>
+    <string name="cd_language_switch">Язык</string>
+    <string name="auth_link_expired">Время подключения истекло. Попробуйте снова.</string>
 
     <string name="synced_title">Аккаунт подключён</string>
     <string name="synced_access_paid">Подписка активна</string>
@@ -72,7 +60,6 @@
     <string name="error_referral_unavailable">Список друзей не загрузился. Попробуйте снова.</string>
 
     <string name="cd_app_logo">Логотип Pomp HSK AI</string>
-    <string name="cd_copy_code">Скопировать код подключения</string>
 
     <string name="today_continue">Продолжить</string>
     <string name="today_streak">Серия дней</string>
@@ -405,9 +392,6 @@
     <string name="plan_choice_pay">Оформить Pro</string>
     <string name="plan_choice_later">Пока продолжу бесплатно</string>
     <string name="hint_open">Пояснение</string>
-    <string name="auth_continue_google">Продолжить с Google</string>
-    <string name="auth_continue_apple">Продолжить с Apple</string>
-    <string name="auth_provider_divider">или</string>
     <string name="auth_provider_waiting">Ожидаем подтверждение…</string>
     <string name="error_provider_cancelled">Вход отменён.</string>
     <string name="error_provider_unavailable">Этот способ сейчас недоступен. Войдите через Telegram.</string>
@@ -429,6 +413,5 @@
     <string name="profile_identity_unlinked">Отключено. На других устройствах выполнен выход.</string>
     <string name="profile_identity_connect_provider">Подключить %1$s</string>
     <string name="error_account_blocked">Этот аккаунт ограничен администратором. Напишите в поддержку.</string>
-    <string name="auth_multi_subtitle">Войдите безопасно через Telegram, Google или Apple.</string>
     <string name="profile_social_title">HSK AI в соцсетях</string>
 </resources>

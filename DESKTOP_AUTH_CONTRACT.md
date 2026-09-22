@@ -78,6 +78,19 @@ placed in URLs, logs, analytics, local/session storage or JavaScript responses.
    `Approve / Cancel` action. Opening the link reserves the pending code to the
    first Telegram user who views this confirmation, but does not bind the
    account. Only that user can approve or cancel it.
+
+   **Android is the one platform whose deep link carries its request id**
+   (`?start=android_link_<request id>`), so the bot asks for no code at all:
+   it shows device and app version with the same `Approve / Cancel`, over
+   `link_request_confirmation` / `approve_link_request` /
+   `cancel_link_request`. Opening that link reserves the request to the first
+   Telegram user the same way, so only that chat can approve or cancel it, and
+   the row is still single-use and still expires with the link TTL. The
+   trade-off is deliberate and Android-only: a forwarded link can reach a
+   confirmation screen, which is why the screen names the device and version
+   and why the desktop code path is unchanged. The id is not a secret that
+   mints a session — the token pair is still handed only to the client holding
+   the polling secret.
 5. Approval atomically binds the pending code to the current Telegram account;
    cancellation invalidates it.
 6. Rust calls `POST /api/v3/desktop-auth/link/status`. It is a POST request so

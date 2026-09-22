@@ -32,6 +32,11 @@ data class LinkUiState(
      * by the screen so a recomposition cannot reopen the browser.
      */
     val pendingBrowserUrl: String? = null,
+    /**
+     * The bot deep link, handed to the screen once for the same reason: the
+     * learner asked for Telegram, so Telegram opens exactly once.
+     */
+    val pendingTelegramUrl: String? = null,
 ) {
     val displayCode: String get() = pending?.displayCode.orEmpty()
     val botDeepLink: String get() = pending?.botDeepLink.orEmpty()
@@ -41,8 +46,8 @@ data class LinkUiState(
  * Drives the Telegram device-link screen.
  *
  * The polling secret never reaches the UI state that gets rendered — only the
- * display code and the bot link are shown. Polling stops on success, on
- * expiry, and on any error that cannot be resolved by waiting.
+ * bot link is handed to the screen, and only to be opened. Polling stops on
+ * success, on expiry, and on any error that cannot be resolved by waiting.
  */
 class LinkViewModel(
     private val authRepository: AuthRepository,
@@ -53,6 +58,8 @@ class LinkViewModel(
     val state: StateFlow<LinkUiState> = _state.asStateFlow()
 
     private var pollJob: Job? = null
+    /** The in-flight start of a link, so stepping back can cancel it. */
+    private var startJob: Job? = null
 
     /**
      * Loads the provider list.
@@ -78,6 +85,48 @@ class LinkViewModel(
     /** The screen calls this once it has opened the browser. */
     fun browserUrlOpened() = _state.update { it.copy(pendingBrowserUrl = null) }
 
+    /** The screen calls this once it has opened Telegram. */
+    fun telegramUrlOpened() = _state.update { it.copy(pendingTelegramUrl = null) }
+
+    /**
+     * Opens the bot for the Telegram card.
+     *
+     * A link is reserved first, unless one from an earlier tap is still
+     * valid. Either way the learner never sees, copies or types a code: the
+     * bot reads the request out of the deep link and shows one confirm
+     * button.
+     */
+    fun continueWithTelegram() {
+        val current = _state.value
+        if (current.isRequestingCode) return
+        val pending = current.pending
+        if (pending == null || current.isExpired || remainingSeconds(pending) <= 0) {
+            requestCode(openTelegram = true)
+            return
+        }
+        _state.update {
+            it.copy(
+                busyProvider = AuthProvider.TELEGRAM,
+                isWaitingForApproval = true,
+                error = null,
+                pendingTelegramUrl = pending.botDeepLink.ifEmpty { null },
+            )
+        }
+    }
+
+    /** Steps back from a provider that was started, back to the cards. */
+    fun dismissWaiting() {
+        startJob?.cancel()
+        _state.update {
+            it.copy(
+                isRequestingCode = false,
+                busyProvider = null,
+                pendingTelegramUrl = null,
+                error = null,
+            )
+        }
+    }
+
     private fun startProvider(
         provider: AuthProvider,
         start: suspend () -> ApiResult<PendingLink>,
@@ -87,7 +136,7 @@ class LinkViewModel(
         _state.update {
             it.copy(busyProvider = provider, error = null, isExpired = false)
         }
-        viewModelScope.launch {
+        startJob = viewModelScope.launch {
             when (val result = start()) {
                 is ApiResult.Failure -> _state.update {
                     it.copy(
@@ -117,24 +166,36 @@ class LinkViewModel(
         }
     }
 
-    fun requestCode() {
+    /**
+     * Reserves a link request and starts polling for its approval.
+     *
+     * With [openTelegram] the bot deep link is published to the screen too,
+     * which is what the Telegram card wants; Google and Apple reserve their
+     * own link rows through [startProvider].
+     */
+    fun requestCode(openTelegram: Boolean = false) {
         if (_state.value.isRequestingCode) return
         pollJob?.cancel()
         val providers = _state.value.providers
         _state.value = LinkUiState(isRequestingCode = true, providers = providers)
-        viewModelScope.launch {
+        startJob = viewModelScope.launch {
             when (val result = authRepository.startLink()) {
                 is ApiResult.Failure -> _state.value =
                     LinkUiState(error = result.error, providers = providers)
 
                 is ApiResult.Success -> {
+                    val pending = result.value
                     _state.value = LinkUiState(
-                        pending = result.value,
-                        secondsRemaining = remainingSeconds(result.value),
+                        pending = pending,
+                        secondsRemaining = remainingSeconds(pending),
                         isWaitingForApproval = true,
                         providers = providers,
+                        busyProvider = AuthProvider.TELEGRAM.takeIf { openTelegram },
+                        pendingTelegramUrl = pending.botDeepLink
+                            .ifEmpty { null }
+                            .takeIf { openTelegram },
                     )
-                    startPolling(result.value)
+                    startPolling(pending)
                 }
             }
         }
@@ -197,6 +258,7 @@ class LinkViewModel(
         ((pending.expiresAtMillis - now()) / 1_000L).coerceAtLeast(0L).toInt()
 
     override fun onCleared() {
+        startJob?.cancel()
         pollJob?.cancel()
         super.onCleared()
     }

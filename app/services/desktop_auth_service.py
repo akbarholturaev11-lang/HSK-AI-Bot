@@ -499,35 +499,27 @@ class DesktopAuthService:
             "expires_in": max(0, int((expires_at - now).total_seconds())),
         }
 
-    async def link_request_preview_for_code(
+    async def link_request_confirmation(
         self,
         *,
         link_request_id: str,
-        display_code: str,
         telegram_id: int,
+        platform: str = "android",
     ) -> dict[str, Any]:
-        """Verify the Android request id and its displayed code together."""
+        """Reserve a deep-link request to the Telegram user confirming it.
+
+        The request id travels in the bot deep link, so the app never has to
+        show a code and the learner never has to type one. Reservation is what
+        keeps that safe: the first Telegram user who opens the link is the only
+        one who can then approve or cancel it.
+        """
 
         self._signing_secret()
-        request_id = str(link_request_id or "").strip()
-        normalized = str(display_code or "").strip().upper().replace("-", "")
-        if not request_id or len(request_id) > 64 or len(normalized) != 8:
-            raise DesktopAuthError("desktop_link_invalid", status_code=404)
-        result = await self.session.execute(
-            select(DesktopLinkRequest)
-            .where(DesktopLinkRequest.id == request_id)
-            .with_for_update()
-        )
-        link_request = result.scalar_one_or_none()
+        link_request = await self._locked_link_request_by_id(link_request_id)
         now = _utcnow()
-        if not link_request or link_request.platform != "android":
-            raise DesktopAuthError("desktop_link_invalid", status_code=404)
         self._require_telegram_flow(link_request)
-        if not hmac.compare_digest(
-            str(getattr(link_request, "display_code_hash", "") or ""),
-            self._hash("display-code", normalized),
-        ):
-            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        if platform and link_request.platform != platform:
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
             await self.session.commit()
@@ -538,7 +530,10 @@ class DesktopAuthService:
                 return {
                     "ok": True,
                     "duplicate": True,
+                    "link_request_id": link_request.id,
                     "platform": link_request.platform,
+                    "app_version": link_request.app_version,
+                    "expires_in": 0,
                 }
             raise DesktopAuthError("desktop_link_already_approved", status_code=409)
         if link_request.status != "pending" or link_request.consumed_at is not None:
@@ -553,11 +548,62 @@ class DesktopAuthService:
         expires_at = _as_utc(link_request.expires_at) or now
         return {
             "ok": True,
-            "display_code": normalized,
+            "duplicate": False,
+            "link_request_id": link_request.id,
             "platform": link_request.platform,
             "app_version": link_request.app_version,
             "expires_in": max(0, int((expires_at - now).total_seconds())),
         }
+
+    async def approve_link_request(
+        self,
+        *,
+        link_request_id: str,
+        telegram_id: int,
+        platform: str = "android",
+    ) -> dict[str, Any]:
+        """Approve the request the Telegram user was just shown."""
+
+        self._signing_secret()
+        link_request = await self._locked_link_request_by_id(link_request_id)
+        # The flow guard comes first: a provider row is not the bot's to touch,
+        # whatever platform it names.
+        self._require_telegram_flow(link_request)
+        if platform and link_request.platform != platform:
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        return await self._approve_locked(link_request, telegram_id)
+
+    async def cancel_link_request(
+        self,
+        *,
+        link_request_id: str,
+        telegram_id: int | None = None,
+        platform: str = "android",
+    ) -> dict[str, Any]:
+        """Cancel that same request, from the same confirmation."""
+
+        self._signing_secret()
+        link_request = await self._locked_link_request_by_id(link_request_id)
+        # The flow guard comes first: a provider row is not the bot's to touch,
+        # whatever platform it names.
+        self._require_telegram_flow(link_request)
+        if platform and link_request.platform != platform:
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        return await self._cancel_locked(link_request, telegram_id)
+
+    async def _locked_link_request_by_id(self, link_request_id: str):
+        request_id = str(link_request_id or "").strip()
+        if not request_id or len(request_id) > 64:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        result = await self.session.execute(
+            select(DesktopLinkRequest)
+            .where(DesktopLinkRequest.id == request_id)
+            .with_for_update()
+        )
+        link_request = result.scalar_one_or_none()
+        if not link_request:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        return link_request
 
     async def approve_link(
         self,
@@ -577,9 +623,19 @@ class DesktopAuthService:
             .with_for_update()
         )
         link_request = result.scalar_one_or_none()
-        now = _utcnow()
         if not link_request:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        return await self._approve_locked(link_request, telegram_id)
+
+    async def _approve_locked(self, link_request, telegram_id: int) -> dict[str, Any]:
+        """Bind a locked, pending request to the Telegram account approving it.
+
+        One implementation for both ways in — the desktop code and the Android
+        deep link — so the two can never drift apart on expiry, reuse or on who
+        is allowed to approve.
+        """
+
+        now = _utcnow()
         self._require_telegram_flow(link_request)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
@@ -686,9 +742,18 @@ class DesktopAuthService:
             .with_for_update()
         )
         link_request = result.scalar_one_or_none()
-        now = _utcnow()
         if not link_request:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
+        return await self._cancel_locked(link_request, telegram_id)
+
+    async def _cancel_locked(
+        self,
+        link_request,
+        telegram_id: int | None,
+    ) -> dict[str, Any]:
+        """Invalidate a locked, pending request. Shared for the same reason."""
+
+        now = _utcnow()
         self._require_telegram_flow(link_request)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
