@@ -2426,6 +2426,64 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.route("**/api/admin-miniapp/users/give-access", grant_access)
     page.route("**/api/admin-miniapp/course-access/save", save_course_access)
     page.route("**/api/admin-miniapp/desktop-promo/save", save_app_promo)
+    page.route(
+        "**/api/admin-miniapp/android-stats",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "period": "all_time",
+                "android": {
+                    "funnel": {
+                        "apk_requested": {"users": 9, "events": 12},
+                        "apk_sent": {"users": 8, "events": 10},
+                        "session_linked": {"users": 5, "events": 5},
+                        "first_open": {"users": 4, "events": 4},
+                    },
+                    "registry": {
+                        "installed_devices": 5,
+                        "installed_users": 4,
+                        "opened_devices": 4,
+                        "opened_users": 4,
+                        "never_opened_devices": 1,
+                        "unlinked_devices": 2,
+                        "new_devices_in_period": 5,
+                        "new_users_in_period": 4,
+                        "period_bounded": False,
+                        "online_devices_1d": 2,
+                        "online_users_1d": 2,
+                        "online_devices_7d": 3,
+                        "online_users_7d": 3,
+                        "online_devices_30d": 4,
+                        "online_users_30d": 4,
+                    },
+                    "active": {
+                        "dau": 2,
+                        "dau_devices": 2,
+                        "wau": 3,
+                        "wau_devices": 3,
+                        "mau": 4,
+                        "mau_devices": 4,
+                        "window_days": 30,
+                    },
+                    "versions": {
+                        "rows": [{"version": "1.6.4", "devices": 3, "users": 3}],
+                        "latest": "1.6.4",
+                        "outdated_devices_30d": 1,
+                        "comparable_devices_30d": 4,
+                        "window_days": 30,
+                    },
+                    "updates": {"installed": {"users": 2, "events": 2}},
+                    "rates": {"opened_per_installed": 80.0, "mau_devices_per_installed": 80.0},
+                    "notes": {
+                        "install_definition": "O'rnatish = akkaunt ulangan qurilma.",
+                        "active_definition": "Aktiv = ilova ochilishi.",
+                        "not_measured": "Akkaunt ulanmagan o'rnatishlar o'lchanmaydi.",
+                    },
+                },
+            },
+        ),
+    )
 
     page.goto(app_url("/admin.html"), wait_until="networkidle")
 
@@ -2442,6 +2500,9 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Pullik taxmin")
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("$0.000000")
     expect(page.locator("#clientBusinessTable")).to_contain_text("Android")
+    expect(page.locator("#androidCards")).to_contain_text("O'rnatgan qurilma")
+    expect(page.locator("#androidDevices")).to_contain_text("Ulagan, lekin ochmagan")
+    expect(page.locator("#androidVersions")).to_contain_text("1.6.4")
     expect(page.locator("#clientBusinessTable")).to_contain_text("Desktop")
     expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
     expect(page.locator("#featureAdoption")).to_contain_text("Darslar")

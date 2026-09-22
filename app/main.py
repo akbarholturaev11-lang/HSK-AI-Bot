@@ -101,6 +101,8 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_notification_service import CourseNotificationService
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import access_expires_at, resolve_state
+from app.services.android_analytics_service import AndroidAnalyticsService
+from app.services.android_release_service import AndroidReleaseService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_release_manifest_service import (
@@ -787,6 +789,26 @@ def bot_username_value() -> str:
 
 async def _desktop_latest_versions() -> dict[str, str]:
     return await resolve_desktop_latest_versions(settings)
+
+
+async def _android_latest_release(session) -> dict[str, object] | None:
+    """The build the bot hands out right now, or nothing if it cannot be read.
+
+    A missing release must leave the version column empty rather than make
+    every installed phone look up to date.
+    """
+
+    try:
+        release = await AndroidReleaseService(session).serve()
+    except Exception:
+        logger.exception("Android release could not be read for admin statistics")
+        return None
+    if release is None:
+        return None
+    return {
+        "version_name": release.version_name,
+        "version_code": release.version_code,
+    }
 
 
 def _admin_miniapp_user_id(request: Request) -> int | None:
@@ -2634,6 +2656,43 @@ async def admin_miniapp_desktop_stats(request: Request):
             "ok": True,
             "period": period,
             "desktop": snapshot,
+        }
+    )
+
+
+@app.post("/api/admin-miniapp/android-stats")
+async def admin_miniapp_android_stats(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    period = str(payload.get("period") or "all_time").strip().lower()
+    now = datetime.now(timezone.utc)
+    since_by_period = {
+        "all_time": None,
+        "weekly": now - timedelta(days=7),
+        "monthly": now - timedelta(days=30),
+    }
+    if period not in since_by_period:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_android_stats_period"},
+        )
+    async with async_session_maker() as session:
+        snapshot = await AndroidAnalyticsService(session).snapshot(
+            now=now,
+            since=since_by_period[period],
+            latest_release=await _android_latest_release(session),
+        )
+    return JSONResponse(
+        content={
+            "ok": True,
+            "period": period,
+            "android": snapshot,
         }
     )
 
