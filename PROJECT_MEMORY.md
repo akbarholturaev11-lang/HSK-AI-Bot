@@ -9637,3 +9637,176 @@ Verified:
   "Android", faqat `.quick-platform-android` ko'rinadi, uz/ru/tj matnlari
   to'g'ri; macos/windows avvalgidek; ios'da oyna ochilmaydi; JS xatosi yo'q,
   gorizontal scroll yo'q.
+
+### 2026-09-22 — Obuna Mini App: to'lov so'rovi nega yiqilganini endi aytadi
+
+Muammo: foydalanuvchi karta screenshotini yuborganda faqat «Хатогӣ шуд. Боз
+кӯшиш кунед.» chiqardi va boshqa hech narsa ma'lum bo'lmasdi.
+
+Sabab bitta emas, ikkita edi va ikkalasi ham bir xil ko'rinardi:
+
+**1. Bitta matn — to'rtta boshqa-boshqa sabab.** Chromiumda haqiqiy
+`subscription.html` ni haydab tekshirildi: server 500/502 (JSON o'rniga
+gateway HTML sahifasi), `invalid_screenshot`, `user_blocked` — uchalasi
+ham `errorText()` da xaritalanmagan, ya'ni bitta umumiy `text.error` ga
+tushardi. Ulanish uzilganda esa ekranda brauzerning inglizcha «Failed to
+fetch» matni chiqardi, javob umuman kelmasa — spinner cheksiz aylanardi
+(timeout yo'q edi). Serverda `/api/subscription-miniapp/submit` da na
+`try/except`, na bitta `logger` bor edi — yiqilish hech qanday iz
+qoldirmasdi.
+
+**2. Yuklash hajmi sekin internetga mos emasdi.** `compressDataUrl` bitta
+qadam bilan siqardi: 1600px / sifat 0.82. Sinovda 1080×2400 screenshot shu
+quvurdan **581 KB** bo'lib chiqdi (base64). Foydalanuvchi skrinshotidagi
+tarmoq tezligi — **287 B/s**, ya'ni bunday so'rov ~34 daqiqa yuklanadi va
+gateway uni uzib, HTML 502 qaytaradi → yana o'sha umumiy matn.
+
+Changed:
+- `subscription.html` → `compressDataUrl` pog'onali bo'ldi:
+  `[[1280,0.72],[1100,0.65],[900,0.6],[720,0.55]]`, maqsad ≤300 KB. O'sha
+  1080×2400 screenshot endi **293 KB** (581 KB emas), haqiqiy 720×1280
+  skrin — 91 KB. Kichik rasm qayta kodlanib kattalashib ketmasin deb asl
+  nusxa (faqat allowed format bo'lsa) kichik bo'lganda o'zi qoladi.
+- `api()` ga `AbortController` timeouti: submit 120s, qolganlari 45s.
+  `fetch` rad etsa — `networkError`, abort bo'lsa — `timeoutError`; ya'ni
+  ekranda boshqa inglizcha xabar chiqmaydi va spinner cheksiz aylanmaydi.
+- `errorText()` ga `invalid_screenshot`, `user_blocked`,
+  `payment_submit_failed` qo'shildi; `bad_json` endi `text.error` emas,
+  `serverError` (gateway HTML javobi aynan shu holat).
+- 5 ta yangi matn UCHALA tilda (uz/ru/tj): `networkError`, `timeoutError`,
+  `serverError`, `screenshotInvalid`, `userBlocked`.
+- Screenshot tanlanganda darhol tekshiriladi (`allowedShot` + 8MB):
+  brauzer ocholmagan HEIC/format ilgari faqat «Фиристодан» dan keyin,
+  umumiy matn bilan rad etilardi.
+- `app/main.py` → submit endpointi: body o'qilmasa 400 JSON, kutilmagan
+  istisnoda `logger.exception` + rollback + 500 JSON
+  `payment_submit_failed` (HTML sahifa emas — Mini App uni o'qiy oladi);
+  `ok:false` qaytgan har bir holat `logger.warning` bilan sababi va
+  `telegram_id` si bilan yoziladi.
+- `subscription_miniapp_service.py` → `_decode_screenshot` rad etish
+  sababini (mime / bayt hajmi / base64) logga yozadi; admin xabari
+  yetmaganda `logger.exception`. Rasm ma'lumotining o'zi logga tushmaydi.
+
+Tegilmagan: narx/plan/chegirma hisobi, to'lov tasdiqlash, DB modellari va
+migratsiyalar, QA rejimi, admin panel, Mini App dizayni va oqimi.
+
+Key files:
+- `app/static/subscription.html`
+- `app/main.py` (`/api/subscription-miniapp/submit`)
+- `app/services/subscription_miniapp_service.py`
+- `tests/test_subscription_miniapp_submit.py` (yangi)
+
+Verified:
+- Yangi test fayli eski kodda yiqiladi (`git stash` bilan tekshirildi:
+  14 failed), yangisida o'tadi. To'liq suite: 1580 passed.
+- Haqiqiy brauzerda (Chromium, 393×780, mock API): 502 HTML → «Сервер
+  ҳозир ҷавоб надод…», ulanish uzilishi → «Пайваст қатъ шуд…»,
+  `invalid_screenshot` → «Ин расм қабул нашуд…», `user_blocked` → «Ҳисоби
+  шумо баста шудааст…», HEIC → o'z matni bilan darhol rad, 1.5s timeout →
+  timeout matni aynan chegarada. JS xatosi yo'q.
+
+Diqqat:
+- Prod sababi shu muhitdan isbotlanmadi (Railway'ga chiqish yopiq).
+  Deploydan keyin shu foydalanuvchi bilan qayta sinalsin: endi xato matni
+  aniq sababni aytadi, sabab esa Railway logida
+  `subscription_miniapp_submit ...` qatori bo'lib qoladi.
+- `subscription.html` `no-cache` bilan beriladi, `?v=` bump kerak emas.
+
+### 2026-09-22 — Obuna Mini App: xato paytida admin kontakti ekranga chiqadi
+
+Muammo: to'lov so'rovi yiqilganda foydalanuvchi faqat toast ko'rardi va
+nima qilishni bilmay chiqib ketardi — admin esa nosozlikdan bexabar
+qolardi.
+
+Changed:
+- `submitPayment` xato tutganda `offerSupport(error)` chaqiradi: MAVJUD
+  «Yordam» varag'i (`#supportSheet`) ochiladi, ichida xato sababi va
+  «Adminga yozish» tugmasi turadi. Yangi UI bloki, animatsiya yoki nishon
+  qo'shilmadi — varaq, matnlar va tugmalar ilgaridan bor edi.
+- `api()` endi `Error` o'rniga `apiError(code,supportUrl)` qaytaradi: xato
+  matni bilan birga KODI saqlanadi. Tarmoq/timeout ham shu yo'ldan
+  (`network_error`, `request_timeout`) o'tadi, ya'ni matn yagona joyda —
+  `errorText()` da.
+- `state.supportReason` — varaqdagi matn xato sababi bilan boshlanadi,
+  keyin eski yo'riqnoma (`supportText`) davom etadi. «?» tugmasi orqali
+  ochilganda sabab tozalanadi.
+- Admin kontakti sozlanmagan bo'lsa (`bot_settings.admin_contact` bo'sh):
+  varaq umuman ochilmaydi va «Adminga yozish» tugmasi ko'rinmaydi —
+  ishlamaydigan tugma qolmasin.
+- `invalid_screenshot` bundan mustasno (`SUPPORT_SKIP_CODES`): buni
+  foydalanuvchi boshqa rasm tanlab o'zi tuzatadi.
+- Server: `/api/subscription-miniapp/submit` ning HAR BIR xato javobiga
+  `support_url` qo'shiladi (`_support_url_for_error()`), chunki aynan
+  nosozlik paytida `overview` ham yiqilgan bo'lishi mumkin va Mini App
+  kontaktsiz qoladi.
+
+Key files:
+- `app/static/subscription.html`
+- `app/main.py` (`/api/subscription-miniapp/submit`, `_support_url_for_error`)
+- `tests/test_subscription_miniapp_submit.py`
+
+Verified:
+- Haqiqiy brauzerda (Chromium, 393×780): 500 JSON → varaq ochildi, tugma
+  javobdagi `https://t.me/hsk_ai_support` ni ochdi; 502 HTML → varaq
+  `overview` dagi kontakt bilan ochildi; `invalid_screenshot` → varaq
+  ochilMAdi, faqat toast; ulanish uzilishi → uzbekcha sabab + kontakt;
+  kontakt bo'sh bo'lsa → varaq ochilmaydi, «?» varag'ida tugma yashirin.
+  JS xatosi yo'q.
+- `tests/test_subscription_miniapp_submit.py` (11 test) + to'liq suite:
+  1581 passed.
+
+Diqqat:
+- Kontakt manbasi — admin panel/bot dagi `admin_contact` sozlamasi
+  (`ADMIN_CONTACT_KEY`). U bo'sh bo'lsa hech qanday kontakt ko'rsatilmaydi,
+  shuning uchun prodda o'sha sozlama to'ldirilgani tekshirilsin.
+
+### 2026-09-22 — Obuna Mini App: rasm rad etilsa — sabab, hajm va yo'l-yo'riq
+
+Foydalanuvchi prodda sinab ko'rdi: siqishdan keyin to'lov so'rovi o'tdi
+(«So'rov yuborildi ✅»), ya'ni sabab haqiqatan yuklash hajmi + sekin tarmoq
+ekan. Keyingi talab: Mini App xatoni AYNAN aytsin, hajm katta bo'lsa —
+hajmni ham ko'rsatsin va nima qilish kerakligini aytsin.
+
+Changed:
+- `renderUploadBox(text)` ajratildi (ilgari o'sha 4 qator `renderPay` ning
+  ikki shoxida takrorlanardi). Endi upload qatori uchta holatni ko'rsatadi:
+  tanlanmagan (eski yo'riqnoma), tanlangan (HAQIQIY hajm: «Hajmi 68 KB —
+  yuborishga tayyor»), rad etilgan (sabab + yo'l-yo'riq). Toast 2 soniyada
+  o'chadi, bu qator esa boshqa rasm tanlangunicha turadi.
+- `state.screenshotNote` + `rejectScreenshot(note)`: rad etish sabablari
+  ajratildi — format (`{type}` bilan: `image/heic`, `application/pdf`),
+  hajm (`{size}` bilan) va o'qish xatosi. Ilgari uchalasi bitta «Bu rasm
+  qabul qilinmadi» edi.
+- `screenshotHeavy`: siqishdan keyin ham 600 KB dan og'ir qolsa (canvas
+  siqa olmagan holat) foydalanuvchi buni YUBORISHDAN OLDIN biladi va
+  Wi-Fi taklif qilinadi.
+- Klient chegarasi endi server bilan bir xil o'lchovda: `SCREENSHOT_MAX_CHARS`
+  (base64 belgilari) o'rniga `SCREENSHOT_MAX_BYTES=8MB` (dekodlangan bayt).
+  Ilgari 7.4 MB rasm «chegara 8 MB» deb rad etilardi — chunki base64 satri
+  ~1.33 barobar uzun.
+- `_decode_screenshot` endi `(payload, reason)` qaytaradi va submit javobiga
+  `reason` («format» yoki «too_big») qo'shiladi; `apiError` uni olib yuradi,
+  `serverScreenshotNote()` esa shu sabab bo'yicha matn tanlaydi. Server
+  «too_big» desa-yu hajm chegaradan kichik bo'lsa — umumiy matn qoladi
+  (chalg'itmaslik uchun).
+- Support varag'idagi sabab oxirida texnik kod turadi (masalan
+  `[payment_submit_failed]`) — foydalanuvchi xabarni adminga yuborganda
+  qaysi nosozlik bo'lgani taxmin qilinmaydi.
+- 5 ta yangi matn uchala tilda: `screenshotReady`, `screenshotHeavy`,
+  `screenshotTooBig`, `screenshotFormat`, `screenshotReadFailed`.
+  Yangi UI bloki, rang yoki CSS qo'shilmadi — mavjud `#uploadText` qatori.
+
+Key files:
+- `app/static/subscription.html`
+- `app/services/subscription_miniapp_service.py` (`_decode_screenshot` → tuple)
+- `tests/test_subscription_miniapp_submit.py`
+
+Verified:
+- Haqiqiy brauzerda (Chromium, 393×780, uz/tj): oddiy skrin → «Hajmi 68 KB
+  — yuborishga tayyor»; HEIC → «...qo'llab-quvvatlanmaydi (image/heic)»;
+  PDF → «(application/pdf)»; 7.4 MB PNG (canvas siqmagan holat majburlandi)
+  → og'irlik ogohlantirishi bilan QABUL qilinadi; server `invalid_screenshot`
+  → qator ekranda qoladi; support varag'ida `[payment_submit_failed]`.
+  JS xatosi yo'q.
+- `tests/test_subscription_miniapp_submit.py` — 14 test; to'liq suite:
+  1584 passed.

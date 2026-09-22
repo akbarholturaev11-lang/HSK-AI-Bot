@@ -534,7 +534,17 @@ const I18N={
     quoteError:"To'lov ma'lumotini hozir ochib bo'lmadi. Qayta urinib ko'ring.",
     paymentDetailsMissing:"Karta rekviziti hozircha tayyor emas. Keyinroq urinib ko'ring.",
     adminNotificationFailed:"To'lov so'rovi yuborilmadi. Qayta urinib ko'ring.",
-    invalidTelegram:"Mini appni bot ichidan qayta oching."
+    invalidTelegram:"Mini appni bot ichidan qayta oching.",
+    screenshotReady:"Hajmi {size} — yuborishga tayyor.",
+    screenshotHeavy:"Hajmi {size}. Sekin internetda yuborish uzoq davom etishi mumkin — imkon bo'lsa Wi-Fi ga ulaning.",
+    screenshotTooBig:"Rasm juda katta: {size}. Chegara — 8 MB. Galereyadan oddiy screenshot (JPG) tanlang yoki rasmni qirqib kichraytiring.",
+    screenshotFormat:"Bu format qo'llab-quvvatlanmaydi ({type}). Screenshotni JPG yoki PNG holida tanlang.",
+    screenshotReadFailed:"Rasmni o'qib bo'lmadi. Yana bir marta tanlab ko'ring.",
+    networkError:"Internet uzildi. Ulanishni tekshirib, qayta yuboring.",
+    timeoutError:"Internet juda sekin — so'rov yuborilmadi. Aloqa yaxshilanganda qayta urinib ko'ring.",
+    serverError:"Server hozir javob bermadi. Bir oz kutib, qayta yuboring.",
+    screenshotInvalid:"Bu rasm qabul qilinmadi. Boshqa screenshot (JPG yoki PNG) tanlang.",
+    userBlocked:"Hisobingiz bloklangan. Support bilan bog'laning."
   },
   ru:{
     title:"Подписка",
@@ -653,7 +663,17 @@ const I18N={
     quoteError:"Не удалось открыть данные оплаты. Попробуйте ещё раз.",
     paymentDetailsMissing:"Реквизиты карты пока не готовы. Попробуйте позже.",
     adminNotificationFailed:"Заявку не удалось отправить. Попробуйте ещё раз.",
-    invalidTelegram:"Откройте mini app из бота."
+    invalidTelegram:"Откройте mini app из бота.",
+    screenshotReady:"Размер {size} — готово к отправке.",
+    screenshotHeavy:"Размер {size}. На медленном интернете отправка может занять много времени — по возможности подключитесь к Wi-Fi.",
+    screenshotTooBig:"Изображение слишком большое: {size}. Предел — 8 MB. Выберите обычный screenshot (JPG) из галереи или обрежьте изображение.",
+    screenshotFormat:"Этот формат не поддерживается ({type}). Выберите screenshot в формате JPG или PNG.",
+    screenshotReadFailed:"Не удалось прочитать изображение. Попробуйте выбрать ещё раз.",
+    networkError:"Соединение прервалось. Проверьте интернет и отправьте ещё раз.",
+    timeoutError:"Интернет слишком медленный — заявка не ушла. Попробуйте при лучшей связи.",
+    serverError:"Сервер сейчас не ответил. Подождите немного и отправьте ещё раз.",
+    screenshotInvalid:"Это изображение не принято. Выберите другой screenshot (JPG или PNG).",
+    userBlocked:"Ваш аккаунт заблокирован. Свяжитесь с поддержкой."
   },
   tj:{
     title:"Обуна",
@@ -772,7 +792,17 @@ const I18N={
     quoteError:"Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.",
     paymentDetailsMissing:"Реквизити корт ҳоло тайёр нест. Баъдтар кӯшиш кунед.",
     adminNotificationFailed:"Дархости пардохт фиристода нашуд. Боз кӯшиш кунед.",
-    invalidTelegram:"Mini app-ро аз дохили bot кушоед."
+    invalidTelegram:"Mini app-ро аз дохили bot кушоед.",
+    screenshotReady:"Ҳаҷм {size} — барои фиристодан тайёр.",
+    screenshotHeavy:"Ҳаҷм {size}. Дар интернети суст фиристодан дер давом карда метавонад — агар имкон бошад, ба Wi-Fi пайваст шавед.",
+    screenshotTooBig:"Расм хеле калон аст: {size}. Ҳудуд — 8 MB. Аз галерея screenshot-и оддӣ (JPG) интихоб кунед ё расмро бурида хурд кунед.",
+    screenshotFormat:"Ин формат дастгирӣ намешавад ({type}). Screenshot-ро дар шакли JPG ё PNG интихоб кунед.",
+    screenshotReadFailed:"Расмро хондан нашуд. Боз як бор интихоб кунед.",
+    networkError:"Пайваст қатъ шуд. Интернетро тафтиш карда, аз нав фиристед.",
+    timeoutError:"Интернет хеле суст аст — дархост нарафт. Ҳангоми алоқаи беҳтар боз кӯшиш кунед.",
+    serverError:"Сервер ҳозир ҷавоб надод. Каме сабр карда, аз нав фиристед.",
+    screenshotInvalid:"Ин расм қабул нашуд. Screenshot-и дигар (JPG ё PNG) интихоб кунед.",
+    userBlocked:"Ҳисоби шумо баста шудааст. Бо дастгирӣ дар тамос шавед."
   }
 };
 
@@ -798,6 +828,8 @@ const state={
   inviteCopied:false,
   supportOpen:false,
   supportUrl:"",
+  supportReason:"",
+  screenshotNote:"",
   busy:false,
   busyOverlay:false,
   done:false,
@@ -914,16 +946,40 @@ function trackSubscriptionStage(stage){
     keepalive:true
   }).catch(()=>null);
 }
-function api(path,body){
+/* Sekin internetda so'rov cheksiz osilib qolmasin: timeout bo'lmasa
+   foydalanuvchi aylanayotgan spinnerdan boshqa hech narsa ko'rmaydi. */
+const API_TIMEOUT_MS=45000;
+const SUBMIT_TIMEOUT_MS=120000;
+function api(path,body,timeoutMs){
+  const limit=timeoutMs||API_TIMEOUT_MS;
+  const controller=typeof AbortController==="function"?new AbortController():null;
+  const timer=controller?setTimeout(()=>controller.abort(),limit):null;
+  const clear=()=>{if(timer)clearTimeout(timer)};
   return fetch(path,{
     method:"POST",
     headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body||{})
+    body:JSON.stringify(body||{}),
+    signal:controller?controller.signal:undefined
+  }).catch(error=>{
+    clear();
+    /* Tarmoq xatosi brauzerdan inglizcha keladi ("Failed to fetch") —
+       foydalanuvchiga o'z tilidagi sabab ko'rsatiladi. */
+    throw apiError(error&&error.name==="AbortError"?"request_timeout":"network_error");
   }).then(async response=>{
+    clear();
     const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
-    if(!response.ok||!data.ok)throw new Error(errorText(data.error||"api_error"));
+    if(!response.ok||!data.ok)throw apiError(data.error||"api_error",data.support_url,data.reason);
     return data;
   });
+}
+/* Xato matni bilan birga KODI ham saqlanadi: ekranda admin kontaktini
+   ko'rsatish yoki ko'rsatmaslik shu kodga qarab hal qilinadi. */
+function apiError(code,supportUrl,reason){
+  const error=new Error(errorText(code));
+  error.code=code;
+  if(supportUrl)error.supportUrl=supportUrl;
+  if(reason)error.reason=reason;
+  return error;
 }
 function errorText(code){
   const text=tr();
@@ -934,7 +990,13 @@ function errorText(code){
     qr_not_ready:text.qrMissing,
     payment_invalid_plan:text.offerExpired,
     access_start_first:text.invalidTelegram,
-    bad_json:text.error,
+    invalid_screenshot:text.screenshotInvalid,
+    user_blocked:text.userBlocked,
+    payment_submit_failed:text.serverError,
+    /* JSON o'rniga gateway HTML sahifasi qaytgan holat (502/504). */
+    bad_json:text.serverError,
+    network_error:text.networkError,
+    request_timeout:text.timeoutError,
     api_error:text.error
   };
   return errors[code]||text.error;
@@ -1034,6 +1096,7 @@ function applyOverview(data){
     state.qrPreviewOpen=false;
     state.screenshotDataUrl="";
     state.screenshotName="";
+    state.screenshotNote="";
   }
 }
 async function loadOverview(){
@@ -1372,10 +1435,7 @@ function renderPay(text){
     $("#amountOld").classList.remove("show");
     $("#summaryRows").innerHTML="";
     $("#paymentBox").innerHTML=`<h4>${text.detailsTitle}</h4><div class="qr empty">${state.quoteError||text.quoteError}</div>`;
-    $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
-    $("#uploadText").textContent=text.uploadText;
-    $("#uploadPlus").textContent=state.screenshotDataUrl?"✓":"+";
-    $("#uploadBox").classList.toggle("ready",Boolean(state.screenshotDataUrl));
+    renderUploadBox(text);
     return;
   }
   $("#amountValue").textContent=money(quote.pay_amount);
@@ -1412,10 +1472,39 @@ function renderPay(text){
   }else{
     $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4><div class="qr empty">${text.qrMissing}</div>`;
   }
+  renderUploadBox(text);
+}
+/* Screenshot qatori: tanlangan rasmning HAQIQIY hajmi, yoki rad etilgan
+   bo'lsa — sababi va nima qilish kerakligi. Toast 2 soniyada yo'qoladi,
+   bu qator esa foydalanuvchi boshqa rasm tanlagunicha turadi. */
+function renderUploadBox(text){
+  const hasShot=Boolean(state.screenshotDataUrl);
   $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
-  $("#uploadText").textContent=state.screenshotName?text.uploadText:text.uploadText;
-  $("#uploadPlus").textContent=state.screenshotDataUrl?"✓":"+";
-  $("#uploadBox").classList.toggle("ready",Boolean(state.screenshotDataUrl));
+  $("#uploadText").textContent=state.screenshotNote||(hasShot?screenshotSizeNote(text):text.uploadText);
+  $("#uploadPlus").textContent=hasShot?"✓":"+";
+  $("#uploadBox").classList.toggle("ready",hasShot);
+}
+function screenshotSizeNote(text){
+  const bytes=dataUrlBytes(state.screenshotDataUrl);
+  const size=formatBytes(bytes);
+  /* Siqishdan keyin ham og'ir qolgan rasm sekin internetda uzoq ketadi —
+     foydalanuvchi buni yuborishdan OLDIN bilsin. */
+  const template=bytes>SCREENSHOT_HEAVY_BYTES?text.screenshotHeavy:text.screenshotReady;
+  return template.replace("{size}",size);
+}
+function dataUrlBytes(dataUrl){
+  const base64=String(dataUrl||"").split(",")[1]||"";
+  if(!base64)return 0;
+  const padding=base64.endsWith("==")?2:(base64.endsWith("=")?1:0);
+  return Math.max(0,Math.floor(base64.length*3/4)-padding);
+}
+function dataUrlMime(dataUrl){
+  const match=/^data:([^;,]+)/i.exec(String(dataUrl||""));
+  return match?match[1]:"";
+}
+function formatBytes(bytes){
+  if(bytes>=1024*1024)return (bytes/1048576).toFixed(1)+" MB";
+  return Math.max(1,Math.round(bytes/1024))+" KB";
 }
 function currentQrImage(){
   return state.quote?.qr?.image_data_url||"";
@@ -1496,8 +1585,12 @@ function renderSupportSheet(text){
   sheet.classList.toggle("show",visible);
   sheet.setAttribute("aria-hidden",visible?"false":"true");
   $("#supportTitle").textContent=text.supportTitle;
-  $("#supportText").textContent=text.supportText;
+  /* Xatodan keyin ochilgan bo'lsa — sabab shu yerda turadi, foydalanuvchi
+     adminga aynan nima bo'lganini yozib yuboradi. */
+  $("#supportText").textContent=state.supportReason?state.supportReason+" "+text.supportText:text.supportText;
   $("#openSupportBtn").textContent=text.supportButton;
+  /* Admin kontakti sozlanmagan bo'lsa ishlamaydigan tugma turmasin. */
+  $("#openSupportBtn").style.display=state.supportUrl?"":"none";
   $("#closeSupportBtn").textContent=text.close;
 }
 function showInviteSheet(link){
@@ -1512,12 +1605,44 @@ function hideInviteSheet(){
   render();
 }
 function showSupportSheet(){
+  state.supportReason="";
   state.supportOpen=true;
   render();
 }
 function hideSupportSheet(){
   state.supportOpen=false;
+  state.supportReason="";
   render();
+}
+/* To'lov so'rovi yiqilganda foydalanuvchi ekranda admin kontaktini ko'rsin:
+   aks holda u nima bo'lganini hech kimga ayta olmay chiqib ketadi va admin
+   nosozlikdan xabarsiz qoladi. O'zi darhol tuzata oladigan holat (boshqa
+   rasm tanlash) bundan mustasno. */
+const SUPPORT_SKIP_CODES=["invalid_screenshot"];
+/* Server rad etgan rasm: sabab kodi `reason` da keladi. */
+function serverScreenshotNote(error){
+  const text=tr();
+  const bytes=dataUrlBytes(state.screenshotDataUrl);
+  /* Hajm chegaradan kichik bo'lsa "juda katta" deyish foydalanuvchini
+     chalg'itadi — unda umumiy matn qoladi. */
+  if(error&&error.reason==="too_big"&&bytes>SCREENSHOT_MAX_BYTES){
+    return text.screenshotTooBig.replace("{size}",formatBytes(bytes));
+  }
+  if(error&&error.reason==="format"){
+    return text.screenshotFormat.replace("{type}",dataUrlMime(state.screenshotDataUrl)||"?");
+  }
+  return text.screenshotInvalid;
+}
+function offerSupport(error){
+  const code=(error&&error.code)||"";
+  if(SUPPORT_SKIP_CODES.indexOf(code)>=0)return;
+  if(error&&error.supportUrl)state.supportUrl=error.supportUrl;
+  if(!state.supportUrl)return;
+  const reason=(error&&error.message)||tr().error;
+  /* Kod ham qo'shiladi: foydalanuvchi xabarni adminga yuborganda qaysi
+     nosozlik bo'lgani taxmin qilinmaydi, aniq ko'rinadi. */
+  state.supportReason=code?`${reason} [${code}]`:reason;
+  state.supportOpen=true;
 }
 async function copyText(value,successMessage,failedMessage){
   if(!value){toast(tr().error);return false}
@@ -1604,14 +1729,23 @@ async function submitPayment(){
       payment_method:state.method,
       card_country:state.method==="visa"?state.country:null,
       screenshot_data_url:state.screenshotDataUrl
-    });
+    },SUBMIT_TIMEOUT_MS);
     state.pending=Boolean(data.already_pending);
     state.pendingPayment=data.already_pending?data:null;
     state.done=!state.pending;
     try{sessionStorage.removeItem("hsk_subscription_attempt_v1")}catch(e){}
     state.step=0;
   }catch(error){
-    toast(error.message||tr().error);
+    /* Server rasmni rad etsa — sababi (format yoki hajm) bo'yicha aynan
+       nima qilish kerakligi aytiladi va bu qator toast o'chgach ham qoladi. */
+    const note=error&&error.code==="invalid_screenshot"?serverScreenshotNote(error):"";
+    toast(note||error.message||tr().error);
+    if(note){
+      state.screenshotDataUrl="";
+      state.screenshotName="";
+      state.screenshotNote=note;
+    }
+    offerSupport(error);
   }finally{
     setBusy(false);
     render();
@@ -1733,45 +1867,91 @@ function readFileAsDataUrl(file){
     reader.readAsDataURL(file);
   });
 }
-// Telefon rasmlari 8MB serverchekdan oshib ketmasligi uchun canvasda siqamiz.
+/* Telefon rasmi canvasda siqiladi. Asosiy chek — 8MB server chegarasi emas,
+   YUKLASH VAQTI: sekin mobil internetda 300KB dan katta so'rov gateway
+   timeoutiga borib "Xatolik yuz berdi" bo'lib qaytardi. Shuning uchun
+   pog'onali siqish: karta raqami o'qiladigan eng kichik hajm tanlanadi. */
+const SCREENSHOT_TARGET_CHARS=300*1024;
+/* Server chegarasi DEKODLANGAN baytda o'lchanadi (MAX_SCREENSHOT_BYTES),
+   base64 satri esa ~1.33 barobar uzun — shuning uchun bu yerda ham bayt. */
+const SCREENSHOT_MAX_BYTES=8*1024*1024;
+/* Siqish ishlaganda hajm ~300KB dan oshmaydi. Bundan kattasi — canvas
+   siqa olmagan holat, ya'ni yuborish sekin internetda uzoq davom etadi. */
+const SCREENSHOT_HEAVY_BYTES=600*1024;
+const SCREENSHOT_STEPS=[[1280,0.72],[1100,0.65],[900,0.6],[720,0.55]];
+function allowedShot(dataUrl){
+  return /^data:image\/(jpeg|jpg|png|webp);base64,/i.test(dataUrl||"");
+}
 function compressDataUrl(dataUrl){
   return new Promise(resolve=>{
     const img=new Image();
     img.onerror=()=>resolve(dataUrl);
     img.onload=()=>{
       try{
-        const max=1600;
-        const scale=Math.min(1,max/Math.max(img.width,img.height));
-        const w=Math.max(1,Math.round(img.width*scale));
-        const h=Math.max(1,Math.round(img.height*scale));
-        const canvas=document.createElement("canvas");
-        canvas.width=w;canvas.height=h;
-        const ctx=canvas.getContext("2d");
-        if(!ctx){resolve(dataUrl);return}
-        ctx.drawImage(img,0,0,w,h);
-        const out=canvas.toDataURL("image/jpeg",0.82);
-        resolve(out&&out.length>60?out:dataUrl);
+        let best="";
+        for(const step of SCREENSHOT_STEPS){
+          const max=step[0],quality=step[1];
+          const scale=Math.min(1,max/Math.max(img.width,img.height));
+          const w=Math.max(1,Math.round(img.width*scale));
+          const h=Math.max(1,Math.round(img.height*scale));
+          const canvas=document.createElement("canvas");
+          canvas.width=w;canvas.height=h;
+          const ctx=canvas.getContext("2d");
+          if(!ctx)break;
+          ctx.drawImage(img,0,0,w,h);
+          const out=canvas.toDataURL("image/jpeg",quality);
+          if(!out||out.length<=60)break;
+          best=out;
+          if(out.length<=SCREENSHOT_TARGET_CHARS)break;
+        }
+        if(!best){resolve(dataUrl);return}
+        /* Kichik rasm qayta kodlanganda kattalashib ketishi mumkin —
+           faqat allowed formatdagi asl nusxa kichik bo'lsa o'sha qoladi. */
+        resolve(allowedShot(dataUrl)&&dataUrl.length<best.length?dataUrl:best);
       }catch(e){resolve(dataUrl);}
     };
     img.src=dataUrl;
   });
 }
+/* Rasm rad etilganda sabab AYNAN aytiladi: format, hajm yoki o'qish
+   xatosi — har biri o'z matni va nima qilish kerakligi bilan. */
+function rejectScreenshot(note){
+  state.screenshotDataUrl="";
+  state.screenshotName="";
+  state.screenshotNote=note;
+  toast(note);
+  render();
+}
 $("#receiptInput").addEventListener("change",async event=>{
   const file=event.target.files?.[0];
   if(!file)return;
+  const text=tr();
   if(!file.type.startsWith("image/")){
-    toast(tr().needScreenshot);
+    rejectScreenshot(text.screenshotFormat.replace("{type}",file.type||"?"));
     event.target.value="";
     return;
   }
   try{
     const raw=await readFileAsDataUrl(file);
-    state.screenshotDataUrl=await compressDataUrl(raw);
+    const shot=await compressDataUrl(raw);
+    /* Server faqat jpeg/png/webp va 8MB gacha qabul qiladi. Ilgari bunday
+       rasm faqat "Фиристодан" bosilgandan keyin, umumiy xato matni bilan
+       rad etilardi — endi sabab darhol va aniq aytiladi. */
+    if(!allowedShot(shot)){
+      rejectScreenshot(text.screenshotFormat.replace("{type}",file.type||"?"));
+      return;
+    }
+    if(dataUrlBytes(shot)>SCREENSHOT_MAX_BYTES){
+      rejectScreenshot(text.screenshotTooBig.replace("{size}",formatBytes(dataUrlBytes(shot))));
+      return;
+    }
+    state.screenshotDataUrl=shot;
     state.screenshotName=file.name;
+    state.screenshotNote="";
     trackSubscriptionStage("payment_receipt_selected");
     render();
   }catch(err){
-    toast(tr().needScreenshot);
+    rejectScreenshot(text.screenshotReadFailed);
   }finally{
     event.target.value="";
   }
