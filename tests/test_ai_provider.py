@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from app.services import ai_provider
 from app.services.ai_provider import AIProviderChain, GEMINI_MODEL_OPTIONS
+from app.services.ai_usage_budget_service import MODEL_PRICING_USD_PER_1M
 
 
 def _mock_response():
@@ -103,14 +104,43 @@ class AIProviderChainTests(unittest.IsolatedAsyncioTestCase):
 
 class ActiveGeminiModelTests(unittest.IsolatedAsyncioTestCase):
     async def test_cache_returns_value_without_db(self):
-        ai_provider.set_active_gemini_model_cache("gemini-2.5-pro")
-        self.assertEqual(await ai_provider.get_active_gemini_model(), "gemini-2.5-pro")
+        ai_provider.set_active_gemini_model_cache("gemini-3.6-flash")
+        self.assertEqual(await ai_provider.get_active_gemini_model(), "gemini-3.6-flash")
 
-    def test_model_options_are_the_three_expected(self):
-        self.assertEqual(
-            GEMINI_MODEL_OPTIONS,
-            ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"],
-        )
+    def test_every_offered_model_has_a_price(self):
+        """An unpriced model is billed as $0, so the budget guard never trips.
+
+        This is how a model swap goes wrong quietly: the calls succeed, the
+        cost column reads zero, and nothing stops a runaway.
+        """
+
+        for model in GEMINI_MODEL_OPTIONS + [ai_provider.GEMINI_FAST_MODEL]:
+            with self.subTest(model=model):
+                self.assertIn(model, MODEL_PRICING_USD_PER_1M)
+
+    def test_no_retired_model_is_offered(self):
+        """The 2.5 family is gone.
+
+        `gemini-2.5-flash-lite` and `gemini-2.5-pro` answer 404 "no longer
+        available to new users", and `gemini-2.5-flash` answers 429 on every
+        call. Offering one again would send every request to the OpenAI
+        fallback without anyone noticing — which is exactly what happened.
+        """
+
+        offered = set(GEMINI_MODEL_OPTIONS) | {ai_provider.GEMINI_FAST_MODEL}
+        retired = {m for m in offered if m.startswith("gemini-2.")}
+        self.assertEqual(retired, set())
+
+    def test_the_default_is_something_a_user_can_actually_be_given(self):
+        self.assertIn(ai_provider._default_gemini_model(), GEMINI_MODEL_OPTIONS)
+
+    def test_history_keeps_prices_for_models_no_longer_offered(self):
+        """Old usage rows still name the retired models; dropping their price
+        would rewrite past cost as zero."""
+
+        for model in ("gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"):
+            with self.subTest(model=model):
+                self.assertIn(model, MODEL_PRICING_USD_PER_1M)
 
 
 if __name__ == "__main__":

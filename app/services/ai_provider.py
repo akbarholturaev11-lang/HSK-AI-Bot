@@ -26,15 +26,24 @@ logger = logging.getLogger(__name__)
 GEMINI_OPENAI_COMPAT_DEFAULT = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 # Admin panelda tanlanadigan Gemini modellari.
+#
+# 2.5 oilasi olib tashlandi: `gemini-2.5-flash-lite` va `gemini-2.5-pro`
+# 404 "no longer available to new users" qaytaradi, `gemini-2.5-flash` esa
+# har chaqiruvda 429 beradi. Ya'ni uchalasi ham ishlamas edi va har bir
+# so'rov jimgina OpenAI zaxirasiga tushardi.
+#
+# Bu ro'yxatdagilar 2026-09-22 da shu API kaliti bilan ketma-ket sinaldi.
 GEMINI_MODEL_OPTIONS = [
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash",
-    "gemini-2.5-pro",
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.6-flash",
 ]
 
 # AI Voice suhbatida kechikishni kamaytirish uchun eng tez model
 # (admin global tanlovidan qat'i nazar shu ishlatiladi).
-GEMINI_FAST_MODEL = "gemini-2.5-flash-lite"
+# Google'ning o'zi eski `gemini-2.5-flash-lite` o'rniga shuni tavsiya qildi;
+# haqiqiy xitoycha audio bilan tekshirildi.
+GEMINI_FAST_MODEL = "gemini-3.5-flash-lite"
 
 # bot_settings jadvalidagi kalit.
 ACTIVE_GEMINI_MODEL_KEY = "active_gemini_model"
@@ -54,7 +63,7 @@ def gemini_active() -> bool:
 
 def _default_gemini_model() -> str:
     model = (settings.GEMINI_MODEL or "").strip()
-    return model if model in GEMINI_MODEL_OPTIONS else "gemini-2.5-flash"
+    return model if model in GEMINI_MODEL_OPTIONS else "gemini-3.5-flash"
 
 
 def set_active_gemini_model_cache(value: str) -> None:

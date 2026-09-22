@@ -27,8 +27,17 @@ MODEL_PRICING_USD_PER_1M = {
     "gpt-4o-mini": (0.15, 0.60),
     "o4-mini": (1.10, 4.40),
     "gpt-4o-mini-transcribe": (1.25, 5.00),
-    # Gemini (asosiy provayder) — taxminiy narxlar (1M token input/output),
-    # deploydan oldin Google amaldagi narxi bilan solishtirilsin.
+    # Gemini (asosiy provayder), 1M token uchun (input, output) USD.
+    # 2026-09-22 da Google'ning rasmiy narx sahifasidan olindi.
+    "gemini-3.5-flash-lite": (0.30, 2.50),
+    "gemini-3.5-flash": (1.50, 9.00),
+    # DIQQAT: bu aksiya narxi — 2026-12-31 gacha. 2027-01-01 dan
+    # (1.50, 7.50) bo'ladi. O'sha sanada shu qatorni yangilash kerak,
+    # aks holda xarajat hisobi ikki barobar kam ko'rsatadi.
+    "gemini-3.6-flash": (0.75, 3.75),
+    # Eski modellar ataylab qoldirildi: `ai_usage_events` dagi tarixiy
+    # yozuvlar shu nomlarga ishora qiladi va olib tashlansa o'sha davr
+    # xarajati nolga aylanadi.
     "gemini-2.5-flash-lite": (0.10, 0.40),
     "gemini-2.5-flash": (0.30, 2.50),
     "gemini-2.5-pro": (1.25, 10.00),

@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     # Owner uses the free API tier. Set paid when the Google project is upgraded.
     GEMINI_BILLING_TIER: Literal["free", "paid"] = "free"
     # Admin panel model tanlamagan bo'lsa ishlatiladigan standart Gemini modeli.
-    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
     # Gemini'ning OpenAI-mos endpointi (matn/vision/JSON shu orqali ketadi).
     GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
     # Gemini osilib qolsa OpenAI'ga tez o'tish uchun so'rov timeouti (soniya).
