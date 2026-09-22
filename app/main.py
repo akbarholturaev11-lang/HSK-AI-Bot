@@ -170,7 +170,12 @@ from app.services.payment_qr_code_service import (
 )
 from app.bot.keyboards.promo_button import encode_promo_button_config
 from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, normalize_help_url
-from app.services.support_contact_service import ADMIN_CONTACT_KEY, admin_contact_url, normalize_admin_contact
+from app.services.support_contact_service import (
+    ADMIN_CONTACT_KEY,
+    admin_contact_url,
+    get_admin_contact_url,
+    normalize_admin_contact,
+)
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import (
     extract_fresh_verified_webapp_user_id,
@@ -251,6 +256,20 @@ def _checkout_attempt_id(value) -> str | None:
 
 def _checkout_text(value, limit: int) -> str:
     return str(value or "").strip()[:limit]
+
+
+async def _support_url_for_error() -> str:
+    """Admin kontakti — xato javobiga ham qo'shiladi.
+
+    Mini App uni odatda `overview` dan oladi, lekin aynan nosozlik paytida
+    `overview` ham yiqilgan bo'lishi mumkin. Kontaktsiz foydalanuvchi
+    muammoni hech kimga ayta olmaydi, shuning uchun bu yerda qayta olinadi.
+    """
+    try:
+        async with async_session_maker() as session:
+            return await get_admin_contact_url(session)
+    except Exception:  # noqa: BLE001
+        return ""
 
 
 def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
@@ -4760,7 +4779,12 @@ async def subscription_miniapp_submit(request: Request):
             "subscription_miniapp_submit body unreadable telegram_id=%s", telegram_id
         )
         return JSONResponse(
-            status_code=400, content={"ok": False, "error": "payment_submit_failed"}
+            status_code=400,
+            content={
+                "ok": False,
+                "error": "payment_submit_failed",
+                "support_url": await _support_url_for_error(),
+            },
         )
 
     if not isinstance(payload, dict):
@@ -4768,7 +4792,12 @@ async def subscription_miniapp_submit(request: Request):
             "subscription_miniapp_submit body is not an object telegram_id=%s", telegram_id
         )
         return JSONResponse(
-            status_code=400, content={"ok": False, "error": "payment_submit_failed"}
+            status_code=400,
+            content={
+                "ok": False,
+                "error": "payment_submit_failed",
+                "support_url": await _support_url_for_error(),
+            },
         )
 
     attempt_id = _checkout_attempt_id(payload.get("attempt_id"))
@@ -4798,7 +4827,11 @@ async def subscription_miniapp_submit(request: Request):
                 await session.rollback()
             return JSONResponse(
                 status_code=500,
-                content={"ok": False, "error": "payment_submit_failed"},
+                content={
+                    "ok": False,
+                    "error": "payment_submit_failed",
+                    "support_url": await _support_url_for_error(),
+                },
             )
         if not result.get("ok"):
             logger.warning(
@@ -4808,6 +4841,7 @@ async def subscription_miniapp_submit(request: Request):
                 _checkout_text(payload.get("payment_method"), 32),
                 result.get("error"),
             )
+            result.setdefault("support_url", await _support_url_for_error())
         if result.get("ok") and result.get("payment_id") and not result.get("already_pending"):
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             await ConversionFunnelService().record(

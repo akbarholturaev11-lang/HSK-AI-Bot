@@ -26,6 +26,7 @@ from app.db.base import Base
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.services.support_contact_service import ADMIN_CONTACT_KEY
 from app.services.subscription_miniapp_service import (
     MAX_SCREENSHOT_BYTES,
     PAYMENT_DETAILS_KEY,
@@ -187,6 +188,23 @@ class SubscriptionMiniAppSubmitEndpointTests(unittest.IsolatedAsyncioTestCase):
         self.token_patch = patch.object(self.main.settings, "BOT_TOKEN", self.FAKE_TOKEN)
         self.token_patch.start()
 
+        # Endpoint xato javobiga admin kontaktini qo'shadi — o'sha o'qish
+        # production bazasiga emas, shu sinov bazasiga borsin.
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            await BotSettingRepository(session).set(ADMIN_CONTACT_KEY, "@hsk_ai_support")
+            await session.commit()
+        self.session_patch = patch.object(
+            self.main, "async_session_maker", self.sessions
+        )
+        self.session_patch.start()
+
         async def _not_blocked(session_maker, telegram_id):
             return False
 
@@ -205,7 +223,9 @@ class SubscriptionMiniAppSubmitEndpointTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.client.aclose()
         self.guard_patch.stop()
+        self.session_patch.stop()
         self.token_patch.stop()
+        await self.engine.dispose()
 
     async def test_unexpected_failure_returns_a_json_code_the_mini_app_can_explain(self):
         async def _boom(*args, **kwargs):
@@ -224,9 +244,11 @@ class SubscriptionMiniAppSubmitEndpointTests(unittest.IsolatedAsyncioTestCase):
             )
 
         self.assertEqual(response.status_code, 500)
-        self.assertEqual(
-            response.json(), {"ok": False, "error": "payment_submit_failed"}
-        )
+        payload = response.json()
+        self.assertFalse(payload["ok"])
+        self.assertEqual(payload["error"], "payment_submit_failed")
+        # Foydalanuvchi ekranda adminga yoza olsin: kontakt xato javobida ham keladi.
+        self.assertEqual(payload["support_url"], "https://t.me/hsk_ai_support")
 
     async def test_truncated_body_returns_json_instead_of_a_server_error_page(self):
         # Sekin internetda yuklash yarmida uzilsa body to'liq kelmaydi.
@@ -240,9 +262,10 @@ class SubscriptionMiniAppSubmitEndpointTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json(), {"ok": False, "error": "payment_submit_failed"}
-        )
+        payload = response.json()
+        self.assertFalse(payload["ok"])
+        self.assertEqual(payload["error"], "payment_submit_failed")
+        self.assertEqual(payload["support_url"], "https://t.me/hsk_ai_support")
 
 
 class SubscriptionMiniAppErrorCopyTests(unittest.TestCase):
@@ -276,7 +299,9 @@ class SubscriptionMiniAppErrorCopyTests(unittest.TestCase):
 
     def test_network_failures_do_not_leak_the_browser_message(self):
         # Ilgari ulanish uzilganda ekranda inglizcha "Failed to fetch" chiqardi.
-        self.assertIn('error&&error.name==="AbortError"?tr().timeoutError:tr().networkError', SUBSCRIPTION_HTML)
+        self.assertIn('apiError(error&&error.name==="AbortError"?"request_timeout":"network_error")', SUBSCRIPTION_HTML)
+        self.assertIn("request_timeout:text.timeoutError", SUBSCRIPTION_HTML)
+        self.assertIn("network_error:text.networkError", SUBSCRIPTION_HTML)
         self.assertIn("SUBMIT_TIMEOUT_MS", SUBSCRIPTION_HTML)
         self.assertIn("signal:controller?controller.signal:undefined", SUBSCRIPTION_HTML)
 
@@ -289,6 +314,17 @@ class SubscriptionMiniAppErrorCopyTests(unittest.TestCase):
     def test_unsupported_file_is_stopped_before_submit(self):
         self.assertIn("allowedShot(shot)", SUBSCRIPTION_HTML)
         self.assertIn("SCREENSHOT_MAX_CHARS", SUBSCRIPTION_HTML)
+
+    def test_failed_submit_shows_the_admin_contact_on_screen(self):
+        # Xato yuz berganda foydalanuvchi adminga yoza olsin.
+        self.assertIn("offerSupport(error)", SUBSCRIPTION_HTML)
+        self.assertIn('SUPPORT_SKIP_CODES=["invalid_screenshot"]', SUBSCRIPTION_HTML)
+        self.assertIn("if(error&&error.supportUrl)state.supportUrl=error.supportUrl;", SUBSCRIPTION_HTML)
+        self.assertIn("state.supportReason", SUBSCRIPTION_HTML)
+        # Kontakt sozlanmagan bo'lsa ishlamaydigan tugma ko'rinmaydi.
+        self.assertIn('$("#openSupportBtn").style.display=state.supportUrl?"":"none";', SUBSCRIPTION_HTML)
+        # Yangi UI bloki emas — mavjud "Yordam" varag'i ishlatiladi.
+        self.assertEqual(SUBSCRIPTION_HTML.count('id="supportSheet"'), 1)
 
 
 if __name__ == "__main__":

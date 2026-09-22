@@ -9711,3 +9711,51 @@ Diqqat:
   aniq sababni aytadi, sabab esa Railway logida
   `subscription_miniapp_submit ...` qatori bo'lib qoladi.
 - `subscription.html` `no-cache` bilan beriladi, `?v=` bump kerak emas.
+
+### 2026-09-22 — Obuna Mini App: xato paytida admin kontakti ekranga chiqadi
+
+Muammo: to'lov so'rovi yiqilganda foydalanuvchi faqat toast ko'rardi va
+nima qilishni bilmay chiqib ketardi — admin esa nosozlikdan bexabar
+qolardi.
+
+Changed:
+- `submitPayment` xato tutganda `offerSupport(error)` chaqiradi: MAVJUD
+  «Yordam» varag'i (`#supportSheet`) ochiladi, ichida xato sababi va
+  «Adminga yozish» tugmasi turadi. Yangi UI bloki, animatsiya yoki nishon
+  qo'shilmadi — varaq, matnlar va tugmalar ilgaridan bor edi.
+- `api()` endi `Error` o'rniga `apiError(code,supportUrl)` qaytaradi: xato
+  matni bilan birga KODI saqlanadi. Tarmoq/timeout ham shu yo'ldan
+  (`network_error`, `request_timeout`) o'tadi, ya'ni matn yagona joyda —
+  `errorText()` da.
+- `state.supportReason` — varaqdagi matn xato sababi bilan boshlanadi,
+  keyin eski yo'riqnoma (`supportText`) davom etadi. «?» tugmasi orqali
+  ochilganda sabab tozalanadi.
+- Admin kontakti sozlanmagan bo'lsa (`bot_settings.admin_contact` bo'sh):
+  varaq umuman ochilmaydi va «Adminga yozish» tugmasi ko'rinmaydi —
+  ishlamaydigan tugma qolmasin.
+- `invalid_screenshot` bundan mustasno (`SUPPORT_SKIP_CODES`): buni
+  foydalanuvchi boshqa rasm tanlab o'zi tuzatadi.
+- Server: `/api/subscription-miniapp/submit` ning HAR BIR xato javobiga
+  `support_url` qo'shiladi (`_support_url_for_error()`), chunki aynan
+  nosozlik paytida `overview` ham yiqilgan bo'lishi mumkin va Mini App
+  kontaktsiz qoladi.
+
+Key files:
+- `app/static/subscription.html`
+- `app/main.py` (`/api/subscription-miniapp/submit`, `_support_url_for_error`)
+- `tests/test_subscription_miniapp_submit.py`
+
+Verified:
+- Haqiqiy brauzerda (Chromium, 393×780): 500 JSON → varaq ochildi, tugma
+  javobdagi `https://t.me/hsk_ai_support` ni ochdi; 502 HTML → varaq
+  `overview` dagi kontakt bilan ochildi; `invalid_screenshot` → varaq
+  ochilMAdi, faqat toast; ulanish uzilishi → uzbekcha sabab + kontakt;
+  kontakt bo'sh bo'lsa → varaq ochilmaydi, «?» varag'ida tugma yashirin.
+  JS xatosi yo'q.
+- `tests/test_subscription_miniapp_submit.py` (11 test) + to'liq suite:
+  1581 passed.
+
+Diqqat:
+- Kontakt manbasi — admin panel/bot dagi `admin_contact` sozlamasi
+  (`ADMIN_CONTACT_KEY`). U bo'sh bo'lsa hech qanday kontakt ko'rsatilmaydi,
+  shuning uchun prodda o'sha sozlama to'ldirilgani tekshirilsin.

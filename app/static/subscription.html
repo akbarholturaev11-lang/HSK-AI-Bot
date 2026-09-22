@@ -813,6 +813,7 @@ const state={
   inviteCopied:false,
   supportOpen:false,
   supportUrl:"",
+  supportReason:"",
   busy:false,
   busyOverlay:false,
   done:false,
@@ -947,13 +948,21 @@ function api(path,body,timeoutMs){
     clear();
     /* Tarmoq xatosi brauzerdan inglizcha keladi ("Failed to fetch") —
        foydalanuvchiga o'z tilidagi sabab ko'rsatiladi. */
-    throw new Error(error&&error.name==="AbortError"?tr().timeoutError:tr().networkError);
+    throw apiError(error&&error.name==="AbortError"?"request_timeout":"network_error");
   }).then(async response=>{
     clear();
     const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
-    if(!response.ok||!data.ok)throw new Error(errorText(data.error||"api_error"));
+    if(!response.ok||!data.ok)throw apiError(data.error||"api_error",data.support_url);
     return data;
   });
+}
+/* Xato matni bilan birga KODI ham saqlanadi: ekranda admin kontaktini
+   ko'rsatish yoki ko'rsatmaslik shu kodga qarab hal qilinadi. */
+function apiError(code,supportUrl){
+  const error=new Error(errorText(code));
+  error.code=code;
+  if(supportUrl)error.supportUrl=supportUrl;
+  return error;
 }
 function errorText(code){
   const text=tr();
@@ -969,6 +978,8 @@ function errorText(code){
     payment_submit_failed:text.serverError,
     /* JSON o'rniga gateway HTML sahifasi qaytgan holat (502/504). */
     bad_json:text.serverError,
+    network_error:text.networkError,
+    request_timeout:text.timeoutError,
     api_error:text.error
   };
   return errors[code]||text.error;
@@ -1530,8 +1541,12 @@ function renderSupportSheet(text){
   sheet.classList.toggle("show",visible);
   sheet.setAttribute("aria-hidden",visible?"false":"true");
   $("#supportTitle").textContent=text.supportTitle;
-  $("#supportText").textContent=text.supportText;
+  /* Xatodan keyin ochilgan bo'lsa — sabab shu yerda turadi, foydalanuvchi
+     adminga aynan nima bo'lganini yozib yuboradi. */
+  $("#supportText").textContent=state.supportReason?state.supportReason+" "+text.supportText:text.supportText;
   $("#openSupportBtn").textContent=text.supportButton;
+  /* Admin kontakti sozlanmagan bo'lsa ishlamaydigan tugma turmasin. */
+  $("#openSupportBtn").style.display=state.supportUrl?"":"none";
   $("#closeSupportBtn").textContent=text.close;
 }
 function showInviteSheet(link){
@@ -1546,12 +1561,27 @@ function hideInviteSheet(){
   render();
 }
 function showSupportSheet(){
+  state.supportReason="";
   state.supportOpen=true;
   render();
 }
 function hideSupportSheet(){
   state.supportOpen=false;
+  state.supportReason="";
   render();
+}
+/* To'lov so'rovi yiqilganda foydalanuvchi ekranda admin kontaktini ko'rsin:
+   aks holda u nima bo'lganini hech kimga ayta olmay chiqib ketadi va admin
+   nosozlikdan xabarsiz qoladi. O'zi darhol tuzata oladigan holat (boshqa
+   rasm tanlash) bundan mustasno. */
+const SUPPORT_SKIP_CODES=["invalid_screenshot"];
+function offerSupport(error){
+  const code=(error&&error.code)||"";
+  if(SUPPORT_SKIP_CODES.indexOf(code)>=0)return;
+  if(error&&error.supportUrl)state.supportUrl=error.supportUrl;
+  if(!state.supportUrl)return;
+  state.supportReason=(error&&error.message)||tr().error;
+  state.supportOpen=true;
 }
 async function copyText(value,successMessage,failedMessage){
   if(!value){toast(tr().error);return false}
@@ -1646,6 +1676,7 @@ async function submitPayment(){
     state.step=0;
   }catch(error){
     toast(error.message||tr().error);
+    offerSupport(error);
   }finally{
     setBusy(false);
     render();
