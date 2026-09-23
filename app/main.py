@@ -65,6 +65,11 @@ from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, engine, init_db
 from app.db.models.user import User
+from app.db.models.payment import Payment
+from app.db.models.referral import Referral
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.release_feedback import ReleaseFeedbackDelivery
+from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
@@ -100,7 +105,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.entitlements.lesson_access import LessonAccessService
-from app.services.entitlements.state import access_expires_at, resolve_state
+from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
 from app.services.android_analytics_service import AndroidAnalyticsService
 from app.services.android_release_service import AndroidReleaseService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
@@ -137,6 +142,7 @@ from app.services.course_ad_service import (
     CourseAdService,
 )
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
+from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.portfolio_service import PortfolioService
 from app.services.required_channel_service import RequiredChannelService
@@ -1110,8 +1116,182 @@ async def _admin_miniapp_management_payload(session) -> dict:
     }
 
 
+def _admin_access_label(state: str) -> str:
+    return {
+        EntitlementState.PRO_ACTIVE: "Pullik obuna",
+        EntitlementState.TRIAL_ACTIVE: "Pro trial",
+        EntitlementState.TEMP_ACCESS: "Vaqtinchalik access",
+        EntitlementState.EXPIRED: "Muddati tugagan",
+        EntitlementState.BLOCKED: "Bloklangan",
+        EntitlementState.FREE: "Bepul",
+    }.get(state, "Bepul")
+
+
+def _admin_aware_dt(value):
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
+def _admin_dt_close(left, right, *, seconds: int = 10) -> bool:
+    left = _admin_aware_dt(left)
+    right = _admin_aware_dt(right)
+    if not left or not right:
+        return False
+    return abs((left - right).total_seconds()) <= seconds
+
+
+async def _admin_access_meta(session, user, payments: list) -> dict:
+    """Admin UI uchun accessni billingdan ajratib, odam tushunadigan sabab bilan qaytaradi."""
+    now = datetime.now(timezone.utc)
+    state = resolve_state(user, now=now)
+    starts_at = (
+        getattr(user, "pro_trial_started_at", None)
+        if state == EntitlementState.TRIAL_ACTIVE
+        else getattr(user, "start_date", None)
+    )
+    ends_at = access_expires_at(user, state, now=now)
+    source = ""
+    source_label = "—"
+
+    if state == EntitlementState.PRO_ACTIVE:
+        approved = next(
+            (item for item in payments if getattr(item, "payment_status", "") == "approved"),
+            None,
+        )
+        approved_at = (
+            getattr(approved, "reviewed_at", None) or getattr(approved, "submitted_at", None)
+            if approved
+            else None
+        )
+        if approved and _admin_dt_close(starts_at, approved_at, seconds=600):
+            source = "payment"
+            source_label = "To'lov orqali"
+        else:
+            source = "manual_admin"
+            source_label = "Admin qo'lda bergan"
+
+    elif state == EntitlementState.TRIAL_ACTIVE:
+        source = "pro_trial"
+        trial_source = str(getattr(user, "pro_trial_source", "") or "").strip()
+        source_label = {
+            "miniapp_trial": "Mini App Pro trial",
+            "android_trial": "Android Pro trial",
+            "desktop_trial": "Desktop Pro trial",
+        }.get(trial_source, "7 kunlik Pro trial")
+
+    elif state == EntitlementState.TEMP_ACCESS:
+        referral_budget = (
+            await session.execute(
+                select(AIUsageBudget)
+                .where(
+                    AIUsageBudget.user_telegram_id == user.telegram_id,
+                    AIUsageBudget.plan_type == REFERRAL_TRIAL_PLAN_TYPE,
+                )
+                .order_by(AIUsageBudget.id.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        if (
+            referral_budget
+            and _admin_dt_close(starts_at, referral_budget.starts_at, seconds=10)
+            and _admin_dt_close(ends_at, referral_budget.ends_at, seconds=10)
+        ):
+            source = "referral_reward"
+            source_label = "Referral mukofoti"
+        else:
+            release_delivery = (
+                await session.execute(
+                    select(ReleaseFeedbackDelivery)
+                    .where(
+                        ReleaseFeedbackDelivery.user_telegram_id == user.telegram_id,
+                        ReleaseFeedbackDelivery.trial_granted_until.is_not(None),
+                    )
+                    .order_by(ReleaseFeedbackDelivery.try_clicked_at.desc())
+                    .limit(1)
+                )
+            ).scalar_one_or_none()
+            if release_delivery and _admin_dt_close(
+                ends_at, release_delivery.trial_granted_until, seconds=60
+            ):
+                source = "release_feedback"
+                source_label = "Yangilikni sinash uchun access"
+            else:
+                feedback = (
+                    await session.execute(
+                        select(BotFeedback)
+                        .where(
+                            BotFeedback.telegram_id == user.telegram_id,
+                            BotFeedback.reward_granted_at.is_not(None),
+                        )
+                        .order_by(BotFeedback.reward_granted_at.desc())
+                        .limit(1)
+                    )
+                ).scalar_one_or_none()
+                if feedback:
+                    reward_at = _admin_aware_dt(feedback.reward_granted_at)
+                    end_at = _admin_aware_dt(ends_at)
+                    if reward_at and end_at and reward_at <= end_at and end_at - reward_at <= timedelta(days=1):
+                        source = "feedback_reward"
+                        source_label = "Feedback uchun vaqtinchalik access"
+        if not source:
+            source = "temporary_access"
+            source_label = "Vaqtinchalik access"
+
+    return {
+        "type": state,
+        "label": _admin_access_label(state),
+        "source": source,
+        "source_label": source_label,
+        "starts_at": _mini_dt(starts_at) if starts_at else "",
+        "ends_at": _mini_dt(ends_at) if ends_at else "",
+        "is_paid": state == EntitlementState.PRO_ACTIVE,
+    }
+
+
+async def _admin_referral_meta(session, user) -> dict:
+    referrer = None
+    if user.referred_by_telegram_id:
+        referrer_user = await UserRepository(session).get_by_telegram_id(user.referred_by_telegram_id)
+        referrer = {
+            "telegram_id": referrer_user.telegram_id if referrer_user else user.referred_by_telegram_id,
+            "name": (referrer_user.full_name or "Nomsiz") if referrer_user else "",
+            "username": referrer_user.username if referrer_user else "",
+        }
+
+    total = (
+        await session.execute(
+            select(func.count())
+            .select_from(Referral)
+            .where(Referral.referrer_telegram_id == user.telegram_id)
+        )
+    ).scalar() or 0
+    active = (
+        await session.execute(
+            select(func.count())
+            .select_from(Referral)
+            .where(
+                Referral.referrer_telegram_id == user.telegram_id,
+                Referral.status == "active",
+            )
+        )
+    ).scalar() or 0
+    return {
+        "referred_by": referrer,
+        "own_code": user.referral_code or "",
+        "invited_total": int(total),
+        "invited_active": int(active),
+    }
+
+
 async def _admin_user_payload(session, user) -> dict:
     payments = await PaymentRepository(session).list_by_user(user.telegram_id, limit=10)
+    access = await _admin_access_meta(session, user, payments)
+    referral = await _admin_referral_meta(session, user)
+    bonus_total = int(user.bonus_questions or 0)
+    bonus_used = int(user.bonus_questions_used or 0)
     has_pending_payment = bool(
         (
             await session.execute(
@@ -1160,6 +1340,13 @@ async def _admin_user_payload(session, user) -> dict:
             ),
             "referral_code": user.referral_code or "",
             "referred_by_telegram_id": user.referred_by_telegram_id,
+            "access": access,
+            "referral": referral,
+            "bonus": {
+                "total": bonus_total,
+                "used": bonus_used,
+                "left": max(bonus_total - bonus_used, 0),
+            },
         },
         "payments": [
             {
@@ -1170,6 +1357,7 @@ async def _admin_user_payload(session, user) -> dict:
                 "amount": format_subscription_price(payment.amount, payment.currency),
                 "submitted_at": _mini_dt(payment.submitted_at),
                 "reviewed_at": _mini_dt(payment.reviewed_at),
+                "discount_source": payment.discount_source or "none",
                 "comment": payment.admin_comment or "",
             }
             for payment in payments
@@ -1187,6 +1375,8 @@ def _admin_user_card_payload(
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
     bonus_left = max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0)
+    access_state = resolve_state(user, now=now)
+    access_end = access_expires_at(user, access_state, now=now)
     return {
         "id": user.telegram_id,
         "name": user.full_name or "Nomsiz",
@@ -1206,6 +1396,9 @@ def _admin_user_card_payload(
         "plan": _mini_plan_label(user.selected_plan_type),
         "method": _mini_method_label(user.payment_method),
         "end_date": _mini_dt(user.end_date) if user.end_date else "",
+        "access_type": access_state,
+        "access_label": _admin_access_label(access_state),
+        "access_ends_at": _mini_dt(access_end) if access_end else "",
         "last_active": _mini_dt(user.last_active_at),
         "active_today": is_admin_active_today(user, today_start),
         "hot_lead": (
