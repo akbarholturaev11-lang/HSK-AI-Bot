@@ -291,6 +291,16 @@ class CourseHskExamServiceTests(unittest.IsolatedAsyncioTestCase):
             payload["grading_questions"] = CourseHskExamService._grading_snapshot(questions)
         return SimpleNamespace(session_id=session_id, payload_json=json.dumps(payload, ensure_ascii=False))
 
+    def test_start_access_key_is_scoped_to_exam_variant(self):
+        hsk1_uz = self.service._access_key(7, "hsk1", "uz", "")
+        hsk2_uz = self.service._access_key(7, "hsk2", "uz", "")
+        hsk1_ru = self.service._access_key(7, "hsk1", "ru", "")
+        retry = self.service._access_key(7, "hsk1", "uz", "")
+
+        self.assertEqual(hsk1_uz, retry)
+        self.assertNotEqual(hsk1_uz, hsk2_uz)
+        self.assertNotEqual(hsk1_uz, hsk1_ru)
+
     def test_xp_reference_is_shared_by_all_same_level_attempts_for_one_utc_day(self):
         now = datetime(2026, 7, 22, 18, 30, tzinfo=timezone.utc)
 
