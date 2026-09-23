@@ -57,6 +57,10 @@ class WidgetStore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun markOffered() = mutex.withLock { change { it.copy(onboardingOffered = true) } }
 
+    suspend fun markInstallPromptShown(localDay: String) = mutex.withLock {
+        change { it.copy(lastInstallPromptDay = localDay) }
+    }
+
     suspend fun enqueue(event: AndroidWidgetEvent) = mutex.withLock {
         change {
             if (!it.linked || it.events.any { queued -> queued.event_id == event.event_id }) it
