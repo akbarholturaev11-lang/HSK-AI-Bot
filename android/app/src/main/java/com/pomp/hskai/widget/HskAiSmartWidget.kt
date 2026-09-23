@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,8 +80,9 @@ internal fun WidgetContent(
     val compact = size.height < 110.dp
     val wide = size.width >= 260.dp
     val palette = PompColors.paletteFor(dark)
+
     // One engine chose the state, one table chose the drawing and the line.
-    // This function only places them.
+    // The artwork fills the widget; copy is a readable overlay on top of it.
     val asset = WidgetArt.assetFor(access, visual)
     val milestone = visual.special
         ?.takeIf { access == WidgetAccess.ACTIVE && it.kind == WidgetSpecialKind.MILESTONE }
@@ -89,6 +90,7 @@ internal fun WidgetContent(
         else context.getString(asset.text)
     val fresh = access == WidgetAccess.FOUNDATION || access == WidgetAccess.ACTIVE
     val snapshot = session.snapshot
+
     // Today against today's goal is what decides whether to open the app;
     // the lifetime total is kept only while the goal is still unknown.
     val stats = when {
@@ -99,54 +101,73 @@ internal fun WidgetContent(
     }
     val lesson = if (fresh && snapshot?.lessonOrder != null)
         context.getString(R.string.widget_lesson, snapshot.level.uppercase(), snapshot.lessonOrder) else "HSK AI"
+
     // Every tap goes through CurrentLesson; MainActivity performs the fresh bearer/access check.
     val action = actionStartActivity(WidgetIntents.open(context, "widget"))
-    val frame = GlanceModifier.fillMaxSize().appWidgetBackground().background(palette.paper)
-        .cornerRadius(20.dp).clickable(action).padding(if (compact) 6.dp else 8.dp)
-    // The panda is the widget. Text is what is left over, not the other way
-    // round: the smallest size carries the drawing and one line, and only the
-    // widest one has room for the lesson label as well.
-    if (wide) {
-        Row(modifier = frame, verticalAlignment = Alignment.CenterVertically) {
-            Panda(asset, message, 88.dp)
-            Spacer(GlanceModifier.width(12.dp))
-            Column(GlanceModifier.defaultWeight(), verticalAlignment = Alignment.CenterVertically) {
-                Text(lesson, style = TextStyle(color = ColorProvider(palette.cinnabar), fontSize = 11.sp, fontWeight = FontWeight.Bold), maxLines = 1)
-                Spacer(GlanceModifier.height(4.dp))
-                Text(message, style = TextStyle(color = ColorProvider(palette.ink), fontSize = 16.sp, fontWeight = FontWeight.Bold), maxLines = 2)
-                Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 11.sp), maxLines = 1)
+    val frame = GlanceModifier
+        .fillMaxSize()
+        .appWidgetBackground()
+        .background(palette.paper)
+        .cornerRadius(20.dp)
+        .clickable(action)
+
+    val overlay = GlanceModifier
+        .fillMaxWidth()
+        .padding(if (compact) 4.dp else 8.dp)
+        .background(ColorProvider(Color.Black.copy(alpha = if (dark) 0.68f else 0.58f)))
+        .cornerRadius(if (compact) 10.dp else 14.dp)
+        .padding(
+            horizontal = if (compact) 7.dp else 10.dp,
+            vertical = if (compact) 4.dp else 7.dp,
+        )
+
+    val primary = ColorProvider(Color.White)
+    val secondary = ColorProvider(Color.White.copy(alpha = 0.84f))
+
+    Box(modifier = frame, contentAlignment = Alignment.BottomStart) {
+        Image(
+            provider = ImageProvider(asset.drawable()),
+            contentDescription = message,
+            modifier = GlanceModifier.fillMaxSize().cornerRadius(20.dp),
+            contentScale = ContentScale.Crop,
+        )
+
+        Column(modifier = overlay) {
+            if (wide) {
+                Text(
+                    lesson,
+                    style = TextStyle(
+                        color = secondary,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    maxLines = 1,
+                )
+                Spacer(GlanceModifier.height(2.dp))
             }
-        }
-    } else if (compact) {
-        Row(modifier = frame, verticalAlignment = Alignment.CenterVertically) {
-            Panda(asset, message, 32.dp)
-            Spacer(GlanceModifier.width(6.dp))
-            Column(GlanceModifier.defaultWeight(), verticalAlignment = Alignment.CenterVertically) {
-                Text(message, style = TextStyle(color = ColorProvider(palette.ink), fontSize = 12.sp, fontWeight = FontWeight.Bold), maxLines = 1)
-                Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 10.sp), maxLines = 1)
-            }
-        }
-    } else {
-        Column(
-            modifier = frame,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Panda(asset, message, 44.dp)
-            Spacer(GlanceModifier.height(4.dp))
-            Text(message, style = TextStyle(color = ColorProvider(palette.ink), fontSize = 12.sp, fontWeight = FontWeight.Bold), maxLines = 2)
-            Text(stats, style = TextStyle(color = ColorProvider(palette.inkSecondary), fontSize = 10.sp), maxLines = 1)
+            Text(
+                message,
+                style = TextStyle(
+                    color = primary,
+                    fontSize = when {
+                        wide -> 15.sp
+                        compact -> 11.sp
+                        else -> 13.sp
+                    },
+                    fontWeight = FontWeight.Bold,
+                ),
+                maxLines = if (compact) 1 else 2,
+            )
+            Text(
+                stats,
+                style = TextStyle(
+                    color = secondary,
+                    fontSize = if (compact) 9.sp else 10.sp,
+                ),
+                maxLines = 1,
+            )
         }
     }
-}
-
-/** One drawing, one size. [WidgetAsset.drawable] is where motion will arrive. */
-@Composable
-private fun Panda(asset: WidgetAsset, description: String, size: Dp) {
-    // The artwork is a square painted scene, so it is rounded to sit inside
-    // the widget frame rather than on top of it. Pre-31 launchers ignore the
-    // radius and show the square; nothing else changes.
-    Image(ImageProvider(asset.drawable()), description, GlanceModifier.size(size).cornerRadius(14.dp))
 }
 
 class HskAiWidgetReceiver : GlanceAppWidgetReceiver() {
