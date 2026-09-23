@@ -176,6 +176,23 @@ class AppSettings(context: Context) : LessonResumeStore {
         appContext.settingsDataStore.edit { it[LAST_REMINDER_DATE_KEY] = value }
     }
 
+    suspend fun dictionaryLastCheckedAtMillis(language: String): Long? =
+        appContext.settingsDataStore.data.first()[dictionaryCheckedAtKey(language)]
+
+    suspend fun dictionaryLastCheckedClientVersion(language: String): Int? =
+        appContext.settingsDataStore.data.first()[dictionaryCheckedVersionKey(language)]
+
+    suspend fun setDictionaryLastChecked(
+        language: String,
+        checkedAtMillis: Long,
+        clientVersionCode: Int,
+    ) {
+        appContext.settingsDataStore.edit {
+            it[dictionaryCheckedAtKey(language)] = checkedAtMillis
+            it[dictionaryCheckedVersionKey(language)] = clientVersionCode
+        }
+    }
+
     /**
      * Mini App `hsk_v3_lesson_resume:v2:<level>:<order>` — the card the learner
      * stopped on. Leaving a lesson halfway and starting it again from the top
@@ -202,6 +219,12 @@ class AppSettings(context: Context) : LessonResumeStore {
             it.remove(resumeAtKey(level, order))
         }
     }
+
+    private fun dictionaryCheckedAtKey(language: String) =
+        longPreferencesKey("dictionary_checked_at:v1:${language.lowercase()}")
+
+    private fun dictionaryCheckedVersionKey(language: String) =
+        intPreferencesKey("dictionary_checked_version:v1:${language.lowercase()}")
 
     private fun resumeIndexKey(level: String, order: Int) =
         intPreferencesKey("lesson_resume_index:v2:${level.lowercase()}:$order")
