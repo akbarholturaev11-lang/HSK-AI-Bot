@@ -301,6 +301,10 @@ fun ProfileScreen(
 
     if (privacyOpen) {
         PrivacySecuritySheet(
+            onTerms = {
+                privacyOpen = false
+                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/terms")
+            },
             onPrivacyPolicy = {
                 privacyOpen = false
                 onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/privacy")
@@ -762,6 +766,7 @@ private fun StudyReminderSettingsSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PrivacySecuritySheet(
+    onTerms: () -> Unit,
     onPrivacyPolicy: () -> Unit,
     onPermissions: () -> Unit,
     onDismiss: () -> Unit,
@@ -778,6 +783,8 @@ private fun PrivacySecuritySheet(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column {
+                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), true, onTerms) { SettingsChevron() }
+                    SettingsDivider()
                     MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), true, onPrivacyPolicy) { SettingsChevron() }
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), true, onPermissions) { SettingsChevron() }
