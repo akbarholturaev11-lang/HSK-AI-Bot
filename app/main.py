@@ -1166,9 +1166,18 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
             if approved
             else None
         )
-        if approved and _admin_dt_close(starts_at, approved_at, seconds=600):
+        paid_window_matches = approved and _admin_dt_close(starts_at, approved_at, seconds=600)
+        if approved and not starts_at and approved_at and ends_at:
+            duration_days = PLAN_DURATIONS.get(getattr(approved, "plan_type", ""))
+            expected_end = _admin_aware_dt(approved_at)
+            if duration_days and expected_end:
+                expected_end = expected_end + timedelta(days=duration_days)
+                paid_window_matches = _admin_dt_close(ends_at, expected_end, seconds=900)
+        if paid_window_matches:
             source = "payment"
             source_label = "To'lov orqali"
+            if not starts_at:
+                starts_at = approved_at
         else:
             source = "manual_admin"
             source_label = "Admin qo'lda bergan"
@@ -1196,11 +1205,16 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
         ).scalar_one_or_none()
         if (
             referral_budget
-            and _admin_dt_close(starts_at, referral_budget.starts_at, seconds=10)
             and _admin_dt_close(ends_at, referral_budget.ends_at, seconds=10)
+            and (
+                not starts_at
+                or _admin_dt_close(starts_at, referral_budget.starts_at, seconds=10)
+            )
         ):
             source = "referral_reward"
             source_label = "Referral mukofoti"
+            if not starts_at:
+                starts_at = referral_budget.starts_at
         else:
             release_delivery = (
                 await session.execute(
@@ -1218,6 +1232,8 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
             ):
                 source = "release_feedback"
                 source_label = "Yangilikni sinash uchun access"
+                if not starts_at:
+                    starts_at = release_delivery.try_clicked_at
             else:
                 feedback = (
                     await session.execute(
@@ -1236,6 +1252,8 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
                     if reward_at and end_at and reward_at <= end_at and end_at - reward_at <= timedelta(days=1):
                         source = "feedback_reward"
                         source_label = "Feedback uchun vaqtinchalik access"
+                        if not starts_at:
+                            starts_at = reward_at
         if not source:
             source = "temporary_access"
             source_label = "Vaqtinchalik access"
