@@ -125,6 +125,8 @@ fun LessonScreen(
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
+    onSpeakPronunciation: () -> Unit,
+    onSkipPronunciation: () -> Unit,
     onRetryCompletion: () -> Unit,
     onOpenPinyinSettings: () -> Unit,
     onOpenWriter: (WriterTarget) -> Unit,
@@ -167,6 +169,8 @@ fun LessonScreen(
                     onAcknowledge = onAcknowledge,
                     onAdvance = onAdvance,
                     onPlayAudio = onPlayAudio,
+                    onSpeakPronunciation = onSpeakPronunciation,
+                    onSkipPronunciation = onSkipPronunciation,
                     onOpenPinyinSettings = onOpenPinyinSettings,
                     onOpenWriter = onOpenWriter,
                     onShowWriterCharacter = onShowWriterCharacter,
@@ -241,6 +245,8 @@ private fun LessonBody(
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
+    onSpeakPronunciation: () -> Unit,
+    onSkipPronunciation: () -> Unit,
     onOpenPinyinSettings: () -> Unit,
     onOpenWriter: (WriterTarget) -> Unit,
     onShowWriterCharacter: (Int) -> Unit,
@@ -372,7 +378,17 @@ private fun LessonBody(
                         onRevealed = { newWordOpen = true },
                     )
                     is GrammarCard -> GrammarCardView(card, pinyin)
-                    is PronunciationCard -> PronunciationCardView(card, pinyin, state.isAudioLoading, onPlayAudio, onAcknowledge)
+                    is PronunciationCard -> PronunciationCardView(
+                        card = card,
+                        pinyin = pinyin,
+                        isAudioLoading = state.isAudioLoading,
+                        isRecording = state.isPronunciationRecording,
+                        isScoring = state.isPronunciationScoring,
+                        isAnswered = state.isAnswered,
+                        onPlayAudio = onPlayAudio,
+                        onSpeak = onSpeakPronunciation,
+                        onSkip = onSkipPronunciation,
+                    )
                     is ChoiceCard -> {
                         // Coach on the left with the question beside it; the
                         // answers below at full width.
@@ -405,6 +421,16 @@ private fun LessonBody(
                     is UnsupportedCard -> UnsupportedCardView(card, onAcknowledge)
                 }
                 state.audioError?.let { error ->
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(error.messageRes),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = PompColors.Flame,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                state.pronunciationError?.let { error ->
                     Spacer(Modifier.height(12.dp))
                     Text(
                         text = stringResource(error.messageRes),
