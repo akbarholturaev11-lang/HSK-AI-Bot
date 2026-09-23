@@ -41,8 +41,8 @@ val hasReleaseSigning = releaseStoreFile != null &&
  * APK. `app-direct-release.apk` would leave the admin typing the version from
  * memory on every upload, so the artifact carries it instead.
  */
-val appVersionName = "1.6.5"
-val appVersionCode = 20
+val appVersionName = "1.6.6"
+val appVersionCode = 21
 
 val apiOrigin: String = (project.findProperty("POMP_API_ORIGIN") as String?)
     ?.trim()

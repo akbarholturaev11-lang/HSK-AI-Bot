@@ -227,6 +227,22 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-23 — Android Google Sign-In release uchun versionCode 21
+
+Changed:
+- `android/app/build.gradle.kts` dagi release versiya `1.6.6` /
+  `versionCode 21`ga oshirildi.
+
+Why:
+- R2’da `1.6.5` / `20` nomli APK allaqachon bor, ammo u hozirgi source’dan
+  boshqa baytlar bilan qurilgan. Release workflow immutable APK obyektini
+  ustiga yozishni ataylab rad etdi; yangi Google client ID bilan APKni xavfsiz
+  nashr qilish uchun keyingi, monotonic versionCode kerak.
+
+Risk:
+- LOW — faqat release identifikatori o‘zgardi. Android static checks, Direct/
+  Play unit testlari va lint yangi versiyada yashil.
+
 ### 2026-09-23 — Google Sign-In uchun public maxfiylik sahifasi
 
 Changed:
