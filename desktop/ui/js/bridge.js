@@ -13,6 +13,7 @@ const COMMANDS = Object.freeze({
   bootstrap: "desktop_bootstrap",
   logout: "desktop_logout",
   courseMap: "desktop_course_map",
+  syncState: "desktop_sync",
   lessonData: "desktop_lesson_data",
   lessonComplete: "desktop_lesson_complete",
   setLanguage: "desktop_set_language",
@@ -704,6 +705,10 @@ export const desktopBridge = Object.freeze({
       );
     }
     return invokeCommand(COMMANDS.courseMap, { timezoneOffsetMinutes });
+  },
+
+  syncState() {
+    return invokeCommand(COMMANDS.syncState);
   },
 
   lessonData(lessonOrder) {
