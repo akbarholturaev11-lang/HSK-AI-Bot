@@ -460,6 +460,21 @@ export async function previewInvoke(command, args = {}) {
       return { ok: true };
     case "desktop_course_map":
       return courseMap();
+    case "desktop_sync": {
+      const map = courseMap();
+      return {
+        ok: true,
+        notifications: Array.isArray(map.notifications) ? map.notifications : [],
+        user: {
+          is_paid: Boolean(map.user?.is_paid),
+          language: String(map.user?.language || previewState.language || "uz"),
+        },
+        level: String(map.level || "hsk1"),
+        progress: {
+          completed: Number(map.progress?.completed || previewState.completed || 0),
+        },
+      };
+    }
     case "desktop_lesson_data":
       return lessonData(Number(args.lessonOrder || 1));
     case "desktop_lesson_complete":

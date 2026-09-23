@@ -201,6 +201,7 @@ jobs:
             tests/test_desktop_auth_service.py \
             tests/test_desktop_course_api.py \
             tests/test_desktop_rating_api.py \
+            tests/test_desktop_request_load.py \
             tests/test_desktop_subscription_api.py \
             tests/test_identity_link_service.py \
             tests/test_miniapp_profile_status.py \

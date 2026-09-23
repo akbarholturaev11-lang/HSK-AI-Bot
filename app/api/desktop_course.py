@@ -229,6 +229,29 @@ def create_desktop_course_router(
                 )
             )
 
+    @router.get("/api/v3/desktop/sync")
+    async def desktop_sync(request: Request):
+        try:
+            async with session_factory() as session:
+                result = await service_factory(
+                    session,
+                    settings_obj,
+                ).sync_state(_access_token(request))
+            return JSONResponse(
+                content=result,
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop sync failed")
+            return _error_response(
+                DesktopCourseError(
+                    "desktop_course_unavailable",
+                    status_code=503,
+                )
+            )
+
     @router.get("/api/v3/desktop/course/lesson/{lesson_order}")
     async def desktop_course_lesson(request: Request, lesson_order: int):
         try:

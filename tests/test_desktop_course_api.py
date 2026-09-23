@@ -159,6 +159,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(payload["authenticated"])
         self.assertEqual(payload["level"], "hsk1")
         self.assertEqual(payload["user"]["language"], "uz")
+        self.assertEqual(payload["user"]["access_state"], "FREE")
         self.assertEqual(payload["notifications"][0]["key"], "lesson_time")
         self.assertEqual(payload["notifications"][0]["action"], "course")
         self.assertEqual(payload["notifications"][0]["lesson_order"], 1)
@@ -205,6 +206,66 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(device.first_open_at)
             self.assertEqual(int(first_open_events or 0), 0)
             self.assertEqual(progress.reminder_tz_offset, 5)
+
+    async def test_sync_is_lightweight_and_reports_only_drift_markers(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            await CourseNotificationService(session).record(
+                user,
+                key="lesson_time",
+                lang="uz",
+                title="Dars vaqti keldi",
+                body="Bugungi darsni davom ettiring.",
+                action="course",
+                level="hsk1",
+                lesson_order=1,
+                dedupe_key="desktop-sync:lesson-time",
+            )
+            await session.commit()
+
+        # The sync endpoint must not create course progress or enter any of the
+        # full-map pipelines just because the desktop heartbeat fired.
+        with (
+            patch(
+                "app.services.desktop_course_service.CourseGamificationService.snapshot",
+                side_effect=AssertionError("sync must not compute gamification"),
+            ),
+            patch(
+                "app.services.desktop_course_service.CourseTodayService.payload",
+                side_effect=AssertionError("sync must not compute Today"),
+            ),
+            patch(
+                "app.services.desktop_course_service.MiniAppHintService.hints_for",
+                side_effect=AssertionError("sync must not compute hints"),
+            ),
+            patch(
+                "app.services.desktop_course_service.LessonAccessService.apply_map",
+                side_effect=AssertionError("sync must not expand lesson access"),
+            ),
+        ):
+            response = await self.client.get(
+                "/api/v3/desktop/sync",
+                headers=self.auth_headers,
+            )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["level"], "hsk1")
+        self.assertEqual(payload["user"]["language"], "uz")
+        self.assertFalse(payload["user"]["is_paid"])
+        self.assertEqual(payload["user"]["access_state"], "FREE")
+        self.assertEqual(payload["progress"]["completed"], 0)
+        self.assertEqual(payload["notifications"][0]["key"], "lesson_time")
+        self.assertEqual(response.headers.get("cache-control"), "no-store")
+
+        async with self.sessions() as session:
+            progress_count = (
+                await session.execute(
+                    select(func.count()).select_from(CourseProgress)
+                )
+            ).scalar_one()
+            self.assertEqual(int(progress_count or 0), 0)
 
     async def test_notifications_toggle_persists_to_course_map(self):
         update = await self.client.post(
@@ -700,6 +761,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             paths,
             {
                 "/api/v3/desktop/course/map",
+                "/api/v3/desktop/sync",
                 "/api/v3/desktop/course/lesson/{lesson_order}",
                 "/api/v3/desktop/course/complete",
                 "/api/v3/desktop/preferences/language",

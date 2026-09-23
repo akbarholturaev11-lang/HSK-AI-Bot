@@ -2228,6 +2228,13 @@ async fn desktop_course_map(
 }
 
 #[tauri::command]
+async fn desktop_sync(
+    state: tauri::State<'_, DesktopState>,
+) -> Result<Value, String> {
+    authenticated_get_json(&state, "/api/v3/desktop/sync").await
+}
+
+#[tauri::command]
 async fn desktop_lesson_data(
     state: tauri::State<'_, DesktopState>,
     lesson_order: i64,
@@ -2737,6 +2744,7 @@ pub fn run() {
             desktop_bootstrap,
             desktop_logout,
             desktop_course_map,
+        desktop_sync,
             desktop_lesson_data,
             desktop_lesson_complete,
             desktop_set_language,
