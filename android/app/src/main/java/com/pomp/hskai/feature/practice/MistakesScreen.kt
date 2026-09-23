@@ -572,19 +572,37 @@ internal fun MistakesReviewRun(
         }
 
         if (state.reviewFeedback != null) {
-            HskPrimaryButton(
-                text = stringResource(
-                    if (state.reviewIndex >= session.questions.lastIndex) {
-                        R.string.mistakes_finish
-                    } else {
-                        R.string.mistakes_next
-                    }
-                ),
-                onClick = onAdvance,
-                enabled = !state.isCompleting,
-                loading = state.isCompleting,
+            Column(
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp),
-            )
+            ) {
+                if (state.error != null && state.error !is ApiError.LimitReached) {
+                    Surface(
+                        color = PompColors.FlameSoft,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+                    ) {
+                        Text(
+                            text = stringResource(state.error.messageRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = PompColors.Flame,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        )
+                    }
+                }
+                HskPrimaryButton(
+                    text = stringResource(
+                        if (state.reviewIndex >= session.questions.lastIndex) {
+                            R.string.mistakes_finish
+                        } else {
+                            R.string.mistakes_next
+                        }
+                    ),
+                    onClick = onAdvance,
+                    enabled = true,
+                    loading = state.isCompleting,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }

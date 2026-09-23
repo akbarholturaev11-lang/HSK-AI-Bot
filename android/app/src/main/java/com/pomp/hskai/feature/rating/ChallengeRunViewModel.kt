@@ -87,6 +87,7 @@ class ChallengeRunViewModel(
 
     fun advance() {
         val state = _state.value
+        if (state.isSubmitting) return
         val question = state.current ?: return
         val chosen = state.selected ?: return
         answers += ChallengeAnswerDto(questionId = question.id, selectedIndex = chosen)

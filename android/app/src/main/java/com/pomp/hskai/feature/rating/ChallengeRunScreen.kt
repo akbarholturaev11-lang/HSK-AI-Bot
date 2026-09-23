@@ -194,32 +194,34 @@ private fun ChallengeQuestion(
         }
 
         Spacer(Modifier.weight(1f))
-        Surface(
-            onClick = onAdvance,
-            enabled = state.selected != null && !state.isSubmitting,
-            color = if (state.selected != null) PompColors.Cinnabar else PompColors.Divider,
-            shape = RoundedCornerShape(14.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp),
-        ) {
-            Text(
-                text = stringResource(
-                    if (state.index + 1 >= state.total) {
-                        R.string.challenge_finish
-                    } else {
-                        R.string.lesson_next
-                    }
-                ),
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                fontWeight = FontWeight.Medium,
-                color = PompColors.Paper,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 15.dp),
-            )
+        state.error?.let { error ->
+            Surface(
+                color = PompColors.FlameSoft,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+            ) {
+                Text(
+                    text = stringResource(error.messageRes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.Flame,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                )
+            }
         }
+        HskPrimaryButton(
+            text = stringResource(
+                if (state.index + 1 >= state.total) {
+                    R.string.challenge_finish
+                } else {
+                    R.string.lesson_next
+                }
+            ),
+            onClick = onAdvance,
+            enabled = state.selected != null,
+            loading = state.isSubmitting,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+        )
     }
 }
 

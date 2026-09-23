@@ -500,6 +500,53 @@ class CourseChallengeRewardTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["challenge"]["viewer_level"], "hsk3")
         self.assertEqual(result["challenge"]["other_level"], "hsk1")
 
+    async def test_submit_retry_replays_committed_score_without_side_effects(self):
+        service = CourseChallengeService(SimpleNamespace(flush=AsyncMock()))
+        challenger = SimpleNamespace(
+            id=1,
+            telegram_id=1001,
+            level="hsk1",
+            language="uz",
+            full_name="Challenger",
+            username="challenger",
+        )
+        opponent = SimpleNamespace(
+            id=2,
+            telegram_id=1002,
+            level="hsk2",
+            language="ru",
+            full_name="Opponent",
+            username="opponent",
+        )
+        challenge = CourseChallenge(
+            id=92,
+            challenger_user_id=1,
+            opponent_user_id=2,
+            status="accepted",
+            level="hsk1",
+            lang="uz",
+            mode="mock",
+            question_payload="[]",
+            challenger_score=7,
+            challenger_total=10,
+            challenger_percent=70,
+        )
+        service.get_for_user = AsyncMock(return_value=(challenger, challenge))
+        service._users_by_id = AsyncMock(return_value={1: challenger, 2: opponent})
+        service.mistakes = SimpleNamespace(record_items=AsyncMock())
+        service.gamification = SimpleNamespace(award=AsyncMock())
+
+        result = await service.submit(1001, 92, [], duration_seconds=5)
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["duplicate"])
+        self.assertEqual(result["score"], 7)
+        self.assertEqual(result["total"], 10)
+        self.assertEqual(result["percent"], 70)
+        self.assertEqual(result["reward"], {"awarded_xp": 0, "duplicate": True})
+        service.mistakes.record_items.assert_not_awaited()
+        service.gamification.award.assert_not_awaited()
+
     async def test_exact_tie_rewards_both_players(self):
         service = CourseChallengeService(SimpleNamespace())
         service.gamification = SimpleNamespace(award=AsyncMock(return_value={"awarded_xp": CHALLENGE_TIE_XP, "xp": 100}))

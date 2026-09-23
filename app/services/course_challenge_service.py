@@ -182,6 +182,37 @@ class CourseChallengeService:
         result = await self.session.execute(select(User).where(User.id.in_(ids)))
         return {int(user.id): user for user in result.scalars().all()}
 
+    async def _duplicate_submit_response(
+        self,
+        user: User,
+        challenge: CourseChallenge,
+        role: str,
+    ) -> dict:
+        """Return the committed result without repeating XP or mistake writes."""
+        users = await self._users_by_id(
+            {int(challenge.challenger_user_id), int(challenge.opponent_user_id)}
+        )
+        if role == "challenger":
+            score = challenge.challenger_score
+            total = challenge.challenger_total
+            percent = challenge.challenger_percent
+        else:
+            score = challenge.opponent_score
+            total = challenge.opponent_total
+            percent = challenge.opponent_percent
+        return {
+            "ok": True,
+            "duplicate": True,
+            "score": int(score or 0),
+            "total": int(total or 0),
+            "percent": self._result_percent(score, total, percent),
+            "wrong_items": [],
+            "reward": {"awarded_xp": 0, "duplicate": True},
+            "winner_reward": None,
+            "final_rewards": {},
+            "challenge": self._challenge_payload(challenge, user, users),
+        }
+
     @staticmethod
     def _remaining_cooldown_seconds(
         last_created_at: datetime | None,
@@ -377,6 +408,10 @@ class CourseChallengeService:
         if challenge.status not in {"accepted", "completed"}:
             return {"ok": False, "error": f"challenge_{challenge.status}"}
         role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
+        if role == "challenger" and challenge.challenger_score is not None:
+            return await self._duplicate_submit_response(user, challenge, role)
+        if role == "opponent" and challenge.opponent_score is not None:
+            return await self._duplicate_submit_response(user, challenge, role)
         questions = self._questions(challenge, role)
         submitted = {
             str(item.get("question_id") or ""): item
@@ -436,10 +471,6 @@ class CourseChallengeService:
         percent = round((score / total) * 100) if total else 0
         now = datetime.now(timezone.utc)
         duration_seconds = max(0, min(86400, int(duration_seconds or 0)))
-        if role == "challenger" and challenge.challenger_score is not None:
-            return {"ok": False, "error": "challenge_already_submitted"}
-        if role == "opponent" and challenge.opponent_score is not None:
-            return {"ok": False, "error": "challenge_already_submitted"}
         if role == "challenger":
             challenge.challenger_score = score
             challenge.challenger_total = total

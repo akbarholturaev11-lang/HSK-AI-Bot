@@ -131,6 +131,27 @@ class CourseMistakeService:
         return {}
 
     @classmethod
+    def _completed_review_response(cls, event: CourseMiniAppEvent) -> dict:
+        """Replay a committed completion without granting rewards twice."""
+        payload = cls._json_dict(getattr(event, "payload_json", None))
+
+        def number(key: str) -> int:
+            try:
+                return max(0, int(payload.get(key) or 0))
+            except (TypeError, ValueError):
+                return 0
+
+        return {
+            "ok": True,
+            "duplicate": True,
+            "score": number("score"),
+            "total": number("total"),
+            "percent": number("percent"),
+            "remaining": number("remaining"),
+            "reward": {"awarded_xp": 0, "duplicate": True},
+        }
+
+    @classmethod
     def _material_payload(
         cls,
         raw: dict,
@@ -1068,14 +1089,15 @@ class CourseMistakeService:
         if not started:
             return {"ok": False, "error": "invalid_mistake_review_session"}
         completed_result = await self.session.execute(
-            select(CourseMiniAppEvent.id).where(
+            select(CourseMiniAppEvent).where(
                 CourseMiniAppEvent.user_id == user.id,
                 CourseMiniAppEvent.event_name == "mistake_review_completed",
                 CourseMiniAppEvent.session_id == session_id,
             )
         )
-        if completed_result.scalar_one_or_none():
-            return {"ok": False, "error": "mistake_review_already_completed"}
+        completed = completed_result.scalar_one_or_none()
+        if completed:
+            return self._completed_review_response(completed)
         try:
             started_payload = json.loads(started.payload_json or "{}")
             mistake_ids = [int(value) for value in started_payload.get("mistake_ids", [])]
@@ -1251,7 +1273,17 @@ class CourseMistakeService:
             return {"ok": False, "error": "mistake_review_result_write_failed"}
         if event.get("duplicate"):
             await self.session.rollback()
-            return {"ok": False, "error": "mistake_review_already_completed"}
+            completed_result = await self.session.execute(
+                select(CourseMiniAppEvent).where(
+                    CourseMiniAppEvent.user_id == user.id,
+                    CourseMiniAppEvent.event_name == "mistake_review_completed",
+                    CourseMiniAppEvent.session_id == session_id,
+                )
+            )
+            completed = completed_result.scalar_one_or_none()
+            if completed:
+                return self._completed_review_response(completed)
+            return {"ok": False, "error": "mistake_review_result_write_failed"}
         await self.session.commit()
         return {
             "ok": True,
