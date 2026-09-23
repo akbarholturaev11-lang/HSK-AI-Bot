@@ -9,8 +9,34 @@
     <string name="profile_mini_streak">Серия дней</string>
     <string name="profile_mini_completed_lessons">Пройдено уроков</string>
     <string name="profile_mini_level">Уровень</string>
-    <string name="profile_mini_notify_head">Бот пришлёт уведомление, когда:</string>
-    <string name="profile_mini_notify_rank">кто-то обгоняет вас в рейтинге</string>
+    <string name="profile_mini_notify_head">Приложение HSK AI показывает учебные напоминания на этом устройстве:</string>
+    <string name="profile_mini_notify_rank">дневная цель ещё не выполнена</string>
     <string name="profile_mini_notify_lesson">день заканчивается, а урок ещё не пройден</string>
     <string name="profile_mini_notify_streak">ваша серия дней под угрозой</string>
+
+    <string name="profile_account_title">Аккаунт</string>
+    <string name="profile_account_subtitle">Профиль и подключённые способы входа</string>
+    <string name="profile_account_name">Имя</string>
+    <string name="profile_account_telegram">Ник в Telegram</string>
+    <string name="profile_account_phone">Телефон</string>
+    <string name="profile_account_google">Google-аккаунт</string>
+    <string name="profile_account_apple">Apple ID</string>
+    <string name="profile_account_connect">Подключить</string>
+    <string name="profile_account_disconnect">Отключить</string>
+    <string name="profile_account_save">Сохранить</string>
+    <string name="profile_account_avatar">Изменить аватар</string>
+    <string name="profile_account_avatar_hint">Этот аватар видят другие пользователи в рейтинге.</string>
+    <string name="profile_notifications_status_on">Включено</string>
+    <string name="profile_notifications_status_off">Выключено</string>
+    <string name="profile_notifications_category_study">Учебные напоминания</string>
+    <string name="profile_notifications_category_study_desc">Напоминания приложения о дневной цели и риске потерять серию.</string>
+    <string name="profile_notifications_detail_intro">Управляйте напоминаниями HSK AI на этом устройстве.</string>
+    <string name="profile_notifications_goal">Вечером напомним, если дневная цель XP ещё не выполнена.</string>
+    <string name="profile_notifications_streak">Напомним, если серия дней может прерваться.</string>
+    <string name="profile_privacy_security">Конфиденциальность и безопасность</string>
+    <string name="profile_privacy_policy">Политика конфиденциальности</string>
+    <string name="profile_app_permissions">Разрешения приложения</string>
+    <string name="profile_app_permissions_desc">Микрофон и уведомления можно контролировать в настройках Android.</string>
+    <string name="profile_security_note">Ник Telegram здесь не изменяется. Google и Apple подключаются только как дополнительные способы входа в тот же аккаунт HSK AI.</string>
+    <string name="profile_app_version">Версия приложения</string>
 </resources>
