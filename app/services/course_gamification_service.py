@@ -266,6 +266,7 @@ class CourseGamificationService:
                 User.telegram_id,
                 User.full_name,
                 User.username,
+                CourseMiniAppProfile.display_name,
                 User.status,
                 User.payment_status,
                 User.end_date,
@@ -292,6 +293,7 @@ class CourseGamificationService:
             telegram_id,
             full_name,
             username,
+            profile_display_name,
             status,
             payment_status,
             end_date,
@@ -307,7 +309,7 @@ class CourseGamificationService:
                 ranked.append(
                     {
                         "rank": index,
-                        "name": str(full_name or "HSK Student").strip()[:40],
+                        "name": str(profile_display_name or full_name or "HSK Student").strip()[:40],
                         "telegram_id": int(telegram_id) if telegram_id else None,
                         "username": str(username or "").strip().lstrip("@")[:32],
                         "avatar_key": str(avatar_key or "").strip()[:32],
