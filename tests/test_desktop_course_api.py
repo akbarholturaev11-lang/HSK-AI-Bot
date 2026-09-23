@@ -761,6 +761,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             paths,
             {
                 "/api/v3/desktop/course/map",
+                "/api/v3/desktop/sync",
                 "/api/v3/desktop/course/lesson/{lesson_order}",
                 "/api/v3/desktop/course/complete",
                 "/api/v3/desktop/preferences/language",
