@@ -49,6 +49,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.AuthState
@@ -119,6 +120,7 @@ import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
 import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
+import java.time.LocalDate
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 import com.pomp.hskai.widget.*
@@ -363,7 +365,10 @@ private fun AppRoot(
             var planChoiceSeen by rememberSaveable { mutableStateOf(false) }
             var planChoiceOpen by remember { mutableStateOf(false) }
             var widgetSetupOpen by remember { mutableStateOf(false) }
+            var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
             var widgetOfferHandled by rememberSaveable { mutableStateOf(false) }
+            var widgetForegroundTick by remember { mutableStateOf(0) }
+            val widgetLifecycle = LocalLifecycleOwner.current.lifecycle
             val widgetSession by app.widgetStore.state.collectAsStateWithLifecycle(initialValue = WidgetSession())
             val widgetTheme by app.appSettings.themeMode.collectAsStateWithLifecycle(initialValue = com.pomp.hskai.core.settings.AppThemeMode.DEFAULT)
             val sessionEpoch = remember { app.widgetStore.state }
@@ -377,14 +382,39 @@ private fun AppRoot(
                 val epoch = widgetEpoch ?: return@LaunchedEffect
                 courseState.snapshot?.let { app.widgetCoordinator.publish(it, epoch) }
             }
+            DisposableEffect(widgetLifecycle) {
+                val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                    if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                        widgetForegroundTick += 1
+                    }
+                }
+                widgetLifecycle.addObserver(observer)
+                onDispose { widgetLifecycle.removeObserver(observer) }
+            }
+
+            // Onboarding uses the same full-screen prompt as the daily reminder.
+            // Keep the plan-choice gate closed until this prompt is dismissed,
+            // so the two full-screen experiences never stack or swap order.
             LaunchedEffect(onboardingState.launch) {
-                if (onboardingState.launch != null && !widgetOfferHandled) {
-                    widgetOfferHandled = true
-                    if (!app.widgetStore.read().onboardingOffered) {
+                if (onboardingState.launch != null && !widgetOfferHandled && !widgetSetupOpen) {
+                    val today = LocalDate.now().toString()
+                    val session = app.widgetStore.read()
+                    val installed = WidgetScheduler.hasWidgets(localeHost)
+                    if (
+                        WidgetInstallPromptPolicy.shouldAutoShow(
+                            installed = installed,
+                            lastShownDay = session.lastInstallPromptDay,
+                            today = today,
+                        )
+                    ) {
                         app.widgetStore.markOffered()
+                        app.widgetStore.markInstallPromptShown(today)
+                        widgetPromptFromOnboarding = true
                         widgetSetupOpen = true
                         app.widgetStore.enqueue(AndroidWidgetEvent("android_widget_onboarding_viewed"))
                         app.applicationScope.launch { app.widgetCoordinator.flushEvents() }
+                    } else {
+                        widgetOfferHandled = true
                     }
                 }
             }
@@ -393,6 +423,42 @@ private fun AppRoot(
                 if (onboardingState.completed) {
                     courseViewModel.load()
                     profileViewModel.load()
+                }
+            }
+
+            // Existing learners who still have no widget see the same prompt
+            // once per local day when the app returns to the foreground.
+            LaunchedEffect(
+                widgetForegroundTick,
+                onboardingState.completed,
+                onboardingState.launch,
+                widgetOfferHandled,
+                widgetSetupOpen,
+                planChoiceOpen,
+                studySetupState.visible,
+                widgetSession.lastInstallPromptDay,
+            ) {
+                if (!onboardingState.completed || widgetSetupOpen || planChoiceOpen || studySetupState.visible) {
+                    return@LaunchedEffect
+                }
+                if (onboardingState.launch != null && !widgetOfferHandled) {
+                    return@LaunchedEffect
+                }
+
+                val today = LocalDate.now().toString()
+                val installed = WidgetScheduler.hasWidgets(localeHost)
+                if (
+                    WidgetInstallPromptPolicy.shouldAutoShow(
+                        installed = installed,
+                        lastShownDay = widgetSession.lastInstallPromptDay,
+                        today = today,
+                    )
+                ) {
+                    app.widgetStore.markInstallPromptShown(today)
+                    widgetPromptFromOnboarding = false
+                    widgetSetupOpen = true
+                    app.widgetStore.enqueue(AndroidWidgetEvent("android_widget_daily_prompt_viewed"))
+                    app.applicationScope.launch { app.widgetCoordinator.flushEvents() }
                 }
             }
 
@@ -660,6 +726,7 @@ private fun AppRoot(
                         onDestinationConsumed()
                     }
                     AppDestination.WidgetSetup -> {
+                        widgetPromptFromOnboarding = false
                         widgetSetupOpen = true
                         onDestinationConsumed()
                     }
@@ -1024,7 +1091,10 @@ private fun AppRoot(
                                 onOpenGoal = { goalPickerOpen = true },
                                 onOpenLanguage = { languagePickerOpen = true },
                                 onToggleNotifications = toggleLocalReminder,
-                                onOpenWidget = { widgetSetupOpen = true },
+                                onOpenWidget = {
+                                    widgetPromptFromOnboarding = false
+                                    widgetSetupOpen = true
+                                },
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
@@ -1042,10 +1112,22 @@ private fun AppRoot(
                     }
 
                     if (widgetSetupOpen) {
-                        WidgetSetupSheet(
-                            reminderEnabled = widgetSession.reminderEnabled,
-                            onReminder = toggleLocalReminder,
-                            onDismiss = { widgetSetupOpen = false },
+                        WidgetInstallPromptScreen(
+                            onDismiss = {
+                                widgetSetupOpen = false
+                                if (widgetPromptFromOnboarding) {
+                                    widgetPromptFromOnboarding = false
+                                    widgetOfferHandled = true
+                                }
+                            },
+                            onInstalled = {
+                                WidgetScheduler.schedule(context)
+                                widgetSetupOpen = false
+                                if (widgetPromptFromOnboarding) {
+                                    widgetPromptFromOnboarding = false
+                                    widgetOfferHandled = true
+                                }
+                            },
                         )
                     } else if (studySetupState.visible) {
                         StudySetupSheet(
