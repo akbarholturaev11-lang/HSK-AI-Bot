@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.lesson
 
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.audio.VoiceRecorder
+import com.pomp.hskai.core.audio.VoiceRecording
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -11,6 +13,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.StrokeDataDto
+import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
@@ -30,6 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -196,6 +200,27 @@ private class FakeLessonAudioPlayer : LessonAudioPlayer {
     }
 }
 
+private class FakeVoiceRecorder : VoiceRecorder {
+    override var isRecording: Boolean = false
+        private set
+    var cancelCalls = 0
+
+    override fun start() {
+        isRecording = true
+    }
+
+    override suspend fun stop(): VoiceRecording {
+        check(isRecording)
+        isRecording = false
+        return VoiceRecording("data:audio/mp4;base64,dGVzdA==", 4)
+    }
+
+    override fun cancel() {
+        isRecording = false
+        cancelCalls++
+    }
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class LessonViewModelTest {
 
@@ -251,6 +276,8 @@ class LessonViewModelTest {
         api: AndroidCourseApi = FakeLessonApi(),
         audioPlayer: LessonAudioPlayer = FakeLessonAudioPlayer(),
         resumeStore: LessonResumeStore? = null,
+        voiceRecorder: VoiceRecorder? = null,
+        pronunciationScorer: PronunciationScorer? = null,
         eventIdFactory: () -> String = {
             "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
         },
@@ -262,7 +289,71 @@ class LessonViewModelTest {
         language = AppLanguage.UZBEK,
         eventIdFactory = eventIdFactory,
         resumeStore = resumeStore,
+        voiceRecorder = voiceRecorder,
+        pronunciationScorer = pronunciationScorer,
     ).also { it.beginAttempt("attempt-1") }
+
+    @Test
+    fun `pronunciation card records scores and reveals feedback`() = runTest(dispatcher) {
+        val recorder = FakeVoiceRecorder()
+        var scoredTarget = ""
+        val model = viewModel(
+            resumeStore = FakeResumeStore(index = 5),
+            voiceRecorder = recorder,
+            pronunciationScorer = object : PronunciationScorer {
+                override suspend fun score(
+                    target: String,
+                    targetPinyin: String,
+                    language: String,
+                    level: String,
+                    audioDataUrl: String,
+                ): ApiResult<VoicePronounceResponse> {
+                    scoredTarget = target
+                    return ApiResult.Success(VoicePronounceResponse(ok = true, score = 82, heard = target))
+                }
+            },
+        )
+        advanceUntilIdle()
+
+        model.speakPronunciation()
+        assertTrue(recorder.isRecording)
+        assertTrue(model.state.value.isPronunciationRecording)
+
+        advanceTimeBy(LessonViewModel.PRONUNCIATION_WINDOW_MILLIS)
+        advanceUntilIdle()
+
+        assertEquals("你", scoredTarget)
+        assertEquals(82, model.state.value.pronunciationScore)
+        assertTrue(model.state.value.answer is AnswerState.Checked)
+        assertFalse(model.state.value.isPronunciationRecording)
+        assertFalse(model.state.value.isPronunciationScoring)
+    }
+
+    @Test
+    fun `leaving a pronunciation card releases the microphone`() = runTest(dispatcher) {
+        val recorder = FakeVoiceRecorder()
+        val model = viewModel(
+            resumeStore = FakeResumeStore(index = 5),
+            voiceRecorder = recorder,
+            pronunciationScorer = object : PronunciationScorer {
+                override suspend fun score(
+                    target: String,
+                    targetPinyin: String,
+                    language: String,
+                    level: String,
+                    audioDataUrl: String,
+                ) = ApiResult.Success(VoicePronounceResponse(ok = true, score = 90))
+            },
+        )
+        advanceUntilIdle()
+
+        model.speakPronunciation()
+        model.endAttempt("attempt-1")
+
+        assertFalse(recorder.isRecording)
+        assertTrue(recorder.cancelCalls > 0)
+        assertFalse(model.state.value.isPronunciationRecording)
+    }
 
     /** In-memory stand-in for the DataStore-backed resume point. */
     private class FakeResumeStore(var index: Int = 0) : LessonResumeStore {
