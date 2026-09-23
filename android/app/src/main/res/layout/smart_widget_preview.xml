@@ -1,10 +1,27 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="horizontal" android:gravity="center" android:padding="12dp"
-    android:background="@drawable/widget_preview_background">
-    <ImageView android:layout_width="64dp" android:layout_height="64dp"
-        android:src="@drawable/widget_panda_d01" android:contentDescription="@null" />
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/widget_name" android:textColor="#211D17" android:textSize="16sp"
-        android:textStyle="bold" android:maxLines="2" />
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_preview_background"
+    android:clipToOutline="true">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/widget_panda_d01" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="8dp"
+        android:background="@drawable/widget_preview_overlay"
+        android:maxLines="2"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="8dp"
+        android:text="@string/widget_name"
+        android:textColor="#FFFFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+</FrameLayout>
