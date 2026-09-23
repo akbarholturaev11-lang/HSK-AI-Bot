@@ -95,6 +95,7 @@ def _public_entry(entry: dict[str, Any], *, secret: str = "") -> dict[str, Any]:
         "rank": int(entry.get("rank") or 0),
         "name": str(entry.get("name") or "").strip()[:40],
         "username": str(entry.get("username") or "").strip()[:32],
+        "avatar_key": str(entry.get("avatar_key") or "").strip()[:32],
         "xp": int(entry.get("xp") or 0),
         "league_points": int(entry.get("league_points") or 0),
         "total_xp": int(entry.get("total_xp") or 0),

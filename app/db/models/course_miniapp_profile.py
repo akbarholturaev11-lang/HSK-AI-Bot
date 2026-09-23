@@ -69,6 +69,12 @@ class CourseMiniAppProfile(Base):
     # Master switch for the motivational reminders. Default ON; the user turns it
     # off from the Mini App profile (with a warning). See MotivationReminderService.
     notifications_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    # App profile customisation is deliberately separate from Telegram identity
+    # data. Telegram can refresh users.full_name/users.username at any time;
+    # these two fields are the learner's explicit in-app choices.
+    display_name: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    avatar_key: Mapped[str] = mapped_column(String(32), default="", nullable=False)
     # Motivational reminder bookkeeping (managed by MotivationReminderService).
     last_known_rank: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     motivation_overtaken_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)

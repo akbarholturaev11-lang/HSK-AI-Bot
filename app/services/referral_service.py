@@ -131,6 +131,8 @@ class ReferralService:
                 User.telegram_id,
                 User.full_name,
                 User.username,
+                CourseMiniAppProfile.display_name,
+                CourseMiniAppProfile.avatar_key,
                 User.status,
                 User.payment_status,
                 User.end_date,
@@ -157,6 +159,8 @@ class ReferralService:
             telegram_id,
             full_name,
             username,
+            profile_display_name,
+            avatar_key,
             status,
             payment_status,
             end_date,
@@ -168,7 +172,8 @@ class ReferralService:
             items.append(
                 {
                     "rank": index,
-                    "name": str(full_name or username or "HSK Student").strip()[:40],
+                    "name": str(profile_display_name or full_name or username or "HSK Student").strip()[:40],
+                    "avatar_key": str(avatar_key or "").strip()[:32],
                     "telegram_id": int(telegram_id) if telegram_id else None,
                     "username": str(username or "").strip().lstrip("@")[:32],
                     "status": str(ref_status or "pending"),

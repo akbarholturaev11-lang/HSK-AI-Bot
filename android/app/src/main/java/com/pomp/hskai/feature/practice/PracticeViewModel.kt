@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 data class PracticeToolSpec(
     val mode: String,
@@ -229,14 +230,19 @@ class PracticeViewModel(
 
     private var lastAttempt: Attempt? = null
 
-    private data class ExamAttempt(val level: String, val language: String)
+    private data class ExamAttempt(
+        val level: String,
+        val language: String,
+        val accessRef: String,
+    )
 
     /**
-     * Set when an exam is opened, cleared when anything else is. An ad that
-     * follows a refusal must re-open what was refused, so only one of the two
-     * attempts may be live at a time.
+     * Each tap gets one opaque attempt id. It stays stable for transport/access
+     * retries but a later tap gets a new id, so a completed exam/review can
+     * never be reopened as if it were a fresh run.
      */
     private var lastExamAttempt: ExamAttempt? = null
+    private var lastMistakeReviewAccessRef: String? = null
 
     fun startPractice(
         tool: PracticeToolSpec,
@@ -248,6 +254,7 @@ class PracticeViewModel(
         if (_state.value.isStarting) return
         lastAttempt = Attempt(tool, level, language)
         lastExamAttempt = null
+        lastMistakeReviewAccessRef = null
         _state.update {
             it.copy(
                 isStarting = true,
@@ -325,7 +332,10 @@ class PracticeViewModel(
         adSupported: Boolean = false,
     ) {
         if (_state.value.isStarting) return
-        lastExamAttempt = ExamAttempt(level, language)
+        val resolvedAccessRef = accessRef.ifBlank { UUID.randomUUID().toString() }
+        lastExamAttempt = ExamAttempt(level, language, resolvedAccessRef)
+        lastAttempt = null
+        lastMistakeReviewAccessRef = null
         _state.update {
             it.copy(
                 isStarting = true,
@@ -339,7 +349,7 @@ class PracticeViewModel(
                 // The limit block names the section that was refused, and for
                 // an exam that section is the test centre.
                 pendingTool = EXAM_TOOL,
-                adAccessRef = if (adSupported) accessRef else "",
+                adAccessRef = if (adSupported) resolvedAccessRef else "",
             )
         }
         viewModelScope.launch {
@@ -347,7 +357,7 @@ class PracticeViewModel(
                 val result = repository.examStart(
                     level = level,
                     language = language,
-                    accessRef = accessRef,
+                    accessRef = resolvedAccessRef,
                     adSupported = adSupported,
                 )
             ) {
@@ -524,17 +534,26 @@ class PracticeViewModel(
     fun onAccessChanged() {
         if (_state.value.error !is ApiError.LimitReached) return
         _state.update { it.copy(error = null) }
+        val reviewAccessRef = lastMistakeReviewAccessRef
+        if (reviewAccessRef != null) {
+            startMistakeReview(accessRef = reviewAccessRef)
+            return
+        }
         val exam = lastExamAttempt
         if (exam != null) {
-            startExam(level = exam.level, language = exam.language)
+            startExam(level = exam.level, language = exam.language, accessRef = exam.accessRef)
             return
         }
         val attempt = lastAttempt ?: return
         startPractice(tool = attempt.tool, level = attempt.level, language = attempt.language)
     }
 
-    fun startMistakeReview() {
+    fun startMistakeReview(accessRef: String = "") {
         if (_state.value.isStarting) return
+        val resolvedAccessRef = accessRef.ifBlank { UUID.randomUUID().toString() }
+        lastAttempt = null
+        lastExamAttempt = null
+        lastMistakeReviewAccessRef = resolvedAccessRef
         stopReviewAudio()
         _state.update {
             it.copy(
@@ -548,7 +567,7 @@ class PracticeViewModel(
             )
         }
         viewModelScope.launch {
-            when (val result = repository.startMistakeReview()) {
+            when (val result = repository.startMistakeReview(resolvedAccessRef)) {
                 is ApiResult.Success -> _state.update {
                     it.copy(
                         isStarting = false,

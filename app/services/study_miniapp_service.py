@@ -137,7 +137,12 @@ class StudyMiniAppService:
                 CourseMistake.wrong_count > CourseMistake.resolved_count,
             )
         )
-        display_name = str(getattr(user, "full_name", None) or getattr(user, "username", None) or "HSK Student").strip()
+        telegram_name = str(
+            getattr(user, "full_name", None)
+            or getattr(user, "username", None)
+            or "HSK Student"
+        ).strip()
+        display_name = str(getattr(profile, "display_name", None) or telegram_name).strip()
         initials = "".join(part[:1] for part in display_name.split()[:2]).upper() or "HSK"
         return {
             "ok": True,
@@ -145,6 +150,12 @@ class StudyMiniAppService:
             "user": {
                 "name": display_name[:80],
                 "avatar": initials[:3],
+                "avatar_key": str(getattr(profile, "avatar_key", "") or "")[:32],
+                "telegram_username": str(getattr(user, "username", None) or "").strip().lstrip("@")[:64],
+                # Telegram Bot API does not expose a user's phone number. Keep
+                # this optional field for accounts that may obtain a verified
+                # number through another first-party flow later; never invent it.
+                "phone": str(getattr(user, "phone_number", None) or "").strip()[:32],
                 "level": await self._resolve_level(user),
                 "language": getattr(user, "language", None) or "ru",
             },

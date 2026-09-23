@@ -13,6 +13,7 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidHintDismissRequest
 import com.pomp.hskai.data.api.AndroidHintDismissResponse
 import com.pomp.hskai.data.api.AndroidProfileResponse
+import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.ExamAnswerDto
@@ -74,6 +75,17 @@ class FeatureRepository(
         api.profile(it)
     }
 
+    suspend fun updateProfile(displayName: String, avatarKey: String): ApiResult<AndroidProfileResponse> =
+        authorized {
+            api.updateProfile(
+                it,
+                AndroidProfileUpdateRequest(
+                    displayName = displayName,
+                    avatarKey = avatarKey,
+                ),
+            )
+        }
+
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
         authorized { api.subscriptionOverview(it) }
 
@@ -106,8 +118,13 @@ class FeatureRepository(
         api.mistakes(it, category = category, limit = limit, offset = offset)
     }
 
-    suspend fun startMistakeReview(): ApiResult<MistakeReviewStartResponse> =
-        authorized { api.mistakeReviewStart(it, MistakeReviewStartRequest()) }
+    suspend fun startMistakeReview(accessRef: String = ""): ApiResult<MistakeReviewStartResponse> =
+        authorized {
+            api.mistakeReviewStart(
+                it,
+                MistakeReviewStartRequest(accessRef = accessRef),
+            )
+        }
 
     suspend fun answerMistakeReview(
         sessionId: String,

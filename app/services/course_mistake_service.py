@@ -18,7 +18,11 @@ from app.services.course_miniapp_analytics_service import (
 from app.services.course_gamification_service import CourseGamificationService
 
 
-MISTAKE_REVIEW_VERSION = 1
+MISTAKE_REVIEW_VERSION = 2
+# New starts use v2 so stale v1 snapshots cannot poison the Start button.
+# Answer/complete still accept v1: a learner who was already inside a review
+# when the backend deploys must be able to finish it.
+MISTAKE_REVIEW_ACCEPTED_VERSIONS = frozenset({1, MISTAKE_REVIEW_VERSION})
 MISTAKE_REVIEW_MATERIAL_VERSION = 2
 MISTAKE_REVIEW_FORMATS = {
     "word": "word_choice",
@@ -86,6 +90,15 @@ class CourseMistakeService:
     @staticmethod
     def _text(value, limit: int = 2000) -> str:
         return re.sub(r"\s+", " ", str(value or "")).strip()[:limit]
+
+    @staticmethod
+    def _valid_review_session_id(user_id: int, session_id: str) -> bool:
+        if len(session_id) > 80:
+            return False
+        return any(
+            session_id.startswith(f"mistake-review:{int(user_id)}:v{version}:")
+            for version in MISTAKE_REVIEW_ACCEPTED_VERSIONS
+        )
 
     @classmethod
     def _category(cls, item: dict, source: str) -> str:
@@ -917,8 +930,7 @@ class CourseMistakeService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
-        expected_prefix = f"mistake-review:{user.id}:v{MISTAKE_REVIEW_VERSION}:"
-        if not session_id.startswith(expected_prefix) or len(session_id) > 80:
+        if not self._valid_review_session_id(user.id, session_id):
             return {"ok": False, "error": "invalid_mistake_review_session"}
         question_id = self._text(question_id, 160)
         raw_answer = selected_index
@@ -1074,8 +1086,7 @@ class CourseMistakeService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
-        expected_prefix = f"mistake-review:{user.id}:v{MISTAKE_REVIEW_VERSION}:"
-        if not session_id.startswith(expected_prefix) or len(session_id) > 80:
+        if not self._valid_review_session_id(user.id, session_id):
             return {"ok": False, "error": "invalid_mistake_review_session"}
         await self.session.execute(select(User.id).where(User.id == user.id).with_for_update())
         started_result = await self.session.execute(

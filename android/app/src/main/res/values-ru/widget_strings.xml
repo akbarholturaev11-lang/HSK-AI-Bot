@@ -9,6 +9,13 @@
     <string name="widget_stats">%1$d XP · %2$d дн.</string>
     <string name="widget_lesson">%1$s · Урок %2$d</string>
     <string name="widget_open">Открыть приложение</string>
+        <string name="widget_prompt_title">Установите виджет</string>
+    <string name="widget_prompt_body">Урок, серия и прогресс дня — прямо на главном экране.</string>
+    <string name="widget_prompt_install">Установить</string>
+    <string name="widget_prompt_not_now">Не сейчас</string>
+    <string name="widget_prompt_installed_title">Виджет установлен</string>
+    <string name="widget_prompt_installed_body">HSK AI теперь на главном экране. Урок и серия всегда перед глазами.</string>
+    <string name="widget_prompt_manual_hint">Если системное окно не открылось: удерживайте главный экран → Виджеты → HSK AI.</string>
     <string name="widget_setup_title">Уроки на главном экране</string>
     <string name="widget_setup_body">Урок, XP и серия всегда перед глазами. Нажмите на виджет, чтобы открыть HSK AI.</string>
     <string name="widget_setup_add">Добавить на главный экран</string>

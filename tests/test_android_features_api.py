@@ -99,6 +99,7 @@ class AndroidReferralPayloadTests(unittest.TestCase):
                 "rank": 2,
                 "name": "Li Friend",
                 "username": "@li_friend",
+                "avatar_key": "panda_streak",
                 "telegram_id": 778,
                 "user_id": 91,
                 "status": "active",
@@ -113,6 +114,7 @@ class AndroidReferralPayloadTests(unittest.TestCase):
 
         self.assertEqual(2, row["rank"])
         self.assertEqual("li_friend", row["username"])
+        self.assertEqual("panda_streak", row["avatar_key"])
         self.assertEqual(45, row["xp"])
         self.assertEqual(320, row["total_xp"])
         self.assertEqual(challenge_ref(778, secret), row["challenge_ref"])
@@ -148,6 +150,7 @@ class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
                         "rank": 1,
                         "name": "Li Friend",
                         "username": "li_friend",
+                        "avatar_key": "panda_streak",
                         "telegram_id": 778,
                         "status": "active",
                         "xp": 45,
@@ -199,6 +202,7 @@ class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(1, payload["invited"])
         self.assertEqual(1, payload["activated"])
         self.assertEqual("Li Friend", payload["items"][0]["name"])
+        self.assertEqual("panda_streak", payload["items"][0]["avatar_key"])
         self.assertTrue(payload["items"][0]["challenge_ref"])
         self.assertNotIn("telegram_id", payload["items"][0])
 
@@ -1483,6 +1487,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/trial/start"),
         ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
+        ("PATCH", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("POST", "/api/v3/android/subscription/open"),
         ("POST", "/api/v3/android/practice/start"),

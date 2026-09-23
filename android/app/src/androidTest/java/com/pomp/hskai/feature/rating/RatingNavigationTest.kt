@@ -124,29 +124,22 @@ class RatingNavigationTest {
     }
 
     @Test
-    fun quick_challenge_button_does_not_open_the_profile() {
-        val sent = mutableListOf<String>()
+    fun leaderboard_does_not_show_quick_challenge_button() {
         compose.setContent {
             PompHskAiTheme {
-                var selected by remember { mutableStateOf<RatingEntryDto?>(null) }
                 RatingScreen(
                     state = state,
                     onSelectTab = {},
                     onOpenChallenges = {},
-                    onOpenUser = { selected = it },
+                    onOpenUser = {},
                     onInviteFriends = {},
-                    onChallenge = { sent += it },
+                    onChallenge = {},
                     onRetry = {},
                 )
-                if (selected != null) {
-                    androidx.compose.material3.Text("PROFILE_OPEN")
-                }
             }
         }
 
-        compose.onNodeWithText("战").performClick()
-        compose.onNodeWithText("PROFILE_OPEN").assertDoesNotExist()
-        assertEquals(listOf(rival.challengeRef), sent)
+        compose.onNodeWithText("战").assertDoesNotExist()
     }
 
     @Test

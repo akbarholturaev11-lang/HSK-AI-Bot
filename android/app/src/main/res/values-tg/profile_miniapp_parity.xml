@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile_widgets">Виҷетҳо</string>
+    <string name="profile_widget_installed">Насб шудааст</string>
+    <string name="profile_widget_not_installed">Насб нашудааст</string>
     <string name="profile_mini_group_title">Хатоҳои ман · Дӯстон</string>
     <string name="profile_mini_mistakes_subtitle">Кор бар ҷойҳои заиф</string>
     <string name="profile_mini_settings">Танзимот</string>
@@ -9,8 +12,35 @@
     <string name="profile_mini_streak">Рӯзҳои пайдарпай</string>
     <string name="profile_mini_completed_lessons">Дарсҳои анҷомшуда</string>
     <string name="profile_mini_level">Сатҳ</string>
-    <string name="profile_mini_notify_head">Бот вақте огоҳӣ мефиристад, ки:</string>
-    <string name="profile_mini_notify_rank">касе дар рейтинг аз шумо пеш меравад</string>
+    <string name="profile_mini_notify_head">Барномаи HSK AI дар ҳамин дастгоҳ ёдраскуниҳои омӯзиширо нишон медиҳад:</string>
+    <string name="profile_mini_notify_rank">ҳадафи рӯзона ҳанӯз иҷро нашуда бошад</string>
     <string name="profile_mini_notify_lesson">рӯз ба охир мерасаду дарс иҷро нашудааст</string>
     <string name="profile_mini_notify_streak">силсилаи рӯзҳои пайдарпайи шумо дар хатар аст</string>
+
+    <string name="profile_account_title">Ҳисоб</string>
+    <string name="profile_account_subtitle">Профил ва усулҳои пайвастшудаи вуруд</string>
+    <string name="profile_account_name">Ном</string>
+    <string name="profile_account_telegram">Ники Telegram</string>
+    <string name="profile_account_phone">Телефон</string>
+    <string name="profile_account_google">Ҳисоби Google</string>
+    <string name="profile_account_apple">Apple ID</string>
+    <string name="profile_account_connect">Пайваст кардан</string>
+    <string name="profile_account_disconnect">Ҷудо кардан</string>
+    <string name="profile_account_save">Сабт кардан</string>
+    <string name="profile_account_avatar">Иваз кардани аватар</string>
+    <string name="profile_account_avatar_hint">Дигар корбарон ин аватарро дар рейтинг мебинанд.</string>
+    <string name="profile_notifications_status_on">Фаъол</string>
+    <string name="profile_notifications_status_off">Хомӯш</string>
+    <string name="profile_notifications_category_study">Ёдраскуниҳои омӯзиш</string>
+    <string name="profile_notifications_category_study_desc">Ёдраскуниҳои барнома барои ҳадафи рӯзона ва хавфи қатъ шудани силсила.</string>
+    <string name="profile_notifications_detail_intro">Ёдраскуниҳои HSK AI-ро дар ҳамин дастгоҳ идора кунед.</string>
+    <string name="profile_notifications_goal">Шом ёдрас мекунем, агар ҳадафи XP-и рӯзона иҷро нашуда бошад.</string>
+    <string name="profile_notifications_streak">Ёдрас мекунем, агар силсилаи рӯзҳо дар хавфи қатъ шудан бошад.</string>
+    <string name="profile_privacy_security">Махфият ва амният</string>
+    <string name="profile_terms_of_use">Шартҳои истифода</string>
+    <string name="profile_privacy_policy">Сиёсати махфият</string>
+    <string name="profile_app_permissions">Иҷозатҳои барнома</string>
+    <string name="profile_app_permissions_desc">Микрофон ва огоҳиҳоро дар танзимоти Android идора кунед.</string>
+    <string name="profile_security_note">Ники Telegram дар ин ҷо тағйир дода намешавад. Google ва Apple танҳо ҳамчун усули иловагии вуруд ба ҳамин ҳисоби HSK AI пайваст мешаванд.</string>
+    <string name="profile_app_version">Версияи барнома</string>
 </resources>

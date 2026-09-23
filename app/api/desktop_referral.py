@@ -68,6 +68,7 @@ def _public_item(entry: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "name": str(entry.get("name") or "").strip()[:40],
+        "avatar_key": str(entry.get("avatar_key") or "").strip()[:32],
         "status": str(entry.get("status") or "pending"),
         "joined_at": str(entry.get("joined_at") or ""),
         "activated_at": str(entry.get("activated_at") or ""),

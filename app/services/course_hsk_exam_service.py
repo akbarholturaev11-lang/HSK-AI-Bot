@@ -29,7 +29,7 @@ from app.services.course_question_material import (
 )
 
 
-HSK_EXAM_SERVICE_VERSION = 2
+HSK_EXAM_SERVICE_VERSION = 3
 HSK_EXAM_EVENT_SOURCE = "course_hsk_exam"
 HSK_EXAM_BASE_XP = 10
 HSK_EXAM_STATIC_DIR = Path(__file__).resolve().parents[1] / "static" / "course_v3_data" / "exams"
@@ -84,13 +84,20 @@ class CourseHskExamService:
         )
 
     @staticmethod
-    def _access_key(user_id: int, access_ref: str) -> str:
-        value = f"{int(user_id)}:{access_ref}".encode("utf-8")
+    def _access_key(user_id: int, level: str, lang: str, access_ref: str) -> str:
+        # A retry key identifies one concrete exam variant. Previously it only
+        # used user_id + access_ref; Android normally sends an empty access_ref,
+        # so an old HSK 1 start could collide with HSK 2/3/4 (or a new UI
+        # language) forever and the API returned hsk_exam_access_ref_conflict.
+        value = (
+            f"{int(user_id)}:{normalize_hsk_level(level)}:"
+            f"{normalize_material_language(lang)}:{access_ref}"
+        ).encode("utf-8")
         return hashlib.sha256(value).hexdigest()[:24]
 
     @classmethod
-    def _session_id(cls, user_id: int, level: str, access_ref: str) -> str:
-        access_key = cls._access_key(user_id, access_ref)
+    def _session_id(cls, user_id: int, level: str, lang: str, access_ref: str) -> str:
+        access_key = cls._access_key(user_id, level, lang, access_ref)
         return f"hsk-exam:{int(user_id)}:{level}:v{HSK_EXAM_SERVICE_VERSION}:{access_key}"
 
     @staticmethod
@@ -407,8 +414,8 @@ class CourseHskExamService:
         if not self.access.is_paid_user(user) and not self.access.is_free_user(user):
             return {"ok": False, "error": "course_access_blocked"}
 
-        access_key = self._access_key(user.id, access_ref)
-        session_id = self._session_id(user.id, level, access_ref)
+        access_key = self._access_key(user.id, level, lang, access_ref)
+        session_id = self._session_id(user.id, level, lang, access_ref)
         existing = await self._started_for_access_key(user, access_key)
         if existing:
             existing_session_id = str(getattr(existing, "session_id", None) or "")

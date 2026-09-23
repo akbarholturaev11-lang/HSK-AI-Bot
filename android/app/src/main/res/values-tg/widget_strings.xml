@@ -9,6 +9,13 @@
     <string name="widget_stats">%1$d XP · %2$d рӯз</string>
     <string name="widget_lesson">%1$s · Дарси %2$d</string>
     <string name="widget_open">Кушодани барнома</string>
+        <string name="widget_prompt_title">Виҷетро насб кунед</string>
+    <string name="widget_prompt_body">Дарс, силсила ва ҳолати рӯзро аз экрани асосӣ бинед.</string>
+    <string name="widget_prompt_install">Насб кардан</string>
+    <string name="widget_prompt_not_now">Ҳоло не</string>
+    <string name="widget_prompt_installed_title">Виҷет насб шуд</string>
+    <string name="widget_prompt_installed_body">HSK AI акнун дар экрани асосӣ аст. Дарс ва силсиларо бо як нигоҳ мебинед.</string>
+    <string name="widget_prompt_manual_hint">Агар равзанаи система кушода нашавад: экрани асосиро нигоҳ доред → Виҷетҳо → HSK AI.</string>
     <string name="widget_setup_title">Дарсҳо дар экрани асосӣ</string>
     <string name="widget_setup_body">Дарс, XP ва силсиларо бе кушодани барнома бинед. Бо пахши виҷет HSK AI кушода мешавад.</string>
     <string name="widget_setup_add">Илова ба экрани асосӣ</string>

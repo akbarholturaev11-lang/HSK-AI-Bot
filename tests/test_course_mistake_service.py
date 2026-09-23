@@ -237,11 +237,11 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
             result = await self.service.start_review(123, access_ref="review-ref-123")
 
         self.assertTrue(result["ok"])
-        self.assertTrue(result["session"]["id"].startswith("mistake-review:7:v1:"))
+        self.assertTrue(result["session"]["id"].startswith("mistake-review:7:v2:"))
         self.service.access.consume_free_use.assert_awaited_once_with(
             self.user,
             feature_key="training_test",
-            usage_ref="mistake-review:v1:review-ref-123",
+            usage_ref="mistake-review:v2:review-ref-123",
         )
         event_payload = analytics.record_server_event.await_args.kwargs["payload"]
         self.assertEqual(event_payload["mistake_ids"], [1])

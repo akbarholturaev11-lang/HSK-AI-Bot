@@ -18,8 +18,17 @@ data class AndroidProfileResponse(
 data class AndroidProfileUserDto(
     @SerialName("name") val name: String = "",
     @SerialName("avatar") val avatar: String = "",
+    @SerialName("avatar_key") val avatarKey: String = "",
+    @SerialName("telegram_username") val telegramUsername: String = "",
+    @SerialName("phone") val phone: String = "",
     @SerialName("level") val level: String = "hsk1",
     @SerialName("language") val language: String = "uz",
+)
+
+@Serializable
+data class AndroidProfileUpdateRequest(
+    @SerialName("display_name") val displayName: String,
+    @SerialName("avatar_key") val avatarKey: String,
 )
 
 @Serializable
@@ -565,6 +574,7 @@ data class RatingEntryDto(
     @SerialName("rank") val rank: Int = 0,
     @SerialName("name") val name: String = "",
     @SerialName("username") val username: String = "",
+    @SerialName("avatar_key") val avatarKey: String = "",
     @SerialName("xp") val xp: Int = 0,
     @SerialName("course_level") val courseLevel: String = "",
     @SerialName("is_paid") val isPaid: Boolean = false,
@@ -590,6 +600,7 @@ data class ReferralItemDto(
     @SerialName("rank") val rank: Int = 0,
     @SerialName("name") val name: String = "",
     @SerialName("username") val username: String = "",
+    @SerialName("avatar_key") val avatarKey: String = "",
     @SerialName("status") val status: String = "",
     @SerialName("xp") val xp: Int = 0,
     @SerialName("total_xp") val totalXp: Int = 0,
