@@ -9,6 +9,13 @@
     <string name="widget_stats">%1$d XP · %2$d kun</string>
     <string name="widget_lesson">%1$s · %2$d-dars</string>
     <string name="widget_open">Ilovani ochish</string>
+        <string name="widget_prompt_title">Vidjet o‘rnating</string>
+    <string name="widget_prompt_body">Dars, streak va kunlik holatni bosh ekrandan ko‘rib turing.</string>
+    <string name="widget_prompt_install">O‘rnatish</string>
+    <string name="widget_prompt_not_now">Hozir emas</string>
+    <string name="widget_prompt_installed_title">Vidjet o‘rnatildi</string>
+    <string name="widget_prompt_installed_body">HSK AI endi bosh ekranda. Dars va streak holatini bir qarashda ko‘rasiz.</string>
+    <string name="widget_prompt_manual_hint">Agar tizim oynasi ochilmasa: bosh ekranni bosib turing → Vidjetlar → HSK AI.</string>
     <string name="widget_setup_title">Darslar bosh ekranda</string>
     <string name="widget_setup_body">Kunlik dars, XP va streak holatini ilovani ochmasdan ko‘ring. Widget bosilganda HSK AI ochiladi.</string>
     <string name="widget_setup_add">Bosh ekranga qo‘shish</string>
