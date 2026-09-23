@@ -62,6 +62,8 @@ def robots_text(origin):
         "Allow: /desktop-download-page.css$",
         "Allow: /desktop-download-page.js$",
         "Allow: /assets/",
+        "Allow: /privacy$",
+        "Allow: /privacy?*",
         "Allow: /sitemap.xml$",
         "Allow: /robots.txt$",
     ])
@@ -97,6 +99,40 @@ def create_public_site_router(*, settings_obj):
 
     for path in PAGES:
         router.add_api_route(path, landing, methods=["GET", "HEAD"], name="public_" + path.replace("/", "_"))
+
+    @router.get("/privacy")
+    async def privacy_policy():
+        body = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HSK AI Privacy Policy</title><meta name="robots" content="index,follow">
+<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}</style></head>
+<body><h1>HSK AI Privacy Policy</h1><small>Effective: 23 September 2026</small>
+<p>HSK AI processes only the information needed to provide learning, account, security and subscription features.</p>
+<h2>Information we process</h2>
+<p>Account identifiers from Telegram and, when you connect them, Google or Apple; your in-app display name and avatar choice; course progress, XP, streaks, mistakes, learning settings, subscription state and service diagnostics.</p>
+<h2>Google and Apple sign-in</h2>
+<p>Provider subject identifiers are stored as keyed hashes. A provider may also supply an email address for display and account-security purposes. Email is not used to merge unrelated accounts.</p>
+<h2>Microphone and voice features</h2>
+<p>Microphone permission is requested only when you use pronunciation or AI Voice. Audio you submit may be sent to HSK AI servers and service providers solely to transcribe, score or answer that voice interaction.</p>
+<h2>Notifications and device permissions</h2>
+<p>The Android app asks for notification permission only for study reminders. You can turn reminders off in HSK AI settings or revoke permissions in Android settings.</p>
+<h2>Sharing and sale</h2>
+<p>We do not sell personal data. Data may be processed by infrastructure, authentication, analytics or AI service providers only as needed to operate HSK AI, protect the service, or comply with law.</p>
+<h2>Your choices</h2>
+<p>You can disconnect optional sign-in methods, change your app profile, sign out, revoke device permissions, and contact HSK AI support from the app to request access, correction or deletion of account data.</p>
+<h2>Security</h2>
+<p>Authentication tokens are protected and sensitive provider identifiers are not exposed in public leaderboard data. No system can guarantee absolute security; HSK AI limits access and data exposure by design.</p>
+<h2>Contact</h2>
+<p>Use the Support item inside HSK AI or the official Telegram bot @darsi_chini_bot.</p>
+</body></html>"""
+        return HTMLResponse(
+            body,
+            headers={
+                "Cache-Control": "public, max-age=300",
+                "Referrer-Policy": "no-referrer",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
 
     @router.get("/robots.txt")
     async def robots():

@@ -61,6 +61,7 @@ from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
@@ -98,6 +99,7 @@ PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 MIN_TIMEZONE_OFFSET = -720
 MAX_TIMEZONE_OFFSET = 840
 MAX_ANDROID_JSON_BODY_BYTES = 16 * 1024
+ANDROID_PROFILE_AVATARS = {"", "panda_cheer", "panda_streak", "panda_worried"}
 
 # Reklama turlaridan Android nimani ko'rsatishi mumkin.
 #
@@ -132,6 +134,15 @@ class AndroidFeatureError(RuntimeError):
         self.status_code = status_code
 
 
+
+
+class AndroidProfileUpdateRequest(BaseModel):
+    """Editable app-profile fields; Telegram identity itself stays read-only."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    display_name: str = Field(default="", max_length=80)
+    avatar_key: str = Field(default="", max_length=32)
 
 
 class AndroidAdViewRequest(BaseModel):
@@ -777,6 +788,38 @@ def create_android_features_router(
             return _error_response(exc)
         except Exception:
             logger.exception("Android profile failed")
+            return _error_response(
+                AndroidFeatureError("android_profile_unavailable", status_code=503)
+            )
+
+    @router.patch("/api/v3/android/profile")
+    async def android_profile_update(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            payload = await _validated_payload(request, AndroidProfileUpdateRequest)
+            avatar_key = payload.avatar_key.strip()
+            if avatar_key not in ANDROID_PROFILE_AVATARS:
+                raise AndroidFeatureError("android_profile_avatar_invalid", status_code=422)
+
+            # Collapse whitespace/control separators before storing a display
+            # name. The Telegram username remains immutable in this endpoint.
+            display_name = " ".join(payload.display_name.split()).strip()[:80]
+            async with session_factory() as session:
+                user = await _user(session, request)
+                profile = await CourseMiniAppProfileService(session).get_or_create(user.id)
+                profile.display_name = display_name or None
+                profile.avatar_key = avatar_key
+                await session.flush()
+                result = await StudyMiniAppService(session).get_profile_payload(
+                    int(user.telegram_id)
+                )
+                await session.commit()
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android profile update failed")
             return _error_response(
                 AndroidFeatureError("android_profile_unavailable", status_code=503)
             )
