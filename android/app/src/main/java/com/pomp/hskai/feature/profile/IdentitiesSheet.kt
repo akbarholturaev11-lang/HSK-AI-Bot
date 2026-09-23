@@ -258,7 +258,7 @@ private fun ProviderAccountRow(
             )
             Text(
                 identity?.emailMasked ?: identity?.displayName
-                    ?: stringResource(R.string.profile_identity_not_connected),
+                    ?: stringResource(R.string.profile_account_connect),
                 color = PompColors.InkDisabled,
                 fontSize = 12.sp,
             )
