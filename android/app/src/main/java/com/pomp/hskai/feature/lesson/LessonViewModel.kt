@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
@@ -13,6 +14,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.RatingResponse
+import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.domain.model.ChoiceCard
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** What the learner has done with the card currently on screen. */
@@ -99,6 +102,10 @@ data class LessonUiState(
     val isStale: Boolean = false,
     val isAudioLoading: Boolean = false,
     val audioError: ApiError? = null,
+    val isPronunciationRecording: Boolean = false,
+    val isPronunciationScoring: Boolean = false,
+    val pronunciationScore: Int? = null,
+    val pronunciationError: ApiError? = null,
     val outcome: LessonOutcome = LessonOutcome.InProgress,
     /**
      * The three leaderboard rows the rank-up celebration shows, fetched once
@@ -188,6 +195,17 @@ data class WriterTarget(
 /** CJK ideographs, the range hanzi-writer has data for. */
 private fun Char.isHanzi(): Boolean = code in 0x3400..0x9FFF || code in 0xF900..0xFAFF
 
+/** Small seam that keeps the microphone flow independently testable. */
+interface PronunciationScorer {
+    suspend fun score(
+        target: String,
+        targetPinyin: String,
+        language: String,
+        level: String,
+        audioDataUrl: String,
+    ): ApiResult<VoicePronounceResponse>
+}
+
 /**
  * Runs one mini-lesson.
  *
@@ -204,6 +222,9 @@ class LessonViewModel(
      * the learner up. Absent in tests, where no board is asserted.
      */
     private val featureRepository: FeatureRepository? = null,
+    private val pronunciationScorer: PronunciationScorer? = null,
+    /** Records pronunciation cards; absent only in unit tests that do not speak. */
+    private val voiceRecorder: VoiceRecorder? = null,
     private val level: String,
     private val lessonOrder: Int,
     private val language: AppLanguage,
@@ -236,6 +257,7 @@ class LessonViewModel(
         return seconds.coerceIn(0L, 3600L).toInt()
     }
     private var audioJob: Job? = null
+    private var pronunciationJob: Job? = null
 
     /** The stroke fetch for the character the writing sheet is on. */
     private var writerJob: Job? = null
@@ -250,6 +272,7 @@ class LessonViewModel(
     fun beginAttempt(attemptKey: String) {
         if (attemptKey.isBlank() || activeAttemptKey == attemptKey) return
         stopAudio()
+        stopPronunciation()
         activeAttemptKey = attemptKey
         eventId = eventIdFactory()
         mistakes.clear()
@@ -263,6 +286,7 @@ class LessonViewModel(
         activeAttemptKey = null
         loadGeneration++
         stopAudio()
+        stopPronunciation()
         _state.update { it.copy(isAudioLoading = false, audioError = null) }
     }
 
@@ -344,9 +368,104 @@ class LessonViewModel(
         record(wrongAttempts.isEmpty(), card.explanation)
     }
 
-    /** New word, grammar, pronunciation and unsupported cards just advance. */
+    /** New word, grammar and unsupported cards just advance. */
     fun acknowledge() {
         if (_state.value.isAnswered) return
+        advance()
+    }
+
+    /** Records and scores the phrase shown by the current pronunciation card. */
+    fun speakPronunciation() {
+        val current = _state.value
+        val card = current.currentCard as? PronunciationCard ?: return
+        if (current.isAnswered || current.isPronunciationRecording || current.isPronunciationScoring) return
+        val recorder = voiceRecorder ?: run {
+            _state.update { it.copy(pronunciationError = ApiError.Unknown) }
+            return
+        }
+        val scorer = pronunciationScorer
+        if (scorer == null && featureRepository == null) {
+            _state.update { it.copy(pronunciationError = ApiError.Unknown) }
+            return
+        }
+
+        stopAudio()
+        runCatching { recorder.start() }.onFailure {
+            _state.update { it.copy(pronunciationError = ApiError.Unknown) }
+            return
+        }
+        _state.update {
+            it.copy(
+                isAudioLoading = false,
+                audioError = null,
+                isPronunciationRecording = true,
+                pronunciationScore = null,
+                pronunciationError = null,
+            )
+        }
+        val attemptKey = activeAttemptKey ?: run {
+            recorder.cancel()
+            return
+        }
+        val cardIndex = current.cardIndex
+        pronunciationJob = viewModelScope.launch {
+            delay(PRONUNCIATION_WINDOW_MILLIS)
+            val recording = runCatching { recorder.stop() }.getOrElse {
+                if (activeAttemptKey == attemptKey) _state.update {
+                    it.copy(isPronunciationRecording = false, pronunciationError = ApiError.Unknown)
+                }
+                return@launch
+            }
+            if (activeAttemptKey != attemptKey || _state.value.cardIndex != cardIndex) return@launch
+            _state.update { it.copy(isPronunciationRecording = false, isPronunciationScoring = true) }
+            when (
+                val result = scorer?.score(
+                    card.phrase,
+                    card.pinyin,
+                    language.backendCode,
+                    level,
+                    recording.dataUrl,
+                ) ?: featureRepository!!.scorePronunciation(
+                    target = card.phrase,
+                    targetPinyin = card.pinyin,
+                    language = language.backendCode,
+                    level = level,
+                    audioDataUrl = recording.dataUrl,
+                )
+            ) {
+                is ApiResult.Success -> if (activeAttemptKey == attemptKey && _state.value.cardIndex == cardIndex) {
+                    val score = result.value.score
+                    val passed = result.value.ok && score >= PRONUNCIATION_PASS_SCORE
+                    val detail = result.value.heard.ifBlank { result.value.message }
+                    _state.update {
+                        it.copy(
+                            isPronunciationScoring = false,
+                            pronunciationScore = score,
+                            pronunciationError = null,
+                            // Pronunciation cards remain ungraded/skippable, but
+                            // feedback now owns the Next button after a real try.
+                            answer = AnswerState.Checked(
+                                isCorrect = passed,
+                                explanation = listOf("$score%", detail)
+                                    .filter { text -> text.isNotBlank() }
+                                    .joinToString(" · "),
+                            ),
+                        )
+                    }
+                }
+
+                is ApiResult.Failure -> if (activeAttemptKey == attemptKey && _state.value.cardIndex == cardIndex) {
+                    _state.update {
+                        it.copy(isPronunciationScoring = false, pronunciationError = result.error)
+                    }
+                }
+            }
+        }
+    }
+
+    /** "I cannot speak now" skips safely without leaving the recorder open. */
+    fun skipPronunciation() {
+        if (_state.value.currentCard !is PronunciationCard) return
         advance()
     }
 
@@ -428,6 +547,7 @@ class LessonViewModel(
 
     /** Moves past the feedback bar to the next card, or finishes the lesson. */
     fun advance() {
+        stopPronunciation()
         val current = _state.value
         val next = current.cardIndex + 1
 
@@ -455,6 +575,8 @@ class LessonViewModel(
                 cardIndex = next,
                 answer = AnswerState.Unanswered,
                 audioError = null,
+                pronunciationScore = null,
+                pronunciationError = null,
             )
         }
     }
@@ -569,6 +691,15 @@ class LessonViewModel(
         audioPlayer.release()
     }
 
+    private fun stopPronunciation() {
+        pronunciationJob?.cancel()
+        pronunciationJob = null
+        voiceRecorder?.cancel()
+        _state.update {
+            it.copy(isPronunciationRecording = false, isPronunciationScoring = false)
+        }
+    }
+
     private fun addMistake(mistake: CourseMistakeDto) {
         if (mistakes.size < MAX_MISTAKES_PER_COMPLETION) mistakes += mistake
     }
@@ -577,6 +708,7 @@ class LessonViewModel(
         activeAttemptKey = null
         loadGeneration++
         stopAudio()
+        stopPronunciation()
         super.onCleared()
     }
 
@@ -589,12 +721,14 @@ class LessonViewModel(
         private val resumeStore: LessonResumeStore,
         private val accessRef: String = "",
         private val featureRepository: FeatureRepository? = null,
+        private val voiceRecorder: VoiceRecorder,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = LessonViewModel(
             repository = repository,
             audioPlayer = audioPlayer,
             featureRepository = featureRepository,
+            voiceRecorder = voiceRecorder,
             level = level,
             lessonOrder = lessonOrder,
             language = language,
@@ -626,5 +760,7 @@ class LessonViewModel(
     companion object {
         /** Matches DesktopCourseCompleteRequest.mistakes.max_length. */
         const val MAX_MISTAKES_PER_COMPLETION = 50
+        const val PRONUNCIATION_WINDOW_MILLIS = 2_600L
+        const val PRONUNCIATION_PASS_SCORE = 60
     }
 }
