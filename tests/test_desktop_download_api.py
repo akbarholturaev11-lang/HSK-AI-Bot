@@ -114,6 +114,37 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             "Pomp-HSK-AI-universal.dmg",
         )
 
+    async def test_status_exposes_android_once_from_the_same_release_lookup(self):
+        async with self.sessions() as session:
+            await save_desktop_app_promo_settings(
+                session,
+                {
+                    "enabled": True,
+                    "daily_limit": 2,
+                    "placements": {
+                        "home_prompt": True,
+                        "lesson_end_promo": True,
+                        "ad_promo": True,
+                    },
+                    "platforms": {
+                        "macos": True,
+                        "windows": True,
+                        "android": True,
+                        "ios": False,
+                    },
+                },
+            )
+            await session.commit()
+
+        release = SimpleNamespace(download_url=None, file_id="tg-file-id")
+        mocked = AsyncMock(return_value=release)
+        with patch.object(AndroidReleaseService, "serve", mocked):
+            async with self.sessions() as session:
+                payload = await DesktopDownloadService(session, _settings()).status(1001)
+
+        self.assertTrue(payload["platforms"]["android"])
+        self.assertEqual(mocked.await_count, 1)
+
     async def test_status_uses_admin_app_promo_settings(self):
         async with self.sessions() as session:
             await save_desktop_app_promo_settings(
