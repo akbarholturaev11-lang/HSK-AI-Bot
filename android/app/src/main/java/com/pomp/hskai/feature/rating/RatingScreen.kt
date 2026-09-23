@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.rating
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -353,7 +355,7 @@ fun RatingUserScreen(
                     modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    ProfileAvatar(name = name, premium = user.isPaid)
+                    ProfileAvatar(name = name, premium = user.isPaid, avatarKey = user.avatarKey)
                     Spacer(Modifier.height(12.dp))
                     Text(
                         text = name,
@@ -524,19 +526,19 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
 }
 
 @Composable
-private fun ProfileAvatar(name: String, premium: Boolean) {
+private fun ProfileAvatar(name: String, premium: Boolean, avatarKey: String) {
     Box {
         Box(
             modifier = Modifier
                 .size(84.dp)
                 .border(2.dp, PompColors.CinnabarDark, RoundedCornerShape(24.dp))
-                .background(PompColors.Cinnabar, RoundedCornerShape(24.dp)),
+                .background(PompColors.GoldSoft, RoundedCornerShape(24.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = name.trim().take(1).uppercase().ifBlank { "学" },
-                style = PompTextStyles.hanziMedium.copy(fontSize = 38.sp),
-                color = PompColors.Paper,
+            Image(
+                painter = painterResource(ratingAvatarDrawable(avatarKey)),
+                contentDescription = name,
+                modifier = Modifier.size(78.dp),
             )
         }
         if (premium) {
@@ -934,7 +936,7 @@ private fun LeagueRow(
         ) {
             RankBadge(row.rank)
             Spacer(Modifier.width(10.dp))
-            InitialsAvatar(name)
+            InitialsAvatar(name, row.avatarKey)
             Spacer(Modifier.width(10.dp))
             Row(
                 modifier = Modifier.weight(1f),
@@ -1277,26 +1279,25 @@ private fun RankBadge(rank: Int) {
 }
 
 @Composable
-private fun InitialsAvatar(name: String) {
-    val initials = name.trim()
-        .split(' ')
-        .filter { it.isNotBlank() }
-        .take(2)
-        .joinToString("") { it.take(1) }
-        .uppercase()
-        .ifBlank { "H" }
+private fun InitialsAvatar(name: String, avatarKey: String = "") {
     Box(
         modifier = Modifier
-            .size(34.dp)
+            .size(36.dp)
             .background(PompColors.GoldSoft, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = initials,
-            style = MaterialTheme.typography.labelLarge,
-            color = PompColors.InkSecondary,
+        Image(
+            painter = painterResource(ratingAvatarDrawable(avatarKey)),
+            contentDescription = name,
+            modifier = Modifier.size(33.dp),
         )
     }
+}
+
+private fun ratingAvatarDrawable(key: String): Int = when (key) {
+    "panda_streak" -> R.drawable.widget_panda_streak
+    "panda_worried" -> R.drawable.widget_panda_worried
+    else -> R.drawable.widget_panda_cheer
 }
 
 @Composable
