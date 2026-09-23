@@ -1159,6 +1159,7 @@ private fun LessonHost(
             // Only the rank-up board uses it, and only when the lesson moved
             // the learner up the weekly league.
             featureRepository = app.featureRepository,
+            voiceRecorder = app.voiceRecorder,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
@@ -1194,6 +1195,8 @@ private fun LessonHost(
         onAcknowledge = model::acknowledge,
         onAdvance = model::advance,
         onPlayAudio = model::playAudio,
+        onSpeakPronunciation = model::speakPronunciation,
+        onSkipPronunciation = model::skipPronunciation,
         onRetryCompletion = model::retryCompletion,
         onOpenPinyinSettings = { pinyinSheetOpen = true },
         onOpenWriter = model::openWriter,
