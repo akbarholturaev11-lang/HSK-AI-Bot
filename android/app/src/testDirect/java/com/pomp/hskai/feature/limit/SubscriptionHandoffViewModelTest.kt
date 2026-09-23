@@ -10,6 +10,7 @@ import com.pomp.hskai.data.api.AndroidAdViewRequest
 import com.pomp.hskai.data.api.AndroidAdViewResponse
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidProfileResponse
+import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.ExamCompleteRequest
@@ -248,6 +249,11 @@ private class FakeFeatureApi(
 
     override suspend fun profile(authorization: String): Response<AndroidProfileResponse> =
         error("unexpected call")
+
+    override suspend fun updateProfile(
+        authorization: String,
+        body: AndroidProfileUpdateRequest,
+    ): Response<AndroidProfileResponse> = error("unexpected call")
 
     override suspend fun subscriptionOverview(
         authorization: String,
