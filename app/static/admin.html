@@ -824,9 +824,9 @@
 
       const steps=[
         ["APK so'raldi",stage("apk_requested")],
-        ["APK yuborildi",stage("apk_sent")],
-        ["Akkaunt ulandi",stage("session_linked")],
-        ["Ilova birinchi ochildi",stage("first_open")]
+        ["APK olgan",stage("apk_sent")],
+        ["Akkaunt ulagan",stage("session_linked")],
+        ["Birinchi marta ochgan",stage("first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("androidFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
