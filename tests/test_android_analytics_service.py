@@ -149,13 +149,20 @@ class AndroidActiveTest(unittest.TestCase):
 
     def test_active_windows_split_users_and_devices(self):
         snapshot = _snapshot(
+            device_rows=[
+                _device("d1", user_id=1),
+                _device("d2", user_id=1),
+                _device("d3", user_id=2),
+                _device("d4", user_id=3),
+                _device("d5", user_id=4),
+            ],
             open_rows=[
                 _open_row(100, device_id="d1", hours_ago=1),
                 _open_row(100, device_id="d2", hours_ago=2),
                 _open_row(200, device_id="d3", hours_ago=24 * 3),
                 _open_row(300, device_id="d4", hours_ago=24 * 20),
                 _open_row(400, device_id="d5", hours_ago=24 * 45),
-            ]
+            ],
         )
         active = snapshot["active"]
         self.assertEqual(active["dau"], 1)
@@ -163,6 +170,23 @@ class AndroidActiveTest(unittest.TestCase):
         self.assertEqual(active["wau"], 2)
         self.assertEqual(active["mau"], 3)
         self.assertEqual(active["mau_devices"], 4)
+
+    def test_revoked_device_is_not_active_anymore(self):
+        snapshot = _snapshot(
+            device_rows=[
+                _device("current", user_id=1),
+                _device("revoked", user_id=2, revoked=True),
+            ],
+            open_rows=[
+                _open_row(100, device_id="current", hours_ago=1),
+                _open_row(200, device_id="revoked", hours_ago=1),
+            ],
+        )
+        active = snapshot["active"]
+        self.assertEqual(active["dau"], 1)
+        self.assertEqual(active["dau_devices"], 1)
+        self.assertEqual(active["mau"], 1)
+        self.assertEqual(active["mau_devices"], 1)
 
 
 class AndroidFunnelTest(unittest.TestCase):
