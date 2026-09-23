@@ -71,5 +71,6 @@ data class WidgetSession(
     val reminderEnabled: Boolean = false,
     val lastReminderDay: String? = null,
     val onboardingOffered: Boolean = false,
+    val lastInstallPromptDay: String? = null,
     val events: List<AndroidWidgetEvent> = emptyList(),
 )
