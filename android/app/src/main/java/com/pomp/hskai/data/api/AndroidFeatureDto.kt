@@ -600,6 +600,7 @@ data class ReferralItemDto(
     @SerialName("rank") val rank: Int = 0,
     @SerialName("name") val name: String = "",
     @SerialName("username") val username: String = "",
+    @SerialName("avatar_key") val avatarKey: String = "",
     @SerialName("status") val status: String = "",
     @SerialName("xp") val xp: Int = 0,
     @SerialName("total_xp") val totalXp: Int = 0,
