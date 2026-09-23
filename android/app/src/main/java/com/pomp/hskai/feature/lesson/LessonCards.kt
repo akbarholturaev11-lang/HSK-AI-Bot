@@ -1,5 +1,9 @@
 package com.pomp.hskai.feature.lesson
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
@@ -25,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -54,6 +60,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
@@ -375,9 +382,21 @@ fun PronunciationCardView(
     card: PronunciationCard,
     pinyin: PinyinVisibility,
     isAudioLoading: Boolean,
+    isRecording: Boolean,
+    isScoring: Boolean,
+    isAnswered: Boolean,
     onPlayAudio: (String) -> Unit,
+    onSpeak: () -> Unit,
     onSkip: () -> Unit,
 ) {
+    val context = LocalContext.current
+    var permissionDenied by remember { mutableStateOf(false) }
+    val permission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        permissionDenied = !granted
+        if (granted) onSpeak()
+    }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         CardTitle(stringResource(R.string.lesson_repeat_after_teacher))
         Text(text = card.phrase, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
@@ -387,8 +406,61 @@ fun PronunciationCardView(
         Spacer(Modifier.height(8.dp))
         Text(text = card.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         Spacer(Modifier.height(18.dp))
-        AudioAction(isLoading = isAudioLoading, onClick = { onPlayAudio(card.phrase) })
-        Spacer(Modifier.height(24.dp))
+        AudioAction(
+            isLoading = isAudioLoading,
+            enabled = !isRecording && !isScoring,
+            onClick = { onPlayAudio(card.phrase) },
+        )
+        Spacer(Modifier.height(18.dp))
+        Surface(
+            onClick = {
+                val granted = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.RECORD_AUDIO,
+                ) == PackageManager.PERMISSION_GRANTED
+                if (granted) {
+                    permissionDenied = false
+                    onSpeak()
+                } else {
+                    permission.launch(Manifest.permission.RECORD_AUDIO)
+                }
+            },
+            enabled = !isRecording && !isScoring && !isAnswered,
+            shape = androidx.compose.foundation.shape.CircleShape,
+            color = if (isRecording) PompColors.CinnabarDark else PompColors.Cinnabar,
+            border = BorderStroke(3.dp, PompColors.PaperRaised),
+            modifier = Modifier.size(78.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Filled.Mic,
+                    contentDescription = stringResource(R.string.voice_a11y_mic),
+                    tint = PompColors.Paper,
+                    modifier = Modifier.size(31.dp),
+                )
+            }
+        }
+        Spacer(Modifier.height(9.dp))
+        Text(
+            text = when {
+                isRecording -> stringResource(R.string.foundation_speak_listening)
+                isScoring -> stringResource(R.string.foundation_speak_checking)
+                else -> stringResource(R.string.foundation_speak_check)
+            },
+            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+            color = PompColors.InkDisabled,
+            textAlign = TextAlign.Center,
+        )
+        if (permissionDenied) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.lesson_microphone_permission_required),
+                style = MaterialTheme.typography.bodySmall,
+                color = PompColors.Flame,
+                textAlign = TextAlign.Center,
+            )
+        }
+        Spacer(Modifier.height(16.dp))
         SecondaryAction(text = stringResource(R.string.lesson_cannot_speak_now), onClick = onSkip)
     }
 }
@@ -485,10 +557,14 @@ internal fun ChoiceCardOptions(
 }
 
 @Composable
-private fun AudioAction(isLoading: Boolean, onClick: () -> Unit) {
+private fun AudioAction(
+    isLoading: Boolean,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
     OutlinedButton(
         onClick = onClick,
-        enabled = !isLoading,
+        enabled = enabled && !isLoading,
         modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
         shape = RoundedCornerShape(14.dp),
     ) {
