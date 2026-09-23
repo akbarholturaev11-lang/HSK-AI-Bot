@@ -402,5 +402,25 @@ class AndroidAnalyticsQueriesTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(weekly["active"]["dau"], 0)
 
 
+
+class AndroidAdminCopyTest(unittest.TestCase):
+    def test_admin_android_block_is_simple_by_default(self):
+        admin = open("app/static/admin.html", encoding="utf-8").read()
+        for text_value in (
+            "O'rnatilgan",
+            "Bugun ishlatgan",
+            "7 kunda ishlatgan",
+            "30 kunda ishlatgan",
+            "Batafsil statistika",
+            "Yangilanish kerak:",
+        ):
+            with self.subTest(text_value=text_value):
+                self.assertIn(text_value, admin)
+
+    def test_update_event_is_not_called_a_device_count(self):
+        admin = open("app/static/admin.html", encoding="utf-8").read()
+        self.assertIn('"Update o\'rnatilgan",num(updates.installed&&updates.installed.events)+" marta"', admin)
+
+
 if __name__ == "__main__":
     unittest.main()
