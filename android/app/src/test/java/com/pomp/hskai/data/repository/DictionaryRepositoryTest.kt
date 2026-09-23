@@ -9,6 +9,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.DictionaryResponse
+import com.pomp.hskai.data.api.DictionaryWordDto
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
@@ -21,6 +22,7 @@ import com.pomp.hskai.data.local.DictionaryMetaEntity
 import com.pomp.hskai.data.local.DictionaryWordEntity
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -84,7 +86,9 @@ private class FakeBundledDictionarySource(
         )
 }
 
-private class DictionaryApi : AndroidCourseApi {
+private class DictionaryApi(
+    private val notModified: Boolean = false,
+) : AndroidCourseApi {
     var calls = 0
 
     override suspend fun unlockLesson(
@@ -97,7 +101,24 @@ private class DictionaryApi : AndroidCourseApi {
         ifNoneMatch: String?,
     ): Response<DictionaryResponse> {
         calls++
-        return Response.success(DictionaryResponse(ok = true, version = "asset-v1"))
+        if (notModified) {
+            return Response.error(304, ByteArray(0).toResponseBody(null))
+        }
+        return Response.success(
+            DictionaryResponse(
+                ok = true,
+                version = "server-v2",
+                language = "uz",
+                words = listOf(
+                    DictionaryWordDto(
+                        hanzi = "新",
+                        pinyin = "xīn",
+                        meaning = "yangi",
+                        level = "HSK1",
+                    )
+                ),
+            )
+        )
     }
 
     override suspend fun courseMap(
@@ -161,6 +182,66 @@ class DictionaryRepositoryTest {
         assertEquals(251, words.size)
         assertEquals("HSK4", words.last().level)
         assertEquals("离线词250", words.last().hanzi)
+    }
+
+    @Test
+    fun `etag check is skipped inside ttl and repeated at expiry`() = runTest {
+        val dao = FakeDictionaryDao()
+        dao.insertAll(sampleWords(3))
+        dao.setMeta(DictionaryMetaEntity(version = "asset-v1", language = "uz"))
+        val api = DictionaryApi(notModified = true)
+        var now = 100_000L
+        var checkedAt: Long? = null
+        var checkedClient: Int? = null
+        val repository = DictionaryRepository(
+            api = api,
+            accessToken = { ApiResult.Success("token") },
+            dao = dao,
+            clientVersionCode = 7,
+            readLastCheckedAtMillis = { checkedAt },
+            readLastCheckedClientVersion = { checkedClient },
+            writeLastChecked = { _, at, version ->
+                checkedAt = at
+                checkedClient = version
+            },
+            now = { now },
+        )
+
+        repository.sync(AppLanguage.UZBEK)
+        assertEquals(1, api.calls)
+        assertEquals(now, checkedAt)
+        assertEquals(7, checkedClient)
+
+        now += DICTIONARY_CHECK_TTL_MILLIS - 1
+        repository.sync(AppLanguage.UZBEK)
+        assertEquals(1, api.calls)
+
+        now += 1
+        repository.sync(AppLanguage.UZBEK)
+        assertEquals(2, api.calls)
+    }
+
+    @Test
+    fun `new android version invalidates a fresh dictionary check`() = runTest {
+        val dao = FakeDictionaryDao()
+        dao.insertAll(sampleWords(3))
+        dao.setMeta(DictionaryMetaEntity(version = "asset-v1", language = "uz"))
+        val api = DictionaryApi(notModified = true)
+        val now = 500_000L
+        val repository = DictionaryRepository(
+            api = api,
+            accessToken = { ApiResult.Success("token") },
+            dao = dao,
+            clientVersionCode = 8,
+            readLastCheckedAtMillis = { now - 1_000L },
+            readLastCheckedClientVersion = { 7 },
+            writeLastChecked = { _, _, _ -> },
+            now = { now },
+        )
+
+        repository.sync(AppLanguage.UZBEK)
+
+        assertEquals(1, api.calls)
     }
 
     @Test
