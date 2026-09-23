@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -86,6 +87,7 @@ import com.pomp.hskai.feature.assistant.profileAssistantContext
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 import com.pomp.hskai.feature.course.GoalRing
 import com.pomp.hskai.feature.hint.SectionHint
+import com.pomp.hskai.widget.WidgetScheduler
 import kotlinx.coroutines.launch
 
 /**
@@ -131,6 +133,7 @@ fun ProfileScreen(
     var notificationDetailOpen by remember { mutableStateOf(false) }
     var privacyOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var widgetInstalled by remember(context) { mutableStateOf(WidgetScheduler.hasWidgets(context)) }
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
     val scope = rememberCoroutineScope()
@@ -222,7 +225,14 @@ fun ProfileScreen(
             // Compiled only into the `direct` build; the Play flavour has a
             // no-op here, because Play updates the app itself.
             item { AppUpdateCard() }
-            item { SettingsEntryCard(onClick = { settingsOpen = true }) }
+            item {
+                SettingsEntryCard(
+                    onClick = {
+                        widgetInstalled = WidgetScheduler.hasWidgets(context)
+                        settingsOpen = true
+                    }
+                )
+            }
             // `onOpenSupport` is the screen's "open this URL outside the app"
             // callback (MainActivity wires it to openExternal); the social row
             // needs exactly that and nothing support-specific.
@@ -253,7 +263,12 @@ fun ProfileScreen(
             onOpenLanguage = { settingsOpen = false; onOpenLanguage() },
             onOpenAppearance = { settingsOpen = false; appearancePickerOpen = true },
             onOpenNotifications = { settingsOpen = false; notificationsOpen = true },
-            onOpenWidget = { settingsOpen = false; onOpenWidget() },
+            widgetInstalled = widgetInstalled,
+            onOpenWidget = {
+                widgetInstalled = WidgetScheduler.hasWidgets(context)
+                settingsOpen = false
+                onOpenWidget()
+            },
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
             onOpenAccount = {
@@ -565,6 +580,7 @@ private fun ProfileSettingsSheet(
     onOpenLanguage: () -> Unit,
     onOpenAppearance: () -> Unit,
     onOpenNotifications: () -> Unit,
+    widgetInstalled: Boolean,
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
@@ -619,7 +635,20 @@ private fun ProfileSettingsSheet(
                         }
                     }
                     SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.widget_name), true, onOpenWidget) { SettingsChevron() }
+                    MiniSettingsRow(Icons.Filled.Widgets, stringResource(R.string.profile_widgets), true, onOpenWidget) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(
+                                    if (widgetInstalled) R.string.profile_widget_installed
+                                    else R.string.profile_widget_not_installed
+                                ),
+                                color = if (widgetInstalled) PompColors.Jade else PompColors.InkSecondary,
+                                fontSize = 12.sp,
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            SettingsChevron()
+                        }
+                    }
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal), true, onOpenGoal) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
