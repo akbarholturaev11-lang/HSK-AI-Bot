@@ -39,8 +39,20 @@ object AppUpdate {
      * one who reports bugs that were fixed weeks ago.
      */
     const val NUDGE_AFTER_MISSED_RELEASES = 2
+    const val CHECK_CACHE_TTL_MILLIS = 30L * 60L * 1000L
 
     private val json = Json { ignoreUnknownKeys = true }
+
+    fun isCheckCacheFresh(
+        checkedAtMillis: Long,
+        nowMillis: Long,
+        checkedVersionCode: Int,
+        installedVersionCode: Int,
+    ): Boolean {
+        if (checkedVersionCode != installedVersionCode || checkedAtMillis <= 0L) return false
+        val age = nowMillis - checkedAtMillis
+        return age in 0 until CHECK_CACHE_TTL_MILLIS
+    }
 
     fun parse(status: Int, body: String?, installedVersionCode: Int): UpdateRelease? {
         if (status != 200 || body.isNullOrBlank()) return null
