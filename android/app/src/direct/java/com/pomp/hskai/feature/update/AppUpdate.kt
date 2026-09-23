@@ -51,7 +51,7 @@ object AppUpdate {
     ): Boolean {
         if (checkedVersionCode != installedVersionCode || checkedAtMillis <= 0L) return false
         val age = nowMillis - checkedAtMillis
-        return age in 0 until CHECK_CACHE_TTL_MILLIS
+        return age in 0L until CHECK_CACHE_TTL_MILLIS
     }
 
     fun parse(status: Int, body: String?, installedVersionCode: Int): UpdateRelease? {
