@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile_widgets">Виджеты</string>
+    <string name="profile_widget_installed">Установлен</string>
+    <string name="profile_widget_not_installed">Не установлен</string>
     <string name="profile_mini_group_title">Мои ошибки · Друзья</string>
     <string name="profile_mini_mistakes_subtitle">Работа над слабыми местами</string>
     <string name="profile_mini_settings">Настройки</string>
