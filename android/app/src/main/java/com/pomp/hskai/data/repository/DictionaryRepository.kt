@@ -29,6 +29,8 @@ data class DictionaryWord(
  * language change invalidates the copy, because the stored meanings are in the
  * previous language.
  */
+internal const val DICTIONARY_CHECK_TTL_MILLIS = 24L * 60L * 60L * 1000L
+
 class DictionaryRepository(
     private val api: AndroidCourseApi,
     private val accessToken: suspend () -> ApiResult<String>,
@@ -180,7 +182,6 @@ class DictionaryRepository(
 
     private companion object {
         const val NOT_MODIFIED = 304
-        const val DICTIONARY_CHECK_TTL_MILLIS = 24L * 60L * 60L * 1000L
         // The server currently ships HSK 1-4 as one 1247-word dictionary. A
         // 200-row cap made the default list look like it stopped at HSK2
         // because the source is ordered by level.
