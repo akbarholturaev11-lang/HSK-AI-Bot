@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile_widgets">Vidjetlar</string>
+    <string name="profile_widget_installed">O‘rnatilgan</string>
+    <string name="profile_widget_not_installed">O‘rnatilmagan</string>
     <string name="profile_mini_group_title">Xatolarim · Do\'stlar</string>
     <string name="profile_mini_mistakes_subtitle">Zaif joylar ustida ishlash</string>
     <string name="profile_mini_settings">Sozlamalar</string>
