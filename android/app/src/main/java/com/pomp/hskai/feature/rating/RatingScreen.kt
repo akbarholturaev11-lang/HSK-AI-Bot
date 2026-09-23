@@ -174,15 +174,20 @@ fun RatingScreen(
                     if (rows.size >= PROMOTION_ZONE) {
                         item { PromotionZone() }
                     }
-                    items(rows, key = { "league-${it.rank}-${it.name}" }) { row ->
-                        LeagueRow(
-                            row = row,
-                            onOpen = { onOpenUser(row) },
-                            canChallenge = row.challengeRef.isNotBlank() &&
-                                !row.isCurrentUser &&
-                                !state.isChallengeBusy,
-                            onChallenge = { onChallenge(row.challengeRef) },
-                        )
+                    if (rows.isNotEmpty()) {
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                rows.forEachIndexed { index, row ->
+                                    LeagueRow(
+                                        row = row,
+                                        onOpen = { onOpenUser(row) },
+                                    )
+                                    if (index != rows.lastIndex) {
+                                        HorizontalDivider(color = PompColors.Divider)
+                                    }
+                                }
+                            }
+                        }
                     }
                     if (rows.isEmpty() && !state.isLoading && state.error == null) {
                         item { EmptyBlock(stringResource(R.string.rating_empty)) }
@@ -215,15 +220,19 @@ fun RatingScreen(
                             )
                         }
                     }
-                    itemsIndexed(
-                        items = friends,
-                        key = { index, friend -> "friend-${friend.rank}-$index-${friend.name}" },
-                    ) { index, friend ->
-                        FriendRow(
-                            friend = friend,
-                            rank = friend.rank.takeIf { it > 0 } ?: index + 1,
-                            onOpen = { onOpenUser(friend.asRatingEntry(index + 1)) },
-                        )
+                    if (friends.isNotEmpty()) {
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                friends.forEachIndexed { index, friend ->
+                                    FriendRow(
+                                        friend = friend,
+                                        rank = friend.rank.takeIf { it > 0 } ?: index + 1,
+                                        onOpen = { onOpenUser(friend.asRatingEntry(index + 1)) },
+                                        showDivider = index != friends.lastIndex,
+                                    )
+                                }
+                            }
+                        }
                     }
                     if (friends.isEmpty() && !state.isLoading && state.referralError == null) {
                         item { EmptyBlock(stringResource(R.string.rating_friends_empty)) }
@@ -919,67 +928,70 @@ private fun PromotionZone() {
 private fun LeagueRow(
     row: RatingEntryDto,
     onOpen: () -> Unit,
-    canChallenge: Boolean,
-    onChallenge: () -> Unit,
 ) {
     val name = row.name.ifBlank { row.username.ifBlank { stringResource(R.string.rating_unnamed) } }
-    Surface(
-        onClick = onOpen,
-        color = if (row.isCurrentUser) PompColors.CinnabarSoft else PompColors.PaperRaised,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, if (row.isCurrentUser) PompColors.Cinnabar.copy(alpha = 0.25f) else PompColors.Divider),
-        modifier = Modifier.fillMaxWidth(),
+    val rowTint = when {
+        row.isPaid -> PompColors.GoldSoft.copy(alpha = 0.38f)
+        row.isCurrentUser -> PompColors.CinnabarSoft.copy(alpha = 0.42f)
+        else -> Color.Transparent
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(rowTint, RoundedCornerShape(10.dp))
+            .clickable(onClick = onOpen)
+            .padding(horizontal = 8.dp, vertical = 9.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
+        RankBadge(row.rank)
+        Spacer(Modifier.width(8.dp))
+        InitialsAvatar(name, row.avatarKey, premium = row.isPaid)
+        Spacer(Modifier.width(10.dp))
         Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            RankBadge(row.rank)
-            Spacer(Modifier.width(10.dp))
-            InitialsAvatar(name, row.avatarKey)
-            Spacer(Modifier.width(10.dp))
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (row.isCurrentUser) PompColors.CinnabarDark else PompColors.Ink,
-                    maxLines = 1,
-                )
-                if (row.isPaid) {
-                    Spacer(Modifier.width(6.dp))
-                    Icon(
-                        Icons.Filled.WorkspacePremium,
-                        contentDescription = stringResource(R.string.rating_premium),
-                        tint = PompColors.Gold,
-                        modifier = Modifier.size(15.dp),
-                    )
-                }
-            }
             Text(
-                text = row.xp.toString(),
-                style = MaterialTheme.typography.titleSmall,
-                color = PompColors.InkSecondary,
+                text = name,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (row.isCurrentUser) PompColors.CinnabarDark else PompColors.Ink,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false),
             )
-            if (canChallenge) {
-                Spacer(Modifier.width(8.dp))
+            if (row.isPaid) {
+                Spacer(Modifier.width(6.dp))
                 Surface(
-                    onClick = onChallenge,
+                    color = PompColors.GoldSoft,
                     shape = RoundedCornerShape(999.dp),
-                    color = PompColors.CinnabarSoft,
-                    border = BorderStroke(1.dp, PompColors.Cinnabar.copy(alpha = 0.25f)),
                 ) {
-                    Text(
-                        text = "战",
-                        style = PompTextStyles.hanziSmall.copy(fontSize = 15.sp),
-                        color = PompColors.CinnabarDark,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.WorkspacePremium,
+                            contentDescription = stringResource(R.string.rating_premium),
+                            tint = PompColors.Gold,
+                            modifier = Modifier.size(12.dp),
+                        )
+                        Spacer(Modifier.width(3.dp))
+                        Text(
+                            text = stringResource(R.string.rating_premium),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = PompColors.Gold,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
             }
         }
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = row.xp.toString(),
+            style = MaterialTheme.typography.titleSmall,
+            color = if (row.isPaid) PompColors.Gold else PompColors.InkSecondary,
+        )
     }
 }
 
@@ -1166,12 +1178,25 @@ private fun RowScope.FriendStat(value: String, label: String) {
 }
 
 @Composable
-private fun FriendRow(friend: ReferralItemDto, rank: Int, onOpen: () -> Unit) {
+private fun FriendRow(
+    friend: ReferralItemDto,
+    rank: Int,
+    onOpen: () -> Unit,
+    showDivider: Boolean = true,
+) {
     val name = friend.name.ifBlank { stringResource(R.string.rating_unnamed) }
     val active = friend.status == "active"
-    Column(modifier = Modifier.fillMaxWidth().clickable(onClick = onOpen)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                if (friend.isPaid) PompColors.GoldSoft.copy(alpha = 0.38f) else Color.Transparent,
+                RoundedCornerShape(10.dp),
+            )
+            .clickable(onClick = onOpen),
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -1181,8 +1206,8 @@ private fun FriendRow(friend: ReferralItemDto, rank: Int, onOpen: () -> Unit) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.width(28.dp),
             )
-            InitialsAvatar(name)
-            Spacer(Modifier.width(11.dp))
+            InitialsAvatar(name, friend.avatarKey, premium = friend.isPaid)
+            Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -1243,7 +1268,9 @@ private fun FriendRow(friend: ReferralItemDto, rank: Int, onOpen: () -> Unit) {
                 color = PompColors.InkSecondary,
             )
         }
-        HorizontalDivider(color = PompColors.Divider)
+        if (showDivider) {
+            HorizontalDivider(color = PompColors.Divider)
+        }
     }
 }
 
@@ -1251,6 +1278,7 @@ private fun ReferralItemDto.asRatingEntry(fallbackRank: Int) = RatingEntryDto(
     rank = rank.takeIf { it > 0 } ?: fallbackRank,
     name = name,
     username = username,
+    avatarKey = avatarKey,
     xp = xp,
     courseLevel = courseLevel,
     isPaid = isPaid,
@@ -1279,18 +1307,49 @@ private fun RankBadge(rank: Int) {
 }
 
 @Composable
-private fun InitialsAvatar(name: String, avatarKey: String = "") {
-    Box(
-        modifier = Modifier
-            .size(36.dp)
-            .background(PompColors.GoldSoft, CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            painter = painterResource(ratingAvatarDrawable(avatarKey)),
-            contentDescription = name,
-            modifier = Modifier.size(33.dp),
-        )
+private fun InitialsAvatar(
+    name: String,
+    avatarKey: String = "",
+    premium: Boolean = false,
+) {
+    Box(modifier = Modifier.size(42.dp)) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .align(Alignment.Center)
+                .background(
+                    if (premium) PompColors.GoldSoft else PompColors.PaperRaised,
+                    CircleShape,
+                )
+                .border(
+                    width = if (premium) 2.dp else 1.dp,
+                    color = if (premium) PompColors.Gold else PompColors.Divider,
+                    shape = CircleShape,
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(
+                painter = painterResource(ratingAvatarDrawable(avatarKey)),
+                contentDescription = name,
+                modifier = Modifier.size(35.dp),
+            )
+        }
+        if (premium) {
+            Surface(
+                color = PompColors.Gold,
+                shape = CircleShape,
+                modifier = Modifier.size(15.dp).align(Alignment.BottomEnd),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        Icons.Filled.WorkspacePremium,
+                        contentDescription = stringResource(R.string.rating_premium),
+                        tint = PompColors.Paper,
+                        modifier = Modifier.size(9.dp),
+                    )
+                }
+            }
+        }
     }
 }
 
