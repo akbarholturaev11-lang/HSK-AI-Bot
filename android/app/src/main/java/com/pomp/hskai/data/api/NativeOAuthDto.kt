@@ -11,7 +11,9 @@ data class ProvidersResponse(
 
 @Serializable
 data class OAuthStartRequest(
-    @SerialName("platform") val platform: String = "android",
+    // The server requires this field; a default would be omitted when the
+    // Retrofit JSON encoder uses its normal `encodeDefaults = false` setting.
+    @SerialName("platform") val platform: String,
     @SerialName("app_version") val appVersion: String,
     @SerialName("installation_key") val installationKey: String,
     @SerialName("provider") val provider: String,

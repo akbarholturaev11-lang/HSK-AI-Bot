@@ -1,5 +1,6 @@
 package com.pomp.hskai.core.auth
 
+import android.app.Activity
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -154,7 +155,10 @@ class AuthRepository(
      * Telegram flow — the tokens still come from `link/status`, never from an
      * OAuth endpoint.
      */
-    suspend fun startGoogleSignIn(bindToCurrentAccount: Boolean = false): ApiResult<PendingLink> {
+    suspend fun startGoogleSignIn(
+        activity: Activity? = null,
+        bindToCurrentAccount: Boolean = false,
+    ): ApiResult<PendingLink> {
         val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
         val google = googleIdTokens ?: return ApiResult.Failure(ApiError.Unknown)
         val pending = when (
@@ -169,7 +173,7 @@ class AuthRepository(
             is ApiResult.Success -> started.value
         }
 
-        val idToken = when (val token = google.idToken(pending.nonce)) {
+        val idToken = when (val token = google.idToken(activity, pending.nonce)) {
             is GoogleIdTokenResult.Success -> token.idToken
             GoogleIdTokenResult.Cancelled -> return ApiResult.Failure(ApiError.ProviderCancelled)
             GoogleIdTokenResult.Unavailable -> return ApiResult.Failure(ApiError.ProviderUnavailable)
@@ -216,6 +220,7 @@ class AuthRepository(
         bindToCurrentAccount: Boolean,
     ): ApiResult<PendingLink> {
         val body = OAuthStartRequest(
+            platform = "android",
             appVersion = appVersion,
             installationKey = store.installationKey(),
             provider = provider.wire,

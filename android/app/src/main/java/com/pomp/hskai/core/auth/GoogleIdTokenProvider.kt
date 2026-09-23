@@ -1,5 +1,6 @@
 package com.pomp.hskai.core.auth
 
+import android.app.Activity
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
@@ -20,7 +21,11 @@ interface GoogleIdTokenProvider {
     /** Whether the build carries a Google client id at all. */
     val isAvailable: Boolean
 
-    suspend fun idToken(nonce: String): GoogleIdTokenResult
+    /**
+     * [activity] owns the Credential Manager sheet. An application context
+     * cannot present that UI, so callers must pass the current host activity.
+     */
+    suspend fun idToken(activity: Activity?, nonce: String): GoogleIdTokenResult
 }
 
 sealed interface GoogleIdTokenResult {
@@ -53,8 +58,10 @@ class CredentialManagerGoogleIdTokenProvider(
 
     override val isAvailable: Boolean get() = webClientId.isNotBlank()
 
-    override suspend fun idToken(nonce: String): GoogleIdTokenResult {
-        if (!isAvailable || nonce.isBlank()) return GoogleIdTokenResult.Unavailable
+    override suspend fun idToken(activity: Activity?, nonce: String): GoogleIdTokenResult {
+        if (!isAvailable || nonce.isBlank() || activity == null) {
+            return GoogleIdTokenResult.Unavailable
+        }
         val option = GetGoogleIdOption.Builder()
             .setServerClientId(webClientId)
             .setNonce(nonce)
@@ -64,7 +71,7 @@ class CredentialManagerGoogleIdTokenProvider(
             .build()
         val request = GetCredentialRequest.Builder().addCredentialOption(option).build()
         return try {
-            val response = credentialManager.getCredential(context, request)
+            val response = credentialManager.getCredential(activity, request)
             val credential = response.credential
             if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                 return GoogleIdTokenResult.Failed

@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.profile
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -65,13 +66,16 @@ class IdentitiesViewModel(
         }
     }
 
-    fun connect(provider: AuthProvider) {
+    fun connect(provider: AuthProvider, activity: Activity?) {
         if (_state.value.busyProvider != null) return
         pollJob?.cancel()
         _state.update { it.copy(busyProvider = provider, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
             val started = when (provider) {
-                AuthProvider.GOOGLE -> authRepository.startGoogleSignIn(bindToCurrentAccount = true)
+                AuthProvider.GOOGLE -> authRepository.startGoogleSignIn(
+                    activity = activity,
+                    bindToCurrentAccount = true,
+                )
                 AuthProvider.APPLE -> authRepository.startAppleSignIn(bindToCurrentAccount = true)
                 AuthProvider.TELEGRAM -> return@launch
             }

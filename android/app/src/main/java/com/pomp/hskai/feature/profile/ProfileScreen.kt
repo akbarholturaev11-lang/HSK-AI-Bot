@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.profile
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -119,7 +120,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     identities: IdentitiesUiState = IdentitiesUiState(),
     onLoadIdentities: () -> Unit = {},
-    onConnectIdentity: (AuthProvider) -> Unit = {},
+    onConnectIdentity: (AuthProvider, Activity?) -> Unit = { _, _ -> },
     onDisconnectIdentity: (String) -> Unit = {},
     onIdentitiesBrowserOpened: () -> Unit = {},
     onSaveProfile: (String, String) -> Unit = { _, _ -> },

@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.profile
 
+import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pomp.hskai.core.auth.AuthProvider
@@ -40,7 +41,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     identities: IdentitiesUiState = IdentitiesUiState(),
     onLoadIdentities: () -> Unit = {},
-    onConnectIdentity: (AuthProvider) -> Unit = {},
+    onConnectIdentity: (AuthProvider, Activity?) -> Unit = { _, _ -> },
     onDisconnectIdentity: (String) -> Unit = {},
     onIdentitiesBrowserOpened: () -> Unit = {},
 ) {

@@ -1,5 +1,6 @@
 package com.pomp.hskai.core.auth
 
+import android.app.Activity
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.storage.CredentialStore
@@ -27,6 +28,8 @@ import com.pomp.hskai.data.api.RevokeRequest
 import com.pomp.hskai.data.api.RevokeResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
@@ -156,7 +159,7 @@ private class FakeGoogleIdTokens(
     override val isAvailable: Boolean = true,
 ) : GoogleIdTokenProvider {
     var lastNonce: String? = null
-    override suspend fun idToken(nonce: String): GoogleIdTokenResult {
+    override suspend fun idToken(activity: Activity?, nonce: String): GoogleIdTokenResult {
         lastNonce = nonce
         return result
     }
@@ -197,6 +200,21 @@ class AuthRepositoryOauthTest {
         assertEquals("id-token", oauth.lastAssert?.idToken)
         assertEquals(AuthProvider.GOOGLE, pending.provider)
         assertEquals(clock + 600_000L, pending.expiresAtMillis)
+    }
+
+    @Test
+    fun `oauth start always serializes its required platform`() {
+        val payload = Json.encodeToString(
+            OAuthStartRequest(
+                platform = "android",
+                appVersion = "1.6.6",
+                installationKey = "k".repeat(64),
+                provider = "google",
+                mode = "native_id_token",
+            )
+        )
+
+        assertTrue(payload.contains("\"platform\":\"android\""))
     }
 
     @Test

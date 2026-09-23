@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -60,7 +61,7 @@ fun IdentitiesSheet(
     profile: AndroidProfileResponse?,
     savingProfile: Boolean,
     onSaveProfile: (String, String) -> Unit,
-    onConnect: (AuthProvider) -> Unit,
+    onConnect: (AuthProvider, Activity?) -> Unit,
     onDisconnect: (String) -> Unit,
     onBrowserUrlOpened: () -> Unit,
     onDismiss: () -> Unit,
@@ -237,9 +238,10 @@ private fun ReadOnlyField(label: String, value: String) {
 private fun ProviderAccountRow(
     provider: AuthProvider,
     state: IdentitiesUiState,
-    onConnect: (AuthProvider) -> Unit,
+    onConnect: (AuthProvider, Activity?) -> Unit,
     onDisconnect: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     val identity = state.identities.firstOrNull { it.provider == provider }
     val canConnect = provider in state.available
     Row(
@@ -272,7 +274,7 @@ private fun ProviderAccountRow(
             }
         } else if (canConnect) {
             OutlinedButton(
-                onClick = { onConnect(provider) },
+                onClick = { onConnect(provider, context as? Activity) },
                 enabled = state.busyProvider == null,
             ) {
                 Text(stringResource(R.string.profile_account_connect))

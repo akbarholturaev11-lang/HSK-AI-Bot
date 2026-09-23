@@ -227,6 +227,26 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-23 — Android Google OAuth start request and Credential Manager host fix
+
+Changed:
+- Android now serializes the required `platform=android` field for every native
+  OAuth start request; Kotlin serialization otherwise omits DTO defaults.
+- Google Credential Manager is called with the current host `Activity`, which
+  is required to show an account selector on a real device.
+- The same safe path is used when linking Google from Profile. Release version
+  is `1.6.7` / `versionCode 22`.
+
+Why:
+- The server correctly rejected Android's incomplete request with HTTP 422
+  (`desktop_request_invalid`) before Credential Manager could open. The fix
+  keeps all existing fail-closed provider checks and Desktop safety guards.
+
+Risk:
+- LOW — Android static checks, Direct/Play unit tests, lint, and Pixel 8
+  no-account behavior were verified. A signed-in physical device is still
+  needed to complete a real Google account selection.
+
 ### 2026-09-23 — Android Google Sign-In release uchun versionCode 21
 
 Changed:

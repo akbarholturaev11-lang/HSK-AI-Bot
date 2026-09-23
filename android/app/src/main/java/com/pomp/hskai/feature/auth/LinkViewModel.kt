@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.auth
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.auth.AuthProvider
@@ -74,8 +75,8 @@ class LinkViewModel(
         }
     }
 
-    fun signInWithGoogle() = startProvider(AuthProvider.GOOGLE) {
-        authRepository.startGoogleSignIn()
+    fun signInWithGoogle(activity: Activity?) = startProvider(AuthProvider.GOOGLE) {
+        authRepository.startGoogleSignIn(activity = activity)
     }
 
     fun signInWithApple() = startProvider(AuthProvider.APPLE) {
