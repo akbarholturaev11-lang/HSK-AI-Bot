@@ -337,13 +337,18 @@ Risk:
 - No payment or subscription logic changed.
 
 Follow-up:
-- Provider credentials are not set in any environment yet, so the feature is
-  invisible until `GOOGLE_OAUTH_ENABLED` / `APPLE_OAUTH_ENABLED` and the client
-  ids are configured. `OAUTH_REDIRECT_BASE_URL` must be an https origin with no
-  path.
-- Register OAuth clients: two Android clients (`com.pomp.hskai` with the upload
-  and Play signing SHA-1s, and `com.pomp.hskai.debug`), one Google Web client
-  for desktop, one Apple Services ID.
+- Google OAuth 2026-09-23 da productionga sozlandi: ikki Android client,
+  Android uchun alohida Web client va Desktop Web client ro‘yxatdan o‘tdi;
+  credential’lar Railway’da, faqat Android Web client ID public Gradle
+  property’da turadi. Secret hech qachon repo yoki memory faylida saqlanmaydi.
+  Google provider Android, Desktop va Mini App’da fail-closed ro‘yxat orqali
+  ko‘rinmoqda; OAuth ilova Google Console’da `In production` holatida.
+- Apple credential’lari hali sozlanmagan, shuning uchun Apple provider
+  yashirin qoladi. `OAUTH_REDIRECT_BASE_URL` HTTPS origin bo‘lib, path
+  bo‘lmasligi shart.
+- Google Console application verification eslatmasini ko‘rsatadi. Hozirgi
+  `openid email profile` oqimiga sensitive/restricted scope qo‘shilsa yoki
+  Google so‘rasa, alohida verification topshirilishi kerak.
 - Phase 2 (Telegram-less accounts) is NOT in this change. It needs
   `users.telegram_id` AND `desktop_devices.telegram_id` nullable, plus an audit
   of every telegram_id-keyed table and bot notification path.
