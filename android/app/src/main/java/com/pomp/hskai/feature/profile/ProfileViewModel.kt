@@ -30,6 +30,8 @@ data class ProfileUiState(
     val trialStarting: Boolean = false,
     /** Server rad etsa sababi. Jimgina "hech narsa bo'lmadi" eng yomon variant. */
     val trialError: String = "",
+    val profileSaving: Boolean = false,
+    val profileRevision: Int = 0,
     val error: ApiError? = null,
 )
 
@@ -77,6 +79,25 @@ class ProfileViewModel(
                 trial = (trialResult as? ApiResult.Success)?.value?.trial,
                 error = firstError,
             )
+        }
+    }
+
+    fun saveProfile(displayName: String, avatarKey: String) {
+        if (_state.value.profileSaving) return
+        _state.update { it.copy(profileSaving = true, error = null) }
+        viewModelScope.launch {
+            when (val result = repository.updateProfile(displayName, avatarKey)) {
+                is ApiResult.Success -> _state.update {
+                    it.copy(
+                        profile = result.value,
+                        profileSaving = false,
+                        profileRevision = it.profileRevision + 1,
+                    )
+                }
+                is ApiResult.Failure -> _state.update {
+                    it.copy(profileSaving = false, error = result.error)
+                }
+            }
         }
     }
 
