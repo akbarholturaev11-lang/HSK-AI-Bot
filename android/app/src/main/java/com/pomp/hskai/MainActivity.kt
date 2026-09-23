@@ -727,6 +727,9 @@ private fun AppRoot(
                     }
                     AppDestination.WidgetSetup -> {
                         widgetPromptFromOnboarding = false
+                        scope.launch {
+                            app.widgetStore.markInstallPromptShown(LocalDate.now().toString())
+                        }
                         widgetSetupOpen = true
                         onDestinationConsumed()
                     }
@@ -1093,6 +1096,9 @@ private fun AppRoot(
                                 onToggleNotifications = toggleLocalReminder,
                                 onOpenWidget = {
                                     widgetPromptFromOnboarding = false
+                                    scope.launch {
+                                        app.widgetStore.markInstallPromptShown(LocalDate.now().toString())
+                                    }
                                     widgetSetupOpen = true
                                 },
                                 onOpenSupport = { url -> openExternal(context, url) },
