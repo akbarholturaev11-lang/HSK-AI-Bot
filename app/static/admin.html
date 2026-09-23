@@ -352,20 +352,20 @@
 
         <!-- Native Android client -->
         <div class="block">
-          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>O'rnatish: qurilma yozuvi · aktivlik: ilova ochilishi</p></div></div>
+          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Asosiy raqamlar — sodda ko'rinish</p></div></div>
           <div class="grid g2" id="androidCards"></div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">APK voronkasi</div>
-            <div id="androidFunnel"></div>
-          </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">O'rnatilgan qurilmalar</div>
-            <div id="androidDevices"></div>
-          </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Versiyalar · oxirgi 30 kun</div>
-            <div id="androidVersions"></div>
-          </div>
+          <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
+          <details class="acc" style="margin-top:12px">
+            <summary>Batafsil statistika</summary>
+            <div class="accbody">
+              <div class="dtitle-sm">Yuklash jarayoni · user</div>
+              <div id="androidFunnel"></div>
+              <div class="dtitle-sm" style="margin-top:14px">Qurilmalar</div>
+              <div id="androidDevices"></div>
+              <div class="dtitle-sm" style="margin-top:14px">Versiyalar · oxirgi 30 kun</div>
+              <div id="androidVersions"></div>
+            </div>
+          </details>
           <div class="explain" id="androidExplain"></div>
         </div>
 
@@ -738,11 +738,10 @@
       ].map(cardHtml).join("");
 
       const steps=[
-        ["So'rov",desktopUsers(funnel,"download_requested")],
-        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
-        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
-        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
-        ["First open",desktopUsers(funnel,"verified_first_open")]
+        ["APK so'ragan",stage("apk_requested")],
+        ["APK olgan",stage("apk_sent")],
+        ["Akkaunt ulagan",stage("session_linked")],
+        ["Birinchi marta ochgan",stage("first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
@@ -804,6 +803,7 @@
       $("androidFunnel").innerHTML="";
       $("androidDevices").innerHTML="";
       $("androidVersions").innerHTML="";
+      $("androidUpdateSummary").textContent="";
       $("androidExplain").textContent="";
     }
 
@@ -816,48 +816,42 @@
       const stage=(key)=>num(funnel[key]&&funnel[key].users);
 
       $("androidCards").innerHTML=[
-        {label:"O'rnatgan qurilma",value:num(reg.installed_devices),note:num(reg.installed_users)+" user \u00b7 akkaunt ulangan",tone:"good"},
-        {label:"Android DAU",value:num(active.dau),note:"24 soat \u00b7 "+num(active.dau_devices)+" qurilma",tone:"info"},
-        {label:"Android WAU",value:num(active.wau),note:"7 kun \u00b7 "+num(active.wau_devices)+" qurilma",tone:"info"},
-        {label:"Android MAU",value:num(active.mau),note:"30 kun \u00b7 "+num(active.mau_devices)+" qurilma",tone:"good"}
+        {label:"O'rnatilgan",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
+        {label:"Bugun ishlatgan",value:num(active.dau),note:"user",tone:"info"},
+        {label:"7 kunda ishlatgan",value:num(active.wau),note:"user",tone:"info"},
+        {label:"30 kunda ishlatgan",value:num(active.mau),note:"user",tone:"good"}
       ].map(cardHtml).join("");
 
       const steps=[
         ["APK so'raldi",stage("apk_requested")],
-        ["APK yuborildi",stage("apk_sent")],
-        ["Akkaunt ulandi",stage("session_linked")],
-        ["Ilova birinchi ochildi",stage("first_open")]
+        ["APK olgan",stage("apk_sent")],
+        ["Akkaunt ulagan",stage("session_linked")],
+        ["Birinchi marta ochgan",stage("first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("androidFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
 
-      const periodLabel=reg.period_bounded?"Davrda qo'shilgan":"Jami qo'shilgan";
       const deviceRows=[
-        ["O'rnatgan (akkaunt ulangan)",num(reg.installed_devices),num(reg.installed_users)],
-        ["Ilovani ochgan",num(reg.opened_devices)+" \u00b7 "+num(rates.opened_per_installed)+"%",num(reg.opened_users)],
-        ["Ulagan, lekin ochmagan",num(reg.never_opened_devices),"\u2014"],
-        [periodLabel,num(reg.new_devices_in_period),num(reg.new_users_in_period)],
-        ["Serverga chiqdi \u00b7 24 soat",num(reg.online_devices_1d),num(reg.online_users_1d)],
-        ["Serverga chiqdi \u00b7 7 kun",num(reg.online_devices_7d),num(reg.online_users_7d)],
-        ["Serverga chiqdi \u00b7 30 kun",num(reg.online_devices_30d),num(reg.online_users_30d)],
-        ["Ulanish uzilgan",num(reg.unlinked_devices),"\u2014"],
-        ["Update o'rnatildi",num(updates.installed&&updates.installed.events),num(updates.installed&&updates.installed.users)]
+        ["Hozir ulangan telefon",num(reg.installed_devices),num(reg.installed_users)],
+        ["Kamida 1 marta ochilgan",num(reg.opened_devices),num(reg.opened_users)],
+        ["Hali ochilmagan",num(reg.never_opened_devices),"—"],
+        ["Ulanishi uzilgan eski telefon",num(reg.unlinked_devices),"—"],
+        ["Update o'rnatilgan",num(updates.installed&&updates.installed.events)+" marta",num(updates.installed&&updates.installed.users)]
       ];
-      $("androidDevices").innerHTML=`<table class="tbl"><thead><tr><th>Ko'rsatkich</th><th class="r">Qurilma</th><th class="r">User</th></tr></thead>
+      $("androidDevices").innerHTML=`<table class="tbl"><thead><tr><th>Ko'rsatkich</th><th class="r">Soni</th><th class="r">User</th></tr></thead>
         <tbody>${deviceRows.map(row=>`<tr><td><b>${esc(row[0])}</b></td><td class="r">${esc(row[1])}</td><td class="r">${esc(row[2])}</td></tr>`).join("")}</tbody></table>`;
 
       const versionRows=versions.rows||[];
       const outdated=versions.outdated_devices_30d;
-      const outdatedLabel=outdated==null
-        ? "Joriy release aniqlanmadi \u2014 eskirgan versiya sanalmadi."
-        : `Eskirgan: ${num(outdated)} / ${num(versions.comparable_devices_30d)} qurilma \u00b7 joriy ${esc(versions.latest||"\u2014")}`;
       $("androidVersions").innerHTML=(versionRows.length
-        ? `<table class="tbl"><thead><tr><th>Versiya</th><th class="r">Qurilma</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td><b>${esc(row.version)}</b></td><td class="r">${num(row.devices)}</td><td class="r">${num(row.users)}</td></tr>`).join("")}</tbody></table>`
-        : "<p class='empty'>Oxirgi 30 kunda serverga chiqqan qurilma yo'q.</p>")
-        +`<div class="explain">${esc(outdatedLabel)}</div>`;
+        ? `<table class="tbl"><thead><tr><th>Versiya</th><th class="r">Telefon</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td><b>${esc(row.version)}</b></td><td class="r">${num(row.devices)}</td><td class="r">${num(row.users)}</td></tr>`).join("")}</tbody></table>`
+        : "<p class='empty'>Oxirgi 30 kunda faol qurilma yo'q.</p>");
 
-      const notes=snapshot.notes||{};
-      $("androidExplain").textContent=[notes.install_definition,notes.active_definition,notes.not_measured].filter(Boolean).join(" ");
+      $("androidUpdateSummary").textContent=outdated==null
+        ? "Joriy Android versiyasi aniqlanmadi."
+        : "Yangilanish kerak: "+num(outdated)+"/"+num(versions.comparable_devices_30d)+" telefon · joriy versiya "+String(versions.latest||"—");
+
+      $("androidExplain").textContent="O'rnatilgan = akkaunt ulangan telefon. Faol = ilovani ochgan user. Uzilgan eski telefonlar faolga kirmaydi.";
     }
 
     function renderAdvanced(fp){
