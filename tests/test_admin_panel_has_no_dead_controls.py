@@ -37,6 +37,7 @@ from app.services.course_access_policy_service import (
 
 ADMIN = Path("app/static/admin.html").read_text(encoding="utf-8")
 MODULES = Path("app/services/admin_miniapp_service.py").read_text(encoding="utf-8")
+I18N = Path("app/bot/utils/i18n.py").read_text(encoding="utf-8")
 
 
 class TheAdsModeIsGoneTests(unittest.TestCase):
@@ -326,3 +327,38 @@ class EachPlacementIsOneBlockTests(unittest.TestCase):
         # buni ekranda ko'rsin, keyin "qayerga ketdi?" deb qidirmasin.
         self.assertIn('id="caPlaceNone"', ADMIN)
         self.assertIn('return (on.length?on:["lesson_end"]).join(",")', ADMIN)
+
+
+
+class UserAccessDetailsAreExplicitTests(unittest.TestCase):
+    def test_user_detail_separates_access_from_payment(self):
+        for label in (
+            "Access turi",
+            "Sabab",
+            "Boshlangan",
+            "Tugaydi",
+            "Qo'shimcha AI savollar",
+            "Taklif qilgan",
+            "O'z referral kodi",
+            "Faol referral",
+        ):
+            with self.subTest(label=label):
+                self.assertIn(label, ADMIN)
+
+    def test_temporary_access_is_not_called_a_paid_subscription(self):
+        self.assertIn('u.status==="active"&&u.payment_status!=="approved"', ADMIN)
+        self.assertIn('"Vaqtinchalik access"', ADMIN)
+        self.assertIn('(u.payment_status==="approved"?"obuna":"access")+" tugaydi "', ADMIN)
+
+    def test_latest_user_payload_exposes_canonical_entitlement(self):
+        for field in ('"access_type"', '"access_label"', '"access_ends_at"'):
+            with self.subTest(field=field):
+                self.assertIn(field, MODULES)
+
+
+class ReferralCopyMatchesCurrentBehaviorTests(unittest.TestCase):
+    def test_goal_copy_says_six_without_changing_the_reward_constant(self):
+        self.assertIn("REFERRAL_TRIAL_REQUIRED_ACTIVE = 5", Path("app/services/referral_service.py").read_text(encoding="utf-8"))
+        self.assertIn("+6 ta faol do‘st", I18N)
+        self.assertIn("Пригласите +6 активных друзей", I18N)
+        self.assertIn("+6 дӯсти фаъол", I18N)

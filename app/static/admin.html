@@ -1007,12 +1007,14 @@
 
     /* ---------- USERS ---------- */
     function statusTone(u){
-      if(u.payment_status==="approved"&&u.status==="active") return ["Obunachi","green"];
       if(u.has_pending_payment||u.payment_status==="pending") return ["To'lov tekshiruvda","amber"];
       if(u.bot_blocked) return ["Bot bloklangan","red"];
+      if(u.access_type==="PRO_ACTIVE"||u.access_type==="pro_active"||(u.payment_status==="approved"&&u.status==="active")) return [u.access_label||"Pullik obuna","green"];
+      if(u.access_type==="TRIAL_ACTIVE"||u.access_type==="trial_active") return [u.access_label||"Pro trial","blue"];
+      if(u.access_type==="TEMP_ACCESS"||u.access_type==="temp_access"||(u.status==="active"&&u.payment_status!=="approved")) return [u.access_label||"Vaqtinchalik access","violet"];
       if(u.status==="expired") return ["Muddati tugagan","red"];
       if(u.status==="blocked") return ["Bloklangan","red"];
-      return [u.status_label||"Holat yo'q","violet"];
+      return [u.access_label||u.status_label||"Holat yo'q","violet"];
     }
     function filterUsers(){
       const q = state.search.trim().toLowerCase();
@@ -1044,7 +1046,7 @@
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
             <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
             ${tag(t[0],t[1])}</div>
-          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("Telegram blok","red"):""}${tag(u.end_date?"tugaydi "+u.end_date:"faol obuna yo'q",u.end_date?"green":"red")}</div>
+          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("Telegram blok","red"):""}${u.access_ends_at?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.access_ends_at,u.payment_status==="approved"?"green":"violet"):(u.end_date?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.end_date,u.payment_status==="approved"?"green":"violet"):"")}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>AI savollar</span></div><div class="mini"><b>${esc(u.streak)}</b><span>seriya</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Bu saralash bo'yicha foydalanuvchi topilmadi.</p>";
@@ -1123,26 +1125,41 @@
       let detail=null;
       try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ toast(apiErr(e,"Tafsilot yuklanmadi")); }
       const f=(detail&&detail.user)||u, pays=(detail&&detail.payments)||[];
+      const access=f.access||{};
+      const referral=f.referral||{};
+      const bonus=f.bonus||{total:f.bonus_left||0,used:0,left:f.bonus_left||0};
+      const referredBy=referral.referred_by||null;
+      const referrerText=referredBy
+        ? ((referredBy.username?"@"+referredBy.username+" · ":"")+(referredBy.name?referredBy.name+" · ":"")+referredBy.telegram_id)
+        : "—";
       state.activeUser={id:f.id,name:f.name,username:f.username||u.username||""};
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Ruxsat va obuna</div>
           <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
             <button class="btn sec" style="height:32px;padding:0 11px" data-copy="${esc(f.id)}">Nusxa olish</button></div>
           <div class="kv" style="margin-top:9px">
-          <span>Holat</span><b>${esc(f.status_label||f.status)}</b>
+          <span>Access turi</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
+          <span>Sabab</span><b>${esc(access.source_label||"—")}</b>
           <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>
           <span>To'lov</span><b>${esc(f.has_pending_payment?"tekshiruvda":(f.payment_label||f.payment_status))}</b>
           <span>Tarif</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
           <span>Usul</span><b>${esc(f.method||f.payment_method||"—")}</b>
-          <span>Boshlangan</span><b>${esc(f.start_date||"—")}</b>
-          <span>Tugash sanasi</span><b>${esc(f.end_date||"yo'q")}</b></div></section>
+          <span>Boshlangan</span><b>${esc(access.starts_at||f.start_date||"—")}</b>
+          <span>Tugaydi</span><b>${esc(access.ends_at||f.end_date||"—")}</b></div>
+          ${access.source==="manual_admin"?'<div class="ncnote" style="margin-top:10px">Bu access admin tomonidan qo\'lda berilgan. U to\'lov yoki daromad yozuvi hisoblanmaydi.</div>':""}
+        </section>
         <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
           <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
           <span>Rejim</span><b>${esc(f.mode||f.learning_mode)}</b><span>Savollar</span><b>${esc(f.questions)}</b>
-          <span>Bonus</span><b>${esc(f.bonus_left)}</b><span>Seriya</span><b>${esc(f.streak)} kun</b>
-          <span>Referal</span><b>${esc(f.referral_code||"—")}</b></div></section>
+          <span>Qo'shimcha AI savollar</span><b>${esc(bonus.left)} ta</b><span>Seriya</span><b>${esc(f.streak)} kun</b>
+          <span>Bonus berilgan</span><b>${esc(bonus.total)} ta</b><span>Bonus ishlatilgan</span><b>${esc(bonus.used)} ta</b></div></section>
+        <section class="dsec"><div class="dtitle-sm">Referral</div><div class="kv">
+          <span>Taklif qilgan</span><b>${esc(referrerText)}</b>
+          <span>O'z referral kodi</span><b>${esc(referral.own_code||f.referral_code||"kod yaratilmagan")}</b>
+          <span>Takliflari</span><b>${esc(referral.invited_total||0)} ta</b>
+          <span>Faol referral</span><b>${esc(referral.invited_active||0)} ta</b></div></section>
         <section class="dsec"><div class="dtitle-sm">To'lov tarixi</div><div class="panel">
-          ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>${esc(p.submitted_at)} ${p.comment?"· "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
+          ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>Yuborilgan: ${esc(p.submitted_at||"—")}<br>Ko'rilgan: ${esc(p.reviewed_at||"—")}${p.comment?" · "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
         </div></section>
         <section class="dsec"><div class="dtitle-sm">Admin amallari</div><div class="panel">
           <div class="mcard"><h3>Qo'lda paid obuna berish</h3>
