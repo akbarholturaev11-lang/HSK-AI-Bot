@@ -329,6 +329,40 @@ class DesktopCourseService:
         await self.session.commit()
         return data
 
+    async def sync_state(
+        self,
+        access_token: str,
+    ) -> dict[str, Any]:
+        """Cheap desktop heartbeat: notifications + fields that can invalidate the map.
+
+        This deliberately avoids the full course-map pipeline: no gamification
+        snapshot, Today payload, access-map expansion, hints or admin-contact
+        lookup. The client asks for a full map only when one of these compact
+        state markers actually changed.
+        """
+        context = await self._context(access_token)
+        user = context.user
+        progress = await CourseProgressRepository(self.session).get_by_user_id(
+            user.id,
+            for_update=False,
+        )
+        return {
+            "ok": True,
+            "notifications": await CourseNotificationService(
+                self.session
+            ).list_for_user(user),
+            "user": {
+                "is_paid": has_full_access(resolve_state(user)),
+                "language": self._language(user),
+            },
+            "level": self._level(user),
+            "progress": {
+                "completed": int(
+                    getattr(progress, "completed_lessons_count", 0) or 0
+                ),
+            },
+        }
+
     async def lesson(
         self,
         access_token: str,
