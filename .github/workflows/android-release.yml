@@ -9,12 +9,6 @@ name: Android release
 # already have, so the certificate fingerprint is pinned below and a mismatch
 # fails the run rather than stranding them.
 on:
-  # One-shot release trigger used by the 1.6.7 version-bump commit. It is
-  # removed again immediately after the signed APK is published.
-  push:
-    branches: [main]
-    paths:
-      - "android/app/build.gradle.kts"
   workflow_dispatch:
     inputs:
       publish_to_r2:
@@ -183,7 +177,7 @@ jobs:
           if-no-files-found: error
 
       - name: Publish to Cloudflare R2
-        if: ${{ github.event_name == 'push' || inputs.publish_to_r2 }}
+        if: ${{ inputs.publish_to_r2 }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
