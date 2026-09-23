@@ -34,6 +34,7 @@
     <string name="profile_notifications_goal">Вечером напомним, если дневная цель XP ещё не выполнена.</string>
     <string name="profile_notifications_streak">Напомним, если серия дней может прерваться.</string>
     <string name="profile_privacy_security">Конфиденциальность и безопасность</string>
+    <string name="profile_terms_of_use">Условия использования</string>
     <string name="profile_privacy_policy">Политика конфиденциальности</string>
     <string name="profile_app_permissions">Разрешения приложения</string>
     <string name="profile_app_permissions_desc">Микрофон и уведомления можно контролировать в настройках Android.</string>
