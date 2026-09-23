@@ -443,6 +443,10 @@ private fun AppRoot(
                 }
             }
 
+            LaunchedEffect(profileState.profileRevision) {
+                if (profileState.profileRevision > 0) ratingViewModel.load()
+            }
+
             val context = LocalContext.current
             val notificationPermission = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
@@ -1016,10 +1020,10 @@ private fun AppRoot(
                                 },
                                 dailyXp = courseState.map?.progress?.dailyXp ?: 0,
                                 dailyGoal = dailyGoal,
-                                notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
+                                notificationsEnabled = notificationsOn,
                                 onOpenGoal = { goalPickerOpen = true },
                                 onOpenLanguage = { languagePickerOpen = true },
-                                onToggleNotifications = settingsViewModel::setNotifications,
+                                onToggleNotifications = toggleLocalReminder,
                                 onOpenWidget = { widgetSetupOpen = true },
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onRefresh = profileViewModel::load,
@@ -1031,6 +1035,8 @@ private fun AppRoot(
                                 onConnectIdentity = identitiesViewModel::connect,
                                 onDisconnectIdentity = identitiesViewModel::disconnect,
                                 onIdentitiesBrowserOpened = identitiesViewModel::browserUrlOpened,
+                                onSaveProfile = profileViewModel::saveProfile,
+                                profileSaving = profileState.profileSaving,
                             )
                         }
                     }
