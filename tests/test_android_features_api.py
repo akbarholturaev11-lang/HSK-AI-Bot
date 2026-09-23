@@ -1487,6 +1487,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/trial/start"),
         ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
+        ("PATCH", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("POST", "/api/v3/android/subscription/open"),
         ("POST", "/api/v3/android/practice/start"),
