@@ -1629,11 +1629,13 @@ async function refreshDesktopSync({ foreground = false } = {}) {
 
     const currentMap = state.map;
     const nextPaid = Boolean(sync.user.is_paid);
+    const nextAccessState = String(sync.user.access_state || "");
     const nextLanguage = normalizeLanguage(sync.user.language);
     const nextLevel = String(sync.level || "").toLowerCase();
     const nextCompleted = Number(sync.progress.completed || 0);
     const mapChanged =
       nextPaid !== Boolean(currentMap?.user?.is_paid) ||
+      nextAccessState !== String(currentMap?.user?.access_state || "") ||
       nextLanguage !== normalizeLanguage(currentMap?.user?.language) ||
       nextLevel !== String(currentMap?.level || "").toLowerCase() ||
       nextCompleted !== Number(currentMap?.progress?.completed || 0);
