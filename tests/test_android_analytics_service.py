@@ -403,6 +403,18 @@ class AndroidAnalyticsQueriesTest(unittest.IsolatedAsyncioTestCase):
 
 
 
+class AdminRenderResilienceTest(unittest.TestCase):
+    def test_android_summary_is_null_safe(self):
+        admin = open("app/static/admin.html", encoding="utf-8").read()
+        self.assertIn('const updateSummary=$("androidUpdateSummary");', admin)
+        self.assertIn('if(updateSummary) updateSummary.textContent=""', admin)
+
+    def test_render_error_is_not_reported_as_server_connection_error(self):
+        admin = open("app/static/admin.html", encoding="utf-8").read()
+        self.assertIn('console.error("Admin panel render xatosi",e);', admin)
+        self.assertIn('toast("Panelning bir qismi yuklanmadi. Qayta ochish shart emas.");', admin)
+
+
 class AndroidAdminCopyTest(unittest.TestCase):
     def test_admin_android_block_is_simple_by_default(self):
         admin = open("app/static/admin.html", encoding="utf-8").read()
