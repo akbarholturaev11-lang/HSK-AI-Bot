@@ -9,8 +9,34 @@
     <string name="profile_mini_streak">Ketma-ket kun</string>
     <string name="profile_mini_completed_lessons">Tugallangan dars</string>
     <string name="profile_mini_level">Daraja</string>
-    <string name="profile_mini_notify_head">Bot quyidagi holatlarda xabar yuboradi:</string>
-    <string name="profile_mini_notify_rank">Reytingda kimdir sizdan o\'zib ketsa</string>
+    <string name="profile_mini_notify_head">HSK AI ilovasi ushbu telefonda o‘qish eslatmalarini ko‘rsatadi:</string>
+    <string name="profile_mini_notify_rank">Kunlik maqsad hali bajarilmagan bo‘lsa</string>
     <string name="profile_mini_notify_lesson">Kun tugayotganda darsni hali bajarmagan bo\'lsangiz</string>
     <string name="profile_mini_notify_streak">Ketma-ket kunlar seriyangiz uzilish xavfida bo\'lsa</string>
+
+    <string name="profile_account_title">Hisob</string>
+    <string name="profile_account_subtitle">Profil va ulangan kirish usullari</string>
+    <string name="profile_account_name">Ism</string>
+    <string name="profile_account_telegram">Telegram nik</string>
+    <string name="profile_account_phone">Telefon</string>
+    <string name="profile_account_google">Google hisobi</string>
+    <string name="profile_account_apple">Apple ID</string>
+    <string name="profile_account_connect">Ulash</string>
+    <string name="profile_account_disconnect">Uzish</string>
+    <string name="profile_account_save">Saqlash</string>
+    <string name="profile_account_avatar">Avatarni o‘zgartirish</string>
+    <string name="profile_account_avatar_hint">Reytingda boshqa foydalanuvchilar shu avatarni ko‘radi.</string>
+    <string name="profile_notifications_status_on">Yoqilgan</string>
+    <string name="profile_notifications_status_off">O‘chirilgan</string>
+    <string name="profile_notifications_category_study">O‘qish eslatmalari</string>
+    <string name="profile_notifications_category_study_desc">Kunlik maqsad va streak uchun ilova ichidagi eslatmalar.</string>
+    <string name="profile_notifications_detail_intro">Bu telefonda HSK AI eslatmalarini boshqaring.</string>
+    <string name="profile_notifications_goal">Kunlik XP maqsadi bajarilmagan bo‘lsa, kechqurun eslatadi.</string>
+    <string name="profile_notifications_streak">Streak uzilish xavfida bo‘lsa, eslatadi.</string>
+    <string name="profile_privacy_security">Maxfiylik va xavfsizlik</string>
+    <string name="profile_privacy_policy">Maxfiylik siyosati</string>
+    <string name="profile_app_permissions">Ilova ruxsatlari</string>
+    <string name="profile_app_permissions_desc">Mikrofon va bildirishnoma ruxsatlarini Android sozlamalarida boshqaring.</string>
+    <string name="profile_security_note">Telegram nikini bu yerda o‘zgartirib bo‘lmaydi. Google va Apple shu HSK AI hisobiga qo‘shimcha kirish usuli sifatida ulanadi.</string>
+    <string name="profile_app_version">Ilova versiyasi</string>
 </resources>
