@@ -34,6 +34,7 @@
     <string name="profile_notifications_goal">Kunlik XP maqsadi bajarilmagan bo‘lsa, kechqurun eslatadi.</string>
     <string name="profile_notifications_streak">Streak uzilish xavfida bo‘lsa, eslatadi.</string>
     <string name="profile_privacy_security">Maxfiylik va xavfsizlik</string>
+    <string name="profile_terms_of_use">Foydalanish shartlari</string>
     <string name="profile_privacy_policy">Maxfiylik siyosati</string>
     <string name="profile_app_permissions">Ilova ruxsatlari</string>
     <string name="profile_app_permissions_desc">Mikrofon va bildirishnoma ruxsatlarini Android sozlamalarida boshqaring.</string>
