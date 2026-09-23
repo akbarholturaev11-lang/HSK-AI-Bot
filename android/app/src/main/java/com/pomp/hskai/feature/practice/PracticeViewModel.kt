@@ -264,7 +264,7 @@ class PracticeViewModel(
                 selectedIndex = null,
                 answers = emptyMap(),
                 pendingTool = tool,
-                adAccessRef = if (adSupported) resolvedAccessRef else "",
+                adAccessRef = if (adSupported) accessRef else "",
             )
         }
         viewModelScope.launch {
@@ -274,7 +274,7 @@ class PracticeViewModel(
                     level = level,
                     language = language,
                     skill = tool.skill,
-                    accessRef = resolvedAccessRef,
+                    accessRef = accessRef,
                     adSupported = adSupported,
                 )
             ) {
@@ -349,7 +349,7 @@ class PracticeViewModel(
                 // The limit block names the section that was refused, and for
                 // an exam that section is the test centre.
                 pendingTool = EXAM_TOOL,
-                adAccessRef = if (adSupported) accessRef else "",
+                adAccessRef = if (adSupported) resolvedAccessRef else "",
             )
         }
         viewModelScope.launch {
@@ -357,7 +357,7 @@ class PracticeViewModel(
                 val result = repository.examStart(
                     level = level,
                     language = language,
-                    accessRef = accessRef,
+                    accessRef = resolvedAccessRef,
                     adSupported = adSupported,
                 )
             ) {
