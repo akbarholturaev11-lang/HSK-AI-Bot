@@ -2,6 +2,55 @@
 
 DOWNLOAD_PATH = "/download"
 
+# Legal notices are kept outside PAGES so they are not treated as marketing pages.
+GOOGLE_SIGNIN_PRIVACY_PAGES = {
+    "/privacy/google-sign-in/": {
+        "lang": "uz",
+        "title": "Google bilan kirish maxfiyligi — HSK AI",
+        "description": "HSK AI Google bilan kirishida qaysi ma’lumotlar ishlatilishi haqida maxfiylik eslatmasi.",
+        "updated": "23 sentyabr 2026",
+        "h1": "Google bilan kirish: maxfiylik eslatmasi",
+        "intro": "Bu eslatma HSK AI’da Google bilan kirish yoki Google hisobini mavjud HSK AI hisobiga ulash uchun qo‘llanadi.",
+        "sections": [
+            ("Qaysi ma’lumot ishlatiladi", "Google tasdiqlagan hisob identifikatori, email manzili, email tasdiqlanganligi holati va profil nomi olinadi. Bu ma’lumot Google bilan kirish va qaysi HSK AI hisobiga bog‘langanini ko‘rsatish uchun kerak."),
+            ("Hisoblar qanday bog‘lanadi", "Google email manzili orqali HSK AI hisobi qidirilmaydi va hisoblar birlashtirilmaydi. Google profili faqat foydalanuvchining aniq harakati bilan, avval Telegram orqali yaratilgan HSK AI hisobiga ulanadi."),
+            ("Nima saqlanadi", "Google hisobining barqaror identifikatori kalitli HMAC ko‘rinishida saqlanadi. Bog‘langan hisob uchun email, email tasdiqlanganligi, profil nomi hamda ulash va oxirgi kirish vaqtlari saqlanishi mumkin."),
+            ("Tokenlar va tashqi xizmatlar", "Google access va refresh tokenlari saqlanmaydi; HSK AI foydalanuvchi nomidan Google API’lariga murojaat qilmaydi. Google autentifikatsiyasi Google orqali, ilova esa HSK AI texnik infratuzilmasi orqali qayta ishlanadi."),
+            ("Sizning tanlovingiz", "Google bilan kirishdan foydalanmaslik mumkin. Bog‘lanishni HSK AI profilidagi Sozlamalar → Kirish usullari orqali uzish mumkin; bu boshqa qurilmalardagi sessiyalarni ham yakunlaydi. Savollar uchun Telegram’dagi @darsi_chini_bot ga yozing."),
+        ],
+    },
+    "/privacy/google-sign-in/ru/": {
+        "lang": "ru",
+        "title": "Конфиденциальность входа через Google — HSK AI",
+        "description": "Уведомление HSK AI о данных, используемых при входе через Google.",
+        "updated": "23 сентября 2026",
+        "h1": "Вход через Google: конфиденциальность",
+        "intro": "Это уведомление относится к входу через Google в HSK AI и к привязке Google-аккаунта к существующему аккаунту HSK AI.",
+        "sections": [
+            ("Какие данные используются", "Мы получаем подтверждённые Google идентификатор аккаунта, email, статус подтверждения email и имя профиля. Эти данные нужны для входа через Google и отображения связанного аккаунта HSK AI."),
+            ("Как связываются аккаунты", "Мы не ищем аккаунт HSK AI по Google email и не объединяем аккаунты по email. Профиль Google можно привязать только явным действием пользователя к уже созданному через Telegram аккаунту HSK AI."),
+            ("Что хранится", "Стабильный идентификатор Google-аккаунта хранится в виде HMAC с секретным ключом. Для привязанного аккаунта могут храниться email, статус его подтверждения, имя профиля, а также время привязки и последнего входа."),
+            ("Токены и внешние сервисы", "Google access- и refresh-токены не хранятся; HSK AI не обращается к Google API от имени пользователя. Аутентификация проходит через Google, а работа приложения обрабатывается технической инфраструктурой HSK AI."),
+            ("Ваш выбор", "Вход через Google необязателен. Связь можно отключить в HSK AI: Профиль → Настройки → Способы входа; это завершит сессии на других устройствах. По вопросам напишите в Telegram-бот @darsi_chini_bot."),
+        ],
+    },
+    "/privacy/google-sign-in/tj/": {
+        "lang": "tg",
+        "title": "Махфияти воридшавӣ бо Google — HSK AI",
+        "description": "Огоҳиномаи HSK AI дар бораи маълумоте, ки ҳангоми воридшавӣ бо Google истифода мешавад.",
+        "updated": "23 сентябри 2026",
+        "h1": "Воридшавӣ бо Google: махфият",
+        "intro": "Ин огоҳинома барои воридшавӣ бо Google ба HSK AI ва пайваст кардани ҳисоби Google ба ҳисоби мавҷудаи HSK AI мебошад.",
+        "sections": [
+            ("Кадом маълумот истифода мешавад", "Мо шиносномаи тасдиқшудаи ҳисоби Google, email, ҳолати тасдиқи email ва номи профилро мегирем. Ин маълумот барои воридшавӣ бо Google ва нишон додани ҳисоби пайвастшудаи HSK AI лозим аст."),
+            ("Чӣ гуна ҳисобҳо пайваст мешаванд", "Мо ҳисоби HSK AI-ро аз рӯйи Google email ҷустуҷӯ ё якҷо намекунем. Профили Google танҳо бо амали ошкори корбар ба ҳисоби HSK AI, ки пештар тавассути Telegram сохта шудааст, пайваст мешавад."),
+            ("Чӣ нигоҳ дошта мешавад", "Шиносномаи доимии ҳисоби Google ба шакли HMAC бо калиди махфӣ нигоҳ дошта мешавад. Барои ҳисоби пайвастшуда email, ҳолати тасдиқи он, номи профил ва вақти пайвастшавӣ ё воридшавии охирин нигоҳ дошта шуда метавонанд."),
+            ("Токенҳо ва хизматрасониҳои беруна", "Google access ва refresh token-ҳо нигоҳ дошта намешаванд; HSK AI аз номи корбар ба Google API муроҷиат намекунад. Тасдиқи шахсият тавассути Google ва кори барнома тавассути инфрасохтори техникии HSK AI анҷом меёбад."),
+            ("Интихоби шумо", "Воридшавӣ бо Google ҳатмӣ нест. Пайвастро дар HSK AI аз Профил → Танзимот → Роҳҳои воридшавӣ ҷудо кардан мумкин аст; ин сессияҳоро дар дастгоҳҳои дигар ҳам анҷом медиҳад. Барои саволҳо ба Telegram-боти @darsi_chini_bot нависед."),
+        ],
+    },
+}
+
 PAGES = {
     "/": {
         "lang": "tg", "title": "HSK AI — забони чинӣ, HSK ва AI teacher",

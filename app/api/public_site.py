@@ -9,14 +9,20 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 
-from app.public_site.content import DOWNLOAD_PATH, PAGES
-from app.public_site.render import BOT_URL, attribution, public_origin, render_page
+from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, PAGES
+from app.public_site.render import (
+    BOT_URL,
+    attribution,
+    public_origin,
+    render_google_signin_privacy,
+    render_page,
+)
 
 logger = logging.getLogger("uvicorn.error.public_analytics")
 STATIC = Path(__file__).resolve().parents[1] / "static"
 GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
 GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
-SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH,)
+SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH,) + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
 
 
 def indexnow_key(settings_obj):
@@ -50,6 +56,8 @@ def robots_text(origin):
     for path in PAGES:
         if path != "/":
             rules.extend([f"Allow: {path}$", f"Allow: {path}?*"])
+    for path in GOOGLE_SIGNIN_PRIVACY_PAGES:
+        rules.extend([f"Allow: {path}$", f"Allow: {path}?*"])
     rules.extend([
         f"Allow: {DOWNLOAD_PATH}$",
         f"Allow: {DOWNLOAD_PATH}?*",
@@ -97,6 +105,16 @@ def create_public_site_router(*, settings_obj):
 
     for path in PAGES:
         router.add_api_route(path, landing, methods=["GET", "HEAD"], name="public_" + path.replace("/", "_"))
+
+    async def google_signin_privacy(request: Request):
+        path = request.url.path
+        return HTMLResponse(render_google_signin_privacy(path, settings_obj), headers={
+            "Cache-Control": "no-cache", "Content-Language": GOOGLE_SIGNIN_PRIVACY_PAGES[path]["lang"],
+            "Referrer-Policy": "strict-origin-when-cross-origin", "X-Content-Type-Options": "nosniff",
+        })
+
+    for path in GOOGLE_SIGNIN_PRIVACY_PAGES:
+        router.add_api_route(path, google_signin_privacy, methods=["GET", "HEAD"], name="privacy_" + path.replace("/", "_"))
 
     @router.get("/robots.txt")
     async def robots():

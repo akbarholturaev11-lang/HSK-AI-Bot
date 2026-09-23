@@ -227,6 +227,28 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-23 — Google Sign-In uchun public maxfiylik sahifasi
+
+Changed:
+- Public saytda Google Sign-In maxfiylik eslatmasi uch tilda ochildi:
+  `/privacy/google-sign-in/`, `/privacy/google-sign-in/ru/` va
+  `/privacy/google-sign-in/tj/`.
+- Sahifa Google’dan olinadigan identity/email/profil ma’lumoti, email orqali
+  hisoblar hech qachon birlashtirilmasligi, subject HMAC ko‘rinishida
+  saqlanishi, access/refresh tokenlar saqlanmasligi va Google bog‘lanishini
+  profil orqali uzish mumkinligini aniq yozadi.
+- Legal sahifalar sitemap va robots allowlist’ga alohida kiritildi; ular
+  marketing `PAGES` inventariga qo‘shilmadi.
+
+Why:
+- Google OAuth consent screen’ini Testing holatidan public Production’ga
+  chiqarish uchun tekshiriladigan, amaldagi auth oqimiga mos maxfiylik URL’i
+  kerak.
+
+Risk:
+- LOW — OAuth guardlari, credential’lar va account-link qoidalari o‘zgarmadi.
+  Public copy identity-link xizmatining amaldagi xatti-harakatiga bog‘langan.
+
 ### 2026-09-22 — Google and Apple sign-in as linked identities (Phase 1)
 
 Changed:
