@@ -60,6 +60,7 @@ fun ProfileScreen(
         onOpenGoal = onOpenGoal,
         onOpenLanguage = onOpenLanguage,
         onToggleNotifications = onToggleNotifications,
+        onOpenWidget = onOpenWidget,
         onOpenSupport = onOpenSupport,
         onRefresh = onRefresh,
         onLogout = onLogout,
