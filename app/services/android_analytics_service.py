@@ -254,8 +254,18 @@ class AndroidAnalyticsService:
         return registry
 
     @classmethod
-    def _active(cls, *, open_rows: Iterable[Any], now: datetime) -> dict[str, Any]:
-        """Real opens: one ``android_app_opened`` row is one device-day."""
+    def _active(
+        cls,
+        *,
+        open_rows: Iterable[Any],
+        now: datetime,
+        current_device_ids: set[str],
+    ) -> dict[str, Any]:
+        """Real opens from devices that are still linked.
+
+        Historical open events from revoked/unlinked phones are ignored so
+        DAU/WAU/MAU cannot be larger than the current install registry.
+        """
 
         users: dict[str, set[int]] = {key: set() for key, _ in ANDROID_ACTIVE_WINDOWS}
         devices: dict[str, set[str]] = {key: set() for key, _ in ANDROID_ACTIVE_WINDOWS}
@@ -267,6 +277,8 @@ class AndroidAnalyticsService:
             telegram_id = int(getattr(row, "telegram_id", 0) or 0)
             payload = cls._payload(getattr(row, "payload_json", None))
             device_id = str(payload.get("device_id") or "").strip()
+            if not device_id or device_id not in current_device_ids:
+                continue
             for key, days in ANDROID_ACTIVE_WINDOWS:
                 if created_at >= now - timedelta(days=days):
                     if telegram_id:
@@ -363,7 +375,17 @@ class AndroidAnalyticsService:
         device_rows = list(device_rows)
         funnel = cls._funnel(totals)
         registry = cls._registry(device_rows=device_rows, now=now, since=since)
-        active = cls._active(open_rows=open_rows, now=now)
+        current_device_ids = {
+            str(getattr(row, "id", "") or "").strip()
+            for row in device_rows
+            if cls._as_utc(getattr(row, "revoked_at", None)) is None
+            and str(getattr(row, "id", "") or "").strip()
+        }
+        active = cls._active(
+            open_rows=open_rows,
+            now=now,
+            current_device_ids=current_device_ids,
+        )
         versions = cls._versions(
             device_rows=device_rows, now=now, latest_release=latest_release
         )
@@ -398,11 +420,9 @@ class AndroidAnalyticsService:
                     "o'rnatish hisoblanmaydi."
                 ),
                 "active_definition": (
-                    "Aktiv = ilovaning o'zi ishga tushgani "
-                    "(android_app_opened, har qurilma uchun kuniga bir "
-                    "marta). Serverga chiqqan qurilma esa fon vidjeti "
-                    "tufayli ham yangilanishi mumkin, shuning uchun alohida "
-                    "ko'rsatiladi."
+                    "Faol = hozir akkaunti ulangan telefonda ilovaning o'zi "
+                    "ochilgan user. Uzilgan eski telefonlar va fon widgeti "
+                    "faol hisobiga kirmaydi."
                 ),
                 "not_measured": (
                     "Akkaunt ulanmagan o'rnatishlar, ilova o'chirib "
