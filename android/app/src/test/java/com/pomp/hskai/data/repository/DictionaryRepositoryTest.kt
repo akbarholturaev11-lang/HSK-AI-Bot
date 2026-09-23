@@ -102,7 +102,17 @@ private class DictionaryApi(
     ): Response<DictionaryResponse> {
         calls++
         if (notModified) {
-            return Response.error(304, ByteArray(0).toResponseBody(null))
+            val raw = okhttp3.Response.Builder()
+                .request(
+                    okhttp3.Request.Builder()
+                        .url("https://hsk-ai.invalid/api/v3/android/dictionary")
+                        .build()
+                )
+                .protocol(okhttp3.Protocol.HTTP_1_1)
+                .code(304)
+                .message("Not Modified")
+                .build()
+            return Response.error(ByteArray(0).toResponseBody(null), raw)
         }
         return Response.success(
             DictionaryResponse(
