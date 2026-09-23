@@ -225,6 +225,10 @@ class HskAiApplication : Application() {
             dao = database.dictionaryDao(),
             onSessionExpired = authRepository::invalidateSession,
             bundledSource = AssetBundledDictionarySource(this, json),
+            clientVersionCode = BuildConfig.VERSION_CODE,
+            readLastCheckedAtMillis = appSettings::dictionaryLastCheckedAtMillis,
+            readLastCheckedClientVersion = appSettings::dictionaryLastCheckedClientVersion,
+            writeLastChecked = appSettings::setDictionaryLastChecked,
         )
     }
 
