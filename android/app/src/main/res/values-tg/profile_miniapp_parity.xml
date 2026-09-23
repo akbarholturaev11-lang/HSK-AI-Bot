@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile_widgets">Виҷетҳо</string>
+    <string name="profile_widget_installed">Насб шудааст</string>
+    <string name="profile_widget_not_installed">Насб нашудааст</string>
     <string name="profile_mini_group_title">Хатоҳои ман · Дӯстон</string>
     <string name="profile_mini_mistakes_subtitle">Кор бар ҷойҳои заиф</string>
     <string name="profile_mini_settings">Танзимот</string>
