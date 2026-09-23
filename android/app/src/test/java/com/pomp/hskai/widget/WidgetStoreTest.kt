@@ -73,6 +73,44 @@ class WidgetStoreTest {
         assertEquals(0, store.read().snapshot?.goalXp)
         assertEquals(0, store.read().snapshot?.dailyXp)
     }
+    @Test fun `widget install prompt is durable and only auto shows once per local day`() = runTest {
+        val memory = MemoryPreferences()
+        val store = WidgetStore(memory)
+        store.linked()
+
+        assertTrue(
+            WidgetInstallPromptPolicy.shouldAutoShow(
+                installed = false,
+                lastShownDay = store.read().lastInstallPromptDay,
+                today = "2026-09-23",
+            )
+        )
+
+        store.markInstallPromptShown("2026-09-23")
+        assertEquals("2026-09-23", WidgetStore(memory).read().lastInstallPromptDay)
+        assertFalse(
+            WidgetInstallPromptPolicy.shouldAutoShow(
+                installed = false,
+                lastShownDay = store.read().lastInstallPromptDay,
+                today = "2026-09-23",
+            )
+        )
+        assertTrue(
+            WidgetInstallPromptPolicy.shouldAutoShow(
+                installed = false,
+                lastShownDay = store.read().lastInstallPromptDay,
+                today = "2026-09-24",
+            )
+        )
+        assertFalse(
+            WidgetInstallPromptPolicy.shouldAutoShow(
+                installed = true,
+                lastShownDay = null,
+                today = "2026-09-24",
+            )
+        )
+    }
+
     @Test fun `telemetry queue bounded deduped persisted and account isolated`() = runTest {
         val memory = MemoryPreferences()
         val store = WidgetStore(memory)
