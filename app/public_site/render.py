@@ -4,7 +4,15 @@ import re
 from html import escape
 from urllib.parse import urlencode, urlsplit
 
-from app.public_site.content import CTA, DOWNLOAD_CTA, DOWNLOAD_PATH, GUIDES, HOME_PATHS, PAGES
+from app.public_site.content import (
+    CTA,
+    DOWNLOAD_CTA,
+    DOWNLOAD_PATH,
+    GOOGLE_SIGNIN_PRIVACY_PAGES,
+    GUIDES,
+    HOME_PATHS,
+    PAGES,
+)
 
 BOT_URL = "https://t.me/darsi_chini_bot"
 ATTRIBUTION_KEYS = ("source", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
@@ -116,3 +124,39 @@ def render_page(path, settings_obj, tags=None):
 <aside class="example" aria-label="中文"><span lang="zh" class="hanzi">你好</span><span class="pinyin">nǐ hǎo</span><span>{labels[0]}</span></aside></div>
 <article>{sections}</article><aside class="guides" lang="tg"><h2>{labels[1]}</h2><ul>{guides}</ul></aside>
 <div class="closing">{cta}</div></main><footer><span>HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span><details><summary>{labels[2]}</summary><p>{privacy}</p></details></footer></body></html>'''
+
+
+def render_google_signin_privacy(path, settings_obj):
+    """Render the public Google Sign-In notice without landing-page analytics."""
+
+    page = GOOGLE_SIGNIN_PRIVACY_PAGES[path]
+    origin = public_origin(settings_obj)
+    canonical = origin + path
+    esc = escape
+    language_labels = (
+        ("/privacy/google-sign-in/tj/", "Тоҷикӣ"),
+        ("/privacy/google-sign-in/ru/", "Русский"),
+        ("/privacy/google-sign-in/", "O‘zbekcha"),
+    )
+    language_links = "".join(
+        f'<a href="{esc(dest)}">{label}</a>' for dest, label in language_labels
+    )
+    alternates = "".join(
+        f'<link rel="alternate" hreflang="{esc(item["lang"])}" href="{esc(origin + dest)}">'
+        for dest, item in GOOGLE_SIGNIN_PRIVACY_PAGES.items()
+    )
+    sections = "".join(
+        f'<section><h2>{esc(title)}</h2><p>{esc(body)}</p></section>'
+        for title, body in page["sections"]
+    )
+    return f'''<!doctype html>
+<html lang="{esc(page["lang"])}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{esc(page["title"])}</title><meta name="description" content="{esc(page["description"])}">
+<meta name="robots" content="index,follow"><link rel="canonical" href="{esc(canonical)}">{alternates}
+<meta property="og:title" content="{esc(page["title"])}"><meta property="og:description" content="{esc(page["description"])}">
+<meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}"><meta property="og:site_name" content="HSK AI">
+<link rel="icon" href="/public-assets/avatar.webp" type="image/webp"><link rel="stylesheet" href="/public-assets/site.css?v=1"></head>
+<body><header><a class="brand" href="/"><img src="/public-assets/avatar.webp" width="40" height="40" alt="">HSK AI</a><nav aria-label="Language">{language_links}</nav></header>
+<main><article><p class="eyebrow">HSK AI · GOOGLE SIGN-IN</p><h1>{esc(page["h1"])}</h1><p class="intro">{esc(page["intro"])}</p>{sections}</article></main>
+<footer><span>HSK AI · {esc(page["title"])} · {esc(page["updated"])}</span></footer></body></html>'''

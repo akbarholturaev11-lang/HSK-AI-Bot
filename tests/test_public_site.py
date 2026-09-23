@@ -14,7 +14,7 @@ from app.api.public_site import (
     create_public_site_router,
     indexnow_payload,
 )
-from app.public_site.content import DOWNLOAD_PATH, HOME_PATHS, PAGES
+from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
 from app.public_site.render import attribution, public_origin
 
 ORIGIN = "https://learn.example.com"
@@ -110,6 +110,9 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             for path in PAGES:
                 self.assertTrue(allowed(robots.text, agent, path))
                 self.assertTrue(allowed(robots.text, agent, path + "?utm_source=x"))
+            for path in GOOGLE_SIGNIN_PRIVACY_PAGES:
+                self.assertTrue(allowed(robots.text, agent, path))
+                self.assertTrue(allowed(robots.text, agent, path + "?utm_source=x"))
             self.assertTrue(allowed(robots.text, agent, DOWNLOAD_PATH))
             self.assertTrue(allowed(robots.text, agent, DOWNLOAD_PATH + "?lang=uz"))
             for path in ("/admin.html", "/api/v3/map", "/subscription.html", "/payments/x", "/course-v3.html",
@@ -184,6 +187,18 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.headers["content-type"], "text/html; charset=utf-8")
         self.assertNotIn("noindex", response.headers.get("x-robots-tag", "").lower())
         self.assertNotIn("authorization", response.headers)
+
+    async def test_google_signin_privacy_pages_are_public_and_descriptive(self):
+        for path, page in GOOGLE_SIGNIN_PRIVACY_PAGES.items():
+            response = await self.client.get(path)
+            self.assertEqual(response.status_code, 200, path)
+            parsed = Tags(response.text)
+            self.assertEqual(parsed.find("html")[0]["lang"], page["lang"])
+            self.assertEqual(parsed.find("link", rel="canonical")[0]["href"], ORIGIN + path)
+            self.assertIn(page["h1"], response.text)
+            self.assertIn("Google", response.text)
+            self.assertNotIn("telegram-web-app.js", response.text)
+            self.assertEqual(response.headers["content-language"], page["lang"])
 
     def test_config_and_attribution_safety(self):
         for bad in ("http://example.com", "https://user:pass@example.com", "https://example.com/a", "https://example.com/?x=1"):

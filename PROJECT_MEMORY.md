@@ -227,6 +227,44 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-23 — Android Google Sign-In release uchun versionCode 21
+
+Changed:
+- `android/app/build.gradle.kts` dagi release versiya `1.6.6` /
+  `versionCode 21`ga oshirildi.
+
+Why:
+- R2’da `1.6.5` / `20` nomli APK allaqachon bor, ammo u hozirgi source’dan
+  boshqa baytlar bilan qurilgan. Release workflow immutable APK obyektini
+  ustiga yozishni ataylab rad etdi; yangi Google client ID bilan APKni xavfsiz
+  nashr qilish uchun keyingi, monotonic versionCode kerak.
+
+Risk:
+- LOW — faqat release identifikatori o‘zgardi. Android static checks, Direct/
+  Play unit testlari va lint yangi versiyada yashil.
+
+### 2026-09-23 — Google Sign-In uchun public maxfiylik sahifasi
+
+Changed:
+- Public saytda Google Sign-In maxfiylik eslatmasi uch tilda ochildi:
+  `/privacy/google-sign-in/`, `/privacy/google-sign-in/ru/` va
+  `/privacy/google-sign-in/tj/`.
+- Sahifa Google’dan olinadigan identity/email/profil ma’lumoti, email orqali
+  hisoblar hech qachon birlashtirilmasligi, subject HMAC ko‘rinishida
+  saqlanishi, access/refresh tokenlar saqlanmasligi va Google bog‘lanishini
+  profil orqali uzish mumkinligini aniq yozadi.
+- Legal sahifalar sitemap va robots allowlist’ga alohida kiritildi; ular
+  marketing `PAGES` inventariga qo‘shilmadi.
+
+Why:
+- Google OAuth consent screen’ini Testing holatidan public Production’ga
+  chiqarish uchun tekshiriladigan, amaldagi auth oqimiga mos maxfiylik URL’i
+  kerak.
+
+Risk:
+- LOW — OAuth guardlari, credential’lar va account-link qoidalari o‘zgarmadi.
+  Public copy identity-link xizmatining amaldagi xatti-harakatiga bog‘langan.
+
 ### 2026-09-22 — Google and Apple sign-in as linked identities (Phase 1)
 
 Changed:
@@ -299,13 +337,18 @@ Risk:
 - No payment or subscription logic changed.
 
 Follow-up:
-- Provider credentials are not set in any environment yet, so the feature is
-  invisible until `GOOGLE_OAUTH_ENABLED` / `APPLE_OAUTH_ENABLED` and the client
-  ids are configured. `OAUTH_REDIRECT_BASE_URL` must be an https origin with no
-  path.
-- Register OAuth clients: two Android clients (`com.pomp.hskai` with the upload
-  and Play signing SHA-1s, and `com.pomp.hskai.debug`), one Google Web client
-  for desktop, one Apple Services ID.
+- Google OAuth 2026-09-23 da productionga sozlandi: ikki Android client,
+  Android uchun alohida Web client va Desktop Web client ro‘yxatdan o‘tdi;
+  credential’lar Railway’da, faqat Android Web client ID public Gradle
+  property’da turadi. Secret hech qachon repo yoki memory faylida saqlanmaydi.
+  Google provider Android, Desktop va Mini App’da fail-closed ro‘yxat orqali
+  ko‘rinmoqda; OAuth ilova Google Console’da `In production` holatida.
+- Apple credential’lari hali sozlanmagan, shuning uchun Apple provider
+  yashirin qoladi. `OAUTH_REDIRECT_BASE_URL` HTTPS origin bo‘lib, path
+  bo‘lmasligi shart.
+- Google Console application verification eslatmasini ko‘rsatadi. Hozirgi
+  `openid email profile` oqimiga sensitive/restricted scope qo‘shilsa yoki
+  Google so‘rasa, alohida verification topshirilishi kerak.
 - Phase 2 (Telegram-less accounts) is NOT in this change. It needs
   `users.telegram_id` AND `desktop_devices.telegram_id` nullable, plus an audit
   of every telegram_id-keyed table and bot notification path.
