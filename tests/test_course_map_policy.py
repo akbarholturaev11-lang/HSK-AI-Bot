@@ -119,8 +119,12 @@ class DesktopUsesTheSharedPredicateTests(unittest.TestCase):
         source = Path("app/services/desktop_course_service.py").read_text(
             encoding="utf-8"
         )
-        # Xarita, dars va yakunlash — uchalasi ham yagona predikatga o'tdi.
-        self.assertEqual(3, source.count("has_full_access(resolve_state(user))"))
+        # Xarita, yengil sync, dars va yakunlash — barchasi yagona predikatga
+        # o'tdi. Sync endi to'liq xaritani so'ramasdan access o'zgarganini
+        # kuzatadi, shuning uchun unga ham ayni qaror kerak.
+        # Xarita `resolve_state` natijasini qayta ishlatadi, shuning uchun bu
+        # himoya formatga emas, to'rtta haqiqiy `has_full_access` qaroriga bog'liq.
+        self.assertEqual(4, source.count("has_full_access("))
         self.assertNotIn("is_paid = CourseMiniAppAccessService.is_paid_user(user)", source)
         self.assertNotIn("is_paid = access.is_paid_user(user)", source)
 

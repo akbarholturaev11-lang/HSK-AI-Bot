@@ -677,19 +677,21 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function paywallHtml(ctx)", html)
         self.assertIn(r"App.startTrial(\'paywall_lesson\')", html)
 
-    def test_practice_limit_status_is_prefetched_without_spending_the_gate(self):
+    def test_practice_limit_status_is_loaded_on_demand_without_spending_the_gate(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
 
-        self.assertIn("function prefetchPracticeLimitStatus()", html)
+        # Startup'da barcha practice limitlarini ketma-ket so'rash ortiqcha
+        # server yuk edi. Holat faqat haqiqiy gate ochilganda olinadi.
+        self.assertNotIn("function prefetchPracticeLimitStatus()", html)
+        self.assertNotIn("PRACTICE_STATUS_PREFETCHED", html)
         self.assertIn('"/api/v3/limits/status"', html)
-        prefetch_body = html[
-            html.index("function prefetchPracticeLimitStatus()") : html.index(
+        status_body = html[
+            html.index("function practiceLimitStatus(") : html.index(
                 "window.CourseLimitStatus="
             )
         ]
-        self.assertNotIn('"/api/v3/practice/daily-gate"', prefetch_body)
-        self.assertIn("PRACTICE_STATUS_PREFETCHED=true", html)
+        self.assertNotIn('"/api/v3/practice/daily-gate"', status_body)
         self.assertIn("PRACTICE_LIMIT_STATUS_VERSIONS", html)
         self.assertIn("window.CourseLimitStatus={get:practiceLimitStatus", html)
         self.assertIn("statusPromise=window.CourseLimitStatus.get(statusFeature)", ads)
@@ -872,9 +874,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
             # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260920-1", html, page
+                "/course_v3_data/desktop-download.js?v=20260923-2", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260921-1", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260923-2", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -1032,8 +1034,8 @@ class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
     """
 
     EXPECTED = {
-        "desktop-download.js": "9d473017d3877170",
-        "ads.js": "d19d51dfa7beb2ce",
+        "desktop-download.js": "dabde559cf9ec41e",
+        "ads.js": "6238d6aa34689f86",
     }
 
     def test_a_changed_script_forces_a_new_version(self):

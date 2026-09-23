@@ -235,7 +235,7 @@ Changed:
 - Google Credential Manager is called with the current host `Activity`, which
   is required to show an account selector on a real device.
 - The same safe path is used when linking Google from Profile. Release version
-  is `1.6.7` / `versionCode 22`.
+  is `1.6.8` / `versionCode 23`.
 
 Why:
 - The server correctly rejected Android's incomplete request with HTTP 422
