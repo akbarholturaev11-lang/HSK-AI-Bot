@@ -13,6 +13,7 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidHintDismissRequest
 import com.pomp.hskai.data.api.AndroidHintDismissResponse
 import com.pomp.hskai.data.api.AndroidProfileResponse
+import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.ExamAnswerDto
@@ -73,6 +74,17 @@ class FeatureRepository(
     suspend fun profile(): ApiResult<AndroidProfileResponse> = authorized {
         api.profile(it)
     }
+
+    suspend fun updateProfile(displayName: String, avatarKey: String): ApiResult<AndroidProfileResponse> =
+        authorized {
+            api.updateProfile(
+                it,
+                AndroidProfileUpdateRequest(
+                    displayName = displayName,
+                    avatarKey = avatarKey,
+                ),
+            )
+        }
 
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
         authorized { api.subscriptionOverview(it) }
