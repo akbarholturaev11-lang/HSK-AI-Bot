@@ -49,8 +49,20 @@ class RatingViewModel(
     private val _state = MutableStateFlow(RatingUiState())
     val state: StateFlow<RatingUiState> = _state.asStateFlow()
 
-    init {
-        load()
+    private var hasLoaded = false
+    private var loadInFlight = false
+
+    /**
+     * Startup must not fetch the whole rating surface before the learner opens it.
+     * MainActivity calls this on the first Rating-tab entry.
+     */
+    fun ensureLoaded() {
+        if (!hasLoaded && !loadInFlight) load()
+    }
+
+    /** Keep background/profile changes from waking a tab that was never opened. */
+    fun refreshIfLoaded() {
+        if (hasLoaded) load()
     }
 
     fun selectTab(tab: RatingTab) {
@@ -58,8 +70,11 @@ class RatingViewModel(
     }
 
     fun load() {
+        if (loadInFlight) return
+        loadInFlight = true
         _state.update { it.copy(isLoading = true, referralError = null, error = null) }
         viewModelScope.launch {
+            try {
             val rating = async { repository.rating() }
             val referral = async { repository.referral() }
             val duels = async { repository.challenges() }
@@ -80,6 +95,10 @@ class RatingViewModel(
                     referralError = (referralResult as? ApiResult.Failure)?.error,
                     error = (ratingResult as? ApiResult.Failure)?.error,
                 )
+            }
+            hasLoaded = ratingResult is ApiResult.Success
+            } finally {
+                loadInFlight = false
             }
         }
     }

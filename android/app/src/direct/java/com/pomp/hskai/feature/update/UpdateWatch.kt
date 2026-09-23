@@ -77,7 +77,7 @@ class UpdateCheckWorker(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val release = withContext(Dispatchers.IO) { fetchRelease() } ?: return Result.success()
+        val release = withContext(Dispatchers.IO) { fetchRelease(applicationContext) } ?: return Result.success()
         UpdateNotices.announce(context = applicationContext, release = release)
         return Result.success()
     }

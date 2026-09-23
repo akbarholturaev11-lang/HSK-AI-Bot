@@ -29,12 +29,19 @@ data class DictionaryWord(
  * language change invalidates the copy, because the stored meanings are in the
  * previous language.
  */
+internal const val DICTIONARY_CHECK_TTL_MILLIS = 24L * 60L * 60L * 1000L
+
 class DictionaryRepository(
     private val api: AndroidCourseApi,
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: DictionaryDao,
     private val onSessionExpired: suspend () -> Unit = {},
     private val bundledSource: BundledDictionarySource? = null,
+    private val clientVersionCode: Int = 0,
+    private val readLastCheckedAtMillis: suspend (String) -> Long? = { null },
+    private val readLastCheckedClientVersion: suspend (String) -> Int? = { null },
+    private val writeLastChecked: suspend (String, Long, Int) -> Unit = { _, _, _ -> },
+    private val now: () -> Long = System::currentTimeMillis,
 ) {
 
     /**
@@ -62,6 +69,20 @@ class DictionaryRepository(
                 sameLanguage = cached?.language == language.backendCode
             }
         }
+        val languageKey = language.backendCode
+        if (cachedCount > 0 && sameLanguage && clientVersionCode > 0) {
+            val checkedAt = runCatching { readLastCheckedAtMillis(languageKey) }.getOrNull()
+            val checkedClient = runCatching { readLastCheckedClientVersion(languageKey) }.getOrNull()
+            val age = checkedAt?.let { now() - it }
+            if (
+                checkedClient == clientVersionCode &&
+                age != null &&
+                age in 0L until DICTIONARY_CHECK_TTL_MILLIS
+            ) {
+                return ApiResult.Success(cachedCount)
+            }
+        }
+
         val etag = cached?.version
             ?.takeIf { it.isNotBlank() && sameLanguage && cachedCount > 0 }
             ?.let { "W/\"dictionary-$it\"" }
@@ -82,7 +103,10 @@ class DictionaryRepository(
         }
 
         // The server confirmed the stored copy is still the current one.
-        if (response.code() == NOT_MODIFIED) return ApiResult.Success(cachedCount)
+        if (response.code() == NOT_MODIFIED) {
+            markChecked(languageKey)
+            return ApiResult.Success(cachedCount)
+        }
 
         val body = response.body()
         if (!response.isSuccessful || body == null || !body.ok) {
@@ -116,6 +140,7 @@ class DictionaryRepository(
                 language = body.language.ifBlank { language.backendCode },
             ),
         )
+        markChecked(languageKey)
         return ApiResult.Success(words.size)
     }
 
@@ -144,6 +169,11 @@ class DictionaryRepository(
     }
 
     suspend fun clearCache() = dao.clear()
+
+    private suspend fun markChecked(language: String) {
+        if (clientVersionCode <= 0) return
+        runCatching { writeLastChecked(language, now(), clientVersionCode) }
+    }
 
     private suspend fun keepOrFail(error: ApiError, cachedCount: Int): ApiResult<Int> {
         if (error is ApiError.SessionExpired) onSessionExpired()

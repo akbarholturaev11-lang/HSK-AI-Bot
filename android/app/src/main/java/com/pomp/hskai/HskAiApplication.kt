@@ -225,6 +225,10 @@ class HskAiApplication : Application() {
             dao = database.dictionaryDao(),
             onSessionExpired = authRepository::invalidateSession,
             bundledSource = AssetBundledDictionarySource(this, json),
+            clientVersionCode = BuildConfig.VERSION_CODE,
+            readLastCheckedAtMillis = appSettings::dictionaryLastCheckedAtMillis,
+            readLastCheckedClientVersion = appSettings::dictionaryLastCheckedClientVersion,
+            writeLastChecked = appSettings::setDictionaryLastChecked,
         )
     }
 
@@ -260,7 +264,9 @@ class HskAiApplication : Application() {
 
     suspend fun clearLocalData() {
         courseRepository.clearCache()
-        dictionaryRepository.clearCache()
+        // Dictionary rows are public release data, not account data. Keeping
+        // them across logout preserves the version that the ETag stamp refers to
+        // and avoids replacing a newer server copy with the bundled APK seed.
         voiceRecorder.cancel()
     }
 

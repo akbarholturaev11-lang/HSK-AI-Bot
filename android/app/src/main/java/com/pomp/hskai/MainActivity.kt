@@ -419,8 +419,11 @@ private fun AppRoot(
                 }
             }
 
-            LaunchedEffect(onboardingState.completed) {
-                if (onboardingState.completed) {
+            // Existing accounts already loaded course/profile in their ViewModel init.
+            // Refresh only when this process has just completed onboarding; launch
+            // stays null for an account that arrived already onboarded.
+            LaunchedEffect(onboardingState.launch) {
+                if (onboardingState.launch != null) {
                     courseViewModel.load()
                     profileViewModel.load()
                 }
@@ -510,7 +513,7 @@ private fun AppRoot(
             }
 
             LaunchedEffect(profileState.profileRevision) {
-                if (profileState.profileRevision > 0) ratingViewModel.load()
+                if (profileState.profileRevision > 0) ratingViewModel.refreshIfLoaded()
             }
 
             val context = LocalContext.current
@@ -554,7 +557,7 @@ private fun AppRoot(
                 onRefreshAccess = {
                     courseViewModel.load()
                     profileViewModel.load()
-                    voiceViewModel.loadStatus()
+                    voiceViewModel.refreshStatusIfLoaded()
                 },
                 // Whether this account may still take the free week is the
                 // server's answer, read once here and shown everywhere — the
@@ -577,7 +580,7 @@ private fun AppRoot(
                 trialWasActive = trialActive
                 if (previous == false && trialActive) {
                     courseViewModel.load()
-                    voiceViewModel.loadStatus()
+                    voiceViewModel.refreshStatusIfLoaded()
                     // Limit bloki O'ZI yo'qolishi kerak. Aks holda odam
                     // "7 kun bepul" ni bosgandan keyin ham o'sha oynani
                     // ko'rib turadi va tugma ishlamagandek tuyuladi.
@@ -620,6 +623,18 @@ private fun AppRoot(
             var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
+
+            // Secondary tabs own their first server load. Returning to an already
+            // opened tab is local unless that feature explicitly requests refresh.
+            LaunchedEffect(selectedTab) {
+                when (selectedTab) {
+                    MainTab.PRACTICE -> practiceViewModel.ensureMistakesLoaded()
+                    MainTab.VOICE -> voiceViewModel.ensureStatusLoaded()
+                    MainTab.RATING -> ratingViewModel.ensureLoaded()
+                    else -> Unit
+                }
+            }
+
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level

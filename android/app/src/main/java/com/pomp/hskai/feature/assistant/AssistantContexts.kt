@@ -279,12 +279,13 @@ fun challengeAssistantContext(state: ChallengeRunUiState, opponentName: String):
 
 fun profileAssistantContext(state: ProfileUiState): ScreenContext {
     val profile = state.profile
-    val sub = state.subscription
     val details = buildString {
         appendLine("Profile screen.")
-        profile?.let { appendLine("User: ${it.user.name}, level ${it.user.level}, streak ${it.stats.streak}, total XP ${it.stats.xp}") }
-        state.rating?.let { appendLine("Rating: #${it.rank}, ${it.weeklyXp} weekly XP, league ${it.league}") }
-        sub?.let { appendLine("Subscription: paid=${it.access.isPaid}, state=${it.access.state}, checkout=${it.checkoutAllowed}") }
+        profile?.let {
+            appendLine("User: ${it.user.name}, level ${it.user.level}, streak ${it.stats.streak}, total XP ${it.stats.xp}")
+            appendLine("Rating: ${it.stats.weeklyXp} weekly XP, league ${it.stats.league}")
+            appendLine("Subscription: paid=${it.subscription.isPaid}, state=${it.subscription.status}, until=${it.subscription.until.orEmpty()}")
+        }
         state.trial?.let { appendLine("Trial offer eligible: ${it.eligible}, active: ${it.active}") }
     }
     return ScreenContext("profile", "Profil", details.trim(), answerState = if (state.error != null) "error" else "viewing")

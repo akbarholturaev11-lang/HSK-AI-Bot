@@ -23,6 +23,45 @@ class AppUpdateTest {
     """.trimIndent()
 
     @Test
+    fun `update check cache is fresh only inside ttl for the same installed build`() {
+        val ttl = AppUpdate.CHECK_CACHE_TTL_MILLIS
+        val checkedAt = 10_000L
+
+        assertTrue(
+            AppUpdate.isCheckCacheFresh(
+                checkedAtMillis = checkedAt,
+                nowMillis = checkedAt + ttl - 1,
+                checkedVersionCode = 7,
+                installedVersionCode = 7,
+            )
+        )
+        assertFalse(
+            AppUpdate.isCheckCacheFresh(
+                checkedAtMillis = checkedAt,
+                nowMillis = checkedAt + ttl,
+                checkedVersionCode = 7,
+                installedVersionCode = 7,
+            )
+        )
+        assertFalse(
+            AppUpdate.isCheckCacheFresh(
+                checkedAtMillis = checkedAt,
+                nowMillis = checkedAt + 1,
+                checkedVersionCode = 6,
+                installedVersionCode = 7,
+            )
+        )
+        assertFalse(
+            AppUpdate.isCheckCacheFresh(
+                checkedAtMillis = checkedAt,
+                nowMillis = checkedAt - 1,
+                checkedVersionCode = 7,
+                installedVersionCode = 7,
+            )
+        )
+    }
+
+    @Test
     fun `a newer build is read back whole`() {
         val release = AppUpdate.parse(status = 200, body = body, installedVersionCode = 2)
 

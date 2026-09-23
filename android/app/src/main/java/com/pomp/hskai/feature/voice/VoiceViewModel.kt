@@ -110,9 +110,17 @@ class VoiceViewModel(
 
     private val _state = MutableStateFlow(VoiceUiState())
     val state: StateFlow<VoiceUiState> = _state.asStateFlow()
+    private var statusLoaded = false
+    private var statusLoadInFlight = false
 
-    init {
-        loadStatus()
+    /** First Voice-tab entry owns the initial status request, not app startup. */
+    fun ensureStatusLoaded() {
+        if (!statusLoaded && !statusLoadInFlight) loadStatus()
+    }
+
+    /** Access changes refresh Voice only after Voice has actually been opened. */
+    fun refreshStatusIfLoaded() {
+        if (statusLoaded) loadStatus()
     }
 
     override fun onCleared() {
@@ -120,20 +128,29 @@ class VoiceViewModel(
     }
 
     fun loadStatus() {
+        if (statusLoadInFlight) return
+        statusLoadInFlight = true
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
+            try {
             when (val result = repository.voiceStatus()) {
-                is ApiResult.Success -> _state.update {
-                    it.copy(
-                        isLoading = false,
-                        status = result.value,
-                        remainingLimit = result.value.remainingVoiceLimit,
-                    )
+                is ApiResult.Success -> {
+                    statusLoaded = true
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            status = result.value,
+                            remainingLimit = result.value.remainingVoiceLimit,
+                        )
+                    }
                 }
 
                 is ApiResult.Failure -> _state.update {
                     it.copy(isLoading = false, error = result.error)
                 }
+            }
+            } finally {
+                statusLoadInFlight = false
             }
         }
     }

@@ -59,7 +59,7 @@ fun AppUpdateBanner(modifier: Modifier = Modifier) {
     var canInstall by remember { mutableStateOf(context.canInstallApks()) }
 
     LaunchedEffect(Unit) {
-        release = withContext(Dispatchers.IO) { fetchRelease() }
+        release = withContext(Dispatchers.IO) { fetchRelease(context) }
     }
 
     // The install permission is granted in Android's own settings, in another

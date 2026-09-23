@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.update
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.Settings
 import android.util.Log
@@ -35,6 +36,15 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "AppUpdate"
+private const val UPDATE_CHECK_PREFS = "app_update_check_cache"
+private const val KEY_CHECKED_AT = "checked_at"
+private const val KEY_CHECKED_VERSION = "checked_version"
+private const val KEY_HAS_RELEASE = "has_release"
+private const val KEY_RELEASE_NAME = "release_name"
+private const val KEY_RELEASE_CODE = "release_code"
+private const val KEY_RELEASE_URL = "release_url"
+private const val KEY_RELEASE_SIZE = "release_size"
+private val updateCheckLock = Any()
 
 /**
  * "A newer version exists", in the one place a learner goes looking.
@@ -59,7 +69,7 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
     var canInstall by remember { mutableStateOf(context.canInstallApks()) }
 
     LaunchedEffect(Unit) {
-        release = withContext(Dispatchers.IO) { fetchRelease() }
+        release = withContext(Dispatchers.IO) { fetchRelease(context) }
     }
 
     // Granting the permission happens in Android's own settings, in another
@@ -175,26 +185,102 @@ private val downloadClient: OkHttpClient by lazy {
         .build()
 }
 
-internal fun fetchRelease(): UpdateRelease? = try {
-    val request = Request.Builder()
-        .url(
-            "${BuildConfig.API_ORIGIN}/api/v3/android-update/check" +
-                "?version_code=${BuildConfig.VERSION_CODE}"
-        )
-        .get()
-        .build()
-    downloadClient.newCall(request).execute().use { response ->
-        AppUpdate.parse(
-            status = response.code,
-            body = response.body?.string(),
+internal fun fetchRelease(
+    context: Context,
+    nowMillis: Long = System.currentTimeMillis(),
+): UpdateRelease? = synchronized(updateCheckLock) {
+    val prefs = context.applicationContext.getSharedPreferences(
+        UPDATE_CHECK_PREFS,
+        Context.MODE_PRIVATE,
+    )
+    val checkedAt = prefs.getLong(KEY_CHECKED_AT, 0L)
+    val checkedVersion = prefs.getInt(KEY_CHECKED_VERSION, -1)
+    val hasRelease = prefs.getBoolean(KEY_HAS_RELEASE, false)
+    val cachedRelease = if (hasRelease && checkedVersion == BuildConfig.VERSION_CODE) {
+        cachedRelease(prefs)
+    } else {
+        null
+    }
+
+    if (
+        AppUpdate.isCheckCacheFresh(
+            checkedAtMillis = checkedAt,
+            nowMillis = nowMillis,
+            checkedVersionCode = checkedVersion,
             installedVersionCode = BuildConfig.VERSION_CODE,
         )
+    ) {
+        if (!hasRelease) return@synchronized null
+        if (cachedRelease != null) return@synchronized cachedRelease
     }
-} catch (error: Exception) {
-    // No network, no server, no card. An update is never worth an error
-    // message in a profile someone opened to look at their streak.
-    Log.d(TAG, "update check failed", error)
-    null
+
+    try {
+        val request = Request.Builder()
+            .url(
+                "${BuildConfig.API_ORIGIN}/api/v3/android-update/check" +
+                    "?version_code=${BuildConfig.VERSION_CODE}"
+            )
+            .get()
+            .build()
+        downloadClient.newCall(request).execute().use { response ->
+            val body = response.body?.string()
+            val release = AppUpdate.parse(
+                status = response.code,
+                body = body,
+                installedVersionCode = BuildConfig.VERSION_CODE,
+            )
+            if (response.code == 204 || release != null) {
+                storeUpdateCheck(prefs, nowMillis, release)
+            }
+            release
+        }
+    } catch (error: Exception) {
+        // Keep a previously validated release visible while offline, but do not
+        // mark a failed network attempt as a fresh check.
+        Log.d(TAG, "update check failed", error)
+        cachedRelease
+    }
+}
+
+private fun cachedRelease(prefs: SharedPreferences): UpdateRelease? {
+    val name = prefs.getString(KEY_RELEASE_NAME, "").orEmpty()
+    val code = prefs.getInt(KEY_RELEASE_CODE, -1)
+    val url = prefs.getString(KEY_RELEASE_URL, "").orEmpty()
+    val size = prefs.getLong(KEY_RELEASE_SIZE, 0L)
+    if (name.isBlank() || code <= BuildConfig.VERSION_CODE || !AppUpdate.isInstallableUrl(url)) {
+        return null
+    }
+    return UpdateRelease(
+        versionName = name,
+        versionCode = code,
+        url = url,
+        size = size,
+    )
+}
+
+private fun storeUpdateCheck(
+    prefs: SharedPreferences,
+    checkedAtMillis: Long,
+    release: UpdateRelease?,
+) {
+    prefs.edit()
+        .putLong(KEY_CHECKED_AT, checkedAtMillis)
+        .putInt(KEY_CHECKED_VERSION, BuildConfig.VERSION_CODE)
+        .putBoolean(KEY_HAS_RELEASE, release != null)
+        .apply {
+            if (release == null) {
+                remove(KEY_RELEASE_NAME)
+                remove(KEY_RELEASE_CODE)
+                remove(KEY_RELEASE_URL)
+                remove(KEY_RELEASE_SIZE)
+            } else {
+                putString(KEY_RELEASE_NAME, release.versionName)
+                putInt(KEY_RELEASE_CODE, release.versionCode)
+                putString(KEY_RELEASE_URL, release.url)
+                putLong(KEY_RELEASE_SIZE, release.size)
+            }
+        }
+        .apply()
 }
 
 internal fun download(context: Context, release: UpdateRelease): File? = try {

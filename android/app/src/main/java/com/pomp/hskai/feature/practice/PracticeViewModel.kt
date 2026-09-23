@@ -136,9 +136,12 @@ class PracticeViewModel(
     val state: StateFlow<PracticeUiState> = _state.asStateFlow()
 
     private var reviewAudioJob: Job? = null
+    private var mistakesLoaded = false
+    private var mistakesLoadInFlight = false
 
-    init {
-        loadMistakes()
+    /** First Practice-tab entry owns the initial mistakes fetch, not app startup. */
+    fun ensureMistakesLoaded() {
+        if (!mistakesLoaded && !mistakesLoadInFlight) loadMistakes()
     }
 
     /**
@@ -150,8 +153,11 @@ class PracticeViewModel(
      * caps each response at 100.
      */
     fun loadMistakes() {
+        if (mistakesLoadInFlight) return
+        mistakesLoadInFlight = true
         _state.update { it.copy(isLoadingMistakes = true, error = null) }
         viewModelScope.launch {
+            try {
             val items = mutableListOf<MistakeItemDto>()
             var summary: MistakeSummaryDto? = null
             var offset = 0
@@ -178,6 +184,7 @@ class PracticeViewModel(
                                     ),
                                 )
                             }
+                            mistakesLoaded = true
                             return@launch
                         }
                         if (page.isEmpty()) break
@@ -205,6 +212,7 @@ class PracticeViewModel(
                 }
             }
 
+            mistakesLoaded = true
             _state.update {
                 it.copy(
                     isLoadingMistakes = false,
@@ -214,6 +222,9 @@ class PracticeViewModel(
                         items = items,
                     ),
                 )
+            }
+            } finally {
+                mistakesLoadInFlight = false
             }
         }
     }
