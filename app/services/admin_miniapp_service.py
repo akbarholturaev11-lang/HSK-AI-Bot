@@ -26,6 +26,7 @@ from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services.admin_stats_service import miniapp_course_stats
 from app.services.required_channel_service import RequiredChannelService
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.subscription_price_service import SubscriptionPriceService
@@ -1211,6 +1212,18 @@ def _status_label(value: str | None) -> str:
         "free": "Бепул",
     }
     return labels.get(str(value or "").lower(), value or "—")
+
+
+def _access_label(value: str | None) -> str:
+    labels = {
+        EntitlementState.PRO_ACTIVE: "Pullik obuna",
+        EntitlementState.TRIAL_ACTIVE: "Pro trial",
+        EntitlementState.TEMP_ACCESS: "Vaqtinchalik access",
+        EntitlementState.EXPIRED: "Muddati tugagan",
+        EntitlementState.BLOCKED: "Bloklangan",
+        EntitlementState.FREE: "Bepul",
+    }
+    return labels.get(str(value or ""), "Bepul")
 
 
 def _payment_label(value: str | None) -> str:
@@ -2938,6 +2951,11 @@ class AdminMiniAppService:
                 "plan": _plan_label(item.selected_plan_type),
                 "method": _method_label(item.payment_method),
                 "end_date": _dt(item.end_date),
+                "access_type": resolve_state(item, now=now),
+                "access_label": _access_label(resolve_state(item, now=now)),
+                "access_ends_at": _dt(
+                    access_expires_at(item, resolve_state(item, now=now), now=now)
+                ),
                 "last_active": _ago(item.last_active_at, now=now),
                 "active_today": is_admin_active_today(item, today_start),
                 "hot_lead": (
