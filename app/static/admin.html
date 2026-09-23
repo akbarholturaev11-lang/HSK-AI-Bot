@@ -611,23 +611,34 @@
       state.desktopStatsLoading={};
       state.androidStats={};
       state.androidStatsLoading={};
+
+      let ov, fin, desktop;
       try{
-        const [ov, fin, desktop] = await Promise.all([
+        [ov, fin, desktop] = await Promise.all([
           apiPost("/api/admin-miniapp/overview",{}),
           apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null),
           apiPost("/api/admin-miniapp/desktop-stats",{period:"all_time"}).catch(()=>null)
         ]);
-        state.overview = ov;
-        state.finance = fin;
-        state.financeError = !fin;
-        state.desktopStats.all_time=(desktop&&desktop.desktop)?desktop.desktop:{error:true};
-        $("loading").hidden = true; $("app").hidden = false;
-        renderAll();
       }catch(e){
         const c = e&&e.status;
         if(c===401) setError("Kirish rad etildi","Mini ilovani Telegram ichidan admin tugmasi orqali oching.");
         else if(c===403) setError("Admin ruxsati yo'q","Bu panel faqat adminlar uchun.");
         else setError("Ulanish xatosi","Serverdan ma'lumot olib bo'lmadi. Keyinroq qayta oching.");
+        return;
+      }
+
+      state.overview = ov;
+      state.finance = fin;
+      state.financeError = !fin;
+      state.desktopStats.all_time=(desktop&&desktop.desktop)?desktop.desktop:{error:true};
+      $("loading").hidden = true;
+      $("app").hidden = false;
+
+      try{
+        renderAll();
+      }catch(e){
+        console.error("Admin panel render xatosi",e);
+        toast("Panelning bir qismi yuklanmadi. Qayta ochish shart emas.");
       }
     }
     async function loadManagement(force){
@@ -799,12 +810,14 @@
     }
 
     function androidBlank(message){
-      $("androidCards").innerHTML=message?`<p class='empty'>${esc(message)}</p>`:"";
-      $("androidFunnel").innerHTML="";
-      $("androidDevices").innerHTML="";
-      $("androidVersions").innerHTML="";
-      $("androidUpdateSummary").textContent="";
-      $("androidExplain").textContent="";
+      const cards=$("androidCards"), funnel=$("androidFunnel"), devices=$("androidDevices");
+      const versions=$("androidVersions"), updateSummary=$("androidUpdateSummary"), explain=$("androidExplain");
+      if(cards) cards.innerHTML=message?`<p class='empty'>${esc(message)}</p>`:"";
+      if(funnel) funnel.innerHTML="";
+      if(devices) devices.innerHTML="";
+      if(versions) versions.innerHTML="";
+      if(updateSummary) updateSummary.textContent="";
+      if(explain) explain.textContent="";
     }
 
     function renderAndroidStats(snapshot,loading){
@@ -847,11 +860,15 @@
         ? `<table class="tbl"><thead><tr><th>Versiya</th><th class="r">Telefon</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td><b>${esc(row.version)}</b></td><td class="r">${num(row.devices)}</td><td class="r">${num(row.users)}</td></tr>`).join("")}</tbody></table>`
         : "<p class='empty'>Oxirgi 30 kunda faol qurilma yo'q.</p>");
 
-      $("androidUpdateSummary").textContent=outdated==null
-        ? "Joriy Android versiyasi aniqlanmadi."
-        : "Yangilanish kerak: "+num(outdated)+"/"+num(versions.comparable_devices_30d)+" telefon · joriy versiya "+String(versions.latest||"—");
+      const updateSummary=$("androidUpdateSummary");
+      if(updateSummary){
+        updateSummary.textContent=outdated==null
+          ? "Joriy Android versiyasi aniqlanmadi."
+          : "Yangilanish kerak: "+num(outdated)+"/"+num(versions.comparable_devices_30d)+" telefon · joriy versiya "+String(versions.latest||"—");
+      }
 
-      $("androidExplain").textContent="O'rnatilgan = akkaunt ulangan telefon. Faol = ilovani ochgan user. Uzilgan eski telefonlar faolga kirmaydi.";
+      const explain=$("androidExplain");
+      if(explain) explain.textContent="O'rnatilgan = akkaunt ulangan telefon. Faol = ilovani ochgan user. Uzilgan eski telefonlar faolga kirmaydi.";
     }
 
     function renderAdvanced(fp){
