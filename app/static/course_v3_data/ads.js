@@ -377,6 +377,20 @@
      Server rad etsa ham oqim buzilmaydi: tugma shunchaki chiqmaydi. */
   var TRIAL={loaded:false,eligible:false};
   function trialStatus(){
+    /* course-v3.html bitta session-wide trial provider beradi. Shu provider
+       bor bo'lsa ads.js ikkinchi /trial/status so'rovini yubormaydi. */
+    try{
+      if(window.HskTrialState&&typeof window.HskTrialState.eligibility==="function"){
+        var known=window.HskTrialState.eligibility();
+        if(known!==undefined){TRIAL.loaded=true;TRIAL.eligible=!!known;return Promise.resolve(TRIAL.eligible)}
+        if(typeof window.HskTrialState.get==="function"){
+          return window.HskTrialState.get().then(function(){
+            var value=window.HskTrialState.eligibility();
+            TRIAL.loaded=true;TRIAL.eligible=!!value;return TRIAL.eligible;
+          });
+        }
+      }
+    }catch(e){}
     if(TRIAL.loaded)return Promise.resolve(TRIAL.eligible);
     if(!CFG.initData)return Promise.resolve(false);
     return fetch("/api/v3/trial/status",{method:"POST",
