@@ -318,9 +318,17 @@ class DesktopDownloadService:
             )
             for platform in PLATFORMS
         }
+        android_ready = bool(
+            promo_settings.platforms.get("android")
+        ) and await self._android_release_ready()
+        # Mini App oldin Android availability uchun yana public-status so'rar
+        # edi. Shu authenticated status allaqachon ayni release'ni tekshiradi,
+        # shuning uchun natijani bitta payload'da beramiz.
+        payload["platforms"]["android"] = android_ready
         payload["promo"] = await self._promo_status(
             telegram_id,
             promo_settings=promo_settings,
+            android_ready=android_ready,
         )
         return payload
 
@@ -344,6 +352,7 @@ class DesktopDownloadService:
         telegram_id: int,
         *,
         promo_settings: DesktopAppPromoSettings | None = None,
+        android_ready: bool | None = None,
     ) -> dict[str, Any]:
         promo_settings = promo_settings or await get_desktop_app_promo_settings(
             self.session
@@ -438,9 +447,10 @@ class DesktopDownloadService:
             and bool(promo_settings.platforms.get(platform))
             for platform in PLATFORMS
         )
-        android_ready = bool(
-            promo_settings.platforms.get("android")
-        ) and await self._android_release_ready()
+        if android_ready is None:
+            android_ready = bool(
+                promo_settings.platforms.get("android")
+            ) and await self._android_release_ready()
         release_ready = desktop_ready or android_ready
         # `DESKTOP_DOWNLOADS_ENABLED` — DESKTOP yuklab olishning kill
         # switch'i: u DMG/EXE ni shu origin orqali berishni to'xtatadi.

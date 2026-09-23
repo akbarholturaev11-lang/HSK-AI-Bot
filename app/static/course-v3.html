@@ -1238,7 +1238,7 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script defer src="/course_v3_data/ads.js?v=20260921-1"></script>
+<script defer src="/course_v3_data/ads.js?v=20260923-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1278,16 +1278,18 @@ function _apiPost(url,body,opts){var init={method:"POST",headers:_apiHeaders(),b
    yopilish haqida botga xabar bermaydi, shuning uchun signal shu yerdan ketadi.
    sendBeacon custom header qo'ya olmaydi (init-data kerak) — keepalive'li
    fetch ishlatiladi. Backend takrorni o'zi to'sadi, bu yerda ham bir marta. */
-var EXIT_PINGED=false;
+var EXIT_PINGED=false,INTERNAL_NAVIGATING_UNTIL=0;
+function beginInternalNavigation(){INTERNAL_NAVIGATING_UNTIL=Date.now()+5000}
+function internalNavigationActive(){return Date.now()<INTERNAL_NAVIGATING_UNTIL}
 function pingMiniAppExit(){
-  if(EXIT_PINGED||!INIT_DATA)return;
+  if(internalNavigationActive()||EXIT_PINGED||!INIT_DATA)return;
   EXIT_PINGED=true;
   try{_apiPost("/api/v3/exit",{},{keepalive:true}).catch(function(){})}catch(e){}
 }
 try{
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="hidden")pingMiniAppExit();
-    else{EXIT_PINGED=false;refreshCourseProgress()}
+    else{INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshCourseProgress()}
   });
   window.addEventListener("pagehide",pingMiniAppExit);
   /* bfcache: sahifa xotiradan tiklanganda (obuna, lug'at yoki AI Voice
@@ -1297,7 +1299,7 @@ try{
      yuklanish, hech narsa qilinmaydi. */
   window.addEventListener("pageshow",function(e){
     if(!e||!e.persisted)return;
-    EXIT_PINGED=false;clearDeferredCourseUnlock();
+    INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
     if(!INIT_DATA||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
       if(!d||d._parseFail||d.authenticated===false||!d.units)return;
@@ -1412,11 +1414,24 @@ var _ttsCache={},_ttsPending={};
 function ttsUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
 function prefetchTTS(t){
   t=(t||"").trim();
-  if(!t||t.length>240||_ttsCache[t]||_ttsPending[t])return;
-  if(!/[一-鿿]/.test(t))return;
-  _ttsPending[t]=fetch(ttsUrl(t)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPending[t];if(b&&b.size)_ttsCache[t]=URL.createObjectURL(b)}).catch(function(){delete _ttsPending[t]});
+  if(!t||t.length>240||!/[一-鿿]/.test(t))return Promise.resolve(null);
+  if(_ttsCache[t])return Promise.resolve(_ttsCache[t]);
+  if(_ttsPending[t])return _ttsPending[t];
+  _ttsPending[t]=fetch(ttsUrl(t)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){
+    delete _ttsPending[t];if(b&&b.size){_ttsCache[t]=URL.createObjectURL(b);return _ttsCache[t]}return null;
+  }).catch(function(){delete _ttsPending[t];return null});
+  return _ttsPending[t];
 }
-function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||ttsUrl(t));if(!_ttsCache[t])prefetchTTS(t);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+function speak(t){
+  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  function playSource(src){
+    if(tok!==window._ttsTok)return;
+    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+  }
+  if(_ttsCache[t]){playSource(_ttsCache[t]);return}
+  if(_ttsPending[t]){_ttsPending[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||ttsUrl(t))});return}
+  playSource(ttsUrl(t));
+}
 /* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */
 function cardAudioTexts(c){
   if(!c)return [];
@@ -1494,7 +1509,13 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course")refreshCourseProgress();
+    if(s==="mashq")prefetchPracticeAssets();
     if(s==="voice")renderVoice();
+    if(s==="rating")renderRating();
+    if(s==="profile"){
+      renderProfile();
+      if(!TRIAL_LOADED)trialFetchStatus().then(function(){if(SCREEN==="profile")renderProfile()});
+    }
     /* Kirish usullari faqat profil ochilganda va bir marta so'raladi.
        Sozlanmagan deployda ro'yxat bo'sh qaytadi va bo'lim chizilmaydi. */
     if(s==="profile"&&!SIGNIN_STATE.loaded)loadSignInMethods();
@@ -1512,6 +1533,7 @@ var App={
     flushPendingCenterAd();
   },
   openPaywall:function(ctx){
+    if(!TRIAL_LOADED&&INIT_DATA){trialFetchStatus().then(function(){App.openPaywall(ctx)});return}
     if(salesValueTreatment()&&salesValueCourseContext(ctx)&&!salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)&&!SALES_VALUE_PRIME_DONE){
       primeSalesValueContent().then(function(){App.openPaywall(ctx)});return;
     }
@@ -1544,8 +1566,9 @@ var App={
     var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription";
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
     trackCheckoutOpenedForRedirect(source,clickId);
-    /* Same-origin subscription page: navigate inside the Telegram Mini App webview,
-       NOT tg.openLink (which kicks the user out to the external browser). */
+    /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
+       This is not a Mini App exit, so pagehide must not notify the bot. */
+    beginInternalNavigation();
     setTimeout(function(){location.href=url},40);
   },
   exitFlow:function(){
@@ -1858,7 +1881,7 @@ var App={
   tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
   tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
-  openDict:function(){location.href="/hsk-lugat.html?theme=light&lang="+LANG},
+  openDict:function(){beginInternalNavigation();location.href="/hsk-lugat.html?theme=light&lang="+LANG},
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
   openTest:function(){TEST.open()},
@@ -1986,7 +2009,7 @@ function navInit(){document.querySelectorAll("#nav button").forEach(function(b){
 /* ---------- Course (hybrid path) ---------- */
 function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[]).forEach(function(l){a.push(l)})});return a}
 var LESSON_DATA_CACHE={},LESSON_DATA_PROMISES={},PRACTICE_PREFETCHED=false;
-var PRACTICE_LIMIT_STATUS_CACHE={},PRACTICE_LIMIT_STATUS_PROMISES={},PRACTICE_LIMIT_STATUS_VERSIONS={},PRACTICE_STATUS_PREFETCHED=false;
+var PRACTICE_LIMIT_STATUS_CACHE={},PRACTICE_LIMIT_STATUS_PROMISES={},PRACTICE_LIMIT_STATUS_VERSIONS={};
 function cloneJson(v){return JSON.parse(JSON.stringify(v))}
 function lessonDataKey(lv,n){return normalizeLevel(lv)+"-"+String(Number(n)||0)}
 function lessonDataUrl(lv,n){return "/course_v3_data/"+normalizeLevel(lv)+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json"}
@@ -2024,8 +2047,8 @@ function prefetchPracticeAssets(){
        bosilganda darhol ochiladi. */
     loadJsOnce("hsk-words.js?v=20260720").catch(function(){});
     loadJsOnce("/course_v3_data/lesson_gate.js?v=20260719").catch(function(){});
-    /* memo.js hali alohida sahifada ishlatiladi — faqat keshga tushiriladi. */
-    try{fetch("course_v3_data/memo.js?v=20260628",{cache:"force-cache"}).then(function(r){return r.ok?r.arrayBuffer():null}).catch(function(){})}catch(e){}
+    /* memo.js alohida memorize sahifasining o'z defer scripti; bu yerda
+       oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
   });
 }
 /* Limit holatini oldindan olish — bu endpoint foydalanishni SARFLAMAYDI.
@@ -2061,19 +2084,6 @@ function invalidatePracticeLimitStatus(feature){
     delete PRACTICE_LIMIT_STATUS_PROMISES[feature];
   }
 }
-function prefetchPracticeLimitStatus(){
-  if(!INIT_DATA||PRACTICE_STATUS_PREFETCHED)return;
-  PRACTICE_STATUS_PREFETCHED=true;
-  var features=["recognition","memorize","pronunciation","placement","training_test","mistake_review"];
-  idleRun(function(){
-    var i=0;
-    function next(){
-      if(i>=features.length)return;
-      practiceLimitStatus(features[i++]).catch(function(){}).then(function(){setTimeout(next,250)});
-    }
-    next();
-  });
-}
 window.CourseLimitStatus={get:practiceLimitStatus,invalidate:invalidatePracticeLimitStatus};
 function prefetchNearbyLessons(){
   if(!MAP)return;
@@ -2086,8 +2096,6 @@ function prefetchNearbyLessons(){
   [lessons[current],lessons[current+1]].forEach(function(l){
     if(l&&l.n)idleRun(function(){loadLessonData(lv,l.n).catch(function(){})});
   });
-  prefetchPracticeAssets();
-  prefetchPracticeLimitStatus();
 }
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
 function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
@@ -2101,16 +2109,22 @@ function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
    Holat SERVERDAN keladi (`/api/v3/trial/status`) — klient "bu odam trial
    ola oladimi" degan qarorni O'ZI qabul qilmaydi. Sabab oddiy: bir Telegram
    akkaunt bir marta trial olishi kerak, va buni faqat server biladi. */
-var TRIAL_STATE=null;
+var TRIAL_STATE=null,TRIAL_PROMISE=null,TRIAL_LOADED=false;
 function trialFetchStatus(){
-  if(!INIT_DATA)return Promise.resolve(null);
-  return fetch("/api/v3/trial/status",{method:"POST",
+  if(TRIAL_LOADED)return Promise.resolve(TRIAL_STATE);
+  if(TRIAL_PROMISE)return TRIAL_PROMISE;
+  if(!INIT_DATA){TRIAL_LOADED=true;return Promise.resolve(null)}
+  TRIAL_PROMISE=fetch("/api/v3/trial/status",{method:"POST",
     headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},body:"{}"})
     .then(function(r){return r.json()}).then(function(d){
-      TRIAL_STATE=(d&&d.ok&&d.trial)?d.trial:null;return TRIAL_STATE;
-    }).catch(function(){return null});
+      TRIAL_STATE=(d&&d.ok&&d.trial)?d.trial:null;TRIAL_LOADED=true;return TRIAL_STATE;
+    }).catch(function(){TRIAL_STATE=null;TRIAL_LOADED=true;return null})
+    .then(function(v){TRIAL_PROMISE=null;return v});
+  return TRIAL_PROMISE;
 }
 function trialEligible(){return !!(TRIAL_STATE&&TRIAL_STATE.eligible)}
+function trialEligibilityValue(){return TRIAL_LOADED?trialEligible():undefined}
+window.HskTrialState={get:trialFetchStatus,eligibility:trialEligibilityValue};
 /* Trialni boshlaydi. Server rad etsa sababni ko'rsatamiz — jimgina
    "hech narsa bo'lmadi" holati eng yomon variant. */
 function trialStart(source){
@@ -2121,7 +2135,7 @@ function trialStart(source){
     .then(function(r){return r.json().then(function(d){return{status:r.status,d:d||{}}})})
     .then(function(res){
       if(res.status===200&&res.d.ok){
-        TRIAL_STATE=null;
+        TRIAL_STATE=null;TRIAL_PROMISE=null;TRIAL_LOADED=false;
         trackCourseEvent("trial_started",{source:source||"miniapp"});
         toast(T().trialOn||"Pro 7 kunga ochildi");
         setTimeout(function(){location.reload()},900);
@@ -5722,7 +5736,7 @@ var RECOG=(function(){
 
   function showLimit(adAvailable){
     if(window.CourseAds&&CourseAds.showLimitPromo){
-      CourseAds.showLimitPromo({trialEligible:trialEligible(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
+      CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
     }
     var t=L();
     el("rc-body").innerHTML='<div class="rc-done"><div class="rc-st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+esc(t.limitTitle)+'</h3><p>'+esc(SECTION_LIMIT_TEXT||t.limitSub)+'</p>'
@@ -5881,7 +5895,7 @@ var PRON=(function(){
 
   function showLimit(adAvailable){
     if(window.CourseAds&&CourseAds.showLimitPromo){
-      CourseAds.showLimitPromo({trialEligible:trialEligible(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
+      CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
     }
     var t=L(),d=el("pr-done");if(!d)return;
     d.innerHTML='<div class="pr-st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+esc(t.limitTitle)+'</h3><p>'+esc(SECTION_LIMIT_TEXT||t.limitSub)+'</p>'
@@ -6223,7 +6237,7 @@ var MIST=(function(){
   function showLimit(adAvailable){
     var t=L();
     if(window.CourseAds&&CourseAds.showLimitPromo){
-      CourseAds.showLimitPromo({trialEligible:trialEligible(),reason:SECTION_LIMIT_TEXT||t.limitWhy,onSubscribe:premium,onTrial:function(){trialStart("paywall_pronunciation")},onBack:function(){}});return;
+      CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||t.limitWhy,onSubscribe:premium,onTrial:function(){trialStart("paywall_pronunciation")},onBack:function(){}});return;
     }
     el("mk-lim-text").textContent=SECTION_LIMIT_TEXT||t.limitText;
     el("mk-limit").hidden=false;
@@ -6344,7 +6358,7 @@ var TEST=(function(){
   function showLimit(adAvailable){
     var t=L();
     if(window.CourseAds&&CourseAds.showLimitPromo){
-      CourseAds.showLimitPromo({trialEligible:trialEligible(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_test")},onBack:showHub});return;
+      CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_test")},onBack:showHub});return;
     }
     el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
     var e=el("tc-empty");
@@ -6555,11 +6569,17 @@ function clog(ev,msg,ex){try{var tgw=window.Telegram&&window.Telegram.WebApp,c={
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=slowOn()?.68:.85;u.onstart=function(){vspeak(true)};u.onend=function(){vspeak(false)};u.onerror=function(){vspeak(false)};window.speechSynthesis.speak(u)}catch(e){}}
 function vspeak(on){try{var r=$("root");if(r)r.classList.toggle("vspeak",!!on)}catch(e){}}
 function stopSpeak(){vspeak(false);window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||_ttsCache[x]||_ttsPend[x]||!/[一-鿿]/.test(x))return;_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size)_ttsCache[x]=URL.createObjectURL(b)}).catch(function(){delete _ttsPend[x]})}
-function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)));if(!_ttsCache[t])_ttsPrefetch(t);
-  try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
-  a.playbackRate=slowOn()?.75:1;
-  _ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1;vspeak(true)};a.onended=function(){if(tok===window._ttsTok)vspeak(false)};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||!/[一-鿿]/.test(x))return Promise.resolve(null);if(_ttsCache[x])return Promise.resolve(_ttsCache[x]);if(_ttsPend[x])return _ttsPend[x];_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size){_ttsCache[x]=URL.createObjectURL(b);return _ttsCache[x]}return null}).catch(function(){delete _ttsPend[x];return null});return _ttsPend[x]}
+function speak(t){
+  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  function playSource(src){
+    if(tok!==window._ttsTok)return;
+    try{var a=new Audio(src);try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}a.playbackRate=slowOn()?.75:1;_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1;vspeak(true)};a.onended=function(){if(tok===window._ttsTok)vspeak(false)};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+  }
+  if(_ttsCache[t]){playSource(_ttsCache[t]);return}
+  if(_ttsPend[t]){_ttsPend[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)))});return}
+  playSource("/api/v3/tts?text="+encodeURIComponent(t));
+}
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
 /* ---- sepia bamboo forest background ---- */
@@ -7008,7 +7028,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=T().nav[s.dataset.i]});
-  if(MAP){renderCourse();renderMashq();renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
+  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
@@ -7026,26 +7046,22 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
     if(d.user&&d.user.onboarding_completed===false){
       var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
-      location.replace("/course_v3_onboarding.html?"+onbQuery.toString());return;
+      beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString());return;
     }
     if(d.user&&typeof d.user.onboarding_completed!=="boolean"){
       var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
       if(!cachedOnboarding&&!bootParams.get("onboarded")){
         var fallbackQuery=new URLSearchParams(bootParams.toString());fallbackQuery.set("lang",LANG);
-        location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString());return;
+        beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString());return;
       }
     }
     if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
     renderAll();
-    /* Trial holati serverdan. Kelgach profil qayta chiziladi, chunki undagi
-       karta shu holatga qarab ko'rinadi. */
-    trialFetchStatus().then(function(){
-      try{renderProfile()}catch(e){}
-      /* Onboardingdan endigina qaytgan odam tanlov ekranini ko'radi:
-         "HSK AI Pro olish" yoki "7 kun bepul sinash". Bir marta — keyin
-         profil kartasi va paywall orqali qoladi. */
-      if(bootParams.get("onboarded")==="1")maybeShowPlanChoice();
-    });
+    /* Oddiy startup trial eligibility'ni so'ramaydi: map joriy access holatini
+       allaqachon beradi. Faqat onboardingdan qaytishda tanlov uchun darhol kerak. */
+    if(bootParams.get("onboarded")==="1"){
+      trialFetchStatus().then(function(){try{renderProfile()}catch(e){}maybeShowPlanChoice()});
+    }
     /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
@@ -7284,6 +7300,6 @@ var NavBack={
 };
 NavBack.init();
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20260920-1"></script>
+<script src="/course_v3_data/desktop-download.js?v=20260923-2"></script>
 </body>
 </html>

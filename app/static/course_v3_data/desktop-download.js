@@ -39,9 +39,6 @@
      o'rinni bir marta egallay oladi, undan keyin sessiya yopiladi. */
   var PROMO_PRIORITY_SOURCE = "lesson_end_promo";
   var APP_PROMO_PLATFORMS = ["macos", "windows", "android"];
-  // Android's availability comes from the public apps status, not from the
-  // desktop one: it is published by a different pipeline and needs no auth.
-  var APPS_STATUS_ENDPOINT = "/api/v3/apps/public-status";
 
   var COPY = {
     uz: {
@@ -758,6 +755,8 @@
   function renderProfile() {
     var host = document.getElementById("pomp-desktop-profile-root");
     if (!host) return;
+    var profileScreen = document.getElementById("s-profile");
+    if (profileScreen && !profileScreen.classList.contains("on")) return;
     host.replaceChildren();
     if (isDesktop || !state.availabilityLoaded) {
       return;
@@ -2061,26 +2060,7 @@
     }
   }
 
-  function loadAndroidAvailability() {
-    // Public, cached and unauthenticated: it must not be able to fail the
-    // desktop status, which is what the rest of this panel depends on.
-    fetch(APPS_STATUS_ENDPOINT, { headers: { Accept: "application/json" } })
-      .then(function (response) {
-        return response.ok ? response.json() : null;
-      })
-      .then(function (data) {
-        var entry =
-          (data && data.platforms && data.platforms.android) || null;
-        state.platforms.android = Boolean(entry && entry.available);
-        renderProfile();
-      })
-      .catch(function () {
-        state.platforms.android = false;
-      });
-  }
-
   function loadAvailability() {
-    loadAndroidAvailability();
     if (state.availabilityLoading) return;
     if (isDesktop || !telegramInitData()) {
       state.availabilityLoaded = true;
@@ -2110,6 +2090,9 @@
             );
             state.platforms.windows = Boolean(
               data.platforms && data.platforms.windows
+            );
+            state.platforms.android = Boolean(
+              data.platforms && data.platforms.android
             );
             state.platforms.ios = false;
             state.transferUrls.macos = cleanTransferUrl(
