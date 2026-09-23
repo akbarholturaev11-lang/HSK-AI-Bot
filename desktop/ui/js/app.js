@@ -176,6 +176,8 @@ const state = {
   notificationsSaving: false,
   notificationInitialized: false,
   notificationRefreshTimer: null,
+  notificationSyncInFlight: false,
+  notificationLastSyncAt: 0,
   seenNotificationIds: new Set(),
   notificationPermission: "unsupported",
   ratingRequest: 0,
@@ -191,7 +193,8 @@ const state = {
 };
 
 const LESSON_AI_DOCK_QUERY = "(min-width: 1100px)";
-const NOTIFICATION_REFRESH_MS = 60_000;
+const NOTIFICATION_REFRESH_MS = 5 * 60_000;
+const NOTIFICATION_FOCUS_MIN_GAP_MS = 15_000;
 const SEEN_NOTIFICATIONS_STORAGE_KEY = "pomp-hsk-seen-notifications";
 const MAX_SEEN_NOTIFICATION_IDS = 80;
 const AI_MAX_ATTACHMENTS = 4;
@@ -1576,40 +1579,84 @@ function syncServerNotifications({ initial = false } = {}) {
 
 function startNotificationRefresh() {
   stopNotificationRefresh();
+  // The startup course map already contains the current notification feed.
+  // Background sync begins later and uses the lightweight endpoint only.
+  state.notificationLastSyncAt = Date.now();
   state.notificationRefreshTimer = setInterval(() => {
-    if (dom.workspace.hidden || lesson.isOpen) return;
-    void refreshCourseMapSilently();
+    void refreshDesktopSync();
   }, NOTIFICATION_REFRESH_MS);
 }
 
 function stopNotificationRefresh() {
-  if (!state.notificationRefreshTimer) return;
-  clearInterval(state.notificationRefreshTimer);
-  state.notificationRefreshTimer = null;
+  if (state.notificationRefreshTimer) {
+    clearInterval(state.notificationRefreshTimer);
+    state.notificationRefreshTimer = null;
+  }
 }
 
-async function refreshCourseMapSilently() {
+function desktopSyncAllowed() {
+  return Boolean(
+    state.map &&
+    !dom.workspace.hidden &&
+    !lesson.isOpen &&
+    document.visibilityState !== "hidden"
+  );
+}
+
+async function refreshDesktopSync({ foreground = false } = {}) {
+  if (!desktopSyncAllowed() || state.notificationSyncInFlight) return false;
+  const now = Date.now();
+  if (
+    foreground &&
+    now - Number(state.notificationLastSyncAt || 0) < NOTIFICATION_FOCUS_MIN_GAP_MS
+  ) {
+    return false;
+  }
+
+  state.notificationSyncInFlight = true;
+  state.notificationLastSyncAt = now;
   try {
-    const map = await desktopBridge.courseMap();
+    const sync = await desktopBridge.syncState();
     if (
-      !map ||
-      map.ok !== true ||
-      !Array.isArray(map.units) ||
-      !map.user ||
-      !map.progress
+      !sync ||
+      sync.ok !== true ||
+      !Array.isArray(sync.notifications) ||
+      !sync.user ||
+      !sync.progress
     ) {
-      return;
+      return false;
     }
-    state.map = map;
-    subscription.setUser(map.user);
+
+    const currentMap = state.map;
+    const nextPaid = Boolean(sync.user.is_paid);
+    const nextLanguage = normalizeLanguage(sync.user.language);
+    const nextLevel = String(sync.level || "").toLowerCase();
+    const nextCompleted = Number(sync.progress.completed || 0);
+    const mapChanged =
+      nextPaid !== Boolean(currentMap?.user?.is_paid) ||
+      nextLanguage !== normalizeLanguage(currentMap?.user?.language) ||
+      nextLevel !== String(currentMap?.level || "").toLowerCase() ||
+      nextCompleted !== Number(currentMap?.progress?.completed || 0);
+
+    currentMap.notifications = sync.notifications;
     syncServerNotifications();
-    renderRail();
-    if (["today", "course", "profile"].includes(state.view)) {
-      renderActiveView();
+    renderNotifications();
+
+    if (mapChanged) {
+      await loadCourseMap({ keepView: true });
     }
+    return true;
   } catch (error) {
     if (isSessionError(error)) showAuth({ expired: true });
+    return false;
+  } finally {
+    state.notificationSyncInFlight = false;
   }
+}
+
+function refreshDesktopSyncOnFocus() {
+  if (document.visibilityState === "hidden") return;
+  void refreshDesktopSync({ foreground: true });
 }
 
 function openNotifications() {
@@ -5735,6 +5782,10 @@ async function bindDesktopUpdateEvents() {
 }
 
 function bindEvents() {
+  window.addEventListener("focus", refreshDesktopSyncOnFocus);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshDesktopSyncOnFocus();
+  });
   dom.startLink.addEventListener("click", startLink);
   dom.retryLink.addEventListener("click", () => {
     if (state.authLinkedPending) {
