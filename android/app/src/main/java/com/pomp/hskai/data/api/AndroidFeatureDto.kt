@@ -450,6 +450,7 @@ data class MistakeReviewCompleteAnswerDto(
 @Serializable
 data class MistakeReviewCompleteResponse(
     @SerialName("ok") val ok: Boolean = false,
+    @SerialName("duplicate") val duplicate: Boolean = false,
     @SerialName("score") val score: Int = 0,
     @SerialName("total") val total: Int = 0,
     @SerialName("percent") val percent: Int = 0,
@@ -532,6 +533,7 @@ data class ChallengeAnswerDto(
 data class ChallengeActionResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("error") val error: String = "",
+    @SerialName("duplicate") val duplicate: Boolean = false,
     /** True only when Telegram accepted the opponent notification. */
     @SerialName("notification_sent") val notificationSent: Boolean = false,
 )

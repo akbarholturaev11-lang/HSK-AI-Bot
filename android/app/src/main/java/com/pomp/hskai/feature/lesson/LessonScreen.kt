@@ -830,6 +830,8 @@ private fun FooterBar(
                     text = stringResource(R.string.lesson_next),
                     color = if (answer.isCorrect) PompColors.Jade else PompColors.Flame,
                     onClick = onAdvance,
+                    enabled = !state.isSubmitting,
+                    loading = state.isSubmitting,
                 )
             }
         }
@@ -857,16 +859,32 @@ private fun FlowButton(
     color: Color,
     onClick: () -> Unit,
     shape: RoundedCornerShape = RoundedCornerShape(13.dp),
+    enabled: Boolean = true,
+    loading: Boolean = false,
 ) {
-    Surface(onClick = onClick, color = color, shape = shape, modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-            fontWeight = FontWeight.Medium,
-            color = PompColors.Paper,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 14.dp),
-        )
+    Surface(
+        onClick = onClick,
+        enabled = enabled && !loading,
+        color = color,
+        shape = shape,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+        ) {
+            if (loading) {
+                HskBrandLoader(compact = true)
+            } else {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+                    fontWeight = FontWeight.Medium,
+                    color = PompColors.Paper,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }
 

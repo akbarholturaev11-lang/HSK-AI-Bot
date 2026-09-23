@@ -487,6 +487,41 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(item.resolved_count, 0)
         self.service.gamification.award.assert_not_awaited()
 
+    async def test_completed_review_retry_replays_result_without_xp(self):
+        started = SimpleNamespace(payload_json='{"mistake_ids":[1]}')
+        completed = SimpleNamespace(
+            payload_json=json.dumps(
+                {
+                    "score": 8,
+                    "total": 10,
+                    "percent": 80,
+                    "remaining": 3,
+                }
+            )
+        )
+        self.session.execute = AsyncMock(
+            side_effect=[
+                SimpleNamespace(scalar_one_or_none=lambda: self.user.id),
+                SimpleNamespace(scalar_one_or_none=lambda: started),
+                SimpleNamespace(scalar_one_or_none=lambda: completed),
+            ]
+        )
+
+        result = await self.service.complete_review(
+            123,
+            session_id="mistake-review:7:v1:committed",
+            answers=[],
+        )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["duplicate"])
+        self.assertEqual(result["score"], 8)
+        self.assertEqual(result["total"], 10)
+        self.assertEqual(result["percent"], 80)
+        self.assertEqual(result["remaining"], 3)
+        self.assertEqual(result["reward"], {"awarded_xp": 0, "duplicate": True})
+        self.service.gamification.award.assert_not_awaited()
+
     async def test_correct_review_reduces_active_weakness(self):
         item = mistake(wrong_count=2, resolved_count=0)
         question = self.service._legacy_review_question(item, [item.correct_answer])

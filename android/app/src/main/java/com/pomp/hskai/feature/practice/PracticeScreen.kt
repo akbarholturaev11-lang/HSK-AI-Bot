@@ -489,7 +489,15 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
         }
         Spacer(Modifier.height(14.dp))
         PracticeQuestionOptions(question, state.selectedIndex, onSelect)
-        PrimaryAction(if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.selectedIndex != null && !state.isCompleting) { onAdvance(language) }
+        if (state.error != null && state.error !is ApiError.LimitReached) {
+            Spacer(Modifier.height(12.dp))
+            ErrorPill(stringResource(state.error.messageRes))
+        }
+        PrimaryAction(
+            text = if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next),
+            enabled = state.selectedIndex != null,
+            loading = state.isCompleting,
+        ) { onAdvance(language) }
     }
 }
 
@@ -586,7 +594,15 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
                 question.options.forEachIndexed { index, option -> OptionRow(option, state.examSelectedIndex == index, false, false, state.examSelectedIndex == null) { onSelect(index) } }
             }
         }
-        PrimaryAction(if (state.examIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next), state.examSelectedIndex != null && !state.isCompleting) { onAdvance(language) }
+        if (state.error != null && state.error !is ApiError.LimitReached) {
+            Spacer(Modifier.height(12.dp))
+            ErrorPill(stringResource(state.error.messageRes))
+        }
+        PrimaryAction(
+            text = if (state.examIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next),
+            enabled = state.examSelectedIndex != null,
+            loading = state.isCompleting,
+        ) { onAdvance(language) }
     }
 }
 
@@ -723,12 +739,18 @@ private fun OptionRow(text: String, selected: Boolean, correct: Boolean, wrong: 
 }
 
 @Composable
-private fun PrimaryAction(text: String, enabled: Boolean, onClick: () -> Unit) {
+private fun PrimaryAction(
+    text: String,
+    enabled: Boolean,
+    loading: Boolean = false,
+    onClick: () -> Unit,
+) {
     Spacer(Modifier.height(16.dp))
     HskPrimaryButton(
         text = text,
         onClick = onClick,
         enabled = enabled,
+        loading = loading,
         modifier = Modifier.fillMaxWidth(),
     )
 }
@@ -793,13 +815,13 @@ private fun CompletionSummaryShell(
             Spacer(Modifier.height(16.dp))
             Column { extra() }
             PrimaryAction(
-                if (outcome.hasStreakEvent) {
+                text = if (outcome.hasStreakEvent) {
                     stringResource(R.string.lesson_next)
                 } else {
                     stringResource(R.string.practice_back_to_tools)
                 },
-                true,
-                advance,
+                enabled = true,
+                onClick = advance,
             )
         }
     }

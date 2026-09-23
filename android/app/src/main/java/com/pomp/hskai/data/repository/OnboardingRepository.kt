@@ -27,7 +27,7 @@ class OnboardingRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall { api.status("Bearer $token") }
+        val result = status(token)
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         return result
     }
@@ -61,9 +61,36 @@ class OnboardingRepository(
                 )
             }
         } ?: ApiResult.Failure(ApiError.Timeout)
+
+        // The server may commit just before the HTTP response is lost. In
+        // that case showing Retry leaves an already-onboarded learner stuck
+        // behind a form that can no longer change the canonical profile.
+        // Re-read server state only for transport/unknown failures; a real
+        // semantic server rejection must remain visible to the learner.
+        if (result is ApiResult.Failure && result.error.isReconcilable()) {
+            when (val canonical = status(token)) {
+                is ApiResult.Success -> if (canonical.value.ok && canonical.value.completed) {
+                    return ApiResult.Success(
+                        AndroidOnboardingCompleteDto(
+                            ok = true,
+                            profile = canonical.value.profile.copy(onboardingCompleted = true),
+                            level = canonical.value.level,
+                        )
+                    )
+                }
+
+                is ApiResult.Failure -> notifySessionExpired(canonical.error)
+            }
+        }
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         return result
     }
+
+    private suspend fun status(token: String): ApiResult<AndroidOnboardingStatusDto> =
+        apiCall { api.status("Bearer $token") }
+
+    private fun ApiError.isReconcilable(): Boolean =
+        this is ApiError.Timeout || this is ApiError.Offline || this is ApiError.Unknown
 
     private suspend fun notifySessionExpired(error: ApiError) {
         if (error is ApiError.SessionExpired) onSessionExpired()

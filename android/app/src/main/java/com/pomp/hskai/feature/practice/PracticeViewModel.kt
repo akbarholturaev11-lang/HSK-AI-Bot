@@ -373,6 +373,7 @@ class PracticeViewModel(
 
     fun advanceExam(language: String) {
         val current = _state.value
+        if (current.isCompleting) return
         val session = current.examSession ?: return
         val question = session.questions.getOrNull(current.examIndex) ?: return
         val selected = current.examSelectedIndex ?: return
@@ -440,6 +441,7 @@ class PracticeViewModel(
 
     fun advancePractice(language: String) {
         val current = _state.value
+        if (current.isCompleting) return
         val session = current.session ?: return
         val question = session.questions.getOrNull(current.questionIndex) ?: return
         val selected = current.selectedIndex ?: return
@@ -598,6 +600,7 @@ class PracticeViewModel(
 
     fun advanceReview() {
         val current = _state.value
+        if (current.isCompleting) return
         val session = current.reviewSession ?: return
         if (current.reviewFeedback == null) return
         // The previous question's audio must not carry into the next one.
