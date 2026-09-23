@@ -18,7 +18,7 @@ from app.services.course_miniapp_analytics_service import (
 from app.services.course_gamification_service import CourseGamificationService
 
 
-MISTAKE_REVIEW_VERSION = 1
+MISTAKE_REVIEW_VERSION = 2
 MISTAKE_REVIEW_MATERIAL_VERSION = 2
 MISTAKE_REVIEW_FORMATS = {
     "word": "word_choice",
