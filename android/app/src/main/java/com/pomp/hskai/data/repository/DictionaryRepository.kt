@@ -77,7 +77,7 @@ class DictionaryRepository(
             if (
                 checkedClient == clientVersionCode &&
                 age != null &&
-                age in 0 until DICTIONARY_CHECK_TTL_MILLIS
+                age in 0L until DICTIONARY_CHECK_TTL_MILLIS
             ) {
                 return ApiResult.Success(cachedCount)
             }
