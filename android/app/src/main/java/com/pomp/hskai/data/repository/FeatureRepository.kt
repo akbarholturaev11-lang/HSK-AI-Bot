@@ -118,8 +118,13 @@ class FeatureRepository(
         api.mistakes(it, category = category, limit = limit, offset = offset)
     }
 
-    suspend fun startMistakeReview(): ApiResult<MistakeReviewStartResponse> =
-        authorized { api.mistakeReviewStart(it, MistakeReviewStartRequest()) }
+    suspend fun startMistakeReview(accessRef: String = ""): ApiResult<MistakeReviewStartResponse> =
+        authorized {
+            api.mistakeReviewStart(
+                it,
+                MistakeReviewStartRequest(accessRef = accessRef),
+            )
+        }
 
     suspend fun answerMistakeReview(
         sessionId: String,
