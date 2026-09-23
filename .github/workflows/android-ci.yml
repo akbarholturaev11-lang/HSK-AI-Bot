@@ -196,13 +196,17 @@ jobs:
             tests/test_course_hsk_exam_service.py \
             tests/test_course_miniapp_profile_preferences.py \
             tests/test_course_mistake_service.py \
+            tests/test_course_ads_module.py \
+            tests/test_desktop_download_api.py \
             tests/test_desktop_auth_service.py \
             tests/test_desktop_course_api.py \
             tests/test_desktop_rating_api.py \
             tests/test_desktop_subscription_api.py \
             tests/test_identity_link_service.py \
             tests/test_miniapp_profile_status.py \
+            tests/test_miniapp_request_load.py \
             tests/test_mistake_review_contract.py \
+            tests/test_trial_entry_points.py \
             tests/test_public_site.py \
             tests/test_referral_budget_binding.py \
             tests/test_referral_trial_contract.py
