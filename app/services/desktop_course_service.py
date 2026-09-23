@@ -256,7 +256,8 @@ class DesktopCourseService:
         # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
         # shuning uchun referral yoki otziv bonusi olgan odam telefonda
         # darsni ochardi, desktopda esa ocholmasdi.
-        is_paid = has_full_access(resolve_state(user))
+        access_state = resolve_state(user)
+        is_paid = has_full_access(access_state)
         data = self._read_json(
             COURSE_V3_DATA_ROOT / f"{level}.json",
             error_code="course_map_load_failed",
@@ -293,6 +294,7 @@ class DesktopCourseService:
             "avatar_url": self._avatar_url(user),
             "language": language,
             "is_paid": is_paid,
+            "access_state": access_state,
             "referral_code": getattr(user, "referral_code", None) or "",
         }
         data["notify"] = {
@@ -346,13 +348,15 @@ class DesktopCourseService:
             user.id,
             for_update=False,
         )
+        access_state = resolve_state(user)
         return {
             "ok": True,
             "notifications": await CourseNotificationService(
                 self.session
             ).list_for_user(user),
             "user": {
-                "is_paid": has_full_access(resolve_state(user)),
+                "is_paid": has_full_access(access_state),
+                "access_state": access_state,
                 "language": self._language(user),
             },
             "level": self._level(user),
