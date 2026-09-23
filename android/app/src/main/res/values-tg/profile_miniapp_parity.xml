@@ -34,6 +34,7 @@
     <string name="profile_notifications_goal">Шом ёдрас мекунем, агар ҳадафи XP-и рӯзона иҷро нашуда бошад.</string>
     <string name="profile_notifications_streak">Ёдрас мекунем, агар силсилаи рӯзҳо дар хавфи қатъ шудан бошад.</string>
     <string name="profile_privacy_security">Махфият ва амният</string>
+    <string name="profile_terms_of_use">Шартҳои истифода</string>
     <string name="profile_privacy_policy">Сиёсати махфият</string>
     <string name="profile_app_permissions">Иҷозатҳои барнома</string>
     <string name="profile_app_permissions_desc">Микрофон ва огоҳиҳоро дар танзимоти Android идора кунед.</string>
