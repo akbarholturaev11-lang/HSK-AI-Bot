@@ -1652,7 +1652,9 @@ class AdminMiniAppService:
             "explain": (
                 "Bu Telegram aloqa holati, product churn emas. "
                 "Ilovada blokdan keyin aktiv bo'lganlar HSK AI'dan foydalanishni davom ettirgan. "
-                "Aniqlash manbasi sababni emas, blok qayerda sezilganini ko'rsatadi."
+                "Aniqlash manbasi sababni emas, blok qayerda sezilganini ko'rsatadi. "
+                "Eski yozuvlarning birinchi blok vaqti oldingi kodda qayta yozilgan bo'lishi mumkin; "
+                "my_chat_member asosidagi aniq tarix shu yangilanishdan keyin yig'iladi."
             ),
         }
 
