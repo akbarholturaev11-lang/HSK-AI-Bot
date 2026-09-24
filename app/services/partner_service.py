@@ -403,7 +403,7 @@ class PartnerService:
                 chat_id=user.telegram_id,
                 text=t(key, lang, **kwargs),
             )
-            await blocks.handle_send_success(user)
+            await blocks.handle_send_success(user, reason="partner_notification")
         except Exception as exc:
             await blocks.handle_send_exception(
                 user.telegram_id,
