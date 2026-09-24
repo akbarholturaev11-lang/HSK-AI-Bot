@@ -6,6 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
 from app.db.models.ai_usage import AIUsageEvent
+from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
@@ -219,6 +220,59 @@ class PaymentPeriodIntegrityTests(_StatsDatabaseTestCase):
         self.assertFalse(by_id[202]["hot_lead"])
         self.assertTrue(by_id[303]["hot_lead"])
         self.assertFalse(by_id[101]["hot_lead"])
+
+
+class BotReachabilityStatsIntegrityTests(_StatsDatabaseTestCase):
+    async def test_summary_separates_telegram_unreachable_from_app_activity(self):
+        now = datetime.now(timezone.utc)
+        blocked_at = now - timedelta(days=2)
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    User(
+                        id=1,
+                        telegram_id=101,
+                        status="free",
+                        payment_status="none",
+                        bot_blocked_at=blocked_at,
+                        bot_block_reason="my_chat_member_blocked",
+                        created_at=now - timedelta(days=30),
+                        last_active_at=now - timedelta(hours=1),
+                    ),
+                    User(
+                        id=2,
+                        telegram_id=202,
+                        status="free",
+                        payment_status="none",
+                        bot_blocked_at=blocked_at,
+                        bot_block_reason="feedback_prompt",
+                        created_at=now - timedelta(days=30),
+                        last_active_at=now - timedelta(days=3),
+                    ),
+                    BotReachabilityEvent(
+                        user_id=1,
+                        telegram_id=101,
+                        event_type="blocked",
+                        source="my_chat_member_blocked",
+                        created_at=blocked_at,
+                    ),
+                    CourseMiniAppEvent(
+                        telegram_id=101,
+                        user_id=1,
+                        event_name="android_app_opened",
+                        source="android",
+                        created_at=now - timedelta(days=1),
+                    ),
+                ]
+            )
+            await session.commit()
+            summary = await AdminMiniAppService(session)._bot_reachability_summary(now)
+
+        self.assertEqual(summary["current_unreachable"], 2)
+        self.assertEqual(summary["explicit_block_users_7d"], 1)
+        self.assertEqual(summary["active_after_block_any"], 1)
+        self.assertEqual(summary["active_after_block_android"], 1)
+        self.assertEqual(summary["active_after_block_miniapp"], 0)
 
 
 class EntitlementSegmentIntegrityTests(_StatsDatabaseTestCase):
