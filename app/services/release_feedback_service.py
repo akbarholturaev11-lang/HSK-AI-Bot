@@ -185,6 +185,7 @@ class ReleaseFeedbackService:
         return [
             user for user in users
             if user.status != "blocked"
+            and not BotBlockStatusService.is_bot_blocked(user)
             and user.telegram_id not in admin_ids
             and user.telegram_id not in already_done
         ]
