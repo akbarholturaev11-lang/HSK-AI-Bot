@@ -6,6 +6,7 @@ from sqlalchemy import or_, select
 
 from app.config import settings
 from app.db.models.user import User
+from app.db.models.bot_reachability_event import BotReachabilityEvent
 
 
 class BotBlockStatusService:
@@ -42,8 +43,18 @@ class BotBlockStatusService:
         # Preserve the first timestamp/source inside one block episode.
         # If the user was previously unblocked, this starts a NEW episode.
         if not self.is_bot_blocked(user):
+            source = str(reason or "telegram_forbidden")[:120]
             user.bot_blocked_at = now
-            user.bot_block_reason = str(reason or "telegram_forbidden")[:120]
+            user.bot_block_reason = source
+            self.session.add(
+                BotReachabilityEvent(
+                    user_id=getattr(user, "id", None),
+                    telegram_id=int(user.telegram_id),
+                    event_type="blocked",
+                    source=source,
+                    created_at=now,
+                )
+            )
 
         user.last_bot_block_check_at = now
         await self.session.flush()
@@ -52,11 +63,22 @@ class BotBlockStatusService:
         self,
         user,
         *,
+        reason: str = "confirmed_reachable",
         checked_at: datetime | None = None,
     ) -> None:
         now = checked_at or datetime.now(timezone.utc)
         if self.is_bot_blocked(user):
+            source = str(reason or "confirmed_reachable")[:120]
             user.bot_unblocked_at = now
+            self.session.add(
+                BotReachabilityEvent(
+                    user_id=getattr(user, "id", None),
+                    telegram_id=int(user.telegram_id),
+                    event_type="unblocked",
+                    source=source,
+                    created_at=now,
+                )
+            )
         user.last_bot_block_check_at = now
         await self.session.flush()
 
@@ -67,7 +89,7 @@ class BotBlockStatusService:
         checked_at: datetime | None = None,
     ) -> None:
         """A successful Telegram delivery is proof the bot is not blocked."""
-        await self.mark_user_unblocked(user, checked_at=checked_at)
+        await self.mark_user_unblocked(user, reason="delivery_success", checked_at=checked_at)
 
     async def mark_telegram_id_unblocked(self, telegram_id: int) -> bool:
         result = await self.session.execute(select(User).where(User.telegram_id == telegram_id))
