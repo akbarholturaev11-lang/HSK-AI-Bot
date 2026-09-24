@@ -34,6 +34,10 @@ async def track_private_bot_membership(update: ChatMemberUpdated) -> None:
                 checked_at=update.date,
             )
         else:
-            await blocks.mark_user_unblocked(user, checked_at=update.date)
+            await blocks.mark_user_unblocked(
+                user,
+                reason="my_chat_member_unblocked",
+                checked_at=update.date,
+            )
 
         await session.commit()
