@@ -4,6 +4,8 @@ from types import SimpleNamespace
 
 from app.bot.keyboards.feedback import LIKE_SUB_OPTIONS, PAID_OPTIONS
 from app.services.bot_feedback_service import (
+    FEEDBACK_MAX_PROMPTS,
+    FEEDBACK_RETRY_AFTER,
     FEEDBACK_REWARD_DURATION,
     BotFeedbackService,
     feedback_prompt_for,
@@ -43,7 +45,7 @@ def _paid_user(**kwargs):
 
 
 def _feedback(**kwargs):
-    base = dict(id=7, liked_code=None, disliked_code=None, reward_granted_at=None, price_offer_due_at=None)
+    base = dict(id=7, liked_code=None, disliked_code=None, reward_granted_at=None, price_offer_due_at=None, prompted_at=None, prompt_attempts=0)
     base.update(kwargs)
     return SimpleNamespace(**base)
 
@@ -104,6 +106,28 @@ class FeedbackPromptTest(unittest.TestCase):
     def test_every_like_option_with_substep_has_other_escape(self):
         for parent, codes in LIKE_SUB_OPTIONS.items():
             self.assertIn("other", codes, parent)
+
+
+class FeedbackRetryTest(unittest.TestCase):
+    def test_pending_feedback_stops_after_max_prompts(self):
+        service = _service()
+        feedback = _feedback(
+            prompt_attempts=FEEDBACK_MAX_PROMPTS,
+            prompted_at=NOW - FEEDBACK_RETRY_AFTER - timedelta(minutes=1),
+        )
+
+        self.assertFalse(service._is_prompt_due(feedback, NOW))
+
+    def test_second_prompt_waits_full_retry_window(self):
+        service = _service()
+        feedback = _feedback(
+            prompt_attempts=1,
+            prompted_at=NOW - timedelta(hours=23),
+        )
+        self.assertFalse(service._is_prompt_due(feedback, NOW))
+
+        feedback.prompted_at = NOW - FEEDBACK_RETRY_AFTER
+        self.assertTrue(service._is_prompt_due(feedback, NOW))
 
 
 class FeedbackRewardTest(unittest.IsolatedAsyncioTestCase):
