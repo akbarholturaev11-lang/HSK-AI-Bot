@@ -15,7 +15,7 @@ from aiogram import Bot
 from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
@@ -1338,6 +1338,7 @@ async def _admin_user_payload(session, user) -> dict:
             "bot_blocked_at": _mini_dt(user.bot_blocked_at),
             "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
             "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
+            "bot_block_reason": user.bot_block_reason or "",
             "payment_status": user.payment_status,
             "has_pending_payment": has_pending_payment,
             "payment_method": user.payment_method,
@@ -1406,6 +1407,7 @@ def _admin_user_card_payload(
         "bot_blocked_at": _mini_dt(user.bot_blocked_at),
         "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
         "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
+        "bot_block_reason": user.bot_block_reason or "",
         "payment_status": user.payment_status,
         "payment_label": user.payment_status or "—",
         "has_pending_payment": bool(has_pending_payment),
@@ -3196,15 +3198,61 @@ async def admin_miniapp_users_search(request: Request):
         payload = await request.json()
     except ValueError:
         payload = {}
-    query = str(payload.get("query") or "").strip()
+
+    query_text = str(payload.get("query") or "").strip()
+    segment = str(payload.get("segment") or "").strip().lower()
+    try:
+        limit = max(1, min(1000, int(payload.get("limit") or 60)))
+    except (TypeError, ValueError):
+        limit = 60
+
     async with async_session_maker() as session:
-        repo = UserRepository(session)
-        if query:
-            users = await repo.search_by_identifier(query, limit=30)
-        else:
-            users = (await session.execute(
-                select(User).order_by(User.last_active_at.desc()).limit(30)
-            )).scalars().all()
+        stmt = select(User)
+
+        if query_text:
+            value = query_text[1:] if query_text.startswith("@") else query_text
+            if value.isdigit():
+                stmt = stmt.where(User.telegram_id == int(value))
+            else:
+                pattern = f"%{value.lower()}%"
+                stmt = stmt.where(
+                    or_(
+                        func.lower(User.username).like(pattern),
+                        func.lower(User.full_name).like(pattern),
+                    )
+                )
+
+        if segment == "bot_blocked":
+            stmt = stmt.where(
+                User.bot_blocked_at.is_not(None),
+                or_(
+                    User.bot_unblocked_at.is_(None),
+                    User.bot_unblocked_at < User.bot_blocked_at,
+                ),
+            )
+
+        total = int(
+            (
+                await session.execute(
+                    select(func.count()).select_from(stmt.order_by(None).subquery())
+                )
+            ).scalar()
+            or 0
+        )
+
+        order_column = (
+            User.bot_blocked_at.desc()
+            if segment == "bot_blocked"
+            else User.last_active_at.desc()
+        )
+        users = list(
+            (
+                await session.execute(
+                    stmt.order_by(order_column, User.id.desc()).limit(limit)
+                )
+            ).scalars().all()
+        )
+
         user_ids = [int(user.telegram_id) for user in users]
         pending_ids = {
             int(value)
@@ -3218,9 +3266,11 @@ async def admin_miniapp_users_search(request: Request):
             ).scalars().all()
             if value
         } if user_ids else set()
+
     now = datetime.now(timezone.utc)
     return JSONResponse(content={
         "ok": True,
+        "total": total,
         "users": [
             _admin_user_card_payload(
                 user,
@@ -3230,7 +3280,6 @@ async def admin_miniapp_users_search(request: Request):
             for user in users
         ],
     })
-
 
 @app.post("/api/admin-miniapp/users/detail")
 async def admin_miniapp_user_detail(request: Request):
