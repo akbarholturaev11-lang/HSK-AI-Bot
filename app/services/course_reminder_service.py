@@ -102,6 +102,8 @@ class CourseReminderService:
         d1_holdout_ids = await self._active_d1_holdout_ids(now_utc)
 
         for progress, user in rows:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             if int(user.telegram_id) in d1_holdout_ids:
                 continue
             if not progress.reminder_time:
@@ -166,6 +168,8 @@ class CourseReminderService:
         summary_service = CourseProgressSummaryService(self.session)
 
         for progress, user in rows:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             tz_offset = reminder_tz_offset(progress)
             local_now = now_utc + timedelta(hours=tz_offset)
 
