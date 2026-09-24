@@ -599,7 +599,7 @@
       all:["Hammasi","butun baza"], active_today:["Bugun aktiv","bugun botga kirgan"],
       paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","unikal to'lovchi"],
       wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Pro sinov","haqiqiy Pro trial"], free:["Bepul","free-tier"],
-      expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Bot blok","botni bloklagan"]
+      expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Telegram yopiq","xabar yetib bormaydi"]
     };
 
     /* ---------- load ---------- */
@@ -1020,7 +1020,7 @@
     /* ---------- USERS ---------- */
     function statusTone(u){
       if(u.has_pending_payment||u.payment_status==="pending") return ["To'lov tekshiruvda","amber"];
-      if(u.bot_blocked) return ["Bot bloklangan","red"];
+      if(u.bot_blocked) return ["Telegram yetib bormaydi","red"];
       if(u.access_type==="PRO_ACTIVE"||u.access_type==="pro_active"||(u.payment_status==="approved"&&u.status==="active")) return [u.access_label||"Pullik obuna","green"];
       if(u.access_type==="TRIAL_ACTIVE"||u.access_type==="trial_active") return [u.access_label||"Pro trial","blue"];
       if(u.access_type==="TEMP_ACCESS"||u.access_type==="temp_access"||(u.status==="active"&&u.payment_status!=="approved")) return [u.access_label||"Vaqtinchalik access","violet"];
@@ -1059,7 +1059,7 @@
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
             <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
             ${tag(t[0],t[1])}</div>
-          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("Telegram blok","red"):""}${u.access_ends_at?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.access_ends_at,u.payment_status==="approved"?"green":"violet"):(u.end_date?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.end_date,u.payment_status==="approved"?"green":"violet"):"")}</div>
+          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("TG yopiq","red"):""}${u.access_ends_at?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.access_ends_at,u.payment_status==="approved"?"green":"violet"):(u.end_date?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.end_date,u.payment_status==="approved"?"green":"violet"):"")}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>AI savollar</span></div><div class="mini"><b>${esc(u.streak)}</b><span>seriya</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Bu saralash bo'yicha foydalanuvchi topilmadi.</p>";
@@ -1151,6 +1151,7 @@
         ? ((referredBy.username?"@"+referredBy.username+" · ":"")+(referredBy.name?referredBy.name+" · ":"")+referredBy.telegram_id)
         : "—";
       state.activeUser={id:f.id,name:f.name,username:f.username||u.username||""};
+      const afterBlock=f.client_activity_after_bot_block||{};
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Ruxsat va obuna</div>
           <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
@@ -1158,7 +1159,8 @@
           <div class="kv" style="margin-top:9px">
           <span>Access turi</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
           <span>Sabab</span><b>${esc(access.source_label||"—")}</b>
-          <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>${f.bot_blocked_at?`<span>Blok aniqlangan</span><b>${esc(f.bot_blocked_at)}</b><span>Aniqlash manbasi</span><b>${esc(f.bot_block_reason||"—")}</b><span>Oxirgi tekshiruv</span><b>${esc(f.last_bot_block_check_at||"—")}</b>`:""}
+          <span>Telegram holati</span><b>${f.bot_blocked?"xabar yetib bormaydi":"ochiq"}</b>${f.bot_blocked_at?`<span>Holat aniqlangan</span><b>${esc(f.bot_blocked_at)}</b><span>Aniqlash manbasi</span><b>${esc(f.bot_block_reason||"—")}</b><span>Oxirgi tekshiruv</span><b>${esc(f.last_bot_block_check_at||"—")}</b>`:""}
+          ${f.bot_blocked?`<span>Keyin Mini App ochilgan</span><b>${esc(afterBlock.miniapp_opened_at||"yo'q")}</b><span>Keyin Android ochilgan</span><b>${esc(afterBlock.android_opened_at||"yo'q")}</b><span>Keyin Desktop ochilgan</span><b>${esc(afterBlock.desktop_opened_at||"yo'q")}</b>`:""}
           <span>To'lov</span><b>${esc(f.has_pending_payment?"tekshiruvda":(f.payment_label||f.payment_status))}</b>
           <span>Tarif</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
           <span>Usul</span><b>${esc(f.method||f.payment_method||"—")}</b>
