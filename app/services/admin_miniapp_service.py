@@ -1340,6 +1340,7 @@ class AdminMiniAppService:
 
         total = await self._count_users()
         status_counts = await self._group_counts(User.status)
+        entitlement_counts = await self._entitlement_state_counts(now)
         language_counts = await self._group_counts(User.language)
         level_counts = await self._group_counts(User.level)
 
@@ -1499,8 +1500,8 @@ class AdminMiniAppService:
                 "paid": paid_users,
                 "pending": pending_payment_users,
                 "wants_pay": hot_leads,
-                "trial": int(status_counts.get("trial", 0)),
-                "free": int(status_counts.get("free", 0)),
+                "trial": int(entitlement_counts.get(EntitlementState.TRIAL_ACTIVE, 0)),
+                "free": int(entitlement_counts.get(EntitlementState.FREE, 0)),
                 "expired": int(status_counts.get("expired", 0)),
                 "blocked": int(status_counts.get("blocked", 0)),
                 "bot_blocked": bot_blocked_users,
@@ -1562,6 +1563,19 @@ class AdminMiniAppService:
             select(column, func.count().label("cnt")).group_by(column)
         )).fetchall()
         return {str(row[0] or "—"): int(row.cnt or 0) for row in rows}
+
+    async def _entitlement_state_counts(self, now: datetime) -> dict[str, int]:
+        """Count the same access states the clients actually use.
+
+        Legacy users.status == "trial" is free-tier state, not the current
+        7-day Pro trial. Admin segment counts must not mix the two.
+        """
+        users = list((await self.session.execute(select(User))).scalars().all())
+        counts: dict[str, int] = {}
+        for user in users:
+            state = resolve_state(user, now=now)
+            counts[state] = counts.get(state, 0) + 1
+        return counts
 
     async def _payment_status_counts(self, since: datetime | None = None) -> dict[str, dict[str, int]]:
         effective_at = case(
