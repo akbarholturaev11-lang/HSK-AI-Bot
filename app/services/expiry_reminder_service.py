@@ -21,6 +21,8 @@ class ExpiryReminderService:
         sent_count = 0
 
         for user in users:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             if user.expiry_reminder_sent_at is not None:
                 continue
 
