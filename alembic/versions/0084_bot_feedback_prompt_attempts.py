@@ -16,16 +16,28 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column(
-        "bot_feedbacks",
-        sa.Column(
-            "prompt_attempts",
-            sa.Integer(),
-            nullable=False,
-            server_default=sa.text("0"),
-        ),
-    )
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if "bot_feedbacks" not in set(inspector.get_table_names()):
+        return
+    columns = {item["name"] for item in inspector.get_columns("bot_feedbacks")}
+    if "prompt_attempts" not in columns:
+        op.add_column(
+            "bot_feedbacks",
+            sa.Column(
+                "prompt_attempts",
+                sa.Integer(),
+                nullable=False,
+                server_default=sa.text("0"),
+            ),
+        )
 
 
 def downgrade() -> None:
-    op.drop_column("bot_feedbacks", "prompt_attempts")
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if "bot_feedbacks" not in set(inspector.get_table_names()):
+        return
+    columns = {item["name"] for item in inspector.get_columns("bot_feedbacks")}
+    if "prompt_attempts" in columns:
+        op.drop_column("bot_feedbacks", "prompt_attempts")
