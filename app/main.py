@@ -519,8 +519,6 @@ async def _background_scheduler(bot: Bot) -> None:
                 await BotFeedbackService(session).send_due_feedback_requests(bot)
             async with async_session_maker() as session:
                 await SubscriptionChurnService(session).send_due_followups(bot)
-            async with async_session_maker() as session:
-                await BotBlockStatusService(session).scan_due_users(bot, limit=100)
             # Gemini yoqilgan bo'lsa "limit o'zgardi" e'lonini bir marta yuboradi.
             await announce_if_needed(bot)
         except Exception as e:
