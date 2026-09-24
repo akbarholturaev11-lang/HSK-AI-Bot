@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from aiogram.exceptions import TelegramForbiddenError
 
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.bot.handlers.bot_membership import router as bot_membership_router
 
 
 class _ScalarsResult:
@@ -64,6 +65,9 @@ def _user(telegram_id, **kwargs):
 
 
 class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
+    def test_membership_router_requests_my_chat_member_updates(self):
+        self.assertIn("my_chat_member", bot_membership_router.resolve_used_update_types())
+
     async def test_get_chat_success_does_not_unblock_previously_blocked(self):
         # Avval bloklangan user; get_chat OK qaytaradi (Telegram blokda ham OK qaytaradi).
         blocked_at = datetime.now(timezone.utc) - timedelta(days=2)
