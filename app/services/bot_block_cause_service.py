@@ -57,6 +57,11 @@ class BotBlockCauseService:
         "onboarding_tip": "onboarding maslahati",
         "partner_notification": "hamkorlik xabari",
         "gemini_switch": "AI yangilanish xabari",
+        "payment_approved": "to'lov tasdiqlangan xabari",
+        "payment_rejected": "to'lov rad etilgan xabari",
+        "referral_bonus": "referral bonus xabari",
+        "referral_trial_unlocked": "referral orqali ochilgan trial xabari",
+        "limit_notice": "limit haqida xabar",
     }
 
     FRICTION_LABELS = {
