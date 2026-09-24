@@ -82,7 +82,7 @@ async def _deliver_all(bot: Bot) -> None:
             block_service = BotBlockStatusService(session)
 
             for user in users:
-                if getattr(user, "status", "") == "blocked":
+                if getattr(user, "status", "") == "blocked" or BotBlockStatusService.is_bot_blocked(user):
                     continue
                 try:
                     await bot.send_message(
@@ -90,9 +90,8 @@ async def _deliver_all(bot: Bot) -> None:
                         _text_for_language(getattr(user, "language", None)),
                         parse_mode="HTML",
                     )
+                    await block_service.handle_send_success(user)
                     sent += 1
-                    if BotBlockStatusService.is_bot_blocked(user):
-                        await block_service.mark_user_unblocked(user)
                 except Exception as exc:  # noqa: BLE001 — bloklagan/o'chirgan userlar kutilgan
                     try:
                         await block_service.handle_send_exception(
