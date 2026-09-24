@@ -137,6 +137,7 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(user.bot_blocked_at, first)
         self.assertEqual(user.bot_block_reason, "broadcast")
         self.assertEqual(user.last_bot_block_check_at, later)
+        self.assertEqual(session.added, [])
 
     async def test_new_block_after_unblock_starts_new_episode(self):
         first = datetime.now(timezone.utc) - timedelta(days=2)
@@ -160,6 +161,9 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(user.bot_blocked_at, second)
         self.assertEqual(user.bot_block_reason, "my_chat_member_blocked")
         self.assertTrue(BotBlockStatusService.is_bot_blocked(user))
+        self.assertEqual(len(session.added), 1)
+        self.assertEqual(session.added[0].event_type, "blocked")
+        self.assertEqual(session.added[0].source, "my_chat_member_blocked")
 
     async def test_successful_delivery_clears_stale_block_state(self):
         blocked_at = datetime.now(timezone.utc) - timedelta(hours=1)
@@ -171,6 +175,9 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertFalse(BotBlockStatusService.is_bot_blocked(user))
         self.assertIsNotNone(user.bot_unblocked_at)
+        self.assertEqual(len(session.added), 1)
+        self.assertEqual(session.added[0].event_type, "unblocked")
+        self.assertEqual(session.added[0].source, "delivery_success")
 
 
 if __name__ == "__main__":
