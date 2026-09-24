@@ -1016,11 +1016,13 @@ class MotivationReminderService:
                         await bot.send_photo(user.telegram_id, media, caption=caption, reply_markup=markup, parse_mode="HTML")
                     else:
                         await bot.send_video(user.telegram_id, media, caption=caption, reply_markup=markup, parse_mode="HTML")
+                    await BotBlockStatusService(self.session).handle_send_success(user)
                     await record_in_app()
                     return True
             await bot.send_message(
                 user.telegram_id, text, reply_markup=markup, parse_mode="HTML"
             )
+            await BotBlockStatusService(self.session).handle_send_success(user)
             await record_in_app()
             return True
         except Exception as exc:  # noqa: BLE001 - blocked/deleted users are expected
