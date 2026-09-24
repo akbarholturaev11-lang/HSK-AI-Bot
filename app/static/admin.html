@@ -436,6 +436,7 @@
           <button class="icon-btn" data-act="clear-search">✕</button>
         </div>
         <div class="chips" id="userFilters" style="margin-bottom:12px"></div>
+        <div id="telegramReachability" hidden></div>
         <div class="list" id="userList"></div>
       </section>
 
@@ -1051,7 +1052,47 @@
       const c = state.overview.segments||{};
       $("userFilters").innerHTML = Object.keys(segmentLabels).map(k=>`<button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
     }
+    function renderTelegramReachability(){
+      const box=$("telegramReachability");
+      if(!box) return;
+      if(state.filter!=="bot_blocked"){ box.hidden=true; box.innerHTML=""; return; }
+      const d=state.overview.telegram_reachability||{};
+      const sourceNames={
+        my_chat_member_blocked:"Telegram block eventi",
+        broadcast:"Ommaviy xabar paytida aniqlangan",
+        feedback_prompt:"Feedback xabarida aniqlangan",
+        course_reminder:"Dars eslatmasida aniqlangan",
+        course_weekly_progress:"Haftalik hisobotda aniqlangan",
+        motivation_reminder:"Motivatsion eslatmada aniqlangan",
+        trial_reminder:"Trial eslatmasida aniqlangan",
+        daily_reset:"Kunlik limit xabarida aniqlangan",
+        expiry_reminder:"Obuna tugash xabarida aniqlangan",
+        ad_campaign:"Reklama xabarida aniqlangan",
+        discount_notification:"Chegirma xabarida aniqlangan",
+        release_feedback:"Yangilik feedbackida aniqlangan",
+        subscription_churn_followup:"Obuna follow-up xabarida aniqlangan",
+        onboarding_tip:"Onboarding maslahatida aniqlangan",
+        daily_get_chat_forbidden:"Eski getChat tekshiruvida aniqlangan",
+        diagnostic_get_chat_forbidden:"Diagnostik getChat tekshiruvida aniqlangan",
+        legacy_unknown:"Eski yozuv · manba nomalum"
+      };
+      const sources=(d.detection_sources||[]).slice(0,6);
+      box.hidden=false;
+      box.innerHTML=`<div class="block" style="margin-bottom:12px">
+        <div class="block-head"><span class="bi">📡</span><div><h3>Telegram aloqa diagnostikasi</h3><p>Bu product churn emas: Telegram xabar yetib borishi va ilovadagi keyingi faollik alohida ko'rsatiladi.</p></div></div>
+        <div class="grid g2">
+          <article class="stat danger"><div class="lab">Telegram yopiq</div><div><div class="val">${esc(d.current_unreachable||0)}</div><div class="sub">hozir xabar yetib bormaydi</div></div></article>
+          <article class="stat good"><div class="lab">Ilovada davom etgan</div><div><div class="val">${esc(d.active_after_block_any||0)}</div><div class="sub">TG yopilgandan keyin ham aktiv</div></div></article>
+          <article class="stat"><div class="lab">Android davom etgan</div><div><div class="val">${esc(d.active_after_block_android||0)}</div><div class="sub">android_app_opened bor</div></div></article>
+          <article class="stat"><div class="lab">Mini App davom etgan</div><div><div class="val">${esc(d.active_after_block_miniapp||0)}</div><div class="sub">miniapp_opened bor</div></div></article>
+          <article class="stat"><div class="lab">Aniq block · 7 kun</div><div><div class="val">${esc(d.explicit_block_users_7d||0)}</div><div class="sub">my_chat_member signali</div></div></article>
+        </div>
+        ${sources.length?`<div style="margin-top:12px"><div class="dtitle-sm">Aniqlash manbalari · sabab emas</div><div class="tags">${sources.map(s=>tag(`${sourceNames[s.source]||s.source}: ${s.users}`,"")).join("")}</div></div>`:""}
+        <div class="explain" style="margin-top:12px">${esc(d.explain||"")}</div>
+      </div>`;
+    }
     function renderUsers(){
+      renderTelegramReachability();
       const rows = filterUsers();
       $("userList").innerHTML = rows.length ? rows.map(u=>{
         const t = statusTone(u);
