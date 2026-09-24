@@ -227,7 +227,7 @@ class ReleaseFeedbackService:
                     language=user.language,
                     rating_markup=release_feedback_rating_keyboard(campaign.id),
                 )
-                await blocks.handle_send_success(user)
+                await blocks.handle_send_success(user, reason="release_feedback")
                 sent_count += 1
             except Exception as exc:
                 status = "failed"
