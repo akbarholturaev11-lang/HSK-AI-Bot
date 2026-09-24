@@ -12,6 +12,7 @@ from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_notification_service import CourseNotificationService
 from app.services.user_access_state_service import UserAccessStateService
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 @dataclass
@@ -48,6 +49,7 @@ class DiscountNotificationService:
 
         sent_count = 0
         failed_count = 0
+        blocks = BotBlockStatusService(self.session)
 
         for user in target_users:
             lang = user.language or "uz"
@@ -86,9 +88,15 @@ class DiscountNotificationService:
                     source="discount_notification",
                     dedupe_key=f"discount_campaign:{campaign.id}",
                 )
+                await blocks.handle_send_success(user)
                 sent_count += 1
-            except Exception:
+            except Exception as exc:
                 failed_count += 1
+                await blocks.handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="discount_notification",
+                )
             await asyncio.sleep(0.05)
 
         await self.repo.mark_notification_sent(
