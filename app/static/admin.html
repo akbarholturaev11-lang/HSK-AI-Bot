@@ -1259,6 +1259,11 @@
       const afterBlock=f.client_activity_after_bot_block||{};
       const tgDiag=botReachabilityDiagnosis(f);
       const tgHistory=f.bot_reachability_history||[];
+      const blockCause=f.bot_block_cause||{};
+      const causeTone=Number(blockCause.score||0)>=80?"green":Number(blockCause.score||0)>=60?"amber":"red";
+      const causeEvidence=(blockCause.evidence||[]).map(x=>"• "+esc(x)).join("<br>");
+      const causeAlternatives=(blockCause.alternatives||[]).map(a=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(a.title)}</b><div class="usub">${(a.evidence||[]).map(esc).join(" · ")}</div></div><span class="usub">${esc(a.confidence)} · ${esc(a.score)}/100</span></div>`).join("");
+      const causeHtml=f.bot_blocked?`<div class="mcard" style="margin-top:12px"><div class="uhead"><div><div class="uname">Ehtimoliy blok sababi</div><div class="usub">Real eventlar asosida. Telegram userning sababini matn ko\'rinishida bermaydi.</div></div>${tag((blockCause.confidence||"past")+" ishonch",causeTone)}</div><div style="margin-top:10px"><b>${esc(blockCause.title||"Sababni ishonchli ajratib bo\'lmadi")}</b></div>${blockCause.score?`<div class="tags" style="margin-top:8px">${tag("Dalil kuchi: "+blockCause.score+"/100",causeTone)}${tag(blockCause.data_quality_label||"Ma\'lumot sifati noma\'lum","")}</div>`:""}${causeEvidence?`<div class="ncnote" style="margin-top:10px"><b>Nimaga shunday deyapmiz:</b><br>${causeEvidence}</div>`:""}${blockCause.note?`<div class="explain" style="margin-top:8px">${esc(blockCause.note)}</div>`:""}${causeAlternatives?`<details class="acc" style="margin-top:10px"><summary>Boshqa ehtimollar</summary><div class="accbody">${causeAlternatives}</div></details>`:""}<div class="ncnote" style="margin-top:10px"><b>Muhim:</b> ${esc(blockCause.disclaimer||"Bu ehtimoliy xulosa, aniq sabab emas.")}</div></div>`:"";
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Ruxsat va obuna</div>
           <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
@@ -1291,6 +1296,8 @@
             <b>Admin uchun qoida:</b> Telegram yopiq bo'lsa-yu, yuqoridagi ilovalardan biri blockdan keyin ochilgan bo'lsa, bu userni "HSK AI'ni tashlagan" deb hisoblamang.
             Hech qaysi app faolligi topilmasa ham bu faqat qo'shimcha signal — yakuniy churn xulosasi emas.
           </div>
+
+          ${causeHtml}
 
           <details class="acc" style="margin-top:10px" ${tgHistory.length?"":"hidden"}>
             <summary>Telegram yopilish/ochilish tarixi · ${tgHistory.length} ta qayd</summary>
