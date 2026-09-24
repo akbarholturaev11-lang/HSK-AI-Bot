@@ -1030,7 +1030,8 @@
     }
     function filterUsers(){
       const q = state.search.trim().toLowerCase();
-      const src = (state.search.trim().length>=2 && state.remoteUsers) ? state.remoteUsers : (state.overview.users||[]);
+      const useRemote = !!state.remoteUsers && (state.search.trim().length>=2 || state.filter==="bot_blocked");
+      const src = useRemote ? state.remoteUsers : (state.overview.users||[]);
       return src.filter(u=>{
         const f = state.filter==="all"
           || (state.filter==="paid"&&u.payment_status==="approved"&&u.status==="active")
@@ -1064,8 +1065,13 @@
       }).join("") : "<p class='empty'>Bu saralash bo'yicha foydalanuvchi topilmadi.</p>";
     }
     async function remoteSearch(q){
-      if(q.trim().length<2){ state.remoteUsers=null; renderUsers(); return; }
-      try{ const d=await apiPost("/api/admin-miniapp/users/search",{query:q}); state.remoteUsers=d.users||[]; renderUsers(); }
+      const segment = state.filter==="bot_blocked" ? "bot_blocked" : "";
+      if(q.trim().length<2 && !segment){ state.remoteUsers=null; renderUsers(); return; }
+      try{
+        const d=await apiPost("/api/admin-miniapp/users/search",{query:q,segment:segment,limit:1000});
+        state.remoteUsers=d.users||[];
+        renderUsers();
+      }
       catch(e){ toast(apiErr(e,"Qidiruv ishlamadi")); }
     }
 
@@ -1152,7 +1158,7 @@
           <div class="kv" style="margin-top:9px">
           <span>Access turi</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
           <span>Sabab</span><b>${esc(access.source_label||"—")}</b>
-          <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>
+          <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>${f.bot_blocked_at?`<span>Blok aniqlangan</span><b>${esc(f.bot_blocked_at)}</b><span>Aniqlash manbasi</span><b>${esc(f.bot_block_reason||"—")}</b><span>Oxirgi tekshiruv</span><b>${esc(f.last_bot_block_check_at||"—")}</b>`:""}
           <span>To'lov</span><b>${esc(f.has_pending_payment?"tekshiruvda":(f.payment_label||f.payment_status))}</b>
           <span>Tarif</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
           <span>Usul</span><b>${esc(f.method||f.payment_method||"—")}</b>
@@ -2256,14 +2262,14 @@
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }
-      if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; renderDashboard(); renderUserFilters(); renderUsers(); switchTab("users"); return; }
+      if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; state.remoteUsers=null; renderDashboard(); renderUserFilters(); switchTab("users"); if(state.filter==="bot_blocked") return remoteSearch(state.search); renderUsers(); return; }
       if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
       if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);
       if((el=T("[data-tab-jump]"))) return switchTab(el.dataset.tabJump);
       if((el=T("[data-act]"))){
         const n=el.dataset.act;
         if(n==="reload") return loadData();
-        if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; renderUsers(); return; }
+        if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; if(state.filter==="bot_blocked") return remoteSearch(""); renderUsers(); return; }
         if(n==="copy-report") return copyReport();
         if(n==="upload-ca"){ $("caFile").click(); return; }
         if(n==="close-drawer") return closeDrawer();
