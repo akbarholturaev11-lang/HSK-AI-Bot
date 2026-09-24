@@ -202,7 +202,7 @@ class OnboardingTipService:
                     text=t(self._tip_text_key(event.tip_key), lang),
                     parse_mode="HTML",
                 )
-                await BotBlockStatusService(self.session).handle_send_success(user)
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="onboarding_tip")
             except Exception as exc:
                 await BotBlockStatusService(self.session).handle_send_exception(
                     user.telegram_id,
