@@ -346,8 +346,9 @@ class BotBlockCauseIntegrityTests(_StatsDatabaseTestCase):
             result = await BotBlockCauseService(session).analyze(user)
 
         self.assertEqual(result["key"], "channel_migration")
-        self.assertEqual(result["confidence"], "yuqori")
+        self.assertEqual(result["confidence"], "o'rta")
         self.assertIn("HSK AI", result["note"])
+        self.assertIn("non-churn", result["note"])
 
     async def test_legacy_episode_caps_confidence_even_with_strong_timing_signal(self):
         now = datetime.now(timezone.utc)
