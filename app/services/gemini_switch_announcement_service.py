@@ -90,7 +90,7 @@ async def _deliver_all(bot: Bot) -> None:
                         _text_for_language(getattr(user, "language", None)),
                         parse_mode="HTML",
                     )
-                    await block_service.handle_send_success(user)
+                    await block_service.handle_send_success(user, reason="gemini_switch")
                     sent += 1
                 except Exception as exc:  # noqa: BLE001 — bloklagan/o'chirgan userlar kutilgan
                     try:
