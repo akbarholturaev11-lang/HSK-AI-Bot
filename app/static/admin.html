@@ -749,10 +749,11 @@
       ].map(cardHtml).join("");
 
       const steps=[
-        ["APK so'ragan",stage("apk_requested")],
-        ["APK olgan",stage("apk_sent")],
-        ["Akkaunt ulagan",stage("session_linked")],
-        ["Birinchi marta ochgan",stage("first_open")]
+        ["So'rov",desktopUsers(funnel,"download_requested")],
+        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
+        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
+        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
+        ["First open",desktopUsers(funnel,"verified_first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
