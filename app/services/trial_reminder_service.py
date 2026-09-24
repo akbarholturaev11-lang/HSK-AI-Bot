@@ -99,6 +99,7 @@ class TrialReminderService:
                 await bot.send_message(
                     chat_id=user.telegram_id, text=text, parse_mode="HTML"
                 )
+                await blocks.handle_send_success(user)
             except Exception as exc:  # noqa: BLE001 — blok holati alohida yuriladi
                 await blocks.handle_send_exception(
                     user.telegram_id, exc, reason="trial_reminder"
