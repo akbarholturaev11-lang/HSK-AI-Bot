@@ -1020,8 +1020,8 @@
 
     function botReachabilitySourceLabel(source){
       const labels={
-        my_chat_member_blocked:"Telegramning o'zi block eventini yubordi",
-        my_chat_member_unblocked:"Telegramning o'zi unblock eventini yubordi",
+        my_chat_member_blocked:"Telegram bot bloklanganini aniq bildirdi",
+        my_chat_member_unblocked:"Telegram bot qayta ochilganini aniq bildirdi",
         delivery_success:"Bot xabari muvaffaqiyatli yetib bordi",
         inbound_activity:"User botga qayta yozdi yoki tugma bosdi",
         broadcast:"Ommaviy xabar yuborilganda aniqlangan",
@@ -1044,7 +1044,7 @@
         diagnostic_get_chat_forbidden:"Diagnostik getChat tekshiruvida aniqlangan",
         telegram_forbidden:"Telegram xabar yuborishni rad etdi",
         confirmed_reachable:"Telegram aloqasi qayta tasdiqlandi",
-        legacy_unknown:"Eski yozuv — aniqlash manbasi saqlanmagan"
+        legacy_unknown:"Eski yozuv — qayerda aniqlangani saqlanmagan"
       };
       return labels[source]||source||"Manba noma'lum";
     }
@@ -1122,13 +1122,13 @@
         <div class="block-head"><span class="bi">📡</span><div><h3>Telegram aloqa diagnostikasi</h3><p>Bu bo'lim "user HSK AI'ni tashladi" degani emas. Telegram bot aloqasi va HSK AI ichidagi faollik alohida ko'rsatiladi.</p></div></div>
 
         <div class="grid g2">
-          <article class="stat danger"><div class="lab">Telegram xabari yetib bormaydi</div><div><div class="val">${esc(current)}</div><div class="sub">hozirgi unreachable userlar</div></div></article>
+          <article class="stat danger"><div class="lab">Telegram xabari yetib bormaydi</div><div><div class="val">${esc(current)}</div><div class="sub">hozir bot xabari yetmaydigan userlar</div></div></article>
           <article class="stat good"><div class="lab">HSK AI'da davom etgan</div><div><div class="val">${esc(continued)}</div><div class="sub">TG yopilgandan keyin ham app ochgan · ${continuedPct}%</div></div></article>
           <article class="stat amber"><div class="lab">Keyingi app faolligi topilmagan</div><div><div class="val">${esc(noApp)}</div><div class="sub">churn bo'lishi mumkin, lekin tasdiq emas</div></div></article>
           <article class="stat"><div class="lab">Android'da davom etgan</div><div><div class="val">${esc(d.active_after_block_android||0)}</div><div class="sub">blokdan keyin Android ochilgan</div></div></article>
           <article class="stat"><div class="lab">Mini App'da davom etgan</div><div><div class="val">${esc(d.active_after_block_miniapp||0)}</div><div class="sub">blokdan keyin Mini App ochilgan</div></div></article>
           <article class="stat"><div class="lab">Desktop'da davom etgan</div><div><div class="val">${esc(d.active_after_block_desktop||0)}</div><div class="sub">blokdan keyin Desktop ochilgan</div></div></article>
-          <article class="stat"><div class="lab">Aniq Telegram block · 7 kun</div><div><div class="val">${esc(d.explicit_block_users_7d||0)}</div><div class="sub">Telegram my_chat_member eventi bilan tasdiqlangan</div></div></article>
+          <article class="stat"><div class="lab">Aniq Telegram block · 7 kun</div><div><div class="val">${esc(d.explicit_block_users_7d||0)}</div><div class="sub">Telegramning rasmiy block signali bilan tasdiqlangan</div></div></article>
         </div>
 
         <div class="ncnote" style="margin-top:12px">
@@ -1145,9 +1145,9 @@
           <summary>Eski 601 kabi tarixiy raqamlar haqida muhim izoh</summary>
           <div class="accbody">
             <div class="ncnote">
-              Eski кодда бир userга кейинги Telegram Forbidden xatosi kelganda <b>bot_blocked_at</b> va aniqlash manbasi qayta yozilishi mumkin edi.
+              Eski kodda bir userga keyingi Telegram yuborish xatosi kelganda blok vaqti va aniqlash manbasi qayta yozilishi mumkin edi.
               Shuning uchun eski yozuvlardan "birinchi marta aynan qachon va qaysi xabardan keyin blokladi" degan xulosani 100% tiklab bo'lmaydi.
-              Yangi tracking esa block/unblock transitionlarini alohida tarixga yozadi va birinchi vaqtni saqlaydi.
+              Yangi tizim esa Telegram yopilish/ochilish holatlarini alohida tarixga yozadi va birinchi aniqlangan vaqtni saqlaydi.
             </div>
           </div>
         </details>
@@ -1281,7 +1281,7 @@
             <span>Telegram xabari</span><b>${f.bot_blocked?"yetib bormaydi":"yetib borishi mumkin"}</b>
             <span>Block birinchi aniqlangan</span><b>${esc(f.bot_blocked_at||"—")}</b>
             <span>Aniqlash manbasi</span><b>${esc(botReachabilitySourceLabel(f.bot_block_reason))}</b>
-            <span>Oxirgi reachability tekshiruvi</span><b>${esc(f.last_bot_block_check_at||"—")}</b>
+            <span>Telegram aloqasi oxirgi tekshirilgan</span><b>${esc(f.last_bot_block_check_at||"—")}</b>
             <span>Keyin Mini App</span><b>${afterBlock.miniapp_opened_at?("ochilgan · "+esc(afterBlock.miniapp_opened_at)):"ochilmagan / ma'lumot yo'q"}</b>
             <span>Keyin Android</span><b>${afterBlock.android_opened_at?("ochilgan · "+esc(afterBlock.android_opened_at)):"ochilmagan / ma'lumot yo'q"}</b>
             <span>Keyin Desktop</span><b>${afterBlock.desktop_opened_at?("ochilgan · "+esc(afterBlock.desktop_opened_at)):"ochilmagan / ma'lumot yo'q"}</b>
@@ -1293,9 +1293,9 @@
           </div>
 
           <details class="acc" style="margin-top:10px" ${tgHistory.length?"":"hidden"}>
-            <summary>Telegram block/unblock tarixi · ${tgHistory.length} ta event</summary>
+            <summary>Telegram yopilish/ochilish tarixi · ${tgHistory.length} ta qayd</summary>
             <div class="accbody">
-              ${tgHistory.length?tgHistory.map(h=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(botReachabilityEventLabel(h.type))}</b><div class="usub">${esc(botReachabilitySourceLabel(h.source))}</div></div><span class="usub">${esc(h.created_at||"—")}</span></div>`).join(""):"<p class='empty'>Yangi tracking bo'yicha tarix hali yo'q.</p>"}
+              ${tgHistory.length?tgHistory.map(h=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(botReachabilityEventLabel(h.type))}</b><div class="usub">${esc(botReachabilitySourceLabel(h.source))}</div></div><span class="usub">${esc(h.created_at||"—")}</span></div>`).join(""):"<p class='empty'>Yangi tizim bo'yicha tarix hali yo'q.</p>"}
             </div>
           </details>
 
