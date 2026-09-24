@@ -87,6 +87,7 @@ from app.services.motivation_reminder_service import (
 )
 from app.services.access_service import AccessService
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.bot_block_cause_service import BotBlockCauseService
 from app.services.gemini_switch_announcement_service import announce_if_needed
 from app.services.daily_reset_service import DailyResetService
 from app.services.expiry_reminder_service import ExpiryReminderService
@@ -1364,6 +1365,7 @@ async def _admin_user_payload(session, user) -> dict:
             "android_opened_at": _mini_dt(activity_by_name.get("android_app_opened")),
             "desktop_opened_at": _mini_dt(activity_by_name.get("desktop_app_opened")),
         }
+    block_cause = await BotBlockCauseService(session).analyze(user)
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1412,6 +1414,7 @@ async def _admin_user_payload(session, user) -> dict:
                 for item in reachability_rows
             ],
             "client_activity_after_bot_block": client_activity_after_block,
+            "bot_block_cause": block_cause,
             "bonus": {
                 "total": bonus_total,
                 "used": bonus_used,
