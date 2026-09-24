@@ -11,6 +11,7 @@ from app.repositories.user_repo import UserRepository
 from app.bot.keyboards.promo_button import build_promo_button_markup, decode_promo_button_config
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.services.support_contact_service import get_admin_contact_url
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 @dataclass
@@ -81,11 +82,14 @@ class AdCampaignService:
 
         target_users = [
             user for user in users
-            if user.telegram_id not in admin_ids and user.telegram_id not in already_done
+            if user.telegram_id not in admin_ids
+            and user.telegram_id not in already_done
+            and not BotBlockStatusService.is_bot_blocked(user)
         ]
 
         sent_count = 0
         failed_count = 0
+        blocks = BotBlockStatusService(self.session)
         delivery_count = 0
         button_contact_url = None
         if (decode_promo_button_config(campaign.button_config) or {}).get("action") == "contact":
@@ -110,11 +114,17 @@ class AdCampaignService:
                         contact_url=button_contact_url,
                     ),
                 )
+                await blocks.handle_send_success(user, reason="ad_campaign")
                 sent_count += 1
             except Exception as exc:
                 status = "failed"
                 error = str(exc)
                 failed_count += 1
+                await blocks.handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="ad_campaign",
+                )
 
             await self.repo.create_delivery(
                 campaign_id=campaign.id,

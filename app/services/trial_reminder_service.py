@@ -63,6 +63,8 @@ class TrialReminderService:
         sent = 0
 
         for user in users:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             ends_at = _as_utc(user.pro_trial_ends_at)
             if not ends_at:
                 continue
@@ -99,6 +101,7 @@ class TrialReminderService:
                 await bot.send_message(
                     chat_id=user.telegram_id, text=text, parse_mode="HTML"
                 )
+                await blocks.handle_send_success(user, reason="trial_reminder")
             except Exception as exc:  # noqa: BLE001 — blok holati alohida yuriladi
                 await blocks.handle_send_exception(
                     user.telegram_id, exc, reason="trial_reminder"

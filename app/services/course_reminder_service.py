@@ -102,6 +102,8 @@ class CourseReminderService:
         d1_holdout_ids = await self._active_d1_holdout_ids(now_utc)
 
         for progress, user in rows:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             if int(user.telegram_id) in d1_holdout_ids:
                 continue
             if not progress.reminder_time:
@@ -142,6 +144,7 @@ class CourseReminderService:
                     dedupe_key=f"lesson_time:{local_now.date().isoformat()}",
                     params=reminder_params,
                 )
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="course_reminder")
                 progress.last_reminder_sent_at = now_utc
                 print(f"CourseReminderService: sent reminder to {user.telegram_id}")
             except Exception as e:
@@ -165,6 +168,8 @@ class CourseReminderService:
         summary_service = CourseProgressSummaryService(self.session)
 
         for progress, user in rows:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             tz_offset = reminder_tz_offset(progress)
             local_now = now_utc + timedelta(hours=tz_offset)
 
@@ -204,6 +209,7 @@ class CourseReminderService:
                     reply_markup=_reminder_keyboard(lang),
                     parse_mode="HTML",
                 )
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="course_weekly_progress")
                 progress.last_weekly_progress_sent_at = now_utc
                 progress.weekly_progress_baseline_lessons_count = total_lessons
                 print(f"CourseReminderService: sent weekly progress to {user.telegram_id}")

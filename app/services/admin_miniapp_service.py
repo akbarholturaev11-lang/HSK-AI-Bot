@@ -11,6 +11,7 @@ from sqlalchemy import and_, case, func, or_, select
 from app.db.models.ad_campaign import AdCampaign, AdCampaignDelivery
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
@@ -1340,6 +1341,7 @@ class AdminMiniAppService:
 
         total = await self._count_users()
         status_counts = await self._group_counts(User.status)
+        entitlement_counts = await self._entitlement_state_counts(now)
         language_counts = await self._group_counts(User.language)
         level_counts = await self._group_counts(User.level)
 
@@ -1360,6 +1362,7 @@ class AdminMiniAppService:
         historical_approved_users = await self._approved_payment_user_count()
         pending_payment_users = await self._pending_payment_user_count()
         bot_blocked_users = await self._count_users(*_bot_block_filter())
+        telegram_reachability = await self._bot_reachability_summary(now)
 
         miniapp_course = await miniapp_course_stats(self.session)
         avg_sections = (
@@ -1499,8 +1502,8 @@ class AdminMiniAppService:
                 "paid": paid_users,
                 "pending": pending_payment_users,
                 "wants_pay": hot_leads,
-                "trial": int(status_counts.get("trial", 0)),
-                "free": int(status_counts.get("free", 0)),
+                "trial": int(entitlement_counts.get(EntitlementState.TRIAL_ACTIVE, 0)),
+                "free": int(entitlement_counts.get(EntitlementState.FREE, 0)),
                 "expired": int(status_counts.get("expired", 0)),
                 "blocked": int(status_counts.get("blocked", 0)),
                 "bot_blocked": bot_blocked_users,
@@ -1530,6 +1533,7 @@ class AdminMiniAppService:
             "feedback": feedback_summary,
             "subscription_sources": source_rows,
             "course_hot_leads": course_hot,
+            "telegram_reachability": telegram_reachability,
             "prices": price_rows,
             "users": latest_users,
             "queue": self._queue(
@@ -1562,6 +1566,98 @@ class AdminMiniAppService:
             select(column, func.count().label("cnt")).group_by(column)
         )).fetchall()
         return {str(row[0] or "—"): int(row.cnt or 0) for row in rows}
+
+    async def _entitlement_state_counts(self, now: datetime) -> dict[str, int]:
+        """Count the same access states the clients actually use.
+
+        Legacy users.status == "trial" is free-tier state, not the current
+        7-day Pro trial. Admin segment counts must not mix the two.
+        """
+        users = list((await self.session.execute(select(User))).scalars().all())
+        counts: dict[str, int] = {}
+        for user in users:
+            state = resolve_state(user, now=now)
+            counts[state] = counts.get(state, 0) + 1
+        return counts
+
+    async def _bot_reachability_summary(self, now: datetime) -> dict:
+        """Explain current Telegram-unreachable users without calling it product churn."""
+        current_filter = _bot_block_filter()
+        current = await self._count_users(*current_filter)
+        week_ago = now - timedelta(days=7)
+
+        explicit_block_users_7d = int(
+            (
+                await self.session.execute(
+                    select(func.count(func.distinct(BotReachabilityEvent.telegram_id))).where(
+                        BotReachabilityEvent.event_type == "blocked",
+                        BotReachabilityEvent.source == "my_chat_member_blocked",
+                        BotReachabilityEvent.created_at >= week_ago,
+                    )
+                )
+            ).scalar()
+            or 0
+        )
+
+        async def active_after_block(event_names: tuple[str, ...]) -> int:
+            return int(
+                (
+                    await self.session.execute(
+                        select(func.count(func.distinct(User.telegram_id)))
+                        .select_from(User)
+                        .join(
+                            CourseMiniAppEvent,
+                            CourseMiniAppEvent.telegram_id == User.telegram_id,
+                        )
+                        .where(
+                            *current_filter,
+                            CourseMiniAppEvent.created_at >= User.bot_blocked_at,
+                            CourseMiniAppEvent.event_name.in_(event_names),
+                        )
+                    )
+                ).scalar()
+                or 0
+            )
+
+        miniapp_after = await active_after_block(("miniapp_opened",))
+        android_after = await active_after_block(("android_app_opened",))
+        desktop_after = await active_after_block(("desktop_app_opened",))
+        any_app_after = await active_after_block(
+            ("miniapp_opened", "android_app_opened", "desktop_app_opened")
+        )
+
+        source_rows = (
+            await self.session.execute(
+                select(User.bot_block_reason, func.count().label("cnt"))
+                .where(*current_filter)
+                .group_by(User.bot_block_reason)
+                .order_by(func.count().desc())
+            )
+        ).all()
+
+        return {
+            "current_unreachable": int(current),
+            "explicit_block_users_7d": explicit_block_users_7d,
+            "active_after_block_any": any_app_after,
+            "active_after_block_miniapp": miniapp_after,
+            "active_after_block_android": android_after,
+            "active_after_block_desktop": desktop_after,
+            "detection_sources": [
+                {
+                    "source": str(row.bot_block_reason or "legacy_unknown"),
+                    "users": int(row.cnt or 0),
+                }
+                for row in source_rows
+            ],
+            "explain": (
+                "Bu Telegram aloqa holati, HSK AI'dan ketgan userlar soni emas. "
+                "Telegram yopilgandan keyin ham Android, Mini App yoki Desktop'da aktiv bo'lgan user "
+                "HSK AI'dan foydalanishni davom ettirgan hisoblanadi. Aniqlash manbasi user nega "
+                "bloklaganini emas, tizim buni qaysi paytda sezganini ko'rsatadi. "
+                "Eski yozuvlarda birinchi blok vaqti aniq bo'lmasligi mumkin; yangi aniq tarix "
+                "shu yangilanishdan keyin yig'iladi."
+            ),
+        }
 
     async def _payment_status_counts(self, since: datetime | None = None) -> dict[str, dict[str, int]]:
         effective_at = case(

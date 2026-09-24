@@ -25,6 +25,7 @@ from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.services import course_daily_window
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_notification_service import (
     CourseNotificationService,
     notification_copy,
@@ -142,6 +143,11 @@ class LimitNotificationService:
         )
         if not recorded or bot is None:
             return recorded
+
+        blocks = BotBlockStatusService(self.session)
+        if blocks.is_bot_blocked(user):
+            return recorded
+
         try:
             await bot.send_message(
                 chat_id=int(user.telegram_id),
@@ -151,7 +157,13 @@ class LimitNotificationService:
                 ),
                 parse_mode="HTML",
             )
-        except Exception:  # noqa: BLE001 — bloklagan user xabari oqimni buzmasin
+            await blocks.handle_send_success(user, reason="limit_notice")
+        except Exception as exc:  # noqa: BLE001 — bloklagan user xabari oqimni buzmasin
+            await blocks.handle_send_exception(
+                int(user.telegram_id),
+                exc,
+                reason="limit_notice",
+            )
             logger.info("Limit notice could not be delivered", exc_info=True)
         return recorded
 

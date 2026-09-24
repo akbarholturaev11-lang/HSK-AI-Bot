@@ -62,6 +62,7 @@ class BotFeedbackRepository:
     ) -> None:
         now = datetime.now(timezone.utc)
         feedback.prompt_message_id = message_id
+        feedback.prompt_attempts = int(getattr(feedback, "prompt_attempts", 0) or 0) + 1
         feedback.prompted_at = now
         feedback.updated_at = now
         await self.session.flush()

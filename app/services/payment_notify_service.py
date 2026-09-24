@@ -2,6 +2,7 @@ from aiogram import Bot
 
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
+from app.services.bot_block_status_service import BotBlockStatusService
 
 REASON_TRANSLATIONS = {
     "wrong_amount":       {"uz": "Summa noto'g'ri",    "tj": "Маблағ нодуруст",     "ru": "Неверная сумма"},
@@ -17,14 +18,28 @@ def _translate_reason(reason_code: str, lang: str) -> str:
 
 
 class PaymentNotifyService:
+    def __init__(self, session=None):
+        self.session = session
+
+    async def _success(self, user, source: str) -> None:
+        if self.session is not None:
+            await BotBlockStatusService(self.session).handle_send_success(user, reason=source)
+
+    async def _failure(self, user, exc: Exception, source: str) -> None:
+        if self.session is not None:
+            await BotBlockStatusService(self.session).handle_send_exception(user.telegram_id, exc, reason=source)
+
     async def notify_payment_approved(self, bot: Bot, user) -> None:
         if not user:
             return
         lang = user.language if user.language else "ru"
+        if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
+            return
         try:
             await bot.send_message(chat_id=user.telegram_id, text=t("user_payment_approved", lang))
-        except Exception:
-            pass
+            await self._success(user, "payment_approved")
+        except Exception as exc:
+            await self._failure(user, exc, "payment_approved")
 
     async def notify_payment_rejected(self, bot: Bot, user, reason: str = None, plan_type: str = None, payment=None) -> None:
         if not user:
@@ -45,6 +60,8 @@ class PaymentNotifyService:
         elif payment and getattr(payment, "discount_source", None) == "referral":
             mode = "referral_discount"
 
+        if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
+            return
         try:
             await bot.send_message(
                 chat_id=user.telegram_id,
@@ -58,5 +75,6 @@ class PaymentNotifyService:
                     method=getattr(payment, "payment_method", None) if payment else None,
                 ),
             )
-        except Exception:
-            pass
+            await self._success(user, "payment_rejected")
+        except Exception as exc:
+            await self._failure(user, exc, "payment_rejected")

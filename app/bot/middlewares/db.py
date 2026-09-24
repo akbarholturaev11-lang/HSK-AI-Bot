@@ -32,7 +32,10 @@ class DBSessionMiddleware(BaseMiddleware):
                     user.last_active_at = datetime.now(timezone.utc)
                     changed = True
                     if BotBlockStatusService.is_bot_blocked(user):
-                        user.bot_unblocked_at = datetime.now(timezone.utc)
+                        await BotBlockStatusService(session).mark_user_unblocked(
+                            user,
+                            reason="inbound_activity",
+                        )
                         changed = True
                     if changed:
                         await session.commit()

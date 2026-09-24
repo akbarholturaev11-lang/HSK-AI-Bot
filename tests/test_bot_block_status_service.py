@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from aiogram.exceptions import TelegramForbiddenError
 
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.bot.handlers.bot_membership import router as bot_membership_router
 
 
 class _ScalarsResult:
@@ -25,6 +26,10 @@ class _FakeSession:
     def __init__(self, users):
         self._users = users
         self.committed = False
+        self.added = []
+
+    def add(self, item):
+        self.added.append(item)
 
     async def execute(self, _query):
         return _ScalarsResult(self._users)
@@ -64,6 +69,9 @@ def _user(telegram_id, **kwargs):
 
 
 class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
+    def test_membership_router_requests_my_chat_member_updates(self):
+        self.assertIn("my_chat_member", bot_membership_router.resolve_used_update_types())
+
     async def test_get_chat_success_does_not_unblock_previously_blocked(self):
         # Avval bloklangan user; get_chat OK qaytaradi (Telegram blokda ham OK qaytaradi).
         blocked_at = datetime.now(timezone.utc) - timedelta(days=2)
@@ -102,6 +110,11 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(marked)
         self.assertTrue(BotBlockStatusService.is_bot_blocked(user))
+        self.assertEqual(len(session.added), 2)
+        outbound = next(item for item in session.added if getattr(item, "status", None) == "forbidden")
+        transition = next(item for item in session.added if getattr(item, "event_type", None) == "blocked")
+        self.assertEqual(outbound.source, "broadcast")
+        self.assertEqual(transition.source, "broadcast")
 
     async def test_handle_send_exception_ignores_other_errors(self):
         user = _user(404)
@@ -112,6 +125,66 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertFalse(marked)
         self.assertFalse(BotBlockStatusService.is_bot_blocked(user))
+
+    async def test_repeated_forbidden_preserves_first_episode_timestamp_and_source(self):
+        first = datetime.now(timezone.utc) - timedelta(hours=4)
+        later = first + timedelta(hours=2)
+        user = _user(505, bot_blocked_at=first, bot_block_reason="broadcast")
+        session = _FakeSession([user])
+        service = BotBlockStatusService(session)
+
+        await service.mark_user_blocked(
+            user,
+            reason="course_reminder",
+            checked_at=later,
+        )
+
+        self.assertEqual(user.bot_blocked_at, first)
+        self.assertEqual(user.bot_block_reason, "broadcast")
+        self.assertEqual(user.last_bot_block_check_at, later)
+        self.assertEqual(session.added, [])
+
+    async def test_new_block_after_unblock_starts_new_episode(self):
+        first = datetime.now(timezone.utc) - timedelta(days=2)
+        unblocked = first + timedelta(days=1)
+        second = unblocked + timedelta(hours=3)
+        user = _user(
+            606,
+            bot_blocked_at=first,
+            bot_unblocked_at=unblocked,
+            bot_block_reason="broadcast",
+        )
+        session = _FakeSession([user])
+        service = BotBlockStatusService(session)
+
+        await service.mark_user_blocked(
+            user,
+            reason="my_chat_member_blocked",
+            checked_at=second,
+        )
+
+        self.assertEqual(user.bot_blocked_at, second)
+        self.assertEqual(user.bot_block_reason, "my_chat_member_blocked")
+        self.assertTrue(BotBlockStatusService.is_bot_blocked(user))
+        self.assertEqual(len(session.added), 1)
+        self.assertEqual(session.added[0].event_type, "blocked")
+        self.assertEqual(session.added[0].source, "my_chat_member_blocked")
+
+    async def test_successful_delivery_clears_stale_block_state(self):
+        blocked_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        user = _user(707, bot_blocked_at=blocked_at, bot_block_reason="feedback_prompt")
+        session = _FakeSession([user])
+        service = BotBlockStatusService(session)
+
+        await service.handle_send_success(user, reason="feedback_prompt")
+
+        self.assertFalse(BotBlockStatusService.is_bot_blocked(user))
+        self.assertIsNotNone(user.bot_unblocked_at)
+        self.assertEqual(len(session.added), 2)
+        outbound = next(item for item in session.added if getattr(item, "status", None) == "sent")
+        transition = next(item for item in session.added if getattr(item, "event_type", None) == "unblocked")
+        self.assertEqual(outbound.source, "feedback_prompt")
+        self.assertEqual(transition.source, "delivery_success")
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ from app.bot.utils.i18n import t
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 FOLLOWUP_DELAY = timedelta(hours=24)
@@ -112,7 +113,10 @@ class SubscriptionChurnService:
         users = list(result.scalars().all())
 
         sent_count = 0
+        blocks = BotBlockStatusService(self.session)
         for user in users:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             lang = user.language if user.language else "ru"
             try:
                 await bot.send_message(
@@ -121,9 +125,14 @@ class SubscriptionChurnService:
                     reply_markup=subscription_churn_followup_keyboard(lang),
                     parse_mode="HTML",
                 )
+                await blocks.handle_send_success(user, reason="subscription_churn_followup")
                 sent_count += 1
-            except Exception:
-                pass
+            except Exception as exc:
+                await blocks.handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="subscription_churn_followup",
+                )
             user.subscription_churn_followup_sent_at = now
 
         if users:
