@@ -125,7 +125,7 @@ class SubscriptionChurnService:
                     reply_markup=subscription_churn_followup_keyboard(lang),
                     parse_mode="HTML",
                 )
-                await blocks.handle_send_success(user)
+                await blocks.handle_send_success(user, reason="subscription_churn_followup")
                 sent_count += 1
             except Exception as exc:
                 await blocks.handle_send_exception(
