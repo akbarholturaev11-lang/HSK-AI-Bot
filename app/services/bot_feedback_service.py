@@ -196,7 +196,12 @@ class BotFeedbackService:
         sent_count = 0
         for feedback in feedbacks:
             user = await self.user_repo.get_by_telegram_id(feedback.telegram_id)
-            if not user or user.status == "blocked" or UserAccessStateService.is_paid(user):
+            if (
+                not user
+                or user.status == "blocked"
+                or UserAccessStateService.is_paid(user)
+                or BotBlockStatusService.is_bot_blocked(user)
+            ):
                 await self.feedback_repo.mark_price_offer_sent(feedback)
                 continue
 
@@ -213,8 +218,16 @@ class BotFeedbackService:
                     reply_markup=feedback_price_offer_keyboard(feedback.id, lang),
                     parse_mode="HTML",
                 )
+                await BotBlockStatusService(self.session).handle_send_success(user)
                 sent_count += 1
-            except Exception:
+            except Exception as exc:
+                blocked = await BotBlockStatusService(self.session).handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="feedback_price_offer",
+                )
+                if blocked:
+                    await self.feedback_repo.mark_price_offer_sent(feedback)
                 continue
 
             await self.feedback_repo.mark_price_offer_sent(feedback)
