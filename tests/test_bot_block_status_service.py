@@ -113,6 +113,57 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(marked)
         self.assertFalse(BotBlockStatusService.is_bot_blocked(user))
 
+    async def test_repeated_forbidden_preserves_first_episode_timestamp_and_source(self):
+        first = datetime.now(timezone.utc) - timedelta(hours=4)
+        later = first + timedelta(hours=2)
+        user = _user(505, bot_blocked_at=first, bot_block_reason="broadcast")
+        session = _FakeSession([user])
+        service = BotBlockStatusService(session)
+
+        await service.mark_user_blocked(
+            user,
+            reason="course_reminder",
+            checked_at=later,
+        )
+
+        self.assertEqual(user.bot_blocked_at, first)
+        self.assertEqual(user.bot_block_reason, "broadcast")
+        self.assertEqual(user.last_bot_block_check_at, later)
+
+    async def test_new_block_after_unblock_starts_new_episode(self):
+        first = datetime.now(timezone.utc) - timedelta(days=2)
+        unblocked = first + timedelta(days=1)
+        second = unblocked + timedelta(hours=3)
+        user = _user(
+            606,
+            bot_blocked_at=first,
+            bot_unblocked_at=unblocked,
+            bot_block_reason="broadcast",
+        )
+        session = _FakeSession([user])
+        service = BotBlockStatusService(session)
+
+        await service.mark_user_blocked(
+            user,
+            reason="my_chat_member_blocked",
+            checked_at=second,
+        )
+
+        self.assertEqual(user.bot_blocked_at, second)
+        self.assertEqual(user.bot_block_reason, "my_chat_member_blocked")
+        self.assertTrue(BotBlockStatusService.is_bot_blocked(user))
+
+    async def test_successful_delivery_clears_stale_block_state(self):
+        blocked_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        user = _user(707, bot_blocked_at=blocked_at, bot_block_reason="feedback_prompt")
+        session = _FakeSession([user])
+        service = BotBlockStatusService(session)
+
+        await service.handle_send_success(user)
+
+        self.assertFalse(BotBlockStatusService.is_bot_blocked(user))
+        self.assertIsNotNone(user.bot_unblocked_at)
+
 
 if __name__ == "__main__":
     unittest.main()
