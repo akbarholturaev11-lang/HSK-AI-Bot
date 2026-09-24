@@ -82,7 +82,9 @@ class AdCampaignService:
 
         target_users = [
             user for user in users
-            if user.telegram_id not in admin_ids and user.telegram_id not in already_done
+            if user.telegram_id not in admin_ids
+            and user.telegram_id not in already_done
+            and not BotBlockStatusService.is_bot_blocked(user)
         ]
 
         sent_count = 0
