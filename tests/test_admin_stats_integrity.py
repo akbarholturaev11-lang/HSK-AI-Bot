@@ -19,6 +19,7 @@ from app.services.admin_miniapp_service import (
     admin_miniapp_today_start,
 )
 from app.services.admin_stats_service import miniapp_course_stats
+from app.services.entitlements.state import EntitlementState
 
 
 class _StatsDatabaseTestCase(unittest.IsolatedAsyncioTestCase):
@@ -218,6 +219,40 @@ class PaymentPeriodIntegrityTests(_StatsDatabaseTestCase):
         self.assertFalse(by_id[202]["hot_lead"])
         self.assertTrue(by_id[303]["hot_lead"])
         self.assertFalse(by_id[101]["hot_lead"])
+
+
+class EntitlementSegmentIntegrityTests(_StatsDatabaseTestCase):
+    async def test_legacy_trial_status_is_free_and_real_pro_trial_is_trial(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    User(
+                        id=1,
+                        telegram_id=101,
+                        status="trial",
+                        payment_status="none",
+                        created_at=now - timedelta(days=5),
+                        last_active_at=now,
+                    ),
+                    User(
+                        id=2,
+                        telegram_id=202,
+                        status="free",
+                        payment_status="none",
+                        trial_used=True,
+                        pro_trial_started_at=now - timedelta(days=1),
+                        pro_trial_ends_at=now + timedelta(days=6),
+                        created_at=now - timedelta(days=5),
+                        last_active_at=now,
+                    ),
+                ]
+            )
+            await session.commit()
+            counts = await AdminMiniAppService(session)._entitlement_state_counts(now)
+
+        self.assertEqual(counts.get(EntitlementState.FREE), 1)
+        self.assertEqual(counts.get(EntitlementState.TRIAL_ACTIVE), 1)
 
 
 class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
