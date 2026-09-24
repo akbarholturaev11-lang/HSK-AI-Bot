@@ -45,7 +45,11 @@ class DiscountNotificationService:
     ) -> DiscountNotificationResult:
         users = await self._target_users(campaign)
         admin_ids = set(settings.admin_id_list)
-        target_users = [user for user in users if user.telegram_id not in admin_ids]
+        target_users = [
+            user for user in users
+            if user.telegram_id not in admin_ids
+            and not BotBlockStatusService.is_bot_blocked(user)
+        ]
 
         sent_count = 0
         failed_count = 0
