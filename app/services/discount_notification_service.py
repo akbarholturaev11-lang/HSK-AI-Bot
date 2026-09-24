@@ -92,7 +92,7 @@ class DiscountNotificationService:
                     source="discount_notification",
                     dedupe_key=f"discount_campaign:{campaign.id}",
                 )
-                await blocks.handle_send_success(user)
+                await blocks.handle_send_success(user, reason="discount_notification")
                 sent_count += 1
             except Exception as exc:
                 failed_count += 1
