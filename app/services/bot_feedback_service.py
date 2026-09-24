@@ -100,8 +100,9 @@ class BotFeedbackService:
         users = list(result.scalars().all())
 
         sent_count = 0
+        attempted_count = 0
         for user in users:
-            if sent_count >= FEEDBACK_SEND_BATCH_LIMIT:
+            if attempted_count >= FEEDBACK_SEND_BATCH_LIMIT:
                 break
 
             feedback = await self._get_or_create_due_feedback(user, now)
@@ -111,6 +112,7 @@ class BotFeedbackService:
             lang = user.language if user.language else "ru"
             text, keyboard = feedback_prompt_for(user, feedback, lang)
 
+            attempted_count += 1
             message_id = None
             try:
                 msg = await bot.send_message(
