@@ -7,6 +7,7 @@ from sqlalchemy import or_, select
 from app.config import settings
 from app.db.models.user import User
 from app.db.models.bot_reachability_event import BotReachabilityEvent
+from app.db.models.bot_outbound_event import BotOutboundEvent
 
 
 class BotBlockStatusService:
@@ -86,10 +87,11 @@ class BotBlockStatusService:
         self,
         user,
         *,
+        reason: str = "delivery_success",
         checked_at: datetime | None = None,
     ) -> None:
         """A successful Telegram delivery is proof the bot is not blocked."""
-        await self.mark_user_unblocked(user, reason="delivery_success", checked_at=checked_at)
+        await self.mark_user_unblocked(user, reason=reason, checked_at=checked_at)
 
     async def mark_telegram_id_unblocked(self, telegram_id: int) -> bool:
         result = await self.session.execute(select(User).where(User.telegram_id == telegram_id))
@@ -99,9 +101,31 @@ class BotBlockStatusService:
         await self.mark_user_unblocked(user)
         return True
 
-    async def handle_send_success(self, user) -> None:
-        if user and self.is_bot_blocked(user):
-            await self.mark_user_reachable(user)
+    async def handle_send_success(
+        self,
+        user,
+        *,
+        reason: str = "delivery_success",
+        sent_at: datetime | None = None,
+    ) -> None:
+        if not user:
+            return
+        now = sent_at or datetime.now(timezone.utc)
+        source = str(reason or "delivery_success")[:120]
+        self.session.add(
+            BotOutboundEvent(
+                user_id=getattr(user, "id", None),
+                telegram_id=int(user.telegram_id),
+                source=source,
+                status="sent",
+                created_at=now,
+            )
+        )
+        if self.is_bot_blocked(user):
+            await self.mark_user_reachable(user, reason="delivery_success", checked_at=now)
+        else:
+            user.last_bot_block_check_at = now
+            await self.session.flush()
 
     async def handle_send_exception(
         self,
@@ -118,7 +142,18 @@ class BotBlockStatusService:
         user = result.scalar_one_or_none()
         if not user:
             return False
-        await self.mark_user_blocked(user, reason=reason)
+        now = datetime.now(timezone.utc)
+        source = str(reason or "send_failed")[:120]
+        self.session.add(
+            BotOutboundEvent(
+                user_id=getattr(user, "id", None),
+                telegram_id=int(user.telegram_id),
+                source=source,
+                status="forbidden",
+                created_at=now,
+            )
+        )
+        await self.mark_user_blocked(user, reason=source, checked_at=now)
         return True
 
     async def scan_due_users(self, bot, *, limit: int = 100, pause_seconds: float = 0.03) -> int:
