@@ -1,6 +1,9 @@
 name: Backend targeted tests
 
 on:
+  push:
+    branches:
+      - "fix/bot-block-tracking"
   pull_request:
     paths:
       - "app/**"
