@@ -74,6 +74,8 @@ from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
     MOTIVATION_KEYS,
@@ -1320,6 +1322,48 @@ async def _admin_user_payload(session, user) -> dict:
             )
         ).scalar()
     )
+    reachability_rows = list(
+        (
+            await session.execute(
+                select(BotReachabilityEvent)
+                .where(BotReachabilityEvent.telegram_id == user.telegram_id)
+                .order_by(BotReachabilityEvent.created_at.desc(), BotReachabilityEvent.id.desc())
+                .limit(12)
+            )
+        ).scalars().all()
+    )
+
+    client_activity_after_block = {
+        "miniapp_opened_at": "",
+        "android_opened_at": "",
+        "desktop_opened_at": "",
+    }
+    if BotBlockStatusService.is_bot_blocked(user) and user.bot_blocked_at:
+        activity_names = (
+            "miniapp_opened",
+            "android_app_opened",
+            "desktop_app_opened",
+        )
+        activity_rows = (
+            await session.execute(
+                select(
+                    CourseMiniAppEvent.event_name,
+                    func.max(CourseMiniAppEvent.created_at).label("last_at"),
+                )
+                .where(
+                    CourseMiniAppEvent.telegram_id == user.telegram_id,
+                    CourseMiniAppEvent.created_at >= user.bot_blocked_at,
+                    CourseMiniAppEvent.event_name.in_(activity_names),
+                )
+                .group_by(CourseMiniAppEvent.event_name)
+            )
+        ).all()
+        activity_by_name = {str(row.event_name): row.last_at for row in activity_rows}
+        client_activity_after_block = {
+            "miniapp_opened_at": _mini_dt(activity_by_name.get("miniapp_opened")),
+            "android_opened_at": _mini_dt(activity_by_name.get("android_app_opened")),
+            "desktop_opened_at": _mini_dt(activity_by_name.get("desktop_app_opened")),
+        }
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1359,6 +1403,15 @@ async def _admin_user_payload(session, user) -> dict:
             "referred_by_telegram_id": user.referred_by_telegram_id,
             "access": access,
             "referral": referral,
+            "bot_reachability_history": [
+                {
+                    "type": item.event_type,
+                    "source": item.source,
+                    "created_at": _mini_dt(item.created_at),
+                }
+                for item in reachability_rows
+            ],
+            "client_activity_after_bot_block": client_activity_after_block,
             "bonus": {
                 "total": bonus_total,
                 "used": bonus_used,
