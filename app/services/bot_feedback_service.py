@@ -123,7 +123,7 @@ class BotFeedbackService:
                 )
                 message_id = msg.message_id
                 sent_count += 1
-                await BotBlockStatusService(self.session).handle_send_success(user)
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="feedback_prompt")
             except Exception as exc:
                 await BotBlockStatusService(self.session).handle_send_exception(
                     user.telegram_id,
@@ -218,7 +218,7 @@ class BotFeedbackService:
                     reply_markup=feedback_price_offer_keyboard(feedback.id, lang),
                     parse_mode="HTML",
                 )
-                await BotBlockStatusService(self.session).handle_send_success(user)
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="feedback_price_offer")
                 sent_count += 1
             except Exception as exc:
                 blocked = await BotBlockStatusService(self.session).handle_send_exception(
