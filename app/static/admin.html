@@ -598,7 +598,7 @@
     const segmentLabels = {
       all:["Hammasi","butun baza"], active_today:["Bugun aktiv","bugun botga kirgan"],
       paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","unikal to'lovchi"],
-      wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Sinov","trial"], free:["Bepul","free"],
+      wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Pro sinov","haqiqiy Pro trial"], free:["Bepul","free-tier"],
       expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Bot blok","botni bloklagan"]
     };
 
@@ -1038,8 +1038,8 @@
           || (state.filter==="active_today"&&u.active_today===true)
           || (state.filter==="pending"&&(u.has_pending_payment===true||u.payment_status==="pending"))
           || (state.filter==="wants_pay"&&u.hot_lead===true)
-          || (state.filter==="trial"&&u.status==="trial")
-          || (state.filter==="free"&&u.status==="free")
+          || (state.filter==="trial"&&u.access_type==="TRIAL_ACTIVE")
+          || (state.filter==="free"&&u.access_type==="FREE")
           || (state.filter==="expired"&&u.status==="expired")
           || (state.filter==="blocked"&&u.status==="blocked")
           || (state.filter==="bot_blocked"&&u.bot_blocked);
