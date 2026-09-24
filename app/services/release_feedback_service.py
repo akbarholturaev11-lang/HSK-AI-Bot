@@ -15,6 +15,7 @@ from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, de
 from app.repositories.user_repo import UserRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.config import settings
 
 
@@ -209,6 +210,7 @@ class ReleaseFeedbackService:
         sent_count = 0
         failed_count = 0
         delivery_count = 0
+        blocks = BotBlockStatusService(self.session)
 
         for user in users:
             status = "sent"
@@ -224,11 +226,17 @@ class ReleaseFeedbackService:
                     language=user.language,
                     rating_markup=release_feedback_rating_keyboard(campaign.id),
                 )
+                await blocks.handle_send_success(user)
                 sent_count += 1
             except Exception as exc:
                 status = "failed"
                 error = str(exc)
                 failed_count += 1
+                await blocks.handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="release_feedback",
+                )
 
             await self.repo.create_delivery(
                 campaign_id=campaign.id,
