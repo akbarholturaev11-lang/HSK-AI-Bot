@@ -32,6 +32,7 @@ class ExpiryReminderService:
                     chat_id=user.telegram_id,
                     text=text,
                 )
+                await block_service.handle_send_success(user)
                 await CourseNotificationService(self.session).record_from_text(
                     user,
                     key="subscription_expiring",
