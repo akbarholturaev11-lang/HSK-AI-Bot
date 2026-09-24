@@ -1535,7 +1535,7 @@ async def _review_admin_payment(
             if course_event.get("recorded"):
                 await analytics_session.commit()
         with contextlib.suppress(Exception):
-            await PaymentNotifyService().notify_payment_approved(bot=bot, user=user)
+            await PaymentNotifyService(session).notify_payment_approved(bot=bot, user=user)
         if partner:
             with contextlib.suppress(Exception):
                 await PartnerService(session).notify_partner(
@@ -1564,7 +1564,7 @@ async def _review_admin_payment(
             payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
         )
         with contextlib.suppress(Exception):
-            await PaymentNotifyService().notify_payment_rejected(
+            await PaymentNotifyService(session).notify_payment_rejected(
                 bot=bot,
                 user=user,
                 reason=None,
