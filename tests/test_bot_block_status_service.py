@@ -26,6 +26,10 @@ class _FakeSession:
     def __init__(self, users):
         self._users = users
         self.committed = False
+        self.added = []
+
+    def add(self, item):
+        self.added.append(item)
 
     async def execute(self, _query):
         return _ScalarsResult(self._users)
