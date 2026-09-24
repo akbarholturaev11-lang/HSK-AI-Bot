@@ -44,6 +44,7 @@ class DailyResetService:
                         chat_id=user.telegram_id,
                         text=t("daily_limit_renewed", lang),
                     )
+                    await block_service.handle_send_success(user)
                     sent_count += 1
                 except Exception as exc:
                     await block_service.handle_send_exception(
