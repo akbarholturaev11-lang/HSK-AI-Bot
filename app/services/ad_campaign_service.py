@@ -114,7 +114,7 @@ class AdCampaignService:
                         contact_url=button_contact_url,
                     ),
                 )
-                await blocks.handle_send_success(user)
+                await blocks.handle_send_success(user, reason="ad_campaign")
                 sent_count += 1
             except Exception as exc:
                 status = "failed"
