@@ -63,6 +63,8 @@ class TrialReminderService:
         sent = 0
 
         for user in users:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             ends_at = _as_utc(user.pro_trial_ends_at)
             if not ends_at:
                 continue
