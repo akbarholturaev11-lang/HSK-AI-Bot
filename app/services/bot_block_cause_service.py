@@ -263,7 +263,9 @@ class BotBlockCauseService:
         if earliest:
             evidence.append(f"Birinchi app faolligi blockdan {minutes} daqiqa keyin qayd etilgan")
 
-        score = 88 if minutes <= 24 * 60 else 78
+        # Post-block app activity is strong evidence that this is NOT product churn,
+        # but it is only indirect evidence for why Telegram was blocked.
+        score = 72 if minutes <= 24 * 60 else 64
         return self._candidate(
             key="channel_migration",
             title="Telegram kerak bo'lmay qolgan yoki ilovaga o'tgan bo'lishi mumkin",
@@ -271,7 +273,8 @@ class BotBlockCauseService:
             evidence=evidence[:4],
             note=(
                 "Bu user HSK AI'ni tashlaganini ko'rsatmaydi: Telegram yopilgandan keyin ham "
-                "HSK AI clientlaridan foydalanish davom etgan."
+                "HSK AI clientlaridan foydalanish davom etgan. Bu kuchli non-churn signali, ammo "
+                "Telegramni nega yopganining to'g'ridan-to'g'ri isboti emas."
             ),
         )
 
