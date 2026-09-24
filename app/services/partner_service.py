@@ -14,6 +14,7 @@ from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.partner_repo import PAYOUT_OPEN_STATUSES, PartnerRepository
 from app.repositories.user_repo import UserRepository
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.portfolio_service import PortfolioService
 
 
@@ -385,7 +386,7 @@ class PartnerService:
 
     async def notify_partner(self, bot: Bot, partner: Partner, key: str, **kwargs) -> None:
         user = await self.user_repo.get_by_telegram_id(partner.user_telegram_id)
-        if not user:
+        if not user or BotBlockStatusService.is_bot_blocked(user):
             return
         lang = user.language or "ru"
         include_bonus_line = kwargs.pop("include_bonus_line", False)
@@ -396,13 +397,19 @@ class PartnerService:
                 if signup_bonus
                 else ""
             )
+        blocks = BotBlockStatusService(self.session)
         try:
             await bot.send_message(
                 chat_id=user.telegram_id,
                 text=t(key, lang, **kwargs),
             )
-        except Exception:
-            pass
+            await blocks.handle_send_success(user)
+        except Exception as exc:
+            await blocks.handle_send_exception(
+                user.telegram_id,
+                exc,
+                reason="partner_notification",
+            )
 
     async def overall_stats(self) -> dict[str, object]:
         partner_counts = {
