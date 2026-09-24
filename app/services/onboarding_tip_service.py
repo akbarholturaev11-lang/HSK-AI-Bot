@@ -170,6 +170,8 @@ class OnboardingTipService:
     async def _should_send(self, user: User, event: OnboardingTipEvent) -> bool:
         if not user or getattr(user, "status", "") == "blocked":
             return False
+        if BotBlockStatusService.is_bot_blocked(user):
+            return False
         if event.tip_key in _COURSE_TIP_KEYS:
             return await self._course_context_is_current(user, self._parse_context(event.context_json))
         return True
