@@ -33,6 +33,7 @@ from app.bot.handlers.android_app import router as android_app_router
 from app.bot.handlers.partner import router as partner_router
 from app.bot.handlers.admin_partner import router as admin_partner_router
 from app.bot.handlers.challenge import router as challenge_router
+from app.bot.handlers.bot_membership import router as bot_membership_router
 
 
 def create_bot(settings):
@@ -52,6 +53,8 @@ def create_bot(settings):
     dp.message.middleware(RequiredChannelMiddleware(async_session_maker))
     dp.callback_query.middleware(RequiredChannelMiddleware(async_session_maker))
 
+    # Telegram emits my_chat_member when a private user blocks/unblocks the bot.
+    dp.include_router(bot_membership_router)
     dp.include_router(required_channel_router)
     # Desktop deep links must be handled before the generic /start router.
     dp.include_router(desktop_auth_router)
