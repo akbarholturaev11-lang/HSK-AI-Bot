@@ -10,6 +10,7 @@ from app.db.models.onboarding_tip_event import OnboardingTipEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.message_repo import MessageRepository
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 TIP_DELAY_SECONDS = 0
@@ -199,7 +200,13 @@ class OnboardingTipService:
                     text=t(self._tip_text_key(event.tip_key), lang),
                     parse_mode="HTML",
                 )
-            except Exception:
+                await BotBlockStatusService(self.session).handle_send_success(user)
+            except Exception as exc:
+                await BotBlockStatusService(self.session).handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="onboarding_tip",
+                )
                 event.status = "skipped"
                 continue
 
