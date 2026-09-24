@@ -198,9 +198,8 @@ class AdminBroadcastService:
                     media_file_id=media_file_id,
                     reply_markup=markup,
                 )
+                await block_service.handle_send_success(user, reason="broadcast")
                 sent += 1
-                if BotBlockStatusService.is_bot_blocked(user):
-                    await block_service.mark_user_unblocked(user)
             except Exception as exc:
                 failed += 1
                 try:
