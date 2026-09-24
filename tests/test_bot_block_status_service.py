@@ -110,6 +110,11 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(marked)
         self.assertTrue(BotBlockStatusService.is_bot_blocked(user))
+        self.assertEqual(len(session.added), 2)
+        outbound = next(item for item in session.added if getattr(item, "status", None) == "forbidden")
+        transition = next(item for item in session.added if getattr(item, "event_type", None) == "blocked")
+        self.assertEqual(outbound.source, "broadcast")
+        self.assertEqual(transition.source, "broadcast")
 
     async def test_handle_send_exception_ignores_other_errors(self):
         user = _user(404)
@@ -171,13 +176,15 @@ class BotBlockStatusServiceTests(unittest.IsolatedAsyncioTestCase):
         session = _FakeSession([user])
         service = BotBlockStatusService(session)
 
-        await service.handle_send_success(user)
+        await service.handle_send_success(user, reason="feedback_prompt")
 
         self.assertFalse(BotBlockStatusService.is_bot_blocked(user))
         self.assertIsNotNone(user.bot_unblocked_at)
-        self.assertEqual(len(session.added), 1)
-        self.assertEqual(session.added[0].event_type, "unblocked")
-        self.assertEqual(session.added[0].source, "delivery_success")
+        self.assertEqual(len(session.added), 2)
+        outbound = next(item for item in session.added if getattr(item, "status", None) == "sent")
+        transition = next(item for item in session.added if getattr(item, "event_type", None) == "unblocked")
+        self.assertEqual(outbound.source, "feedback_prompt")
+        self.assertEqual(transition.source, "delivery_success")
 
 
 if __name__ == "__main__":
