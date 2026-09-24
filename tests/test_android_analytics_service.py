@@ -415,6 +415,19 @@ class AdminRenderResilienceTest(unittest.TestCase):
         self.assertIn('toast("Panelning bir qismi yuklanmadi. Qayta ochish shart emas.");', admin)
 
 
+class AdminDesktopFunnelRenderTest(unittest.TestCase):
+    def test_desktop_funnel_uses_desktop_event_reader(self):
+        admin = open("app/static/admin.html", encoding="utf-8").read()
+        expected = '''const steps=[
+        ["So'rov",desktopUsers(funnel,"download_requested")],
+        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
+        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
+        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
+        ["First open",desktopUsers(funnel,"verified_first_open")]
+      ];'''
+        self.assertIn(expected, admin)
+
+
 class AndroidAdminCopyTest(unittest.TestCase):
     def test_admin_android_block_is_simple_by_default(self):
         admin = open("app/static/admin.html", encoding="utf-8").read()
