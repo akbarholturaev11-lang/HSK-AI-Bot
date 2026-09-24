@@ -115,6 +115,8 @@ class SubscriptionChurnService:
         sent_count = 0
         blocks = BotBlockStatusService(self.session)
         for user in users:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             lang = user.language if user.language else "ru"
             try:
                 await bot.send_message(
