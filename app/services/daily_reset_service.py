@@ -37,7 +37,7 @@ class DailyResetService:
             user.questions_used = 0
             user.last_limit_reset_at = now
 
-            if should_notify:
+            if should_notify and not BotBlockStatusService.is_bot_blocked(user):
                 lang = user.language if user.language else "ru"
                 try:
                     await bot.send_message(
