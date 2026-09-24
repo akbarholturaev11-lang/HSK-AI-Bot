@@ -1650,11 +1650,12 @@ class AdminMiniAppService:
                 for row in source_rows
             ],
             "explain": (
-                "Bu Telegram aloqa holati, product churn emas. "
-                "Ilovada blokdan keyin aktiv bo'lganlar HSK AI'dan foydalanishni davom ettirgan. "
-                "Aniqlash manbasi sababni emas, blok qayerda sezilganini ko'rsatadi. "
-                "Eski yozuvlarning birinchi blok vaqti oldingi kodda qayta yozilgan bo'lishi mumkin; "
-                "my_chat_member asosidagi aniq tarix shu yangilanishdan keyin yig'iladi."
+                "Bu Telegram aloqa holati, HSK AI'dan ketgan userlar soni emas. "
+                "Telegram yopilgandan keyin ham Android, Mini App yoki Desktop'da aktiv bo'lgan user "
+                "HSK AI'dan foydalanishni davom ettirgan hisoblanadi. Aniqlash manbasi user nega "
+                "bloklaganini emas, tizim buni qaysi paytda sezganini ko'rsatadi. "
+                "Eski yozuvlarda birinchi blok vaqti aniq bo'lmasligi mumkin; yangi aniq tarix "
+                "shu yangilanishdan keyin yig'iladi."
             ),
         }
 
