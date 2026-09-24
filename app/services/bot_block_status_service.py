@@ -9,7 +9,13 @@ from app.db.models.user import User
 
 
 class BotBlockStatusService:
-    """Tracks users who blocked the Telegram bot without messaging them."""
+    """Tracks whether Telegram can currently deliver bot messages to a user.
+
+    `bot_blocked_at` is the first confirmed/detected time of the CURRENT
+    unreachable episode. Repeated failed sends must not move that timestamp or
+    replace the original detection source; otherwise churn attribution becomes
+    meaningless. A later confirmed unblock closes the episode.
+    """
 
     CHECK_INTERVAL = timedelta(days=1)
 
@@ -32,9 +38,14 @@ class BotBlockStatusService:
         checked_at: datetime | None = None,
     ) -> None:
         now = checked_at or datetime.now(timezone.utc)
-        user.bot_blocked_at = now
+
+        # Preserve the first timestamp/source inside one block episode.
+        # If the user was previously unblocked, this starts a NEW episode.
+        if not self.is_bot_blocked(user):
+            user.bot_blocked_at = now
+            user.bot_block_reason = str(reason or "telegram_forbidden")[:120]
+
         user.last_bot_block_check_at = now
-        user.bot_block_reason = str(reason or "telegram_forbidden")[:120]
         await self.session.flush()
 
     async def mark_user_unblocked(
@@ -49,6 +60,15 @@ class BotBlockStatusService:
         user.last_bot_block_check_at = now
         await self.session.flush()
 
+    async def mark_user_reachable(
+        self,
+        user,
+        *,
+        checked_at: datetime | None = None,
+    ) -> None:
+        """A successful Telegram delivery is proof the bot is not blocked."""
+        await self.mark_user_unblocked(user, checked_at=checked_at)
+
     async def mark_telegram_id_unblocked(self, telegram_id: int) -> bool:
         result = await self.session.execute(select(User).where(User.telegram_id == telegram_id))
         user = result.scalar_one_or_none()
@@ -57,7 +77,19 @@ class BotBlockStatusService:
         await self.mark_user_unblocked(user)
         return True
 
-    async def handle_send_exception(self, telegram_id: int, exc: Exception, *, reason: str = "send_failed") -> bool:
+    async def handle_send_success(self, user) -> None:
+        if user and self.is_bot_blocked(user):
+            await self.mark_user_reachable(user)
+
+    async def handle_send_exception(
+        self,
+        telegram_id: int,
+        exc: Exception,
+        *,
+        reason: str = "send_failed",
+    ) -> bool:
+        # Only TelegramForbiddenError is reachability evidence. Timeouts,
+        # rate limits and generic BadRequest must never inflate "bot blocked".
         if not isinstance(exc, TelegramForbiddenError):
             return False
         result = await self.session.execute(select(User).where(User.telegram_id == telegram_id))
@@ -68,6 +100,13 @@ class BotBlockStatusService:
         return True
 
     async def scan_due_users(self, bot, *, limit: int = 100, pause_seconds: float = 0.03) -> int:
+        """Legacy diagnostics only.
+
+        Production block/unblock state is now driven by Telegram
+        `my_chat_member` updates plus failed/successful real deliveries.
+        This method remains for tests/manual diagnostics, but the scheduler no
+        longer uses it.
+        """
         now = datetime.now(timezone.utc)
         cutoff = now - self.CHECK_INTERVAL
         query = (
@@ -93,19 +132,18 @@ class BotBlockStatusService:
             try:
                 await bot.get_chat(user.telegram_id)
             except TelegramForbiddenError:
-                # Hisob o'chirilgan / bot bloklangan — bu ishonchli blok signali.
-                await self.mark_user_blocked(user, reason="daily_get_chat_forbidden", checked_at=now)
+                await self.mark_user_blocked(
+                    user,
+                    reason="diagnostic_get_chat_forbidden",
+                    checked_at=now,
+                )
             except TelegramBadRequest:
                 user.last_bot_block_check_at = now
                 await self.session.flush()
             except Exception:
                 continue
             else:
-                # MUHIM: get_chat muvaffaqiyati blokdan chiqqanini ANGLATMAYDI —
-                # Telegram getChat user botni bloklagan bo'lsa ham OK qaytaradi.
-                # Shuning uchun bu yerda blokni olib tashlamaymiz (avval shu xato bor edi:
-                # har kungi skaner haqiqiy bloklarni o'chirib yuborardi).
-                # Haqiqiy blokdan chiqish middleware orqali, user botga yozganda belgilanadi.
+                # getChat success does NOT prove unblocked.
                 user.last_bot_block_check_at = now
                 await self.session.flush()
             checked += 1
