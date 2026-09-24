@@ -27,6 +27,7 @@ class BotFeedback(Base):
     admin_replied_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     prompt_message_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    prompt_attempts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     prompted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), index=True, nullable=True)
     reward_granted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
