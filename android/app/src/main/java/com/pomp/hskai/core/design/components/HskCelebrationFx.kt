@@ -867,10 +867,15 @@ internal fun HskConfettiRain(key: Any?, modifier: Modifier = Modifier) {
         val pieceHeight = 13.dp.toPx()
         val corner = CornerRadius(2.dp.toPx())
         val startY = -14.dp.toPx()
+        val width = size.width
+        val pivot = Offset(pieceWidth / 2f, pieceHeight / 2f)
         for (piece in pieces) {
+            // Worked out here: the transform block below is not a Density scope.
+            val x = piece.x * width + piece.dx.dp.toPx() * move
+            val y = startY + travel * move
             withTransform({
-                translate(left = piece.x * size.width + piece.dx.dp.toPx() * move, top = startY + travel * move)
-                rotate(degrees = piece.spin * move, pivot = Offset(pieceWidth / 2f, pieceHeight / 2f))
+                translate(left = x, top = y)
+                rotate(degrees = piece.spin * move, pivot = pivot)
             }) {
                 drawRoundRect(color = piece.color, size = Size(pieceWidth, pieceHeight), cornerRadius = corner, alpha = fade)
             }

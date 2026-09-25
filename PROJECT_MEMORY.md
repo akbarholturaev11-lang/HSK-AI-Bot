@@ -227,6 +227,28 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-25 — Android dars yakuni: kinematik klip, ovoz va vibratsiya
+
+Changed:
+- Dars/mashq yakunidagi bayram Mini App'dagidek: personaj qo'nishi (dars),
+  qizil plashli Pandaning osmonga parvozi (streak), uzoqdan otilib chiqishi
+  (reyting); chang, silkinish, konfetti, 毕/胜 emblemasi, olov, kunlar muhri,
+  reytingda qatorlar o'rin almashishi. Streak ekranidagi eski panda rasmi
+  o'rniga bizning chizilgan Panda.
+- Mini App notalari (`beep()`) sintez qilinadi, vibratsiya har notaga mos,
+  qo'nishda zarb. Ovozsiz rejimda jim, vibratsiya rejimida faqat vibratsiya.
+
+Files touched:
+- `android/.../core/design/components/HskCelebrationFx.kt` (yangi),
+  `HskCelebration.kt`, `HskCharacters.kt` (panda plashi),
+  `feature/lesson/LessonCompletionCelebration.kt`,
+  `feature/practice/PracticeCompletionHero.kt`, `AndroidManifest.xml` (VIBRATE).
+  Tafsilot: `ANDROID_CONTEXT.md` 3.19.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Reyting mantiqi o'zgarmagan.
+- Telefonda ko'rish/eshitish tekshiruvi kerak (ovoz balandligi, vibratsiya kuchi).
+
 ### 2026-09-25 — Android dars ekrani: Tekshirish tugmasi va xatoga tayyor javob
 
 Changed:

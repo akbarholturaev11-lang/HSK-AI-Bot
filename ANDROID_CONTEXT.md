@@ -784,6 +784,51 @@ Yangi matn yo'q: barcha satrlar mavjud (uz/ru/tg). Qamrov:
 debug APK, release bundle. **Tekshirilmagan:** ko'rinish telefonda
 (light/dark, 360 dp, katta shrift, uz/ru/tg) va AI chat oqimi real akkauntda.
 
+### 3.19 Dars yakuni: Mini App'dagi kinematik klip, ovoz va vibratsiya — 2026-09-25
+
+Muammo: dars tugaganda Androidda effekt yo'q edi, streak ekranidagi panda
+eski rasm (`widget_panda_streak`) edi, reytingda ko'tarilish sahnasi quruq edi.
+Endi Mini App'dagi (`course-v3.html`) bayram navbati ko'chirildi — raqamlar
+o'zi: `PANDA_FX`, `cinePanda()`, `skyScene()`, `pandaDust()`, `stageQuake()`,
+`luRain()`, `.lu-emb`, `luReveal`, `flameSvg()`, `sk*` keyframe'lar, `beep()`.
+
+- **Yangi fayl:** `core/design/components/HskCelebrationFx.kt`.
+  - `hskTrack` — CSS keyframe'larini (har segment o'z easing'i bilan) o'qiydi.
+  - `HskCinematicEntrance` — sahnadan oldin faqat personaj: `LAND` (dars —
+    tepadan tushib changda qo'nadi), `FLY` (streak — qizil plashli panda
+    osmonga uchib, bulutlar orasidan o'tib qaytib qo'nadi; yer, daraxtlar,
+    uy, shamol, soya), `ZOOM` (reyting — uzoqdan otilib chiqadi). Qo'nishda
+    chang, kadr silkinishi, zarb. Ekranga tegish klipni o'tkazib yuboradi;
+    tizimda animatsiyalar o'chirilgan bo'lsa klip yo'q.
+  - `HskConfettiRain` (eski statik `HskConfettiField` o'rniga), `HskCelebrationEmblem`
+    (毕 dars / 胜 checkpoint), `HskReveal` (qatorma-qator ochilish),
+    `HskStreakFlame` (yonish, lipillash, oltin nur), `HskMiniFlame` (kun alangasi:
+    yonayotgan / muzlagan / hali oldinda), `HskStamp` (bugungi kun muhri),
+    `HskNumberPop`.
+  - **Ovoz + vibratsiya:** `HskCue` — Mini App notalari (`AudioTrack`, 44.1 kHz,
+    sintez, fayl yo'q) va har notaga mos vibratsiya zarbasi (90 ms oraliq).
+    Telefon ovozsiz rejimda — jim; vibratsiya rejimida — faqat vibratsiya;
+    ovoz media balandligi orqali (`USAGE_GAME`). Qo'nishda kuchli zarb.
+- **Panda plashi:** `HskCharacterStage(cape = true)` — Mini App parvoz
+  pozasidagi qizil plash, hilpiraydi. Faqat panda va faqat bayramda.
+- **Sahna:** `HskCelebrationStage(raysVisible, rainKey)` — klip paytida nurlar
+  yashirin, keyin qaytadi; konfetti hammasining ustida.
+- **Dars (`LessonCompletionCelebration.kt`):** har sahna o'z klipi bilan
+  ochiladi; klip tugaguncha tugma ham, matn ham yo'q. Dars sahnasida markazda
+  emblema, personaj burchakda (Mini App `.lu-panda`). Streak — olov yonida
+  bizning Panda (eski rasm olib tashlandi). Reyting — siz va o'tib ketgan
+  o'quvchi qatorlari o'rin almashadi (420 ms dan keyin), konfetti va ohang.
+- **Mashq/Xatolarim:** `PracticeStreakStep` ham `FLY` klipi va yangi streak
+  ekranini ishlatadi (umumiy komponent).
+- **Manifest:** `android.permission.VIBRATE` (normal ruxsat, so'ralmaydi).
+
+Reyting sahnasi mantiqi o'zgarmagan: faqat server `rank_before > rank_after`
+(haqiqiy ko'tarilish) desa chiqadi, XP'dan taxmin qilinmaydi.
+
+Yangi ko'rinadigan matn yo'q (emblema ieroglifi — Mini App'dagi bilan bir xil,
+tarjima qilinmaydi). Qamrov: `HskCelebrationFxTest` (keyframe o'qish,
+vibratsiya zarbalari notalarga mosligi).
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
