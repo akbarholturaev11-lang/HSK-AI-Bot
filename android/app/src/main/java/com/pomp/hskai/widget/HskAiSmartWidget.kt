@@ -40,7 +40,9 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.i18n.AppLocale
 import com.pomp.hskai.core.settings.AppThemeMode
 import java.util.UUID
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 
 class HskAiSmartWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Responsive(setOf(DpSize(130.dp, 48.dp), DpSize(130.dp, 110.dp), DpSize(260.dp, 110.dp)))
@@ -67,22 +69,18 @@ class HskAiSmartWidget : GlanceAppWidget() {
     }
 }
 
-/** No scheduling, network calls or access decisions in the view. */
-@Composable
-internal fun WidgetContent(
+internal data class WidgetCopy(val message: String, val stats: String, val lesson: String)
+
+/**
+ * The widget's words for one render. The install prompt draws its preview of
+ * the widget from this too, so the two can never say different things.
+ */
+internal fun widgetCopy(
     context: Context,
     session: WidgetSession,
     access: WidgetAccess,
-    dark: Boolean,
-    visual: WidgetVisual = WidgetVisualResolver.resolve(session.snapshot, session.epoch),
-) {
-    val size = LocalSize.current
-    val compact = size.height < 110.dp
-    val wide = size.width >= 260.dp
-    val palette = PompColors.paletteFor(dark)
-
-    // One engine chose the state, one table chose the drawing and the line.
-    // The artwork fills the widget; copy is a readable overlay on top of it.
+    visual: WidgetVisual,
+): WidgetCopy {
     val asset = WidgetArt.assetFor(access, visual)
     val milestone = visual.special
         ?.takeIf { access == WidgetAccess.ACTIVE && it.kind == WidgetSpecialKind.MILESTONE }
@@ -101,6 +99,27 @@ internal fun WidgetContent(
     }
     val lesson = if (fresh && snapshot?.lessonOrder != null)
         context.getString(R.string.widget_lesson, snapshot.level.uppercase(), snapshot.lessonOrder) else "HSK AI"
+    return WidgetCopy(message, stats, lesson)
+}
+
+/** No scheduling, network calls or access decisions in the view. */
+@Composable
+internal fun WidgetContent(
+    context: Context,
+    session: WidgetSession,
+    access: WidgetAccess,
+    dark: Boolean,
+    visual: WidgetVisual = WidgetVisualResolver.resolve(session.snapshot, session.epoch),
+) {
+    val size = LocalSize.current
+    val compact = size.height < 110.dp
+    val wide = size.width >= 260.dp
+    val palette = PompColors.paletteFor(dark)
+
+    // One engine chose the state, one table chose the drawing and the line.
+    // The artwork fills the widget; copy is a readable overlay on top of it.
+    val asset = WidgetArt.assetFor(access, visual)
+    val (message, stats, lesson) = widgetCopy(context, session, access, visual)
 
     // Every tap goes through CurrentLesson; MainActivity performs the fresh bearer/access check.
     val action = actionStartActivity(WidgetIntents.open(context, "widget"))
@@ -173,11 +192,22 @@ internal fun WidgetContent(
 class HskAiWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget = HskAiSmartWidget()
 
+    companion object {
+        /**
+         * Counts widgets that newly landed on a home screen while this process
+         * is alive. The install prompt watches it, because some launchers
+         * confirm a pin without ever pausing the app.
+         */
+        internal val placements = MutableStateFlow(0)
+    }
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         // Only actual provider IDs mean "pinned". Dispatching a pin request is not success.
         val prefs = context.getSharedPreferences("widget_installations", Context.MODE_PRIVATE)
         val actual = appWidgetManager.getAppWidgetIds(android.content.ComponentName(context, javaClass)).toSet()
-        appWidgetIds.filter { it in actual && !prefs.contains(it.toString()) }.forEach { id ->
+        val added = appWidgetIds.filter { it in actual && !prefs.contains(it.toString()) }
+        if (added.isNotEmpty()) placements.update { it + 1 }
+        added.forEach { id ->
             val eventId = UUID.randomUUID().toString()
             prefs.edit().putBoolean(id.toString(), true).apply()
             WorkManager.getInstance(context).enqueueUniqueWork(

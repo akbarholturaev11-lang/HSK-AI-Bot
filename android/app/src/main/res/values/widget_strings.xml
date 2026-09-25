@@ -16,6 +16,9 @@
     <string name="widget_prompt_installed_title">Vidjet o‘rnatildi</string>
     <string name="widget_prompt_installed_body">HSK AI endi bosh ekranda. Dars va streak holatini bir qarashda ko‘rasiz.</string>
     <string name="widget_prompt_manual_hint">Agar tizim oynasi ochilmasa: bosh ekranni bosib turing → Vidjetlar → HSK AI.</string>
+    <string name="widget_prompt_placed">Vidjet ekranga o‘rnatildi</string>
+    <string name="widget_prompt_blocked_hint">Telefoningiz vidjet qo‘yishni to‘sib qo‘ydi. Sozlamalarda «Ish stoli yorliqlari» ruxsatini yoqing.</string>
+    <string name="widget_prompt_open_permission">Ruxsatni ochish</string>
     <string name="widget_setup_title">Darslar bosh ekranda</string>
     <string name="widget_setup_body">Kunlik dars, XP va streak holatini ilovani ochmasdan ko‘ring. Widget bosilganda HSK AI ochiladi.</string>
     <string name="widget_setup_add">Bosh ekranga qo‘shish</string>

@@ -14,7 +14,7 @@ Native Android home-screen widget for HSK AI. It is a Glance widget owned by the
 | Widget copy | `android/app/src/main/res/values/widget_strings.xml`, `values-ru/widget_strings.xml`, `values-tg/widget_strings.xml` | Keep all three files in sync; the static translation check enforces this. |
 | Panda artwork | `android/app/src/main/res/drawable-nodpi/widget_panda_*.webp` | Replace a drawing without changing state or layout code. |
 | Responsive layout | `android/app/src/main/java/com/pomp/hskai/widget/HskAiSmartWidget.kt` | Layout only; state, art and copy selection stay elsewhere. |
-| Add-widget/reminder UI | `android/app/src/main/java/com/pomp/hskai/widget/WidgetSetupSheet.kt` | The reminder switch is local Android state and does not change Telegram notification preferences. |
+| Add-widget UI | `android/app/src/main/java/com/pomp/hskai/widget/WidgetInstallPromptScreen.kt` | One full-screen prompt for onboarding, the daily reminder and Profile. It previews the real widget (same art and `widgetCopy` as `WidgetContent`) at 2x2 cells on a blurred home screen, hides the AI button, closes itself the moment a widget lands (`HskAiWidgetReceiver.placements` or resume) and then `WidgetPlacedNotice` shows for 1.5 s. On Xiaomi a pin that shows no system UI within 2 s is treated as blocked by the home-screen-shortcuts permission (`WidgetInstallPromptPolicy.pinLooksBlocked`). |
 | API event allowlist | `app/api/android_events.py` | Add an event to the Pydantic literal and the server model allowlist together. |
 
 ## Panda qachon nima deydi
