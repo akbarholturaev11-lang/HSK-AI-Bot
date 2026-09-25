@@ -9,7 +9,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,40 +22,32 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AcUnit
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.feature.profile.weekCalendarMeta
-import kotlinx.coroutines.delay
 
 /**
  * The Mini App's `.levelup` overlay, shared by every celebration in the app.
@@ -64,21 +55,31 @@ import kotlinx.coroutines.delay
  * A lesson and a practice round end with the same kind of moment, so they use
  * one stage rather than two that slowly stop looking alike. The stage stays
  * dark in both themes — that is what the rays and the flame are drawn against.
+ *
+ * [raysVisible] is false during a cinematic entrance: the Mini App hides its
+ * rays for the close-up and fades them back in with the scene. Each new
+ * [rainKey] lets one shower of confetti fall over everything (`luRain()`).
  */
 @Composable
 fun HskCelebrationStage(
-    confettiSeed: Int,
     modifier: Modifier = Modifier,
+    raysVisible: Boolean = true,
+    rainKey: Any? = null,
     content: @Composable () -> Unit,
 ) {
+    val rays by animateFloatAsState(
+        targetValue = if (raysVisible) 1f else 0f,
+        animationSpec = tween(durationMillis = 400),
+        label = "stage-rays",
+    )
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(HskStageInk),
     ) {
-        HskRayBurst(modifier = Modifier.fillMaxSize())
-        HskConfettiField(seed = confettiSeed, modifier = Modifier.fillMaxSize())
+        HskRayBurst(modifier = Modifier.fillMaxSize().graphicsLayer { alpha = rays })
         content()
+        HskConfettiRain(key = rainKey, modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -91,7 +92,9 @@ fun HskCelebrationStage(
  * uses — the two must never disagree about the same week.
  *
  * A lesson and a practice round both report the same gamification snapshot,
- * so both get the same screen rather than two that drift apart.
+ * so both get the same screen rather than two that drift apart. The lines
+ * come in one after another (`luReveal`); the flame ignites, the number pops
+ * and today's flame is stamped onto the week, as in the Mini App.
  */
 @Composable
 fun HskStreakCelebration(gamification: CourseGamificationDto) {
@@ -107,96 +110,121 @@ fun HskStreakCelebration(gamification: CourseGamificationDto) {
     val days = stringArrayResource(R.array.profile_week_days)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = Icons.Filled.LocalFireDepartment,
-                contentDescription = null,
-                tint = PompColors.LightCinnabar,
-                modifier = Modifier.size(104.dp),
-            )
-            HskCelebrationPanda(
-                drawable = R.drawable.widget_panda_streak,
-                pulseKey = streak,
-                modifier = Modifier.offset(x = 46.dp, y = 8.dp),
-                size = 52.dp,
-            )
-        }
-        Text(
-            text = "$streak",
-            style = MaterialTheme.typography.displayLarge,
-            color = PompColors.LightGold,
-            fontWeight = FontWeight.Black,
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = stringResource(R.string.lesson_streak_days),
-            style = MaterialTheme.typography.headlineSmall,
-            color = HskStageInkOn,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = streakCopy(streak, gamification.streakReset),
-            style = MaterialTheme.typography.bodyMedium,
-            color = HskStageInkMuted,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(18.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            for (index in 0 until 7) {
-                val studied = meta.studied(index, streak)
-                StreakDay(
-                    label = days.getOrNull(index).orEmpty(),
-                    studied = studied,
-                    missed = !studied && index < meta.todayIndex,
-                    isToday = index == meta.todayIndex,
+        HskReveal(delayMillis = 0) {
+            // `.sk-flame` with `.sk-panda` sitting at its lower right.
+            Box(modifier = Modifier.size(150.dp)) {
+                HskStreakFlame(modifier = Modifier.fillMaxSize())
+                HskCharacterStage(
+                    character = HskCharacter.Panda,
+                    mood = HskCharacterMood.Celebrate,
+                    reaction = HskCharacterReaction.Pop,
+                    reactionKey = streak,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = 52.dp, y = 8.dp)
+                        .size(86.dp),
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
-        WeekGoalCard(done = done)
+        HskReveal(delayMillis = 90) {
+            HskNumberPop(delayMillis = 90) {
+                Text(
+                    text = "$streak",
+                    style = TextStyle(
+                        fontSize = 74.sp,
+                        lineHeight = 78.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        shadow = Shadow(color = Color.Black.copy(alpha = .35f), offset = Offset(0f, 6f)),
+                    ),
+                    color = PompColors.LightGold,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        HskReveal(delayMillis = 170) {
+            Text(
+                text = stringResource(R.string.lesson_streak_days),
+                style = MaterialTheme.typography.headlineSmall,
+                color = HskStageInkOn,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
+        }
+        HskReveal(delayMillis = 250) {
+            Text(
+                text = streakCopy(streak, gamification.streakReset),
+                style = MaterialTheme.typography.bodyMedium,
+                color = HskStageInkMuted,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+        }
+        HskReveal(delayMillis = 320) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(9.dp),
+                modifier = Modifier.padding(top = 18.dp),
+            ) {
+                for (index in 0 until 7) {
+                    val studied = meta.studied(index, streak)
+                    StreakDay(
+                        label = days.getOrNull(index).orEmpty(),
+                        flame = when {
+                            studied -> HskDayFlame.Lit
+                            index < meta.todayIndex -> HskDayFlame.Frozen
+                            else -> HskDayFlame.Ahead
+                        },
+                        isToday = index == meta.todayIndex,
+                    )
+                }
+            }
+        }
+        HskReveal(delayMillis = 380) {
+            WeekGoalCard(done = done, modifier = Modifier.padding(top = 16.dp))
+        }
     }
 }
 
-/** One weekday: lit when studied, frozen when missed, dim when still ahead. */
+/**
+ * One weekday (`.sk-day`): lit when studied, frozen when missed, dim when
+ * still ahead. Today's lit flame is stamped in once the row is in place.
+ */
 @Composable
-private fun StreakDay(label: String, studied: Boolean, missed: Boolean, isToday: Boolean) {
+private fun StreakDay(label: String, flame: HskDayFlame, isToday: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = if (isToday) PompColors.LightGold else HskStageInkMuted,
-            fontWeight = if (isToday) FontWeight.Bold else FontWeight.Medium,
+            color = when {
+                isToday -> HskStageInkOn
+                flame == HskDayFlame.Lit -> PompColors.LightGold
+                flame == HskDayFlame.Frozen -> HskStageIceLabel
+                else -> HskStageInkDay
+            },
+            fontWeight = FontWeight.SemiBold,
         )
         Spacer(Modifier.height(4.dp))
         Box(
-            modifier = Modifier.size(width = 30.dp, height = 34.dp),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(width = 34.dp, height = 36.dp),
+            contentAlignment = Alignment.BottomCenter,
         ) {
-            Icon(
-                imageVector = if (missed) Icons.Filled.AcUnit else Icons.Filled.LocalFireDepartment,
-                contentDescription = null,
-                tint = when {
-                    studied -> PompColors.LightCinnabar
-                    missed -> HskStageIce
-                    else -> HskStageInkFaint
-                },
-                modifier = Modifier.size(24.dp),
-            )
+            if (isToday && flame == HskDayFlame.Lit) {
+                HskStamp(delayMillis = 450) { HskMiniFlame(state = flame) }
+            } else {
+                HskMiniFlame(state = flame)
+            }
         }
     }
 }
 
 /** `.sk-weekgoal` — how much of this week is already closed. */
 @Composable
-private fun WeekGoalCard(done: Int) {
+private fun WeekGoalCard(done: Int, modifier: Modifier = Modifier) {
     val left = (7 - done).coerceAtLeast(0)
     Surface(
         shape = RoundedCornerShape(15.dp),
         color = HskStageTile,
         border = BorderStroke(1.dp, HskStageTileBorder),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
             Row(
@@ -273,39 +301,6 @@ private fun streakCopy(streak: Int, reset: Boolean): String = stringResource(
     },
 )
 
-@Composable
-fun HskCelebrationPanda(
-    drawable: Int,
-    pulseKey: Int,
-    modifier: Modifier = Modifier,
-    size: Dp = 164.dp,
-) {
-    var entered by remember(drawable, pulseKey) { mutableStateOf(false) }
-    LaunchedEffect(drawable, pulseKey) {
-        entered = false
-        delay(40)
-        entered = true
-    }
-    val scale by animateFloatAsState(
-        targetValue = if (entered) 1f else 0.68f,
-        animationSpec = tween(520, easing = FastOutSlowInEasing),
-        label = "panda-pop-scale",
-    )
-    val alpha by animateFloatAsState(
-        targetValue = if (entered) 1f else 0f,
-        animationSpec = tween(260),
-        label = "panda-pop-alpha",
-    )
-    Image(
-        painter = painterResource(drawable),
-        contentDescription = null,
-        modifier = modifier
-            .size(size)
-            .scale(scale)
-            .alpha(alpha),
-    )
-}
-
 /**
  * The Mini App's `#lu-rays`: 24 gold spokes turning slowly behind the stage.
  *
@@ -352,50 +347,8 @@ internal val HskStageTile = Color.White.copy(alpha = 0.08f)
 internal val HskStageTileBorder = Color.White.copy(alpha = 0.16f)
 internal val HskStageTrack = Color.White.copy(alpha = 0.12f)
 internal val HskStageIce = Color(0xFF7FB4D6)
+/** `.sk-day` label: `rgba(255,255,255,.55)`, and `#9CC6DF` on a frozen day. */
+internal val HskStageInkDay = Color.White.copy(alpha = 0.55f)
+internal val HskStageIceLabel = Color(0xFF9CC6DF)
 /** `fill="#FFC800"` on the Mini App's rays, at its own `.5` opacity. */
 internal val HskRayGold = Color(0xFFFFC800).copy(alpha = 0.16f)
-
-@Composable
-fun HskConfettiField(seed: Int, modifier: Modifier = Modifier) {
-    val particles = remember(seed) {
-        List(18) { index ->
-            ConfettiParticle(
-                x = ((index * 37 + seed * 11) % 100) / 100f,
-                y = ((index * 53 + seed * 7) % 92) / 100f,
-                symbol = CONFETTI_SYMBOLS[(index + seed.absoluteSafe()) % CONFETTI_SYMBOLS.size],
-            )
-        }
-    }
-    Box(modifier = modifier) {
-        particles.forEachIndexed { index, particle ->
-            Text(
-                text = particle.symbol,
-                color = CONFETTI_COLORS[index % CONFETTI_COLORS.size],
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = (particle.x * 280).dp,
-                        y = (particle.y * 620).dp,
-                    )
-                    .alpha(0.72f),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-    }
-}
-
-private data class ConfettiParticle(
-    val x: Float,
-    val y: Float,
-    val symbol: String,
-)
-
-private val CONFETTI_SYMBOLS = listOf("★", "✦", "✧", "◆", "●", "✺")
-private val CONFETTI_COLORS = listOf(
-    Color(0xFFF2B84B),
-    Color(0xFF3CBF86),
-    Color(0xFFE65B4B),
-    Color(0xFF4B82D8),
-)
-
-private fun Int.absoluteSafe(): Int = if (this == Int.MIN_VALUE) 0 else kotlin.math.abs(this)

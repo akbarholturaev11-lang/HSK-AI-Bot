@@ -1,5 +1,10 @@
 package com.pomp.hskai.feature.practice
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +27,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,9 +44,16 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskCelebrationStage
+import com.pomp.hskai.core.design.components.HskCharacter
 import com.pomp.hskai.core.design.components.HskCharacterStage
+import com.pomp.hskai.core.design.components.HskCinematicEntrance
+import com.pomp.hskai.core.design.components.HskCue
+import com.pomp.hskai.core.design.components.HskEntrance
+import com.pomp.hskai.core.design.components.HskFadeIn
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.HskStreakCelebration
+import com.pomp.hskai.core.design.components.hskPlayCue
+import kotlinx.coroutines.delay
 
 /**
  * The flame screen after a practice round, on the same stage a lesson uses.
@@ -52,42 +68,69 @@ internal fun PracticeStreakStep(
     outcome: PracticeCompletionOutcome,
     onDone: () -> Unit,
 ) {
-    HskCelebrationStage(confettiSeed = outcome.gamification.streak * 31 + outcome.score) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding()
-                .padding(horizontal = 24.dp),
-        ) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-            ) {
-                val minHeight = maxHeight
+    // The same close-up a lesson's streak opens with: the caped panda flies
+    // up through the sky and lands, then the flame screen comes in.
+    var revealed by remember(outcome) { mutableStateOf(false) }
+    val context = LocalContext.current
+    LaunchedEffect(outcome, revealed) {
+        if (!revealed) return@LaunchedEffect
+        delay(350)
+        hskPlayCue(context, HskCue.STREAK)
+    }
+    HskCelebrationStage(raysVisible = revealed) {
+        AnimatedContent(
+            targetState = revealed,
+            transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+            modifier = Modifier.fillMaxSize(),
+            label = "practice-streak-scene",
+        ) { shown ->
+            if (!shown) {
+                HskCinematicEntrance(
+                    entrance = HskEntrance.FLY,
+                    character = HskCharacter.Panda,
+                    cape = true,
+                    onReveal = { revealed = true },
+                )
+            } else {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                        .fillMaxSize()
+                        .systemBarsPadding()
+                        .padding(horizontal = 24.dp),
                 ) {
-                    Column(
+                    BoxWithConstraints(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = minHeight)
-                            .padding(vertical = 12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
+                            .weight(1f)
+                            .fillMaxWidth(),
                     ) {
-                        HskStreakCelebration(outcome.gamification)
+                        val minHeight = maxHeight
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState()),
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = minHeight)
+                                    .padding(vertical = 12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                HskStreakCelebration(outcome.gamification)
+                            }
+                        }
                     }
+                    HskFadeIn(durationMillis = 400) {
+                        HskPrimaryButton(
+                            text = stringResource(R.string.lesson_next),
+                            onClick = onDone,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    Spacer(Modifier.height(20.dp))
                 }
             }
-            HskPrimaryButton(
-                text = stringResource(R.string.lesson_next),
-                onClick = onDone,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(20.dp))
         }
     }
 }
