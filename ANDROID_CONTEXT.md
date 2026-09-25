@@ -829,6 +829,10 @@ Yangi ko'rinadigan matn yo'q (emblema ieroglifi — Mini App'dagi bilan bir xil,
 tarjima qilinmaydi). Qamrov: `HskCelebrationFxTest` (keyframe o'qish,
 vibratsiya zarbalari notalarga mosligi).
 
+**Tekshirilgan:** Android CI (run 36171700748) yashil — unit test, lint,
+debug APK, release bundle. **Tekshirilmagan:** telefonda ko'rinish va eshitish
+(ovoz balandligi, vibratsiya kuchi, kichik ekranda burchakdagi personaj).
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
