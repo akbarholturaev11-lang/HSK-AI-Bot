@@ -227,6 +227,24 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-25 — Android dars ekrani: Tekshirish tugmasi va xatoga tayyor javob
+
+Changed:
+- Android darsida savol endi ikki bosqichda: bosish tanlaydi, `Tekshirish`
+  tekshiradi. Ekran Duolingo tuzilishida (sarlavha, personaj + pufak, pastda
+  katta tugma), orqada xira qadimiy manzara. Ranglar va personajlar o'zimizniki.
+- Noto'g'ri javobda kartaning o'z izohi AI belgisi bilan chiqadi — AI chaqirilmaydi.
+  AI'ga faqat o'quvchi tugmani bosganda savol ketadi; kontekstga o'quvchi javobi qo'shildi.
+
+Files touched:
+- `android/.../feature/lesson/*`, `core/design/components/HskSceneBackground.kt`,
+  `feature/assistant/AssistantController.kt`, `AssistantHost.kt`, `AssistantContexts.kt`,
+  `MainActivity.kt`. Tafsilot: `ANDROID_CONTEXT.md` 3.18.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Mashq/Xatolarim/lug'at hali eski uslubda.
+- Kompilyatsiya CI'da tekshiriladi (bu muhitda Android SDK yo'q); telefonda vizual tekshiruv kerak.
+
 ### 2026-09-23 — Android Google OAuth start request and Credential Manager host fix
 
 Changed:

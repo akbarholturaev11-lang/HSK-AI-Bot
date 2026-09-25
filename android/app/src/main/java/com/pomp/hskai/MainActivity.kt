@@ -1292,7 +1292,13 @@ private fun LessonHost(
         com.pomp.hskai.feature.assistant.lessonAssistantContext(lessonState, launch.attemptKey),
         bottomBar = false,
         priority = 10,
+        // The AI button must not come to rest on the lesson's own bottom button.
+        bottomInset = 76.dp,
     )
+    // After a wrong answer the lesson offers questions for the AI chat; they
+    // exist only while the chat itself is switched on.
+    val assistant = com.pomp.hskai.feature.assistant.LocalAssistant.current
+    val assistantEnabled = assistant?.controller?.state?.collectAsStateWithLifecycle()?.value?.enabled == true
 
     LessonScreen(
         state = lessonState,
@@ -1316,6 +1322,7 @@ private fun LessonHost(
             model.endAttempt(launch.attemptKey)
             onExit(completed)
         },
+        onAskAssistant = if (assistant != null && assistantEnabled) assistant.ask else null,
     )
 
     if (pinyinSheetOpen) {

@@ -742,6 +742,47 @@ Tunggi osmon `DAY` holatida turgani xatodek ko'rinadi, shuning uchun
 kunduzgi rasmlar MORNING/DAY/WAITING'da, to'q sariq EVENING'da, tunggilar
 LATE'da, qizil dramatiklar CRITICAL'da.
 
+### 3.18 Dars ekrani: sahna tuzilishi, qadimiy fon, xatoga tayyor javob — 2026-09-25
+
+Faqat **dars** ekrani o'zgardi (Mashq, Xatolarim, drill'lar, lug'at, o'tish
+testi va Mini App — o'zgarmagan, ular keyin alohida ko'chiriladi).
+
+- **Fon:** `core/design/components/HskSceneBackground.kt` — xira 山水 manzara
+  (tog', pagoda, qarag'ay, qayiq, quyosh, qushlar). Vektor, APK'ga fayl
+  qo'shmaydi, faqat palitra tokenlari (`Ink`, `Cinnabar`/`Gold`), animatsiyasiz,
+  `drawWithCache` bilan bir marta chiziladi. Faqat kartalar ostida; loader,
+  xato va bayram ekranlarida yo'q.
+- **Tuzilish:** tepada ko'rsatma sarlavha (`lessonHeading`: savolda `title`,
+  talaffuzda `lesson_repeat_after_teacher`, juftlarda `lesson_match_pairs`).
+  Savolda personaj chapda, pufakda savol materiali; javoblar pastda, to'liq
+  enda, o'rtada, A/B/C belgisisiz. Yangi so'z, grammatika va quruvchilarda
+  personaj tepada qoladi. Yangi so'z animatsiyasi **o'zgarmagan** (admin talabi).
+- **Ikki bosqich:** savolda bosish faqat **tanlaydi**, `Tekshirish` tekshiradi.
+  ViewModel API o'zgarmagan (`answerChoice` endi tugmadan chaqiriladi).
+  O'tish testi (`SkipTestScreen` → `ChoiceCardView`) eskicha — bir bosishda.
+- **Xatoga tayyor javob:** noto'g'ri javobda pastki panelda AI belgisi bilan
+  kartaning o'z `explanation`i chiqadi — **AI'ga so'rov YO'Q**, limit
+  sarflanmaydi. Ostida «Xatoyim nimada?» / «Misol bilan ko'rsat» — bosilsa AI
+  chat ochiladi, tayyor javob birinchi xabar bo'lib turadi
+  (`AssistantSeed`, faqat telefonda, serverga yozilmaydi) va savol dars
+  konteksti bilan ketadi. Kontekstga o'quvchi tanlagan javob qo'shildi
+  (`AnswerState.Checked.chosen` → «Learner answer»). To'g'ri javobda panel
+  eskicha (izoh matni). Talaffuz bahosida AI qatori yo'q.
+- Talaffuz kartasida personaj qaytdi (statik, faqat bir martalik reaksiya);
+  Mini App bilan moslik uchun personaj Panda qoldi (`LessonCharacterParityTest`).
+- Darsdagi AI tugmasi pastki tugma ustiga tushmasligi uchun `bottomInset = 76.dp`.
+
+Yangi fayllar: `feature/lesson/LessonBubble.kt` (dumli pufak, coach qatori,
+chuqurlikli tugma, tayyor javob), `feature/lesson/LessonChoiceCards.kt`
+(dars savoli materiali va variantlar). Umumiy `HskCoachRow`/`HskCoachBeside`ga
+ataylab tegilmadi — ular mashq ekranlariniki.
+
+Yangi matn yo'q: barcha satrlar mavjud (uz/ru/tg). Qamrov:
+`LessonOptionStateTest`, `LessonViewModelTest` (tanlangan javob).
+
+**Tekshirilmagan:** bu muhitda Android SDK yo'q — kompilyatsiya CI'da,
+ko'rinish telefonda (light/dark, 360 dp, katta shrift, uz/ru/tg).
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.

@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -62,7 +65,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
@@ -73,13 +75,13 @@ import kotlin.math.PI
 import kotlin.math.sin
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
-import com.pomp.hskai.core.design.components.HskCoachBeside
-import com.pomp.hskai.core.design.components.HskCoachRow
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.design.components.HskSceneBackground
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.ChoiceCard
+import com.pomp.hskai.domain.model.ChoiceKind
 import com.pomp.hskai.domain.model.GrammarCard
 import com.pomp.hskai.domain.model.LessonCard
 import com.pomp.hskai.domain.model.MatchPairsCard
@@ -114,6 +116,11 @@ internal fun SecondaryAction(text: String, onClick: () -> Unit) {
     )
 }
 
+/**
+ * [onAskAssistant] hands a question to the AI chat together with the ready
+ * answer the lesson already showed. Null hides the questions — the chat is
+ * switched off, or there is no chat on this screen.
+ */
 @Composable
 fun LessonScreen(
     state: LessonUiState,
@@ -133,6 +140,7 @@ fun LessonScreen(
     onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
+    onAskAssistant: ((question: String, readyAnswer: String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val outcome = state.outcome
@@ -160,23 +168,29 @@ fun LessonScreen(
                         onExit = onExit,
                     )
                 outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
-                else -> LessonBody(
-                    state = state,
-                    pinyin = pinyin,
-                    onAnswerChoice = onAnswerChoice,
-                    onAnswerBuilder = onAnswerBuilder,
-                    onAnswerPairs = onAnswerPairs,
-                    onAcknowledge = onAcknowledge,
-                    onAdvance = onAdvance,
-                    onPlayAudio = onPlayAudio,
-                    onSpeakPronunciation = onSpeakPronunciation,
-                    onSkipPronunciation = onSkipPronunciation,
-                    onOpenPinyinSettings = onOpenPinyinSettings,
-                    onOpenWriter = onOpenWriter,
-                    onShowWriterCharacter = onShowWriterCharacter,
-                    onCloseWriter = onCloseWriter,
-                    onExit = onExit,
-                )
+                else -> Box(modifier = Modifier.fillMaxSize()) {
+                    // The faded ink landscape sits under the cards only; the
+                    // loader, the errors and the celebration keep their own ground.
+                    HskSceneBackground(Modifier.fillMaxSize())
+                    LessonBody(
+                        state = state,
+                        pinyin = pinyin,
+                        onAnswerChoice = onAnswerChoice,
+                        onAnswerBuilder = onAnswerBuilder,
+                        onAnswerPairs = onAnswerPairs,
+                        onAcknowledge = onAcknowledge,
+                        onAdvance = onAdvance,
+                        onPlayAudio = onPlayAudio,
+                        onSpeakPronunciation = onSpeakPronunciation,
+                        onSkipPronunciation = onSkipPronunciation,
+                        onOpenPinyinSettings = onOpenPinyinSettings,
+                        onOpenWriter = onOpenWriter,
+                        onShowWriterCharacter = onShowWriterCharacter,
+                        onCloseWriter = onCloseWriter,
+                        onExit = onExit,
+                        onAskAssistant = onAskAssistant,
+                    )
+                }
             }
         }
 
@@ -235,6 +249,24 @@ private fun Centered(content: @Composable () -> Unit) {
     ) { content() }
 }
 
+/**
+ * The instruction a card puts at the top of the screen, or null when the card
+ * keeps the coach above it instead (teaching cards and the builders, whose
+ * own instruction sits inside them).
+ */
+@Composable
+private fun lessonHeading(card: LessonCard, section: String): String? {
+    val listenTitle = stringResource(R.string.lesson_listen_and_choose)
+    val repeatTitle = stringResource(R.string.lesson_repeat_after_teacher)
+    val pairsTitle = stringResource(R.string.lesson_match_pairs)
+    return when (card) {
+        is ChoiceCard -> card.title.ifBlank { if (card.kind == ChoiceKind.LISTENING) listenTitle else section }
+        is PronunciationCard -> repeatTitle
+        is MatchPairsCard -> pairsTitle
+        else -> null
+    }
+}
+
 @Composable
 private fun LessonBody(
     state: LessonUiState,
@@ -252,9 +284,11 @@ private fun LessonBody(
     onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
+    onAskAssistant: ((question: String, readyAnswer: String) -> Unit)?,
 ) {
     val haptics = LocalHapticFeedback.current
     val card = state.currentCard ?: return
+    // A question is answered in two steps: a tap only picks, Tekshirish checks.
     var selectedIndex by remember(state.cardIndex) { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(state.answer, state.cardIndex) {
@@ -295,11 +329,6 @@ private fun LessonBody(
                 onOpenPinyinSettings = onOpenPinyinSettings,
                 onExit = onExit,
             )
-            LessonStageLine(
-                index = state.cardIndex + 1,
-                total = state.totalCards,
-                title = state.currentSectionTitle,
-            )
             if (state.isStale) StaleBanner()
 
             val checked = state.answer as? AnswerState.Checked
@@ -325,122 +354,142 @@ private fun LessonBody(
                 checked.isCorrect -> LessonCharacterMood.Correct
                 else -> LessonCharacterMood.Wrong
             }
+            val reactionKey = state.cardIndex to checked?.isCorrect
             // The coach says the card's own instruction instead of standing
-            // alone beside a name tag. `CardTitle` reads the same line out of
-            // LocalLessonCoachLine and skips it, so it is moved, not doubled.
+            // alone beside a name tag.
             val coachLine = lessonCoachLine(card, state.currentSectionTitle)
-            // Pronunciation/audio exercises own the centre of the screen and
-            // may activate microphone/audio resources; no persistent coach
-            // composition stays alive above them. The entry and finish
-            // cinematics still use the shared character system.
-            val showPersistentCoach = card !is PronunciationCard
-            // A question card stands the coach BESIDE it (further down, where
-            // the material and the answers can be split). Everything else —
-            // the teaching cards and the builders — keeps the coach above,
-            // because there is nothing there to put beside it.
+            // A question, the pronunciation card and the pairs put their
+            // instruction at the top as the screen's heading, the stage layout;
+            // the coach then says the material, not the instruction.
+            val heading = lessonHeading(card, state.currentSectionTitle)
             // The entry cinematic is already a character on screen. Composing
-            // the persistent coach underneath it means two character
-            // compositions alive at once (origin/main ff230ab7); the slot is
-            // held open so nothing jumps when the cinematic ends.
+            // the coach underneath it means two character compositions alive at
+            // once (origin/main ff230ab7); the slot is held open so nothing
+            // jumps when the cinematic ends.
             val coachReady = !entryVisible
-            if (showPersistentCoach && card !is ChoiceCard) {
-                HskCoachRow(
+
+            if (heading != null) LessonHeading(heading)
+
+            // Teaching cards and the builders keep the coach above: there is
+            // nothing to stand beside. The pairs keep the whole width for the grid.
+            val coachAbove = card !is ChoiceCard && card !is PronunciationCard && card !is MatchPairsCard
+            if (coachAbove) {
+                LessonCoachBeside(
                     character = coachCharacter,
                     mood = coachMood,
                     reaction = coachReaction,
-                    reactionKey = state.cardIndex to checked?.isCorrect,
-                    text = coachLine,
-                    modifier = Modifier.padding(horizontal = 18.dp),
+                    reactionKey = reactionKey,
                     showCharacter = coachReady,
-                )
+                    showBubble = coachLine.isNotBlank(),
+                    characterSize = 88.dp,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp),
+                ) {
+                    BubbleText(coachLine)
+                }
             }
 
-            // The card sits in the middle of the free space instead of clinging to
-            // the top-left corner; longer decks still scroll normally.
+            // Longer decks still scroll. A question stands the coach at the top
+            // and its answers at the bottom; every other card sits in the middle.
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
               val viewport = maxHeight
-              CompositionLocalProvider(LocalLessonCoachLine provides coachLine) {
+              CompositionLocalProvider(LocalLessonCoachLine provides (heading ?: coachLine)) {
               Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .heightIn(min = viewport)
-                    .padding(horizontal = 18.dp, vertical = 10.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = if (card is ChoiceCard) Arrangement.SpaceBetween else Arrangement.Center,
               ) {
                 when (card) {
-                    is NewWordCard -> NewWordCardView(
-                        card = card,
-                        pinyin = pinyin,
-                        isAudioLoading = state.isAudioLoading,
-                        onPlayAudio = onPlayAudio,
-                        onRevealed = { newWordOpen = true },
-                    )
-                    is GrammarCard -> GrammarCardView(card, pinyin)
-                    is PronunciationCard -> PronunciationCardView(
-                        card = card,
-                        pinyin = pinyin,
-                        isAudioLoading = state.isAudioLoading,
-                        isRecording = state.isPronunciationRecording,
-                        isScoring = state.isPronunciationScoring,
-                        isAnswered = state.isAnswered,
-                        onPlayAudio = onPlayAudio,
-                        onSpeak = onSpeakPronunciation,
-                        onSkip = onSkipPronunciation,
-                    )
                     is ChoiceCard -> {
-                        // Coach on the left with the question beside it; the
-                        // answers below at full width.
-                        HskCoachBeside(
+                        val listening = card.kind == ChoiceKind.LISTENING
+                        LessonCoachBeside(
                             character = coachCharacter,
                             mood = coachMood,
                             reaction = coachReaction,
-                            reactionKey = state.cardIndex to checked?.isCorrect,
-                            text = coachLine,
+                            reactionKey = reactionKey,
                             showCharacter = coachReady,
+                            // The listening bubble is the speaker: tap it to hear again.
+                            onBubbleClick = if (listening && !state.isAudioLoading) {
+                                { onPlayAudio(card.audioText.orEmpty()) }
+                            } else {
+                                null
+                            },
+                            onBubbleClickLabel = if (listening) stringResource(R.string.lesson_play_audio) else null,
                         ) {
-                            ChoiceCardMaterial(
-                                card = card,
-                                pinyin = pinyin,
-                                isAudioLoading = state.isAudioLoading,
-                                onPlayAudio = onPlayAudio,
-                            )
+                            LessonChoiceMaterial(card = card, isAudioLoading = state.isAudioLoading)
                         }
-                        Spacer(Modifier.height(14.dp))
-                        ChoiceCardOptions(
-                            card = card,
-                            selectedIndex = selectedIndex,
-                            isAnswered = state.isAnswered,
-                            onSelect = { index -> selectedIndex = index; onAnswerChoice(card, index) },
-                        )
+                        Column(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                            LessonChoiceOptions(
+                                card = card,
+                                selectedIndex = selectedIndex,
+                                isAnswered = state.isAnswered,
+                                onSelect = { index -> selectedIndex = index },
+                            )
+                            LessonCardErrors(state)
+                        }
                     }
-                    is SentenceBuilderCard -> SentenceBuilderCardView(card, state.isAnswered) { onAnswerBuilder(card, it) }
-                    is ReverseBuilderCard -> ReverseBuilderCardView(card, pinyin, state.isAnswered) { onAnswerBuilder(card, it) }
-                    is MatchPairsCard -> MatchPairsCardView(card, state.isAnswered) { onAnswerPairs(card, it) }
-                    is UnsupportedCard -> UnsupportedCardView(card, onAcknowledge)
+                    is PronunciationCard -> {
+                        PronunciationCardView(
+                            card = card,
+                            pinyin = pinyin,
+                            isAudioLoading = state.isAudioLoading,
+                            isRecording = state.isPronunciationRecording,
+                            isScoring = state.isPronunciationScoring,
+                            isAnswered = state.isAnswered,
+                            onPlayAudio = onPlayAudio,
+                            onSpeak = onSpeakPronunciation,
+                            onSkip = onSkipPronunciation,
+                            coach = {
+                                val stage = Modifier.size(width = 150.dp, height = 165.dp)
+                                if (coachReady) {
+                                    LessonCharacterStage(
+                                        character = coachCharacter,
+                                        mood = coachMood,
+                                        reaction = coachReaction,
+                                        reactionKey = reactionKey,
+                                        modifier = stage,
+                                    )
+                                } else {
+                                    Spacer(stage)
+                                }
+                            },
+                        )
+                        LessonCardErrors(state)
+                    }
+                    is NewWordCard -> {
+                        NewWordCardView(
+                            card = card,
+                            pinyin = pinyin,
+                            isAudioLoading = state.isAudioLoading,
+                            onPlayAudio = onPlayAudio,
+                            onRevealed = { newWordOpen = true },
+                        )
+                        LessonCardErrors(state)
+                    }
+                    is GrammarCard -> {
+                        GrammarCardView(card, pinyin)
+                        LessonCardErrors(state)
+                    }
+                    is SentenceBuilderCard -> {
+                        SentenceBuilderCardView(card, state.isAnswered) { onAnswerBuilder(card, it) }
+                        LessonCardErrors(state)
+                    }
+                    is ReverseBuilderCard -> {
+                        ReverseBuilderCardView(card, pinyin, state.isAnswered) { onAnswerBuilder(card, it) }
+                        LessonCardErrors(state)
+                    }
+                    is MatchPairsCard -> {
+                        MatchPairsCardView(card, state.isAnswered) { onAnswerPairs(card, it) }
+                        LessonCardErrors(state)
+                    }
+                    is UnsupportedCard -> {
+                        UnsupportedCardView(card, onAcknowledge)
+                        LessonCardErrors(state)
+                    }
                 }
-                state.audioError?.let { error ->
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(error.messageRes),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.Flame,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                state.pronunciationError?.let { error ->
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(error.messageRes),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.Flame,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                Spacer(Modifier.height(24.dp))
               }
               }
             }
@@ -453,9 +502,15 @@ private fun LessonBody(
                 FooterBar(
                     state = state,
                     card = card,
+                    selectedChoice = selectedIndex,
                     acknowledgeReady = card !is NewWordCard || newWordOpen,
+                    onCheckChoice = {
+                        val index = selectedIndex
+                        if (card is ChoiceCard && index != null) onAnswerChoice(card, index)
+                    },
                     onAcknowledge = onAcknowledge,
                     onAdvance = onAdvance,
+                    onAskAssistant = onAskAssistant,
                 )
             }
         }
@@ -489,6 +544,31 @@ private fun LessonBody(
             onShowCharacter = onShowWriterCharacter,
             onReplay = { onShowWriterCharacter(state.writerIndex) },
             onDismiss = onCloseWriter,
+        )
+    }
+}
+
+/** Audio and microphone failures, said under the card they happened on. */
+@Composable
+private fun LessonCardErrors(state: LessonUiState) {
+    state.audioError?.let { error ->
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = stringResource(error.messageRes),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.Flame,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+    state.pronunciationError?.let { error ->
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = stringResource(error.messageRes),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.Flame,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -539,16 +619,16 @@ private fun LessonTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp),
+            .padding(start = 8.dp, end = 16.dp, top = 8.dp, bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(11.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         HskGlassIconButton(
             icon = Icons.Filled.Close,
             contentDescription = stringResource(R.string.action_close),
             onClick = onExit,
-            size = 30.dp,
-            iconSize = 17.dp,
+            size = 40.dp,
+            iconSize = 24.dp,
             tint = PompColors.InkSecondary,
         )
 
@@ -558,19 +638,36 @@ private fun LessonTopBar(
             label = "lessonProgress",
         )
         Box(
-            modifier = Modifier.weight(1f).height(9.dp).clip(RoundedCornerShape(6.dp)).background(PompColors.Divider),
+            modifier = Modifier.weight(1f).height(16.dp).clip(RoundedCornerShape(8.dp)).background(PompColors.Divider),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth(animatedProgress).height(9.dp).clip(RoundedCornerShape(6.dp)).background(PompColors.Cinnabar),
-            )
+                modifier = Modifier
+                    .fillMaxWidth(animatedProgress)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(PompColors.Cinnabar),
+            ) {
+                // A soft highlight along the top of the fill, so the bar reads as
+                // a filled tube rather than a flat stripe.
+                if (animatedProgress > 0.06f) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp, top = 4.dp)
+                            .fillMaxWidth()
+                            .height(4.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(Color.White.copy(alpha = 0.3f)),
+                    )
+                }
+            }
         }
 
         HskGlassIconButton(
             icon = Icons.Filled.Settings,
             contentDescription = stringResource(R.string.lesson_pinyin_title),
             onClick = onOpenPinyinSettings,
-            size = 30.dp,
-            iconSize = 17.dp,
+            size = 40.dp,
+            iconSize = 22.dp,
             tint = PompColors.InkDisabled,
         )
 
@@ -682,11 +779,11 @@ private fun AnimatedHeartCounter(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.graphicsLayer { this.alpha = alpha.value },
     ) {
         Box(
-            modifier = Modifier.size(21.dp),
+            modifier = Modifier.size(28.dp),
             contentAlignment = Alignment.Center,
         ) {
             if (glow.value > 0f) {
@@ -702,7 +799,7 @@ private fun AnimatedHeartCounter(
                 contentDescription = null,
                 tint = heartColor,
                 modifier = Modifier
-                    .size(15.dp)
+                    .size(22.dp)
                     .graphicsLayer {
                         scaleX = scale.value
                         scaleY = scale.value
@@ -712,8 +809,8 @@ private fun AnimatedHeartCounter(
         }
         Text(
             text = hearts.toString(),
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
-            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.labelLarge.copy(fontSize = 17.sp),
+            fontWeight = FontWeight.Bold,
             color = heartColor,
         )
     }
@@ -789,127 +886,130 @@ private fun LessonEntryOverlay(
     }
 }
 
-@Composable
-private fun LessonStageLine(index: Int, total: Int, title: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, top = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = "$index / $total",
-            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
-            fontWeight = FontWeight.SemiBold,
-            color = PompColors.CinnabarDark,
-        )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp),
-            fontWeight = FontWeight.SemiBold,
-            color = PompColors.Ink,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.End,
-        )
-    }
-}
-
+/**
+ * The bottom of the lesson: Tekshirish on a question until it is checked,
+ * Davom etish on a teaching card, and after a check the result panel.
+ */
 @Composable
 private fun FooterBar(
     state: LessonUiState,
     card: LessonCard,
+    selectedChoice: Int?,
     acknowledgeReady: Boolean,
+    onCheckChoice: () -> Unit,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
+    onAskAssistant: ((question: String, readyAnswer: String) -> Unit)?,
 ) {
     val answer = state.answer
     if (answer is AnswerState.Checked) {
-        Surface(
-            color = if (answer.isCorrect) PompColors.JadeSoft else PompColors.FlameSoft,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(
-                modifier = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 18.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // The persistent coach above owns the feedback reaction.
-                    // Do not draw a second legacy panda in the footer.
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(if (answer.isCorrect) R.string.lesson_correct else R.string.lesson_wrong),
-                            style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
-                            fontWeight = FontWeight.Medium,
-                            color = if (answer.isCorrect) PompColors.Jade else PompColors.Flame,
-                        )
-                        if (answer.explanation.isNotBlank()) {
-                            Text(
-                                text = answer.explanation,
-                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                                color = PompColors.InkSecondary,
-                            )
-                        }
-                    }
-                }
-                Spacer(Modifier.height(10.dp))
-                FlowButton(
-                    text = stringResource(R.string.lesson_next),
-                    color = if (answer.isCorrect) PompColors.Jade else PompColors.Flame,
-                    onClick = onAdvance,
-                    enabled = !state.isSubmitting,
-                    loading = state.isSubmitting,
-                )
-            }
-        }
+        FeedbackPanel(
+            answer = answer,
+            card = card,
+            submitting = state.isSubmitting,
+            onAdvance = onAdvance,
+            onAskAssistant = onAskAssistant,
+        )
         return
     }
 
-    val needsAcknowledge = card is NewWordCard || card is GrammarCard
-    if (needsAcknowledge && acknowledgeReady) {
-        Box(
-            modifier = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-        ) {
-            FlowButton(
+    val footer = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+    when {
+        card is ChoiceCard -> Box(modifier = footer) {
+            LessonDepthButton(
+                text = stringResource(R.string.lesson_check),
+                color = PompColors.Cinnabar,
+                onClick = onCheckChoice,
+                enabled = selectedChoice != null,
+            )
+        }
+        (card is NewWordCard || card is GrammarCard) && acknowledgeReady -> Box(modifier = footer) {
+            LessonDepthButton(
                 text = stringResource(R.string.lesson_next),
                 color = PompColors.Cinnabar,
-                shape = RoundedCornerShape(14.dp),
                 onClick = onAcknowledge,
             )
         }
     }
 }
 
+/**
+ * The result of a check. A wrong answer on a graded card also gets the ready
+ * answer — the card's own explanation, said by the AI tutor's avatar — and two
+ * questions the learner can take to the AI chat. The ready answer asks no
+ * model; only a question the learner taps does, so a lesson full of mistakes
+ * does not spend AI on its own.
+ */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun FlowButton(
-    text: String,
-    color: Color,
-    onClick: () -> Unit,
-    shape: RoundedCornerShape = RoundedCornerShape(13.dp),
-    enabled: Boolean = true,
-    loading: Boolean = false,
+private fun FeedbackPanel(
+    answer: AnswerState.Checked,
+    card: LessonCard,
+    submitting: Boolean,
+    onAdvance: () -> Unit,
+    onAskAssistant: ((question: String, readyAnswer: String) -> Unit)?,
 ) {
+    val accent = if (answer.isCorrect) PompColors.Jade else PompColors.Flame
+    // A pronunciation score is not an answer the chat can explain.
+    val offerHelp = !answer.isCorrect && card !is PronunciationCard
     Surface(
-        onClick = onClick,
-        enabled = enabled && !loading,
-        color = color,
-        shape = shape,
+        color = if (answer.isCorrect) PompColors.JadeSoft else PompColors.FlameSoft,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
+        Column(
+            modifier = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
         ) {
-            if (loading) {
-                HskBrandLoader(compact = true)
-            } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Icon(
+                    imageVector = if (answer.isCorrect) Icons.Filled.CheckCircle else Icons.Filled.Cancel,
+                    contentDescription = null,
+                    tint = accent,
+                    modifier = Modifier.size(30.dp),
+                )
                 Text(
-                    text = text,
-                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                    fontWeight = FontWeight.Medium,
-                    color = PompColors.Paper,
-                    textAlign = TextAlign.Center,
+                    text = stringResource(if (answer.isCorrect) R.string.lesson_correct else R.string.lesson_wrong),
+                    fontSize = 22.sp,
+                    lineHeight = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accent,
                 )
             }
+            if (offerHelp) {
+                if (answer.explanation.isNotBlank()) {
+                    ReadyAnswer(text = answer.explanation, modifier = Modifier.padding(top = 12.dp))
+                }
+                if (onAskAssistant != null) {
+                    val mistake = stringResource(R.string.assistant_mistake)
+                    val example = stringResource(R.string.assistant_example)
+                    FlowRow(
+                        modifier = Modifier.padding(start = 36.dp, top = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        AskChip(text = mistake, onClick = { onAskAssistant(mistake, answer.explanation) })
+                        AskChip(text = example, onClick = { onAskAssistant(example, answer.explanation) })
+                    }
+                }
+            } else if (answer.explanation.isNotBlank()) {
+                Text(
+                    text = answer.explanation,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    color = PompColors.InkSecondary,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+            }
+            Spacer(Modifier.height(14.dp))
+            LessonDepthButton(
+                text = stringResource(R.string.lesson_next),
+                color = accent,
+                onClick = onAdvance,
+                enabled = !submitting,
+                loading = submitting,
+            )
         }
     }
 }

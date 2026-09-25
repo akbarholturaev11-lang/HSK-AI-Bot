@@ -429,6 +429,31 @@ class LessonViewModelTest {
         assertEquals(1, model.state.value.gradedAnswered)
     }
 
+    /**
+     * The AI chat is asked "what was my mistake?" about the answer the learner
+     * actually gave, so the check keeps it — as the learner saw it.
+     */
+    @Test
+    fun `the learner's own answer is kept for the AI chat`() = runTest {
+        val model = viewModel()
+        advanceUntilIdle()
+        model.acknowledge()
+
+        val choice = model.state.value.currentCard as ChoiceCard
+        model.answerChoice(choice, 1)
+        assertEquals("好", (model.state.value.answer as AnswerState.Checked).chosen)
+        model.advance()
+
+        val builder = model.state.value.currentCard as SentenceBuilderCard
+        model.answerBuilder(builder, listOf("好", "你"))
+        assertEquals("好 你", (model.state.value.answer as AnswerState.Checked).chosen)
+        model.advance()
+
+        val pairs = model.state.value.currentCard as MatchPairsCard
+        model.answerMatchPairs(pairs, listOf(0 to 1))
+        assertEquals("你 = yaxshi", (model.state.value.answer as AnswerState.Checked).chosen)
+    }
+
     @Test
     fun `a wrong answer is reported with only the selection, never the answer`() = runTest {
         val api = FakeLessonApi()

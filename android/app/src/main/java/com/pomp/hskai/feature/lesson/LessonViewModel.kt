@@ -37,7 +37,16 @@ import kotlinx.coroutines.launch
 /** What the learner has done with the card currently on screen. */
 sealed interface AnswerState {
     data object Unanswered : AnswerState
-    data class Checked(val isCorrect: Boolean, val explanation: String) : AnswerState
+    data class Checked(
+        val isCorrect: Boolean,
+        val explanation: String,
+        /**
+         * What the learner actually picked or built, as they saw it. Only the
+         * AI chat reads it, so a question like "what was my mistake?" is asked
+         * about the real answer. Grading and the mistake record never use it.
+         */
+        val chosen: String = "",
+    ) : AnswerState
 }
 
 sealed interface LessonOutcome {
@@ -337,7 +346,7 @@ class LessonViewModel(
                 selectedIndex = selectedIndex,
             ))
         }
-        record(correct, card.explanation)
+        record(correct, card.explanation, chosen = card.options.getOrNull(selectedIndex).orEmpty())
     }
 
     fun answerBuilder(card: LessonCard, built: List<String>) {
@@ -353,7 +362,7 @@ class LessonViewModel(
                 selectedTokens = built,
             ))
         }
-        record(correct, explanation)
+        record(correct, explanation, chosen = built.joinToString(" "))
     }
 
     fun answerMatchPairs(card: MatchPairsCard, wrongAttempts: List<Pair<Int, Int>>) {
@@ -365,7 +374,15 @@ class LessonViewModel(
                 selectedRightIndex = right,
             ))
         }
-        record(wrongAttempts.isEmpty(), card.explanation)
+        record(
+            wrongAttempts.isEmpty(),
+            card.explanation,
+            chosen = wrongAttempts.mapNotNull { (left, right) ->
+                val first = card.pairs.getOrNull(left)?.first ?: return@mapNotNull null
+                val second = card.pairs.getOrNull(right)?.second ?: return@mapNotNull null
+                "$first = $second"
+            }.joinToString(", "),
+        )
     }
 
     /** New word, grammar and unsupported cards just advance. */
@@ -533,10 +550,10 @@ class LessonViewModel(
         viewModelScope.launch { store.setLessonResumeIndex(level, lessonOrder, index) }
     }
 
-    private fun record(correct: Boolean, explanation: String) {
+    private fun record(correct: Boolean, explanation: String, chosen: String = "") {
         _state.update {
             it.copy(
-                answer = AnswerState.Checked(correct, explanation),
+                answer = AnswerState.Checked(correct, explanation, chosen),
                 correctCount = it.correctCount + if (correct) 1 else 0,
                 gradedAnswered = it.gradedAnswered + 1,
                 answerStreak = if (correct) it.answerStreak + 1 else 0,

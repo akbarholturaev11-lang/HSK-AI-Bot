@@ -70,6 +70,8 @@ fun lessonAssistantContext(state: LessonUiState, attemptId: String): ScreenConte
                 AnswerState.Unanswered -> appendLine("Answer is not checked yet; do not reveal the solution.")
                 is AnswerState.Checked -> {
                     appendLine("Checked: ${if (answer.isCorrect) "correct" else "wrong"}")
+                    // "What was my mistake?" needs the answer the learner actually gave.
+                    if (answer.chosen.isNotBlank()) appendLine("Learner answer: ${answer.chosen}")
                     if (answer.explanation.isNotBlank()) appendLine("Explanation shown: ${answer.explanation}")
                 }
             }
