@@ -352,20 +352,20 @@
 
         <!-- Native Android client -->
         <div class="block">
-          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>O'rnatish: qurilma yozuvi · aktivlik: ilova ochilishi</p></div></div>
+          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Asosiy raqamlar — sodda ko'rinish</p></div></div>
           <div class="grid g2" id="androidCards"></div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">APK voronkasi</div>
-            <div id="androidFunnel"></div>
-          </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">O'rnatilgan qurilmalar</div>
-            <div id="androidDevices"></div>
-          </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Versiyalar · oxirgi 30 kun</div>
-            <div id="androidVersions"></div>
-          </div>
+          <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
+          <details class="acc" style="margin-top:12px">
+            <summary>Batafsil statistika</summary>
+            <div class="accbody">
+              <div class="dtitle-sm">Yuklash jarayoni · user</div>
+              <div id="androidFunnel"></div>
+              <div class="dtitle-sm" style="margin-top:14px">Qurilmalar</div>
+              <div id="androidDevices"></div>
+              <div class="dtitle-sm" style="margin-top:14px">Versiyalar · oxirgi 30 kun</div>
+              <div id="androidVersions"></div>
+            </div>
+          </details>
           <div class="explain" id="androidExplain"></div>
         </div>
 
@@ -436,6 +436,7 @@
           <button class="icon-btn" data-act="clear-search">✕</button>
         </div>
         <div class="chips" id="userFilters" style="margin-bottom:12px"></div>
+        <div id="telegramReachability" hidden></div>
         <div class="list" id="userList"></div>
       </section>
 
@@ -598,8 +599,8 @@
     const segmentLabels = {
       all:["Hammasi","butun baza"], active_today:["Bugun aktiv","bugun botga kirgan"],
       paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","unikal to'lovchi"],
-      wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Sinov","trial"], free:["Bepul","free"],
-      expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Bot blok","botni bloklagan"]
+      wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Pro sinov","haqiqiy Pro trial"], free:["Bepul","free-tier"],
+      expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Telegram yopiq","xabar yetib bormaydi"]
     };
 
     /* ---------- load ---------- */
@@ -611,23 +612,34 @@
       state.desktopStatsLoading={};
       state.androidStats={};
       state.androidStatsLoading={};
+
+      let ov, fin, desktop;
       try{
-        const [ov, fin, desktop] = await Promise.all([
+        [ov, fin, desktop] = await Promise.all([
           apiPost("/api/admin-miniapp/overview",{}),
           apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null),
           apiPost("/api/admin-miniapp/desktop-stats",{period:"all_time"}).catch(()=>null)
         ]);
-        state.overview = ov;
-        state.finance = fin;
-        state.financeError = !fin;
-        state.desktopStats.all_time=(desktop&&desktop.desktop)?desktop.desktop:{error:true};
-        $("loading").hidden = true; $("app").hidden = false;
-        renderAll();
       }catch(e){
         const c = e&&e.status;
         if(c===401) setError("Kirish rad etildi","Mini ilovani Telegram ichidan admin tugmasi orqali oching.");
         else if(c===403) setError("Admin ruxsati yo'q","Bu panel faqat adminlar uchun.");
         else setError("Ulanish xatosi","Serverdan ma'lumot olib bo'lmadi. Keyinroq qayta oching.");
+        return;
+      }
+
+      state.overview = ov;
+      state.finance = fin;
+      state.financeError = !fin;
+      state.desktopStats.all_time=(desktop&&desktop.desktop)?desktop.desktop:{error:true};
+      $("loading").hidden = true;
+      $("app").hidden = false;
+
+      try{
+        renderAll();
+      }catch(e){
+        console.error("Admin panel render xatosi",e);
+        toast("Panelning bir qismi yuklanmadi. Qayta ochish shart emas.");
       }
     }
     async function loadManagement(force){
@@ -800,11 +812,14 @@
     }
 
     function androidBlank(message){
-      $("androidCards").innerHTML=message?`<p class='empty'>${esc(message)}</p>`:"";
-      $("androidFunnel").innerHTML="";
-      $("androidDevices").innerHTML="";
-      $("androidVersions").innerHTML="";
-      $("androidExplain").textContent="";
+      const cards=$("androidCards"), funnel=$("androidFunnel"), devices=$("androidDevices");
+      const versions=$("androidVersions"), updateSummary=$("androidUpdateSummary"), explain=$("androidExplain");
+      if(cards) cards.innerHTML=message?`<p class='empty'>${esc(message)}</p>`:"";
+      if(funnel) funnel.innerHTML="";
+      if(devices) devices.innerHTML="";
+      if(versions) versions.innerHTML="";
+      if(updateSummary) updateSummary.textContent="";
+      if(explain) explain.textContent="";
     }
 
     function renderAndroidStats(snapshot,loading){
@@ -816,48 +831,46 @@
       const stage=(key)=>num(funnel[key]&&funnel[key].users);
 
       $("androidCards").innerHTML=[
-        {label:"O'rnatgan qurilma",value:num(reg.installed_devices),note:num(reg.installed_users)+" user \u00b7 akkaunt ulangan",tone:"good"},
-        {label:"Android DAU",value:num(active.dau),note:"24 soat \u00b7 "+num(active.dau_devices)+" qurilma",tone:"info"},
-        {label:"Android WAU",value:num(active.wau),note:"7 kun \u00b7 "+num(active.wau_devices)+" qurilma",tone:"info"},
-        {label:"Android MAU",value:num(active.mau),note:"30 kun \u00b7 "+num(active.mau_devices)+" qurilma",tone:"good"}
+        {label:"O'rnatilgan",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
+        {label:"Bugun ishlatgan",value:num(active.dau),note:"user",tone:"info"},
+        {label:"7 kunda ishlatgan",value:num(active.wau),note:"user",tone:"info"},
+        {label:"30 kunda ishlatgan",value:num(active.mau),note:"user",tone:"good"}
       ].map(cardHtml).join("");
 
       const steps=[
         ["APK so'raldi",stage("apk_requested")],
-        ["APK yuborildi",stage("apk_sent")],
-        ["Akkaunt ulandi",stage("session_linked")],
-        ["Ilova birinchi ochildi",stage("first_open")]
+        ["APK olgan",stage("apk_sent")],
+        ["Akkaunt ulagan",stage("session_linked")],
+        ["Birinchi marta ochgan",stage("first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("androidFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
 
-      const periodLabel=reg.period_bounded?"Davrda qo'shilgan":"Jami qo'shilgan";
       const deviceRows=[
-        ["O'rnatgan (akkaunt ulangan)",num(reg.installed_devices),num(reg.installed_users)],
-        ["Ilovani ochgan",num(reg.opened_devices)+" \u00b7 "+num(rates.opened_per_installed)+"%",num(reg.opened_users)],
-        ["Ulagan, lekin ochmagan",num(reg.never_opened_devices),"\u2014"],
-        [periodLabel,num(reg.new_devices_in_period),num(reg.new_users_in_period)],
-        ["Serverga chiqdi \u00b7 24 soat",num(reg.online_devices_1d),num(reg.online_users_1d)],
-        ["Serverga chiqdi \u00b7 7 kun",num(reg.online_devices_7d),num(reg.online_users_7d)],
-        ["Serverga chiqdi \u00b7 30 kun",num(reg.online_devices_30d),num(reg.online_users_30d)],
-        ["Ulanish uzilgan",num(reg.unlinked_devices),"\u2014"],
-        ["Update o'rnatildi",num(updates.installed&&updates.installed.events),num(updates.installed&&updates.installed.users)]
+        ["Hozir ulangan telefon",num(reg.installed_devices),num(reg.installed_users)],
+        ["Kamida 1 marta ochilgan",num(reg.opened_devices),num(reg.opened_users)],
+        ["Hali ochilmagan",num(reg.never_opened_devices),"—"],
+        ["Ulanishi uzilgan eski telefon",num(reg.unlinked_devices),"—"],
+        ["Update o'rnatilgan",num(updates.installed&&updates.installed.events)+" marta",num(updates.installed&&updates.installed.users)]
       ];
-      $("androidDevices").innerHTML=`<table class="tbl"><thead><tr><th>Ko'rsatkich</th><th class="r">Qurilma</th><th class="r">User</th></tr></thead>
+      $("androidDevices").innerHTML=`<table class="tbl"><thead><tr><th>Ko'rsatkich</th><th class="r">Soni</th><th class="r">User</th></tr></thead>
         <tbody>${deviceRows.map(row=>`<tr><td><b>${esc(row[0])}</b></td><td class="r">${esc(row[1])}</td><td class="r">${esc(row[2])}</td></tr>`).join("")}</tbody></table>`;
 
       const versionRows=versions.rows||[];
       const outdated=versions.outdated_devices_30d;
-      const outdatedLabel=outdated==null
-        ? "Joriy release aniqlanmadi \u2014 eskirgan versiya sanalmadi."
-        : `Eskirgan: ${num(outdated)} / ${num(versions.comparable_devices_30d)} qurilma \u00b7 joriy ${esc(versions.latest||"\u2014")}`;
       $("androidVersions").innerHTML=(versionRows.length
-        ? `<table class="tbl"><thead><tr><th>Versiya</th><th class="r">Qurilma</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td><b>${esc(row.version)}</b></td><td class="r">${num(row.devices)}</td><td class="r">${num(row.users)}</td></tr>`).join("")}</tbody></table>`
-        : "<p class='empty'>Oxirgi 30 kunda serverga chiqqan qurilma yo'q.</p>")
-        +`<div class="explain">${esc(outdatedLabel)}</div>`;
+        ? `<table class="tbl"><thead><tr><th>Versiya</th><th class="r">Telefon</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td><b>${esc(row.version)}</b></td><td class="r">${num(row.devices)}</td><td class="r">${num(row.users)}</td></tr>`).join("")}</tbody></table>`
+        : "<p class='empty'>Oxirgi 30 kunda faol qurilma yo'q.</p>");
 
-      const notes=snapshot.notes||{};
-      $("androidExplain").textContent=[notes.install_definition,notes.active_definition,notes.not_measured].filter(Boolean).join(" ");
+      const updateSummary=$("androidUpdateSummary");
+      if(updateSummary){
+        updateSummary.textContent=outdated==null
+          ? "Joriy Android versiyasi aniqlanmadi."
+          : "Yangilanish kerak: "+num(outdated)+"/"+num(versions.comparable_devices_30d)+" telefon · joriy versiya "+String(versions.latest||"—");
+      }
+
+      const explain=$("androidExplain");
+      if(explain) explain.textContent="O'rnatilgan = akkaunt ulangan telefon. Faol = ilovani ochgan user. Uzilgan eski telefonlar faolga kirmaydi.";
     }
 
     function renderAdvanced(fp){
@@ -1005,10 +1018,70 @@
       }catch(e){ $("subEntryStats").innerHTML="<p class='empty'>Xatolik</p>"; }
     }
 
+    function botReachabilitySourceLabel(source){
+      const labels={
+        my_chat_member_blocked:"Telegram bot bloklanganini aniq bildirdi",
+        my_chat_member_unblocked:"Telegram bot qayta ochilganini aniq bildirdi",
+        delivery_success:"Bot xabari muvaffaqiyatli yetib bordi",
+        inbound_activity:"User botga qayta yozdi yoki tugma bosdi",
+        broadcast:"Ommaviy xabar yuborilganda aniqlangan",
+        feedback_prompt:"Feedback savoli yuborilganda aniqlangan",
+        feedback_price_offer:"Feedback taklifi yuborilganda aniqlangan",
+        course_reminder:"Dars eslatmasi yuborilganda aniqlangan",
+        course_weekly_progress:"Haftalik o'qish hisoboti yuborilganda aniqlangan",
+        motivation_reminder:"Motivatsion eslatma yuborilganda aniqlangan",
+        trial_reminder:"Pro trial eslatmasi yuborilganda aniqlangan",
+        daily_reset:"Kunlik limit yangilanish xabarida aniqlangan",
+        expiry_reminder:"Obuna tugash eslatmasida aniqlangan",
+        ad_campaign:"Reklama xabari yuborilganda aniqlangan",
+        discount_notification:"Chegirma xabari yuborilganda aniqlangan",
+        release_feedback:"Yangilanish feedback xabarida aniqlangan",
+        subscription_churn_followup:"Obuna follow-up xabarida aniqlangan",
+        onboarding_tip:"Onboarding maslahatida aniqlangan",
+        partner_notification:"Hamkorlik xabari yuborilganda aniqlangan",
+        gemini_switch:"AI modeli yangilanish xabarida aniqlangan",
+        payment_approved:"To'lov tasdiqlangan xabarida aniqlangan",
+        payment_rejected:"To'lov rad etilgan xabarida aniqlangan",
+        referral_bonus:"Referral bonus xabarida aniqlangan",
+        referral_trial_unlocked:"Referral trial xabarida aniqlangan",
+        limit_notice:"Limit xabarida aniqlangan",
+        daily_get_chat_forbidden:"Eski getChat tekshiruvida aniqlangan",
+        diagnostic_get_chat_forbidden:"Diagnostik getChat tekshiruvida aniqlangan",
+        telegram_forbidden:"Telegram xabar yuborishni rad etdi",
+        confirmed_reachable:"Telegram aloqasi qayta tasdiqlandi",
+        legacy_unknown:"Eski yozuv — qayerda aniqlangani saqlanmagan"
+      };
+      return labels[source]||source||"Manba noma'lum";
+    }
+    function botReachabilityEventLabel(type){
+      if(type==="blocked") return "Telegram xabari yopildi";
+      if(type==="unblocked") return "Telegram xabari qayta ochildi";
+      return type||"Holat";
+    }
+    function botReachabilityDiagnosis(f){
+      if(!f.bot_blocked) return {
+        title:"Telegram aloqasi ochiq",
+        tone:"green",
+        text:"Bot xabarlari userga yetib borishi mumkin. Bu holat product faolligi bilan alohida o'lchanadi."
+      };
+      const a=f.client_activity_after_bot_block||{};
+      const active=!!(a.miniapp_opened_at||a.android_opened_at||a.desktop_opened_at);
+      if(active) return {
+        title:"Telegram yopiq, lekin HSK AI ishlatilgan",
+        tone:"amber",
+        text:"User Telegram bot xabarlarini yopgan, ammo blok aniqlangandan keyin HSK AI ilovasidan foydalanish qayd etilgan. Buni churn deb hisoblash noto'g'ri."
+      };
+      return {
+        title:"Telegram yopiq, keyingi app faolligi topilmadi",
+        tone:"red",
+        text:"Bot xabari yetib bormaydi va blokdan keyingi Mini App/Android/Desktop ochilishi topilmadi. Bu churn bo'lishi mumkin, lekin faqat shu signal bilan tasdiqlanmaydi."
+      };
+    }
+
     /* ---------- USERS ---------- */
     function statusTone(u){
       if(u.has_pending_payment||u.payment_status==="pending") return ["To'lov tekshiruvda","amber"];
-      if(u.bot_blocked) return ["Bot bloklangan","red"];
+      if(u.bot_blocked) return ["Telegram yetib bormaydi","red"];
       if(u.access_type==="PRO_ACTIVE"||u.access_type==="pro_active"||(u.payment_status==="approved"&&u.status==="active")) return [u.access_label||"Pullik obuna","green"];
       if(u.access_type==="TRIAL_ACTIVE"||u.access_type==="trial_active") return [u.access_label||"Pro trial","blue"];
       if(u.access_type==="TEMP_ACCESS"||u.access_type==="temp_access"||(u.status==="active"&&u.payment_status!=="approved")) return [u.access_label||"Vaqtinchalik access","violet"];
@@ -1018,15 +1091,16 @@
     }
     function filterUsers(){
       const q = state.search.trim().toLowerCase();
-      const src = (state.search.trim().length>=2 && state.remoteUsers) ? state.remoteUsers : (state.overview.users||[]);
+      const useRemote = !!state.remoteUsers && (state.search.trim().length>=2 || state.filter==="bot_blocked");
+      const src = useRemote ? state.remoteUsers : (state.overview.users||[]);
       return src.filter(u=>{
         const f = state.filter==="all"
           || (state.filter==="paid"&&u.payment_status==="approved"&&u.status==="active")
           || (state.filter==="active_today"&&u.active_today===true)
           || (state.filter==="pending"&&(u.has_pending_payment===true||u.payment_status==="pending"))
           || (state.filter==="wants_pay"&&u.hot_lead===true)
-          || (state.filter==="trial"&&u.status==="trial")
-          || (state.filter==="free"&&u.status==="free")
+          || (state.filter==="trial"&&u.access_type==="TRIAL_ACTIVE")
+          || (state.filter==="free"&&u.access_type==="FREE")
           || (state.filter==="expired"&&u.status==="expired")
           || (state.filter==="blocked"&&u.status==="blocked")
           || (state.filter==="bot_blocked"&&u.bot_blocked);
@@ -1038,7 +1112,57 @@
       const c = state.overview.segments||{};
       $("userFilters").innerHTML = Object.keys(segmentLabels).map(k=>`<button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
     }
+    function renderTelegramReachability(){
+      const box=$("telegramReachability");
+      if(!box) return;
+      if(state.filter!=="bot_blocked"){ box.hidden=true; box.innerHTML=""; return; }
+      const d=state.overview.telegram_reachability||{};
+      const current=Number(d.current_unreachable||0);
+      const continued=Number(d.active_after_block_any||0);
+      const noApp=Math.max(current-continued,0);
+      const continuedPct=current?Math.round((continued/current)*100):0;
+      const sources=(d.detection_sources||[]).slice(0,8);
+      box.hidden=false;
+      box.innerHTML=`<div class="block" style="margin-bottom:12px">
+        <div class="block-head"><span class="bi">📡</span><div><h3>Telegram aloqa diagnostikasi</h3><p>Bu bo'lim "user HSK AI'ni tashladi" degani emas. Telegram bot aloqasi va HSK AI ichidagi faollik alohida ko'rsatiladi.</p></div></div>
+
+        <div class="grid g2">
+          <article class="stat danger"><div class="lab">Telegram xabari yetib bormaydi</div><div><div class="val">${esc(current)}</div><div class="sub">hozir bot xabari yetmaydigan userlar</div></div></article>
+          <article class="stat good"><div class="lab">HSK AI'da davom etgan</div><div><div class="val">${esc(continued)}</div><div class="sub">TG yopilgandan keyin ham app ochgan · ${continuedPct}%</div></div></article>
+          <article class="stat amber"><div class="lab">Keyingi app faolligi topilmagan</div><div><div class="val">${esc(noApp)}</div><div class="sub">churn bo'lishi mumkin, lekin tasdiq emas</div></div></article>
+          <article class="stat"><div class="lab">Android'da davom etgan</div><div><div class="val">${esc(d.active_after_block_android||0)}</div><div class="sub">blokdan keyin Android ochilgan</div></div></article>
+          <article class="stat"><div class="lab">Mini App'da davom etgan</div><div><div class="val">${esc(d.active_after_block_miniapp||0)}</div><div class="sub">blokdan keyin Mini App ochilgan</div></div></article>
+          <article class="stat"><div class="lab">Desktop'da davom etgan</div><div><div class="val">${esc(d.active_after_block_desktop||0)}</div><div class="sub">blokdan keyin Desktop ochilgan</div></div></article>
+          <article class="stat"><div class="lab">Aniq Telegram block · 7 kun</div><div><div class="val">${esc(d.explicit_block_users_7d||0)}</div><div class="sub">Telegramning rasmiy block signali bilan tasdiqlangan</div></div></article>
+        </div>
+
+        <div class="ncnote" style="margin-top:12px">
+          <b>Qanday o'qiladi:</b><br>
+          1) <b>Telegram xabari yetib bormaydi</b> — bot userga xabar jo'nata olmaydi.<br>
+          2) <b>HSK AI'da davom etgan</b> — shu user Telegramni yopgan bo'lsa ham Android, Mini App yoki Desktop'da o'qishni davom ettirgan.<br>
+          3) <b>Keyingi app faolligi topilmagan</b> — faqat qo'shimcha tekshirish kerak bo'lgan guruh; avtomatik ravishda "ketgan user" deb hisoblanmaydi.<br>
+          4) <b>Aniqlash manbasi</b> user nega bloklaganini emas, tizim blokni qaysi voqeada sezganini bildiradi.
+        </div>
+
+        ${sources.length?`<div style="margin-top:12px"><div class="dtitle-sm">Blok qayerda aniqlangan · bu sabab emas</div><div class="tags">${sources.map(s=>tag(`${botReachabilitySourceLabel(s.source)}: ${s.users}`,"")).join("")}</div></div>`:""}
+
+        <details class="acc" style="margin-top:12px">
+          <summary>Eski 601 kabi tarixiy raqamlar haqida muhim izoh</summary>
+          <div class="accbody">
+            <div class="ncnote">
+              Eski kodda bir userga keyingi Telegram yuborish xatosi kelganda blok vaqti va aniqlash manbasi qayta yozilishi mumkin edi.
+              Shuning uchun eski yozuvlardan "birinchi marta aynan qachon va qaysi xabardan keyin blokladi" degan xulosani 100% tiklab bo'lmaydi.
+              Yangi tizim esa Telegram yopilish/ochilish holatlarini alohida tarixga yozadi va birinchi aniqlangan vaqtni saqlaydi.
+            </div>
+          </div>
+        </details>
+
+        <div class="ncnote" style="margin-top:10px"><b>Sababni ko\'rish:</b> pastdagi userni oching. Profil ichida <b>Ehtimoliy blok sababi</b>, dalillar, dalil kuchi va boshqa ehtimollar chiqadi.</div>
+        <div class="explain" style="margin-top:12px">${esc(d.explain||"")}</div>
+      </div>`;
+    }
     function renderUsers(){
+      renderTelegramReachability();
       const rows = filterUsers();
       $("userList").innerHTML = rows.length ? rows.map(u=>{
         const t = statusTone(u);
@@ -1046,14 +1170,19 @@
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
             <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
             ${tag(t[0],t[1])}</div>
-          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("Telegram blok","red"):""}${u.access_ends_at?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.access_ends_at,u.payment_status==="approved"?"green":"violet"):(u.end_date?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.end_date,u.payment_status==="approved"?"green":"violet"):"")}</div>
+          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("TG yopiq","red"):""}${u.access_ends_at?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.access_ends_at,u.payment_status==="approved"?"green":"violet"):(u.end_date?tag((u.payment_status==="approved"?"obuna":"access")+" tugaydi "+u.end_date,u.payment_status==="approved"?"green":"violet"):"")}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>AI savollar</span></div><div class="mini"><b>${esc(u.streak)}</b><span>seriya</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Bu saralash bo'yicha foydalanuvchi topilmadi.</p>";
     }
     async function remoteSearch(q){
-      if(q.trim().length<2){ state.remoteUsers=null; renderUsers(); return; }
-      try{ const d=await apiPost("/api/admin-miniapp/users/search",{query:q}); state.remoteUsers=d.users||[]; renderUsers(); }
+      const segment = state.filter==="bot_blocked" ? "bot_blocked" : "";
+      if(q.trim().length<2 && !segment){ state.remoteUsers=null; renderUsers(); return; }
+      try{
+        const d=await apiPost("/api/admin-miniapp/users/search",{query:q,segment:segment,limit:1000});
+        state.remoteUsers=d.users||[];
+        renderUsers();
+      }
       catch(e){ toast(apiErr(e,"Qidiruv ishlamadi")); }
     }
 
@@ -1133,6 +1262,14 @@
         ? ((referredBy.username?"@"+referredBy.username+" · ":"")+(referredBy.name?referredBy.name+" · ":"")+referredBy.telegram_id)
         : "—";
       state.activeUser={id:f.id,name:f.name,username:f.username||u.username||""};
+      const afterBlock=f.client_activity_after_bot_block||{};
+      const tgDiag=botReachabilityDiagnosis(f);
+      const tgHistory=f.bot_reachability_history||[];
+      const blockCause=f.bot_block_cause||{};
+      const causeTone=Number(blockCause.score||0)>=80?"green":Number(blockCause.score||0)>=60?"amber":"red";
+      const causeEvidence=(blockCause.evidence||[]).map(x=>"• "+esc(x)).join("<br>");
+      const causeAlternatives=(blockCause.alternatives||[]).map(a=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(a.title)}</b><div class="usub">${(a.evidence||[]).map(esc).join(" · ")}</div></div><span class="usub">${esc(a.confidence)} · ${esc(a.score)}/100</span></div>`).join("");
+      const causeHtml=f.bot_blocked?`<div class="mcard" style="margin-top:12px"><div class="uhead"><div><div class="uname">Ehtimoliy blok sababi</div><div class="usub">Real eventlar asosida. Telegram userning sababini matn ko\'rinishida bermaydi.</div></div>${tag((blockCause.confidence||"past")+" ishonch",causeTone)}</div><div style="margin-top:10px"><b>${esc(blockCause.title||"Sababni ishonchli ajratib bo\'lmadi")}</b></div>${blockCause.score?`<div class="tags" style="margin-top:8px">${tag("Dalil kuchi: "+blockCause.score+"/100",causeTone)}${tag(blockCause.data_quality_label||"Ma\'lumot sifati noma\'lum","")}</div>`:""}${causeEvidence?`<div class="ncnote" style="margin-top:10px"><b>Nimaga shunday deyapmiz:</b><br>${causeEvidence}</div>`:""}${blockCause.note?`<div class="explain" style="margin-top:8px">${esc(blockCause.note)}</div>`:""}${causeAlternatives?`<details class="acc" style="margin-top:10px"><summary>Boshqa ehtimollar</summary><div class="accbody">${causeAlternatives}</div></details>`:""}<div class="ncnote" style="margin-top:10px"><b>Muhim:</b> ${esc(blockCause.disclaimer||"Bu ehtimoliy xulosa, aniq sabab emas.")}</div></div>`:"";
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Ruxsat va obuna</div>
           <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
@@ -1140,13 +1277,42 @@
           <div class="kv" style="margin-top:9px">
           <span>Access turi</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
           <span>Sabab</span><b>${esc(access.source_label||"—")}</b>
-          <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>
           <span>To'lov</span><b>${esc(f.has_pending_payment?"tekshiruvda":(f.payment_label||f.payment_status))}</b>
           <span>Tarif</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
           <span>Usul</span><b>${esc(f.method||f.payment_method||"—")}</b>
           <span>Boshlangan</span><b>${esc(access.starts_at||f.start_date||"—")}</b>
           <span>Tugaydi</span><b>${esc(access.ends_at||f.end_date||"—")}</b></div>
           ${access.source==="manual_admin"?'<div class="ncnote" style="margin-top:10px">Bu access admin tomonidan qo\'lda berilgan. U to\'lov yoki daromad yozuvi hisoblanmaydi.</div>':""}
+        </section>
+
+        <section class="dsec">
+          <div class="dtitle-sm">Telegram aloqa va HSK AI faolligi</div>
+          <div class="ncnote" style="margin-top:8px"><b>${esc(tgDiag.title)}</b><br>${esc(tgDiag.text)}</div>
+          <div class="kv" style="margin-top:10px">
+            <span>Telegram xabari</span><b>${f.bot_blocked?"yetib bormaydi":"yetib borishi mumkin"}</b>
+            <span>Block birinchi aniqlangan</span><b>${esc(f.bot_blocked_at||"—")}</b>
+            <span>Aniqlash manbasi</span><b>${esc(botReachabilitySourceLabel(f.bot_block_reason))}</b>
+            <span>Telegram aloqasi oxirgi tekshirilgan</span><b>${esc(f.last_bot_block_check_at||"—")}</b>
+            <span>Keyin Mini App</span><b>${afterBlock.miniapp_opened_at?("ochilgan · "+esc(afterBlock.miniapp_opened_at)):"ochilmagan / ma'lumot yo'q"}</b>
+            <span>Keyin Android</span><b>${afterBlock.android_opened_at?("ochilgan · "+esc(afterBlock.android_opened_at)):"ochilmagan / ma'lumot yo'q"}</b>
+            <span>Keyin Desktop</span><b>${afterBlock.desktop_opened_at?("ochilgan · "+esc(afterBlock.desktop_opened_at)):"ochilmagan / ma'lumot yo'q"}</b>
+          </div>
+
+          <div class="ncnote" style="margin-top:10px">
+            <b>Admin uchun qoida:</b> Telegram yopiq bo'lsa-yu, yuqoridagi ilovalardan biri blockdan keyin ochilgan bo'lsa, bu userni "HSK AI'ni tashlagan" deb hisoblamang.
+            Hech qaysi app faolligi topilmasa ham bu faqat qo'shimcha signal — yakuniy churn xulosasi emas.
+          </div>
+
+          ${causeHtml}
+
+          <details class="acc" style="margin-top:10px" ${tgHistory.length?"":"hidden"}>
+            <summary>Telegram yopilish/ochilish tarixi · ${tgHistory.length} ta qayd</summary>
+            <div class="accbody">
+              ${tgHistory.length?tgHistory.map(h=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(botReachabilityEventLabel(h.type))}</b><div class="usub">${esc(botReachabilitySourceLabel(h.source))}</div></div><span class="usub">${esc(h.created_at||"—")}</span></div>`).join(""):"<p class='empty'>Yangi tizim bo'yicha tarix hali yo'q.</p>"}
+            </div>
+          </details>
+
+          ${f.bot_blocked&&tgHistory.length===0?'<div class="ncnote" style="margin-top:10px">Bu eski yozuv bo\'lishi mumkin. Yangi block/unblock tarixi deploydan keyingi eventlardan boshlab to\'planadi.</div>':""}
         </section>
         <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
           <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
@@ -2244,14 +2410,14 @@
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }
-      if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; renderDashboard(); renderUserFilters(); renderUsers(); switchTab("users"); return; }
+      if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; state.remoteUsers=null; renderDashboard(); renderUserFilters(); switchTab("users"); if(state.filter==="bot_blocked") return remoteSearch(state.search); renderUsers(); return; }
       if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
       if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);
       if((el=T("[data-tab-jump]"))) return switchTab(el.dataset.tabJump);
       if((el=T("[data-act]"))){
         const n=el.dataset.act;
         if(n==="reload") return loadData();
-        if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; renderUsers(); return; }
+        if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; if(state.filter==="bot_blocked") return remoteSearch(""); renderUsers(); return; }
         if(n==="copy-report") return copyReport();
         if(n==="upload-ca"){ $("caFile").click(); return; }
         if(n==="close-drawer") return closeDrawer();

@@ -6,7 +6,10 @@ from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
 from app.db.models.ai_usage import AIUsageEvent
+from app.db.models.bot_reachability_event import BotReachabilityEvent
+from app.db.models.bot_outbound_event import BotOutboundEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.message import Message
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
@@ -19,6 +22,8 @@ from app.services.admin_miniapp_service import (
     admin_miniapp_today_start,
 )
 from app.services.admin_stats_service import miniapp_course_stats
+from app.services.bot_block_cause_service import BotBlockCauseService
+from app.services.entitlements.state import EntitlementState
 
 
 class _StatsDatabaseTestCase(unittest.IsolatedAsyncioTestCase):
@@ -218,6 +223,252 @@ class PaymentPeriodIntegrityTests(_StatsDatabaseTestCase):
         self.assertFalse(by_id[202]["hot_lead"])
         self.assertTrue(by_id[303]["hot_lead"])
         self.assertFalse(by_id[101]["hot_lead"])
+
+
+class BotBlockCauseIntegrityTests(_StatsDatabaseTestCase):
+    async def test_notification_pressure_is_ranked_from_successful_preblock_sends(self):
+        now = datetime.now(timezone.utc)
+        blocked_at = now - timedelta(hours=1)
+        async with self.sessions() as session:
+            user = User(
+                id=1,
+                telegram_id=101,
+                status="free",
+                payment_status="none",
+                bot_blocked_at=blocked_at,
+                bot_block_reason="my_chat_member_blocked",
+                created_at=now - timedelta(days=20),
+                last_active_at=now - timedelta(hours=2),
+            )
+            session.add(user)
+            session.add(
+                BotReachabilityEvent(
+                    user_id=1,
+                    telegram_id=101,
+                    event_type="blocked",
+                    source="my_chat_member_blocked",
+                    created_at=blocked_at,
+                )
+            )
+            for idx, minutes in enumerate((5, 12, 20, 28), start=1):
+                session.add(
+                    BotOutboundEvent(
+                        id=idx,
+                        user_id=1,
+                        telegram_id=101,
+                        source="motivation_reminder",
+                        status="sent",
+                        created_at=blocked_at - timedelta(minutes=minutes),
+                    )
+                )
+            await session.commit()
+            result = await BotBlockCauseService(session).analyze(user)
+
+        self.assertEqual(result["key"], "notification_pressure")
+        self.assertEqual(result["confidence"], "yuqori")
+        self.assertEqual(result["data_quality"], "direct")
+        self.assertTrue(any("4 ta" in item for item in result["evidence"]))
+
+    async def test_recent_app_error_can_be_primary_probable_cause(self):
+        now = datetime.now(timezone.utc)
+        blocked_at = now - timedelta(hours=1)
+        async with self.sessions() as session:
+            user = User(
+                id=2,
+                telegram_id=202,
+                status="free",
+                payment_status="none",
+                bot_blocked_at=blocked_at,
+                bot_block_reason="my_chat_member_blocked",
+                created_at=now - timedelta(days=10),
+                last_active_at=now - timedelta(hours=1),
+            )
+            session.add(user)
+            session.add(
+                BotReachabilityEvent(
+                    user_id=2,
+                    telegram_id=202,
+                    event_type="blocked",
+                    source="my_chat_member_blocked",
+                    created_at=blocked_at,
+                )
+            )
+            session.add(
+                Message(
+                    user_id=2,
+                    role="assistant",
+                    content="APP ERROR KONTEXTI: test",
+                    content_type="app_error_context",
+                    created_at=blocked_at - timedelta(minutes=7),
+                )
+            )
+            await session.commit()
+            result = await BotBlockCauseService(session).analyze(user)
+
+        self.assertEqual(result["key"], "technical_issue")
+        self.assertEqual(result["confidence"], "yuqori")
+        self.assertTrue(any("7 daqiqa" in item for item in result["evidence"]))
+
+    async def test_android_activity_after_block_is_not_presented_as_product_churn(self):
+        now = datetime.now(timezone.utc)
+        blocked_at = now - timedelta(days=1)
+        async with self.sessions() as session:
+            user = User(
+                id=3,
+                telegram_id=303,
+                status="free",
+                payment_status="none",
+                bot_blocked_at=blocked_at,
+                bot_block_reason="my_chat_member_blocked",
+                created_at=now - timedelta(days=30),
+                last_active_at=now,
+            )
+            session.add_all(
+                [
+                    user,
+                    BotReachabilityEvent(
+                        user_id=3,
+                        telegram_id=303,
+                        event_type="blocked",
+                        source="my_chat_member_blocked",
+                        created_at=blocked_at,
+                    ),
+                    CourseMiniAppEvent(
+                        user_id=3,
+                        telegram_id=303,
+                        event_name="android_app_opened",
+                        source="android",
+                        created_at=blocked_at + timedelta(minutes=20),
+                    ),
+                ]
+            )
+            await session.commit()
+            result = await BotBlockCauseService(session).analyze(user)
+
+        self.assertEqual(result["key"], "channel_migration")
+        self.assertEqual(result["confidence"], "o'rta")
+        self.assertIn("HSK AI", result["note"])
+        self.assertIn("non-churn", result["note"])
+
+    async def test_legacy_episode_caps_confidence_even_with_strong_timing_signal(self):
+        now = datetime.now(timezone.utc)
+        blocked_at = now - timedelta(hours=2)
+        async with self.sessions() as session:
+            user = User(
+                id=4,
+                telegram_id=404,
+                status="free",
+                payment_status="none",
+                bot_blocked_at=blocked_at,
+                bot_block_reason="motivation_reminder",
+                created_at=now - timedelta(days=30),
+                last_active_at=now - timedelta(days=3),
+            )
+            session.add(user)
+            for idx, minutes in enumerate((3, 8, 14, 25), start=20):
+                session.add(
+                    BotOutboundEvent(
+                        id=idx,
+                        user_id=4,
+                        telegram_id=404,
+                        source="motivation_reminder",
+                        status="sent",
+                        created_at=blocked_at - timedelta(minutes=minutes),
+                    )
+                )
+            await session.commit()
+            result = await BotBlockCauseService(session).analyze(user)
+
+        self.assertEqual(result["data_quality"], "legacy")
+        self.assertLessEqual(result["score"], 45)
+        self.assertEqual(result["confidence"], "past")
+
+
+class BotReachabilityStatsIntegrityTests(_StatsDatabaseTestCase):
+    async def test_summary_separates_telegram_unreachable_from_app_activity(self):
+        now = datetime.now(timezone.utc)
+        blocked_at = now - timedelta(days=2)
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    User(
+                        id=1,
+                        telegram_id=101,
+                        status="free",
+                        payment_status="none",
+                        bot_blocked_at=blocked_at,
+                        bot_block_reason="my_chat_member_blocked",
+                        created_at=now - timedelta(days=30),
+                        last_active_at=now - timedelta(hours=1),
+                    ),
+                    User(
+                        id=2,
+                        telegram_id=202,
+                        status="free",
+                        payment_status="none",
+                        bot_blocked_at=blocked_at,
+                        bot_block_reason="feedback_prompt",
+                        created_at=now - timedelta(days=30),
+                        last_active_at=now - timedelta(days=3),
+                    ),
+                    BotReachabilityEvent(
+                        user_id=1,
+                        telegram_id=101,
+                        event_type="blocked",
+                        source="my_chat_member_blocked",
+                        created_at=blocked_at,
+                    ),
+                    CourseMiniAppEvent(
+                        telegram_id=101,
+                        user_id=1,
+                        event_name="android_app_opened",
+                        source="android",
+                        created_at=now - timedelta(days=1),
+                    ),
+                ]
+            )
+            await session.commit()
+            summary = await AdminMiniAppService(session)._bot_reachability_summary(now)
+
+        self.assertEqual(summary["current_unreachable"], 2)
+        self.assertEqual(summary["explicit_block_users_7d"], 1)
+        self.assertEqual(summary["active_after_block_any"], 1)
+        self.assertEqual(summary["active_after_block_android"], 1)
+        self.assertEqual(summary["active_after_block_miniapp"], 0)
+
+
+class EntitlementSegmentIntegrityTests(_StatsDatabaseTestCase):
+    async def test_legacy_trial_status_is_free_and_real_pro_trial_is_trial(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    User(
+                        id=1,
+                        telegram_id=101,
+                        status="trial",
+                        payment_status="none",
+                        created_at=now - timedelta(days=5),
+                        last_active_at=now,
+                    ),
+                    User(
+                        id=2,
+                        telegram_id=202,
+                        status="free",
+                        payment_status="none",
+                        trial_used=True,
+                        pro_trial_started_at=now - timedelta(days=1),
+                        pro_trial_ends_at=now + timedelta(days=6),
+                        created_at=now - timedelta(days=5),
+                        last_active_at=now,
+                    ),
+                ]
+            )
+            await session.commit()
+            counts = await AdminMiniAppService(session)._entitlement_state_counts(now)
+
+        self.assertEqual(counts.get(EntitlementState.FREE), 1)
+        self.assertEqual(counts.get(EntitlementState.TRIAL_ACTIVE), 1)
 
 
 class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):

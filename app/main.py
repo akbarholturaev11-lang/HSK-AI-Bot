@@ -15,7 +15,7 @@ from aiogram import Bot
 from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
@@ -74,6 +74,8 @@ from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
     MOTIVATION_KEYS,
@@ -85,6 +87,7 @@ from app.services.motivation_reminder_service import (
 )
 from app.services.access_service import AccessService
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.bot_block_cause_service import BotBlockCauseService
 from app.services.gemini_switch_announcement_service import announce_if_needed
 from app.services.daily_reset_service import DailyResetService
 from app.services.expiry_reminder_service import ExpiryReminderService
@@ -519,8 +522,6 @@ async def _background_scheduler(bot: Bot) -> None:
                 await BotFeedbackService(session).send_due_feedback_requests(bot)
             async with async_session_maker() as session:
                 await SubscriptionChurnService(session).send_due_followups(bot)
-            async with async_session_maker() as session:
-                await BotBlockStatusService(session).scan_due_users(bot, limit=100)
             # Gemini yoqilgan bo'lsa "limit o'zgardi" e'lonini bir marta yuboradi.
             await announce_if_needed(bot)
         except Exception as e:
@@ -1322,6 +1323,49 @@ async def _admin_user_payload(session, user) -> dict:
             )
         ).scalar()
     )
+    reachability_rows = list(
+        (
+            await session.execute(
+                select(BotReachabilityEvent)
+                .where(BotReachabilityEvent.telegram_id == user.telegram_id)
+                .order_by(BotReachabilityEvent.created_at.desc(), BotReachabilityEvent.id.desc())
+                .limit(12)
+            )
+        ).scalars().all()
+    )
+
+    client_activity_after_block = {
+        "miniapp_opened_at": "",
+        "android_opened_at": "",
+        "desktop_opened_at": "",
+    }
+    if BotBlockStatusService.is_bot_blocked(user) and user.bot_blocked_at:
+        activity_names = (
+            "miniapp_opened",
+            "android_app_opened",
+            "desktop_app_opened",
+        )
+        activity_rows = (
+            await session.execute(
+                select(
+                    CourseMiniAppEvent.event_name,
+                    func.max(CourseMiniAppEvent.created_at).label("last_at"),
+                )
+                .where(
+                    CourseMiniAppEvent.telegram_id == user.telegram_id,
+                    CourseMiniAppEvent.created_at >= user.bot_blocked_at,
+                    CourseMiniAppEvent.event_name.in_(activity_names),
+                )
+                .group_by(CourseMiniAppEvent.event_name)
+            )
+        ).all()
+        activity_by_name = {str(row.event_name): row.last_at for row in activity_rows}
+        client_activity_after_block = {
+            "miniapp_opened_at": _mini_dt(activity_by_name.get("miniapp_opened")),
+            "android_opened_at": _mini_dt(activity_by_name.get("android_app_opened")),
+            "desktop_opened_at": _mini_dt(activity_by_name.get("desktop_app_opened")),
+        }
+    block_cause = await BotBlockCauseService(session).analyze(user)
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1340,6 +1384,7 @@ async def _admin_user_payload(session, user) -> dict:
             "bot_blocked_at": _mini_dt(user.bot_blocked_at),
             "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
             "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
+            "bot_block_reason": user.bot_block_reason or "",
             "payment_status": user.payment_status,
             "has_pending_payment": has_pending_payment,
             "payment_method": user.payment_method,
@@ -1360,6 +1405,16 @@ async def _admin_user_payload(session, user) -> dict:
             "referred_by_telegram_id": user.referred_by_telegram_id,
             "access": access,
             "referral": referral,
+            "bot_reachability_history": [
+                {
+                    "type": item.event_type,
+                    "source": item.source,
+                    "created_at": _mini_dt(item.created_at),
+                }
+                for item in reachability_rows
+            ],
+            "client_activity_after_bot_block": client_activity_after_block,
+            "bot_block_cause": block_cause,
             "bonus": {
                 "total": bonus_total,
                 "used": bonus_used,
@@ -1408,6 +1463,7 @@ def _admin_user_card_payload(
         "bot_blocked_at": _mini_dt(user.bot_blocked_at),
         "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
         "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
+        "bot_block_reason": user.bot_block_reason or "",
         "payment_status": user.payment_status,
         "payment_label": user.payment_status or "—",
         "has_pending_payment": bool(has_pending_payment),
@@ -1479,7 +1535,7 @@ async def _review_admin_payment(
             if course_event.get("recorded"):
                 await analytics_session.commit()
         with contextlib.suppress(Exception):
-            await PaymentNotifyService().notify_payment_approved(bot=bot, user=user)
+            await PaymentNotifyService(session).notify_payment_approved(bot=bot, user=user)
         if partner:
             with contextlib.suppress(Exception):
                 await PartnerService(session).notify_partner(
@@ -1508,7 +1564,7 @@ async def _review_admin_payment(
             payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
         )
         with contextlib.suppress(Exception):
-            await PaymentNotifyService().notify_payment_rejected(
+            await PaymentNotifyService(session).notify_payment_rejected(
                 bot=bot,
                 user=user,
                 reason=None,
@@ -3198,15 +3254,61 @@ async def admin_miniapp_users_search(request: Request):
         payload = await request.json()
     except ValueError:
         payload = {}
-    query = str(payload.get("query") or "").strip()
+
+    query_text = str(payload.get("query") or "").strip()
+    segment = str(payload.get("segment") or "").strip().lower()
+    try:
+        limit = max(1, min(1000, int(payload.get("limit") or 60)))
+    except (TypeError, ValueError):
+        limit = 60
+
     async with async_session_maker() as session:
-        repo = UserRepository(session)
-        if query:
-            users = await repo.search_by_identifier(query, limit=30)
-        else:
-            users = (await session.execute(
-                select(User).order_by(User.last_active_at.desc()).limit(30)
-            )).scalars().all()
+        stmt = select(User)
+
+        if query_text:
+            value = query_text[1:] if query_text.startswith("@") else query_text
+            if value.isdigit():
+                stmt = stmt.where(User.telegram_id == int(value))
+            else:
+                pattern = f"%{value.lower()}%"
+                stmt = stmt.where(
+                    or_(
+                        func.lower(User.username).like(pattern),
+                        func.lower(User.full_name).like(pattern),
+                    )
+                )
+
+        if segment == "bot_blocked":
+            stmt = stmt.where(
+                User.bot_blocked_at.is_not(None),
+                or_(
+                    User.bot_unblocked_at.is_(None),
+                    User.bot_unblocked_at < User.bot_blocked_at,
+                ),
+            )
+
+        total = int(
+            (
+                await session.execute(
+                    select(func.count()).select_from(stmt.order_by(None).subquery())
+                )
+            ).scalar()
+            or 0
+        )
+
+        order_column = (
+            User.bot_blocked_at.desc()
+            if segment == "bot_blocked"
+            else User.last_active_at.desc()
+        )
+        users = list(
+            (
+                await session.execute(
+                    stmt.order_by(order_column, User.id.desc()).limit(limit)
+                )
+            ).scalars().all()
+        )
+
         user_ids = [int(user.telegram_id) for user in users]
         pending_ids = {
             int(value)
@@ -3220,9 +3322,11 @@ async def admin_miniapp_users_search(request: Request):
             ).scalars().all()
             if value
         } if user_ids else set()
+
     now = datetime.now(timezone.utc)
     return JSONResponse(content={
         "ok": True,
+        "total": total,
         "users": [
             _admin_user_card_payload(
                 user,
@@ -3232,7 +3336,6 @@ async def admin_miniapp_users_search(request: Request):
             for user in users
         ],
     })
-
 
 @app.post("/api/admin-miniapp/users/detail")
 async def admin_miniapp_user_detail(request: Request):

@@ -21,6 +21,8 @@ class ExpiryReminderService:
         sent_count = 0
 
         for user in users:
+            if BotBlockStatusService.is_bot_blocked(user):
+                continue
             if user.expiry_reminder_sent_at is not None:
                 continue
 
@@ -32,6 +34,7 @@ class ExpiryReminderService:
                     chat_id=user.telegram_id,
                     text=text,
                 )
+                await block_service.handle_send_success(user, reason="expiry_reminder")
                 await CourseNotificationService(self.session).record_from_text(
                     user,
                     key="subscription_expiring",

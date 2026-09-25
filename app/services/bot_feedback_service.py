@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from aiogram import Bot
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from app.bot.keyboards.feedback import (
     feedback_dislike_keyboard,
@@ -20,11 +20,14 @@ from app.repositories.bot_feedback_repo import (
 )
 from app.repositories.user_repo import UserRepository
 from app.services.user_access_state_service import UserAccessStateService
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 FEEDBACK_PERIOD_DAYS = 30
 FEEDBACK_JOIN_DELAY = timedelta(days=1)
 FEEDBACK_RETRY_AFTER = timedelta(hours=24)
+FEEDBACK_MAX_PROMPTS = 2
+FEEDBACK_ACTIVE_WINDOW = timedelta(days=7)
 FEEDBACK_REWARD_DURATION = timedelta(minutes=30)
 FEEDBACK_PRICE_OFFER_DELAY = timedelta(minutes=5)
 # Scheduler har 60 soniyada ishlaydi — bitta yugurishda hammaga yubormaymiz,
@@ -56,6 +59,9 @@ class BotFeedbackService:
         return value
 
     def _is_prompt_due(self, feedback: BotFeedback, now: datetime) -> bool:
+        attempts = int(getattr(feedback, "prompt_attempts", 0) or 0)
+        if attempts >= FEEDBACK_MAX_PROMPTS:
+            return False
         prompted_at = self._aware(feedback.prompted_at)
         return prompted_at is None or now - prompted_at >= FEEDBACK_RETRY_AFTER
 
@@ -82,13 +88,21 @@ class BotFeedbackService:
             select(User)
             .where(User.created_at <= oldest_join_time)
             .where(User.status != "blocked")
+            .where(User.last_active_at >= now - FEEDBACK_ACTIVE_WINDOW)
+            .where(
+                or_(
+                    User.bot_blocked_at.is_(None),
+                    User.bot_unblocked_at >= User.bot_blocked_at,
+                )
+            )
             .order_by(User.created_at.asc())
         )
         users = list(result.scalars().all())
 
         sent_count = 0
+        attempted_count = 0
         for user in users:
-            if sent_count >= FEEDBACK_SEND_BATCH_LIMIT:
+            if attempted_count >= FEEDBACK_SEND_BATCH_LIMIT:
                 break
 
             feedback = await self._get_or_create_due_feedback(user, now)
@@ -98,6 +112,7 @@ class BotFeedbackService:
             lang = user.language if user.language else "ru"
             text, keyboard = feedback_prompt_for(user, feedback, lang)
 
+            attempted_count += 1
             message_id = None
             try:
                 msg = await bot.send_message(
@@ -108,9 +123,16 @@ class BotFeedbackService:
                 )
                 message_id = msg.message_id
                 sent_count += 1
-            except Exception:
-                pass
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="feedback_prompt")
+            except Exception as exc:
+                await BotBlockStatusService(self.session).handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="feedback_prompt",
+                )
 
+            # Count the attempt even when Telegram failed. This prevents a
+            # transient scheduler loop from retrying the same user every minute.
             await self.feedback_repo.mark_prompt_sent(feedback, message_id)
             await asyncio.sleep(FEEDBACK_SEND_DELAY)
 
@@ -174,7 +196,12 @@ class BotFeedbackService:
         sent_count = 0
         for feedback in feedbacks:
             user = await self.user_repo.get_by_telegram_id(feedback.telegram_id)
-            if not user or user.status == "blocked" or UserAccessStateService.is_paid(user):
+            if (
+                not user
+                or user.status == "blocked"
+                or UserAccessStateService.is_paid(user)
+                or BotBlockStatusService.is_bot_blocked(user)
+            ):
                 await self.feedback_repo.mark_price_offer_sent(feedback)
                 continue
 
@@ -191,8 +218,16 @@ class BotFeedbackService:
                     reply_markup=feedback_price_offer_keyboard(feedback.id, lang),
                     parse_mode="HTML",
                 )
+                await BotBlockStatusService(self.session).handle_send_success(user, reason="feedback_price_offer")
                 sent_count += 1
-            except Exception:
+            except Exception as exc:
+                blocked = await BotBlockStatusService(self.session).handle_send_exception(
+                    user.telegram_id,
+                    exc,
+                    reason="feedback_price_offer",
+                )
+                if blocked:
+                    await self.feedback_repo.mark_price_offer_sent(feedback)
                 continue
 
             await self.feedback_repo.mark_price_offer_sent(feedback)

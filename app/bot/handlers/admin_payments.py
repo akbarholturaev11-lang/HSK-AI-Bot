@@ -35,7 +35,7 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
     payment_repo = PaymentRepository(session)
     user_repo = UserRepository(session)
     subscription_service = SubscriptionService(session)
-    payment_notify_service = PaymentNotifyService()
+    payment_notify_service = PaymentNotifyService(session)
 
     payment_id = int(callback.data.split(":")[2])
     payment = await payment_repo.get_by_id(payment_id)
@@ -115,7 +115,7 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         return
     payment_repo = PaymentRepository(session)
     user_repo = UserRepository(session)
-    payment_notify_service = PaymentNotifyService()
+    payment_notify_service = PaymentNotifyService(session)
 
     parts = callback.data.split(":")
     payment_id = int(parts[2])
@@ -176,7 +176,7 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
         return
     payment_repo = PaymentRepository(session)
     user_repo = UserRepository(session)
-    payment_notify_service = PaymentNotifyService()
+    payment_notify_service = PaymentNotifyService(session)
 
     parts = callback.data.split(":")
     payment_id = int(parts[2])

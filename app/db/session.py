@@ -97,6 +97,7 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "feature_key": "VARCHAR(32) DEFAULT 'general' NOT NULL",
     },
     "bot_feedbacks": {
+        "prompt_attempts": "INTEGER DEFAULT 0 NOT NULL",
         "price_offer_due_at": "TIMESTAMP WITH TIME ZONE",
         "price_offer_sent_at": "TIMESTAMP WITH TIME ZONE",
         "price_offer_used_at": "TIMESTAMP WITH TIME ZONE",

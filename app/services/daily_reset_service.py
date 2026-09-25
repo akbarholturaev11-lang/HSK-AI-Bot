@@ -37,13 +37,14 @@ class DailyResetService:
             user.questions_used = 0
             user.last_limit_reset_at = now
 
-            if should_notify:
+            if should_notify and not BotBlockStatusService.is_bot_blocked(user):
                 lang = user.language if user.language else "ru"
                 try:
                     await bot.send_message(
                         chat_id=user.telegram_id,
                         text=t("daily_limit_renewed", lang),
                     )
+                    await block_service.handle_send_success(user, reason="daily_reset")
                     sent_count += 1
                 except Exception as exc:
                     await block_service.handle_send_exception(
