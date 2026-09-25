@@ -243,7 +243,7 @@ Files touched:
 
 Risk / follow-up:
 - Backend, DB, to'lov, Mini App o'zgarmagan. Mashq/Xatolarim/lug'at hali eski uslubda.
-- Kompilyatsiya CI'da tekshiriladi (bu muhitda Android SDK yo'q); telefonda vizual tekshiruv kerak.
+- Android CI (run 36131683181) yashil: unit test, lint, debug APK, release bundle. Telefonda vizual tekshiruv hali kerak.
 
 ### 2026-09-23 — Android Google OAuth start request and Credential Manager host fix
 

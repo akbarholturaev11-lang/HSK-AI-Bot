@@ -780,8 +780,9 @@ ataylab tegilmadi — ular mashq ekranlariniki.
 Yangi matn yo'q: barcha satrlar mavjud (uz/ru/tg). Qamrov:
 `LessonOptionStateTest`, `LessonViewModelTest` (tanlangan javob).
 
-**Tekshirilmagan:** bu muhitda Android SDK yo'q — kompilyatsiya CI'da,
-ko'rinish telefonda (light/dark, 360 dp, katta shrift, uz/ru/tg).
+**Tekshirilgan:** Android CI (run 36131683181) yashil — unit test, lint,
+debug APK, release bundle. **Tekshirilmagan:** ko'rinish telefonda
+(light/dark, 360 dp, katta shrift, uz/ru/tg) va AI chat oqimi real akkauntda.
 
 ### 3.11 Boshqa ochiqlar
 
