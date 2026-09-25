@@ -111,6 +111,17 @@ class WidgetStoreTest {
         )
     }
 
+    @Test fun `a pin is called blocked only on xiaomi when nothing covered the app and no widget arrived`() {
+        assertTrue(WidgetInstallPromptPolicy.pinLooksBlocked("Xiaomi", systemUiSeen = false, placed = false))
+        assertTrue(WidgetInstallPromptPolicy.pinLooksBlocked("xiaomi", systemUiSeen = false, placed = false))
+        // The launcher's sheet showed up, or the widget landed: not blocked.
+        assertFalse(WidgetInstallPromptPolicy.pinLooksBlocked("Xiaomi", systemUiSeen = true, placed = false))
+        assertFalse(WidgetInstallPromptPolicy.pinLooksBlocked("Xiaomi", systemUiSeen = false, placed = true))
+        // Other phones never get the Xiaomi permission hint.
+        assertFalse(WidgetInstallPromptPolicy.pinLooksBlocked("Google", systemUiSeen = false, placed = false))
+        assertFalse(WidgetInstallPromptPolicy.pinLooksBlocked("samsung", systemUiSeen = false, placed = false))
+    }
+
     @Test fun `telemetry queue bounded deduped persisted and account isolated`() = runTest {
         val memory = MemoryPreferences()
         val store = WidgetStore(memory)

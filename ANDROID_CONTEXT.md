@@ -742,6 +742,38 @@ Tunggi osmon `DAY` holatida turgani xatodek ko'rinadi, shuning uchun
 kunduzgi rasmlar MORNING/DAY/WAITING'da, to'q sariq EVENING'da, tunggilar
 LATE'da, qizil dramatiklar CRITICAL'da.
 
+### 3.16 Widget o'rnatish oynasi: haqiqiy o'lcham, fonsiz panda — 2026-09-25
+
+Foydalanuvchi tasdiqlagan chizma bo'yicha (`WidgetInstallPromptScreen.kt`):
+
+- **AI tugmasi yo'q.** `AssistantHidden()` registrga eng yuqori ustuvorlikda
+  `hidesAssistant = true` yozadi; oyna yopilganda yozuv o'chadi. Boshqa
+  to'liq ekranli overlay ham tugmani shu bilan yashira oladi.
+- **Widget haqiqiy o'lchamda.** `smart_widget_info.xml` 2x2 katak so'raydi,
+  shuning uchun oynada 4 ustunli bosh ekran bo'lagi chiziladi, widget o'rtadagi
+  ikki ustunni oladi. Ichidagi rasm va matn haqiqiy widgetniki bilan bir xil:
+  `widgetCopy()` `WidgetContent` dan ajratib olindi, ikkalasi ham shuni
+  chaqiradi. Fon va boshqa ilovalar xira (blur faqat Android 12+, pastda
+  faqat qoraytirish).
+- **Pastdagi panda fonsiz** — `drawable-nodpi/widget_prompt_panda.webp`,
+  `widget_panda_ok02` dan kesilgan (512px manbadan, shuning uchun biroz
+  yumshoq). Sekin nafas oladi (1.0→1.02), tizimda animatsiya o'chiq bo'lsa
+  qimirlamaydi.
+- **Widget tushishi bilan oyna darhol yopiladi** va markazda
+  `WidgetPlacedNotice` (galochka + «Vidjet ekranga o'rnatildi») 1.5 s turadi.
+  Signal ikkita: `HskAiWidgetReceiver.placements` (yangi widget ID
+  `onUpdate` da) va `ON_RESUME` dagi tekshiruv. Profildan widget allaqachon
+  bor holda ochilsa — avvalgidek holat ekrani, o'zi yopilmaydi.
+- **Xiaomi/HyperOS.** U yerda «Ish stoli yorliqlari» ruxsati o'chiq bo'lsa,
+  `requestPin` `true` qaytaradi-yu, hech narsa ko'rsatmaydi. Agar so'rovdan
+  keyin 2 s ichida oyna fokusni yo'qotmasa (tizim oynasi chiqmasa) va widget
+  kelmasa — yo'riqnoma va «Ruxsatni ochish» tugmasi (MIUI ruxsat ekrani,
+  bo'lmasa ilova sozlamalari). Qaytib kelganda tugma yana «O'rnatish».
+
+**Telefonda tekshirish kerak:** Pixel emulyatorida o'rnatish → oyna yopilib
+galochka chiqadimi; Xiaomi'da ruxsat o'chiq/yoqiq holatda; uz/ru/tg;
+kichik ekran (640 dp) — widget kesilib qolmasligi.
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.

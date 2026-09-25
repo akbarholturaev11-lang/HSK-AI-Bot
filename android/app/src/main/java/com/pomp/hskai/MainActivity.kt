@@ -365,6 +365,7 @@ private fun AppRoot(
             var planChoiceSeen by rememberSaveable { mutableStateOf(false) }
             var planChoiceOpen by remember { mutableStateOf(false) }
             var widgetSetupOpen by remember { mutableStateOf(false) }
+            var widgetPlacedNotice by remember { mutableStateOf(false) }
             var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
             var widgetOfferHandled by rememberSaveable { mutableStateOf(false) }
             var widgetForegroundTick by remember { mutableStateOf(0) }
@@ -1133,6 +1134,16 @@ private fun AppRoot(
                     }
 
                     if (widgetSetupOpen) {
+                        val finishWidgetPrompt: (placed: Boolean) -> Unit = { placed ->
+                            WidgetScheduler.schedule(context)
+                            widgetSetupOpen = false
+                            if (widgetPromptFromOnboarding) {
+                                widgetPromptFromOnboarding = false
+                                widgetOfferHandled = true
+                            }
+                            // The prompt closes at once; the confirmation takes its place.
+                            if (placed) widgetPlacedNotice = true
+                        }
                         WidgetInstallPromptScreen(
                             onDismiss = {
                                 widgetSetupOpen = false
@@ -1141,14 +1152,8 @@ private fun AppRoot(
                                     widgetOfferHandled = true
                                 }
                             },
-                            onInstalled = {
-                                WidgetScheduler.schedule(context)
-                                widgetSetupOpen = false
-                                if (widgetPromptFromOnboarding) {
-                                    widgetPromptFromOnboarding = false
-                                    widgetOfferHandled = true
-                                }
-                            },
+                            onInstalled = { finishWidgetPrompt(false) },
+                            onPlaced = { finishWidgetPrompt(true) },
                         )
                     } else if (studySetupState.visible) {
                         StudySetupSheet(
@@ -1207,6 +1212,10 @@ private fun AppRoot(
                                 onDismiss = { goalPickerOpen = false },
                             )
                         }
+                    }
+
+                    if (widgetPlacedNotice) {
+                        WidgetPlacedNotice(onDone = { widgetPlacedNotice = false })
                     }
 
                     val ad = adRequest
