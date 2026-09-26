@@ -119,12 +119,18 @@ class DesktopSubscriptionService:
         prefix = "android" if self.source == "android_subscription" else "desktop"
         return f"{prefix}-{secrets.token_urlsafe(18)}"
 
-    async def _record_checkout_opened(self, *, user, attempt_id: str) -> None:
+    async def _record_checkout_opened(
+        self,
+        *,
+        user,
+        attempt_id: str,
+        entry_source: str | None = None,
+    ) -> None:
         await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=user,
             telegram_id=user.telegram_id,
-            source=self.source,
+            source=entry_source or self.source,
             payload={
                 "attempt_id": attempt_id,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
@@ -145,7 +151,12 @@ class DesktopSubscriptionService:
             context.user, source="desktop_trial", client="desktop"
         )
 
-    async def overview(self, access_token: str) -> dict[str, Any]:
+    async def overview(
+        self,
+        access_token: str,
+        *,
+        entry_source: str | None = None,
+    ) -> dict[str, Any]:
         context = await self._context(access_token)
         result = self._checked_result(
             await self.checkout.overview(
@@ -184,7 +195,7 @@ class DesktopSubscriptionService:
         await SubscriptionEntryAnalyticsService(self.session).record_entry(
             telegram_id=context.user.telegram_id,
             user=context.user,
-            source=self.source,
+            source=entry_source or self.source,
             mode=DESKTOP_SUBSCRIPTION_MODE,
         )
 
@@ -194,6 +205,7 @@ class DesktopSubscriptionService:
             await self._record_checkout_opened(
                 user=context.user,
                 attempt_id=attempt_id,
+                entry_source=entry_source,
             )
         return result
 
