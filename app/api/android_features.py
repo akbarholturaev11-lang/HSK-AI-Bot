@@ -110,7 +110,9 @@ MAX_ANDROID_JSON_BODY_BYTES = 16 * 1024
 ANDROID_PROFILE_AVATARS = {"", "panda_cheer", "panda_streak", "panda_worried"}
 
 ANDROID_CHECKOUT_ORIGIN_SOURCES = {
+    "onboarding_plan": "android_onboarding_plan",
     "course_limit": "android_course_limit",
+    "course_lesson_limit": "android_course_lesson_limit",
     "practice_limit": "android_practice_limit",
     "practice_placement": "android_practice_placement",
     "practice_mock": "android_practice_mock",
