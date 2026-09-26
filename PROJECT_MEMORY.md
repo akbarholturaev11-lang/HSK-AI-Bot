@@ -244,6 +244,7 @@ Files touched:
 Risk / follow-up:
 - Backend, DB, to'lov, Mini App o'zgarmagan. Xatolarim'da javob serverga Tekshirish'da ketadi.
 - Android CI (run 36216591893) yashil. Telefonda ko'rish kerak (kichik ekran, dark mode).
+- Reliz: Android 1.6.10 (versionCode 25) — mashq ekranlari va main'dagi juftlik/AI/orqaga tuzatishlari shu versiyada.
 
 ### 2026-09-26 — Android dars: juftlik bahosi, AI tugmasi, avto-ovoz, «orqaga»
 
