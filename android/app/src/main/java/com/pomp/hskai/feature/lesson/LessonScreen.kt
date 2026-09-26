@@ -75,6 +75,11 @@ import kotlin.math.PI
 import kotlin.math.sin
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.HskBubbleText
+import com.pomp.hskai.core.design.components.HskDepthButton
+import com.pomp.hskai.core.design.components.HskStageCoach
+import com.pomp.hskai.core.design.components.HskStageHeading
+import com.pomp.hskai.core.design.components.HskStageProgress
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskPrimaryButton
@@ -368,13 +373,13 @@ private fun LessonBody(
             // jumps when the cinematic ends.
             val coachReady = !entryVisible
 
-            if (heading != null) LessonHeading(heading)
+            if (heading != null) HskStageHeading(heading)
 
             // Teaching cards and the builders keep the coach above: there is
             // nothing to stand beside. The pairs keep the whole width for the grid.
             val coachAbove = card !is ChoiceCard && card !is PronunciationCard && card !is MatchPairsCard
             if (coachAbove) {
-                LessonCoachBeside(
+                HskStageCoach(
                     character = coachCharacter,
                     mood = coachMood,
                     reaction = coachReaction,
@@ -384,7 +389,7 @@ private fun LessonBody(
                     characterSize = 88.dp,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp),
                 ) {
-                    BubbleText(coachLine)
+                    HskBubbleText(coachLine)
                 }
             }
 
@@ -405,7 +410,7 @@ private fun LessonBody(
                 when (card) {
                     is ChoiceCard -> {
                         val listening = card.kind == ChoiceKind.LISTENING
-                        LessonCoachBeside(
+                        HskStageCoach(
                             character = coachCharacter,
                             mood = coachMood,
                             reaction = coachReaction,
@@ -632,35 +637,7 @@ private fun LessonTopBar(
             tint = PompColors.InkSecondary,
         )
 
-        val animatedProgress by animateFloatAsState(
-            targetValue = progress.coerceIn(0f, 1f),
-            animationSpec = tween(durationMillis = 300),
-            label = "lessonProgress",
-        )
-        Box(
-            modifier = Modifier.weight(1f).height(16.dp).clip(RoundedCornerShape(8.dp)).background(PompColors.Divider),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(animatedProgress)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(PompColors.Cinnabar),
-            ) {
-                // A soft highlight along the top of the fill, so the bar reads as
-                // a filled tube rather than a flat stripe.
-                if (animatedProgress > 0.06f) {
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 8.dp, top = 4.dp)
-                            .fillMaxWidth()
-                            .height(4.dp)
-                            .clip(RoundedCornerShape(2.dp))
-                            .background(Color.White.copy(alpha = 0.3f)),
-                    )
-                }
-            }
-        }
+        HskStageProgress(progress = progress, modifier = Modifier.weight(1f))
 
         HskGlassIconButton(
             icon = Icons.Filled.Settings,
@@ -916,7 +893,7 @@ private fun FooterBar(
     val footer = Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
     when {
         card is ChoiceCard -> Box(modifier = footer) {
-            LessonDepthButton(
+            HskDepthButton(
                 text = stringResource(R.string.lesson_check),
                 color = PompColors.Cinnabar,
                 onClick = onCheckChoice,
@@ -924,7 +901,7 @@ private fun FooterBar(
             )
         }
         (card is NewWordCard || card is GrammarCard) && acknowledgeReady -> Box(modifier = footer) {
-            LessonDepthButton(
+            HskDepthButton(
                 text = stringResource(R.string.lesson_next),
                 color = PompColors.Cinnabar,
                 onClick = onAcknowledge,
@@ -1003,7 +980,7 @@ private fun FeedbackPanel(
                 )
             }
             Spacer(Modifier.height(14.dp))
-            LessonDepthButton(
+            HskDepthButton(
                 text = stringResource(R.string.lesson_next),
                 color = accent,
                 onClick = onAdvance,

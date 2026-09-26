@@ -395,6 +395,8 @@ internal fun HskCinematicEntrance(
     onReveal: () -> Unit,
     modifier: Modifier = Modifier,
     cape: Boolean = false,
+    /** A practice round that went badly still lands, but does not celebrate. */
+    mood: HskCharacterMood = HskCharacterMood.Celebrate,
 ) {
     val context = LocalContext.current
     val reveal by rememberUpdatedState(onReveal)
@@ -502,7 +504,7 @@ internal fun HskCinematicEntrance(
             ) {
                 HskCharacterStage(
                     character = character,
-                    mood = HskCharacterMood.Celebrate,
+                    mood = mood,
                     modifier = Modifier.fillMaxSize(),
                     cape = cape,
                 )

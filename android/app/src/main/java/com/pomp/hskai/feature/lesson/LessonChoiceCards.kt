@@ -40,6 +40,10 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.design.components.HskAnswerOption
+import com.pomp.hskai.core.design.components.HskBubbleText
+import com.pomp.hskai.core.design.components.HskOptionState
+import com.pomp.hskai.core.design.components.hskOptionState
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.ChoiceKind
 
@@ -62,7 +66,7 @@ internal fun LessonChoiceMaterial(card: ChoiceCard, isAudioLoading: Boolean) {
         // speaker and nothing else, as on the Mini App.
         ChoiceKind.LISTENING -> ListeningPrompt(isAudioLoading = isAudioLoading)
         ChoiceKind.GAP_FILL -> {
-            if (card.prompt.isNotBlank()) BubbleText(card.prompt)
+            if (card.prompt.isNotBlank()) HskBubbleText(card.prompt)
             card.sentence?.takeIf { it.isNotBlank() }?.let { sentence ->
                 Spacer(Modifier.height(8.dp))
                 Text(
@@ -75,7 +79,7 @@ internal fun LessonChoiceMaterial(card: ChoiceCard, isAudioLoading: Boolean) {
         ChoiceKind.DIALOG_CLOZE -> {
             // The heading already says the instruction; do not repeat it.
             card.prompt.takeIf { it.isNotBlank() && it != LocalLessonCoachLine.current }?.let {
-                BubbleText(it)
+                HskBubbleText(it)
                 Spacer(Modifier.height(6.dp))
             }
             card.lines.forEach { line ->
@@ -95,7 +99,7 @@ internal fun LessonChoiceMaterial(card: ChoiceCard, isAudioLoading: Boolean) {
                 }
             }
         }
-        else -> BubbleText(card.prompt.ifBlank { card.title })
+        else -> HskBubbleText(card.prompt.ifBlank { card.title })
     }
 }
 
@@ -146,20 +150,15 @@ private fun Waveform(modifier: Modifier) {
     }
 }
 
-internal enum class LessonOptionState { IDLE, SELECTED, CORRECT, WRONG }
+/** The lesson's name for the shared answer state; kept so the lesson reads as before. */
+internal typealias LessonOptionState = HskOptionState
 
-/** Before the check only the pick is lit; after it, the right answer and the wrong pick. */
 internal fun lessonOptionState(
     index: Int,
     correctIndex: Int,
     selectedIndex: Int?,
     isAnswered: Boolean,
-): LessonOptionState = when {
-    !isAnswered -> if (index == selectedIndex) LessonOptionState.SELECTED else LessonOptionState.IDLE
-    index == correctIndex -> LessonOptionState.CORRECT
-    index == selectedIndex -> LessonOptionState.WRONG
-    else -> LessonOptionState.IDLE
-}
+): LessonOptionState = hskOptionState(index, correctIndex, selectedIndex, isAnswered)
 
 @Composable
 internal fun LessonChoiceOptions(
@@ -173,7 +172,7 @@ internal fun LessonChoiceOptions(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         card.options.forEachIndexed { index, option ->
-            LessonOptionRow(
+            HskAnswerOption(
                 text = option,
                 state = lessonOptionState(index, card.correctIndex, selectedIndex, isAnswered),
                 enabled = !isAnswered,
@@ -182,77 +181,3 @@ internal fun LessonChoiceOptions(
         }
     }
 }
-
-@Composable
-private fun LessonOptionRow(
-    text: String,
-    state: LessonOptionState,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    val border = when (state) {
-        LessonOptionState.IDLE -> PompColors.Divider
-        LessonOptionState.SELECTED -> PompColors.Cinnabar
-        LessonOptionState.CORRECT -> PompColors.Jade
-        LessonOptionState.WRONG -> PompColors.Flame
-    }
-    val background = when (state) {
-        LessonOptionState.IDLE -> PompColors.PaperRaised
-        LessonOptionState.SELECTED -> PompColors.CinnabarSoft
-        LessonOptionState.CORRECT -> PompColors.JadeSoft
-        LessonOptionState.WRONG -> PompColors.FlameSoft
-    }
-    val ink = when (state) {
-        LessonOptionState.IDLE -> PompColors.Ink
-        LessonOptionState.SELECTED -> PompColors.CinnabarDark
-        LessonOptionState.CORRECT -> PompColors.Jade
-        LessonOptionState.WRONG -> PompColors.Flame
-    }
-    val description = when (state) {
-        LessonOptionState.CORRECT -> stringResource(R.string.cd_answer_correct, text)
-        LessonOptionState.WRONG -> stringResource(R.string.cd_answer_wrong, text)
-        else -> text
-    }
-    val shape = RoundedCornerShape(14.dp)
-    Box(modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp)) {
-        // The flat edge under the button: neutral while idle, the state's own colour once lit.
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .offset(y = 4.dp)
-                .clip(shape)
-                .background(if (state == LessonOptionState.IDLE) PompColors.OptionDepth else border),
-        )
-        Surface(
-            onClick = onClick,
-            enabled = enabled,
-            color = background,
-            shape = shape,
-            border = BorderStroke(2.dp, border),
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 58.dp)
-                .semantics {
-                    contentDescription = description
-                    selected = state == LessonOptionState.SELECTED
-                },
-        ) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-                Text(
-                    text = text,
-                    style = if (text.hasHanzi()) {
-                        PompTextStyles.hanziMedium.copy(fontSize = 24.sp, lineHeight = 32.sp)
-                    } else {
-                        MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp)
-                    },
-                    color = ink,
-                    textAlign = TextAlign.Center,
-                )
-            }
-        }
-    }
-}
-
-/** Hanzi get the serif face; pinyin and translations stay in the text face. */
-private fun String.hasHanzi(): Boolean =
-    any { it.code in 0x3400..0x9FFF || it.code in 0xF900..0xFAFF }

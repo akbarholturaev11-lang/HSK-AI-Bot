@@ -147,27 +147,9 @@ internal fun PracticeCompletionHero(
     outcome: PracticeCompletionOutcome,
     modifier: Modifier = Modifier,
 ) {
-    val haptics = LocalHapticFeedback.current
-
-    LaunchedEffect(
-        outcome.kind,
-        outcome.score,
-        outcome.total,
-        outcome.isDuplicate,
-        outcome.strongHaptic,
-    ) {
-        if (outcome.strongHaptic) {
-            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-        }
-    }
-
+    // The vibration and the confetti come from the closing clip
+    // (`PracticeCompletionClip`) that every result opens with.
     Box(modifier = modifier.fillMaxWidth()) {
-        if (outcome.showConfetti) {
-            PracticeConfetti(
-                seed = outcome.score * 31 + outcome.total * 7 + outcome.kind.ordinal,
-                modifier = Modifier.matchParentSize(),
-            )
-        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -260,36 +242,3 @@ private fun CompletionPill(text: String) {
         )
     }
 }
-
-@Composable
-private fun PracticeConfetti(seed: Int, modifier: Modifier = Modifier) {
-    val symbols = listOf("★", "✦", "◆", "●", "✺")
-    val particles = remember(seed) {
-        List(16) { index ->
-            Triple(
-                ((index * 37 + seed * 11) % 100) / 100f,
-                ((index * 53 + seed * 7) % 90) / 100f,
-                symbols[(index + seed.absoluteSafe()) % symbols.size],
-            )
-        }
-    }
-    Box(modifier = modifier) {
-        particles.forEachIndexed { index, (x, y, symbol) ->
-            Text(
-                text = symbol,
-                color = when (index % 3) {
-                    0 -> PompColors.Gold
-                    1 -> PompColors.Jade
-                    else -> PompColors.Cinnabar
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = (x * 280).dp, y = (y * 240).dp)
-                    .alpha(0.68f),
-            )
-        }
-    }
-}
-
-private fun Int.absoluteSafe(): Int = if (this == Int.MIN_VALUE) 0 else kotlin.math.abs(this)

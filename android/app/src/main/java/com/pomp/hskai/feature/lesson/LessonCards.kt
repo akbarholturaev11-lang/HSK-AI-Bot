@@ -65,6 +65,8 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.design.components.HskBubbleTail
+import com.pomp.hskai.core.design.components.HskSpeechBubble
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.ChoiceKind
@@ -410,8 +412,8 @@ fun PronunciationCardView(
     val canListen = !isRecording && !isScoring && !isAudioLoading
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         CardTitle(stringResource(R.string.lesson_repeat_after_teacher))
-        LessonSpeechBubble(
-            tail = BubbleTail.Bottom,
+        HskSpeechBubble(
+            tail = HskBubbleTail.Bottom,
             onClick = if (canListen) { { onPlayAudio(card.phrase) } } else null,
             onClickLabel = stringResource(R.string.lesson_play_audio),
         ) {
