@@ -227,6 +227,24 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-26 — Android mashq ekranlari dars uslubida
+
+Changed:
+- Ieroglif tanish, talaffuz, Xatolarim takrori va daraja testi darsdagi sahna
+  tuzilishida (fon, personaj + pufak, Tekshirish). Xatoda faqat izoh, AI chaqirilmaydi.
+- Mashq natijalari oldidan personaj qo'nish klipi; yaxshi natijada konfetti va ohang.
+- HSK imtihon savollari o'zgarmagan (admin qarori).
+
+Files touched:
+- `core/design/components/HskStage.kt` (yangi, darsdan umumiy qilib chiqarildi),
+  `feature/practice/PracticeStage.kt` (yangi), `PracticeScreen.kt`, `MistakesScreen.kt`,
+  `WordDrillScreen.kt`, `MistakesCompletionResult.kt`, `PracticeCompletionHero.kt`,
+  dars fayllari (faqat import/nom). Tafsilot: `ANDROID_CONTEXT.md` 3.20.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Xatolarim'da javob serverga Tekshirish'da ketadi.
+- Telefonda ko'rish kerak (kichik ekran, dark mode).
+
 ### 2026-09-25 — Android dars yakuni: kinematik klip, ovoz va vibratsiya
 
 Changed:

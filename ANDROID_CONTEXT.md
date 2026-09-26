@@ -865,6 +865,41 @@ Foydalanuvchi tasdiqlagan chizma bo'yicha (`WidgetInstallPromptScreen.kt`):
 galochka chiqadimi; Xiaomi'da ruxsat o'chiq/yoqiq holatda; uz/ru/tg;
 kichik ekran (640 dp) — widget kesilib qolmasligi.
 
+### 3.20 Mashq ekranlari dars uslubida, yakunda klip — 2026-09-26
+
+Admin tasdiqlagan qarorlar: xatoda **faqat izoh** (AI chiplari yo'q), mashq
+yakunlari **klip bilan**, **HSK imtihon savollari eskicha** qoladi.
+
+- **Umumiy qismlar core'ga chiqdi:** `core/design/components/HskStage.kt` —
+  `HskSpeechBubble`/`HskBubbleTail`, `HskStageHeading`, `HskStageCoach`,
+  `HskBubbleText`, `HskDepthButton`, `HskStageProgress`, `HskAnswerOption` +
+  `HskOptionState`/`hskOptionState`. Dars shulardan foydalanadi (ko'rinishi
+  o'zgarmagan). `LessonOptionState`/`lessonOptionState` typealias sifatida
+  qoldi — `LessonOptionStateTest` o'zgarmagan. Darsda faqat `ReadyAnswer` va
+  `AskChip` qoldi (`LessonBubble.kt`).
+- **Mashq qismlari:** `feature/practice/PracticeStage.kt` — yuqori panel (X +
+  progress), `PracticeCheckFooter` (Tekshirish), `PracticeFeedbackPanel`
+  (to'g'ri/xato + izoh + Davom etish), `PracticeErrorPill`,
+  `PracticeCompletionClip`.
+- **Ekranlar** (hammasida qadimiy fon, sarlavha, personaj + pufak, A/B/C'siz
+  javoblar, bosish faqat tanlaydi → Tekshirish):
+  - Ieroglif tanish — pufakda pinyin + ma'no, 2×2 ieroglif.
+  - Talaffuz — darsdagi talaffuz kartasi: pufakda ieroglif, personaj, keng
+    mikrofon, «HOZIR GAPIRA OLMAYMAN».
+  - Xatolarim takrori — sarlavhada savol, pufakda turkum qatori + material.
+    Serverga javob endi **Tekshirish'da** ketadi (so'rov o'sha, bir bosish
+    keyin); javob kelguncha tugma yuklanadi. Pastki tugma tab paneli ustiga
+    ko'tarildi (ilgari uning tagida qolishi mumkin edi).
+  - Daraja testi — sarlavhada ko'rsatma, pufakda gap/karnay.
+  - HSK imtihon — **o'zgarmagan** (personaj yo'q, javob oxirigacha yashirin).
+- **Yakun klipi:** barcha mashq natijalari (`CompletionSummaryShell`,
+  `MistakesReviewResult`, `DrillSummary`) oldidan yakun personaji qog'oz fonga
+  qo'nadi (`HskEntrance.LAND`, chang, zarb). Yaxshi natijada (`showConfetti`)
+  konfetti va dars ohangi; yomonida jim qo'nish. Burilishda qayta o'ynamaydi.
+  Hero'dagi eski statik konfetti va alohida vibratsiya olib tashlandi.
+  `HskCinematicEntrance` ga `mood` parametri qo'shildi.
+- ViewModel'lar, server so'rovlari va matnlar o'zgarmagan (yangi satr yo'q).
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
