@@ -48,7 +48,7 @@ _CLIENT_CHANNELS = {
     },
     "android": {
         "label": "Android",
-        "note": "Native Android -> Telegram subscription handoff",
+        "note": "Native Android -> canonical APK checkout",
     },
     "desktop": {
         "label": "Desktop",
@@ -102,6 +102,7 @@ class _ApprovedPayment:
     submitted_at: datetime
     priced: bool
     is_renewal: bool
+    source: str
 
 
 class AdminFinanceStatsService:
@@ -165,12 +166,13 @@ class AdminFinanceStatsService:
                     Payment.base_amount,
                     Payment.reviewed_at,
                     Payment.submitted_at,
+                    Payment.source,
                 ).where(Payment.payment_status == "approved")
             )
         ).all()
 
         items: list[_ApprovedPayment] = []
-        for user_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
+        for user_id, amount, currency, base_amount, reviewed_at, submitted_at, source in rows:
             usd = _amount_to_usd(amount, currency)
             if usd is None and base_amount:
                 usd = _amount_to_usd(base_amount, "TJS")
@@ -192,6 +194,7 @@ class AdminFinanceStatsService:
                     submitted_at=submitted_at,
                     priced=priced,
                     is_renewal=False,
+                    source=str(source or "telegram_bot"),
                 )
             )
 
@@ -455,8 +458,9 @@ class AdminFinanceStatsService:
             "sources_paid": sources_paid,
             "client_business": client_business,
             "source_attribution_explain": (
-                "Har to'lov payment yuborilgan paytdan oldingi eng yaqin obuna-kirish manbasiga bog'landi. "
-                "Oldingi to'lovlar keyinroq ochilgan manbaga ko'chirilmaydi."
+                "Yangi paymentlarda aniq Payment.source ishlatiladi (Android / Mini App / Desktop). "
+                "Eski yoki telegram_bot yozuvlarida tarixiy aniqlikni saqlash uchun paymentdan oldingi "
+                "eng yaqin obuna-kirish manbasi fallback sifatida olinadi."
             ),
             "cards": [
                 {"label": "Daromad", "value": _usd(revenue_usd), "note": f"{approved_count} ta to'lov", "tone": "info"},
@@ -622,7 +626,8 @@ class AdminFinanceStatsService:
             "explain": (
                 "Mini App, Android va Desktop alohida biznes bazaga yozmaydi: "
                 "pul approved Payment jadvalidan, obuna holati User access maydonlaridan, "
-                "client attribution esa paymentdan oldingi eng yaqin SubscriptionEntryEvent manbasidan olinadi."
+                "yangi to'lovlarda client attribution Payment.source'dan, eski yozuvlarda esa "
+                "paymentdan oldingi eng yaqin SubscriptionEntryEvent manbasidan olinadi."
             ),
         }
 
@@ -642,6 +647,9 @@ class AdminFinanceStatsService:
         payment: _ApprovedPayment,
         source_events: list[tuple[datetime, str]],
     ) -> str:
+        exact = str(payment.source or "").strip().lower()
+        if exact in {"android", "desktop", "miniapp"}:
+            return exact
         source = "unknown"
         for created_at, candidate in source_events:
             if created_at > payment.submitted_at:
