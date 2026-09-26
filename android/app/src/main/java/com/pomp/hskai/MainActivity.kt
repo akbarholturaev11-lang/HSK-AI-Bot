@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -987,6 +988,13 @@ private fun AppRoot(
                     voiceState.hasSession &&
                     voiceState.result == null
 
+                // Kurs is the home screen: back from any other tab lands on it,
+                // and only back from Kurs leaves the app. Registered before the
+                // tabs, so a tab's own back (a call, an open list) goes first.
+                BackHandler(enabled = selectedTab != MainTab.COURSE) {
+                    selectedTab = MainTab.COURSE
+                }
+
                 Box(Modifier.fillMaxSize()) {
                     MainScaffold(
                         selectedTab = selectedTab,
@@ -1297,12 +1305,14 @@ private fun LessonHost(
         onDispose { model.endAttempt(launch.attemptKey) }
     }
 
+    // Registered for its context only: the floating AI button stays off the
+    // lesson and its celebration, and the chat is reached from the questions
+    // the lesson offers after a wrong answer.
     com.pomp.hskai.feature.assistant.AssistantScreen(
         com.pomp.hskai.feature.assistant.lessonAssistantContext(lessonState, launch.attemptKey),
         bottomBar = false,
         priority = 10,
-        // The AI button must not come to rest on the lesson's own bottom button.
-        bottomInset = 76.dp,
+        showButton = false,
     )
     // After a wrong answer the lesson offers questions for the AI chat; they
     // exist only while the chat itself is switched on.

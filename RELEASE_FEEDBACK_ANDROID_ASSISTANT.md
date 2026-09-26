@@ -11,8 +11,10 @@ keyin admin tasdiqlasagina mavjud `Release feedback` moduli orqali yuboriladi.
 
 > HSK AI Android ilovasiga yangi yordamchi qo'shildi.
 >
-> Endi dars, lug'at, mashq yoki reyting ichida pastdagi **AI** tugmasini
+> Endi lug'at, mashq yoki reyting ichida pastdagi **AI** tugmasini
 > bossangiz, chat aynan ochiq turgan ekraningizdagi materialni tushunadi.
+> Darsda xato javobdan keyin «Xatoyim nimada?» tugmasi chatni shu savol
+> bilan ochadi.
 >
 > Matn yozing, ovoz bilan so'rang yoki rasm yuboring. Imtihon va bellashuv
 > paytida AI javobni aytib bermaydi, lekin qanday foydalanishni tushuntiradi;
@@ -20,7 +22,9 @@ keyin admin tasdiqlasagina mavjud `Release feedback` moduli orqali yuboriladi.
 
 ## Aynan nima yangilandi
 
-1. Har asosiy Android bo'limida doimiy **AI** tugmasi.
+1. Asosiy Android bo'limlarida doimiy **AI** tugmasi. Dars ichida va dars
+   yakunida suzuvchi tugma yo'q (2026-09-26) — u yerda chat xato javobdan
+   keyingi «Xatoyim nimada?» / «Misol bilan ko'rsat» orqali ochiladi.
 2. 80% balandlikda ochiladigan chat, kerak bo'lsa to'liq ekran.
 3. Dars kartasi, lug'at so'zi, talaffuz, xatolar va reyting holatidan aniq
    kontekst oladigan yordamchi.

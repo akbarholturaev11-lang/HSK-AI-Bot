@@ -43,12 +43,12 @@ class MatchPairsSelectionTest {
         explanation = "",
     )
 
-    private fun render() {
+    private fun render(onFinished: () -> Unit = {}) {
         compose.setContent {
             PompHskAiTheme {
                 // A known ground, so a half-transparent cell composites predictably.
                 Box(Modifier.fillMaxSize().background(PompColors.Paper).padding(8.dp)) {
-                    MatchPairsCardView(card = card, isAnswered = false, onFinished = {})
+                    MatchPairsCardView(card = card, isAnswered = false, onFinished = onFinished)
                 }
             }
         }
@@ -143,6 +143,27 @@ class MatchPairsSelectionTest {
 
         assertEquals("idle", fillOf("颜色"))
         assertEquals("idle", fillOf("chap tomon"))
+    }
+
+    /**
+     * A miss is a nudge, as in the Mini App's `cardMatch`: the grid still
+     * finishes once every pair is matched. It used to hand the miss on, and
+     * the lesson then failed a fully matched grid.
+     */
+    @Test
+    fun a_missed_pick_does_not_stop_the_grid_finishing() {
+        var finished = 0
+        render(onFinished = { finished++ })
+
+        compose.onNodeWithText("颜色").performClick()
+        compose.onNodeWithText("chap tomon").performClick()
+        compose.onNodeWithText("颜色").performClick()
+        compose.onNodeWithText("rang").performClick()
+        compose.onNodeWithText("左边").performClick()
+        compose.onNodeWithText("chap tomon").performClick()
+        compose.waitForIdle()
+
+        assertEquals(1, finished)
     }
 
     @Test

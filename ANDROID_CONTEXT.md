@@ -770,7 +770,9 @@ testi va Mini App — o'zgarmagan, ular keyin alohida ko'chiriladi).
   eskicha (izoh matni). Talaffuz bahosida AI qatori yo'q.
 - Talaffuz kartasida personaj qaytdi (statik, faqat bir martalik reaksiya);
   Mini App bilan moslik uchun personaj Panda qoldi (`LessonCharacterParityTest`).
-- Darsdagi AI tugmasi pastki tugma ustiga tushmasligi uchun `bottomInset = 76.dp`.
+- ~~Darsdagi AI tugmasi pastki tugma ustiga tushmasligi uchun `bottomInset = 76.dp`.~~
+  3.20 da bekor qilindi: darsda suzuvchi AI tugmasi umuman yo'q
+  (`showButton = false`), chat faqat «Xatoyim nimada?» orqali ochiladi.
 
 Yangi fayllar: `feature/lesson/LessonBubble.kt` (dumli pufak, coach qatori,
 chuqurlikli tugma, tayyor javob), `feature/lesson/LessonChoiceCards.kt`
@@ -865,7 +867,7 @@ Foydalanuvchi tasdiqlagan chizma bo'yicha (`WidgetInstallPromptScreen.kt`):
 galochka chiqadimi; Xiaomi'da ruxsat o'chiq/yoqiq holatda; uz/ru/tg;
 kichik ekran (640 dp) — widget kesilib qolmasligi.
 
-### 3.20 Mashq ekranlari dars uslubida, yakunda klip — 2026-09-26
+### 3.21 Mashq ekranlari dars uslubida, yakunda klip — 2026-09-26
 
 Admin tasdiqlagan qarorlar: xatoda **faqat izoh** (AI chiplari yo'q), mashq
 yakunlari **klip bilan**, **HSK imtihon savollari eskicha** qoladi.
@@ -903,8 +905,52 @@ yakunlari **klip bilan**, **HSK imtihon savollari eskicha** qoladi.
 **Tekshirilgan:** Android CI (run 36216591893) yashil — unit test, lint, debug APK,
 release bundle. **Tekshirilmagan:** telefonda ko'rinish (kichik ekran, dark mode, uz/ru/tg).
 
+### 3.20 Juftlik bahosi, darsda AI tugmasi, avto-ovoz, «orqaga» — 2026-09-26
+
+Foydalanuvchi suratlaridan to'rtta narsa:
+
+- **Juftlik mashqi to'g'ri moslansa ham «Noto'g'ri» derdi.** `MatchPairsCardView`
+  har bir noto'g'ri bosishni yig'ib `answerMatchPairs` ga berardi, u esa bitta
+  xato bosish bo'lsa butun kartani xato qilib, yurak olib, mistake yozardi.
+  Mini App'da (`cardMatch`, `_mR`) hammasi moslansa — to'g'ri; xato bosish faqat
+  signal. Endi ham shunday: `answerMatchPairs(card)` doim to'g'ri, yurak
+  ketmaydi, mistake yuborilmaydi. Xato bosilgan ikki katak 400 ms qizil
+  chegara oladi (`PairState.WRONG`). Boshqa kartalar (tanlov, builder, gap,
+  reverse, drill, o'tish testi, Mashq) Mini App bilan solishtirildi — farq yo'q.
+- **AI tugmasi dars ichida va yakunida yo'q.** `AssistantScreen(showButton =
+  false)` — faqat suzuvchi tugma yashiriladi; ro'yxatdagi kontekst qoladi,
+  shuning uchun «Xatoyim nimada?» / «Misol bilan ko'rsat» chatni ochaveradi.
+  `hidesAssistant` dan farqi shu: u chatni ham o'chiradi.
+- **Tinglash va «Ustozdan keyin takrorlang» kartasi ovozni o'zi chaladi**
+  (`LessonBody`, 300 ms, kirish pardasi yopilgandan keyin). Mikrofon avtomatik
+  yoqilmaydi — foydalanuvchi qarori.
+- **«Orqaga» ilovani yopmaydi.** Ekranlar activity emas, holat bo'lgani uchun
+  back tizimga tushib ilovani yopardi. Endi `rememberExitGuard`
+  (`core/design/components/HskExitGuard.kt`): ish ketayotganda ✕ ham, back ham
+  tasdiq so'raydi (dars, Mashq to'plamlari, Xatolarim takrori, imtihon,
+  Ieroglif/Talaffuz drill, o'tish testi, bellashuv); natija/xato/loader'da
+  to'g'ridan-to'g'ri chiqadi. Lug'at — so'zdan ro'yxatga, ro'yxatdan chiqish.
+  Kursdan boshqa tabda back → Kurs (`MainActivity`, tablardan oldin
+  ro'yxatdan o'tadi, shuning uchun tabning o'z back'i ustun). Kursda back —
+  ilovadan chiqish. Yangi satrlar: `lesson_exit_*`, `practice_exit_*`,
+  `exit_confirm_*` (uz/ru/tg).
+
+**Qolgan:** dars yakunidan keyingi reklama oynasida (`AdScreen`) back hali ham
+Kurs tabida turgani uchun ilovadan chiqaradi — reklama mantig'iga tegilmadi.
+
+**Tekshirilgan:** yettita statik tekshiruv; Android CI (run 36217650276,
+`main`, `133ccf2`) yashil — unit test, lint, debug APK, release bundle.
+**Tekshirilmagan:** telefonda — juftlikda xato bosish, avto-ovoz (sekin
+internet), back — dars, drill, lug'at, tablar.
+
 ### 3.11 Boshqa ochiqlar
 
+- Dars yakunidan keyingi reklama oynasida (`AdScreen`) tizim «orqaga»si hali
+  ilovani yopadi: oyna Kurs tabi ustida turadi, Kursda back esa chiqish.
+  Reklama mantig'iga ataylab tegilmagan (3.20).
+- Desktop (`desktop/ui/js/lesson.js`, `selectPair`) juftlik mashqini hali
+  eski usulda baholaydi: bitta xato bosish kartani ochkosiz qoldiradi va
+  mistake yozadi. Mini App va Android (3.20) bunday qilmaydi.
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
   tushadi. Navbatga qo'yib keyin yuborish yo'q.

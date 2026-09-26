@@ -187,6 +187,25 @@ private open class FakeLessonApi(
     ): Response<DictionaryResponse> = Response.success(DictionaryResponse(ok = true))
 }
 
+/** A deck long enough to make more mistakes than one completion may carry. */
+private class ManyChoicesLessonApi(private val count: Int) : FakeLessonApi() {
+    override suspend fun lesson(
+        authorization: String,
+        lessonOrder: Int,
+        accessRef: String,
+    ): Response<CourseLessonResponse> {
+        val cards = List(count) {
+            """{"type":"hanzi_choice","prompt":"?","title":"?","options":["你","好"],"correct_index":0,"explanation":"?"}"""
+        }.joinToString(",")
+        val payload = Json.parseToJsonElement(
+            """{"source_lesson":1,"part_no":1,"part_count":1,"checkpoint":false,"title":"1","subtitle":"1",
+            "sections":[{"section_no":1,"section_purpose":"practice","cards":[$cards]}]}"""
+        ).jsonObject
+        val base = checkNotNull(super.lesson(authorization, lessonOrder, accessRef).body())
+        return Response.success(base.copy(totalCards = count, lesson = payload))
+    }
+}
+
 private class FakeLessonAudioPlayer : LessonAudioPlayer {
     val clips = mutableListOf<ByteArray>()
     var releaseCalls = 0
@@ -447,11 +466,38 @@ class LessonViewModelTest {
         val builder = model.state.value.currentCard as SentenceBuilderCard
         model.answerBuilder(builder, listOf("好", "你"))
         assertEquals("好 你", (model.state.value.answer as AnswerState.Checked).chosen)
+    }
+
+    /**
+     * The pairs card ends only when every pair is matched, and the Mini App's
+     * `cardMatch` calls that right. A stray pick along the way used to fail the
+     * whole grid and take a heart; the user saw «Noto'g'ri» under a solved card.
+     */
+    @Test
+    fun `a matched pairs grid is right and costs no heart`() = runTest {
+        val api = FakeLessonApi()
+        val model = viewModel(api)
+        advanceUntilIdle()
+        model.acknowledge()
+        model.advanceThroughCard()
+        val builder = model.state.value.currentCard as SentenceBuilderCard
+        model.answerBuilder(builder, builder.answerTokens)
         model.advance()
 
         val pairs = model.state.value.currentCard as MatchPairsCard
-        model.answerMatchPairs(pairs, listOf(0 to 1))
-        assertEquals("你 = yaxshi", (model.state.value.answer as AnswerState.Checked).chosen)
+        model.answerMatchPairs(pairs)
+
+        val answer = model.state.value.answer as AnswerState.Checked
+        assertTrue(answer.isCorrect)
+        assertEquals(LessonUiState.MAX_HEARTS, model.state.value.hearts)
+        assertEquals(3, model.state.value.correctCount)
+        assertEquals(3, model.state.value.gradedAnswered)
+
+        model.advance()
+        model.acknowledge()
+        model.acknowledge()
+        advanceUntilIdle()
+        assertTrue(api.completions.single().mistakes.isEmpty())
     }
 
     @Test
@@ -471,26 +517,23 @@ class LessonViewModelTest {
         model.advance()
 
         val pairs = model.state.value.currentCard as MatchPairsCard
-        model.answerMatchPairs(pairs, listOf(0 to 1))
+        model.answerMatchPairs(pairs)
         model.advance()
         model.acknowledge()
         model.acknowledge()
         advanceUntilIdle()
 
         val sent = api.completions.single()
-        assertEquals(3, sent.mistakes.size)
+        assertEquals(2, sent.mistakes.size)
         assertEquals(
             listOf(
                 "lesson:hsk1:1:section:1:card:2",
                 "lesson:hsk1:1:section:1:card:3",
-                "lesson:hsk1:1:section:1:card:4",
             ),
             sent.mistakes.map { it.materialRef },
         )
         assertEquals(1, sent.mistakes[0].selectedIndex)
         assertEquals(listOf("好", "你"), sent.mistakes[1].selectedTokens)
-        assertEquals(0, sent.mistakes[2].selectedLeftIndex)
-        assertEquals(1, sent.mistakes[2].selectedRightIndex)
     }
 
     @Test
@@ -587,22 +630,15 @@ class LessonViewModelTest {
 
     @Test
     fun `completion sends at most fifty mistakes`() = runTest {
-        val api = FakeLessonApi()
+        val api = ManyChoicesLessonApi(count = 60)
         val model = viewModel(api)
         advanceUntilIdle()
 
-        model.acknowledge()
-        val choice = model.state.value.currentCard as ChoiceCard
-        model.answerChoice(choice, choice.correctIndex)
-        model.advance()
-        val builder = model.state.value.currentCard as SentenceBuilderCard
-        model.answerBuilder(builder, builder.answerTokens)
-        model.advance()
-        val pairs = model.state.value.currentCard as MatchPairsCard
-        model.answerMatchPairs(pairs, List(60) { it % 2 to (it + 1) % 2 })
-        model.advance()
-        model.acknowledge()
-        model.acknowledge()
+        repeat(60) {
+            val choice = model.state.value.currentCard as ChoiceCard
+            model.answerChoice(choice, 1 - choice.correctIndex)
+            model.advance()
+        }
         advanceUntilIdle()
 
         assertEquals(LessonViewModel.MAX_MISTAKES_PER_COMPLETION, api.completions.single().mistakes.size)

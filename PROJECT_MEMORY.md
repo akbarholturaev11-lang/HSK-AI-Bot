@@ -239,11 +239,40 @@ Files touched:
 - `core/design/components/HskStage.kt` (yangi, darsdan umumiy qilib chiqarildi),
   `feature/practice/PracticeStage.kt` (yangi), `PracticeScreen.kt`, `MistakesScreen.kt`,
   `WordDrillScreen.kt`, `MistakesCompletionResult.kt`, `PracticeCompletionHero.kt`,
-  dars fayllari (faqat import/nom). Tafsilot: `ANDROID_CONTEXT.md` 3.20.
+  dars fayllari (faqat import/nom). Tafsilot: `ANDROID_CONTEXT.md` 3.21.
 
 Risk / follow-up:
 - Backend, DB, to'lov, Mini App o'zgarmagan. Xatolarim'da javob serverga Tekshirish'da ketadi.
 - Android CI (run 36216591893) yashil. Telefonda ko'rish kerak (kichik ekran, dark mode).
+
+### 2026-09-26 — Android dars: juftlik bahosi, AI tugmasi, avto-ovoz, «orqaga»
+
+Changed:
+- Juftlik mashqi Mini App (`cardMatch`) kabi baholanadi: hamma juft moslansa —
+  to'g'ri. Xato bosish yurak olmaydi, mistake yubormaydi, faqat 400 ms qizil
+  chegara. Ilgari bitta xato bosish to'liq moslangan kartani «Noto'g'ri» qilardi.
+- Dars ichida va dars yakunida suzuvchi AI tugmasi yo'q
+  (`AssistantScreen(showButton = false)`); chat «Xatoyim nimada?» orqali ochiladi.
+- Tinglash va «Ustozdan keyin takrorlang» kartasida ovoz o'zi chalinadi
+  (mikrofon avtomatik yoqilmaydi).
+- Tizim «orqaga» ilovani yopmaydi: ish ketayotgan dars/mashq/drill/test/
+  bellashuvda tasdiq oynasi (`rememberExitGuard`), lug'at va ichki sahifalar
+  orqaga qaytadi, Kursdan boshqa tab → Kurs. Yangi satrlar uz/ru/tg.
+
+Files touched:
+- `android/.../feature/lesson/*`, `core/design/components/HskExitGuard.kt`
+  (yangi), `feature/assistant/AssistantHost.kt`, `MainActivity.kt`,
+  `feature/practice/PracticeScreen.kt`, `WordDrillScreen.kt`,
+  `feature/course/SkipTestScreen.kt`, `feature/rating/ChallengeRunScreen.kt`,
+  `feature/dictionary/DictionaryScreen.kt`, `res/values*/strings.xml`.
+  Tafsilot: `ANDROID_CONTEXT.md` 3.20.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Server juftlik mistake'larini
+  qabul qilishda davom etadi (desktop hali yuboradi).
+- `AdScreen` da back hali ilovani yopadi; desktop juftlik bahosi eski usulda.
+- Android CI (run 36217650276) yashil. Telefonda tekshirish kerak: juftlikda
+  xato bosish, avto-ovoz, back oqimlari.
 
 ### 2026-09-25 — Android dars yakuni: kinematik klip, ovoz va vibratsiya
 

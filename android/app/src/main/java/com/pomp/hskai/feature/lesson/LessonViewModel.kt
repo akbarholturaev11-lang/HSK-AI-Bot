@@ -365,24 +365,15 @@ class LessonViewModel(
         record(correct, explanation, chosen = built.joinToString(" "))
     }
 
-    fun answerMatchPairs(card: MatchPairsCard, wrongAttempts: List<Pair<Int, Int>>) {
+    /**
+     * Every pair has been matched, which is the only way this card ends — and
+     * the Mini App's `cardMatch` counts that as right. A mismatched pick along
+     * the way is only a nudge there: no heart, no mistake, no «Noto'g'ri». It
+     * used to be all three here, so one stray tap failed a fully matched grid.
+     */
+    fun answerMatchPairs(card: MatchPairsCard) {
         if (_state.value.isAnswered) return
-        wrongAttempts.forEach { (left, right) ->
-            addMistake(CourseMistakeDto(
-                materialRef = card.materialRef,
-                selectedLeftIndex = left,
-                selectedRightIndex = right,
-            ))
-        }
-        record(
-            wrongAttempts.isEmpty(),
-            card.explanation,
-            chosen = wrongAttempts.mapNotNull { (left, right) ->
-                val first = card.pairs.getOrNull(left)?.first ?: return@mapNotNull null
-                val second = card.pairs.getOrNull(right)?.second ?: return@mapNotNull null
-                "$first = $second"
-            }.joinToString(", "),
-        )
+        record(correct = true, explanation = card.explanation)
     }
 
     /** New word, grammar and unsupported cards just advance. */

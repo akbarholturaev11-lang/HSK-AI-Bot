@@ -88,6 +88,7 @@ import com.pomp.hskai.feature.assistant.practiceAssistantContext
 import com.pomp.hskai.core.navigation.PracticeTool
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.core.design.components.rememberExitGuard
 
 @Composable
 fun PracticeScreen(
@@ -122,16 +123,28 @@ fun PracticeScreen(
 
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {
+        // The phone's back follows each screen's own way out, so it no longer
+        // falls through to the tabs (or out of the app) from inside a run: a
+        // result closes, a running set asks first, the mistakes list goes back.
         when {
-            state.result != null -> PracticeSummary(state = state, onDone = onResetPractice)
-            state.reviewResult != null -> MistakesReviewResult(result = state.reviewResult, onDone = onResetReview)
-            state.examResult != null -> ExamSummary(state = state, onDone = onResetExam)
+            state.result != null -> {
+                BackHandler(onBack = onResetPractice)
+                PracticeSummary(state = state, onDone = onResetPractice)
+            }
+            state.reviewResult != null -> {
+                BackHandler(onBack = onResetReview)
+                MistakesReviewResult(result = state.reviewResult, onDone = onResetReview)
+            }
+            state.examResult != null -> {
+                BackHandler(onBack = onResetExam)
+                ExamSummary(state = state, onDone = onResetExam)
+            }
             state.isExamRunning -> ExamRun(
                 state = state,
                 language = language,
                 onSelect = onSelectExamOption,
                 onAdvance = onAdvanceExam,
-                onCancel = onResetExam,
+                onCancel = rememberRunExit(onResetExam),
                 onSpeak = onSpeakReview,
             )
             state.isPracticeRunning -> PracticeRun(
@@ -139,22 +152,25 @@ fun PracticeScreen(
                 language = language,
                 onSelect = onSelectPracticeOption,
                 onAdvance = onAdvancePractice,
-                onCancel = onResetPractice,
+                onCancel = rememberRunExit(onResetPractice),
                 onSpeak = onSpeakReview,
             )
             state.isReviewRunning -> MistakesReviewRun(
                 state = state,
                 onSelect = onAnswerReview,
                 onAdvance = onAdvanceReview,
-                onCancel = onResetReview,
+                onCancel = rememberRunExit(onResetReview),
                 onSpeak = onSpeakReview,
             )
-            mistakesOpen -> MistakesOverviewScreen(
-                state = state,
-                onBack = { mistakesOpen = false },
-                onStartReview = onStartMistakeReview,
-                onReload = onResetReview,
-            )
+            mistakesOpen -> {
+                BackHandler { mistakesOpen = false }
+                MistakesOverviewScreen(
+                    state = state,
+                    onBack = { mistakesOpen = false },
+                    onStartReview = onStartMistakeReview,
+                    onReload = onResetReview,
+                )
+            }
             else -> PracticeHome(
                 state = state,
                 level = level,
@@ -186,6 +202,15 @@ fun PracticeScreen(
       }
     }
 }
+
+/** A running set's ✕ and the phone's back: both ask before the attempt is dropped. */
+@Composable
+private fun rememberRunExit(onCancel: () -> Unit): () -> Unit = rememberExitGuard(
+    running = true,
+    title = R.string.practice_exit_title,
+    body = R.string.practice_exit_body,
+    onExit = onCancel,
+)
 
 private enum class PracticeGroup { TEST }
 enum class PracticeRequest { MISTAKES, RECOGNITION, PRONUNCIATION, TESTS }

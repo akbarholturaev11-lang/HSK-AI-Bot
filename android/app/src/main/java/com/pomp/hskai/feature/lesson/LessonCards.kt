@@ -966,8 +966,12 @@ private fun Tile(text: String, enabled: Boolean, onClick: () -> Unit) {
     }
 }
 
-/** What a pair cell is doing right now, mirroring `.pcell` / `.sel` / `.ok`. */
-private enum class PairState { IDLE, SELECTED, MATCHED }
+/**
+ * What a pair cell is doing right now, mirroring `.pcell` / `.sel` / `.ok`.
+ * [WRONG] is the moment after a mismatched pick: the two cells edge red and
+ * settle back, so the learner sees the pick missed instead of only feeling it.
+ */
+private enum class PairState { IDLE, SELECTED, MATCHED, WRONG }
 
 /**
  * `.pcell` from `course-v3.html`.
@@ -975,7 +979,8 @@ private enum class PairState { IDLE, SELECTED, MATCHED }
  * The Android tile never showed a selection at all: tapping a hanzi left the
  * cell exactly as it was, so there was no way to tell what the second tap would
  * be matched against. Idle is a neutral edge, the picked cell turns cinnabar,
- * and a solved pair goes jade and fades back.
+ * a missed pick edges red for a moment, and a solved pair goes jade and fades
+ * back.
  */
 @Composable
 private fun PairCell(
@@ -989,14 +994,15 @@ private fun PairCell(
         PairState.IDLE -> PompColors.Divider
         PairState.SELECTED -> PompColors.Cinnabar
         PairState.MATCHED -> PompColors.Jade
+        PairState.WRONG -> PompColors.Flame
     }
     val background = when (state) {
-        PairState.IDLE -> PompColors.PaperRaised
+        PairState.IDLE, PairState.WRONG -> PompColors.PaperRaised
         PairState.SELECTED -> PompColors.CinnabarSoft
         PairState.MATCHED -> PompColors.JadeSoft
     }
     val ink = when (state) {
-        PairState.IDLE -> PompColors.Ink
+        PairState.IDLE, PairState.WRONG -> PompColors.Ink
         PairState.SELECTED -> PompColors.CinnabarDark
         PairState.MATCHED -> PompColors.Jade
     }
@@ -1014,7 +1020,7 @@ private fun PairCell(
                 .matchParentSize()
                 .offset(y = 4.dp)
                 .clip(shape)
-                .background(if (state == PairState.IDLE) PompColors.OptionDepth else border),
+                .background(if (state == PairState.IDLE || state == PairState.WRONG) PompColors.OptionDepth else border),
         )
         Surface(
             color = background,
@@ -1041,16 +1047,31 @@ private fun PairCell(
     }
 }
 
+/**
+ * `cardMatch` from `course-v3.html`: the card is done, and right, once every
+ * pair is matched. A mismatched pick is a nudge, not a grade — in the Mini App
+ * it beeps and clears the selection, costs no heart and is never reported, so
+ * [onFinished] carries nothing about it. It used to carry every miss, and one
+ * stray tap turned a fully matched grid into «Noto'g'ri».
+ */
 @Composable
-fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (List<Pair<Int, Int>>) -> Unit) {
+fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: () -> Unit) {
     val rightOrder = remember(card) { card.pairs.indices.shuffled() }
     var selectedLeft by remember(card) { mutableStateOf<Int?>(null) }
     var matched by remember(card) { mutableStateOf(setOf<Int>()) }
-    var wrongAttempts by remember(card) { mutableStateOf(listOf<Pair<Int, Int>>()) }
+    // Left and right index of the pick that just missed, lit red for a moment.
+    var missed by remember(card) { mutableStateOf<Pair<Int, Int>?>(null) }
     val haptics = LocalHapticFeedback.current
+
+    LaunchedEffect(missed) {
+        if (missed == null) return@LaunchedEffect
+        kotlinx.coroutines.delay(PAIR_MISS_FLASH_MILLIS)
+        missed = null
+    }
 
     fun cellState(index: Int, isLeft: Boolean) = when {
         index in matched -> PairState.MATCHED
+        missed?.let { (left, right) -> index == (if (isLeft) left else right) } == true -> PairState.WRONG
         isLeft && selectedLeft == index -> PairState.SELECTED
         else -> PairState.IDLE
     }
@@ -1071,7 +1092,10 @@ fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (L
                         state = cellState(index, isLeft = true),
                         small = false,
                         enabled = !isAnswered && index !in matched,
-                        onClick = { selectedLeft = index },
+                        onClick = {
+                            missed = null
+                            selectedLeft = index
+                        },
                     )
                 }
             }
@@ -1092,9 +1116,9 @@ fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (L
                             if (left == index) {
                                 matched = matched + index
                                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                if (matched.size == card.pairs.size) onFinished(wrongAttempts)
+                                if (matched.size == card.pairs.size) onFinished()
                             } else {
-                                wrongAttempts = wrongAttempts + (left to index)
+                                missed = left to index
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                             selectedLeft = null
@@ -1105,6 +1129,9 @@ fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (L
         }
     }
 }
+
+/** How long a missed pick stays red — about the Mini App's error beep. */
+private const val PAIR_MISS_FLASH_MILLIS = 400L
 
 @Composable
 fun UnsupportedCardView(card: UnsupportedCard, onSkip: () -> Unit) {
