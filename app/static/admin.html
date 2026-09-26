@@ -1187,6 +1187,9 @@
     }
 
     /* ---------- PAYMENTS ---------- */
+    function paymentSourceLabel(source){
+      return ({android:"📱 Android",miniapp:"Telegram Mini App",desktop:"Desktop",telegram_bot:"Telegram bot"})[source]||source||"Telegram bot";
+    }
     function renderPayments(){
       const latest = (state.overview.payments&&state.overview.payments.latest)||[];
       const groups = [
@@ -1202,7 +1205,7 @@
               <div class="phead"><div><div class="uname">${esc(p.name)}</div>
                 <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}${p.telegram_id}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
                 <div class="amount">${esc(p.amount)}</div></div>
-              <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(({android:"📱 Android",miniapp:"Telegram Mini App",desktop:"Desktop",telegram_bot:"Telegram bot"})[p.source]||p.source||"Telegram bot",p.source==="android"?"amber":"")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
+              <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(paymentSourceLabel(p.source),p.source==="android"?"amber":"")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
               ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Tasdiqlash</button><button class="btn sec" data-pay="${p.id}" data-pact="reject">Rad etish</button></div>`:""}
             </article>`).join("") || "<p class='empty'>Hozircha bo'sh.</p>"}
           </div>
@@ -1325,7 +1328,7 @@
           <span>Takliflari</span><b>${esc(referral.invited_total||0)} ta</b>
           <span>Faol referral</span><b>${esc(referral.invited_active||0)} ta</b></div></section>
         <section class="dsec"><div class="dtitle-sm">To'lov tarixi</div><div class="panel">
-          ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>Yuborilgan: ${esc(p.submitted_at||"—")}<br>Ko'rilgan: ${esc(p.reviewed_at||"—")}${p.comment?" · "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
+          ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>Manba: ${esc(paymentSourceLabel(p.source))}<br>Yuborilgan: ${esc(p.submitted_at||"—")}<br>Ko'rilgan: ${esc(p.reviewed_at||"—")}${p.comment?" · "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
         </div></section>
         <section class="dsec"><div class="dtitle-sm">Admin amallari</div><div class="panel">
           <div class="mcard"><h3>Qo'lda paid obuna berish</h3>
