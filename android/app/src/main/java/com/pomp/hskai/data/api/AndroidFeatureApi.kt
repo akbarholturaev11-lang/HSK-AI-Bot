@@ -30,6 +30,7 @@ interface AndroidFeatureApi {
     @GET("api/v3/android/subscription/checkout/overview")
     suspend fun checkoutOverview(
         @Header("Authorization") authorization: String,
+        @Query("origin") origin: String,
     ): Response<SubscriptionCheckoutOverviewDto>
 
     @POST("api/v3/android/subscription/checkout/quote")
