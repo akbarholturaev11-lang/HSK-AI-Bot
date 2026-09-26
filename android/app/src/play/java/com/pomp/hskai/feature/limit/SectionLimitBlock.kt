@@ -26,6 +26,7 @@ import com.pomp.hskai.core.text.ResetTime
 @Composable
 fun SectionLimitBlock(
     sectionTitle: String,
+    sourceKey: String,
     limit: LimitGate,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
