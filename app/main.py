@@ -2727,6 +2727,7 @@ async def voice_practice_start(request: Request):
                 payload={
                     "role": str(payload.get("role") or ""),
                     "course_context": result.get("course_context"),
+                    "scenario_id": (result.get("scenario") or {}).get("id"),
                 },
             )
             await session.commit()
@@ -2827,6 +2828,7 @@ async def voice_practice_end(request: Request):
                     "duration_seconds": result.get("duration_seconds", 0),
                     "message_count": result.get("message_count", 0),
                     "correction_count": len(result.get("corrections") or []),
+                    "scenario_id": (result.get("scenario") or {}).get("id"),
                 },
             )
             await session.commit()

@@ -209,6 +209,7 @@
     <string name="voice_correction">Ислоҳ: %1$s</string>
     <string name="voice_result_title">Натиҷаи сӯҳбат</string>
     <string name="voice_result_body">%1$d реплика · %2$d хуб · %3$d ислоҳ</string>
+    <string name="voice_scenario_practiced">Машқ: %1$s</string>
     <string name="voice_again">Сӯҳбати нав</string>
     <string name="nav_rating">Рейтинг</string>
     <string name="rating_tab_league">Лига</string>

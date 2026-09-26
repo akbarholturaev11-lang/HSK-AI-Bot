@@ -3875,6 +3875,7 @@ def _mock_voice_environment(page, *, start=None, message=None, end=None, remaini
             "user_status": {"is_paid": False, "plan": "free"},
             "remaining_limit": remaining,
             "character": "friend",
+            "scenario": {"id": "cafe_order", "title": "Kafeda buyurtma", "goal": "Ichimlik buyurtma qilish"},
             "course_context": {"lesson_id": 5, "words": [{"zh": "医院", "pinyin": "yīyuàn", "meaning": "shifoxona"}], "review_words": []},
             "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None,
                                 "suggestions": [{"zh": "你好，很高兴认识你", "pinyin": "nǐ hǎo", "translation": "Tanishganimdan xursandman"}]},
@@ -3914,6 +3915,7 @@ def _mock_voice_environment(page, *, start=None, message=None, end=None, remaini
             "turns": 2,
             "completed": False,
             "remaining_limit": 0,
+            "scenario": {"id": "cafe_order", "title": "Kafeda buyurtma", "goal": "Ichimlik buyurtma qilish"},
             "transcript": [
                 {"user": "我去医院", "assistant": "很好！", "pinyin": "hěn hǎo", "translation": "Juda yaxshi!",
                  "correction": "我去了医院", "error_type": "grammar", "good": False},
@@ -3978,6 +3980,7 @@ def test_ai_voice_speaks_the_learners_language_and_shows_real_results(page):
     # Xatolar turi bo'yicha ajratilgan.
     expect(page.locator("#vc-dsaved")).to_contain_text("grammatika")
     expect(page.locator("#vc-dbadge")).to_be_visible()
+    expect(page.locator("#vc-dp")).to_contain_text("Mashq: Kafeda buyurtma")
 
 
 def test_ai_voice_hides_the_badge_when_nothing_was_said(page):

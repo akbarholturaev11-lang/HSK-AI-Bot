@@ -227,6 +227,35 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-27 — AI Voice: real-life speaking missions
+
+Changed:
+- Each session now selects one practical scene based on the learner's saved
+  goal: café order, shop purchase, asking directions, or introductions.
+- The scene is stored in the existing `voice_practice_sessions.plan_json`;
+  the AI opens in that scene, stays there for the seven-turn session, and
+  guides the learner with one short question at a time.
+- The opening includes pinyin, translation, and two useful sample replies.
+  The session result names the practiced scene on Mini App, Android, and
+  desktop; Mini App start/completion analytics record its ID.
+
+Why:
+- AI Voice should help learners handle everyday Chinese exchanges. A single
+  practical scene gives each short conversation a clear speaking task.
+
+Files touched:
+- `app/services/voice_practice_service.py`, `app/main.py`
+- `app/static/course-v3.html`, `desktop/ui/js/voice.js`,
+  `desktop/ui/js/i18n.js`
+- Android voice result UI/DTO and `values`, `values-ru`, `values-tg` strings
+
+Risk:
+- MEDIUM — AI prompt behavior changed; no database migration, extra model
+  call, or subscription/limit change.
+
+Follow-up:
+- Compare voice start/completion by scenario before adding more scenes.
+
 ### 2026-09-26 — Android mashq ekranlari dars uslubida
 
 Changed:

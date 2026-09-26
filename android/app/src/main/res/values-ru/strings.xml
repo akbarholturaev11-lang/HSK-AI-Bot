@@ -208,6 +208,7 @@
     <string name="voice_correction">Исправление: %1$s</string>
     <string name="voice_result_title">Итог разговора</string>
     <string name="voice_result_body">%1$d реплик · %2$d хорошо · %3$d исправлений</string>
+    <string name="voice_scenario_practiced">Практика: %1$s</string>
     <string name="voice_again">Новый разговор</string>
     <string name="nav_rating">Рейтинг</string>
     <string name="rating_tab_league">Лига</string>

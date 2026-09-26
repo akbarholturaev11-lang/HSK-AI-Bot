@@ -125,6 +125,7 @@ export class DesktopVoiceController {
     this.turns = [];
     this.turnCount = 0;
     this.maxDialogs = 0;
+    this.scenario = null;
     this.summary = null;
     this.busy = false;
     this.error = "";
@@ -582,6 +583,12 @@ export class DesktopVoiceController {
       node("h3", "", this.t("voiceSummaryTitle")),
       node("p", "muted", this.t("voiceSummaryBody")),
     );
+    const scenario = summary.scenario || this.scenario;
+    if (scenario?.title) {
+      copy.append(
+        node("p", "muted", `${this.t("voiceScenarioPracticed")}: ${scenario.title}`),
+      );
+    }
     const xp = Number(summary?.reward?.xp_awarded ?? summary?.reward?.xp ?? 0);
     const stats = node("div", "voice-summary-stats");
     // Dars so'zlaridan nechtasi haqiqatan ishlatilgani. Bu BALL emas, SANOQ —
@@ -695,6 +702,7 @@ export class DesktopVoiceController {
         voice: this.voice,
       });
       this.sessionId = String(result?.session_id || "");
+      this.scenario = result?.scenario || null;
       this.maxDialogs = Number(result?.max_dialogs || 0);
       this.turnCount = 0;
       this.turns = [];

@@ -245,6 +245,7 @@
     <string name="voice_correction">Tuzatish: %1$s</string>
     <string name="voice_result_title">Suhbat yakuni</string>
     <string name="voice_result_body">%1$d replika · %2$d yaxshi · %3$d tuzatish</string>
+    <string name="voice_scenario_practiced">Mashq qilindi: %1$s</string>
     <string name="voice_again">Yangi suhbat</string>
     <string name="nav_rating">Reyting</string>
     <string name="rating_tab_league">Liga</string>

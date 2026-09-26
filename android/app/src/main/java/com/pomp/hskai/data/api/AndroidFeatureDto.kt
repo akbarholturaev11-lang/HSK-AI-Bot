@@ -710,6 +710,7 @@ data class VoiceStartResponse(
     @SerialName("character") val character: String = "",
     @SerialName("opening_message") val openingMessage: VoiceReplyDto =
         VoiceReplyDto(),
+    @SerialName("scenario") val scenario: VoiceScenarioDto? = null,
     @SerialName("max_dialogs") val maxDialogs: Int = 7,
     /** The lesson this conversation is built on: the "what to say" material. */
     @SerialName("course_context") val courseContext: VoiceCourseContextDto =
@@ -721,6 +722,13 @@ data class VoiceCourseContextDto(
     @SerialName("title") val title: String = "",
     @SerialName("words") val words: List<VoiceWordDto> = emptyList(),
     @SerialName("review_words") val reviewWords: List<VoiceWordDto> = emptyList(),
+)
+
+@Serializable
+data class VoiceScenarioDto(
+    @SerialName("id") val id: String = "",
+    @SerialName("title") val title: String = "",
+    @SerialName("goal") val goal: String = "",
 )
 
 @Serializable
@@ -871,6 +879,7 @@ data class VoiceEndResponse(
     @SerialName("message_count") val messageCount: Int = 0,
     @SerialName("good_count") val goodCount: Int = 0,
     @SerialName("mistake_count") val mistakeCount: Int = 0,
+    @SerialName("scenario") val scenario: VoiceScenarioDto? = null,
     @SerialName("transcript") val transcript: List<VoiceTranscriptDto> = emptyList(),
     @SerialName("reward") val reward: JsonObject? = null,
 )

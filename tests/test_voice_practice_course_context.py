@@ -6,8 +6,9 @@ from app.services.ai_service import AIUsageResult
 from app.services.voice_practice_service import (
     FREE_PRONOUNCE_DAILY,
     MAX_DIALOGS_PER_SESSION,
-    OPENING_MESSAGES,
     ROLE_PROMPTS,
+    VOICE_SCENARIOS,
+    VOICE_SCENARIOS_BY_GOAL,
     VoicePracticeError,
     VoicePracticeService,
 )
@@ -48,6 +49,7 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
                 "words": [{"zh": "你好", "pinyin": "ni hao", "meaning": "hello"}],
             }
         )
+        service._learner_plan = AsyncMock(return_value={"goal": "travel"})
 
         result = await service.start_session(
             123,
@@ -61,11 +63,17 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("manager_wang", ROLE_PROMPTS)
         self.assertEqual(result["course_context"]["lesson_id"], 55)
         self.assertEqual(result["max_dialogs"], MAX_DIALOGS_PER_SESSION)
-        possible_openings = {v["chinese_reply"] for v in OPENING_MESSAGES["friend"]}
-        self.assertIn(result["opening_message"]["chinese_reply"], possible_openings)
+        scenario_id = result["scenario"]["id"]
+        self.assertIn(scenario_id, VOICE_SCENARIOS_BY_GOAL["travel"])
+        self.assertEqual(
+            result["opening_message"]["chinese_reply"],
+            VOICE_SCENARIOS[scenario_id]["opening"]["chinese_reply"],
+        )
+        self.assertEqual(result["scenario"]["title"], VOICE_SCENARIOS[scenario_id]["title"]["ru"])
         self.assertEqual(session.added[0].role, "lily")
         self.assertEqual(session.added[0].lesson_id, 55)
         self.assertEqual(session.added[0].target_words[0]["zh"], "你好")
+        self.assertEqual(session.added[0].plan_json["scenario_id"], scenario_id)
 
     async def test_paid_session_start_uses_ai_budget_gate(self):
         session = _fake_db_session()
@@ -452,6 +460,13 @@ class VoiceAdaptivePromptTests(unittest.IsolatedAsyncioTestCase):
         for marker in ("travel", "GRAMMAR", "Earlier this learner"):
             self.assertNotIn(marker, prompt)
         self.assertIn("STRICT LEVEL RULE", prompt)
+        self.assertIn("Continue the existing conversation naturally", prompt)
+
+    async def test_a_new_session_prompt_stays_in_its_practical_scene(self):
+        prompt = await self._prompt({"scenario_id": "ask_directions"})
+        self.assertIn(VOICE_SCENARIOS["ask_directions"]["instruction"], prompt)
+        self.assertIn("Stay in this same situation", prompt)
+        self.assertNotIn(VOICE_SCENARIOS["cafe_order"]["instruction"], prompt)
 
     async def test_words_already_spoken_are_not_pushed_again(self):
         prompt = await self._prompt(
