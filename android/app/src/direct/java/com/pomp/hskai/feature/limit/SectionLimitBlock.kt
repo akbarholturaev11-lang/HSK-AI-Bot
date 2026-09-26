@@ -22,6 +22,7 @@ import com.pomp.hskai.R
 @Composable
 fun SectionLimitBlock(
     sectionTitle: String,
+    sourceKey: String,
     limit: LimitGate,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
@@ -36,7 +37,7 @@ fun SectionLimitBlock(
         // The subscription leads: it is the answer that lasts. The trial is
         // the quieter alternative under it, not a competing shout.
         primaryLabel = stringResource(R.string.limit_unlock_button),
-        onPrimary = limit.actions.onUnlock,
+        onPrimary = { limit.actions.onUnlock(sourceKey) },
         modifier = modifier,
         reason = reason,
         hint = stringResource(R.string.limit_unlock_hint),
