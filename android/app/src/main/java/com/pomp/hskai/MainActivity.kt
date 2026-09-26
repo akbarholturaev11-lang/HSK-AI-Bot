@@ -553,6 +553,7 @@ private fun AppRoot(
             }
 
             var checkoutVisible by rememberSaveable { mutableStateOf(false) }
+            var checkoutOrigin by rememberSaveable { mutableStateOf("course_limit") }
             val limitGate = rememberLimitGate(
                 repository = app.featureRepository,
                 viewModelStoreOwner = sessionOwner,
@@ -563,7 +564,10 @@ private fun AppRoot(
                     profileViewModel.load()
                     voiceViewModel.refreshStatusIfLoaded()
                 },
-                onOpenSubscription = { checkoutVisible = true },
+                onOpenSubscription = { origin ->
+                    checkoutOrigin = origin
+                    checkoutVisible = true
+                },
                 // Whether this account may still take the free week is the
                 // server's answer, read once here and shown everywhere — the
                 // same way the Mini App reads it once and uses it on the
@@ -807,6 +811,7 @@ private fun AppRoot(
                 SubscriptionCheckoutHost(
                     repository = app.featureRepository,
                     viewModelStoreOwner = sessionOwner,
+                    origin = checkoutOrigin,
                     onClose = {
                         checkoutVisible = false
                         profileViewModel.load()
@@ -1211,7 +1216,7 @@ private fun AppRoot(
                                 onSubscribe = if (limitGate.state.canSubscribe) {
                                     {
                                         planChoiceOpen = false
-                                        limitGate.actions.onUnlock()
+                                        limitGate.actions.onUnlock("onboarding_plan")
                                     }
                                 } else {
                                     null

@@ -135,6 +135,7 @@ fun VoiceScreen(
         ) {
             SectionLimitOverlay(
                 sectionTitle = stringResource(R.string.nav_ai),
+                sourceKey = "voice_limit",
                 limit = limit,
                 reason = state.status?.limitStatus?.limitText ?: stringResource(R.string.limit_voice_reason),
                 // The server says when the daily allowance reopens; the hour

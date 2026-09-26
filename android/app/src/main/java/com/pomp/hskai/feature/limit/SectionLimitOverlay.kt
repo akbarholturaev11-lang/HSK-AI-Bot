@@ -24,6 +24,7 @@ import com.pomp.hskai.core.design.PompColors
 @Composable
 fun SectionLimitOverlay(
     sectionTitle: String,
+    sourceKey: String,
     limit: LimitGate,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
@@ -38,6 +39,7 @@ fun SectionLimitOverlay(
             Box(Modifier.fillMaxSize().safeDrawingPadding()) {
                 SectionLimitBlock(
                     sectionTitle = sectionTitle,
+                    sourceKey = sourceKey,
                     limit = limit,
                     onClose = onClose,
                     reason = reason,

@@ -360,6 +360,8 @@
             <div class="accbody">
               <div class="dtitle-sm">Yuklash jarayoni · user</div>
               <div id="androidFunnel"></div>
+              <div class="dtitle-sm" style="margin-top:14px">Android → obuna</div>
+              <div id="androidSubscription"></div>
               <div class="dtitle-sm" style="margin-top:14px">Qurilmalar</div>
               <div id="androidDevices"></div>
               <div class="dtitle-sm" style="margin-top:14px">Versiyalar · oxirgi 30 kun</div>
@@ -664,7 +666,16 @@
       const ov = state.overview;
       $("generatedAt").textContent = "Oxirgi yangilanish: " + (ov.generated_at || "—");
       const desktop=state.desktopStats.all_time;
+      const android=state.androidStats.all_time;
       const summary=(ov.summary||[]).slice();
+      if(android&&!android.error){
+        summary.push({
+          label:"Android WAU",
+          value:Number(android.active&&android.active.wau||0),
+          note:"HSK AI · 7 kun",
+          tone:"info"
+        });
+      }
       if(desktop&&!desktop.error){
         summary.push({
           label:"Desktop WAU",
@@ -808,15 +819,17 @@
       }finally{
         state.androidStatsLoading[period]=false;
         if(state.statsPeriod===period) renderAndroidStats(state.androidStats[period]||null,false);
+        if(period==="all_time") renderDashboard();
       }
     }
 
     function androidBlank(message){
       const cards=$("androidCards"), funnel=$("androidFunnel"), devices=$("androidDevices");
-      const versions=$("androidVersions"), updateSummary=$("androidUpdateSummary"), explain=$("androidExplain");
+      const subscription=$("androidSubscription"), versions=$("androidVersions"), updateSummary=$("androidUpdateSummary"), explain=$("androidExplain");
       if(cards) cards.innerHTML=message?`<p class='empty'>${esc(message)}</p>`:"";
       if(funnel) funnel.innerHTML="";
       if(devices) devices.innerHTML="";
+      if(subscription) subscription.innerHTML="";
       if(versions) versions.innerHTML="";
       if(updateSummary) updateSummary.textContent="";
       if(explain) explain.textContent="";
@@ -830,12 +843,25 @@
       const num=(v)=>Number(v||0);
       const stage=(key)=>num(funnel[key]&&funnel[key].users);
 
-      $("androidCards").innerHTML=[
+      const fp=financePeriod();
+      const androidBiz=(((fp&&fp.client_business)||{}).rows||[]).find(row=>row.key==="android")||null;
+      const androidSources=(fp&&fp.sources_paid||[]).filter(row=>{
+        const source=String(row.source||"");
+        return source==="android_subscription"||source.startsWith("android_");
+      });
+      const androidCards=[
         {label:"O'rnatilgan",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
         {label:"Bugun ishlatgan",value:num(active.dau),note:"user",tone:"info"},
         {label:"7 kunda ishlatgan",value:num(active.wau),note:"user",tone:"info"},
         {label:"30 kunda ishlatgan",value:num(active.mau),note:"user",tone:"good"}
-      ].map(cardHtml).join("");
+      ];
+      if(androidBiz){
+        androidCards.push(
+          {label:"Android pullik",value:num(androidBiz.paying_users),note:num(androidBiz.payments)+" tasdiqlangan to'lov",tone:"good"},
+          {label:"Android tushum",value:androidBiz.revenue_text||"$0.00",note:num(androidBiz.entry_users)+" user obunani ochgan",tone:"info"}
+        );
+      }
+      $("androidCards").innerHTML=androidCards.map(cardHtml).join("");
 
       const steps=[
         ["APK so'raldi",stage("apk_requested")],
@@ -845,6 +871,22 @@
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("androidFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
+
+      const subscription=$("androidSubscription");
+      if(subscription){
+        const business=androidBiz
+          ? `<table class="tbl"><thead><tr><th>Ko'rsatkich</th><th class="r">Soni</th></tr></thead><tbody>
+              <tr><td><b>Obuna ochilgan</b></td><td class="r">${num(androidBiz.entries)} event · ${num(androidBiz.entry_users)} user</td></tr>
+              <tr><td><b>Pullik user</b></td><td class="r">${num(androidBiz.paying_users)}</td></tr>
+              <tr><td><b>Tasdiqlangan to'lov</b></td><td class="r">${num(androidBiz.payments)}</td></tr>
+              <tr><td><b>Daromad</b></td><td class="r"><b>${esc(androidBiz.revenue_text||"$0.00")}</b></td></tr>
+            </tbody></table>`
+          : "<p class='empty'>Bu davrda Android obuna ma'lumoti yo'q.</p>";
+        const sourceTable=androidSources.length
+          ? `<table class="tbl" style="margin-top:10px"><thead><tr><th>Obunaga olib kelgan bo'lim</th><th class="r">Pullik</th><th class="r">To'lov</th><th class="r">Daromad</th></tr></thead><tbody>${androidSources.map(row=>`<tr><td><b>${esc(row.label)}</b></td><td class="r">${num(row.paying_users)}</td><td class="r">${num(row.payments)}</td><td class="r"><b>${esc(row.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
+          : "";
+        subscription.innerHTML=business+sourceTable;
+      }
 
       const deviceRows=[
         ["Hozir ulangan telefon",num(reg.installed_devices),num(reg.installed_users)],

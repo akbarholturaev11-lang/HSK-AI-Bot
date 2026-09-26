@@ -63,11 +63,12 @@ import com.pomp.hskai.data.repository.FeatureRepository
 fun SubscriptionCheckoutHost(
     repository: FeatureRepository,
     viewModelStoreOwner: ViewModelStoreOwner,
+    origin: String,
     onClose: () -> Unit,
 ) {
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
-        factory = SubscriptionCheckoutViewModel.Factory(repository),
+        factory = SubscriptionCheckoutViewModel.Factory(repository, origin),
     )
     val state by model.state.collectAsStateWithLifecycle()
     val context = LocalContext.current

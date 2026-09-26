@@ -126,6 +126,11 @@ fun WordDrillScreen(
                             R.string.practice_pronunciation_row_title
                         }
                     ),
+                    sourceKey = if (state.mode == DrillMode.RECOGNITION) {
+                        "recognition_limit"
+                    } else {
+                        "pronunciation_limit"
+                    },
                     limit = limit,
                     reason = state.limitText ?: stringResource(R.string.limit_practice_reason),
                     resetAt = state.resetAt,

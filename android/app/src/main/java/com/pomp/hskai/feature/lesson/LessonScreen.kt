@@ -226,6 +226,7 @@ fun LessonScreen(
         if (spent != null && limit != null) {
             SectionLimitOverlay(
                 sectionTitle = stringResource(R.string.nav_course),
+                sourceKey = "course_lesson_limit",
                 limit = limit,
                 reason = spent.limitText ?: stringResource(R.string.limit_lesson_reason),
                 // Qachon ochilishini server aytadi, bu yerda hisoblanmaydi.

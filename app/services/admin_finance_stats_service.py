@@ -458,9 +458,9 @@ class AdminFinanceStatsService:
             "sources_paid": sources_paid,
             "client_business": client_business,
             "source_attribution_explain": (
-                "Yangi paymentlarda aniq Payment.source ishlatiladi (Android / Mini App / Desktop). "
-                "Eski yoki telegram_bot yozuvlarida tarixiy aniqlikni saqlash uchun paymentdan oldingi "
-                "eng yaqin obuna-kirish manbasi fallback sifatida olinadi."
+                "Client kesimi yangi paymentlarda aniq Payment.source'dan olinadi (Android / Mini App / Desktop). "
+                "Qaysi bo'lim obunaga olib kelgani esa paymentdan oldingi eng yaqin SubscriptionEntryEvent orqali "
+                "hisoblanadi; eski yozuvlarda ham shu tarixiy entry fallback bo'lib qoladi."
             ),
             "cards": [
                 {"label": "Daromad", "value": _usd(revenue_usd), "note": f"{approved_count} ta to'lov", "tone": "info"},
@@ -488,7 +488,7 @@ class AdminFinanceStatsService:
         agg: dict[str, dict] = {}
         for p in in_period:
             source = SubscriptionEntryAnalyticsService.source_group_key(
-                self._source_for_payment(
+                self._entry_source_for_payment(
                     p,
                     source_events_by_user.get(p.user_id, []),
                 )
@@ -551,7 +551,7 @@ class AdminFinanceStatsService:
                 bucket["entry_users"].add(int(telegram_id))
 
         for payment in approved:
-            source = self._source_for_payment(
+            source = self._client_source_for_payment(
                 payment,
                 source_events_by_user.get(payment.user_id, []),
             )
@@ -645,19 +645,27 @@ class AdminFinanceStatsService:
         return "miniapp"
 
     @staticmethod
-    def _source_for_payment(
+    def _entry_source_for_payment(
         payment: _ApprovedPayment,
         source_events: list[tuple[datetime, str]],
     ) -> str:
-        exact = str(payment.source or "").strip().lower()
-        if exact in {"android", "desktop", "miniapp"}:
-            return exact
         source = "unknown"
         for created_at, candidate in source_events:
             if created_at > payment.submitted_at:
                 break
             source = candidate or "unknown"
         return source
+
+    @classmethod
+    def _client_source_for_payment(
+        cls,
+        payment: _ApprovedPayment,
+        source_events: list[tuple[datetime, str]],
+    ) -> str:
+        exact = str(payment.source or "").strip().lower()
+        if exact in {"android", "desktop", "miniapp"}:
+            return exact
+        return cls._entry_source_for_payment(payment, source_events)
 
     @staticmethod
     def _retention_explain(
