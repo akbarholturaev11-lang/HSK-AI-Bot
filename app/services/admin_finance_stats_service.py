@@ -636,10 +636,12 @@ class AdminFinanceStatsService:
         group = SubscriptionEntryAnalyticsService.source_group_key(source)
         if group == "unknown":
             return "unknown"
-        if group.startswith("android_") or group == "android_subscription":
+        if group in {"android", "android_subscription"} or group.startswith("android_"):
             return "android"
-        if group.startswith("desktop_") or group == "desktop_subscription":
+        if group in {"desktop", "desktop_subscription"} or group.startswith("desktop_"):
             return "desktop"
+        if group == "miniapp":
+            return "miniapp"
         return "miniapp"
 
     @staticmethod
