@@ -461,13 +461,21 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             base + "/quote", headers=self._headers(self.token_a),
             json={"plan_type": "1_month", "payment_method": "alipay", "amount": 1, "telegram_id": 1002},
         )
-        overview = await self.client.get(base + "/overview", headers=self._headers(self.token_a))
+        invalid_origin = await self.client.get(
+            base + "/overview?origin=not-a-real-section",
+            headers=self._headers(self.token_a),
+        )
+        overview = await self.client.get(
+            base + "/overview?origin=course_limit",
+            headers=self._headers(self.token_a),
+        )
         quote = await self.client.post(
             base + "/quote", headers=self._headers(self.token_a),
             json={"plan_type": "1_month", "payment_method": "alipay"},
         )
         self.assertEqual(missing.status_code, 401)
         self.assertEqual(injected.status_code, 422)
+        self.assertEqual(invalid_origin.status_code, 422)
         self.assertEqual(overview.json()["source"], "android_subscription")
         self.assertEqual(quote.json()["quote"]["final_amount"], 66)
 
@@ -496,7 +504,16 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
 
         async with self.sessions() as session:
             payment = (await session.execute(select(Payment))).scalar_one()
+            entry_source = (
+                await session.execute(
+                    select(SubscriptionEntryEvent.source)
+                    .where(SubscriptionEntryEvent.telegram_id == 1001)
+                    .order_by(SubscriptionEntryEvent.created_at.desc())
+                    .limit(1)
+                )
+            ).scalar_one()
         self.assertEqual(payment.source, "android")
+        self.assertEqual(entry_source, "android_course_limit")
         self.assertEqual(payment.screenshot_file_id, "receipt-file-id")
         self.assertEqual(payment.amount, 66)
         self.assertIn("Android ilova", AdminNotifyService().build_payment_review_text(
