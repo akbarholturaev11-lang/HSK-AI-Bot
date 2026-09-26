@@ -266,6 +266,7 @@ private class FakeFeatureApi(
 
     override suspend fun checkoutOverview(
         authorization: String,
+        origin: String,
     ): Response<SubscriptionCheckoutOverviewDto> = error("unexpected call")
 
     override suspend fun checkoutQuote(
