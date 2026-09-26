@@ -770,7 +770,9 @@ testi va Mini App — o'zgarmagan, ular keyin alohida ko'chiriladi).
   eskicha (izoh matni). Talaffuz bahosida AI qatori yo'q.
 - Talaffuz kartasida personaj qaytdi (statik, faqat bir martalik reaksiya);
   Mini App bilan moslik uchun personaj Panda qoldi (`LessonCharacterParityTest`).
-- Darsdagi AI tugmasi pastki tugma ustiga tushmasligi uchun `bottomInset = 76.dp`.
+- ~~Darsdagi AI tugmasi pastki tugma ustiga tushmasligi uchun `bottomInset = 76.dp`.~~
+  3.20 da bekor qilindi: darsda suzuvchi AI tugmasi umuman yo'q
+  (`showButton = false`), chat faqat «Xatoyim nimada?» orqali ochiladi.
 
 Yangi fayllar: `feature/lesson/LessonBubble.kt` (dumli pufak, coach qatori,
 chuqurlikli tugma, tayyor javob), `feature/lesson/LessonChoiceCards.kt`
@@ -905,6 +907,12 @@ drill, lug'at, tablar.
 
 ### 3.11 Boshqa ochiqlar
 
+- Dars yakunidan keyingi reklama oynasida (`AdScreen`) tizim «orqaga»si hali
+  ilovani yopadi: oyna Kurs tabi ustida turadi, Kursda back esa chiqish.
+  Reklama mantig'iga ataylab tegilmagan (3.20).
+- Desktop (`desktop/ui/js/lesson.js`, `selectPair`) juftlik mashqini hali
+  eski usulda baholaydi: bitta xato bosish kartani ochkosiz qoldiradi va
+  mistake yozadi. Mini App va Android (3.20) bunday qilmaydi.
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
   tushadi. Navbatga qo'yib keyin yuborish yo'q.
