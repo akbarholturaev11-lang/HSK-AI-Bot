@@ -28,7 +28,9 @@ class SubscriptionEntryAnalyticsService:
     SOURCE_GROUP_LABELS = {
         "subscription_page": "Obuna sahifasi",
         "android_subscription": "Android -> Obuna",
+        "android_onboarding_plan": "Android · Onboarding obuna tanlovi",
         "android_course_limit": "Android · Kurs limiti",
+        "android_course_lesson_limit": "Android · Dars ichidagi limit",
         "android_practice_limit": "Android · Mashq limiti",
         "android_practice_placement": "Android · Daraja testi limiti",
         "android_practice_mock": "Android · Test limiti",
