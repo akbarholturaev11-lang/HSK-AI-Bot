@@ -253,7 +253,8 @@ Risk / follow-up:
 - Backend, DB, to'lov, Mini App o'zgarmagan. Server juftlik mistake'larini
   qabul qilishda davom etadi (desktop hali yuboradi).
 - `AdScreen` da back hali ilovani yopadi; desktop juftlik bahosi eski usulda.
-- Telefonda tekshirish kerak: juftlikda xato bosish, avto-ovoz, back oqimlari.
+- Android CI (run 36217650276) yashil. Telefonda tekshirish kerak: juftlikda
+  xato bosish, avto-ovoz, back oqimlari.
 
 ### 2026-09-25 — Android dars yakuni: kinematik klip, ovoz va vibratsiya
 

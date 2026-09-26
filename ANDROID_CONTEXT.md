@@ -900,10 +900,10 @@ Foydalanuvchi suratlaridan to'rtta narsa:
 **Qolgan:** dars yakunidan keyingi reklama oynasida (`AdScreen`) back hali ham
 Kurs tabida turgani uchun ilovadan chiqaradi — reklama mantig'iga tegilmadi.
 
-**Tekshirilmagan:** bu muhitda `dl.google.com` yopiq — Gradle build ham, unit
-test ham ishlamadi. Yettita statik tekshiruv o'tdi. CI (PR yoki `main`) va
-telefonda: juftlikda xato bosish, avto-ovoz (sekin internet), back — dars,
-drill, lug'at, tablar.
+**Tekshirilgan:** yettita statik tekshiruv; Android CI (run 36217650276,
+`main`, `133ccf2`) yashil — unit test, lint, debug APK, release bundle.
+**Tekshirilmagan:** telefonda — juftlikda xato bosish, avto-ovoz (sekin
+internet), back — dars, drill, lug'at, tablar.
 
 ### 3.11 Boshqa ochiqlar
 
