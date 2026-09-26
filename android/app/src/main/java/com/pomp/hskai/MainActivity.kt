@@ -1216,7 +1216,7 @@ private fun AppRoot(
                                 onSubscribe = if (limitGate.state.canSubscribe) {
                                     {
                                         planChoiceOpen = false
-                                        limitGate.actions.onUnlock()
+                                        limitGate.actions.onUnlock("onboarding_plan")
                                     }
                                 } else {
                                     null
