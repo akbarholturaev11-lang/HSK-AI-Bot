@@ -228,6 +228,7 @@ fun CourseScreen(
         if (limitedLesson != null) {
             SectionLimitOverlay(
                 sectionTitle = stringResource(R.string.nav_course),
+                sourceKey = "course_limit",
                 limit = limit,
                 reason = map?.lessonLimit?.limitText
                     ?: stringResource(R.string.limit_lesson_reason),
