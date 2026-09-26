@@ -16,6 +16,9 @@
     <string name="widget_prompt_installed_title">Виҷет насб шуд</string>
     <string name="widget_prompt_installed_body">HSK AI акнун дар экрани асосӣ аст. Дарс ва силсиларо бо як нигоҳ мебинед.</string>
     <string name="widget_prompt_manual_hint">Агар равзанаи система кушода нашавад: экрани асосиро нигоҳ доред → Виҷетҳо → HSK AI.</string>
+    <string name="widget_prompt_placed">Виҷет ба экран насб шуд</string>
+    <string name="widget_prompt_blocked_hint">Телефон гузоштани виҷетро манъ кард. Дар танзимот иҷозати «Нишонаҳо дар мизи корӣ»-ро фаъол кунед.</string>
+    <string name="widget_prompt_open_permission">Кушодани иҷозат</string>
     <string name="widget_setup_title">Дарсҳо дар экрани асосӣ</string>
     <string name="widget_setup_body">Дарс, XP ва силсиларо бе кушодани барнома бинед. Бо пахши виҷет HSK AI кушода мешавад.</string>
     <string name="widget_setup_add">Илова ба экрани асосӣ</string>

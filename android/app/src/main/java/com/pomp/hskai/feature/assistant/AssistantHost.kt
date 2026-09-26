@@ -80,6 +80,8 @@ data class VisibleScreen(
     val priority: Int,
     /** Room the screen's own bottom dock needs, on top of any tab bar. */
     val bottomInset: Dp = 0.dp,
+    /** A full-screen overlay that must not have the button floating over it. */
+    val hidesAssistant: Boolean = false,
 )
 
 /** Explicit registration avoids scraping UI, secrets or hidden answer keys. */
@@ -128,6 +130,15 @@ fun AssistantScreen(context: ScreenContext, bottomBar: Boolean = false, priority
     DisposableEffect(host, owner) { onDispose { host.registry.remove(owner) } }
 }
 
+/** Keeps the assistant button and chat off a full-screen overlay while it is shown. */
+@Composable
+fun AssistantHidden() {
+    val host = LocalAssistant.current ?: return
+    val owner = remember { Any() }
+    SideEffect { host.registry.put(owner, VisibleScreen(ScreenContext(), bottomBar = false, priority = Int.MAX_VALUE, hidesAssistant = true)) }
+    DisposableEffect(host, owner) { onDispose { host.registry.remove(owner) } }
+}
+
 @Composable
 fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: @Composable () -> Unit) {
     val registry = remember { ScreenRegistry() }
@@ -148,7 +159,7 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
     }
     val scope = rememberCoroutineScope()
     val visible = registry.current
-    val availableOnScreen = auth is AuthState.Authenticated && visible != null
+    val availableOnScreen = auth is AuthState.Authenticated && visible != null && !visible.hidesAssistant
     LaunchedEffect(auth) {
         if (auth is AuthState.Authenticated) app.assistant.attach(app.widgetStore.read().epoch.toString())
         else open = false
