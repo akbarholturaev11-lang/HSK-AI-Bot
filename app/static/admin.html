@@ -1202,7 +1202,7 @@
               <div class="phead"><div><div class="uname">${esc(p.name)}</div>
                 <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}${p.telegram_id}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
                 <div class="amount">${esc(p.amount)}</div></div>
-              <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
+              <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(({android:"📱 Android",miniapp:"Telegram Mini App",desktop:"Desktop",telegram_bot:"Telegram bot"})[p.source]||p.source||"Telegram bot",p.source==="android"?"amber":"")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
               ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Tasdiqlash</button><button class="btn sec" data-pay="${p.id}" data-pact="reject">Rad etish</button></div>`:""}
             </article>`).join("") || "<p class='empty'>Hozircha bo'sh.</p>"}
           </div>

@@ -6,9 +6,37 @@
     Play build must not CONTAIN an external checkout, not merely hide it.
 -->
 <resources>
-    <string name="limit_unlock_headline">Бе маҳдудият кушоед 👇🏽</string>
-    <string name="limit_unlock_button">Бе маҳдудият омӯхтан</string>
-    <string name="limit_unlock_hint">Тугма Telegram-ботро мекушояд. Обуна дар ҳамон ҷо ба расмият дароварда мешавад, баъд ин ҷо ҳама чиз кушода мешавад.</string>
+    <string name="limit_unlock_headline">Омӯзишро идома диҳед</string>
+    <string name="limit_unlock_button">HSK AI Pro гирифтан ⭐</string>
+    <string name="limit_unlock_hint">Обуна баъди тасдиқи админ фаъол мешавад.</string>
+    <string name="sub_title">HSK AI Pro</string>
+    <string name="sub_intro">Мӯҳлати обуна ва усули пардохтро интихоб кунед.</string>
+    <string name="sub_plan_10">10 рӯз</string>
+    <string name="sub_plan_1">1 моҳ</string>
+    <string name="sub_plan_3">3 моҳ</string>
+    <string name="sub_method">Усули пардохт</string>
+    <string name="sub_card">Корти бонкӣ</string>
+    <string name="sub_alipay">Alipay</string>
+    <string name="sub_wechat">WeChat</string>
+    <string name="sub_country">Кишвари корт</string>
+    <string name="sub_country_tj">Тоҷикистон</string>
+    <string name="sub_country_uz">Ӯзбекистон</string>
+    <string name="sub_country_ru">Русия</string>
+    <string name="sub_country_other">Кишвари дигар</string>
+    <string name="sub_continue">Нишон додани маълумоти пардохт</string>
+    <string name="sub_payment_details">Маълумоти пардохт</string>
+    <string name="sub_amount">Маблағи пардохт: %1$s %2$s</string>
+    <string name="sub_receipt">Интихоби расиди пардохт</string>
+    <string name="sub_selected">Расид интихоб шуд</string>
+    <string name="sub_submit">Фиристодани расид ба админ</string>
+    <string name="sub_pending">Расид фиристода шуд. Обуна баъди санҷиши админ фаъол мешавад.</string>
+    <string name="sub_already_pending">Расиди шумо санҷида мешавад. Лутфан ҷавобро интизор шавед.</string>
+    <string name="sub_paid">HSK AI Pro фаъол аст.</string>
+    <string name="sub_unavailable">Маълумоти пардохт дастрас нест. Баъдтар кӯшиш кунед.</string>
+    <string name="sub_receipt_invalid">Расиди JPG, PNG ё WebP бо андозаи то 8 МБ интихоб кунед.</string>
+    <string name="sub_approval_note">Расид ва маълумоти пардохт ба админ фиристода мешавад. Обуна баъди тасдиқ фаъол мегардад.</string>
+    <string name="sub_qr_missing">QR барои ин нақша дастрас нест. Усули дигарро интихоб кунед.</string>
+    <string name="sub_retry">Аз нав санҷидан</string>
     <string name="limit_unlock_unavailable">Telegram-ботро кушода натавонистем. Худатон ба бот ворид шавед ё баъдтар кӯшиш кунед.</string>
 
     <!--

@@ -12,11 +12,8 @@ import com.pomp.hskai.R
  * the buttons can differ per channel without any screen knowing which build
  * it is running in.
  *
- * The second button used to be "watch an ad to continue". An ad no longer
- * opens anything — hitting a limit shows the paywall, not a video — so that
- * slot now carries the 7-day free Pro trial, exactly as it does on the Mini
- * App's own paywall. It appears only while the server still says this account
- * may take it.
+ * The second button offers the free trial while the server allows it, then
+ * becomes a close action. An eligible user also has a quieter close action.
  *
  * @param resetAt server instant when the daily limit reopens, or null when
  *   nothing reopens (a subscription-only section). This channel offers a
@@ -26,6 +23,7 @@ import com.pomp.hskai.R
 fun SectionLimitBlock(
     sectionTitle: String,
     limit: LimitGate,
+    onClose: () -> Unit,
     modifier: Modifier = Modifier,
     reason: String? = null,
     resetAt: String? = null,
@@ -42,12 +40,10 @@ fun SectionLimitBlock(
         modifier = modifier,
         reason = reason,
         hint = stringResource(R.string.limit_unlock_hint),
-        secondaryLabel = if (trialOffered) {
-            stringResource(R.string.limit_try_trial)
-        } else {
-            null
-        },
-        onSecondary = if (trialOffered) limit.actions.onStartTrial else null,
+        secondaryLabel = if (trialOffered) stringResource(R.string.limit_try_trial) else stringResource(R.string.limit_later),
+        onSecondary = if (trialOffered) limit.actions.onStartTrial else onClose,
+        tertiaryLabel = if (trialOffered) stringResource(R.string.limit_later) else null,
+        onTertiary = if (trialOffered) onClose else null,
         isBusy = limit.state.isBusy || limit.state.trialStarting,
         errorText = when {
             error != null -> stringResource(error.messageRes)

@@ -6,9 +6,37 @@
     Play build must not CONTAIN an external checkout, not merely hide it.
 -->
 <resources>
-    <string name="limit_unlock_headline">Limitsiz oching 👇🏽</string>
-    <string name="limit_unlock_button">Limitsiz o‘qish</string>
-    <string name="limit_unlock_hint">Tugma Telegram botni ochadi. Obuna o‘sha yerda rasmiylashtiriladi, keyin bu yerda hammasi ochiladi.</string>
+    <string name="limit_unlock_headline">O‘qishni davom ettiring</string>
+    <string name="limit_unlock_button">HSK AI Pro olish ⭐</string>
+    <string name="limit_unlock_hint">Obuna admin tasdiqlagach faollashadi.</string>
+    <string name="sub_title">HSK AI Pro</string>
+    <string name="sub_intro">O‘zingizga qulay muddat va to‘lov usulini tanlang.</string>
+    <string name="sub_plan_10">10 kun</string>
+    <string name="sub_plan_1">1 oy</string>
+    <string name="sub_plan_3">3 oy</string>
+    <string name="sub_method">To‘lov usuli</string>
+    <string name="sub_card">Bank kartasi</string>
+    <string name="sub_alipay">Alipay</string>
+    <string name="sub_wechat">WeChat</string>
+    <string name="sub_country">Karta davlati</string>
+    <string name="sub_country_tj">Tojikiston</string>
+    <string name="sub_country_uz">O‘zbekiston</string>
+    <string name="sub_country_ru">Rossiya</string>
+    <string name="sub_country_other">Boshqa davlat</string>
+    <string name="sub_continue">To‘lov ma’lumotlarini ko‘rish</string>
+    <string name="sub_payment_details">To‘lov rekvizitlari</string>
+    <string name="sub_amount">To‘lanadigan summa: %1$s %2$s</string>
+    <string name="sub_receipt">To‘lov chekini tanlash</string>
+    <string name="sub_selected">Chek tanlandi</string>
+    <string name="sub_submit">Chekni adminga yuborish</string>
+    <string name="sub_pending">Chek adminga yuborildi. Obuna tekshiruvdan keyin ochiladi.</string>
+    <string name="sub_already_pending">Chekingiz tekshiruvda. Iltimos, admin javobini kuting.</string>
+    <string name="sub_paid">HSK AI Pro faol.</string>
+    <string name="sub_unavailable">To‘lov ma’lumotlarini olib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
+    <string name="sub_receipt_invalid">JPG, PNG yoki WebP formatidagi, 8 MB dan kichik chekni tanlang.</string>
+    <string name="sub_approval_note">Chek va to‘lov tafsilotlari adminga yuboriladi. Obuna admin tasdiqlagach ochiladi.</string>
+    <string name="sub_qr_missing">Bu tarif uchun QR hozir mavjud emas. Boshqa usulni tanlang.</string>
+    <string name="sub_retry">Qayta urinish</string>
     <string name="limit_unlock_unavailable">Telegram botni ochib bo‘lmadi. Botga o‘zingiz kiring yoki keyinroq urinib ko‘ring.</string>
 
     <!--

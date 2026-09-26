@@ -41,6 +41,13 @@ from app.api.desktop_referral import (
     _invite_link,
     _public_item as _public_referral_item,
 )
+from app.api.desktop_subscription import (
+    DesktopSubscriptionQuoteRequest,
+    DesktopSubscriptionSubmitRequest,
+    MAX_DESKTOP_SUBSCRIPTION_SUBMIT_BODY_BYTES,
+    _validated_payload as _validated_checkout_payload,
+    _validate_receipt_data_url,
+)
 from app.api.desktop_voice import (
     DesktopSessionId,
     DesktopVoiceEndRequest,
@@ -65,6 +72,7 @@ from app.services.course_miniapp_profile_service import CourseMiniAppProfileServ
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.desktop_subscription_service import DesktopSubscriptionError, DesktopSubscriptionService
 from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.ad_placement_service import (
@@ -409,7 +417,7 @@ def _timezone_offset(request: Request) -> int | None:
 
 
 def _error_response(
-    error: AndroidFeatureError | DesktopAuthError | DesktopPracticeError | VoicePracticeError,
+    error: AndroidFeatureError | DesktopAuthError | DesktopPracticeError | VoicePracticeError | DesktopSubscriptionError,
 ) -> JSONResponse:
     return JSONResponse(
         status_code=getattr(error, "status_code", 400),
@@ -476,12 +484,9 @@ def _bot_url(settings_obj) -> str:
 
 def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -> dict[str, Any]:
     """
-    Subscription is never sold inside the Android app.
-
-    The learner is handed off to the Telegram bot, which offers the existing
-    subscription Mini App; payment, pricing and activation stay in that one
-    canonical flow. The client therefore gets a handoff target, never a
-    checkout of its own.
+    Legacy read-only subscription status for both flavors and older clients.
+    The direct APK uses /subscription/checkout/* for manual receipt checkout;
+    the Play flavor still has no actionable manual payment screen.
     """
 
     state = UserAccessStateService.classify(user)
@@ -823,6 +828,76 @@ def create_android_features_router(
             return _error_response(
                 AndroidFeatureError("android_profile_unavailable", status_code=503)
             )
+
+    # APK checkout uses the Mini App's prices, quote and receipt delivery.
+    # The Play flavor never calls these routes and contains no checkout UI.
+    async def _android_checkout(session, request: Request):
+        await _context(session, request)
+        if bot is None:
+            raise AndroidFeatureError("android_subscription_unavailable", status_code=503)
+        return DesktopSubscriptionService(
+            session, settings_obj, bot=bot, source="android_subscription"
+        )
+
+    @router.get("/api/v3/android/subscription/checkout/overview")
+    async def android_checkout_overview(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await (await _android_checkout(session, request)).overview(_access_token(request))
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android checkout overview failed")
+            return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
+
+    @router.post("/api/v3/android/subscription/checkout/quote")
+    async def android_checkout_quote(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            payload = await _validated_checkout_payload(request, DesktopSubscriptionQuoteRequest)
+            async with session_factory() as session:
+                result = await (await _android_checkout(session, request)).quote(
+                    _access_token(request),
+                    plan_type=payload.plan_type,
+                    payment_method=payload.payment_method,
+                    card_country=payload.card_country,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android checkout quote failed")
+            return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
+
+    @router.post("/api/v3/android/subscription/checkout/submit")
+    async def android_checkout_submit(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            payload = await _validated_checkout_payload(
+                request,
+                DesktopSubscriptionSubmitRequest,
+                max_body_bytes=MAX_DESKTOP_SUBSCRIPTION_SUBMIT_BODY_BYTES,
+            )
+            _validate_receipt_data_url(payload.screenshot_data_url)
+            async with session_factory() as session:
+                result = await (await _android_checkout(session, request)).submit(
+                    _access_token(request),
+                    plan_type=payload.plan_type,
+                    payment_method=payload.payment_method,
+                    card_country=payload.card_country,
+                    screenshot_data_url=payload.screenshot_data_url,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android checkout submit failed")
+            return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
 
     @router.get("/api/v3/android/subscription/overview")
     async def android_subscription_overview(request: Request):

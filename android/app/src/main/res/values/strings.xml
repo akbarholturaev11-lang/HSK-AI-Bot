@@ -348,6 +348,11 @@
     <!-- Reklama bilan davom etish OLIB TASHLANDI: reklama endi hech narsani
          ochmaydi. O'sha joyda bepul haftalik sinov turadi. -->
     <string name="limit_try_trial">7 kun Pro\u2019ni bepul sinash</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">Barcha darslar ochiladi</string>
+    <string name="limit_benefit_practice">Cheksiz mashq va takrorlash</string>
+    <string name="limit_benefit_voice">AI Voice bilan erkin suhbat</string>
+    <string name="limit_later">Keyinroq</string>
     <string name="limit_trial_failed">Bepul sinovni boshlab bo\u2018lmadi. Bu hisob uni allaqachon olgan bo\u2018lishi mumkin.</string>
     <string name="lesson_pinyin_title">Pinyin (talaffuz yozuvi)</string>
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>

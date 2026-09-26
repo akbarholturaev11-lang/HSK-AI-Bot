@@ -244,6 +244,9 @@ class HskAiApplication : Application() {
     val featureRepository: FeatureRepository by lazy {
         FeatureRepository(
             api = retrofit.create(AndroidFeatureApi::class.java),
+            // Receipt upload also waits for the bot to deliver the photo to
+            // an admin; the ordinary 60-second lesson budget is too short.
+            checkoutReceiptApi = assistantRetrofit.create(AndroidFeatureApi::class.java),
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
         )

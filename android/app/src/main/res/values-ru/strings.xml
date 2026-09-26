@@ -309,6 +309,11 @@
     <string name="ad_learn_more">Подробнее</string>
     <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
     <string name="limit_try_trial">7 дней Pro бесплатно</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">Все уроки открыты</string>
+    <string name="limit_benefit_practice">Практика без лимита</string>
+    <string name="limit_benefit_voice">Разговоры с AI Voice</string>
+    <string name="limit_later">Позже</string>
     <string name="limit_trial_failed">Не удалось начать бесплатный период. Возможно, этот аккаунт уже его использовал.</string>
     <string name="lesson_pinyin_title">Пиньинь (произношение)</string>
     <string name="lesson_pinyin_all">Показывать везде</string>

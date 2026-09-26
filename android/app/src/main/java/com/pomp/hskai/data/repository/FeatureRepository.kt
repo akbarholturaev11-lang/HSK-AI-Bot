@@ -16,6 +16,11 @@ import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
+import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
+import com.pomp.hskai.data.api.SubscriptionQuoteRequest
+import com.pomp.hskai.data.api.SubscriptionQuoteResponse
+import com.pomp.hskai.data.api.SubscriptionSubmitRequest
+import com.pomp.hskai.data.api.SubscriptionSubmitResponse
 import com.pomp.hskai.data.api.ExamAnswerDto
 import com.pomp.hskai.data.api.ExamCompleteRequest
 import com.pomp.hskai.data.api.ExamCompleteResponse
@@ -65,6 +70,7 @@ import java.util.TimeZone
 class FeatureRepository(
     private val api: AndroidFeatureApi,
     private val accessToken: suspend () -> ApiResult<String>,
+    private val checkoutReceiptApi: AndroidFeatureApi = api,
     private val onSessionExpired: suspend () -> Unit = {},
     private val timezoneOffsetMinutes: () -> Int = {
         TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000
@@ -89,9 +95,18 @@ class FeatureRepository(
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
         authorized { api.subscriptionOverview(it) }
 
+    suspend fun checkoutOverview(): ApiResult<SubscriptionCheckoutOverviewDto> =
+        authorized { api.checkoutOverview(it) }
+
+    suspend fun checkoutQuote(request: SubscriptionQuoteRequest): ApiResult<SubscriptionQuoteResponse> =
+        authorized { api.checkoutQuote(it, request) }
+
+    suspend fun checkoutSubmit(request: SubscriptionSubmitRequest): ApiResult<SubscriptionSubmitResponse> =
+        authorized { checkoutReceiptApi.checkoutSubmit(it, request) }
+
     /**
-     * Asks the bot to post the subscription menu into the learner's Telegram
-     * chat and returns where to open it. Buying never happens in this app.
+     * Legacy handoff used by older clients. The APK now uses checkout* above;
+     * the Play flavor has no manual payment screen.
      */
     suspend fun subscriptionOpen(): ApiResult<AndroidSubscriptionOpenResponse> =
         authorized { api.subscriptionOpen(it) }

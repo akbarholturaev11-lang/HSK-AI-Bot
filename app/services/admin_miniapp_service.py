@@ -3097,6 +3097,7 @@ class AdminMiniAppService:
                     "status_label": _payment_label(payment.payment_status),
                     "plan": _plan_label(payment.plan_type),
                     "method": _method_label(payment.payment_method),
+                    "source": getattr(payment, "source", "telegram_bot"),
                     "amount": format_subscription_price(payment.amount, payment.currency),
                     "submitted_at": _dt(payment.submitted_at),
                     "reviewed_at": _dt(payment.reviewed_at),

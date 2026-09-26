@@ -310,6 +310,11 @@
     <string name="ad_learn_more">Муфассал</string>
     <string name="ad_unavailable">Ҳоло реклама нест. Баъдтар кӯшиш кунед.</string>
     <string name="limit_try_trial">7 рӯз Pro ройгон</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">Ҳамаи дарсҳо кушода</string>
+    <string name="limit_benefit_practice">Машқи бе маҳдудият</string>
+    <string name="limit_benefit_voice">Суҳбат бо AI Voice</string>
+    <string name="limit_later">Баъдтар</string>
     <string name="limit_trial_failed">Давраи ройгонро оғоз кардан нашуд. Шояд ин ҳисоб онро аллакай гирифтааст.</string>
     <string name="lesson_pinyin_title">Пиньин (талаффуз)</string>
     <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>
