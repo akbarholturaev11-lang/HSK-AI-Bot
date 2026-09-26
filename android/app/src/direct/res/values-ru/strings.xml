@@ -5,9 +5,37 @@
     Play build must not CONTAIN an external checkout, not merely hide it.
 -->
 <resources>
-    <string name="limit_unlock_headline">Откройте без лимита 👇🏽</string>
-    <string name="limit_unlock_button">Учиться без лимита</string>
-    <string name="limit_unlock_hint">Кнопка откроет Telegram-бот. Подписка оформляется там, после этого здесь откроется всё.</string>
+    <string name="limit_unlock_headline">Продолжайте учиться</string>
+    <string name="limit_unlock_button">Получить HSK AI Pro ⭐</string>
+    <string name="limit_unlock_hint">Подписка откроется после подтверждения администратором.</string>
+    <string name="sub_title">HSK AI Pro</string>
+    <string name="sub_intro">Выберите срок подписки и способ оплаты.</string>
+    <string name="sub_plan_10">10 дней</string>
+    <string name="sub_plan_1">1 месяц</string>
+    <string name="sub_plan_3">3 месяца</string>
+    <string name="sub_method">Способ оплаты</string>
+    <string name="sub_card">Банковская карта</string>
+    <string name="sub_alipay">Alipay</string>
+    <string name="sub_wechat">WeChat</string>
+    <string name="sub_country">Страна карты</string>
+    <string name="sub_country_tj">Таджикистан</string>
+    <string name="sub_country_uz">Узбекистан</string>
+    <string name="sub_country_ru">Россия</string>
+    <string name="sub_country_other">Другая страна</string>
+    <string name="sub_continue">Показать реквизиты</string>
+    <string name="sub_payment_details">Реквизиты для оплаты</string>
+    <string name="sub_amount">К оплате: %1$s %2$s</string>
+    <string name="sub_receipt">Выбрать чек</string>
+    <string name="sub_selected">Чек выбран</string>
+    <string name="sub_submit">Отправить чек администратору</string>
+    <string name="sub_pending">Чек отправлен. Подписка откроется после проверки администратором.</string>
+    <string name="sub_already_pending">Ваш чек проверяется. Пожалуйста, дождитесь ответа.</string>
+    <string name="sub_paid">HSK AI Pro активен.</string>
+    <string name="sub_unavailable">Не удалось загрузить оплату. Попробуйте позже.</string>
+    <string name="sub_receipt_invalid">Выберите чек JPG, PNG или WebP размером до 8 МБ.</string>
+    <string name="sub_approval_note">Чек и сведения об оплате отправляются администратору. Подписка откроется после подтверждения.</string>
+    <string name="sub_qr_missing">QR для этого тарифа сейчас недоступен. Выберите другой способ.</string>
+    <string name="sub_retry">Проверить ещё раз</string>
     <string name="limit_unlock_unavailable">Не удалось открыть Telegram-бот. Зайдите в бот вручную или попробуйте позже.</string>
 
     <!--

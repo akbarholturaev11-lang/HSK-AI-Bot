@@ -108,6 +108,7 @@ import com.pomp.hskai.feature.ad.AdScreen
 import com.pomp.hskai.feature.ad.AdViewModel
 import com.pomp.hskai.feature.hint.HintsViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
+import com.pomp.hskai.feature.subscription.SubscriptionCheckoutHost
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.RatingEntryDto
@@ -551,6 +552,7 @@ private fun AppRoot(
                 }
             }
 
+            var checkoutVisible by rememberSaveable { mutableStateOf(false) }
             val limitGate = rememberLimitGate(
                 repository = app.featureRepository,
                 viewModelStoreOwner = sessionOwner,
@@ -561,6 +563,7 @@ private fun AppRoot(
                     profileViewModel.load()
                     voiceViewModel.refreshStatusIfLoaded()
                 },
+                onOpenSubscription = { checkoutVisible = true },
                 // Whether this account may still take the free week is the
                 // server's answer, read once here and shown everywhere — the
                 // same way the Mini App reads it once and uses it on the
@@ -571,16 +574,15 @@ private fun AppRoot(
                 onStartTrial = profileViewModel::startTrial,
             )
 
-            // A trial that has just begun changes what every section is
-            // allowed to do, so course, voice and practice are re-read the
-            // moment it turns on. Only on the change: a cold start with an
-            // already-running trial must not load everything twice.
-            val trialActive = profileState.trial?.active == true
-            var trialWasActive by remember { mutableStateOf<Boolean?>(null) }
-            LaunchedEffect(trialActive) {
-                val previous = trialWasActive
-                trialWasActive = trialActive
-                if (previous == false && trialActive) {
+            // A trial or an admin-approved payment changes every section's
+            // access. Re-read spent sections when the server confirms it.
+            val accessActive = profileState.trial?.active == true ||
+                profileState.profile?.subscription?.isPaid == true
+            var accessWasActive by remember { mutableStateOf<Boolean?>(null) }
+            LaunchedEffect(accessActive) {
+                val previous = accessWasActive
+                accessWasActive = accessActive
+                if (previous == false && accessActive) {
                     courseViewModel.load()
                     voiceViewModel.refreshStatusIfLoaded()
                     // Limit bloki O'ZI yo'qolishi kerak. Aks holda odam
@@ -801,6 +803,18 @@ private fun AppRoot(
                         scope.launch { app.appSettings.setNotificationPrimerSeen() }
                     },
                 )
+            } else if (checkoutVisible) {
+                SubscriptionCheckoutHost(
+                    repository = app.featureRepository,
+                    viewModelStoreOwner = sessionOwner,
+                    onClose = {
+                        checkoutVisible = false
+                        profileViewModel.load()
+                        courseViewModel.load()
+                        voiceViewModel.refreshStatusIfLoaded()
+                        practiceViewModel.onAccessChanged()
+                    },
+                )
             } else if (ratingChallengesOpen) {
                 RatingChallengesScreen(
                     state = ratingState,
@@ -869,8 +883,8 @@ private fun AppRoot(
                 )
                 val drillState by drillViewModel.state.collectAsStateWithLifecycle()
                 // Mashq ichida turib trial olingan bo'lsa ham blok yopilsin.
-                LaunchedEffect(trialActive) {
-                    if (trialActive) drillViewModel.onAccessChanged()
+                LaunchedEffect(accessActive) {
+                    if (accessActive) drillViewModel.onAccessChanged()
                 }
                 WordDrillScreen(
                     state = drillState,
@@ -964,7 +978,7 @@ private fun AppRoot(
                     language = state.account.language,
                     pinyin = pinyin,
                     limit = limitGate,
-                    accessChanged = trialActive,
+                    accessChanged = accessActive,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
                         openLesson = null
