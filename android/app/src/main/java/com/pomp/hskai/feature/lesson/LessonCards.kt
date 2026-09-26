@@ -37,6 +37,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,6 +65,8 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.design.components.HskBubbleTail
+import com.pomp.hskai.core.design.components.HskSpeechBubble
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.ChoiceKind
@@ -377,6 +380,13 @@ fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
     }
 }
 
+/**
+ * Say-it-after-me, in the stage layout: the phrase in a bubble the learner can
+ * tap to hear again, the coach under it, and one wide microphone button.
+ *
+ * [coach] is the lesson's character. It is static here — no idle loop runs
+ * while the microphone may be open; only the one-shot reaction to a score does.
+ */
 @Composable
 fun PronunciationCardView(
     card: PronunciationCard,
@@ -388,6 +398,7 @@ fun PronunciationCardView(
     onPlayAudio: (String) -> Unit,
     onSpeak: () -> Unit,
     onSkip: () -> Unit,
+    coach: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
     var permissionDenied by remember { mutableStateOf(false) }
@@ -397,47 +408,90 @@ fun PronunciationCardView(
         permissionDenied = !granted
         if (granted) onSpeak()
     }
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    val micEnabled = !isRecording && !isScoring && !isAnswered
+    val canListen = !isRecording && !isScoring && !isAudioLoading
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         CardTitle(stringResource(R.string.lesson_repeat_after_teacher))
-        Text(text = card.phrase, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
-        if (pinyin == PinyinVisibility.ALL) {
-            Text(text = card.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
-        }
-        Spacer(Modifier.height(8.dp))
-        Text(text = card.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(18.dp))
-        AudioAction(
-            isLoading = isAudioLoading,
-            enabled = !isRecording && !isScoring,
-            onClick = { onPlayAudio(card.phrase) },
-        )
-        Spacer(Modifier.height(18.dp))
-        Surface(
-            onClick = {
-                val granted = ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.RECORD_AUDIO,
-                ) == PackageManager.PERMISSION_GRANTED
-                if (granted) {
-                    permissionDenied = false
-                    onSpeak()
-                } else {
-                    permission.launch(Manifest.permission.RECORD_AUDIO)
-                }
-            },
-            enabled = !isRecording && !isScoring && !isAnswered,
-            shape = androidx.compose.foundation.shape.CircleShape,
-            color = if (isRecording) PompColors.CinnabarDark else PompColors.Cinnabar,
-            border = BorderStroke(3.dp, PompColors.PaperRaised),
-            modifier = Modifier.size(78.dp),
+        HskSpeechBubble(
+            tail = HskBubbleTail.Bottom,
+            onClick = if (canListen) { { onPlayAudio(card.phrase) } } else null,
+            onClickLabel = stringResource(R.string.lesson_play_audio),
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Filled.Mic,
-                    contentDescription = stringResource(R.string.voice_a11y_mic),
-                    tint = PompColors.Paper,
-                    modifier = Modifier.size(31.dp),
-                )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(32.dp)) {
+                    if (isAudioLoading) {
+                        CircularProgressIndicator(
+                            color = PompColors.Cinnabar,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(22.dp),
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.VolumeUp,
+                            contentDescription = null,
+                            tint = PompColors.Cinnabar,
+                            modifier = Modifier.size(30.dp),
+                        )
+                    }
+                }
+                Column {
+                    Text(text = card.phrase, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
+                    if (pinyin == PinyinVisibility.ALL) {
+                        Text(
+                            text = card.pinyin,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = PompColors.CinnabarDark,
+                        )
+                    }
+                    Text(text = card.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+                }
+            }
+        }
+        if (coach != null) {
+            Spacer(Modifier.height(10.dp))
+            coach()
+        }
+        Spacer(Modifier.height(18.dp))
+        val micShape = RoundedCornerShape(20.dp)
+        val micColor = if (isRecording) PompColors.CinnabarDark else PompColors.Cinnabar
+        Box(modifier = Modifier.padding(bottom = 6.dp)) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .offset(y = 6.dp)
+                    .clip(micShape)
+                    .background(if (micEnabled) PompColors.CinnabarDark else PompColors.Divider),
+            )
+            Surface(
+                onClick = {
+                    val granted = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.RECORD_AUDIO,
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (granted) {
+                        permissionDenied = false
+                        onSpeak()
+                    } else {
+                        permission.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+                enabled = micEnabled,
+                shape = micShape,
+                color = micColor,
+                modifier = Modifier.size(width = 208.dp, height = 80.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.Mic,
+                        contentDescription = stringResource(R.string.voice_a11y_mic),
+                        tint = PompColors.Paper,
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
             }
         }
         Spacer(Modifier.height(9.dp))
@@ -460,8 +514,18 @@ fun PronunciationCardView(
                 textAlign = TextAlign.Center,
             )
         }
-        Spacer(Modifier.height(16.dp))
-        SecondaryAction(text = stringResource(R.string.lesson_cannot_speak_now), onClick = onSkip)
+        Spacer(Modifier.height(20.dp))
+        // A quiet way out, not a second button competing with the microphone.
+        TextButton(onClick = onSkip, enabled = !isRecording && !isScoring) {
+            Text(
+                text = stringResource(R.string.lesson_cannot_speak_now).uppercase(),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                color = PompColors.InkDisabled,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 
@@ -902,8 +966,12 @@ private fun Tile(text: String, enabled: Boolean, onClick: () -> Unit) {
     }
 }
 
-/** What a pair cell is doing right now, mirroring `.pcell` / `.sel` / `.ok`. */
-private enum class PairState { IDLE, SELECTED, MATCHED }
+/**
+ * What a pair cell is doing right now, mirroring `.pcell` / `.sel` / `.ok`.
+ * [WRONG] is the moment after a mismatched pick: the two cells edge red and
+ * settle back, so the learner sees the pick missed instead of only feeling it.
+ */
+private enum class PairState { IDLE, SELECTED, MATCHED, WRONG }
 
 /**
  * `.pcell` from `course-v3.html`.
@@ -911,7 +979,8 @@ private enum class PairState { IDLE, SELECTED, MATCHED }
  * The Android tile never showed a selection at all: tapping a hanzi left the
  * cell exactly as it was, so there was no way to tell what the second tap would
  * be matched against. Idle is a neutral edge, the picked cell turns cinnabar,
- * and a solved pair goes jade and fades back.
+ * a missed pick edges red for a moment, and a solved pair goes jade and fades
+ * back.
  */
 @Composable
 private fun PairCell(
@@ -925,67 +994,96 @@ private fun PairCell(
         PairState.IDLE -> PompColors.Divider
         PairState.SELECTED -> PompColors.Cinnabar
         PairState.MATCHED -> PompColors.Jade
+        PairState.WRONG -> PompColors.Flame
     }
     val background = when (state) {
-        PairState.IDLE -> PompColors.PaperRaised
+        PairState.IDLE, PairState.WRONG -> PompColors.PaperRaised
         PairState.SELECTED -> PompColors.CinnabarSoft
         PairState.MATCHED -> PompColors.JadeSoft
     }
-    val ink = if (state == PairState.MATCHED) PompColors.Jade else PompColors.Ink
-    Surface(
-        color = background,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(2.dp, border),
-        onClick = onClick,
-        enabled = enabled,
+    val ink = when (state) {
+        PairState.IDLE, PairState.WRONG -> PompColors.Ink
+        PairState.SELECTED -> PompColors.CinnabarDark
+        PairState.MATCHED -> PompColors.Jade
+    }
+    val shape = RoundedCornerShape(14.dp)
+    Box(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 4.dp)
             // `.pcell.ok{opacity:.7}` — a solved pair steps back without leaving.
             .alpha(if (state == PairState.MATCHED) 0.7f else 1f),
     ) {
-        Text(
-            text = text,
-            style = if (small) {
-                MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp)
-            } else {
-                PompTextStyles.hanziMedium.copy(fontSize = 16.sp, lineHeight = 22.sp)
-            },
-            color = ink,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(13.dp),
+        // The same flat edge the answer buttons stand on.
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .offset(y = 4.dp)
+                .clip(shape)
+                .background(if (state == PairState.IDLE || state == PairState.WRONG) PompColors.OptionDepth else border),
         )
+        Surface(
+            color = background,
+            shape = shape,
+            border = BorderStroke(2.dp, border),
+            onClick = onClick,
+            enabled = enabled,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.heightIn(min = 76.dp)) {
+                Text(
+                    text = text,
+                    style = if (small) {
+                        MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp, lineHeight = 20.sp)
+                    } else {
+                        PompTextStyles.hanziMedium.copy(fontSize = 24.sp, lineHeight = 30.sp)
+                    },
+                    color = ink,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 13.dp),
+                )
+            }
+        }
     }
 }
 
+/**
+ * `cardMatch` from `course-v3.html`: the card is done, and right, once every
+ * pair is matched. A mismatched pick is a nudge, not a grade — in the Mini App
+ * it beeps and clears the selection, costs no heart and is never reported, so
+ * [onFinished] carries nothing about it. It used to carry every miss, and one
+ * stray tap turned a fully matched grid into «Noto'g'ri».
+ */
 @Composable
-fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (List<Pair<Int, Int>>) -> Unit) {
+fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: () -> Unit) {
     val rightOrder = remember(card) { card.pairs.indices.shuffled() }
     var selectedLeft by remember(card) { mutableStateOf<Int?>(null) }
     var matched by remember(card) { mutableStateOf(setOf<Int>()) }
-    var wrongAttempts by remember(card) { mutableStateOf(listOf<Pair<Int, Int>>()) }
+    // Left and right index of the pick that just missed, lit red for a moment.
+    var missed by remember(card) { mutableStateOf<Pair<Int, Int>?>(null) }
     val haptics = LocalHapticFeedback.current
+
+    LaunchedEffect(missed) {
+        if (missed == null) return@LaunchedEffect
+        kotlinx.coroutines.delay(PAIR_MISS_FLASH_MILLIS)
+        missed = null
+    }
 
     fun cellState(index: Int, isLeft: Boolean) = when {
         index in matched -> PairState.MATCHED
+        missed?.let { (left, right) -> index == (if (isLeft) left else right) } == true -> PairState.WRONG
         isLeft && selectedLeft == index -> PairState.SELECTED
         else -> PairState.IDLE
     }
 
+    // The instruction («Juftlarni moslang») is the lesson's heading now.
     Column(modifier = Modifier.fillMaxWidth()) {
-        // `.qq` is a quiet instruction line, not a heading.
-        Text(
-            text = stringResource(R.string.lesson_match_pairs),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = PompColors.InkSecondary,
-            modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 6.dp, bottom = 12.dp),
-        )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth(),
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.weight(1f),
             ) {
                 card.pairs.forEachIndexed { index, pair ->
@@ -994,12 +1092,15 @@ fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (L
                         state = cellState(index, isLeft = true),
                         small = false,
                         enabled = !isAnswered && index !in matched,
-                        onClick = { selectedLeft = index },
+                        onClick = {
+                            missed = null
+                            selectedLeft = index
+                        },
                     )
                 }
             }
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.weight(1f),
             ) {
                 rightOrder.forEach { index ->
@@ -1015,9 +1116,9 @@ fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (L
                             if (left == index) {
                                 matched = matched + index
                                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                if (matched.size == card.pairs.size) onFinished(wrongAttempts)
+                                if (matched.size == card.pairs.size) onFinished()
                             } else {
-                                wrongAttempts = wrongAttempts + (left to index)
+                                missed = left to index
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                             selectedLeft = null
@@ -1028,6 +1129,9 @@ fun MatchPairsCardView(card: MatchPairsCard, isAnswered: Boolean, onFinished: (L
         }
     }
 }
+
+/** How long a missed pick stays red — about the Mini App's error beep. */
+private const val PAIR_MISS_FLASH_MILLIS = 400L
 
 @Composable
 fun UnsupportedCardView(card: UnsupportedCard, onSkip: () -> Unit) {

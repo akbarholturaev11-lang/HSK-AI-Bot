@@ -227,6 +227,124 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-27 — AI Voice: real-life speaking missions
+
+Changed:
+- Each session now selects one practical scene based on the learner's saved
+  goal: café order, shop purchase, asking directions, or introductions.
+- The scene is stored in the existing `voice_practice_sessions.plan_json`;
+  the AI opens in that scene, stays there for the seven-turn session, and
+  guides the learner with one short question at a time.
+- The opening includes pinyin, translation, and two useful sample replies.
+  The session result names the practiced scene on Mini App, Android, and
+  desktop; Mini App start/completion analytics record its ID.
+
+Why:
+- AI Voice should help learners handle everyday Chinese exchanges. A single
+  practical scene gives each short conversation a clear speaking task.
+
+Files touched:
+- `app/services/voice_practice_service.py`, `app/main.py`
+- `app/static/course-v3.html`, `desktop/ui/js/voice.js`,
+  `desktop/ui/js/i18n.js`
+- Android voice result UI/DTO and `values`, `values-ru`, `values-tg` strings
+
+Risk:
+- MEDIUM — AI prompt behavior changed; no database migration, extra model
+  call, or subscription/limit change.
+
+Follow-up:
+- Compare voice start/completion by scenario before adding more scenes.
+
+### 2026-09-26 — Android mashq ekranlari dars uslubida
+
+Changed:
+- Ieroglif tanish, talaffuz, Xatolarim takrori va daraja testi darsdagi sahna
+  tuzilishida (fon, personaj + pufak, Tekshirish). Xatoda faqat izoh, AI chaqirilmaydi.
+- Mashq natijalari oldidan personaj qo'nish klipi; yaxshi natijada konfetti va ohang.
+- HSK imtihon savollari o'zgarmagan (admin qarori).
+
+Files touched:
+- `core/design/components/HskStage.kt` (yangi, darsdan umumiy qilib chiqarildi),
+  `feature/practice/PracticeStage.kt` (yangi), `PracticeScreen.kt`, `MistakesScreen.kt`,
+  `WordDrillScreen.kt`, `MistakesCompletionResult.kt`, `PracticeCompletionHero.kt`,
+  dars fayllari (faqat import/nom). Tafsilot: `ANDROID_CONTEXT.md` 3.21.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Xatolarim'da javob serverga Tekshirish'da ketadi.
+- Android CI (run 36216591893) yashil. Telefonda ko'rish kerak (kichik ekran, dark mode).
+- Reliz: Android 1.6.10 (versionCode 25) — mashq ekranlari va main'dagi juftlik/AI/orqaga tuzatishlari shu versiyada.
+
+### 2026-09-26 — Android dars: juftlik bahosi, AI tugmasi, avto-ovoz, «orqaga»
+
+Changed:
+- Juftlik mashqi Mini App (`cardMatch`) kabi baholanadi: hamma juft moslansa —
+  to'g'ri. Xato bosish yurak olmaydi, mistake yubormaydi, faqat 400 ms qizil
+  chegara. Ilgari bitta xato bosish to'liq moslangan kartani «Noto'g'ri» qilardi.
+- Dars ichida va dars yakunida suzuvchi AI tugmasi yo'q
+  (`AssistantScreen(showButton = false)`); chat «Xatoyim nimada?» orqali ochiladi.
+- Tinglash va «Ustozdan keyin takrorlang» kartasida ovoz o'zi chalinadi
+  (mikrofon avtomatik yoqilmaydi).
+- Tizim «orqaga» ilovani yopmaydi: ish ketayotgan dars/mashq/drill/test/
+  bellashuvda tasdiq oynasi (`rememberExitGuard`), lug'at va ichki sahifalar
+  orqaga qaytadi, Kursdan boshqa tab → Kurs. Yangi satrlar uz/ru/tg.
+
+Files touched:
+- `android/.../feature/lesson/*`, `core/design/components/HskExitGuard.kt`
+  (yangi), `feature/assistant/AssistantHost.kt`, `MainActivity.kt`,
+  `feature/practice/PracticeScreen.kt`, `WordDrillScreen.kt`,
+  `feature/course/SkipTestScreen.kt`, `feature/rating/ChallengeRunScreen.kt`,
+  `feature/dictionary/DictionaryScreen.kt`, `res/values*/strings.xml`.
+  Tafsilot: `ANDROID_CONTEXT.md` 3.20.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Server juftlik mistake'larini
+  qabul qilishda davom etadi (desktop hali yuboradi).
+- `AdScreen` da back hali ilovani yopadi; desktop juftlik bahosi eski usulda.
+- Android CI (run 36217650276) yashil. Telefonda tekshirish kerak: juftlikda
+  xato bosish, avto-ovoz, back oqimlari.
+
+### 2026-09-25 — Android dars yakuni: kinematik klip, ovoz va vibratsiya
+
+Changed:
+- Dars/mashq yakunidagi bayram Mini App'dagidek: personaj qo'nishi (dars),
+  qizil plashli Pandaning osmonga parvozi (streak), uzoqdan otilib chiqishi
+  (reyting); chang, silkinish, konfetti, 毕/胜 emblemasi, olov, kunlar muhri,
+  reytingda qatorlar o'rin almashishi. Streak ekranidagi eski panda rasmi
+  o'rniga bizning chizilgan Panda.
+- Mini App notalari (`beep()`) sintez qilinadi, vibratsiya har notaga mos,
+  qo'nishda zarb. Ovozsiz rejimda jim, vibratsiya rejimida faqat vibratsiya.
+
+Files touched:
+- `android/.../core/design/components/HskCelebrationFx.kt` (yangi),
+  `HskCelebration.kt`, `HskCharacters.kt` (panda plashi),
+  `feature/lesson/LessonCompletionCelebration.kt`,
+  `feature/practice/PracticeCompletionHero.kt`, `AndroidManifest.xml` (VIBRATE).
+  Tafsilot: `ANDROID_CONTEXT.md` 3.19.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Reyting mantiqi o'zgarmagan.
+- Android CI (run 36171700748) yashil. Telefonda ko'rish/eshitish tekshiruvi kerak (ovoz balandligi, vibratsiya kuchi).
+- Reliz: Android 1.6.9 (versionCode 24) — dars ekrani va dars yakuni klipi shu versiyada chiqdi.
+
+### 2026-09-25 — Android dars ekrani: Tekshirish tugmasi va xatoga tayyor javob
+
+Changed:
+- Android darsida savol endi ikki bosqichda: bosish tanlaydi, `Tekshirish`
+  tekshiradi. Ekran Duolingo tuzilishida (sarlavha, personaj + pufak, pastda
+  katta tugma), orqada xira qadimiy manzara. Ranglar va personajlar o'zimizniki.
+- Noto'g'ri javobda kartaning o'z izohi AI belgisi bilan chiqadi — AI chaqirilmaydi.
+  AI'ga faqat o'quvchi tugmani bosganda savol ketadi; kontekstga o'quvchi javobi qo'shildi.
+
+Files touched:
+- `android/.../feature/lesson/*`, `core/design/components/HskSceneBackground.kt`,
+  `feature/assistant/AssistantController.kt`, `AssistantHost.kt`, `AssistantContexts.kt`,
+  `MainActivity.kt`. Tafsilot: `ANDROID_CONTEXT.md` 3.18.
+
+Risk / follow-up:
+- Backend, DB, to'lov, Mini App o'zgarmagan. Mashq/Xatolarim/lug'at hali eski uslubda.
+- Android CI (run 36131683181) yashil: unit test, lint, debug APK, release bundle. Telefonda vizual tekshiruv hali kerak.
+
 ### 2026-09-23 — Android Google OAuth start request and Credential Manager host fix
 
 Changed:

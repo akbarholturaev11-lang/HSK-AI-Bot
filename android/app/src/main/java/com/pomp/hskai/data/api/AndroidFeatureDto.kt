@@ -88,6 +88,73 @@ data class AndroidSubscriptionOverviewResponse(
     @SerialName("billing") val billing: AndroidBillingDto = AndroidBillingDto(),
 )
 
+/** Canonical Mini App checkout payloads, consumed by the APK flavor only. */
+@Serializable
+data class SubscriptionPriceDto(
+    @SerialName("base_amount") val baseAmount: Int = 0,
+    @SerialName("final_amount") val finalAmount: Int = 0,
+    @SerialName("currency") val currency: String = "",
+    @SerialName("discount_percent") val discountPercent: Int = 0,
+)
+
+@Serializable
+data class SubscriptionPendingDto(
+    @SerialName("id") val id: Int = 0,
+)
+
+@Serializable
+data class SubscriptionCheckoutOverviewDto(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("checkout_allowed") val checkoutAllowed: Boolean = false,
+    @SerialName("read_only_reason") val readOnlyReason: String? = null,
+    @SerialName("pending_payment") val pendingPayment: SubscriptionPendingDto? = null,
+    @SerialName("prices") val prices: Map<String, Map<String, SubscriptionPriceDto>> = emptyMap(),
+    @SerialName("access") val access: AndroidSubscriptionAccessDto = AndroidSubscriptionAccessDto(),
+)
+
+@Serializable
+data class SubscriptionQuoteRequest(
+    @SerialName("plan_type") val planType: String,
+    @SerialName("payment_method") val paymentMethod: String,
+    @SerialName("card_country") val cardCountry: String? = null,
+)
+
+@Serializable
+data class SubscriptionQrDto(
+    @SerialName("available") val available: Boolean = false,
+    @SerialName("image_data_url") val imageDataUrl: String = "",
+)
+
+@Serializable
+data class SubscriptionQuoteDto(
+    @SerialName("pay_amount") val payAmount: String = "",
+    @SerialName("pay_currency") val payCurrency: String = "",
+    @SerialName("payment_details") val paymentDetails: String = "",
+    @SerialName("qr") val qr: SubscriptionQrDto? = null,
+)
+
+@Serializable
+data class SubscriptionQuoteResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("quote") val quote: SubscriptionQuoteDto = SubscriptionQuoteDto(),
+)
+
+@Serializable
+data class SubscriptionSubmitRequest(
+    @SerialName("plan_type") val planType: String,
+    @SerialName("payment_method") val paymentMethod: String,
+    @SerialName("card_country") val cardCountry: String? = null,
+    @SerialName("screenshot_data_url") val screenshotDataUrl: String,
+)
+
+@Serializable
+data class SubscriptionSubmitResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("payment_id") val paymentId: Int = 0,
+    @SerialName("status") val status: String = "",
+    @SerialName("already_pending") val alreadyPending: Boolean = false,
+)
+
 @Serializable
 data class AndroidSubscriptionAccessDto(
     @SerialName("state") val state: String = "",
@@ -643,6 +710,7 @@ data class VoiceStartResponse(
     @SerialName("character") val character: String = "",
     @SerialName("opening_message") val openingMessage: VoiceReplyDto =
         VoiceReplyDto(),
+    @SerialName("scenario") val scenario: VoiceScenarioDto? = null,
     @SerialName("max_dialogs") val maxDialogs: Int = 7,
     /** The lesson this conversation is built on: the "what to say" material. */
     @SerialName("course_context") val courseContext: VoiceCourseContextDto =
@@ -654,6 +722,13 @@ data class VoiceCourseContextDto(
     @SerialName("title") val title: String = "",
     @SerialName("words") val words: List<VoiceWordDto> = emptyList(),
     @SerialName("review_words") val reviewWords: List<VoiceWordDto> = emptyList(),
+)
+
+@Serializable
+data class VoiceScenarioDto(
+    @SerialName("id") val id: String = "",
+    @SerialName("title") val title: String = "",
+    @SerialName("goal") val goal: String = "",
 )
 
 @Serializable
@@ -804,6 +879,7 @@ data class VoiceEndResponse(
     @SerialName("message_count") val messageCount: Int = 0,
     @SerialName("good_count") val goodCount: Int = 0,
     @SerialName("mistake_count") val mistakeCount: Int = 0,
+    @SerialName("scenario") val scenario: VoiceScenarioDto? = null,
     @SerialName("transcript") val transcript: List<VoiceTranscriptDto> = emptyList(),
     @SerialName("reward") val reward: JsonObject? = null,
 )

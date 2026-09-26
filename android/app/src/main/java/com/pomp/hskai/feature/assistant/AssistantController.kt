@@ -61,7 +61,18 @@ data class AssistantState(
     val limits: String = "",
     /** A question the server never confirmed. It blocks a new send until it resolves. */
     val queued: Boolean = false,
+    /** A ready answer shown before a question the learner asked from a screen; see [AssistantSeed]. */
+    val seed: AssistantSeed? = null,
 )
+
+/**
+ * An answer the app already had — a lesson card's own explanation — shown in
+ * the chat as the tutor's message right before the question the learner asked
+ * about it. It never goes to the server and no model writes it: it is on the
+ * phone only, and the model sees the same explanation through the screen
+ * context that travels with the question.
+ */
+data class AssistantSeed(val text: String, val beforeClientMessageId: String)
 
 /** Chats live on the phone. The network is only used to ask a new question. */
 @Serializable private data class AssistantStore(
@@ -239,13 +250,13 @@ class AssistantController(
         if (id.isBlank()) {
             // An empty chat costs nothing until the first question; the server row is
             // created by the send itself, so starting one works offline.
-            mutable.update { it.copy(conversationId = "", turns = emptyList(), nextCursor = "", error = "") }
+            mutable.update { it.copy(conversationId = "", turns = emptyList(), nextCursor = "", error = "", seed = null) }
             persist()
             return
         }
         job = scope.launch {
             val cached = history[id].orEmpty()
-            mutable.update { it.copy(loading = cached.isEmpty(), error = "", conversationId = id, turns = cached, nextCursor = "") }
+            mutable.update { it.copy(loading = cached.isEmpty(), error = "", conversationId = id, turns = cached, nextCursor = "", seed = null) }
             try {
                 loadHistory(id)
                 persist()
@@ -281,6 +292,40 @@ class AssistantController(
         setPending(AssistantInput(UUID.randomUUID().toString(), snapshot.draft, snapshot.mediaKind, snapshot.media, context))
         persist()
         launchDelivery(false)
+    }
+
+    /**
+     * Asks [question] on the learner's behalf, from a button on a screen, with
+     * [readyAnswer] shown just before it as the tutor's message.
+     *
+     * Unlike [send], a busy chat does not drop the tap: an opening history
+     * refresh is waited out first. If a question is still unresolved, or a
+     * photo is attached, nothing is sent — the question is left in the input
+     * for the learner to send, so their own work is never replaced.
+     */
+    fun ask(question: String, context: ScreenContext, readyAnswer: String = "") {
+        if (question.isBlank()) return
+        scope.launch {
+            while (job?.isActive == true) job?.join()
+            val snapshot = mutable.value
+            if (pending != null || snapshot.busy || snapshot.media.isNotBlank()) {
+                mutable.update { it.copy(draft = question.take(4000)) }
+                persist()
+                return@launch
+            }
+            val id = UUID.randomUUID().toString()
+            mutable.update {
+                it.copy(
+                    draft = question.take(4000),
+                    mediaKind = "text",
+                    error = "",
+                    seed = readyAnswer.takeIf { text -> text.isNotBlank() }?.let { text -> AssistantSeed(text, id) },
+                )
+            }
+            setPending(AssistantInput(id, question.take(4000), "text", "", context))
+            persist()
+            launchDelivery(false)
+        }
     }
 
     fun retry() {

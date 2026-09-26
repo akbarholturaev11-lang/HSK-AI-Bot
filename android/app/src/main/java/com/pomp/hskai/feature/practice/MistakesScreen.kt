@@ -1,5 +1,14 @@
 package com.pomp.hskai.feature.practice
 
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.pomp.hskai.core.design.components.HskAnswerOption
+import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.HskStageCoach
+import com.pomp.hskai.core.design.components.HskStageHeading
+import com.pomp.hskai.core.design.components.hskOptionState
+import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
@@ -477,6 +486,14 @@ private fun MistakesState(
     }
 }
 
+/**
+ * A mistake, asked again, in the lesson's stage layout: the question as the
+ * heading, the coach beside its material, full-width answers, Tekshirish.
+ *
+ * The verdict is the server's. A tap only picks; Tekshirish sends the pick —
+ * the same request as before, one tap later — and the panel with the right
+ * answer and its explanation comes up when the reply lands.
+ */
 @Composable
 internal fun MistakesReviewRun(
     state: PracticeUiState,
@@ -488,125 +505,125 @@ internal fun MistakesReviewRun(
 ) {
     val session = state.reviewSession ?: return
     val question = session.questions.getOrNull(state.reviewIndex) ?: return
-    val progress = if (session.questions.isEmpty()) 0f else state.reviewIndex.toFloat() / session.questions.size.toFloat()
+    val feedback = state.reviewFeedback
+    val total = session.questions.size.coerceAtLeast(1)
+    val progress = (state.reviewIndex + if (feedback != null) 1 else 0).toFloat() / total
+    var picked by remember(state.reviewIndex) { mutableStateOf<Int?>(null) }
+    // Sent, and waiting for the server to say whether it was right.
+    val checking = state.reviewSelectedIndex != null && feedback == null
+    val bottomInset = LocalMainBottomInset.current
 
-    Column(modifier = modifier.fillMaxSize().background(PompColors.Paper)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
-        ) {
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(999.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.size(32.dp).clickable(onClick = onCancel),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close), tint = PompColors.InkSecondary, modifier = Modifier.size(18.dp))
-                }
-            }
-            Box(
-                modifier = Modifier.weight(1f).height(7.dp).clip(RoundedCornerShape(4.dp)).background(PompColors.Divider),
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxHeight().fillMaxWidth(progress.coerceIn(0f, 1f)).background(PompColors.Cinnabar),
-                )
-            }
-        }
-
-        // A review is the rabbit's ground (`memory_warning`), but a mistake
-        // keeps the subject it came from — see `mistakeCharacterFor`. The
-        // verdict is the server's, so the coach only reacts once it lands.
-        //
-        // The category-and-position line used to sit above the question in
-        // small red caps; it is the coach's line now, moved rather than
-        // repeated. The question itself stays where it was, full size.
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp),
-        ) {
-            item {
-                // The coach stands beside the question; the answers keep the
-                // full width below. The prompt shrinks from 26sp to 20sp in
-                // the narrower column — still the largest thing in it.
-                HskCoachBeside(
-                    character = mistakeCharacterFor(question.category),
-                    mood = practiceMoodFor(state.reviewFeedback?.correct),
-                    reaction = state.reviewFeedback?.let {
-                        hskReactionFor(correct = it.correct, streak = state.reviewStreak)
-                    },
-                    reactionKey = state.reviewIndex to state.reviewFeedback?.correct,
-                    text = "${mistakeCategoryLabel(question.category)} · ${stringResource(R.string.mistakes_question)} ${state.reviewIndex + 1} ${stringResource(R.string.mistakes_of)} ${session.questions.size}",
+    Box(modifier = modifier.fillMaxSize().background(PompColors.Paper)) {
+        HskSceneBackground(Modifier.fillMaxSize())
+        Column(modifier = Modifier.fillMaxSize()) {
+            PracticeStageTopBar(progress = progress, onClose = onCancel)
+            HskStageHeading(question.prompt)
+            BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                val viewport = maxHeight
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(min = viewport)
+                        .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 20.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(
-                        text = question.prompt,
-                        fontSize = 20.sp,
-                        lineHeight = 27.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = PompColors.Ink,
-                    )
-                    if (question.audioText.isNotBlank() || question.sentence.isNotBlank() || question.pinyin.isNotBlank()) {
-                        ReviewMaterial(
-                            question = question,
-                            isAudioLoading = state.isReviewAudioLoading,
-                            audioError = state.reviewAudioError,
-                            onSpeak = { onSpeak(question.audioText) },
-                        )
-                    }
-                }
-                Spacer(Modifier.height(16.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    question.options.forEachIndexed { index, option ->
-                        MistakeReviewOption(
-                            index = index,
-                            text = option,
-                            selectedIndex = state.reviewSelectedIndex,
-                            feedback = state.reviewFeedback,
-                            onClick = { onSelect(index) },
-                        )
-                    }
-                }
-                state.reviewFeedback?.let { MistakeFeedback(feedback = it) }
-            }
-        }
-
-        if (state.reviewFeedback != null) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp),
-            ) {
-                if (state.error != null && state.error !is ApiError.LimitReached) {
-                    Surface(
-                        color = PompColors.FlameSoft,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+                    // A review is the rabbit's ground (`memory_warning`), but a
+                    // mistake keeps the subject it came from — see
+                    // `mistakeCharacterFor`. The coach reacts once the verdict lands.
+                    HskStageCoach(
+                        character = mistakeCharacterFor(question.category),
+                        mood = practiceMoodFor(feedback?.correct),
+                        reaction = feedback?.let {
+                            hskReactionFor(correct = it.correct, streak = state.reviewStreak)
+                        },
+                        reactionKey = state.reviewIndex to feedback?.correct,
                     ) {
+                        // Which kind of mistake this was, and where in the round:
+                        // the line that used to sit above the question.
                         Text(
-                            text = stringResource(state.error.messageRes),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = PompColors.Flame,
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                            text = "${mistakeCategoryLabel(question.category)} · ${stringResource(R.string.mistakes_question)} ${state.reviewIndex + 1} ${stringResource(R.string.mistakes_of)} ${session.questions.size}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = PompColors.InkSecondary,
                         )
+                        if (question.audioText.isNotBlank() || question.sentence.isNotBlank() || question.pinyin.isNotBlank()) {
+                            Spacer(Modifier.height(6.dp))
+                            ReviewMaterial(
+                                question = question,
+                                isAudioLoading = state.isReviewAudioLoading,
+                                audioError = state.reviewAudioError,
+                                onSpeak = { onSpeak(question.audioText) },
+                            )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        question.options.forEachIndexed { index, option ->
+                            HskAnswerOption(
+                                text = option,
+                                state = if (feedback != null) {
+                                    hskOptionState(
+                                        index = index,
+                                        correctIndex = feedback.correctIndex,
+                                        selectedIndex = state.reviewSelectedIndex,
+                                        isAnswered = true,
+                                    )
+                                } else {
+                                    hskOptionState(
+                                        index = index,
+                                        correctIndex = -1,
+                                        selectedIndex = state.reviewSelectedIndex ?: picked,
+                                        isAnswered = false,
+                                    )
+                                },
+                                enabled = feedback == null && !checking,
+                                onClick = { picked = index },
+                            )
+                        }
+                        if (state.error != null && state.error !is ApiError.LimitReached) {
+                            PracticeErrorPill(stringResource(state.error.messageRes), Modifier.padding(top = 4.dp))
+                        }
                     }
                 }
-                HskPrimaryButton(
-                    text = stringResource(
+            }
+            if (feedback != null) {
+                PracticeFeedbackPanel(
+                    isCorrect = feedback.correct,
+                    lines = buildList {
+                        if (!feedback.correct) {
+                            add("${stringResource(R.string.mistakes_explanation)}: ${feedback.correctAnswer}")
+                        }
+                        if (feedback.explanation != feedback.correctAnswer) add(feedback.explanation)
+                    },
+                    continueText = stringResource(
                         if (state.reviewIndex >= session.questions.lastIndex) {
                             R.string.mistakes_finish
                         } else {
                             R.string.mistakes_next
                         }
                     ),
-                    onClick = onAdvance,
-                    enabled = true,
                     loading = state.isCompleting,
-                    modifier = Modifier.fillMaxWidth(),
+                    onContinue = onAdvance,
+                    bottomInset = bottomInset,
+                )
+            } else {
+                PracticeCheckFooter(
+                    enabled = picked != null,
+                    loading = checking,
+                    onCheck = { picked?.let(onSelect) },
+                    bottomInset = bottomInset,
                 )
             }
         }
     }
 }
 
+/**
+ * What the coach says under the category line: the speaker, the sentence and
+ * its pinyin. It sits in the coach's bubble, so it has no card of its own.
+ */
 @Composable
 private fun ReviewMaterial(
     question: MistakeReviewQuestionDto,
@@ -614,162 +631,51 @@ private fun ReviewMaterial(
     audioError: ApiError?,
     onSpeak: () -> Unit,
 ) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        shadowElevation = 5.dp,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(14.dp)) {
-            if (question.audioText.isNotBlank()) {
-                Surface(
-                    color = PompColors.CinnabarSoft,
-                    shape = RoundedCornerShape(999.dp),
-                    modifier = Modifier.size(42.dp).clickable(enabled = !isAudioLoading, onClick = onSpeak),
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        if (isAudioLoading) {
-                            HskBrandLoader(compact = true)
-                        } else {
-                            Icon(
-                                Icons.Filled.VolumeUp,
-                                contentDescription = stringResource(R.string.dictionary_listen),
-                                tint = PompColors.Cinnabar,
-                                modifier = Modifier.size(20.dp),
-                            )
-                        }
-                    }
-                }
-                if (audioError != null) {
-                    Text(
-                        text = stringResource(audioError.messageRes),
-                        fontSize = 12.sp,
-                        color = PompColors.Flame,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 6.dp),
+    if (question.audioText.isNotBlank()) {
+        Surface(
+            color = PompColors.CinnabarSoft,
+            shape = RoundedCornerShape(999.dp),
+            modifier = Modifier.size(42.dp).clickable(enabled = !isAudioLoading, onClick = onSpeak),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (isAudioLoading) {
+                    HskBrandLoader(compact = true)
+                } else {
+                    Icon(
+                        Icons.Filled.VolumeUp,
+                        contentDescription = stringResource(R.string.dictionary_listen),
+                        tint = PompColors.Cinnabar,
+                        modifier = Modifier.size(20.dp),
                     )
                 }
-                Spacer(Modifier.height(8.dp))
-            }
-            if (question.sentence.isNotBlank()) {
-                Text(
-                    text = question.sentence,
-                    style = PompTextStyles.hanziMedium,
-                    fontSize = 24.sp,
-                    lineHeight = 34.sp,
-                    color = PompColors.Ink,
-                    textAlign = TextAlign.Center,
-                )
-            }
-            if (question.pinyin.isNotBlank()) {
-                Text(
-                    text = question.pinyin,
-                    fontSize = 13.sp,
-                    color = PompColors.Cinnabar,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 3.dp),
-                )
             }
         }
-    }
-}
-
-@Composable
-private fun MistakeReviewOption(
-    index: Int,
-    text: String,
-    selectedIndex: Int?,
-    feedback: MistakeReviewAnswerResponse?,
-    onClick: () -> Unit,
-) {
-    val picked = selectedIndex == index
-    val correct = feedback != null && feedback.correctIndex == index
-    val wrong = feedback != null && picked && !correct
-    val border = when {
-        correct -> PompColors.Jade
-        wrong -> PompColors.Flame
-        else -> PompColors.Divider
-    }
-    val background = when {
-        correct -> PompColors.JadeSoft
-        wrong -> PompColors.FlameSoft
-        else -> PompColors.PaperRaised
-    }
-    val rankBackground = when {
-        correct -> PompColors.Jade
-        wrong -> PompColors.Flame
-        else -> if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper
-    }
-    val rankColor = if (correct || wrong) PompColors.Paper else PompColors.InkSecondary
-
-    Surface(
-        color = background,
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.5.dp, border),
-        modifier = Modifier.fillMaxWidth().clickable(enabled = feedback == null && selectedIndex == null, onClick = onClick),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(11.dp),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 15.dp),
-        ) {
-            Surface(
-                color = rankBackground,
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, if (correct || wrong) rankBackground else PompColors.Divider),
-                modifier = Modifier.size(26.dp),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(text = optionRank(index), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = rankColor)
-                }
-            }
-            Text(text = text, fontSize = 16.sp, color = PompColors.Ink, modifier = Modifier.weight(1f))
+        if (audioError != null) {
+            Text(
+                text = stringResource(audioError.messageRes),
+                fontSize = 12.sp,
+                color = PompColors.Flame,
+                modifier = Modifier.padding(top = 6.dp),
+            )
         }
+        Spacer(Modifier.height(8.dp))
     }
-}
-
-@Composable
-private fun MistakeFeedback(feedback: MistakeReviewAnswerResponse) {
-    val correct = feedback.correct
-    Surface(
-        color = if (correct) PompColors.JadeSoft else PompColors.FlameSoft,
-        shape = RoundedCornerShape(14.dp),
-        modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
-    ) {
-        Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = if (correct) Icons.Filled.CheckCircle else Icons.Filled.WarningAmber,
-                    contentDescription = null,
-                    tint = if (correct) PompColors.Jade else PompColors.Flame,
-                    modifier = Modifier.size(18.dp),
-                )
-                Spacer(Modifier.width(7.dp))
-                Text(
-                    text = stringResource(if (correct) R.string.mistakes_correct else R.string.mistakes_wrong),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (correct) PompColors.Jade else PompColors.Flame,
-                )
-            }
-            if (!correct) {
-                Text(
-                    text = "${stringResource(R.string.mistakes_explanation)}: ${feedback.correctAnswer}",
-                    fontSize = 14.sp,
-                    lineHeight = 21.sp,
-                    color = PompColors.Flame,
-                    modifier = Modifier.padding(top = 4.dp),
-                )
-            }
-            if (feedback.explanation.isNotBlank() && feedback.explanation != feedback.correctAnswer) {
-                Text(
-                    text = feedback.explanation,
-                    fontSize = 14.sp,
-                    lineHeight = 21.sp,
-                    color = PompColors.InkSecondary,
-                    modifier = Modifier.padding(top = 6.dp),
-                )
-            }
-        }
+    if (question.sentence.isNotBlank()) {
+        Text(
+            text = question.sentence,
+            style = PompTextStyles.hanziMedium,
+            fontSize = 24.sp,
+            lineHeight = 34.sp,
+            color = PompColors.Ink,
+        )
+    }
+    if (question.pinyin.isNotBlank()) {
+        Text(
+            text = question.pinyin,
+            fontSize = 13.sp,
+            color = PompColors.Cinnabar,
+            modifier = Modifier.padding(top = 3.dp),
+        )
     }
 }
 
@@ -868,12 +774,4 @@ private fun mistakeCategoryIcon(category: String): ImageVector = when (category)
     "character" -> Icons.Filled.Edit
     "pronunciation" -> Icons.Filled.Mic
     else -> Icons.Filled.WarningAmber
-}
-
-private fun optionRank(index: Int): String = when (index) {
-    0 -> "A"
-    1 -> "B"
-    2 -> "C"
-    3 -> "D"
-    else -> (index + 1).toString()
 }

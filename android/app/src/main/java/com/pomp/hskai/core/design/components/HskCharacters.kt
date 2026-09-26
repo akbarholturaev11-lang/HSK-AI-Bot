@@ -2,6 +2,7 @@ package com.pomp.hskai.core.design.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -49,6 +50,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.tan
 import kotlin.random.Random
 
 /**
@@ -102,6 +104,11 @@ internal fun HskCharacterStage(
     reaction: HskCharacterReaction? = null,
     reactionKey: Any? = null,
     modifier: Modifier = Modifier,
+    /**
+     * The red cape from the Mini App's flying pose, fluttering behind the
+     * panda. Only the panda wears one, and only in a celebration.
+     */
+    cape: Boolean = false,
 ) {
     val y = remember { Animatable(0f) }
     val x = remember { Animatable(0f) }
@@ -121,6 +128,18 @@ internal fun HskCharacterStage(
     val breathing = false
     val breathe = 0f
     val loadingWiggle = 0f
+    // `.pd-cape`: one flutter every 900 ms. It exists only while a cape is
+    // worn, so the lesson's everyday coach stays free of idle animation.
+    val capeWave = if (cape && character == HskCharacter.Panda) {
+        rememberInfiniteTransition(label = "panda-cape").animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(tween(durationMillis = 900, easing = LinearEasing)),
+            label = "panda-cape-wave",
+        )
+    } else {
+        null
+    }
 
     LaunchedEffect(reaction, reactionKey) {
         if (reaction == null) return@LaunchedEffect
@@ -512,7 +531,7 @@ internal fun HskCharacterStage(
                     // The book each character reads while loading sits at a
                     // different spot on each of them, so it is drawn inside the
                     // character rather than pasted at one shared coordinate.
-                    HskCharacter.Panda -> drawPanda(mood, loadingWiggle)
+                    HskCharacter.Panda -> drawPanda(mood, loadingWiggle, capePhase = capeWave?.value)
                     HskCharacter.Dragon -> drawDragon(mood, loadingWiggle)
                     HskCharacter.Crane -> drawCrane(mood, loadingWiggle)
                     HskCharacter.Monkey -> drawMonkey(mood, loadingWiggle)
@@ -824,15 +843,47 @@ private fun CharPen.loadingBook(cxv: Float, cyv: Float, rotation: Float) {
     }
 }
 
+// `pdCape`: the cape sways (skewX) and breathes (scaleY) around its collar.
+private val CAPE_SKEW = arrayOf(
+    HskKey(0f, 5f, HskEaseInOut), HskKey(.35f, -6f, HskEaseInOut), HskKey(.7f, 3f, HskEaseInOut), HskKey(1f, 5f),
+)
+private val CAPE_STRETCH = arrayOf(
+    HskKey(0f, 1f, HskEaseInOut), HskKey(.35f, 1.06f, HskEaseInOut), HskKey(.7f, .96f, HskEaseInOut), HskKey(1f, 1f),
+)
+private val CapeRed = Color(0xFFD9433C)
+private val CapeFold = Color(0xFFB4342E)
+
+/**
+ * The Mini App's flying-pose cape (`pandaChar("fly")`), drawn behind the
+ * body. The flutter is applied to the path's own points — skew around the
+ * collar at y 60, then stretch — so the SVG coordinates stay verbatim.
+ */
+private fun CharPen.drawCape(skewDegrees: Float, stretch: Float) {
+    val collar = 60f
+    val k = tan(Math.toRadians(skewDegrees.toDouble())).toFloat() * stretch
+    fun PathBuilder.from(x: Float, y: Float) = m(x + k * (y - collar), collar + stretch * (y - collar))
+    fun PathBuilder.q(dx1: Float, dy1: Float, dx2: Float, dy2: Float) =
+        rq(dx1 + k * dy1, stretch * dy1, dx2 + k * dy2, stretch * dy2)
+    fill(
+        path { from(35f, 58f); q(-19f, 24f, -13f, 46f); q(13f, -11f, 28f, -8f); q(15f, -3f, 28f, 8f); q(6f, -22f, -13f, -46f); close() },
+        CapeRed,
+    )
+    fill(
+        path { from(42f, 60f); q(-13f, 20f, -9f, 38f); q(10f, -8f, 17f, -7f); q(7f, -1f, 17f, 7f); q(4f, -18f, -9f, -38f); close() },
+        CapeFold.copy(alpha = .55f),
+    )
+}
+
 // --------------------------------------------------------------------------
 // panda — viewBox 0 0 100 110, role main_coach
 // --------------------------------------------------------------------------
-private fun DrawScope.drawPanda(m: HskCharacterMood, wiggle: Float) {
+private fun DrawScope.drawPanda(m: HskCharacterMood, wiggle: Float, capePhase: Float? = null) {
     val pen = CharPen(this, 100f, 110f)
     val ink = Color(0xFF29241F); val fur = Color(0xFFFFFDF7)
     val depth = Color(0xFFD9BE94); val cream = Color(0xFFFFF2D9); val accent = Color(0xFF9A4036)
     with(pen) {
         shadow(50f, 103f, 27f, 5f)
+        if (capePhase != null) drawCape(hskTrack(CAPE_SKEW, capePhase), hskTrack(CAPE_STRETCH, capePhase))
 
         val up = m == HskCharacterMood.Celebrate || m == HskCharacterMood.Correct
         val proud = m == HskCharacterMood.Proud

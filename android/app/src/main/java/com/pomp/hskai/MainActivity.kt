@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -107,6 +108,7 @@ import com.pomp.hskai.feature.ad.AdScreen
 import com.pomp.hskai.feature.ad.AdViewModel
 import com.pomp.hskai.feature.hint.HintsViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
+import com.pomp.hskai.feature.subscription.SubscriptionCheckoutHost
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.RatingEntryDto
@@ -550,6 +552,8 @@ private fun AppRoot(
                 }
             }
 
+            var checkoutVisible by rememberSaveable { mutableStateOf(false) }
+            var checkoutOrigin by rememberSaveable { mutableStateOf("course_limit") }
             val limitGate = rememberLimitGate(
                 repository = app.featureRepository,
                 viewModelStoreOwner = sessionOwner,
@@ -559,6 +563,10 @@ private fun AppRoot(
                     courseViewModel.load()
                     profileViewModel.load()
                     voiceViewModel.refreshStatusIfLoaded()
+                },
+                onOpenSubscription = { origin ->
+                    checkoutOrigin = origin
+                    checkoutVisible = true
                 },
                 // Whether this account may still take the free week is the
                 // server's answer, read once here and shown everywhere — the
@@ -570,16 +578,15 @@ private fun AppRoot(
                 onStartTrial = profileViewModel::startTrial,
             )
 
-            // A trial that has just begun changes what every section is
-            // allowed to do, so course, voice and practice are re-read the
-            // moment it turns on. Only on the change: a cold start with an
-            // already-running trial must not load everything twice.
-            val trialActive = profileState.trial?.active == true
-            var trialWasActive by remember { mutableStateOf<Boolean?>(null) }
-            LaunchedEffect(trialActive) {
-                val previous = trialWasActive
-                trialWasActive = trialActive
-                if (previous == false && trialActive) {
+            // A trial or an admin-approved payment changes every section's
+            // access. Re-read spent sections when the server confirms it.
+            val accessActive = profileState.trial?.active == true ||
+                profileState.profile?.subscription?.isPaid == true
+            var accessWasActive by remember { mutableStateOf<Boolean?>(null) }
+            LaunchedEffect(accessActive) {
+                val previous = accessWasActive
+                accessWasActive = accessActive
+                if (previous == false && accessActive) {
                     courseViewModel.load()
                     voiceViewModel.refreshStatusIfLoaded()
                     // Limit bloki O'ZI yo'qolishi kerak. Aks holda odam
@@ -800,6 +807,19 @@ private fun AppRoot(
                         scope.launch { app.appSettings.setNotificationPrimerSeen() }
                     },
                 )
+            } else if (checkoutVisible) {
+                SubscriptionCheckoutHost(
+                    repository = app.featureRepository,
+                    viewModelStoreOwner = sessionOwner,
+                    origin = checkoutOrigin,
+                    onClose = {
+                        checkoutVisible = false
+                        profileViewModel.load()
+                        courseViewModel.load()
+                        voiceViewModel.refreshStatusIfLoaded()
+                        practiceViewModel.onAccessChanged()
+                    },
+                )
             } else if (ratingChallengesOpen) {
                 RatingChallengesScreen(
                     state = ratingState,
@@ -868,8 +888,8 @@ private fun AppRoot(
                 )
                 val drillState by drillViewModel.state.collectAsStateWithLifecycle()
                 // Mashq ichida turib trial olingan bo'lsa ham blok yopilsin.
-                LaunchedEffect(trialActive) {
-                    if (trialActive) drillViewModel.onAccessChanged()
+                LaunchedEffect(accessActive) {
+                    if (accessActive) drillViewModel.onAccessChanged()
                 }
                 WordDrillScreen(
                     state = drillState,
@@ -963,7 +983,7 @@ private fun AppRoot(
                     language = state.account.language,
                     pinyin = pinyin,
                     limit = limitGate,
-                    accessChanged = trialActive,
+                    accessChanged = accessActive,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
                         openLesson = null
@@ -986,6 +1006,13 @@ private fun AppRoot(
                 val voiceCallActive = selectedTab == MainTab.VOICE &&
                     voiceState.hasSession &&
                     voiceState.result == null
+
+                // Kurs is the home screen: back from any other tab lands on it,
+                // and only back from Kurs leaves the app. Registered before the
+                // tabs, so a tab's own back (a call, an open list) goes first.
+                BackHandler(enabled = selectedTab != MainTab.COURSE) {
+                    selectedTab = MainTab.COURSE
+                }
 
                 Box(Modifier.fillMaxSize()) {
                     MainScaffold(
@@ -1189,7 +1216,7 @@ private fun AppRoot(
                                 onSubscribe = if (limitGate.state.canSubscribe) {
                                     {
                                         planChoiceOpen = false
-                                        limitGate.actions.onUnlock()
+                                        limitGate.actions.onUnlock("onboarding_plan")
                                     }
                                 } else {
                                     null
@@ -1297,11 +1324,19 @@ private fun LessonHost(
         onDispose { model.endAttempt(launch.attemptKey) }
     }
 
+    // Registered for its context only: the floating AI button stays off the
+    // lesson and its celebration, and the chat is reached from the questions
+    // the lesson offers after a wrong answer.
     com.pomp.hskai.feature.assistant.AssistantScreen(
         com.pomp.hskai.feature.assistant.lessonAssistantContext(lessonState, launch.attemptKey),
         bottomBar = false,
         priority = 10,
+        showButton = false,
     )
+    // After a wrong answer the lesson offers questions for the AI chat; they
+    // exist only while the chat itself is switched on.
+    val assistant = com.pomp.hskai.feature.assistant.LocalAssistant.current
+    val assistantEnabled = assistant?.controller?.state?.collectAsStateWithLifecycle()?.value?.enabled == true
 
     LessonScreen(
         state = lessonState,
@@ -1325,6 +1360,7 @@ private fun LessonHost(
             model.endAttempt(launch.attemptKey)
             onExit(completed)
         },
+        onAskAssistant = if (assistant != null && assistantEnabled) assistant.ask else null,
     )
 
     if (pinyinSheetOpen) {

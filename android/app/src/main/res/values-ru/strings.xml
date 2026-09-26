@@ -77,6 +77,13 @@
     <string name="lesson_grammar">Грамматика</string>
     <string name="lesson_repeat_after_teacher">Повторите за преподавателем</string>
     <string name="lesson_cannot_speak_now">Сейчас не могу говорить</string>
+    <!-- Leaving a running lesson or exercise asks first (✕ and the system back). -->
+    <string name="lesson_exit_title">Выйти из урока?</string>
+    <string name="lesson_exit_body">Место, где вы остановились, сохранится — потом продолжите с него.</string>
+    <string name="practice_exit_title">Выйти из упражнения?</string>
+    <string name="practice_exit_body">Результат этой попытки не сохранится.</string>
+    <string name="exit_confirm_leave">Выйти</string>
+    <string name="exit_confirm_stay">Продолжить</string>
     <string name="lesson_microphone_permission_required">Разрешите доступ к микрофону для проверки произношения</string>
     <string name="lesson_play_audio">Прослушать</string>
     <string name="lesson_audio_loading">Загрузка аудио</string>
@@ -201,6 +208,7 @@
     <string name="voice_correction">Исправление: %1$s</string>
     <string name="voice_result_title">Итог разговора</string>
     <string name="voice_result_body">%1$d реплик · %2$d хорошо · %3$d исправлений</string>
+    <string name="voice_scenario_practiced">Практика: %1$s</string>
     <string name="voice_again">Новый разговор</string>
     <string name="nav_rating">Рейтинг</string>
     <string name="rating_tab_league">Лига</string>
@@ -302,6 +310,11 @@
     <string name="ad_learn_more">Подробнее</string>
     <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
     <string name="limit_try_trial">7 дней Pro бесплатно</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">Все уроки открыты</string>
+    <string name="limit_benefit_practice">Практика без лимита</string>
+    <string name="limit_benefit_voice">Разговоры с AI Voice</string>
+    <string name="limit_later">Позже</string>
     <string name="limit_trial_failed">Не удалось начать бесплатный период. Возможно, этот аккаунт уже его использовал.</string>
     <string name="lesson_pinyin_title">Пиньинь (произношение)</string>
     <string name="lesson_pinyin_all">Показывать везде</string>

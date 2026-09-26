@@ -262,30 +262,106 @@ OPENING_MESSAGES = {
     ],
 }
 
-# Suhbat davomida AI aynan bitta mavzuga (masalan doim "sevgilingiz bormi") yopishib
-# qolmasligi uchun har bir sessiyaga (session id asosida, barqaror) 3 ta mavzu tanlanadi.
-TOPIC_POOL = [
-    "food they like or ate today",
-    "weekend or free-time plans",
-    "the weather",
-    "family or friends",
-    "a hobby",
-    "movies or music they enjoy",
-    "travel or a place they want to visit",
-    "shopping",
-    "school or work life",
-    "sports",
-    "their hometown",
-    "favorite season",
-    "morning routine",
-    "future goals or dreams",
-    "a funny memory",
-    "phone or technology habits",
-    "cooking",
-    "pets or animals",
-    "holidays or celebrations",
-    "favorite things or colors",
-]
+# Har bir sessiya bitta sodda, real hayotdagi muloqot vazifasini mashq qiladi.
+# O'quvchining maqsadiga mos vaziyat tanlanadi; sessiya davomida mavzu almashmaydi.
+VOICE_SCENARIOS = {
+    "cafe_order": {
+        "id": "cafe_order",
+        "title": {"uz": "Kafeda buyurtma", "ru": "Заказ в кафе", "tj": "Фармоиш дар қаҳвахона"},
+        "goal": {
+            "uz": "Ichimlik yoki taom buyurtma qilish va narxini so'rash",
+            "ru": "Заказать напиток или еду и спросить цену",
+            "tj": "Нӯшокӣ ё хӯрок фармоиш дода, нархашро пурсед",
+        },
+        "instruction": (
+            "At a small café, help the learner order one drink or simple dish, answer one follow-up about size or preference, "
+            "and ask the price or say thank you."
+        ),
+        "opening": {
+            "chinese_reply": "你好！你想喝什么？",
+            "pinyin": "Nǐ hǎo! Nǐ xiǎng hē shénme?",
+            "translations": {"uz": "Salom! Nima ichishni xohlaysiz?", "ru": "Привет! Что вы хотите выпить?", "tj": "Салом! Чӣ нӯшидан мехоҳед?"},
+            "suggestions": [
+                {"zh": "我要一杯茶", "pinyin": "Wǒ yào yì bēi chá", "translations": {"uz": "Bir piyola choy bering", "ru": "Мне чашку чая", "tj": "Ба ман як пиёла чой диҳед"}},
+                {"zh": "我想喝水", "pinyin": "Wǒ xiǎng hē shuǐ", "translations": {"uz": "Suv ichmoqchiman", "ru": "Я хочу воды", "tj": "Ман об нӯшидан мехоҳам"}},
+            ],
+        },
+    },
+    "shop_purchase": {
+        "id": "shop_purchase",
+        "title": {"uz": "Do'konda xarid", "ru": "Покупка в магазине", "tj": "Харид дар мағоза"},
+        "goal": {
+            "uz": "Mahsulotni so'rash, narxini bilish va tanlov aytish",
+            "ru": "Спросить товар и цену, затем сделать выбор",
+            "tj": "Маҳсулот ва нархро пурсед ва интихоб кунед",
+        },
+        "instruction": (
+            "At a small shop, help the learner ask for one everyday item, ask or understand its price, choose it or decline, "
+            "and finish politely."
+        ),
+        "opening": {
+            "chinese_reply": "你好！你想买什么？",
+            "pinyin": "Nǐ hǎo! Nǐ xiǎng mǎi shénme?",
+            "translations": {"uz": "Salom! Nima sotib olmoqchisiz?", "ru": "Привет! Что хотите купить?", "tj": "Салом! Чӣ харидан мехоҳед?"},
+            "suggestions": [
+                {"zh": "我想买水", "pinyin": "Wǒ xiǎng mǎi shuǐ", "translations": {"uz": "Suv sotib olmoqchiman", "ru": "Я хочу купить воду", "tj": "Ман об харидан мехоҳам"}},
+                {"zh": "我要买这个", "pinyin": "Wǒ yào mǎi zhège", "translations": {"uz": "Shuni sotib olmoqchiman", "ru": "Я хочу купить это", "tj": "Ман инро харидан мехоҳам"}},
+            ],
+        },
+    },
+    "ask_directions": {
+        "id": "ask_directions",
+        "title": {"uz": "Yo'l so'rash", "ru": "Как пройти", "tj": "Роҳро пурсидан"},
+        "goal": {
+            "uz": "Manzilni aytish, yo'lni so'rash va oddiy ko'rsatmani tushunish",
+            "ru": "Назвать место, спросить дорогу и понять простой ответ",
+            "tj": "Ҷойро гуфта, роҳро пурсед ва ҷавоби соддаро фаҳмед",
+        },
+        "instruction": (
+            "The learner is in town and needs to reach a familiar place. Invite them to name the destination, let them ask how to get there, "
+            "then give one short, beginner-level direction at a time and check whether they understood."
+        ),
+        "opening": {
+            "chinese_reply": "你好，你要去哪儿？",
+            "pinyin": "Nǐ hǎo, nǐ yào qù nǎr?",
+            "translations": {"uz": "Salom, qayerga bormoqchisiz?", "ru": "Привет, куда вы идёте?", "tj": "Салом, ба куҷо рафтан мехоҳед?"},
+            "suggestions": [
+                {"zh": "我要去车站", "pinyin": "Wǒ yào qù chēzhàn", "translations": {"uz": "Vokzalga bormoqchiman", "ru": "Я хочу на вокзал", "tj": "Ман ба истгоҳ рафтан мехоҳам"}},
+                {"zh": "我想去地铁站", "pinyin": "Wǒ xiǎng qù dìtiězhàn", "translations": {"uz": "Metro bekatiga bormoqchiman", "ru": "Я хочу на станцию метро", "tj": "Ман ба истгоҳи метро рафтан мехоҳам"}},
+            ],
+        },
+    },
+    "introduce_self": {
+        "id": "introduce_self",
+        "title": {"uz": "Tanishish", "ru": "Знакомство", "tj": "Шиносоӣ"},
+        "goal": {
+            "uz": "Ism va qayerdan ekanini aytib, suhbatdoshga savol berish",
+            "ru": "Назвать своё имя и откуда вы, затем задать вопрос",
+            "tj": "Ном ва аз куҷо буданро гуфта, ба ҳамсуҳбат савол диҳед",
+        },
+        "instruction": (
+            "Help the learner introduce themselves, say where they are from or what they do using simple Chinese, "
+            "and ask one natural question back. Keep the exchange friendly and useful for meeting someone."
+        ),
+        "opening": {
+            "chinese_reply": "你好！你叫什么名字？",
+            "pinyin": "Nǐ hǎo! Nǐ jiào shénme míngzi?",
+            "translations": {"uz": "Salom! Ismingiz nima?", "ru": "Привет! Как вас зовут?", "tj": "Салом! Номатон чист?"},
+            "suggestions": [
+                {"zh": "我叫安娜", "pinyin": "Wǒ jiào Ānnà", "translations": {"uz": "Mening ismim Anna", "ru": "Меня зовут Анна", "tj": "Номи ман Анна"}},
+                {"zh": "我叫阿里", "pinyin": "Wǒ jiào Ālǐ", "translations": {"uz": "Mening ismim Ali", "ru": "Меня зовут Али", "tj": "Номи ман Алӣ"}},
+            ],
+        },
+    },
+}
+
+VOICE_SCENARIOS_BY_GOAL = {
+    "travel": ("ask_directions", "cafe_order", "shop_purchase"),
+    "study_china": ("introduce_self", "ask_directions", "cafe_order"),
+    "work_china": ("introduce_self", "cafe_order", "shop_purchase"),
+    "daily_communication": tuple(VOICE_SCENARIOS),
+    "hsk_exam": ("introduce_self", "cafe_order", "shop_purchase"),
+}
 
 
 class VoicePracticeError(Exception):
@@ -645,7 +721,11 @@ class VoicePracticeService:
         # sessiyada 7 marta ishlaydi, har safar qayta hisoblash so'rov narxini
         # 7 ga ko'paytirar va murabbiylik suhbat o'rtasida siljirdi. Klientga
         # QAYTARILMAYDI — bu ichki murabbiylik ma'lumoti.
-        item.plan_json = await self._learner_plan(user, telegram_id, level) if user else {}
+        plan = await self._learner_plan(user, telegram_id, level) if user else {}
+        scenario = self._select_voice_scenario(plan, item.id)
+        plan = dict(plan) if isinstance(plan, dict) else {}
+        plan["scenario_id"] = scenario["id"]
+        item.plan_json = plan
         await self.session.commit()
 
         next_status = await self.user_status(telegram_id)
@@ -655,7 +735,12 @@ class VoicePracticeService:
             "remaining_limit": next_status["remaining_voice_limit"],
             "character": role,
             "course_context": course_context,
-            "opening_message": self._opening_message(role, language),
+            "scenario": {
+                "id": scenario["id"],
+                "title": scenario["title"].get(language) or scenario["title"]["ru"],
+                "goal": scenario["goal"].get(language) or scenario["goal"]["ru"],
+            },
+            "opening_message": self._opening_message(role, language, scenario),
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
         }
 
@@ -774,9 +859,19 @@ class VoicePracticeService:
         return out
 
     @staticmethod
-    def _opening_message(role: str, language: str) -> dict:
-        variants = OPENING_MESSAGES.get(role) or OPENING_MESSAGES["friend"]
-        message = random.choice(variants)
+    def _select_voice_scenario(plan: dict | None, session_id: str) -> dict:
+        """Choose one practical speaking task, aligned with the learner's goal."""
+        goal = str((plan or {}).get("goal") or "")
+        choices = VOICE_SCENARIOS_BY_GOAL.get(goal, tuple(VOICE_SCENARIOS))
+        scenario_id = random.Random(str(session_id)).choice(choices)
+        return VOICE_SCENARIOS[scenario_id]
+
+    @staticmethod
+    def _opening_message(role: str, language: str, scenario: dict | None = None) -> dict:
+        message = (scenario or {}).get("opening")
+        if not isinstance(message, dict):
+            variants = OPENING_MESSAGES.get(role) or OPENING_MESSAGES["friend"]
+            message = random.choice(variants)
         translations = message.get("translations") or {}
         suggestions = []
         for entry in (message.get("suggestions") or [])[:MAX_REPLY_SUGGESTIONS]:
@@ -824,19 +919,25 @@ class VoicePracticeService:
                 review_instruction += "Occasionally give a light, encouraging nudge to try using one yourself. "
         else:
             review_instruction = ""
-        # Har bir sessiya (session id asosida barqaror) o'zining 3 ta mavzusini oladi,
-        # shunda AI har safar bir xil mavzularga (masalan doim "sevgilingiz bormi") qaytmaydi.
-        topic_rng = random.Random(item.id)
-        session_topics = topic_rng.sample(TOPIC_POOL, k=min(3, len(TOPIC_POOL)))
-        topic_instruction = (
-            "Naturally guide the conversation across these topics during the session (one at a time, shift when "
-            f"it feels natural, don't force all of them in one reply): {', '.join(session_topics)}. "
-        )
         # Moslashuv bloki — QAT'IY 3 jumladan oshmaydi. Sabab: flash-lite kichik
         # model, uzun system prompt eng muhim qoidani (STRICT LEVEL RULE)
         # suyultirib yuboradi. Reja bo'sh bo'lsa blok umuman chiqmaydi va
         # prompt moslashuvdan oldingi holatiga qaytadi.
-        plan = item.plan_json if isinstance(item.plan_json, dict) else {}
+        saved_plan = getattr(item, "plan_json", None)
+        plan = saved_plan if isinstance(saved_plan, dict) else {}
+        scenario_id = str(plan.get("scenario_id") or "")
+        scenario = VOICE_SCENARIOS.get(scenario_id)
+        if scenario:
+            scenario_instruction = (
+                f"Practical speaking situation for this whole session: {scenario['instruction']} "
+                "Stay in this same situation for the full conversation; do not jump to unrelated topics. "
+                "Give the learner a real reason to speak: ask one short, concrete question at a time, react to their answer, "
+                "and move the task forward naturally. If they struggle, simplify your next question or offer an easy opening. "
+            )
+        else:
+            # Deploydan oldin boshlangan sessiyada yangi vaziyat yo'q; uning
+            # allaqachon boshlangan suhbatini boshqa joyga burib yubormaymiz.
+            scenario_instruction = "Continue the existing conversation naturally and ask one short question at a time. "
         learner_lines: list[str] = []
         goal_line = GOAL_REGISTER.get(str(plan.get("goal") or ""))
         if goal_line:
@@ -889,9 +990,8 @@ class VoicePracticeService:
                     f"Current-lesson target words: {target_words}. {used_instruction}"
                     f"{learner_instruction}{review_instruction}"
                     "Fast voice roleplay. Reply in 1 short Chinese sentence, rarely 2. "
-                    "Use one target word only if natural. Be playful and warm: joke, laugh, lightly tease weak "
-                    "answers, never humiliate; switch topic if the learner seems uncomfortable. "
-                    f"{topic_instruction}"
+                    "Use one target word only if natural. Be warm and encouraging; never tease or humiliate the learner. "
+                    f"{scenario_instruction}"
                     "Talk like a real person chatting with a friend, not a textbook: vary your sentence openers "
                     "and reactions every turn, and never reuse the exact phrasing or interjection you used earlier "
                     "in this same conversation (see the message history). This is a real casual chat, not a lesson "
@@ -1358,12 +1458,25 @@ class VoicePracticeService:
         else:
             reward = None
         await self.session.commit()
+        saved_plan = getattr(item, "plan_json", None)
+        end_plan = saved_plan if isinstance(saved_plan, dict) else {}
+        scenario_id = str(end_plan.get("scenario_id") or "")
+        scenario = VOICE_SCENARIOS.get(scenario_id)
         return {
             "ok": True,
             "duration_seconds": max(0, int((ended_at - started_at).total_seconds())),
             "message_count": item.turn_count,
             "corrections": list(item.corrections or []),
             "transcript": transcript,
+            "scenario": (
+                {
+                    "id": scenario["id"],
+                    "title": scenario["title"].get(item.language) or scenario["title"]["ru"],
+                    "goal": scenario["goal"].get(item.language) or scenario["goal"]["ru"],
+                }
+                if scenario
+                else None
+            ),
             "good_count": good_count,
             "mistake_count": mistake_count,
             "errors_by_type": errors_by_type,

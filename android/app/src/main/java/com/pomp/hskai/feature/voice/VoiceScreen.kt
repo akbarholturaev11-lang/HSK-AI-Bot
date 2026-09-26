@@ -135,6 +135,7 @@ fun VoiceScreen(
         ) {
             SectionLimitOverlay(
                 sectionTitle = stringResource(R.string.nav_ai),
+                sourceKey = "voice_limit",
                 limit = limit,
                 reason = state.status?.limitStatus?.limitText ?: stringResource(R.string.limit_voice_reason),
                 // The server says when the daily allowance reopens; the hour
@@ -504,6 +505,14 @@ private fun VoiceResult(
             style = MaterialTheme.typography.bodyLarge,
             color = PompColors.InkSecondary,
         )
+        result.scenario?.title?.takeIf { it.isNotBlank() }?.let { title ->
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.voice_scenario_practiced, title),
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+        }
         Spacer(Modifier.height(18.dp))
         HskPrimaryButton(
             text = stringResource(R.string.voice_again),

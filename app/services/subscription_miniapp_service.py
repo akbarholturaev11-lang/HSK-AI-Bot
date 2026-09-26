@@ -199,6 +199,7 @@ class SubscriptionMiniAppService:
         mode: str | None = None,
         campaign_id: int | None = None,
         feedback_id: int | None = None,
+        source: str = "miniapp",
     ) -> dict[str, Any]:
         mode = self._normalize_mode(mode)
         user = await self.user_repo.get_by_telegram_id(telegram_id)
@@ -273,6 +274,7 @@ class SubscriptionMiniAppService:
             local_amount=quote.get("pay_amount") if payment_method == "visa" else None,
             local_currency=quote.get("pay_currency") if payment_method == "visa" else None,
             exchange_rate=quote.get("exchange_rate") if payment_method == "visa" else None,
+            source=source,
         )
 
         pending_count = await self.payment_repo.count_pending()

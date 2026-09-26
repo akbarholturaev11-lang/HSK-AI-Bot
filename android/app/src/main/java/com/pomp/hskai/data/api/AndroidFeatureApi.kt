@@ -27,6 +27,24 @@ interface AndroidFeatureApi {
         @Header("Authorization") authorization: String,
     ): Response<AndroidSubscriptionOverviewResponse>
 
+    @GET("api/v3/android/subscription/checkout/overview")
+    suspend fun checkoutOverview(
+        @Header("Authorization") authorization: String,
+        @Query("origin") origin: String,
+    ): Response<SubscriptionCheckoutOverviewDto>
+
+    @POST("api/v3/android/subscription/checkout/quote")
+    suspend fun checkoutQuote(
+        @Header("Authorization") authorization: String,
+        @Body body: SubscriptionQuoteRequest,
+    ): Response<SubscriptionQuoteResponse>
+
+    @POST("api/v3/android/subscription/checkout/submit")
+    suspend fun checkoutSubmit(
+        @Header("Authorization") authorization: String,
+        @Body body: SubscriptionSubmitRequest,
+    ): Response<SubscriptionSubmitResponse>
+
     @GET("api/v3/android/trial/status")
     suspend fun trialStatus(
         @Header("Authorization") authorization: String,

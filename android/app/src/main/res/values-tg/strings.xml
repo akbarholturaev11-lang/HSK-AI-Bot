@@ -78,6 +78,13 @@
     <string name="lesson_grammar">Грамматика</string>
     <string name="lesson_repeat_after_teacher">Пас аз устод такрор кунед</string>
     <string name="lesson_cannot_speak_now">Ҳоло гап зада наметавонам</string>
+    <!-- Leaving a running lesson or exercise asks first (✕ and the system back). -->
+    <string name="lesson_exit_title">Аз дарс мебароед?</string>
+    <string name="lesson_exit_body">Ҷое, ки истодед, нигоҳ дошта мешавад — баъд аз ҳамон ҷо идома медиҳед.</string>
+    <string name="practice_exit_title">Аз машқ мебароед?</string>
+    <string name="practice_exit_body">Натиҷаи ин кӯшиш нигоҳ дошта намешавад.</string>
+    <string name="exit_confirm_leave">Баромадан</string>
+    <string name="exit_confirm_stay">Идома додан</string>
     <string name="lesson_microphone_permission_required">Барои санҷидани талаффуз ба микрофон иҷозат диҳед</string>
     <string name="lesson_play_audio">Шунидани овоз</string>
     <string name="lesson_audio_loading">Овоз бор шуда истодааст</string>
@@ -202,6 +209,7 @@
     <string name="voice_correction">Ислоҳ: %1$s</string>
     <string name="voice_result_title">Натиҷаи сӯҳбат</string>
     <string name="voice_result_body">%1$d реплика · %2$d хуб · %3$d ислоҳ</string>
+    <string name="voice_scenario_practiced">Машқ: %1$s</string>
     <string name="voice_again">Сӯҳбати нав</string>
     <string name="nav_rating">Рейтинг</string>
     <string name="rating_tab_league">Лига</string>
@@ -303,6 +311,11 @@
     <string name="ad_learn_more">Муфассал</string>
     <string name="ad_unavailable">Ҳоло реклама нест. Баъдтар кӯшиш кунед.</string>
     <string name="limit_try_trial">7 рӯз Pro ройгон</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">Ҳамаи дарсҳо кушода</string>
+    <string name="limit_benefit_practice">Машқи бе маҳдудият</string>
+    <string name="limit_benefit_voice">Суҳбат бо AI Voice</string>
+    <string name="limit_later">Баъдтар</string>
     <string name="limit_trial_failed">Давраи ройгонро оғоз кардан нашуд. Шояд ин ҳисоб онро аллакай гирифтааст.</string>
     <string name="lesson_pinyin_title">Пиньин (талаффуз)</string>
     <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>

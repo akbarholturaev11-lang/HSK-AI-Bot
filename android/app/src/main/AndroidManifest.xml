@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Study reminders. Requested only after the benefit is explained. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- The lesson-end celebration vibrates in time with its tones. A normal
+         permission: granted at install, never asked for. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
         android:name="android.hardware.microphone"

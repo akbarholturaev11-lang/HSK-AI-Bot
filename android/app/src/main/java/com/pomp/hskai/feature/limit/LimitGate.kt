@@ -62,7 +62,7 @@ data class LimitGateState(
  */
 data class LimitGateActions(
     /** Opens the subscription flow. Only the `direct` channel has one. */
-    val onUnlock: () -> Unit = {},
+    val onUnlock: (String) -> Unit = {},
     /** Re-reads access and limits from the server. Nothing is unlocked locally. */
     val onRecheck: () -> Unit = {},
     /** Opens the configured support contact. Never a payment page. */

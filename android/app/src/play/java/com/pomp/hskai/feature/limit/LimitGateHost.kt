@@ -33,6 +33,7 @@ fun rememberLimitGate(
     supportUrl: String,
     isRefreshing: Boolean,
     onRefreshAccess: () -> Unit,
+    onOpenSubscription: (String) -> Unit = {},
     trialEligible: Boolean = false,
     trialStarting: Boolean = false,
     trialError: String = "",

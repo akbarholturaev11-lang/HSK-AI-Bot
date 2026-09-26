@@ -58,65 +58,67 @@ internal fun MistakesReviewResult(
         if (outcome.hasStreakEvent) streakStep = true else onDone()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PompColors.Paper),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    PracticeCompletionClip(outcome = outcome) {
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PompColors.Paper),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
         ) {
-            PracticeCompletionHero(outcome = outcome)
-            Text(
-                text = stringResource(R.string.mistakes_result_score_label),
-                fontSize = 13.sp,
-                color = PompColors.InkSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-            Text(
-                text = if (result.remaining > 0) {
-                    "${stringResource(R.string.mistakes_result_remaining)}: ${result.remaining}"
-                } else {
-                    stringResource(R.string.mistakes_result_all)
-                },
-                fontSize = 14.sp,
-                color = PompColors.InkSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 10.dp),
-            )
-        }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
+            ) {
+                PracticeCompletionHero(outcome = outcome)
+                Text(
+                    text = stringResource(R.string.mistakes_result_score_label),
+                    fontSize = 13.sp,
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+                Text(
+                    text = if (result.remaining > 0) {
+                        "${stringResource(R.string.mistakes_result_remaining)}: ${result.remaining}"
+                    } else {
+                        stringResource(R.string.mistakes_result_all)
+                    },
+                    fontSize = 14.sp,
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 10.dp),
+                )
+            }
 
-        Button(
-            onClick = advance,
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PompColors.Cinnabar,
-                contentColor = PompColors.Paper,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)
-                .heightIn(min = 54.dp),
-        ) {
-            Icon(Icons.Filled.Check, contentDescription = null)
-            Spacer(Modifier.width(8.dp))
-            Text(
-                // One more screen follows when the streak moved, so the button
-                // says so rather than promising to close.
-                text = if (outcome.hasStreakEvent) {
-                    stringResource(R.string.lesson_next)
-                } else {
-                    stringResource(R.string.mistakes_done)
-                },
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-            )
+            Button(
+                onClick = advance,
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PompColors.Cinnabar,
+                    contentColor = PompColors.Paper,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)
+                    .heightIn(min = 54.dp),
+            ) {
+                Icon(Icons.Filled.Check, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    // One more screen follows when the streak moved, so the button
+                    // says so rather than promising to close.
+                    text = if (outcome.hasStreakEvent) {
+                        stringResource(R.string.lesson_next)
+                    } else {
+                        stringResource(R.string.mistakes_done)
+                    },
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
         }
     }
 }

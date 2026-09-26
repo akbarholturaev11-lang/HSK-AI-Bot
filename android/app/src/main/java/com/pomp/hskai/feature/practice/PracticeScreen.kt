@@ -5,6 +5,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.pomp.hskai.core.design.components.HskAnswerOption
+import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.HskStageCoach
+import com.pomp.hskai.core.design.components.HskStageHeading
+import com.pomp.hskai.core.design.components.hskOptionState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -80,6 +88,7 @@ import com.pomp.hskai.feature.assistant.practiceAssistantContext
 import com.pomp.hskai.core.navigation.PracticeTool
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.core.design.components.rememberExitGuard
 
 @Composable
 fun PracticeScreen(
@@ -114,16 +123,28 @@ fun PracticeScreen(
 
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {
+        // The phone's back follows each screen's own way out, so it no longer
+        // falls through to the tabs (or out of the app) from inside a run: a
+        // result closes, a running set asks first, the mistakes list goes back.
         when {
-            state.result != null -> PracticeSummary(state = state, onDone = onResetPractice)
-            state.reviewResult != null -> MistakesReviewResult(result = state.reviewResult, onDone = onResetReview)
-            state.examResult != null -> ExamSummary(state = state, onDone = onResetExam)
+            state.result != null -> {
+                BackHandler(onBack = onResetPractice)
+                PracticeSummary(state = state, onDone = onResetPractice)
+            }
+            state.reviewResult != null -> {
+                BackHandler(onBack = onResetReview)
+                MistakesReviewResult(result = state.reviewResult, onDone = onResetReview)
+            }
+            state.examResult != null -> {
+                BackHandler(onBack = onResetExam)
+                ExamSummary(state = state, onDone = onResetExam)
+            }
             state.isExamRunning -> ExamRun(
                 state = state,
                 language = language,
                 onSelect = onSelectExamOption,
                 onAdvance = onAdvanceExam,
-                onCancel = onResetExam,
+                onCancel = rememberRunExit(onResetExam),
                 onSpeak = onSpeakReview,
             )
             state.isPracticeRunning -> PracticeRun(
@@ -131,22 +152,25 @@ fun PracticeScreen(
                 language = language,
                 onSelect = onSelectPracticeOption,
                 onAdvance = onAdvancePractice,
-                onCancel = onResetPractice,
+                onCancel = rememberRunExit(onResetPractice),
                 onSpeak = onSpeakReview,
             )
             state.isReviewRunning -> MistakesReviewRun(
                 state = state,
                 onSelect = onAnswerReview,
                 onAdvance = onAdvanceReview,
-                onCancel = onResetReview,
+                onCancel = rememberRunExit(onResetReview),
                 onSpeak = onSpeakReview,
             )
-            mistakesOpen -> MistakesOverviewScreen(
-                state = state,
-                onBack = { mistakesOpen = false },
-                onStartReview = onStartMistakeReview,
-                onReload = onResetReview,
-            )
+            mistakesOpen -> {
+                BackHandler { mistakesOpen = false }
+                MistakesOverviewScreen(
+                    state = state,
+                    onBack = { mistakesOpen = false },
+                    onStartReview = onStartMistakeReview,
+                    onReload = onResetReview,
+                )
+            }
             else -> PracticeHome(
                 state = state,
                 level = level,
@@ -169,6 +193,12 @@ fun PracticeScreen(
             val section = state.pendingTool
             SectionLimitOverlay(
                 sectionTitle = if (section != null) stringResource(section.titleRes) else stringResource(R.string.practice_title),
+                sourceKey = when (section?.mode) {
+                    "placement" -> "practice_placement"
+                    "mock" -> "practice_mock"
+                    "mistake_review" -> "practice_mistakes"
+                    else -> "practice_limit"
+                },
                 limit = limit,
                 reason = spent.limitText ?: stringResource(R.string.limit_practice_reason),
                 resetAt = spent.resetAt,
@@ -178,6 +208,15 @@ fun PracticeScreen(
       }
     }
 }
+
+/** A running set's ✕ and the phone's back: both ask before the attempt is dropped. */
+@Composable
+private fun rememberRunExit(onCancel: () -> Unit): () -> Unit = rememberExitGuard(
+    running = true,
+    title = R.string.practice_exit_title,
+    body = R.string.practice_exit_body,
+    onExit = onCancel,
+)
 
 private enum class PracticeGroup { TEST }
 enum class PracticeRequest { MISTAKES, RECOGNITION, PRONUNCIATION, TESTS }
@@ -410,7 +449,7 @@ private fun PracticeHeader(group: PracticeGroup?, onBack: () -> Unit, hints: Lis
 private fun PracticeNotice(state: PracticeUiState) {
     val error = state.error
     if (error != null && error !is ApiError.LimitReached) {
-        Spacer(Modifier.height(12.dp)); ErrorPill(stringResource(error.messageRes))
+        Spacer(Modifier.height(12.dp)); PracticeErrorPill(stringResource(error.messageRes))
     }
 }
 
@@ -454,6 +493,15 @@ private fun ToolRow(
     }
 }
 
+/**
+ * The placement test in the lesson's stage layout: the instruction as the
+ * heading, the coach beside the sentence (or the speaker, for a listening
+ * question), full-width answers, and Tekshirish.
+ *
+ * A tap only picks; Tekshirish hands the pick to the view model, which is
+ * where it becomes final — the same call as before, one tap later. The
+ * answer and its explanation then show at once, as they always did here.
+ */
 @Composable
 private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int) -> Unit, onAdvance: (String) -> Unit, onCancel: () -> Unit, onSpeak: (String) -> Unit) {
     val session = state.session ?: return
@@ -462,89 +510,131 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
     // Mini App speaks it as the card appears (`course-v3.html:4014`) and so
     // does this; advancing stops the previous one in the view model.
     LaunchedEffect(question.id) { if (question.audioText.isNotBlank()) onSpeak(question.audioText) }
-    val progress = stringResource(R.string.practice_progress, state.questionIndex + 1, session.questions.size)
-    QuestionShell(title = progress, onCancel = onCancel) {
-        // The placement test answers each question on the spot — the right
-        // option and its explanation are already on screen — so a coach that
-        // reacts gives nothing away. The HSK exams withhold that until the
-        // end and deliberately have no coach at all.
-        //
-        // The coach says the question's instruction and the sentence stands
-        // next to it; the options stay full width below, where they need the
-        // room. The instruction used to be the card's own bold headline.
-        val answered = state.selectedIndex != null
-        val isCorrect = answered && question.answerIndex == state.selectedIndex
-        HskCoachBeside(
-            character = practiceCharacterFor(question),
-            mood = practiceMoodFor(if (answered) isCorrect else null),
-            reaction = if (answered) {
-                hskReactionFor(correct = isCorrect, streak = state.practiceStreak)
+    var picked by remember(state.questionIndex) { mutableStateOf<Int?>(null) }
+    val answered = state.selectedIndex != null
+    val isCorrect = answered && question.answerIndex == state.selectedIndex
+    val total = session.questions.size.coerceAtLeast(1)
+    val bottomInset = LocalMainBottomInset.current
+
+    Box(Modifier.fillMaxSize()) {
+        HskSceneBackground(Modifier.fillMaxSize())
+        Column(Modifier.fillMaxSize()) {
+            PracticeStageTopBar(
+                progress = (state.questionIndex + if (answered) 1 else 0).toFloat() / total,
+                onClose = onCancel,
+            )
+            HskStageHeading(question.prompt)
+            BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                val viewport = maxHeight
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(min = viewport)
+                        .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 20.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    // The placement test answers each question on the spot, so
+                    // a coach that reacts gives nothing away. The HSK exams
+                    // withhold the answer until the end and have no coach.
+                    val listening = question.audioText.isNotBlank()
+                    HskStageCoach(
+                        character = practiceCharacterFor(question),
+                        mood = practiceMoodFor(if (answered) isCorrect else null),
+                        reaction = if (answered) {
+                            hskReactionFor(correct = isCorrect, streak = state.practiceStreak)
+                        } else {
+                            null
+                        },
+                        reactionKey = state.questionIndex to state.selectedIndex,
+                        showBubble = listening || question.sentence.isNotBlank(),
+                        // The listening bubble is the speaker: tap it to hear again.
+                        onBubbleClick = if (listening && !state.isReviewAudioLoading) {
+                            { onSpeak(question.audioText) }
+                        } else {
+                            null
+                        },
+                        onBubbleClickLabel = if (listening) stringResource(R.string.lesson_play_audio) else null,
+                    ) {
+                        PracticeBubbleMaterial(question, state.isReviewAudioLoading)
+                    }
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        question.options.forEachIndexed { index, option ->
+                            HskAnswerOption(
+                                text = option,
+                                state = hskOptionState(
+                                    index = index,
+                                    correctIndex = question.answerIndex,
+                                    selectedIndex = if (answered) state.selectedIndex else picked,
+                                    isAnswered = answered,
+                                ),
+                                enabled = !answered,
+                                onClick = { picked = index },
+                            )
+                        }
+                        if (state.error != null && state.error !is ApiError.LimitReached) {
+                            PracticeErrorPill(stringResource(state.error.messageRes), Modifier.padding(top = 4.dp))
+                        }
+                    }
+                }
+            }
+            if (answered) {
+                PracticeFeedbackPanel(
+                    isCorrect = isCorrect,
+                    lines = listOf(question.explanation),
+                    continueText = if (state.questionIndex == session.questions.lastIndex) {
+                        stringResource(R.string.practice_finish)
+                    } else {
+                        stringResource(R.string.lesson_next)
+                    },
+                    loading = state.isCompleting,
+                    onContinue = { onAdvance(language) },
+                    bottomInset = bottomInset,
+                )
             } else {
-                null
-            },
-            reactionKey = state.questionIndex to state.selectedIndex,
-            text = question.prompt.ifBlank { progress },
-        ) {
-            PracticeQuestionMaterial(question, state.isReviewAudioLoading, onSpeak)
+                PracticeCheckFooter(
+                    enabled = picked != null,
+                    onCheck = { picked?.let(onSelect) },
+                    bottomInset = bottomInset,
+                )
+            }
         }
-        Spacer(Modifier.height(14.dp))
-        PracticeQuestionOptions(question, state.selectedIndex, onSelect)
-        if (state.error != null && state.error !is ApiError.LimitReached) {
-            Spacer(Modifier.height(12.dp))
-            ErrorPill(stringResource(state.error.messageRes))
-        }
-        PrimaryAction(
-            text = if (state.questionIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next),
-            enabled = state.selectedIndex != null,
-            loading = state.isCompleting,
-        ) { onAdvance(language) }
     }
 }
 
 /**
- * What the question gives the learner to work on — the sentence, or the
- * speaker when it is a listening question. The instruction is not here: the
- * coach is saying it.
- *
- * Blank material (a bare prompt with nothing to read) draws nothing, so the
- * coach is not left pointing at an empty card.
+ * What the coach says on a placement question: the speaker for a listening
+ * one, and the sentence with its pinyin. The instruction is the heading.
  */
 @Composable
-private fun PracticeQuestionMaterial(
-    question: PracticeQuestionDto,
-    isAudioLoading: Boolean,
-    onSpeak: (String) -> Unit,
-) {
-    if (question.sentence.isBlank() && question.audioText.isBlank()) return
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 7.dp,
-    ) {
-        Column(
-            Modifier.padding(horizontal = 14.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            QuestionText("", question.sentence, question.pinyin, question.audioText, isAudioLoading, onSpeak)
+private fun PracticeBubbleMaterial(question: PracticeQuestionDto, isAudioLoading: Boolean) {
+    if (question.audioText.isNotBlank()) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(32.dp)) {
+            if (isAudioLoading) {
+                HskBrandLoader(compact = true)
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.VolumeUp,
+                    contentDescription = null,
+                    tint = PompColors.Cinnabar,
+                    modifier = Modifier.size(30.dp),
+                )
+            }
         }
     }
-}
-
-/** The answers, and the explanation once one has been picked. */
-@Composable
-private fun PracticeQuestionOptions(
-    question: PracticeQuestionDto,
-    selectedIndex: Int?,
-    onSelect: (Int) -> Unit,
-) {
-    question.options.forEachIndexed { index, option ->
-        val isPicked = selectedIndex == index
-        val isCorrect = selectedIndex != null && question.answerIndex == index
-        OptionRow(option, isPicked, isCorrect, isPicked && !isCorrect, selectedIndex == null) { onSelect(index) }
+    if (question.sentence.isNotBlank()) {
+        if (question.audioText.isNotBlank()) Spacer(Modifier.height(6.dp))
+        Text(
+            text = question.sentence,
+            style = PompTextStyles.hanziMedium.copy(fontSize = 24.sp, lineHeight = 32.sp),
+            color = PompColors.Ink,
+        )
     }
-    if (selectedIndex != null && question.explanation.isNotBlank()) {
-        Spacer(Modifier.height(10.dp))
-        Text(question.explanation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+    if (question.pinyin.isNotBlank()) {
+        Text(text = question.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
     }
 }
 
@@ -596,7 +686,7 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
         }
         if (state.error != null && state.error !is ApiError.LimitReached) {
             Spacer(Modifier.height(12.dp))
-            ErrorPill(stringResource(state.error.messageRes))
+            PracticeErrorPill(stringResource(state.error.messageRes))
         }
         PrimaryAction(
             text = if (state.examIndex == session.questions.lastIndex) stringResource(R.string.practice_finish) else stringResource(R.string.lesson_next),
@@ -799,37 +889,32 @@ private fun CompletionSummaryShell(
     val advance: () -> Unit = {
         if (outcome.hasStreakEvent) streakStep = true else onDone()
     }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = 20.dp,
-            end = 20.dp,
-            top = 20.dp,
-            bottom = 20.dp + LocalMainBottomInset.current,
-        ),
-    ) {
-        item {
-            PracticeCompletionHero(outcome = outcome)
-            Spacer(Modifier.height(12.dp))
-            Text(body, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
-            Spacer(Modifier.height(16.dp))
-            Column { extra() }
-            PrimaryAction(
-                text = if (outcome.hasStreakEvent) {
-                    stringResource(R.string.lesson_next)
-                } else {
-                    stringResource(R.string.practice_back_to_tools)
-                },
-                enabled = true,
-                onClick = advance,
-            )
+    PracticeCompletionClip(outcome = outcome) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                end = 20.dp,
+                top = 20.dp,
+                bottom = 20.dp + LocalMainBottomInset.current,
+            ),
+        ) {
+            item {
+                PracticeCompletionHero(outcome = outcome)
+                Spacer(Modifier.height(12.dp))
+                Text(body, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
+                Spacer(Modifier.height(16.dp))
+                Column { extra() }
+                PrimaryAction(
+                    text = if (outcome.hasStreakEvent) {
+                        stringResource(R.string.lesson_next)
+                    } else {
+                        stringResource(R.string.practice_back_to_tools)
+                    },
+                    enabled = true,
+                    onClick = advance,
+                )
+            }
         }
-    }
-}
-
-@Composable
-private fun ErrorPill(text: String) {
-    Surface(color = PompColors.FlameSoft, shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
-        Text(text, style = MaterialTheme.typography.bodyMedium, color = PompColors.Flame, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
     }
 }

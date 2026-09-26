@@ -77,7 +77,9 @@ fun DictionaryScreen(
     modifier: Modifier = Modifier,
 ) {
     AssistantScreen(dictionaryAssistantContext(state), bottomBar = false)
-    BackHandler(enabled = state.selectedWord != null, onBack = onCloseWord)
+    // An open word closes back to the list; the list closes back to where the
+    // dictionary was opened from. The phone's back used to close the app here.
+    BackHandler { if (state.selectedWord != null) onCloseWord() else onBack() }
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         if (state.selectedWord == null) {
             DictionaryList(state, onQueryChange, onRetry, onOpenWord, onBack)

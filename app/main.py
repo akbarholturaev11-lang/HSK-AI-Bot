@@ -1427,6 +1427,7 @@ async def _admin_user_payload(session, user) -> dict:
                 "status": payment.payment_status,
                 "plan": _mini_plan_label(payment.plan_type),
                 "method": _mini_method_label(payment.payment_method),
+                "source": getattr(payment, "source", "telegram_bot"),
                 "amount": format_subscription_price(payment.amount, payment.currency),
                 "submitted_at": _mini_dt(payment.submitted_at),
                 "reviewed_at": _mini_dt(payment.reviewed_at),
@@ -2726,6 +2727,7 @@ async def voice_practice_start(request: Request):
                 payload={
                     "role": str(payload.get("role") or ""),
                     "course_context": result.get("course_context"),
+                    "scenario_id": (result.get("scenario") or {}).get("id"),
                 },
             )
             await session.commit()
@@ -2826,6 +2828,7 @@ async def voice_practice_end(request: Request):
                     "duration_seconds": result.get("duration_seconds", 0),
                     "message_count": result.get("message_count", 0),
                     "correction_count": len(result.get("corrections") or []),
+                    "scenario_id": (result.get("scenario") or {}).get("id"),
                 },
             )
             await session.commit()

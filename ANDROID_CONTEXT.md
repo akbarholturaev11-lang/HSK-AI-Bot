@@ -742,6 +742,99 @@ Tunggi osmon `DAY` holatida turgani xatodek ko'rinadi, shuning uchun
 kunduzgi rasmlar MORNING/DAY/WAITING'da, to'q sariq EVENING'da, tunggilar
 LATE'da, qizil dramatiklar CRITICAL'da.
 
+### 3.18 Dars ekrani: sahna tuzilishi, qadimiy fon, xatoga tayyor javob — 2026-09-25
+
+Faqat **dars** ekrani o'zgardi (Mashq, Xatolarim, drill'lar, lug'at, o'tish
+testi va Mini App — o'zgarmagan, ular keyin alohida ko'chiriladi).
+
+- **Fon:** `core/design/components/HskSceneBackground.kt` — xira 山水 manzara
+  (tog', pagoda, qarag'ay, qayiq, quyosh, qushlar). Vektor, APK'ga fayl
+  qo'shmaydi, faqat palitra tokenlari (`Ink`, `Cinnabar`/`Gold`), animatsiyasiz,
+  `drawWithCache` bilan bir marta chiziladi. Faqat kartalar ostida; loader,
+  xato va bayram ekranlarida yo'q.
+- **Tuzilish:** tepada ko'rsatma sarlavha (`lessonHeading`: savolda `title`,
+  talaffuzda `lesson_repeat_after_teacher`, juftlarda `lesson_match_pairs`).
+  Savolda personaj chapda, pufakda savol materiali; javoblar pastda, to'liq
+  enda, o'rtada, A/B/C belgisisiz. Yangi so'z, grammatika va quruvchilarda
+  personaj tepada qoladi. Yangi so'z animatsiyasi **o'zgarmagan** (admin talabi).
+- **Ikki bosqich:** savolda bosish faqat **tanlaydi**, `Tekshirish` tekshiradi.
+  ViewModel API o'zgarmagan (`answerChoice` endi tugmadan chaqiriladi).
+  O'tish testi (`SkipTestScreen` → `ChoiceCardView`) eskicha — bir bosishda.
+- **Xatoga tayyor javob:** noto'g'ri javobda pastki panelda AI belgisi bilan
+  kartaning o'z `explanation`i chiqadi — **AI'ga so'rov YO'Q**, limit
+  sarflanmaydi. Ostida «Xatoyim nimada?» / «Misol bilan ko'rsat» — bosilsa AI
+  chat ochiladi, tayyor javob birinchi xabar bo'lib turadi
+  (`AssistantSeed`, faqat telefonda, serverga yozilmaydi) va savol dars
+  konteksti bilan ketadi. Kontekstga o'quvchi tanlagan javob qo'shildi
+  (`AnswerState.Checked.chosen` → «Learner answer»). To'g'ri javobda panel
+  eskicha (izoh matni). Talaffuz bahosida AI qatori yo'q.
+- Talaffuz kartasida personaj qaytdi (statik, faqat bir martalik reaksiya);
+  Mini App bilan moslik uchun personaj Panda qoldi (`LessonCharacterParityTest`).
+- ~~Darsdagi AI tugmasi pastki tugma ustiga tushmasligi uchun `bottomInset = 76.dp`.~~
+  3.20 da bekor qilindi: darsda suzuvchi AI tugmasi umuman yo'q
+  (`showButton = false`), chat faqat «Xatoyim nimada?» orqali ochiladi.
+
+Yangi fayllar: `feature/lesson/LessonBubble.kt` (dumli pufak, coach qatori,
+chuqurlikli tugma, tayyor javob), `feature/lesson/LessonChoiceCards.kt`
+(dars savoli materiali va variantlar). Umumiy `HskCoachRow`/`HskCoachBeside`ga
+ataylab tegilmadi — ular mashq ekranlariniki.
+
+Yangi matn yo'q: barcha satrlar mavjud (uz/ru/tg). Qamrov:
+`LessonOptionStateTest`, `LessonViewModelTest` (tanlangan javob).
+
+**Tekshirilgan:** Android CI (run 36131683181) yashil — unit test, lint,
+debug APK, release bundle. **Tekshirilmagan:** ko'rinish telefonda
+(light/dark, 360 dp, katta shrift, uz/ru/tg) va AI chat oqimi real akkauntda.
+
+### 3.19 Dars yakuni: Mini App'dagi kinematik klip, ovoz va vibratsiya — 2026-09-25
+
+Muammo: dars tugaganda Androidda effekt yo'q edi, streak ekranidagi panda
+eski rasm (`widget_panda_streak`) edi, reytingda ko'tarilish sahnasi quruq edi.
+Endi Mini App'dagi (`course-v3.html`) bayram navbati ko'chirildi — raqamlar
+o'zi: `PANDA_FX`, `cinePanda()`, `skyScene()`, `pandaDust()`, `stageQuake()`,
+`luRain()`, `.lu-emb`, `luReveal`, `flameSvg()`, `sk*` keyframe'lar, `beep()`.
+
+- **Yangi fayl:** `core/design/components/HskCelebrationFx.kt`.
+  - `hskTrack` — CSS keyframe'larini (har segment o'z easing'i bilan) o'qiydi.
+  - `HskCinematicEntrance` — sahnadan oldin faqat personaj: `LAND` (dars —
+    tepadan tushib changda qo'nadi), `FLY` (streak — qizil plashli panda
+    osmonga uchib, bulutlar orasidan o'tib qaytib qo'nadi; yer, daraxtlar,
+    uy, shamol, soya), `ZOOM` (reyting — uzoqdan otilib chiqadi). Qo'nishda
+    chang, kadr silkinishi, zarb. Ekranga tegish klipni o'tkazib yuboradi;
+    tizimda animatsiyalar o'chirilgan bo'lsa klip yo'q.
+  - `HskConfettiRain` (eski statik `HskConfettiField` o'rniga), `HskCelebrationEmblem`
+    (毕 dars / 胜 checkpoint), `HskReveal` (qatorma-qator ochilish),
+    `HskStreakFlame` (yonish, lipillash, oltin nur), `HskMiniFlame` (kun alangasi:
+    yonayotgan / muzlagan / hali oldinda), `HskStamp` (bugungi kun muhri),
+    `HskNumberPop`.
+  - **Ovoz + vibratsiya:** `HskCue` — Mini App notalari (`AudioTrack`, 44.1 kHz,
+    sintez, fayl yo'q) va har notaga mos vibratsiya zarbasi (90 ms oraliq).
+    Telefon ovozsiz rejimda — jim; vibratsiya rejimida — faqat vibratsiya;
+    ovoz media balandligi orqali (`USAGE_GAME`). Qo'nishda kuchli zarb.
+- **Panda plashi:** `HskCharacterStage(cape = true)` — Mini App parvoz
+  pozasidagi qizil plash, hilpiraydi. Faqat panda va faqat bayramda.
+- **Sahna:** `HskCelebrationStage(raysVisible, rainKey)` — klip paytida nurlar
+  yashirin, keyin qaytadi; konfetti hammasining ustida.
+- **Dars (`LessonCompletionCelebration.kt`):** har sahna o'z klipi bilan
+  ochiladi; klip tugaguncha tugma ham, matn ham yo'q. Dars sahnasida markazda
+  emblema, personaj burchakda (Mini App `.lu-panda`). Streak — olov yonida
+  bizning Panda (eski rasm olib tashlandi). Reyting — siz va o'tib ketgan
+  o'quvchi qatorlari o'rin almashadi (420 ms dan keyin), konfetti va ohang.
+- **Mashq/Xatolarim:** `PracticeStreakStep` ham `FLY` klipi va yangi streak
+  ekranini ishlatadi (umumiy komponent).
+- **Manifest:** `android.permission.VIBRATE` (normal ruxsat, so'ralmaydi).
+
+Reyting sahnasi mantiqi o'zgarmagan: faqat server `rank_before > rank_after`
+(haqiqiy ko'tarilish) desa chiqadi, XP'dan taxmin qilinmaydi.
+
+Yangi ko'rinadigan matn yo'q (emblema ieroglifi — Mini App'dagi bilan bir xil,
+tarjima qilinmaydi). Qamrov: `HskCelebrationFxTest` (keyframe o'qish,
+vibratsiya zarbalari notalarga mosligi).
+
+**Tekshirilgan:** Android CI (run 36171700748) yashil — unit test, lint,
+debug APK, release bundle. **Tekshirilmagan:** telefonda ko'rinish va eshitish
+(ovoz balandligi, vibratsiya kuchi, kichik ekranda burchakdagi personaj).
+
 ### 3.16 Widget o'rnatish oynasi: haqiqiy o'lcham, fonsiz panda — 2026-09-25
 
 Foydalanuvchi tasdiqlagan chizma bo'yicha (`WidgetInstallPromptScreen.kt`):
@@ -774,8 +867,90 @@ Foydalanuvchi tasdiqlagan chizma bo'yicha (`WidgetInstallPromptScreen.kt`):
 galochka chiqadimi; Xiaomi'da ruxsat o'chiq/yoqiq holatda; uz/ru/tg;
 kichik ekran (640 dp) — widget kesilib qolmasligi.
 
+### 3.21 Mashq ekranlari dars uslubida, yakunda klip — 2026-09-26
+
+Admin tasdiqlagan qarorlar: xatoda **faqat izoh** (AI chiplari yo'q), mashq
+yakunlari **klip bilan**, **HSK imtihon savollari eskicha** qoladi.
+
+- **Umumiy qismlar core'ga chiqdi:** `core/design/components/HskStage.kt` —
+  `HskSpeechBubble`/`HskBubbleTail`, `HskStageHeading`, `HskStageCoach`,
+  `HskBubbleText`, `HskDepthButton`, `HskStageProgress`, `HskAnswerOption` +
+  `HskOptionState`/`hskOptionState`. Dars shulardan foydalanadi (ko'rinishi
+  o'zgarmagan). `LessonOptionState`/`lessonOptionState` typealias sifatida
+  qoldi — `LessonOptionStateTest` o'zgarmagan. Darsda faqat `ReadyAnswer` va
+  `AskChip` qoldi (`LessonBubble.kt`).
+- **Mashq qismlari:** `feature/practice/PracticeStage.kt` — yuqori panel (X +
+  progress), `PracticeCheckFooter` (Tekshirish), `PracticeFeedbackPanel`
+  (to'g'ri/xato + izoh + Davom etish), `PracticeErrorPill`,
+  `PracticeCompletionClip`.
+- **Ekranlar** (hammasida qadimiy fon, sarlavha, personaj + pufak, A/B/C'siz
+  javoblar, bosish faqat tanlaydi → Tekshirish):
+  - Ieroglif tanish — pufakda pinyin + ma'no, 2×2 ieroglif.
+  - Talaffuz — darsdagi talaffuz kartasi: pufakda ieroglif, personaj, keng
+    mikrofon, «HOZIR GAPIRA OLMAYMAN».
+  - Xatolarim takrori — sarlavhada savol, pufakda turkum qatori + material.
+    Serverga javob endi **Tekshirish'da** ketadi (so'rov o'sha, bir bosish
+    keyin); javob kelguncha tugma yuklanadi. Pastki tugma tab paneli ustiga
+    ko'tarildi (ilgari uning tagida qolishi mumkin edi).
+  - Daraja testi — sarlavhada ko'rsatma, pufakda gap/karnay.
+  - HSK imtihon — **o'zgarmagan** (personaj yo'q, javob oxirigacha yashirin).
+- **Yakun klipi:** barcha mashq natijalari (`CompletionSummaryShell`,
+  `MistakesReviewResult`, `DrillSummary`) oldidan yakun personaji qog'oz fonga
+  qo'nadi (`HskEntrance.LAND`, chang, zarb). Yaxshi natijada (`showConfetti`)
+  konfetti va dars ohangi; yomonida jim qo'nish. Burilishda qayta o'ynamaydi.
+  Hero'dagi eski statik konfetti va alohida vibratsiya olib tashlandi.
+  `HskCinematicEntrance` ga `mood` parametri qo'shildi.
+- ViewModel'lar, server so'rovlari va matnlar o'zgarmagan (yangi satr yo'q).
+
+**Tekshirilgan:** Android CI (run 36216591893) yashil — unit test, lint, debug APK,
+release bundle. **Tekshirilmagan:** telefonda ko'rinish (kichik ekran, dark mode, uz/ru/tg).
+
+### 3.20 Juftlik bahosi, darsda AI tugmasi, avto-ovoz, «orqaga» — 2026-09-26
+
+Foydalanuvchi suratlaridan to'rtta narsa:
+
+- **Juftlik mashqi to'g'ri moslansa ham «Noto'g'ri» derdi.** `MatchPairsCardView`
+  har bir noto'g'ri bosishni yig'ib `answerMatchPairs` ga berardi, u esa bitta
+  xato bosish bo'lsa butun kartani xato qilib, yurak olib, mistake yozardi.
+  Mini App'da (`cardMatch`, `_mR`) hammasi moslansa — to'g'ri; xato bosish faqat
+  signal. Endi ham shunday: `answerMatchPairs(card)` doim to'g'ri, yurak
+  ketmaydi, mistake yuborilmaydi. Xato bosilgan ikki katak 400 ms qizil
+  chegara oladi (`PairState.WRONG`). Boshqa kartalar (tanlov, builder, gap,
+  reverse, drill, o'tish testi, Mashq) Mini App bilan solishtirildi — farq yo'q.
+- **AI tugmasi dars ichida va yakunida yo'q.** `AssistantScreen(showButton =
+  false)` — faqat suzuvchi tugma yashiriladi; ro'yxatdagi kontekst qoladi,
+  shuning uchun «Xatoyim nimada?» / «Misol bilan ko'rsat» chatni ochaveradi.
+  `hidesAssistant` dan farqi shu: u chatni ham o'chiradi.
+- **Tinglash va «Ustozdan keyin takrorlang» kartasi ovozni o'zi chaladi**
+  (`LessonBody`, 300 ms, kirish pardasi yopilgandan keyin). Mikrofon avtomatik
+  yoqilmaydi — foydalanuvchi qarori.
+- **«Orqaga» ilovani yopmaydi.** Ekranlar activity emas, holat bo'lgani uchun
+  back tizimga tushib ilovani yopardi. Endi `rememberExitGuard`
+  (`core/design/components/HskExitGuard.kt`): ish ketayotganda ✕ ham, back ham
+  tasdiq so'raydi (dars, Mashq to'plamlari, Xatolarim takrori, imtihon,
+  Ieroglif/Talaffuz drill, o'tish testi, bellashuv); natija/xato/loader'da
+  to'g'ridan-to'g'ri chiqadi. Lug'at — so'zdan ro'yxatga, ro'yxatdan chiqish.
+  Kursdan boshqa tabda back → Kurs (`MainActivity`, tablardan oldin
+  ro'yxatdan o'tadi, shuning uchun tabning o'z back'i ustun). Kursda back —
+  ilovadan chiqish. Yangi satrlar: `lesson_exit_*`, `practice_exit_*`,
+  `exit_confirm_*` (uz/ru/tg).
+
+**Qolgan:** dars yakunidan keyingi reklama oynasida (`AdScreen`) back hali ham
+Kurs tabida turgani uchun ilovadan chiqaradi — reklama mantig'iga tegilmadi.
+
+**Tekshirilgan:** yettita statik tekshiruv; Android CI (run 36217650276,
+`main`, `133ccf2`) yashil — unit test, lint, debug APK, release bundle.
+**Tekshirilmagan:** telefonda — juftlikda xato bosish, avto-ovoz (sekin
+internet), back — dars, drill, lug'at, tablar.
+
 ### 3.11 Boshqa ochiqlar
 
+- Dars yakunidan keyingi reklama oynasida (`AdScreen`) tizim «orqaga»si hali
+  ilovani yopadi: oyna Kurs tabi ustida turadi, Kursda back esa chiqish.
+  Reklama mantig'iga ataylab tegilmagan (3.20).
+- Desktop (`desktop/ui/js/lesson.js`, `selectPair`) juftlik mashqini hali
+  eski usulda baholaydi: bitta xato bosish kartani ochkosiz qoldiradi va
+  mistake yozadi. Mini App va Android (3.20) bunday qilmaydi.
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
   tushadi. Navbatga qo'yib keyin yuborish yo'q.

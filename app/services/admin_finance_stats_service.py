@@ -48,7 +48,7 @@ _CLIENT_CHANNELS = {
     },
     "android": {
         "label": "Android",
-        "note": "Native Android -> Telegram subscription handoff",
+        "note": "Native Android -> canonical APK checkout",
     },
     "desktop": {
         "label": "Desktop",
@@ -102,6 +102,7 @@ class _ApprovedPayment:
     submitted_at: datetime
     priced: bool
     is_renewal: bool
+    source: str
 
 
 class AdminFinanceStatsService:
@@ -165,12 +166,13 @@ class AdminFinanceStatsService:
                     Payment.base_amount,
                     Payment.reviewed_at,
                     Payment.submitted_at,
+                    Payment.source,
                 ).where(Payment.payment_status == "approved")
             )
         ).all()
 
         items: list[_ApprovedPayment] = []
-        for user_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
+        for user_id, amount, currency, base_amount, reviewed_at, submitted_at, source in rows:
             usd = _amount_to_usd(amount, currency)
             if usd is None and base_amount:
                 usd = _amount_to_usd(base_amount, "TJS")
@@ -192,6 +194,7 @@ class AdminFinanceStatsService:
                     submitted_at=submitted_at,
                     priced=priced,
                     is_renewal=False,
+                    source=str(source or "telegram_bot"),
                 )
             )
 
@@ -455,8 +458,9 @@ class AdminFinanceStatsService:
             "sources_paid": sources_paid,
             "client_business": client_business,
             "source_attribution_explain": (
-                "Har to'lov payment yuborilgan paytdan oldingi eng yaqin obuna-kirish manbasiga bog'landi. "
-                "Oldingi to'lovlar keyinroq ochilgan manbaga ko'chirilmaydi."
+                "Client kesimi yangi paymentlarda aniq Payment.source'dan olinadi (Android / Mini App / Desktop). "
+                "Qaysi bo'lim obunaga olib kelgani esa paymentdan oldingi eng yaqin SubscriptionEntryEvent orqali "
+                "hisoblanadi; eski yozuvlarda ham shu tarixiy entry fallback bo'lib qoladi."
             ),
             "cards": [
                 {"label": "Daromad", "value": _usd(revenue_usd), "note": f"{approved_count} ta to'lov", "tone": "info"},
@@ -484,7 +488,7 @@ class AdminFinanceStatsService:
         agg: dict[str, dict] = {}
         for p in in_period:
             source = SubscriptionEntryAnalyticsService.source_group_key(
-                self._source_for_payment(
+                self._entry_source_for_payment(
                     p,
                     source_events_by_user.get(p.user_id, []),
                 )
@@ -547,7 +551,7 @@ class AdminFinanceStatsService:
                 bucket["entry_users"].add(int(telegram_id))
 
         for payment in approved:
-            source = self._source_for_payment(
+            source = self._client_source_for_payment(
                 payment,
                 source_events_by_user.get(payment.user_id, []),
             )
@@ -622,7 +626,8 @@ class AdminFinanceStatsService:
             "explain": (
                 "Mini App, Android va Desktop alohida biznes bazaga yozmaydi: "
                 "pul approved Payment jadvalidan, obuna holati User access maydonlaridan, "
-                "client attribution esa paymentdan oldingi eng yaqin SubscriptionEntryEvent manbasidan olinadi."
+                "yangi to'lovlarda client attribution Payment.source'dan, eski yozuvlarda esa "
+                "paymentdan oldingi eng yaqin SubscriptionEntryEvent manbasidan olinadi."
             ),
         }
 
@@ -631,14 +636,16 @@ class AdminFinanceStatsService:
         group = SubscriptionEntryAnalyticsService.source_group_key(source)
         if group == "unknown":
             return "unknown"
-        if group.startswith("android_") or group == "android_subscription":
+        if group in {"android", "android_subscription"} or group.startswith("android_"):
             return "android"
-        if group.startswith("desktop_") or group == "desktop_subscription":
+        if group in {"desktop", "desktop_subscription"} or group.startswith("desktop_"):
             return "desktop"
+        if group == "miniapp":
+            return "miniapp"
         return "miniapp"
 
     @staticmethod
-    def _source_for_payment(
+    def _entry_source_for_payment(
         payment: _ApprovedPayment,
         source_events: list[tuple[datetime, str]],
     ) -> str:
@@ -648,6 +655,17 @@ class AdminFinanceStatsService:
                 break
             source = candidate or "unknown"
         return source
+
+    @classmethod
+    def _client_source_for_payment(
+        cls,
+        payment: _ApprovedPayment,
+        source_events: list[tuple[datetime, str]],
+    ) -> str:
+        exact = str(payment.source or "").strip().lower()
+        if exact in {"android", "desktop", "miniapp"}:
+            return exact
+        return cls._entry_source_for_payment(payment, source_events)
 
     @staticmethod
     def _retention_explain(

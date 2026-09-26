@@ -108,6 +108,13 @@
     <string name="lesson_grammar">Grammatika</string>
     <string name="lesson_repeat_after_teacher">Ustozdan keyin takrorlang</string>
     <string name="lesson_cannot_speak_now">Hozir gapira olmayman</string>
+    <!-- Leaving a running lesson or exercise asks first (✕ and the system back). -->
+    <string name="lesson_exit_title">Darsdan chiqasizmi?</string>
+    <string name="lesson_exit_body">Qayerda to\'xtaganingiz saqlanadi — keyin shu joydan davom etasiz.</string>
+    <string name="practice_exit_title">Mashqdan chiqasizmi?</string>
+    <string name="practice_exit_body">Bu urinish natijasi saqlanmaydi.</string>
+    <string name="exit_confirm_leave">Chiqish</string>
+    <string name="exit_confirm_stay">Davom etish</string>
     <string name="lesson_microphone_permission_required">Talaffuzni tekshirish uchun mikrofonga ruxsat bering</string>
     <string name="lesson_play_audio">Ovozni eshitish</string>
     <string name="lesson_audio_loading">Ovoz yuklanmoqda</string>
@@ -238,6 +245,7 @@
     <string name="voice_correction">Tuzatish: %1$s</string>
     <string name="voice_result_title">Suhbat yakuni</string>
     <string name="voice_result_body">%1$d replika · %2$d yaxshi · %3$d tuzatish</string>
+    <string name="voice_scenario_practiced">Mashq qilindi: %1$s</string>
     <string name="voice_again">Yangi suhbat</string>
     <string name="nav_rating">Reyting</string>
     <string name="rating_tab_league">Liga</string>
@@ -341,6 +349,11 @@
     <!-- Reklama bilan davom etish OLIB TASHLANDI: reklama endi hech narsani
          ochmaydi. O'sha joyda bepul haftalik sinov turadi. -->
     <string name="limit_try_trial">7 kun Pro\u2019ni bepul sinash</string>
+    <string name="limit_screen_badge">HSK AI PRO ⭐</string>
+    <string name="limit_benefit_lessons">Barcha darslar ochiladi</string>
+    <string name="limit_benefit_practice">Cheksiz mashq va takrorlash</string>
+    <string name="limit_benefit_voice">AI Voice bilan erkin suhbat</string>
+    <string name="limit_later">Keyinroq</string>
     <string name="limit_trial_failed">Bepul sinovni boshlab bo\u2018lmadi. Bu hisob uni allaqachon olgan bo\u2018lishi mumkin.</string>
     <string name="lesson_pinyin_title">Pinyin (talaffuz yozuvi)</string>
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>

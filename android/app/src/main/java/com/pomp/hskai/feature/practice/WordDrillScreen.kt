@@ -1,5 +1,25 @@
 package com.pomp.hskai.feature.practice
 
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.pomp.hskai.core.design.components.HskAnswerOption
+import com.pomp.hskai.core.design.components.HskBubbleTail
+import com.pomp.hskai.core.design.components.HskCharacterStage
+import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.HskSpeechBubble
+import com.pomp.hskai.core.design.components.HskStageCoach
+import com.pomp.hskai.core.design.components.HskStageHeading
+import com.pomp.hskai.core.design.components.hskOptionState
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,6 +74,7 @@ import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.wordDrillAssistantContext
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.core.design.components.rememberExitGuard
 
 /**
  * The Mini App's adaptive drill screen.
@@ -74,13 +95,22 @@ fun WordDrillScreen(
     onClose: () -> Unit,
 ) {
     AssistantScreen(wordDrillAssistantContext(state), bottomBar = false)
+    // Mid-drill the ✕ and the phone's back ask first; the back used to close
+    // the app. The loader, the limit block and the summary just leave.
+    val requestClose = rememberExitGuard(
+        running = !state.isLoading && !state.limitReached && !state.finished && state.current != null,
+        title = R.string.practice_exit_title,
+        body = R.string.practice_exit_body,
+        onExit = onClose,
+    )
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding(),
         ) {
-            DrillTopBar(progress = state.progress, onClose = onClose)
+            // The result opens with its own clip and has no bar over it.
+            if (!state.finished) PracticeStageTopBar(progress = state.progress, onClose = requestClose)
 
             when {
                 state.isLoading -> Box(
@@ -96,6 +126,11 @@ fun WordDrillScreen(
                             R.string.practice_pronunciation_row_title
                         }
                     ),
+                    sourceKey = if (state.mode == DrillMode.RECOGNITION) {
+                        "recognition_limit"
+                    } else {
+                        "pronunciation_limit"
+                    },
                     limit = limit,
                     reason = state.limitText ?: stringResource(R.string.limit_practice_reason),
                     resetAt = state.resetAt,
@@ -125,92 +160,13 @@ fun WordDrillScreen(
 }
 
 /**
- * The word under drill.
+ * One drill question in the lesson's stage layout, over the faded landscape.
  *
- * [compact] is the version that fits in the column beside the coach, for
- * recognition. Pronunciation asks the learner to SAY the character, so it
- * gets the full width and the large hanzi.
+ * Recognition stands the coach beside the word's sound and meaning and puts
+ * the four characters under it; a tap picks, Tekshirish checks. Pronunciation
+ * is the lesson's pronunciation card: the character in the coach's bubble,
+ * the coach, and a wide microphone.
  */
-@Composable
-private fun DrillWordCard(mode: DrillMode, question: DrillQuestion, compact: Boolean) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 6.dp,
-    ) {
-        Column(
-            // Without the full width there is nothing to centre WITHIN: the
-            // column shrinks to its widest line and sits against the left
-            // edge, which is why the drilled character used to hug the side
-            // of its own card.
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    vertical = if (compact) 18.dp else 24.dp,
-                    horizontal = if (compact) 14.dp else 18.dp,
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            if (mode == DrillMode.PRONUNCIATION) {
-                Text(
-                    text = question.hanzi,
-                    style = PompTextStyles.hanziLarge,
-                    color = PompColors.Ink,
-                )
-            }
-            Text(
-                text = question.pinyin,
-                style = PompTextStyles.pinyin.copy(fontSize = 17.sp),
-                fontWeight = FontWeight.Medium,
-                color = PompColors.CinnabarDark,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = question.meaning,
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                color = PompColors.Ink,
-                textAlign = TextAlign.Center,
-            )
-        }
-    }
-}
-
-@Composable
-private fun DrillTopBar(progress: Float, onClose: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(11.dp),
-    ) {
-        HskGlassIconButton(
-            icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.action_close),
-            onClick = onClose,
-            size = 30.dp,
-            iconSize = 17.dp,
-            tint = PompColors.InkSecondary,
-        )
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(9.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(PompColors.Divider),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(progress.coerceIn(0f, 1f))
-                    .height(9.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(PompColors.Cinnabar),
-            )
-        }
-    }
-}
-
 @Composable
 private fun DrillQuestionBody(
     state: WordDrillUiState,
@@ -220,169 +176,232 @@ private fun DrillQuestionBody(
     onSkipSpoken: () -> Unit,
     onAdvance: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 18.dp),
-    ) {
-        Spacer(Modifier.height(6.dp))
+    val recognition = state.mode == DrillMode.RECOGNITION
+    var picked by remember(state.index) { mutableStateOf<String?>(null) }
+    val character = drillCharacterFor(state.mode)
+    val mood = practiceMoodFor(if (state.isAnswered) state.wasCorrect else null)
+    val reaction = if (state.isAnswered) {
+        hskReactionFor(correct = state.wasCorrect, streak = state.answerStreak)
+    } else {
+        null
+    }
+    val reactionKey = state.index to state.isAnswered
+    // A full-screen route: the footer only has the gesture bar to clear.
+    val bottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-        val character = drillCharacterFor(state.mode)
-        val mood = practiceMoodFor(if (state.isAnswered) state.wasCorrect else null)
-        val reaction = if (state.isAnswered) {
-            hskReactionFor(correct = state.wasCorrect, streak = state.answerStreak)
-        } else {
-            null
-        }
-        val reactionKey = state.index to state.isAnswered
-        val instruction = stringResource(
-            if (state.mode == DrillMode.RECOGNITION) {
-                R.string.drill_recognition_prompt
-            } else {
-                R.string.drill_pronunciation_prompt
-            }
-        )
-
-        // Recognition reads the word and picks a character, so the coach can
-        // stand beside a compact card. Pronunciation SPEAKS the character —
-        // it is the whole point of the screen and has to be big and centred,
-        // which a column beside the coach cannot give it. Squeezing it in
-        // there left a postage-stamp 钱 above a screenful of nothing.
-        if (state.mode == DrillMode.RECOGNITION) {
-            HskCoachBeside(
-                character = character,
-                mood = mood,
-                reaction = reaction,
-                reactionKey = reactionKey,
-                text = instruction,
-            ) {
-                DrillWordCard(state.mode, question, compact = true)
-            }
-        } else {
-            HskCoachRow(
-                character = character,
-                mood = mood,
-                reaction = reaction,
-                reactionKey = reactionKey,
-                text = instruction,
+    Box(modifier = Modifier.fillMaxSize()) {
+        HskSceneBackground(Modifier.fillMaxSize())
+        Column(modifier = Modifier.fillMaxSize()) {
+            HskStageHeading(
+                stringResource(
+                    if (recognition) R.string.drill_recognition_prompt else R.string.drill_pronunciation_prompt
+                )
             )
-            Spacer(Modifier.height(10.dp))
-            DrillWordCard(state.mode, question, compact = false)
+            BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                val viewport = maxHeight
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(min = viewport)
+                        .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = if (recognition) Arrangement.SpaceBetween else Arrangement.Center,
+                ) {
+                    if (recognition) {
+                        HskStageCoach(
+                            character = character,
+                            mood = mood,
+                            reaction = reaction,
+                            reactionKey = reactionKey,
+                        ) {
+                            // The word to find, by its sound and its meaning.
+                            Text(
+                                text = question.pinyin,
+                                style = PompTextStyles.pinyin.copy(fontSize = 17.sp),
+                                fontWeight = FontWeight.Medium,
+                                color = PompColors.CinnabarDark,
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = question.meaning,
+                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+                                color = PompColors.Ink,
+                            )
+                        }
+                        RecognitionOptions(
+                            state = state,
+                            question = question,
+                            picked = picked,
+                            onPick = { picked = it },
+                        )
+                    } else {
+                        PronunciationStage(
+                            state = state,
+                            question = question,
+                            coach = {
+                                HskCharacterStage(
+                                    character = character,
+                                    mood = mood,
+                                    reaction = reaction,
+                                    reactionKey = reactionKey,
+                                    modifier = Modifier.size(width = 150.dp, height = 165.dp),
+                                )
+                            },
+                            onSpeak = onSpeak,
+                            onSkipSpoken = onSkipSpoken,
+                        )
+                    }
+                    state.error?.let { error ->
+                        PracticeErrorPill(stringResource(error.messageRes), Modifier.padding(top = 12.dp))
+                    }
+                }
+            }
+            when {
+                state.isAnswered -> PracticeFeedbackPanel(
+                    isCorrect = state.wasCorrect,
+                    verdictSuffix = state.spokenScore?.let { " $it%" }.orEmpty(),
+                    lines = if (state.wasCorrect) emptyList() else listOf("${question.hanzi} · ${question.pinyin}"),
+                    continueText = stringResource(R.string.lesson_next),
+                    loading = false,
+                    onContinue = onAdvance,
+                    bottomInset = bottomInset,
+                )
+                recognition -> PracticeCheckFooter(
+                    enabled = picked != null,
+                    onCheck = { picked?.let(onChoose) },
+                    bottomInset = bottomInset,
+                )
+            }
         }
-
-        Spacer(Modifier.height(18.dp))
-
-        if (state.mode == DrillMode.RECOGNITION) {
-            RecognitionOptions(state = state, question = question, onChoose = onChoose)
-        } else {
-            PronunciationControls(
-                state = state,
-                onSpeak = onSpeak,
-                onSkipSpoken = onSkipSpoken,
-            )
-        }
-
-        Spacer(Modifier.weight(1f))
-
-        if (state.isAnswered) {
-            DrillFeedback(state = state, question = question, onAdvance = onAdvance)
-        }
-        Spacer(Modifier.height(16.dp))
     }
 }
 
+/** The four characters, two by two: the grid keeps them large enough to tell apart. */
 @Composable
 private fun RecognitionOptions(
     state: WordDrillUiState,
     question: DrillQuestion,
-    onChoose: (String) -> Unit,
+    picked: String?,
+    onPick: (String) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        question.options.chunked(2).forEach { row ->
+    val correctIndex = question.options.indexOf(question.hanzi)
+    val chosen = if (state.isAnswered) state.selected else picked
+    val chosenIndex = chosen?.let { question.options.indexOf(it) }?.takeIf { it >= 0 }
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        question.options.chunked(2).forEachIndexed { row, pair ->
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                row.forEach { option ->
-                    val isRight = state.isAnswered && option == question.hanzi
-                    val isWrongPick = state.isAnswered &&
-                        option == state.selected &&
-                        option != question.hanzi
-                    Surface(
-                        onClick = { onChoose(option) },
-                        enabled = !state.isAnswered,
-                        shape = RoundedCornerShape(13.dp),
-                        color = when {
-                            isRight -> PompColors.JadeSoft
-                            isWrongPick -> PompColors.FlameSoft
-                            else -> PompColors.PaperRaised
-                        },
-                        border = BorderStroke(
-                            2.dp,
-                            when {
-                                isRight -> PompColors.Jade
-                                isWrongPick -> PompColors.Flame
-                                else -> PompColors.Divider
-                            },
+                pair.forEachIndexed { column, option ->
+                    val index = row * 2 + column
+                    HskAnswerOption(
+                        text = option,
+                        state = hskOptionState(
+                            index = index,
+                            correctIndex = correctIndex,
+                            selectedIndex = chosenIndex,
+                            isAnswered = state.isAnswered,
                         ),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(bottom = 10.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier.heightIn(min = 76.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = option,
-                                style = PompTextStyles.hanziMedium,
-                                color = when {
-                                    isRight -> PompColors.Jade
-                                    isWrongPick -> PompColors.Flame
-                                    else -> PompColors.Ink
-                                },
-                            )
-                        }
-                    }
+                        enabled = !state.isAnswered,
+                        onClick = { onPick(option) },
+                        modifier = Modifier.weight(1f),
+                        minHeight = 76.dp,
+                        hanziSize = 32.sp,
+                    )
                 }
             }
         }
     }
 }
 
+/**
+ * The lesson's pronunciation card for a drilled character: what to say in the
+ * coach's bubble, the coach under it, a wide microphone, and a quiet way out.
+ */
 @Composable
-private fun PronunciationControls(
+private fun PronunciationStage(
     state: WordDrillUiState,
+    question: DrillQuestion,
+    coach: @Composable () -> Unit,
     onSpeak: () -> Unit,
     onSkipSpoken: () -> Unit,
 ) {
     val context = LocalContext.current
+    var permissionDenied by remember { mutableStateOf(false) }
     val permission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
-    ) { granted -> if (granted) onSpeak() }
+    ) { granted ->
+        permissionDenied = !granted
+        if (granted) onSpeak()
+    }
+    val micEnabled = !state.isRecording && !state.isScoring && !state.isAnswered
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Surface(
-            onClick = {
-                val granted = ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.RECORD_AUDIO,
-                ) == PackageManager.PERMISSION_GRANTED
-                if (granted) onSpeak() else permission.launch(Manifest.permission.RECORD_AUDIO)
-            },
-            enabled = !state.isRecording && !state.isScoring && !state.isAnswered,
-            shape = CircleShape,
-            color = if (state.isRecording) PompColors.CinnabarDark else PompColors.Cinnabar,
-            border = BorderStroke(3.dp, PompColors.PaperRaised),
-            modifier = Modifier.size(78.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Filled.Mic,
-                    contentDescription = stringResource(R.string.voice_a11y_mic),
-                    tint = PompColors.Paper,
-                    modifier = Modifier.size(31.dp),
+        HskSpeechBubble(tail = HskBubbleTail.Bottom) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = question.hanzi,
+                    style = PompTextStyles.hanziLarge,
+                    color = PompColors.Ink,
                 )
+                Text(
+                    text = question.pinyin,
+                    style = PompTextStyles.pinyin.copy(fontSize = 17.sp),
+                    fontWeight = FontWeight.Medium,
+                    color = PompColors.CinnabarDark,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = question.meaning,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        coach()
+        Spacer(Modifier.height(18.dp))
+        val micShape = RoundedCornerShape(20.dp)
+        Box(modifier = Modifier.padding(bottom = 6.dp)) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .offset(y = 6.dp)
+                    .clip(micShape)
+                    .background(if (micEnabled) PompColors.CinnabarDark else PompColors.Divider),
+            )
+            Surface(
+                onClick = {
+                    val granted = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.RECORD_AUDIO,
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (granted) {
+                        permissionDenied = false
+                        onSpeak()
+                    } else {
+                        permission.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+                enabled = micEnabled,
+                shape = micShape,
+                color = if (state.isRecording) PompColors.CinnabarDark else PompColors.Cinnabar,
+                modifier = Modifier.size(width = 208.dp, height = 80.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.Mic,
+                        contentDescription = stringResource(R.string.voice_a11y_mic),
+                        tint = PompColors.Paper,
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
             }
         }
         Spacer(Modifier.height(9.dp))
@@ -394,74 +413,28 @@ private fun PronunciationControls(
             },
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
             color = PompColors.InkDisabled,
+            textAlign = TextAlign.Center,
         )
-        if (!state.isAnswered) {
-            Spacer(Modifier.height(10.dp))
+        if (permissionDenied) {
+            Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.foundation_speak_skip),
-                style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
-                fontWeight = FontWeight.Bold,
-                color = PompColors.InkDisabled,
+                text = stringResource(R.string.lesson_microphone_permission_required),
+                style = MaterialTheme.typography.bodySmall,
+                color = PompColors.Flame,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(enabled = !state.isRecording && !state.isScoring) {
-                        onSkipSpoken()
-                    }
-                    .padding(vertical = 6.dp),
             )
         }
-    }
-}
-
-@Composable
-private fun DrillFeedback(
-    state: WordDrillUiState,
-    question: DrillQuestion,
-    onAdvance: () -> Unit,
-) {
-    Surface(
-        color = if (state.wasCorrect) PompColors.JadeSoft else PompColors.FlameSoft,
-        shape = RoundedCornerShape(14.dp),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Text(
-                text = buildString {
-                    append(
-                        stringResource(
-                            if (state.wasCorrect) R.string.lesson_correct else R.string.lesson_wrong
-                        )
-                    )
-                    state.spokenScore?.let { append(" $it%") }
-                },
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
-                fontWeight = FontWeight.Medium,
-                color = if (state.wasCorrect) PompColors.Jade else PompColors.Flame,
-            )
-            if (!state.wasCorrect) {
+        if (!state.isAnswered) {
+            Spacer(Modifier.height(20.dp))
+            // A quiet way out, not a second button competing with the microphone.
+            TextButton(onClick = onSkipSpoken, enabled = !state.isRecording && !state.isScoring) {
                 Text(
-                    text = "${question.hanzi} · ${question.pinyin}",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                    color = PompColors.InkSecondary,
-                )
-            }
-            Spacer(Modifier.height(10.dp))
-            Surface(
-                onClick = onAdvance,
-                color = if (state.wasCorrect) PompColors.Jade else PompColors.Flame,
-                shape = RoundedCornerShape(13.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(R.string.lesson_next),
-                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                    fontWeight = FontWeight.Medium,
-                    color = PompColors.Paper,
+                    text = stringResource(R.string.foundation_speak_skip),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    color = PompColors.InkDisabled,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 14.dp),
                 )
             }
         }
@@ -479,31 +452,33 @@ private fun DrillSummary(mode: DrillMode, correct: Int, total: Int, onDone: () -
         correct = correct,
         total = total,
     )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        PracticeCompletionHero(outcome = outcome)
-        Spacer(Modifier.height(24.dp))
-        Surface(
-            onClick = onDone,
-            color = PompColors.Cinnabar,
-            shape = RoundedCornerShape(14.dp),
-            modifier = Modifier.fillMaxWidth(),
+    PracticeCompletionClip(outcome = outcome) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(R.string.action_close),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Paper,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 15.dp),
-            )
+            PracticeCompletionHero(outcome = outcome)
+            Spacer(Modifier.height(24.dp))
+            Surface(
+                onClick = onDone,
+                color = PompColors.Cinnabar,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = stringResource(R.string.action_close),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Paper,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 15.dp),
+                )
+            }
         }
     }
 }

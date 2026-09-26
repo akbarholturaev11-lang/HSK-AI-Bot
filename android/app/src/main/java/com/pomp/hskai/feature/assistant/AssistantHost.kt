@@ -82,6 +82,12 @@ data class VisibleScreen(
     val bottomInset: Dp = 0.dp,
     /** A full-screen overlay that must not have the button floating over it. */
     val hidesAssistant: Boolean = false,
+    /**
+     * False keeps the floating button off the screen while the chat itself
+     * stays reachable: the lesson opens it from its own «Xatoyim nimada?»
+     * questions and must not carry the button over its cards and celebration.
+     */
+    val showsButton: Boolean = true,
 )
 
 /** Explicit registration avoids scraping UI, secrets or hidden answer keys. */
@@ -109,14 +115,41 @@ class ScreenRegistry {
         }.maxWithOrNull(compareBy<Pair<Int, VisibleScreen>> { it.second.priority }.thenBy { it.first })?.second
     }
 }
-class AssistantBinding(val registry: ScreenRegistry, val controller: AssistantController, val open: () -> Unit)
+class AssistantBinding(
+    val registry: ScreenRegistry,
+    val controller: AssistantController,
+    val open: () -> Unit,
+    /**
+     * Opens the chat and asks a question for the learner, with the screen's
+     * own ready answer shown before it. The screen's registered context goes
+     * with the question, exactly as if it had been typed.
+     */
+    val ask: (question: String, readyAnswer: String) -> Unit,
+)
 val LocalAssistant = staticCompositionLocalOf<AssistantBinding?> { null }
 
 @Composable
-fun AssistantScreen(context: ScreenContext, bottomBar: Boolean = false, priority: Int = 0, bottomInset: Dp = 0.dp) {
+fun AssistantScreen(
+    context: ScreenContext,
+    bottomBar: Boolean = false,
+    priority: Int = 0,
+    bottomInset: Dp = 0.dp,
+    showButton: Boolean = true,
+) {
     val host = LocalAssistant.current ?: return
     val owner = remember { Any() }
-    SideEffect { host.registry.put(owner, VisibleScreen(context.copy(details = context.details.take(8000), title = context.title.take(160)), bottomBar, priority, bottomInset)) }
+    SideEffect {
+        host.registry.put(
+            owner,
+            VisibleScreen(
+                context = context.copy(details = context.details.take(8000), title = context.title.take(160)),
+                bottomBar = bottomBar,
+                priority = priority,
+                bottomInset = bottomInset,
+                showsButton = showButton,
+            ),
+        )
+    }
     DisposableEffect(host, owner) { onDispose { host.registry.remove(owner) } }
 }
 
@@ -135,7 +168,18 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
     val auth by app.authRepository.state.collectAsStateWithLifecycle()
     var open by rememberSaveable { mutableStateOf(false) }
     var destination by remember { mutableStateOf<String?>(null) }
-    val binding = remember { AssistantBinding(registry, app.assistant) { open = true; app.assistant.open() } }
+    val binding = remember {
+        AssistantBinding(
+            registry = registry,
+            controller = app.assistant,
+            open = { open = true; app.assistant.open() },
+            ask = { question, readyAnswer ->
+                open = true
+                app.assistant.open()
+                app.assistant.ask(question, registry.current?.context ?: ScreenContext(), readyAnswer)
+            },
+        )
+    }
     val scope = rememberCoroutineScope()
     val visible = registry.current
     val availableOnScreen = auth is AuthState.Authenticated && visible != null && !visible.hidesAssistant
@@ -148,7 +192,7 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
             // The button floats and the learner can park it, so no screen has to
             // reserve a shelf for it: inner screens keep their own bottom action alone.
             Box(Modifier.fillMaxSize()) { content() }
-            if (availableOnScreen && !open) DraggableAssistantButton(
+            if (availableOnScreen && !open && visible?.showsButton == true) DraggableAssistantButton(
                 onClick = binding.open,
                 areaWidth = maxWidth,
                 areaHeight = maxHeight,
@@ -490,7 +534,7 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                             AssistantChip(stringResource(R.string.assistant_older), onClick = app.assistant::older)
                         }
                     }
-                    if (state.turns.isEmpty() && !state.loading) item {
+                    if (state.turns.isEmpty() && !state.loading && state.seed == null) item {
                         Column(
                             Modifier.fillMaxWidth().padding(top = 22.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -514,6 +558,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                     }
                     items(state.turns, key = { it.clientMessageId }) { turn ->
                         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            // The ready answer the question was asked about comes first.
+                            state.seed?.takeIf { it.beforeClientMessageId == turn.clientMessageId }?.let { seed ->
+                                AssistantSeedBubble(seed)
+                            }
                             AssistantUserBubble(turn)
                             when {
                                 turn.text.isNotBlank() -> AssistantAnswerBubble(turn, onAction)
@@ -532,6 +580,10 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                                 }
                             }
                         }
+                    }
+                    // Until the server confirms the question, the ready answer waits at the end.
+                    state.seed?.takeIf { seed -> state.turns.none { it.clientMessageId == seed.beforeClientMessageId } }?.let { seed ->
+                        item(key = "assistant-seed") { AssistantSeedBubble(seed) }
                     }
                 }
             }
@@ -790,6 +842,14 @@ private fun AssistantAnswerBubble(turn: AssistantTurn, onAction: (AssistantActio
         }
         if (turn.status == "failed" && turn.error.isNotBlank()) Text(assistantError(turn.error),
             style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+    }
+}
+
+/** A ready answer the app already had: no model wrote it and the server never sees it. */
+@Composable
+private fun AssistantSeedBubble(seed: AssistantSeed) {
+    AssistantAnswerFrame {
+        Text(seed.text, style = MaterialTheme.typography.bodyLarge, color = PompColors.Ink)
     }
 }
 

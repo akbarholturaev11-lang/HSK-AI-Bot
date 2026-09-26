@@ -1,6 +1,5 @@
 package com.pomp.hskai.feature.course
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +32,7 @@ import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.feature.lesson.ChoiceCardView
+import com.pomp.hskai.core.design.components.rememberExitGuard
 
 /**
  * The Mini App's skip-ahead test, on Android.
@@ -53,7 +53,19 @@ internal fun SkipTestScreen(
     onOpenLesson: () -> Unit,
     onClose: () -> Unit,
 ) {
-    BackHandler(onBack = onClose)
+    // While its questions run, back asks before throwing the test away; on the
+    // offer, the loaders and the result it simply closes, as it always did.
+    rememberExitGuard(
+        running = !state.isLoading &&
+            !state.isUnlocking &&
+            state.error == null &&
+            !state.unlocked &&
+            state.finishedScore == null &&
+            state.questions.isNotEmpty(),
+        title = R.string.practice_exit_title,
+        body = R.string.practice_exit_body,
+        onExit = onClose,
+    )
 
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(

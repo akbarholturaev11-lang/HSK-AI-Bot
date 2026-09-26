@@ -621,6 +621,13 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
                         mode="subscription",
                         created_at=now - timedelta(days=2),
                     ),
+                    SubscriptionEntryEvent(
+                        id=5,
+                        telegram_id=202,
+                        source="profile",
+                        mode="subscription",
+                        created_at=now - timedelta(days=2, hours=1),
+                    ),
                     Payment(
                         id=1,
                         user_telegram_id=101,
@@ -628,6 +635,7 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
                         amount=100,
                         currency="USD",
                         payment_status="approved",
+                        source="miniapp",
                         submitted_at=now - timedelta(days=2),
                         reviewed_at=now - timedelta(days=1),
                     ),
@@ -638,6 +646,7 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
                         amount=50,
                         currency="USD",
                         payment_status="approved",
+                        source="android",
                         submitted_at=now - timedelta(days=2),
                         reviewed_at=now - timedelta(days=1),
                     ),
@@ -648,6 +657,7 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
                         amount=70,
                         currency="USD",
                         payment_status="approved",
+                        source="desktop",
                         submitted_at=now - timedelta(days=2),
                         reviewed_at=now - timedelta(days=1),
                     ),
@@ -683,6 +693,52 @@ class FinanceStatsIntegrityTests(_StatsDatabaseTestCase):
             "approved Payment",
             weekly["client_business"]["explain"],
         )
+
+    async def test_android_payment_keeps_client_and_limit_section_as_separate_attribution(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    User(
+                        id=1,
+                        telegram_id=505,
+                        status="active",
+                        payment_status="approved",
+                        created_at=now - timedelta(days=30),
+                        last_active_at=now - timedelta(hours=1),
+                        end_date=now + timedelta(days=20),
+                    ),
+                    SubscriptionEntryEvent(
+                        id=1,
+                        telegram_id=505,
+                        source="android_voice_limit",
+                        mode="subscription",
+                        created_at=now - timedelta(days=2),
+                    ),
+                    Payment(
+                        id=1,
+                        user_telegram_id=505,
+                        plan_type="1_month",
+                        amount=40,
+                        currency="USD",
+                        payment_status="approved",
+                        source="android",
+                        submitted_at=now - timedelta(days=1),
+                        reviewed_at=now - timedelta(hours=12),
+                    ),
+                ]
+            )
+            await session.commit()
+            payload = await AdminFinanceStatsService(session).build()
+
+        weekly = next(item for item in payload["periods"] if item["key"] == "weekly")
+        by_client = {row["key"]: row for row in weekly["client_business"]["rows"]}
+        by_source = {row["source"]: row for row in weekly["sources_paid"]}
+
+        self.assertEqual(by_client["android"]["payments"], 1)
+        self.assertEqual(by_client["android"]["revenue_usd"], 40.0)
+        self.assertEqual(by_source["android_voice_limit"]["payments"], 1)
+        self.assertEqual(by_source["android_voice_limit"]["revenue_usd"], 40.0)
 
 
 class NotificationStatsIntegrityTests(unittest.TestCase):
