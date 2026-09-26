@@ -59,6 +59,15 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.client.aclose()
 
+    async def test_account_deletion_request_is_accessible_outside_app(self):
+        page = await self.client.get("/account-deletion")
+        self.assertEqual(page.status_code, 200)
+        self.assertIn("Request deletion of your HSK AI account", page.text)
+        self.assertIn("https://t.me/darsi_chini_bot?start=account_deletion", page.text)
+        self.assertIn("Request deletion", page.text)
+        self.assertIn("/account-deletion", (await self.client.get("/privacy")).text)
+        self.assertIn("/account-deletion", SITEMAP_PATHS)
+
     async def test_all_html_metadata_source_and_schemas(self):
         titles, descriptions = set(), set()
         for path, page in PAGES.items():
@@ -124,6 +133,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(allowed(robots.text, agent, "/desktop-download.html"))
             self.assertTrue(allowed(robots.text, agent, "/assets/hsk-ai-cover.webp"))
             self.assertTrue(allowed(robots.text, agent, "/google4575dc78c69e5824.html"))
+            self.assertTrue(allowed(robots.text, agent, "/account-deletion"))
 
         verification = await self.client.get("/google4575dc78c69e5824.html")
         self.assertEqual(verification.status_code, 200)

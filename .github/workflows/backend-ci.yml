@@ -33,3 +33,5 @@ jobs:
       - name: Run adjacent reminder and access regressions
         run: |
           python -m unittest tests.test_admin_stats_service tests.test_trial_reminder_service tests.test_motivation_reminder_service tests.test_blocked_user_guard tests.test_blocked_user_guard_cache
+      - name: Check account deletion request and public instructions
+        run: python -m unittest tests.test_account_deletion_request tests.test_public_site

@@ -325,6 +325,10 @@ fun ProfileScreen(
                 privacyOpen = false
                 onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/privacy")
             },
+            onDeleteAccount = {
+                privacyOpen = false
+                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/account-deletion")
+            },
             onPermissions = {
                 val intent = Intent(
                     Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -798,6 +802,7 @@ private fun StudyReminderSettingsSheet(
 private fun PrivacySecuritySheet(
     onTerms: () -> Unit,
     onPrivacyPolicy: () -> Unit,
+    onDeleteAccount: () -> Unit,
     onPermissions: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -816,6 +821,8 @@ private fun PrivacySecuritySheet(
                     MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), true, onTerms) { SettingsChevron() }
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), true, onPrivacyPolicy) { SettingsChevron() }
+                    SettingsDivider()
+                    MiniSettingsRow(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), true, onDeleteAccount) { SettingsChevron() }
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), true, onPermissions) { SettingsChevron() }
                 }
