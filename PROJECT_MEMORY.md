@@ -248,6 +248,7 @@ Files touched:
 Risk / follow-up:
 - Backend, DB, to'lov, Mini App o'zgarmagan. Reyting mantiqi o'zgarmagan.
 - Android CI (run 36171700748) yashil. Telefonda ko'rish/eshitish tekshiruvi kerak (ovoz balandligi, vibratsiya kuchi).
+- Reliz: Android 1.6.9 (versionCode 24) — dars ekrani va dars yakuni klipi shu versiyada chiqdi.
 
 ### 2026-09-25 — Android dars ekrani: Tekshirish tugmasi va xatoga tayyor javob
 
