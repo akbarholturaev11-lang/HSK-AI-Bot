@@ -1427,6 +1427,7 @@ async def _admin_user_payload(session, user) -> dict:
                 "status": payment.payment_status,
                 "plan": _mini_plan_label(payment.plan_type),
                 "method": _mini_method_label(payment.payment_method),
+                "source": getattr(payment, "source", "telegram_bot"),
                 "amount": format_subscription_price(payment.amount, payment.currency),
                 "submitted_at": _mini_dt(payment.submitted_at),
                 "reviewed_at": _mini_dt(payment.reviewed_at),

@@ -27,7 +27,7 @@ class SubscriptionSourceStats:
 class SubscriptionEntryAnalyticsService:
     SOURCE_GROUP_LABELS = {
         "subscription_page": "Obuna sahifasi",
-        "android_subscription": "Android -> Telegram obuna",
+        "android_subscription": "Android -> Obuna",
         "desktop_subscription": "Desktop -> Obuna",
         "course_locked_lesson": "Qulflangan dars",
         "pronunciation_limit": "Talaffuz limiti",
