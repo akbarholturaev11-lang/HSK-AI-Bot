@@ -193,6 +193,12 @@ fun PracticeScreen(
             val section = state.pendingTool
             SectionLimitOverlay(
                 sectionTitle = if (section != null) stringResource(section.titleRes) else stringResource(R.string.practice_title),
+                sourceKey = when (section?.mode) {
+                    "placement" -> "practice_placement"
+                    "mock" -> "practice_mock"
+                    "mistake_review" -> "practice_mistakes"
+                    else -> "practice_limit"
+                },
                 limit = limit,
                 reason = spent.limitText ?: stringResource(R.string.limit_practice_reason),
                 resetAt = spent.resetAt,
