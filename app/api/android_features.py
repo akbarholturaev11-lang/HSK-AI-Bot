@@ -109,6 +109,17 @@ MAX_TIMEZONE_OFFSET = 840
 MAX_ANDROID_JSON_BODY_BYTES = 16 * 1024
 ANDROID_PROFILE_AVATARS = {"", "panda_cheer", "panda_streak", "panda_worried"}
 
+ANDROID_CHECKOUT_ORIGIN_SOURCES = {
+    "course_limit": "android_course_limit",
+    "practice_limit": "android_practice_limit",
+    "practice_placement": "android_practice_placement",
+    "practice_mock": "android_practice_mock",
+    "practice_mistakes": "android_practice_mistakes",
+    "recognition_limit": "android_recognition_limit",
+    "pronunciation_limit": "android_pronunciation_limit",
+    "voice_limit": "android_voice_limit",
+}
+
 # Reklama turlaridan Android nimani ko'rsatishi mumkin.
 #
 # `app` turi HECH QAYSI kanalda berilmaydi: u desktop ilovani yuklab olishga
@@ -842,10 +853,18 @@ def create_android_features_router(
     @router.get("/api/v3/android/subscription/checkout/overview")
     async def android_checkout_overview(request: Request):
         try:
-            if request.query_params:
+            unknown = set(request.query_params.keys()) - {"origin"}
+            if unknown:
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
+            origin = str(request.query_params.get("origin") or "").strip()
+            if origin and origin not in ANDROID_CHECKOUT_ORIGIN_SOURCES:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            entry_source = ANDROID_CHECKOUT_ORIGIN_SOURCES.get(origin)
             async with session_factory() as session:
-                result = await (await _android_checkout(session, request)).overview(_access_token(request))
+                result = await (await _android_checkout(session, request)).overview(
+                    _access_token(request),
+                    entry_source=entry_source,
+                )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
             return _error_response(exc)
