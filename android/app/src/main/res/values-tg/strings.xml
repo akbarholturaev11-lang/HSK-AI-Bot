@@ -78,6 +78,13 @@
     <string name="lesson_grammar">Грамматика</string>
     <string name="lesson_repeat_after_teacher">Пас аз устод такрор кунед</string>
     <string name="lesson_cannot_speak_now">Ҳоло гап зада наметавонам</string>
+    <!-- Leaving a running lesson or exercise asks first (✕ and the system back). -->
+    <string name="lesson_exit_title">Аз дарс мебароед?</string>
+    <string name="lesson_exit_body">Ҷое, ки истодед, нигоҳ дошта мешавад — баъд аз ҳамон ҷо идома медиҳед.</string>
+    <string name="practice_exit_title">Аз машқ мебароед?</string>
+    <string name="practice_exit_body">Натиҷаи ин кӯшиш нигоҳ дошта намешавад.</string>
+    <string name="exit_confirm_leave">Баромадан</string>
+    <string name="exit_confirm_stay">Идома додан</string>
     <string name="lesson_microphone_permission_required">Барои санҷидани талаффуз ба микрофон иҷозат диҳед</string>
     <string name="lesson_play_audio">Шунидани овоз</string>
     <string name="lesson_audio_loading">Овоз бор шуда истодааст</string>

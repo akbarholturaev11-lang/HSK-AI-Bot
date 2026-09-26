@@ -51,6 +51,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
@@ -79,6 +80,7 @@ import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.rememberExitGuard
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.ChoiceKind
@@ -128,7 +130,7 @@ fun LessonScreen(
     pinyin: PinyinVisibility,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
     onAnswerBuilder: (LessonCard, List<String>) -> Unit,
-    onAnswerPairs: (MatchPairsCard, List<Pair<Int, Int>>) -> Unit,
+    onAnswerPairs: (MatchPairsCard) -> Unit,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
@@ -144,6 +146,18 @@ fun LessonScreen(
     modifier: Modifier = Modifier,
 ) {
     val outcome = state.outcome
+    // Mid-lesson, the ✕ and the phone's back both ask before leaving; the back
+    // used to close the whole app from here. Loaders, errors, the limit block
+    // and the celebration are not a lesson in progress and just leave.
+    val requestExit = rememberExitGuard(
+        running = !state.isLoading &&
+            state.lesson != null &&
+            outcome is LessonOutcome.InProgress &&
+            state.error !is ApiError.LimitReached,
+        title = R.string.lesson_exit_title,
+        body = R.string.lesson_exit_body,
+        onExit = onExit,
+    )
     Box(modifier = modifier.fillMaxSize()) {
         Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
             when {
@@ -187,7 +201,7 @@ fun LessonScreen(
                         onOpenWriter = onOpenWriter,
                         onShowWriterCharacter = onShowWriterCharacter,
                         onCloseWriter = onCloseWriter,
-                        onExit = onExit,
+                        onExit = requestExit,
                         onAskAssistant = onAskAssistant,
                     )
                 }
@@ -273,7 +287,7 @@ private fun LessonBody(
     pinyin: PinyinVisibility,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
     onAnswerBuilder: (LessonCard, List<String>) -> Unit,
-    onAnswerPairs: (MatchPairsCard, List<Pair<Int, Int>>) -> Unit,
+    onAnswerPairs: (MatchPairsCard) -> Unit,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
@@ -319,6 +333,22 @@ private fun LessonBody(
         delay(720)
         entryAlpha.animateTo(0f, tween(durationMillis = 360))
         entryVisible = false
+    }
+
+    // A voice card speaks as it arrives, the way the Mini App's `cardChoice`
+    // (listening) and `cardPron` do: the teacher is heard first, without a tap.
+    // It waits for the entry curtain, so the first card is not spoken unseen.
+    val play by rememberUpdatedState(onPlayAudio)
+    LaunchedEffect(state.cardIndex, entryVisible) {
+        if (entryVisible || state.isAnswered) return@LaunchedEffect
+        val spoken = when (card) {
+            is ChoiceCard -> card.audioText.takeIf { card.kind == ChoiceKind.LISTENING }
+            is PronunciationCard -> card.phrase
+            else -> null
+        }
+        if (spoken.isNullOrBlank()) return@LaunchedEffect
+        delay(VOICE_CARD_SPEAK_DELAY_MILLIS)
+        play(spoken)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -482,7 +512,7 @@ private fun LessonBody(
                         LessonCardErrors(state)
                     }
                     is MatchPairsCard -> {
-                        MatchPairsCardView(card, state.isAnswered) { onAnswerPairs(card, it) }
+                        MatchPairsCardView(card, state.isAnswered) { onAnswerPairs(card) }
                         LessonCardErrors(state)
                     }
                     is UnsupportedCard -> {
@@ -606,6 +636,9 @@ private val WriterDepthLight = Color(0xFF9A7420)
 
 /** How far the pencil floats above whatever the footer currently is. */
 private val WriterButtonGap = 16.dp
+
+/** Between the Mini App's 250 ms (listening) and 350 ms (say-after-me). */
+private const val VOICE_CARD_SPEAK_DELAY_MILLIS = 300L
 
 @Composable
 private fun LessonTopBar(

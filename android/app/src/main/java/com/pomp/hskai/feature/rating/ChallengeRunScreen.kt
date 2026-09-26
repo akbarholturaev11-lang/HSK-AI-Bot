@@ -40,6 +40,7 @@ import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.challengeAssistantContext
+import com.pomp.hskai.core.design.components.rememberExitGuard
 
 /**
  * The duel itself: the same questions the opponent gets, in the same order.
@@ -58,6 +59,14 @@ fun ChallengeRunScreen(
     onClose: () -> Unit,
 ) {
     AssistantScreen(challengeAssistantContext(state, opponentName), bottomBar = false, priority = 10)
+    // The answers only go out at the end, so leaving mid-duel asks first. The
+    // phone's back used to close the app from here.
+    val requestClose = rememberExitGuard(
+        running = !state.isLoading && !state.finished && state.current != null,
+        title = R.string.practice_exit_title,
+        body = R.string.practice_exit_body,
+        onExit = onClose,
+    )
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(
             modifier = Modifier
@@ -74,7 +83,7 @@ fun ChallengeRunScreen(
                 HskGlassIconButton(
                     icon = Icons.Filled.Close,
                     contentDescription = stringResource(R.string.action_close),
-                    onClick = onClose,
+                    onClick = requestClose,
                     size = 30.dp,
                     iconSize = 17.dp,
                     tint = PompColors.InkSecondary,

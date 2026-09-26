@@ -865,6 +865,44 @@ Foydalanuvchi tasdiqlagan chizma bo'yicha (`WidgetInstallPromptScreen.kt`):
 galochka chiqadimi; Xiaomi'da ruxsat o'chiq/yoqiq holatda; uz/ru/tg;
 kichik ekran (640 dp) — widget kesilib qolmasligi.
 
+### 3.20 Juftlik bahosi, darsda AI tugmasi, avto-ovoz, «orqaga» — 2026-09-26
+
+Foydalanuvchi suratlaridan to'rtta narsa:
+
+- **Juftlik mashqi to'g'ri moslansa ham «Noto'g'ri» derdi.** `MatchPairsCardView`
+  har bir noto'g'ri bosishni yig'ib `answerMatchPairs` ga berardi, u esa bitta
+  xato bosish bo'lsa butun kartani xato qilib, yurak olib, mistake yozardi.
+  Mini App'da (`cardMatch`, `_mR`) hammasi moslansa — to'g'ri; xato bosish faqat
+  signal. Endi ham shunday: `answerMatchPairs(card)` doim to'g'ri, yurak
+  ketmaydi, mistake yuborilmaydi. Xato bosilgan ikki katak 400 ms qizil
+  chegara oladi (`PairState.WRONG`). Boshqa kartalar (tanlov, builder, gap,
+  reverse, drill, o'tish testi, Mashq) Mini App bilan solishtirildi — farq yo'q.
+- **AI tugmasi dars ichida va yakunida yo'q.** `AssistantScreen(showButton =
+  false)` — faqat suzuvchi tugma yashiriladi; ro'yxatdagi kontekst qoladi,
+  shuning uchun «Xatoyim nimada?» / «Misol bilan ko'rsat» chatni ochaveradi.
+  `hidesAssistant` dan farqi shu: u chatni ham o'chiradi.
+- **Tinglash va «Ustozdan keyin takrorlang» kartasi ovozni o'zi chaladi**
+  (`LessonBody`, 300 ms, kirish pardasi yopilgandan keyin). Mikrofon avtomatik
+  yoqilmaydi — foydalanuvchi qarori.
+- **«Orqaga» ilovani yopmaydi.** Ekranlar activity emas, holat bo'lgani uchun
+  back tizimga tushib ilovani yopardi. Endi `rememberExitGuard`
+  (`core/design/components/HskExitGuard.kt`): ish ketayotganda ✕ ham, back ham
+  tasdiq so'raydi (dars, Mashq to'plamlari, Xatolarim takrori, imtihon,
+  Ieroglif/Talaffuz drill, o'tish testi, bellashuv); natija/xato/loader'da
+  to'g'ridan-to'g'ri chiqadi. Lug'at — so'zdan ro'yxatga, ro'yxatdan chiqish.
+  Kursdan boshqa tabda back → Kurs (`MainActivity`, tablardan oldin
+  ro'yxatdan o'tadi, shuning uchun tabning o'z back'i ustun). Kursda back —
+  ilovadan chiqish. Yangi satrlar: `lesson_exit_*`, `practice_exit_*`,
+  `exit_confirm_*` (uz/ru/tg).
+
+**Qolgan:** dars yakunidan keyingi reklama oynasida (`AdScreen`) back hali ham
+Kurs tabida turgani uchun ilovadan chiqaradi — reklama mantig'iga tegilmadi.
+
+**Tekshirilmagan:** bu muhitda `dl.google.com` yopiq — Gradle build ham, unit
+test ham ishlamadi. Yettita statik tekshiruv o'tdi. CI (PR yoki `main`) va
+telefonda: juftlikda xato bosish, avto-ovoz (sekin internet), back — dars,
+drill, lug'at, tablar.
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.

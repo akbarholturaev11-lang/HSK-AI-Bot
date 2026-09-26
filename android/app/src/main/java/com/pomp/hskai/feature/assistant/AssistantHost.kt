@@ -82,6 +82,12 @@ data class VisibleScreen(
     val bottomInset: Dp = 0.dp,
     /** A full-screen overlay that must not have the button floating over it. */
     val hidesAssistant: Boolean = false,
+    /**
+     * False keeps the floating button off the screen while the chat itself
+     * stays reachable: the lesson opens it from its own «Xatoyim nimada?»
+     * questions and must not carry the button over its cards and celebration.
+     */
+    val showsButton: Boolean = true,
 )
 
 /** Explicit registration avoids scraping UI, secrets or hidden answer keys. */
@@ -123,10 +129,27 @@ class AssistantBinding(
 val LocalAssistant = staticCompositionLocalOf<AssistantBinding?> { null }
 
 @Composable
-fun AssistantScreen(context: ScreenContext, bottomBar: Boolean = false, priority: Int = 0, bottomInset: Dp = 0.dp) {
+fun AssistantScreen(
+    context: ScreenContext,
+    bottomBar: Boolean = false,
+    priority: Int = 0,
+    bottomInset: Dp = 0.dp,
+    showButton: Boolean = true,
+) {
     val host = LocalAssistant.current ?: return
     val owner = remember { Any() }
-    SideEffect { host.registry.put(owner, VisibleScreen(context.copy(details = context.details.take(8000), title = context.title.take(160)), bottomBar, priority, bottomInset)) }
+    SideEffect {
+        host.registry.put(
+            owner,
+            VisibleScreen(
+                context = context.copy(details = context.details.take(8000), title = context.title.take(160)),
+                bottomBar = bottomBar,
+                priority = priority,
+                bottomInset = bottomInset,
+                showsButton = showButton,
+            ),
+        )
+    }
     DisposableEffect(host, owner) { onDispose { host.registry.remove(owner) } }
 }
 
@@ -169,7 +192,7 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
             // The button floats and the learner can park it, so no screen has to
             // reserve a shelf for it: inner screens keep their own bottom action alone.
             Box(Modifier.fillMaxSize()) { content() }
-            if (availableOnScreen && !open) DraggableAssistantButton(
+            if (availableOnScreen && !open && visible?.showsButton == true) DraggableAssistantButton(
                 onClick = binding.open,
                 areaWidth = maxWidth,
                 areaHeight = maxHeight,

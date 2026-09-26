@@ -54,6 +54,7 @@ import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.wordDrillAssistantContext
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.core.design.components.rememberExitGuard
 
 /**
  * The Mini App's adaptive drill screen.
@@ -74,13 +75,21 @@ fun WordDrillScreen(
     onClose: () -> Unit,
 ) {
     AssistantScreen(wordDrillAssistantContext(state), bottomBar = false)
+    // Mid-drill the ✕ and the phone's back ask first; the back used to close
+    // the app. The loader, the limit block and the summary just leave.
+    val requestClose = rememberExitGuard(
+        running = !state.isLoading && !state.limitReached && !state.finished && state.current != null,
+        title = R.string.practice_exit_title,
+        body = R.string.practice_exit_body,
+        onExit = onClose,
+    )
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding(),
         ) {
-            DrillTopBar(progress = state.progress, onClose = onClose)
+            DrillTopBar(progress = state.progress, onClose = requestClose)
 
             when {
                 state.isLoading -> Box(
