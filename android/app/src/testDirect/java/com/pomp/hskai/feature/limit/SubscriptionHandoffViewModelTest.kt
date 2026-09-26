@@ -13,6 +13,11 @@ import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
+import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
+import com.pomp.hskai.data.api.SubscriptionQuoteRequest
+import com.pomp.hskai.data.api.SubscriptionQuoteResponse
+import com.pomp.hskai.data.api.SubscriptionSubmitRequest
+import com.pomp.hskai.data.api.SubscriptionSubmitResponse
 import com.pomp.hskai.data.api.ExamCompleteRequest
 import com.pomp.hskai.data.api.ExamCompleteResponse
 import com.pomp.hskai.data.api.ExamStartRequest
@@ -258,6 +263,20 @@ private class FakeFeatureApi(
     override suspend fun subscriptionOverview(
         authorization: String,
     ): Response<AndroidSubscriptionOverviewResponse> = error("unexpected call")
+
+    override suspend fun checkoutOverview(
+        authorization: String,
+    ): Response<SubscriptionCheckoutOverviewDto> = error("unexpected call")
+
+    override suspend fun checkoutQuote(
+        authorization: String,
+        body: SubscriptionQuoteRequest,
+    ): Response<SubscriptionQuoteResponse> = error("unexpected call")
+
+    override suspend fun checkoutSubmit(
+        authorization: String,
+        body: SubscriptionSubmitRequest,
+    ): Response<SubscriptionSubmitResponse> = error("unexpected call")
 
     override suspend fun practiceStart(
         authorization: String,
