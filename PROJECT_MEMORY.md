@@ -243,7 +243,7 @@ Files touched:
 
 Risk / follow-up:
 - Backend, DB, to'lov, Mini App o'zgarmagan. Xatolarim'da javob serverga Tekshirish'da ketadi.
-- Telefonda ko'rish kerak (kichik ekran, dark mode).
+- Android CI (run 36216591893) yashil. Telefonda ko'rish kerak (kichik ekran, dark mode).
 
 ### 2026-09-25 — Android dars yakuni: kinematik klip, ovoz va vibratsiya
 

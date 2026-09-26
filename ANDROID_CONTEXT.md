@@ -900,6 +900,9 @@ yakunlari **klip bilan**, **HSK imtihon savollari eskicha** qoladi.
   `HskCinematicEntrance` ga `mood` parametri qo'shildi.
 - ViewModel'lar, server so'rovlari va matnlar o'zgarmagan (yangi satr yo'q).
 
+**Tekshirilgan:** Android CI (run 36216591893) yashil — unit test, lint, debug APK,
+release bundle. **Tekshirilmagan:** telefonda ko'rinish (kichik ekran, dark mode, uz/ru/tg).
+
 ### 3.11 Boshqa ochiqlar
 
 - Android'da `Yodlash` ekrani yo'q.
