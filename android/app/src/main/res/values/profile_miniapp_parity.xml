@@ -39,6 +39,7 @@
     <string name="profile_privacy_security">Maxfiylik va xavfsizlik</string>
     <string name="profile_terms_of_use">Foydalanish shartlari</string>
     <string name="profile_privacy_policy">Maxfiylik siyosati</string>
+    <string name="profile_delete_account">Hisobni o‘chirishni so‘rash</string>
     <string name="profile_app_permissions">Ilova ruxsatlari</string>
     <string name="profile_app_permissions_desc">Mikrofon va bildirishnoma ruxsatlarini Android sozlamalarida boshqaring.</string>
     <string name="profile_security_note">Telegram nikini bu yerda o‘zgartirib bo‘lmaydi. Google va Apple shu HSK AI hisobiga qo‘shimcha kirish usuli sifatida ulanadi.</string>

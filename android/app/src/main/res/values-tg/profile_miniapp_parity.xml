@@ -39,6 +39,7 @@
     <string name="profile_privacy_security">Махфият ва амният</string>
     <string name="profile_terms_of_use">Шартҳои истифода</string>
     <string name="profile_privacy_policy">Сиёсати махфият</string>
+    <string name="profile_delete_account">Дархости нест кардани ҳисоб</string>
     <string name="profile_app_permissions">Иҷозатҳои барнома</string>
     <string name="profile_app_permissions_desc">Микрофон ва огоҳиҳоро дар танзимоти Android идора кунед.</string>
     <string name="profile_security_note">Ники Telegram дар ин ҷо тағйир дода намешавад. Google ва Apple танҳо ҳамчун усули иловагии вуруд ба ҳамин ҳисоби HSK AI пайваст мешаванд.</string>
