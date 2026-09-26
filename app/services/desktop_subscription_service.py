@@ -45,11 +45,12 @@ class DesktopSubscriptionService:
     desktop-specific read-only policy for active paid accounts.
     """
 
-    def __init__(self, session, settings_obj, *, bot: Bot):
+    def __init__(self, session, settings_obj, *, bot: Bot, source: str = DESKTOP_SUBSCRIPTION_SOURCE):
         self.session = session
         self.settings = settings_obj
         self.bot = bot
         self.checkout = SubscriptionMiniAppService(session)
+        self.source = source
 
     async def _context(self, access_token: str):
         return await DesktopAuthService(
@@ -114,16 +115,16 @@ class DesktopSubscriptionService:
             raise cls._service_error(result if isinstance(result, dict) else {})
         return result
 
-    @staticmethod
-    def _attempt_id() -> str:
-        return f"desktop-{secrets.token_urlsafe(18)}"
+    def _attempt_id(self) -> str:
+        prefix = "android" if self.source == "android_subscription" else "desktop"
+        return f"{prefix}-{secrets.token_urlsafe(18)}"
 
     async def _record_checkout_opened(self, *, user, attempt_id: str) -> None:
         await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=user,
             telegram_id=user.telegram_id,
-            source=DESKTOP_SUBSCRIPTION_SOURCE,
+            source=self.source,
             payload={
                 "attempt_id": attempt_id,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
@@ -171,7 +172,7 @@ class DesktopSubscriptionService:
 
         result.update(
             {
-                "source": DESKTOP_SUBSCRIPTION_SOURCE,
+                "source": self.source,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
                 "access": access,
                 "checkout_allowed": read_only_reason is None,
@@ -183,7 +184,7 @@ class DesktopSubscriptionService:
         await SubscriptionEntryAnalyticsService(self.session).record_entry(
             telegram_id=context.user.telegram_id,
             user=context.user,
-            source=DESKTOP_SUBSCRIPTION_SOURCE,
+            source=self.source,
             mode=DESKTOP_SUBSCRIPTION_MODE,
         )
 
@@ -207,7 +208,7 @@ class DesktopSubscriptionService:
         )
         result.update(
             {
-                "source": DESKTOP_SUBSCRIPTION_SOURCE,
+                "source": self.source,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
                 "access": self._access_payload(context.user),
             }
@@ -241,7 +242,7 @@ class DesktopSubscriptionService:
         )
         result.update(
             {
-                "source": DESKTOP_SUBSCRIPTION_SOURCE,
+                "source": self.source,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
                 "access": self._access_payload(context.user),
             }
@@ -272,7 +273,7 @@ class DesktopSubscriptionService:
                     ConversionFunnelEvent.telegram_id
                     == int(context.user.telegram_id),
                     ConversionFunnelEvent.event_name == "checkout_opened",
-                    ConversionFunnelEvent.source == DESKTOP_SUBSCRIPTION_SOURCE,
+                    ConversionFunnelEvent.source == self.source,
                     ConversionFunnelEvent.payload_json.like(
                         f'%"attempt_id": "{attempt_id}"%'
                     ),
@@ -291,7 +292,7 @@ class DesktopSubscriptionService:
             event_name="checkout_opened",
             user=context.user,
             telegram_id=context.user.telegram_id,
-            source=DESKTOP_SUBSCRIPTION_SOURCE,
+            source=self.source,
             payload={
                 "attempt_id": attempt_id,
                 "stage": stage,
@@ -302,7 +303,7 @@ class DesktopSubscriptionService:
         )
         return {
             "ok": bool(recorded),
-            "source": DESKTOP_SUBSCRIPTION_SOURCE,
+            "source": self.source,
         }
 
     async def submit(
@@ -331,11 +332,12 @@ class DesktopSubscriptionService:
                 screenshot_data_url=screenshot_data_url,
                 bot=self.bot,
                 mode=DESKTOP_SUBSCRIPTION_MODE,
+                source="android" if self.source == "android_subscription" else "desktop",
             )
         )
         result.update(
             {
-                "source": DESKTOP_SUBSCRIPTION_SOURCE,
+                "source": self.source,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
                 "access": self._access_payload(context.user),
             }
@@ -345,7 +347,7 @@ class DesktopSubscriptionService:
                 event_name="payment_screenshot_submitted",
                 user=context.user,
                 telegram_id=context.user.telegram_id,
-                source=DESKTOP_SUBSCRIPTION_SOURCE,
+                source=self.source,
                 payment_id=int(result["payment_id"]),
                 payload={
                     "attempt_id": attempt_id,

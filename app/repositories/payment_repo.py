@@ -30,11 +30,13 @@ class PaymentRepository:
         local_amount: Optional[str] = None,
         local_currency: Optional[str] = None,
         exchange_rate: Optional[str] = None,
+        source: str = "telegram_bot",
     ) -> Payment:
         payment = Payment(
             user_telegram_id=user_telegram_id,
             plan_type=plan_type,
             payment_method=payment_method,
+            source=source,
             base_amount=base_amount,
             amount=amount,
             currency=currency,

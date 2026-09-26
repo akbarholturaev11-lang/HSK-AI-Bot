@@ -14,12 +14,14 @@ from app.api.desktop_subscription import (
     MAX_DESKTOP_SUBSCRIPTION_SUBMIT_BODY_BYTES,
     create_desktop_subscription_router,
 )
+from app.api.android_features import create_android_features_router
 from app.db.base import Base
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.payment import Payment
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.admin_notify_service import AdminNotifyService
 
 
 PNG_1X1_DATA_URL = (
@@ -103,6 +105,13 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
         self.app = FastAPI()
         self.app.include_router(
             create_desktop_subscription_router(
+                session_factory=self.sessions,
+                settings_obj=self.settings,
+                bot=self.bot,
+            )
+        )
+        self.app.include_router(
+            create_android_features_router(
                 session_factory=self.sessions,
                 settings_obj=self.settings,
                 bot=self.bot,
@@ -444,6 +453,74 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             "desktop_subscription_request_too_large",
         )
         self.assertEqual(wrong_content_type.status_code, 415)
+
+    async def test_android_receipt_uses_canonical_checkout_and_marks_admin_origin(self):
+        base = "/api/v3/android/subscription/checkout"
+        missing = await self.client.get(base + "/overview")
+        injected = await self.client.post(
+            base + "/quote", headers=self._headers(self.token_a),
+            json={"plan_type": "1_month", "payment_method": "alipay", "amount": 1, "telegram_id": 1002},
+        )
+        overview = await self.client.get(base + "/overview", headers=self._headers(self.token_a))
+        quote = await self.client.post(
+            base + "/quote", headers=self._headers(self.token_a),
+            json={"plan_type": "1_month", "payment_method": "alipay"},
+        )
+        self.assertEqual(missing.status_code, 401)
+        self.assertEqual(injected.status_code, 422)
+        self.assertEqual(overview.json()["source"], "android_subscription")
+        self.assertEqual(quote.json()["quote"]["final_amount"], 66)
+
+        notify = AsyncMock(return_value="receipt-file-id")
+        with patch("app.services.subscription_miniapp_service.AdminNotifyService.notify_payment_review", notify):
+            first = await self.client.post(
+                base + "/submit", headers=self._headers(self.token_a),
+                json={
+                    "plan_type": "1_month", "payment_method": "alipay",
+                    "screenshot_data_url": PNG_1X1_DATA_URL,
+                },
+            )
+            replay = await self.client.post(
+                base + "/submit", headers=self._headers(self.token_a),
+                json={
+                    "plan_type": "1_month", "payment_method": "alipay",
+                    "screenshot_data_url": PNG_1X1_DATA_URL,
+                },
+            )
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(first.json()["status"], "pending")
+        self.assertTrue(replay.json()["already_pending"])
+        notify.assert_awaited_once()
+        self.assertEqual(notify.call_args.kwargs["screenshot_bytes"], base64.b64decode(PNG_1X1_DATA_URL.split(",", 1)[1]))
+        self.assertTrue(notify.call_args.kwargs["require_delivery"])
+
+        async with self.sessions() as session:
+            payment = (await session.execute(select(Payment))).scalar_one()
+        self.assertEqual(payment.source, "android")
+        self.assertEqual(payment.screenshot_file_id, "receipt-file-id")
+        self.assertEqual(payment.amount, 66)
+        self.assertIn("Android ilova", AdminNotifyService().build_payment_review_text(
+            lang="uz", telegram_id=1001, full_name="Android A", plan_type="1_month",
+            amount=payment.amount, currency=payment.currency, payment_id=payment.id,
+            source=payment.source,
+        ))
+
+    async def test_android_failed_admin_delivery_does_not_leave_pending_payment(self):
+        with patch(
+            "app.services.subscription_miniapp_service.AdminNotifyService.notify_payment_review",
+            AsyncMock(side_effect=RuntimeError("admin offline")),
+        ):
+            response = await self.client.post(
+                "/api/v3/android/subscription/checkout/submit",
+                headers=self._headers(self.token_a),
+                json={
+                    "plan_type": "1_month", "payment_method": "alipay",
+                    "screenshot_data_url": PNG_1X1_DATA_URL,
+                },
+            )
+        self.assertEqual(response.status_code, 503)
+        async with self.sessions() as session:
+            self.assertIsNone((await session.execute(select(Payment.id))).scalar_one_or_none())
 
 
 if __name__ == "__main__":

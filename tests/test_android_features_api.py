@@ -5,9 +5,8 @@ token and forwards to the canonical services. These tests therefore protect
 the two things that *are* the adapter's responsibility:
 
 1. Nothing is reachable without a valid Android bearer token.
-2. Subscription is never sold inside the Android app. The app is handed off to
-   the Telegram bot, which offers the existing subscription Mini App, and the
-   adapter never grants access by itself.
+2. The direct APK can submit a receipt through the canonical Mini App checkout.
+   Entitlement still changes only after admin review.
 """
 
 import json
@@ -1489,6 +1488,9 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/profile"),
         ("PATCH", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
+        ("GET", "/api/v3/android/subscription/checkout/overview"),
+        ("POST", "/api/v3/android/subscription/checkout/quote"),
+        ("POST", "/api/v3/android/subscription/checkout/submit"),
         ("POST", "/api/v3/android/subscription/open"),
         ("POST", "/api/v3/android/practice/start"),
         ("POST", "/api/v3/android/practice/complete"),
@@ -1564,6 +1566,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
+        ("GET", "/api/v3/android/subscription/checkout/overview"),
         ("POST", "/api/v3/android/subscription/open"),
         ("GET", "/api/v3/android/mistakes"),
         ("GET", "/api/v3/android/rating/leaderboard"),

@@ -63,8 +63,15 @@ class AdminNotifyService:
         local_amount: str = None,
         local_currency: str = None,
         exchange_rate: str = None,
+        source: str = "telegram_bot",
     ) -> str:
-        plan_label = "10 kunlik" if plan_type == "10_days" else "1 oylik"
+        plan_label = {"10_days": "10 kunlik", "1_month": "1 oylik", "3_months": "3 oylik"}.get(plan_type, plan_type)
+        origin = {
+            "android": "Android ilova",
+            "miniapp": "Telegram Mini App",
+            "desktop": "Desktop ilova",
+            "telegram_bot": "Telegram bot",
+        }.get(source, source)
         method_labels = {
             "visa": "Visa",
             "alipay": "Alipay",
@@ -78,6 +85,7 @@ class AdminNotifyService:
             f"📦 Tarif: {plan_label} — {amount} {currency}",
             f"🏦 To'lov turi: {method_labels.get(payment_method, payment_method or '-')}",
             f"🆔 To'lov ID: #{payment_id}",
+            f"📱 Manba: {origin}",
         ]
 
         if local_amount and local_currency:
@@ -184,6 +192,7 @@ class AdminNotifyService:
             local_amount=getattr(payment, "local_amount", None),
             local_currency=getattr(payment, "local_currency", None),
             exchange_rate=getattr(payment, "exchange_rate", None),
+            source=getattr(payment, "source", "telegram_bot"),
         )
 
         keyboard = admin_payment_review_keyboard(payment.id, "uz")
