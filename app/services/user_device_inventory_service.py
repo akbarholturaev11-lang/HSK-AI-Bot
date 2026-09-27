@@ -266,40 +266,86 @@ class UserDeviceInventoryService:
         }
 
     async def aggregate(self) -> dict[str, Any]:
-        presence_counts = (
+        presence_rows = (
             await self.session.execute(
                 select(
+                    UserClientPresence.user_id,
                     UserClientPresence.platform,
-                    func.count(func.distinct(UserClientPresence.user_id)),
-                )
-                .where(UserClientPresence.surface == MINIAPP_SURFACE)
-                .group_by(UserClientPresence.platform)
+                    UserClientPresence.first_seen_at,
+                ).where(UserClientPresence.surface == MINIAPP_SURFACE)
             )
         ).all()
-        native_counts = (
+        native_rows = (
             await self.session.execute(
                 select(
+                    DesktopDevice.user_id,
                     DesktopDevice.platform,
-                    func.count(func.distinct(DesktopDevice.user_id)),
-                    func.count(DesktopDevice.id),
-                )
-                .where(
+                    DesktopDevice.id,
+                ).where(
                     DesktopDevice.revoked_at.is_(None),
                     DesktopDevice.platform.in_(tuple(NATIVE_PLATFORMS)),
                 )
-                .group_by(DesktopDevice.platform)
             )
         ).all()
-        return {
-            "miniapp_users_by_platform": {
-                str(platform): int(users or 0)
-                for platform, users in presence_counts
-            },
-            "native_by_platform": {
-                str(platform): {
-                    "users": int(users or 0),
-                    "devices": int(devices or 0),
-                }
-                for platform, users, devices in native_counts
-            },
+
+        miniapp_by_platform: dict[str, set[int]] = {}
+        presence_users: set[int] = set()
+        tracking_started_at: datetime | None = None
+        for user_id, platform, first_seen_at in presence_rows:
+            uid = int(user_id)
+            presence_users.add(uid)
+            key = str(platform or "unknown")
+            miniapp_by_platform.setdefault(key, set()).add(uid)
+            seen = _as_utc(first_seen_at)
+            if seen and (tracking_started_at is None or seen < tracking_started_at):
+                tracking_started_at = seen
+
+        native_by_platform_users: dict[str, set[int]] = {}
+        native_by_platform_devices: dict[str, int] = {}
+        native_platforms_by_user: dict[int, set[str]] = {}
+        native_users: set[int] = set()
+        for user_id, platform, _device_id in native_rows:
+            key = str(platform or "")
+            if key not in NATIVE_PLATFORMS:
+                continue
+            uid = int(user_id)
+            native_users.add(uid)
+            native_by_platform_users.setdefault(key, set()).add(uid)
+            native_by_platform_devices[key] = native_by_platform_devices.get(key, 0) + 1
+            native_platforms_by_user.setdefault(uid, set()).add(key)
+
+        both = presence_users & native_users
+        miniapp_only = presence_users - native_users
+        native_only = native_users - presence_users
+        multi_native = {
+            uid for uid, platforms in native_platforms_by_user.items()
+            if len(platforms) > 1
         }
+        conversion = (
+            round(len(both) / len(presence_users) * 100, 1)
+            if presence_users
+            else 0.0
+        )
+
+        return {
+            "tracking_started_at": _iso(tracking_started_at),
+            "miniapp_users_total": len(presence_users),
+            "miniapp_users_by_platform": {
+                platform: len(users)
+                for platform, users in sorted(miniapp_by_platform.items())
+            },
+            "native_users_total": len(native_users),
+            "native_by_platform": {
+                platform: {
+                    "users": len(native_by_platform_users.get(platform, set())),
+                    "devices": int(native_by_platform_devices.get(platform, 0)),
+                }
+                for platform in sorted(NATIVE_PLATFORMS)
+            },
+            "miniapp_only_users": len(miniapp_only),
+            "native_only_users": len(native_only),
+            "miniapp_and_native_users": len(both),
+            "multi_native_platform_users": len(multi_native),
+            "miniapp_to_native_pct": conversion,
+        }
+
