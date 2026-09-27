@@ -93,6 +93,7 @@ the Android Firebase app's public `POMP_FIREBASE_APP_ID`,
 `POMP_FIREBASE_SENDER_ID`, `POMP_FIREBASE_PROJECT_ID`, and
 `POMP_FIREBASE_API_KEY` as Gradle properties or environment variables. The
 manual release workflow reads these from GitHub Actions repository **variables**.
+The release workflow now refuses to publish a build without all four values.
 The package name must match `com.pomp.hskai`; debug builds use
 `com.pomp.hskai.debug` and need their own Firebase Android app ID.
 
