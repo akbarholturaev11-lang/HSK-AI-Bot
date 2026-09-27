@@ -1065,6 +1065,8 @@ private fun AppRoot(
                                 onResetPractice = practiceViewModel::resetPractice,
                                 onStartMistakeReview = practiceViewModel::startMistakeReview,
                                 onAnswerReview = practiceViewModel::answerReview,
+                                onAnswerReviewTokens = practiceViewModel::answerReviewTokens,
+                                onSelectMistakeCategory = practiceViewModel::selectMistakeCategory,
                                 onAdvanceReview = practiceViewModel::advanceReview,
                                 onResetReview = practiceViewModel::resetReview,
                                 onSpeakReview = practiceViewModel::playReviewAudio,

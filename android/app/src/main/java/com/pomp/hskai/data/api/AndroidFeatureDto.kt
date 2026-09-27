@@ -495,6 +495,33 @@ data class MistakesOverviewResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("summary") val summary: MistakeSummaryDto = MistakeSummaryDto(),
     @SerialName("items") val items: List<MistakeItemDto> = emptyList(),
+    /** `view=targets`: one row per word/sentence the learner got wrong. */
+    @SerialName("targets") val targets: List<MistakeTargetDto> = emptyList(),
+)
+
+/**
+ * What the learner did not know — a word or a Chinese sentence — rather than
+ * the question that caught it. The review drills it in three different
+ * exercises; [passed] of [required] shows how far that has come.
+ */
+@Serializable
+data class MistakeTargetDto(
+    @SerialName("id") val id: Int = 0,
+    @SerialName("category") val category: String = "",
+    @SerialName("kind") val kind: String = "",
+    @SerialName("zh") val zh: String = "",
+    @SerialName("pinyin") val pinyin: String = "",
+    @SerialName("meaning") val meaning: String = "",
+    @SerialName("translation") val translation: String = "",
+    @SerialName("wrong") val wrong: String = "",
+    @SerialName("passed") val passed: Int = 0,
+    @SerialName("required") val required: Int = 3,
+    @SerialName("count") val count: Int = 0,
+    @SerialName("level") val level: String? = null,
+    @SerialName("sources") val sources: List<String> = emptyList(),
+    /** Only for `kind == "question"`: an old question kept as it was asked. */
+    @SerialName("question") val question: String = "",
+    @SerialName("answer") val answer: String = "",
 )
 
 @Serializable
@@ -524,6 +551,13 @@ data class MistakeItemDto(
 data class MistakeReviewStartRequest(
     @SerialName("ad_supported") val adSupported: Boolean = false,
     @SerialName("access_ref") val accessRef: String = "",
+    /** A category scopes the review; null is every category. */
+    @SerialName("category") val category: String? = null,
+    /**
+     * The exercise kinds this build can draw. Omitted, the server assumes an
+     * old build and sends only option questions.
+     */
+    @SerialName("formats") val formats: List<String>? = null,
 )
 
 @Serializable
@@ -536,6 +570,9 @@ data class MistakeReviewStartResponse(
 data class MistakeReviewSessionDto(
     @SerialName("id") val id: String = "",
     @SerialName("questions") val questions: List<MistakeReviewQuestionDto> = emptyList(),
+    @SerialName("version") val version: Int = 0,
+    @SerialName("category") val category: String = "all",
+    @SerialName("targets") val targets: Int = 0,
 )
 
 @Serializable
@@ -547,13 +584,22 @@ data class MistakeReviewQuestionDto(
     @SerialName("sentence") val sentence: String = "",
     @SerialName("audio_text") val audioText: String = "",
     @SerialName("pinyin") val pinyin: String = "",
-)
+    @SerialName("format") val format: String = "",
+    /** Sentence building: the shuffled tiles. Empty for an option question. */
+    @SerialName("tokens") val tokens: List<String> = emptyList(),
+    /** A listening exercise: the audio plays by itself when it opens. */
+    @SerialName("autoplay") val autoplay: Boolean = false,
+) {
+    val isBuilder: Boolean get() = tokens.isNotEmpty()
+}
 
+/** Exactly one of [selectedIndex] / [selectedTokens]; the other stays null and is not sent. */
 @Serializable
 data class MistakeReviewAnswerRequest(
     @SerialName("session_id") val sessionId: String,
     @SerialName("question_id") val questionId: String,
-    @SerialName("selected_index") val selectedIndex: Int,
+    @SerialName("selected_index") val selectedIndex: Int? = null,
+    @SerialName("selected_tokens") val selectedTokens: List<String>? = null,
 )
 
 @Serializable
@@ -565,6 +611,7 @@ data class MistakeReviewAnswerResponse(
     @SerialName("correct_index") val correctIndex: Int = -1,
     @SerialName("correct_answer") val correctAnswer: String = "",
     @SerialName("explanation") val explanation: String = "",
+    @SerialName("selected_tokens") val selectedTokens: List<String> = emptyList(),
 )
 
 @Serializable
@@ -587,6 +634,8 @@ data class MistakeReviewCompleteResponse(
     @SerialName("total") val total: Int = 0,
     @SerialName("percent") val percent: Int = 0,
     @SerialName("remaining") val remaining: Int = 0,
+    /** Mistakes that passed all three exercises in this round and are closed. */
+    @SerialName("cleared") val cleared: Int = 0,
     @SerialName("reward") val reward: JsonObject? = null,
 )
 

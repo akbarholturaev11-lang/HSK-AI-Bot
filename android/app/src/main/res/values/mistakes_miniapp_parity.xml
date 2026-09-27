@@ -6,7 +6,6 @@
     <string name="mistakes_empty_subtitle">Darslar va testlardan o\'ting — xatolar shu yerda paydo bo\'ladi va ularni mashq qila olasiz.</string>
     <string name="mistakes_to_course">Darslarga</string>
     <string name="mistakes_review">Xatolar ustida ishlash</string>
-    <string name="mistakes_review_subtitle">faol xato</string>
     <string name="mistakes_start">Boshlash</string>
     <string name="mistakes_all">Barchasi</string>
     <string name="mistakes_retry">Qayta urinish</string>
@@ -36,4 +35,11 @@
     <string name="mistakes_loading">Yuklanmoqda…</string>
     <string name="mistakes_more">Yana ko\'rsatish</string>
     <string name="mistakes_error">Xatolik yuz berdi. Qayta urinib ko\'ring.</string>
+    <string name="mistakes_review_count">Xatolar: %1$d · har biri 3 xil mashqda</string>
+    <string name="mistakes_review_category">%1$s bo\'yicha takrorlash</string>
+    <string name="mistakes_progress">%1$d / %2$d mashq bajarildi</string>
+    <string name="mistakes_result_cleared">To\'liq yopildi: %1$d</string>
+    <string name="mistakes_source_pronunciation">Talaffuz mashqi</string>
+    <string name="mistakes_source_recognition">Ieroglif tanish</string>
+    <string name="mistakes_source_memorize">Yodlash</string>
 </resources>

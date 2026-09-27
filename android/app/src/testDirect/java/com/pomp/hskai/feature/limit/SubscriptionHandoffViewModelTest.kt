@@ -316,6 +316,7 @@ private class FakeFeatureApi(
         category: String?,
         limit: Int,
         offset: Int,
+        view: String?,
     ): Response<MistakesOverviewResponse> = error("unexpected call")
 
     override suspend fun mistakeReviewStart(

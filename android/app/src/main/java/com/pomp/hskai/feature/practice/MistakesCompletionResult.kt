@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -80,6 +81,22 @@ internal fun MistakesReviewResult(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 4.dp),
                 )
+                if (result.cleared > 0) {
+                    // Passed all three exercises this round: these are closed.
+                    Surface(
+                        color = PompColors.JadeSoft,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.padding(top = 10.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.mistakes_result_cleared, result.cleared),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = PompColors.Jade,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp),
+                        )
+                    }
+                }
                 Text(
                     text = if (result.remaining > 0) {
                         "${stringResource(R.string.mistakes_result_remaining)}: ${result.remaining}"

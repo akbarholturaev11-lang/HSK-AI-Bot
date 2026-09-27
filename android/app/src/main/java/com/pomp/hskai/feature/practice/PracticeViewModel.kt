@@ -9,11 +9,11 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.ExamCompleteResponse
 import com.pomp.hskai.data.api.ExamSessionDto
-import com.pomp.hskai.data.api.MistakeItemDto
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
 import com.pomp.hskai.data.api.MistakeReviewSessionDto
 import com.pomp.hskai.data.api.MistakeSummaryDto
+import com.pomp.hskai.data.api.MistakeTargetDto
 import com.pomp.hskai.data.api.MistakesOverviewResponse
 import com.pomp.hskai.data.api.PracticeCompleteResponse
 import com.pomp.hskai.data.api.PracticeSessionDto
@@ -68,6 +68,11 @@ private val MISTAKE_REVIEW_TOOL = PracticeToolSpec(
 data class PracticeUiState(
     val mistakes: MistakesOverviewResponse? = null,
     val isLoadingMistakes: Boolean = false,
+    /**
+     * The chip picked on the mistakes list. It filters the list AND scopes the
+     * review the Start button opens, so the screen keeps one main action.
+     */
+    val mistakeCategory: String = "all",
     val isStarting: Boolean = false,
     val isCompleting: Boolean = false,
     val session: PracticeSessionDto? = null,
@@ -85,6 +90,8 @@ data class PracticeUiState(
     val reviewSession: MistakeReviewSessionDto? = null,
     val reviewIndex: Int = 0,
     val reviewSelectedIndex: Int? = null,
+    /** A built sentence sent with Tekshirish, waiting for the server's verdict. */
+    val reviewSelectedTokens: List<String>? = null,
     val reviewFeedback: MistakeReviewAnswerResponse? = null,
     val reviewAnswers: Map<String, Int> = emptyMap(),
     /** Correct answers in a row in the mistake review; see [practiceStreak]. */
@@ -158,7 +165,7 @@ class PracticeViewModel(
         _state.update { it.copy(isLoadingMistakes = true, error = null) }
         viewModelScope.launch {
             try {
-            val items = mutableListOf<MistakeItemDto>()
+            val items = mutableListOf<MistakeTargetDto>()
             var summary: MistakeSummaryDto? = null
             var offset = 0
 
@@ -171,7 +178,7 @@ class PracticeViewModel(
                 ) {
                     is ApiResult.Success -> {
                         if (summary == null) summary = result.value.summary
-                        val page = result.value.items
+                        val page = result.value.targets
                         items.addAll(page)
                         if (page.size < MISTAKES_PAGE_SIZE) {
                             _state.update {
@@ -180,7 +187,7 @@ class PracticeViewModel(
                                     mistakes = MistakesOverviewResponse(
                                         ok = true,
                                         summary = summary ?: MistakeSummaryDto(),
-                                        items = items,
+                                        targets = items,
                                     ),
                                 )
                             }
@@ -201,7 +208,7 @@ class PracticeViewModel(
                                     mistakes = MistakesOverviewResponse(
                                         ok = true,
                                         summary = summary ?: MistakeSummaryDto(),
-                                        items = items,
+                                        targets = items,
                                     ),
                                     error = result.error,
                                 )
@@ -219,7 +226,7 @@ class PracticeViewModel(
                     mistakes = MistakesOverviewResponse(
                         ok = true,
                         summary = summary ?: MistakeSummaryDto(),
-                        items = items,
+                        targets = items,
                     ),
                 )
             }
@@ -559,6 +566,10 @@ class PracticeViewModel(
         startPractice(tool = attempt.tool, level = attempt.level, language = attempt.language)
     }
 
+    fun selectMistakeCategory(category: String) {
+        _state.update { it.copy(mistakeCategory = category) }
+    }
+
     fun startMistakeReview(accessRef: String = "") {
         if (_state.value.isStarting) return
         val resolvedAccessRef = accessRef.ifBlank { UUID.randomUUID().toString() }
@@ -573,19 +584,24 @@ class PracticeViewModel(
                 reviewSession = null,
                 reviewResult = null,
                 reviewFeedback = null,
+                reviewSelectedTokens = null,
                 reviewAnswers = emptyMap(),
                 pendingTool = MISTAKE_REVIEW_TOOL,
             )
         }
+        val category = _state.value.mistakeCategory
         viewModelScope.launch {
-            when (val result = repository.startMistakeReview(resolvedAccessRef)) {
-                is ApiResult.Success -> _state.update {
-                    it.copy(
-                        isStarting = false,
-                        reviewSession = result.value.session,
-                        reviewIndex = 0,
-                        reviewStreak = 0,
-                    )
+            when (val result = repository.startMistakeReview(resolvedAccessRef, category)) {
+                is ApiResult.Success -> {
+                    _state.update {
+                        it.copy(
+                            isStarting = false,
+                            reviewSession = result.value.session,
+                            reviewIndex = 0,
+                            reviewStreak = 0,
+                        )
+                    }
+                    autoplayReviewQuestion()
                 }
 
                 is ApiResult.Failure -> _state.update {
@@ -628,6 +644,48 @@ class PracticeViewModel(
         }
     }
 
+    /** Tekshirish on a built sentence: the server grades the order, not the client. */
+    fun answerReviewTokens(tokens: List<String>) {
+        val current = _state.value
+        if (current.reviewFeedback != null || current.reviewSelectedTokens != null) return
+        val session = current.reviewSession ?: return
+        val question = session.questions.getOrNull(current.reviewIndex) ?: return
+        if (!question.isBuilder || tokens.size != question.tokens.size) return
+        _state.update { it.copy(reviewSelectedTokens = tokens, error = null) }
+        viewModelScope.launch {
+            when (
+                val result = repository.answerMistakeReview(
+                    sessionId = session.id,
+                    questionId = question.id,
+                    selectedTokens = tokens,
+                )
+            ) {
+                is ApiResult.Success -> _state.update {
+                    it.copy(
+                        reviewFeedback = result.value,
+                        // v3 grades from the server's own record; the index is bookkeeping.
+                        reviewAnswers = it.reviewAnswers + (question.id to 0),
+                        reviewStreak = if (result.value.correct) it.reviewStreak + 1 else 0,
+                    )
+                }
+
+                is ApiResult.Failure -> _state.update {
+                    it.copy(
+                        reviewSelectedTokens = null,
+                        error = result.error,
+                    )
+                }
+            }
+        }
+    }
+
+    /** A listening exercise speaks as soon as it opens; the speaker stays for a replay. */
+    private fun autoplayReviewQuestion() {
+        val current = _state.value
+        val question = current.reviewSession?.questions?.getOrNull(current.reviewIndex) ?: return
+        if (question.autoplay && question.audioText.isNotBlank()) playReviewAudio(question.audioText)
+    }
+
     fun advanceReview() {
         val current = _state.value
         if (current.isCompleting) return
@@ -641,9 +699,11 @@ class PracticeViewModel(
                 it.copy(
                     reviewIndex = current.reviewIndex + 1,
                     reviewSelectedIndex = null,
+                    reviewSelectedTokens = null,
                     reviewFeedback = null,
                 )
             }
+            autoplayReviewQuestion()
             return
         }
         _state.update { it.copy(isCompleting = true, error = null) }
@@ -672,6 +732,7 @@ class PracticeViewModel(
                 reviewSession = null,
                 reviewIndex = 0,
                 reviewSelectedIndex = null,
+                reviewSelectedTokens = null,
                 reviewFeedback = null,
                 reviewAnswers = emptyMap(),
                 reviewStreak = 0,

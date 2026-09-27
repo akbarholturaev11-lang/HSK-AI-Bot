@@ -105,6 +105,7 @@ interface AndroidFeatureApi {
         @Query("category") category: String? = null,
         @Query("limit") limit: Int = 30,
         @Query("offset") offset: Int = 0,
+        @Query("view") view: String? = null,
     ): Response<MistakesOverviewResponse>
 
     @POST("api/v3/android/mistakes/review/start")
