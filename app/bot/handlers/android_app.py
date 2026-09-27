@@ -198,14 +198,24 @@ async def send_android_app(
                 "release_source": release.source,
             },
         )
-        # One authoritative point for every real APK hand-off: bot command,
-        # bot profile, or Mini App request all start the same Android cooldown.
-        await AppPromoDecisionService(session).mark(
-            telegram_id=telegram_id,
-            target_platform="android",
-            action="download_requested",
-        )
+
+    # The learner already has the APK. Persist the delivery first; optional
+    # promo bookkeeping must never make the caller report a false failure.
     await session.commit()
+    if track:
+        try:
+            await AppPromoDecisionService(session).mark(
+                telegram_id=telegram_id,
+                target_platform="android",
+                action="download_requested",
+            )
+            await session.commit()
+        except Exception:
+            logger.exception(
+                "Android APK delivered but promo cooldown write failed telegram_id=%s",
+                telegram_id,
+            )
+            await session.rollback()
     return True
 
 
