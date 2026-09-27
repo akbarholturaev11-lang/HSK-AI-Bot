@@ -3,9 +3,10 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user_client_presence import AppPromoState
 from app.repositories.user_repo import UserRepository
 from app.services.user_device_inventory_service import (
@@ -130,6 +131,19 @@ class AppPromoDecisionService:
             create=False,
         )
         last_at = self._latest_state_at(state)
+        # Migration bridge: old promo events did not carry a target platform.
+        # For at most 14 days after deploy, respect the latest old impression
+        # or desktop download globally rather than immediately re-spamming.
+        if last_at is None:
+            legacy_result = await self.session.execute(
+                select(func.max(CourseMiniAppEvent.created_at)).where(
+                    CourseMiniAppEvent.telegram_id == int(telegram_id),
+                    CourseMiniAppEvent.event_name.in_(
+                        ("desktop_promo_seen", "desktop_download_requested")
+                    ),
+                )
+            )
+            last_at = _as_utc(legacy_result.scalar_one_or_none())
         remaining = 0
         if last_at is not None:
             next_at = last_at + timedelta(days=PROMO_COOLDOWN_DAYS)
