@@ -4764,6 +4764,8 @@ async def miniapp_mistakes(request: Request):
             category=category,
             limit=request.query_params.get("limit", "30"),
             offset=request.query_params.get("offset", "0"),
+            view=request.query_params.get("view"),
+            language=request.query_params.get("lang"),
         )
     if result.get("ok"):
         status_code = 200
@@ -4944,13 +4946,18 @@ async def miniapp_mistake_review_start(request: Request):
         payload = await request.json()
     except Exception:
         payload = {}
-    ad_supported = bool(payload.get("ad_supported")) if isinstance(payload, dict) else False
-    access_ref = str(payload.get("access_ref") or "") if isinstance(payload, dict) else ""
+    if not isinstance(payload, dict):
+        payload = {}
+    ad_supported = bool(payload.get("ad_supported"))
+    access_ref = str(payload.get("access_ref") or "")
     async with async_session_maker() as session:
         result = await CourseMistakeService(session).start_review(
             telegram_id,
             ad_supported=ad_supported,
             access_ref=access_ref,
+            category=str(payload.get("category") or "") or None,
+            formats=payload.get("formats") if isinstance(payload.get("formats"), list) else None,
+            language=str(payload.get("language") or "") or None,
         )
     status_code = (
         200

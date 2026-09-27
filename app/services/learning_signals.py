@@ -18,7 +18,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_xp_event import CourseXpEvent
@@ -142,6 +142,9 @@ class LearningSignalsService:
             select(func.coalesce(func.sum(weight), 0)).where(
                 CourseMistake.user_id == user_id,
                 CourseMistake.wrong_count > CourseMistake.resolved_count,
+                # "-" — takrorlab bo'lmaydigan eski yozuv (nishon ham, yaroqli
+                # savol ham yo'q): kunlik reja uni vazifa qilib bermasin.
+                or_(CourseMistake.target_key.is_(None), CourseMistake.target_key != "-"),
             )
         )
         return int(result.scalar_one() or 0)

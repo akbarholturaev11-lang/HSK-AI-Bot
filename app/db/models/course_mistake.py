@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -18,6 +18,8 @@ class CourseMistake(Base):
             "category IN ('word', 'grammar', 'character', 'pronunciation')",
             name="ck_course_mistakes_category",
         ),
+        # Nishon yopilganda unga bog'langan qatorlarni topish uchun.
+        Index("ix_course_mistakes_user_target", "user_id", "category", "target_key"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -43,6 +45,10 @@ class CourseMistake(Base):
     # Canonical, versioned question snapshot used to rebuild a review without
     # trusting the browser's prompt/answer key. Nullable keeps legacy rows valid.
     material_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # `course_mistake_targets.target_key` (shu `user_id` + `category` bilan).
+    # NULL — hali nishonga bog'lanmagan (eski qator, lazy backfill kutadi);
+    # "-" — nishon ajratib bo'lmadi va eski savol ham yaroqsiz.
+    target_key: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     wrong_count: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     review_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     resolved_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
