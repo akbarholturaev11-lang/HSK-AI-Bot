@@ -106,6 +106,7 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.app_promo_decision_service import AppPromoDecisionService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
@@ -5279,14 +5280,30 @@ async def miniapp_event(request: Request):
             # rather than close over a message that never arrived.
             from app.bot.handlers.android_app import send_android_app
 
+            requested_source = str(
+                payload.get("source") or "miniapp_profile"
+            ).strip()[:40]
             sent = await send_android_app(
                 bot,
                 telegram_id,
                 telegram_id,
                 session,
-                source="miniapp_profile",
+                source=requested_source,
             )
             if sent:
+                try:
+                    await AppPromoDecisionService(session).mark(
+                        telegram_id=telegram_id,
+                        target_platform="android",
+                        action="download_requested",
+                    )
+                    await session.commit()
+                except Exception:
+                    logger.exception(
+                        "Android app promo cooldown write failed telegram_id=%s",
+                        telegram_id,
+                    )
+                    await session.rollback()
                 return {"ok": True}
             return {"ok": False, "error": "android_apk_send_failed"}
 
@@ -5339,6 +5356,19 @@ async def miniapp_event(request: Request):
                 payload=trusted_payload,
             )
             if result.get("ok"):
+                if event in {"desktop_promo_seen", "desktop_promo_dismissed"}:
+                    action = (
+                        "seen"
+                        if event == "desktop_promo_seen"
+                        else "dismissed"
+                    )
+                    await AppPromoDecisionService(session).mark(
+                        telegram_id=telegram_id,
+                        target_platform=str(
+                            trusted_payload.get("target_platform") or ""
+                        ),
+                        action=action,
+                    )
                 await session.commit()
             return result
 
