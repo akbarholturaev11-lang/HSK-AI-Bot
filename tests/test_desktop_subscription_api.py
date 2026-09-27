@@ -477,7 +477,26 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(injected.status_code, 422)
         self.assertEqual(invalid_origin.status_code, 422)
         self.assertEqual(overview.json()["source"], "android_subscription")
+        self.assertIn("discount", overview.json())
+        self.assertIn("support_url", overview.json())
         self.assertEqual(quote.json()["quote"]["final_amount"], 66)
+
+        discount = await self.client.post(
+            base + "/discount-start", headers=self._headers(self.token_a),
+        )
+        self.assertEqual(200, discount.status_code)
+        self.assertTrue(discount.json()["discount"]["offer_started"])
+        event = await self.client.post(
+            base + "/event", headers=self._headers(self.token_a),
+            json={
+                "attempt_id": overview.json()["attempt_id"],
+                "stage": "payment_instructions_viewed",
+                "plan_type": "1_month",
+                "payment_method": "alipay",
+            },
+        )
+        self.assertEqual(200, event.status_code)
+        self.assertTrue(event.json()["ok"])
 
         notify = AsyncMock(return_value="receipt-file-id")
         with patch("app.services.subscription_miniapp_service.AdminNotifyService.notify_payment_review", notify):

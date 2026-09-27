@@ -467,4 +467,12 @@
     <string name="profile_identity_connect_provider">%1$s ni ulash</string>
     <string name="error_account_blocked">Bu hisob administrator tomonidan cheklangan. Qo‘llab-quvvatlashga yozing.</string>
     <string name="profile_social_title">HSK AI ijtimoiy tarmoqlarda</string>
+    <string name="notify_payment_channel">Obuna qarorlari</string>
+    <string name="notify_payment_channel_body">To‘lov tasdiqlangani yoki rad etilgani haqida xabar</string>
+    <string name="notify_payment_approved_title">To‘lovingiz tasdiqlandi</string>
+    <string name="notify_payment_approved_body">Obunangiz faollashdi. Ilovani ochib davom eting.</string>
+    <string name="notify_payment_rejected_title">To‘lovingiz rad etildi</string>
+    <string name="notify_payment_rejected_body">Obuna bo‘limini ochib, to‘lovni tekshiring va qayta yuboring.</string>
+    <string name="notify_payment_private_title">HSK AI obuna xabari</string>
+    <string name="notify_payment_private_body">Tafsilotlarni ko‘rish uchun ilovani oching.</string>
 </resources>

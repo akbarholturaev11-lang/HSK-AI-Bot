@@ -129,6 +129,10 @@ jobs:
       - name: Build the signed direct release
         working-directory: android
         env:
+          POMP_FIREBASE_APP_ID: ${{ vars.POMP_FIREBASE_APP_ID }}
+          POMP_FIREBASE_SENDER_ID: ${{ vars.POMP_FIREBASE_SENDER_ID }}
+          POMP_FIREBASE_PROJECT_ID: ${{ vars.POMP_FIREBASE_PROJECT_ID }}
+          POMP_FIREBASE_API_KEY: ${{ vars.POMP_FIREBASE_API_KEY }}
           POMP_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/release.jks
           POMP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
           POMP_ANDROID_KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}

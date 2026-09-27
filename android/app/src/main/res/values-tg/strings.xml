@@ -429,4 +429,12 @@
     <string name="profile_identity_connect_provider">Пайваст кардани %1$s</string>
     <string name="error_account_blocked">Ин ҳисоб аз ҷониби администратор маҳдуд шудааст. Ба дастгирӣ нависед.</string>
     <string name="profile_social_title">HSK AI дар шабакаҳои иҷтимоӣ</string>
+    <string name="notify_payment_channel">Қарорҳои обуна</string>
+    <string name="notify_payment_channel_body">Огоҳӣ дар бораи тасдиқ ё рад шудани пардохт</string>
+    <string name="notify_payment_approved_title">Пардохти шумо тасдиқ шуд</string>
+    <string name="notify_payment_approved_body">Обуна фаъол шуд. Барномаро кушоед ва омӯзишро идома диҳед.</string>
+    <string name="notify_payment_rejected_title">Пардохти шумо рад шуд</string>
+    <string name="notify_payment_rejected_body">Бахши обунаро кушоед, пардохтро санҷед ва дубора фиристед.</string>
+    <string name="notify_payment_private_title">Хабари обунаи HSK AI</string>
+    <string name="notify_payment_private_body">Барои дидани тафсилот барномаро кушоед.</string>
 </resources>

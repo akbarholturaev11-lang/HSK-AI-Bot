@@ -78,7 +78,7 @@ fun AppDestination.toTab(): MainTab? = when (this) {
     is AppDestination.Lesson,
     -> MainTab.COURSE
 
-    AppDestination.Profile, AppDestination.WidgetSetup -> MainTab.PROFILE
+    AppDestination.Profile, AppDestination.Subscription, AppDestination.WidgetSetup -> MainTab.PROFILE
     AppDestination.Rating -> MainTab.RATING
     AppDestination.Voice -> MainTab.VOICE
     is AppDestination.Practice -> MainTab.PRACTICE

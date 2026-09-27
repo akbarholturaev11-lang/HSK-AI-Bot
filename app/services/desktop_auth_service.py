@@ -1025,6 +1025,15 @@ class DesktopAuthService:
         context = await self.authenticate(access_token)
         now = _utcnow()
         context.session.revoked_at = now
+        if context.device.platform == "android":
+            # A normal logout keeps the reusable installation row, but its
+            # old account must stop receiving payment push immediately.
+            from sqlalchemy import delete
+            from app.db.models.android_push import AndroidPushToken
+
+            await self.session.execute(
+                delete(AndroidPushToken).where(AndroidPushToken.device_id == context.device.id)
+            )
         if revoke_device:
             context.device.revoked_at = now
             result = await self.session.execute(

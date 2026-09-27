@@ -39,6 +39,8 @@ import com.pomp.hskai.widget.*
 import com.pomp.hskai.core.notify.StudyReminderScheduler
 import com.pomp.hskai.feature.update.UpdateWatch
 import com.pomp.hskai.core.notify.StudyNotifications
+import com.pomp.hskai.core.notify.PaymentDecisionMonitor
+import com.pomp.hskai.data.api.AndroidPushApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -56,9 +58,13 @@ class HskAiApplication : Application() {
     val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val widgetStore by lazy { WidgetStore(this) }
     val widgetCoordinator by lazy { WidgetCoordinator(this, retrofit.create(AndroidEventsApi::class.java)) }
+    val paymentDecisionMonitor by lazy {
+        PaymentDecisionMonitor(this, retrofit.create(AndroidPushApi::class.java))
+    }
 
     override fun onCreate() {
         super.onCreate()
+        paymentDecisionMonitor.initializeFirebase()
         applicationScope.launch {
             // Whether a newer build exists is asked here rather than from a
             // screen: the profile card only ever spoke to someone who opened
@@ -73,6 +79,7 @@ class HskAiApplication : Application() {
     }
 
     private suspend fun clearWidgetSession() {
+        paymentDecisionMonitor.clear()
         kotlinx.coroutines.withContext(Dispatchers.Main.immediate) { assistant.reset() }
         widgetStore.clear()
         StudyNotifications.cancelReminder(this)
@@ -155,9 +162,11 @@ class HskAiApplication : Application() {
             ),
             onSessionCleared = ::clearWidgetSession,
             onSessionLinked = { widgetStore.linked(newSession = true) },
-            onAuthenticated = {
+            onAuthenticated = { deviceId ->
+                paymentDecisionMonitor.bindDevice(deviceId)
                 widgetStore.linked()
                 WidgetScheduler.schedule(this)
+                applicationScope.launch { paymentDecisionMonitor.syncRegistration() }
             },
         )
     }

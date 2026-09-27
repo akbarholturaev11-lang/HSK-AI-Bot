@@ -85,12 +85,12 @@ fun NotificationPrimerScreen(
                 modifier = Modifier.widthIn(max = 330.dp),
             )
             Spacer(Modifier.height(22.dp))
-            // Two lines, because there are exactly two things the app would
-            // ever send: the evening reminder and a new version. Anything
-            // vaguer than that is how a permission gets refused.
+            // Name each notification type before asking for app-wide permission.
             PrimerLine(icon = Icons.Filled.NotificationsActive, text = copy.notifyLessons)
             Spacer(Modifier.height(12.dp))
             PrimerLine(icon = Icons.Filled.SystemUpdate, text = copy.notifyUpdates)
+            Spacer(Modifier.height(12.dp))
+            PrimerLine(icon = Icons.Filled.NotificationsActive, text = copy.notifyPayments)
             Spacer(Modifier.height(30.dp))
             HskPrimaryButton(
                 text = copy.notifyAllow,

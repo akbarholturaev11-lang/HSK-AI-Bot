@@ -534,6 +534,7 @@ private fun AppRoot(
                 when (notificationsOn) {
                     true -> if (StudyNotifications.canPost(context)) {
                         StudyReminderScheduler.schedule(context)
+                        app.paymentDecisionMonitor.syncRegistration()
                     }
                     false -> {
                         StudyReminderScheduler.cancel(context)
@@ -754,6 +755,15 @@ private fun AppRoot(
                             app.widgetStore.markInstallPromptShown(LocalDate.now().toString())
                         }
                         widgetSetupOpen = true
+                        onDestinationConsumed()
+                    }
+                    AppDestination.Subscription -> {
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                            checkoutOrigin = ""
+                            checkoutVisible = true
+                        }
+                        // In the Play build toTab() opens Profile: there is no
+                        // external checkout or payment CTA in that binary.
                         onDestinationConsumed()
                     }
                     // `toTab()` above has already moved to Mashq; this opens the

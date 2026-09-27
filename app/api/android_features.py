@@ -42,6 +42,7 @@ from app.api.desktop_referral import (
     _public_item as _public_referral_item,
 )
 from app.api.desktop_subscription import (
+    DesktopSubscriptionEventRequest,
     DesktopSubscriptionQuoteRequest,
     DesktopSubscriptionSubmitRequest,
     MAX_DESKTOP_SUBSCRIPTION_SUBMIT_BODY_BYTES,
@@ -874,6 +875,43 @@ def create_android_features_router(
             logger.exception("Android checkout overview failed")
             return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
 
+    @router.post("/api/v3/android/subscription/checkout/discount-start")
+    async def android_checkout_discount_start(request: Request):
+        try:
+            if request.query_params or await request.body():
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await (await _android_checkout(session, request)).start_discount(
+                    _access_token(request),
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android checkout discount start failed")
+            return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
+
+    @router.post("/api/v3/android/subscription/checkout/event")
+    async def android_checkout_event(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            payload = await _validated_checkout_payload(request, DesktopSubscriptionEventRequest)
+            async with session_factory() as session:
+                result = await (await _android_checkout(session, request)).record_event(
+                    _access_token(request),
+                    attempt_id=payload.attempt_id,
+                    stage=payload.stage,
+                    plan_type=payload.plan_type,
+                    payment_method=payload.payment_method,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android checkout event failed")
+            return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
+
     @router.post("/api/v3/android/subscription/checkout/quote")
     async def android_checkout_quote(request: Request):
         try:
@@ -912,6 +950,7 @@ def create_android_features_router(
                     payment_method=payload.payment_method,
                     card_country=payload.card_country,
                     screenshot_data_url=payload.screenshot_data_url,
+                    attempt_id=payload.attempt_id,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:

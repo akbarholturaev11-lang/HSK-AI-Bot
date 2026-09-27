@@ -2,6 +2,7 @@ package com.pomp.hskai.core.notify
 
 import android.Manifest
 import android.app.NotificationChannel
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -29,24 +30,32 @@ import com.pomp.hskai.widget.WidgetIntents
  */
 object StudyNotifications {
 
-    const val CHANNEL_ID = "study_reminders"
+    // Existing installs already have a DEFAULT channel whose importance cannot
+    // be raised. A new ID lets future reminders appear on screen.
+    const val CHANNEL_ID = "study_reminders_alerts"
+    private const val LEGACY_CHANNEL_ID = "study_reminders"
     private const val REMINDER_NOTIFICATION_ID = 4201
 
     /**
      * The channel must exist before the first post. Creating it again is a
      * no-op, so this is safe to call on every delivery.
      */
-    fun ensureChannel(context: Context) {
-        val manager = context.getSystemService(NotificationManager::class.java) ?: return
+    fun ensureChannel(context: Context): String {
+        val manager = context.getSystemService(NotificationManager::class.java) ?: return CHANNEL_ID
+        // Preserve a user's explicit quieter or muted setting on the old channel.
+        val old = manager.getNotificationChannel(LEGACY_CHANNEL_ID)
+        if (old != null && old.importance != NotificationManager.IMPORTANCE_DEFAULT) return LEGACY_CHANNEL_ID
         val channel = NotificationChannel(
             CHANNEL_ID,
             context.getString(R.string.notify_channel_name),
-            NotificationManager.IMPORTANCE_DEFAULT,
+            NotificationManager.IMPORTANCE_HIGH,
         ).apply {
             description = context.getString(R.string.notify_channel_body)
             setShowBadge(true)
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
         manager.createNotificationChannel(channel)
+        return CHANNEL_ID
     }
 
     /**
@@ -61,7 +70,7 @@ object StudyNotifications {
     fun canPost(context: Context): Boolean =
         NotificationManagerCompat.from(context).areNotificationsEnabled() &&
         context.getSystemService(NotificationManager::class.java)
-            ?.getNotificationChannel(CHANNEL_ID)?.importance != NotificationManager.IMPORTANCE_NONE &&
+            ?.getNotificationChannel(ensureChannel(context))?.importance != NotificationManager.IMPORTANCE_NONE &&
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
                 context,
@@ -123,7 +132,10 @@ object StudyNotifications {
         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
 
         val localized = AppLocale.wrap(context)
-        ensureChannel(localized)
+        val channelId = ensureChannel(localized)
+        if (context.getSystemService(NotificationManager::class.java)
+                ?.getNotificationChannel(channelId)?.importance == NotificationManager.IMPORTANCE_NONE
+        ) return false
 
         val titleRes = when (reminder) {
             Reminder.STREAK_AT_RISK -> R.string.notify_streak_title
@@ -147,13 +159,14 @@ object StudyNotifications {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setLargeIcon(panda(localized, reminder))
             .setContentTitle(localized.getString(titleRes))
             .setContentText(localized.getString(bodyRes))
             .setStyle(NotificationCompat.BigTextStyle().bigText(localized.getString(bodyRes)))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setAutoCancel(true)
             .setContentIntent(pending)

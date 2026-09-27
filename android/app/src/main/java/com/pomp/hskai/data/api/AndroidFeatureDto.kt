@@ -95,6 +95,7 @@ data class SubscriptionPriceDto(
     @SerialName("final_amount") val finalAmount: Int = 0,
     @SerialName("currency") val currency: String = "",
     @SerialName("discount_percent") val discountPercent: Int = 0,
+    @SerialName("discount_applied") val discountApplied: Boolean = false,
 )
 
 @Serializable
@@ -105,11 +106,60 @@ data class SubscriptionPendingDto(
 @Serializable
 data class SubscriptionCheckoutOverviewDto(
     @SerialName("ok") val ok: Boolean = false,
+    @SerialName("language") val language: String = "uz",
+    @SerialName("mode") val mode: String = "subscription",
     @SerialName("checkout_allowed") val checkoutAllowed: Boolean = false,
     @SerialName("read_only_reason") val readOnlyReason: String? = null,
     @SerialName("pending_payment") val pendingPayment: SubscriptionPendingDto? = null,
     @SerialName("prices") val prices: Map<String, Map<String, SubscriptionPriceDto>> = emptyMap(),
+    @SerialName("discount") val discount: SubscriptionDiscountDto? = null,
+    @SerialName("offer") val offer: SubscriptionOfferDto? = null,
+    @SerialName("support_url") val supportUrl: String = "",
+    @SerialName("attempt_id") val attemptId: String? = null,
     @SerialName("access") val access: AndroidSubscriptionAccessDto = AndroidSubscriptionAccessDto(),
+)
+
+@Serializable
+data class SubscriptionDiscountDto(
+    @SerialName("referral_20_available") val referral20Available: Boolean = false,
+    @SerialName("referral_count") val referralCount: Int = 0,
+    @SerialName("referral_required") val referralRequired: Int = 3,
+    @SerialName("discount_used") val discountUsed: Boolean = false,
+    @SerialName("offer_started") val offerStarted: Boolean = false,
+    @SerialName("referral_link") val referralLink: String = "",
+)
+
+@Serializable
+data class SubscriptionOfferDto(
+    @SerialName("available") val available: Boolean = false,
+    @SerialName("percent") val percent: Int = 0,
+    @SerialName("title") val title: String = "",
+    @SerialName("title_uz") val titleUz: String = "",
+    @SerialName("title_ru") val titleRu: String = "",
+    @SerialName("title_tj") val titleTj: String = "",
+    @SerialName("reason") val reason: String = "",
+    @SerialName("reason_uz") val reasonUz: String = "",
+    @SerialName("reason_ru") val reasonRu: String = "",
+    @SerialName("reason_tj") val reasonTj: String = "",
+)
+
+@Serializable
+data class SubscriptionDiscountStartResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("discount") val discount: SubscriptionDiscountDto = SubscriptionDiscountDto(),
+)
+
+@Serializable
+data class SubscriptionCheckoutEventRequest(
+    @SerialName("attempt_id") val attemptId: String,
+    @SerialName("stage") val stage: String,
+    @SerialName("plan_type") val planType: String,
+    @SerialName("payment_method") val paymentMethod: String,
+)
+
+@Serializable
+data class SubscriptionCheckoutEventResponse(
+    @SerialName("ok") val ok: Boolean = false,
 )
 
 @Serializable
@@ -129,6 +179,11 @@ data class SubscriptionQrDto(
 data class SubscriptionQuoteDto(
     @SerialName("pay_amount") val payAmount: String = "",
     @SerialName("pay_currency") val payCurrency: String = "",
+    @SerialName("pay_base_amount") val payBaseAmount: String = "",
+    @SerialName("pay_base_currency") val payBaseCurrency: String = "",
+    @SerialName("exchange_rate") val exchangeRate: String = "",
+    @SerialName("discount_applied") val discountApplied: Boolean = false,
+    @SerialName("discount_percent") val discountPercent: Int = 0,
     @SerialName("payment_details") val paymentDetails: String = "",
     @SerialName("qr") val qr: SubscriptionQrDto? = null,
 )
@@ -145,6 +200,7 @@ data class SubscriptionSubmitRequest(
     @SerialName("payment_method") val paymentMethod: String,
     @SerialName("card_country") val cardCountry: String? = null,
     @SerialName("screenshot_data_url") val screenshotDataUrl: String,
+    @SerialName("attempt_id") val attemptId: String? = null,
 )
 
 @Serializable

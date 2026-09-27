@@ -33,6 +33,17 @@ interface AndroidFeatureApi {
         @Query("origin") origin: String,
     ): Response<SubscriptionCheckoutOverviewDto>
 
+    @POST("api/v3/android/subscription/checkout/discount-start")
+    suspend fun checkoutDiscountStart(
+        @Header("Authorization") authorization: String,
+    ): Response<SubscriptionDiscountStartResponse>
+
+    @POST("api/v3/android/subscription/checkout/event")
+    suspend fun checkoutEvent(
+        @Header("Authorization") authorization: String,
+        @Body body: SubscriptionCheckoutEventRequest,
+    ): Response<SubscriptionCheckoutEventResponse>
+
     @POST("api/v3/android/subscription/checkout/quote")
     suspend fun checkoutQuote(
         @Header("Authorization") authorization: String,
