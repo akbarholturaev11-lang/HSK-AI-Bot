@@ -379,6 +379,14 @@
           <div class="explain" id="clientBusinessExplain"></div>
         </div>
 
+        <!-- Cross-client device inventory -->
+        <div class="block">
+          <div class="block-head"><span class="bi">📲</span><div><h3>Qurilmalar va foydalanish</h3><p>Mini App platformasi + tasdiqlangan native install registry</p></div></div>
+          <div class="grid g2" id="clientDeviceCards"></div>
+          <div id="clientDeviceTable" style="margin-top:12px"></div>
+          <div class="explain" id="clientDeviceExplain"></div>
+        </div>
+
         <!-- Finance -->
         <div class="block">
           <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
@@ -943,6 +951,45 @@
       : "<p class='empty'>Feature adoption ma'lumot yo'q</p>";
     }
 
+    function renderClientDevices(){
+      const d=(state.overview&&state.overview.client_devices)||{};
+      const cards=[
+        {label:"Mini App platformasi aniqlangan",value:Number(d.miniapp_users_total||0),note:"deploydan keyingi presence",tone:"info"},
+        {label:"Native app ulangan",value:Number(d.native_users_total||0),note:"Android · Windows · macOS",tone:"good"},
+        {label:"Mini App + Native",value:Number(d.miniapp_and_native_users||0),note:"ikkalasidan foydalangan",tone:"good"},
+        {label:"Mini App → Native",value:Number(d.miniapp_to_native_pct||0)+"%",note:"presence userlar ichida",tone:"info"}
+      ];
+      const cardHost=$("clientDeviceCards");
+      if(cardHost) cardHost.innerHTML=cards.map(cardHtml).join("");
+
+      const mini=d.miniapp_users_by_platform||{};
+      const native=d.native_by_platform||{};
+      const labels={android:"Android",ios:"iPhone/iPad",windows:"Windows",macos:"macOS",web:"Web",unknown:"Noma'lum"};
+      const miniRows=Object.keys(mini).sort().map(k=>[labels[k]||k,Number(mini[k]||0)]);
+      const nativeRows=["android","windows","macos"].map(k=>[
+        labels[k]||k,
+        Number(native[k]&&native[k].users||0),
+        Number(native[k]&&native[k].devices||0)
+      ]);
+      const tableHost=$("clientDeviceTable");
+      if(tableHost){
+        tableHost.innerHTML=
+          `<div class="dtitle-sm">Telegram Mini App</div>`+
+          (miniRows.length
+            ? `<table class="tbl"><thead><tr><th>Platforma</th><th class="r">User</th></tr></thead><tbody>${miniRows.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="r">${r[1]}</td></tr>`).join("")}</tbody></table>`
+            : "<p class='empty'>Presence ma'lumoti hali yig'ilmagan.</p>")+
+          `<div class="dtitle-sm" style="margin-top:14px">Native ilovalar</div>`+
+          `<table class="tbl"><thead><tr><th>Platforma</th><th class="r">User</th><th class="r">Qurilma</th></tr></thead><tbody>${nativeRows.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="r">${r[1]}</td><td class="r">${r[2]}</td></tr>`).join("")}</tbody></table>`+
+          `<div class="ncnote" style="margin-top:10px">Mini App only: <b>${Number(d.miniapp_only_users||0)}</b> · Native only: <b>${Number(d.native_only_users||0)}</b> · 2+ native platforma: <b>${Number(d.multi_native_platform_users||0)}</b></div>`;
+      }
+      const explain=$("clientDeviceExplain");
+      if(explain){
+        explain.textContent=d.tracking_started_at
+          ? "Mini App platform presence "+d.tracking_started_at+" dan boshlab yig'ilmoqda. Native install tarixi esa mavjud desktop_devices registry'dan olinadi."
+          : "Mini App platform presence yangi tizim deploy qilingandan keyin yig'ila boshlaydi; eski platformalar taxmin qilinmaydi.";
+      }
+    }
+
     function renderStatistics(){
       const fin = state.finance;
       const overviewPeriods=(state.overview&&state.overview.statistics_reports)||[];
@@ -965,6 +1012,7 @@
         ? "Oxirgi DB yozuvi · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"no data":row.last_at}`).join(" · ")
         : "Data freshness ma'lumoti kelmadi.";
       renderAdvanced(orep);
+      renderClientDevices();
       const desktop=state.desktopStats[state.statsPeriod]||null;
       renderDesktopStats(desktop,Boolean(state.desktopStatsLoading[state.statsPeriod]));
       if(!desktop&&!state.desktopStatsLoading[state.statsPeriod]) loadDesktopStats(state.statsPeriod);
@@ -1308,6 +1356,17 @@
         : "—";
       state.activeUser={id:f.id,name:f.name,username:f.username||u.username||""};
       const afterBlock=f.client_activity_after_bot_block||{};
+      const deviceInfo=f.devices||{};
+      const devicePlatformLabel=(p)=>({android:"Android",ios:"iPhone/iPad",windows:"Windows",macos:"macOS",web:"Web",unknown:"Noma'lum"}[String(p||"").toLowerCase()]||String(p||"—"));
+      const miniPresence=Array.isArray(deviceInfo.presences)?deviceInfo.presences:[];
+      const nativeDevices=Array.isArray(deviceInfo.native_devices)?deviceInfo.native_devices:[];
+      const primaryDevice=deviceInfo.primary||null;
+      const miniPresenceHtml=miniPresence.length
+        ? miniPresence.map(x=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(devicePlatformLabel(x.platform))} · Telegram Mini App</b><div class="usub">Birinchi: ${esc(x.first_seen_at||"—")} · oxirgi foreground: ${esc(x.last_foreground_at||"—")}</div></div>${tag("Mini App","blue")}</div>`).join("")
+        : "<p class='empty'>Mini App platform presence hali qayd etilmagan.</p>";
+      const nativeDevicesHtml=nativeDevices.length
+        ? nativeDevices.map(x=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(devicePlatformLabel(x.platform))} · HSK AI native ${x.app_version?("· "+esc(x.app_version)):""}</b><div class="usub">Foreground: ${esc(x.last_foreground_at||"—")} · server contact: ${esc(x.last_contact_at||"—")}</div></div>${tag(x.installed?"ulangan":"uzilgan",x.installed?"green":"red")}</div>`).join("")
+        : "<p class='empty'>Native ilova qurilmasi qayd etilmagan.</p>";
       const tgDiag=botReachabilityDiagnosis(f);
       const tgHistory=f.bot_reachability_history||[];
       const blockCause=f.bot_block_cause||{};
@@ -1358,6 +1417,18 @@
           </details>
 
           ${f.bot_blocked&&tgHistory.length===0?'<div class="ncnote" style="margin-top:10px">Bu eski yozuv bo\'lishi mumkin. Yangi block/unblock tarixi deploydan keyingi eventlardan boshlab to\'planadi.</div>':""}
+        </section>
+
+        <section class="dsec">
+          <div class="dtitle-sm">Qurilmalar va foydalanish</div>
+          <div class="ncnote" style="margin-top:8px">
+            <b>Asosiy oxirgi client:</b> ${primaryDevice?esc(devicePlatformLabel(primaryDevice.platform)+" · "+primaryDevice.surface+" · "+primaryDevice.last_foreground_at):"hali aniqlanmagan"}
+          </div>
+          <div class="dtitle-sm" style="margin-top:12px">Telegram Mini App</div>
+          ${miniPresenceHtml}
+          <div class="dtitle-sm" style="margin-top:12px">Native ilovalar</div>
+          ${nativeDevicesHtml}
+          <div class="ncnote" style="margin-top:10px">Native <b>server contact</b> foreground degani emas: Android widget background refresh ham sessionni tegishi mumkin. Faol foydalanish uchun foreground/open event alohida ko'rsatiladi.</div>
         </section>
         <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
           <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
@@ -1652,24 +1723,17 @@
       const ap=d.desktop_app_promo||{};
       const placements=ap.placements||{};
       const platforms=ap.platforms||{};
-      const daily=Number(ap.daily_limit||3);
       const enabled=ap.enabled!==false;
       showPanel("💻 App reklamasi","Mini App ochilganda va reklama joylarida ilova promosi",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
-          <p>Ochilishi: ${enabled?"yoqilgan":"o'chirilgan"} · Kunlik limit: ${daily} marta</p>
+          <p>Ochilishi: ${enabled?"yoqilgan":"o'chirilgan"} · Auto promo: har platforma uchun 14 kunlik server cooldown</p>
           <div class="tags">${tag(enabled?"faol":"o'chirilgan",enabled?"green":"red")}${tag((placements.home_prompt!==false)?"ochilganda":"ochilganda yo'q",(placements.home_prompt!==false)?"blue":"")}${tag((placements.lesson_end_promo!==false)?"dars yakunida":"dars yakunida yo'q",(placements.lesson_end_promo!==false)?"blue":"")}${tag((placements.ad_promo!==false)?"reklama oynasida":"reklama oynasida yo'q",(placements.ad_promo!==false)?"amber":"")}${tag(ap.media_url?"media bor":"media yo'q",ap.media_url?"green":"")}</div>
         </div>
         <div class="mcard">
           <h3>Ko'rsatish sozlamasi</h3>
           <label class="ncsw"><input type="checkbox" id="apEnabled" ${enabled?"checked":""}> App reklamasi yoqilsin</label>
-          <div class="frow"><label>Mini App ochilganda kuniga necha marta chiqsin</label>
-            <select id="apDailyLimit" class="select">
-              <option value="1"${daily===1?" selected":""}>1 marta</option>
-              <option value="2"${daily===2?" selected":""}>2 marta</option>
-              <option value="3"${daily===3?" selected":""}>3 marta</option>
-            </select>
-          </div>
+          <div class="ncnote">Bir platforma uchun promo ko'rilgach barcha avtomatik joylar 14 kun dam oladi. Native ilova ulangan bo'lsa o'sha platforma boshqa avtomatik reklama qilinmaydi.</div>
           <div class="frow"><label>Qayerda chiqsin</label><div class="chips">
             ${appPromoChipHtml("placement","home_prompt","Mini App ochilganda",placements.home_prompt!==false)}
             ${appPromoChipHtml("placement","lesson_end_promo","Dars yakunida",placements.lesson_end_promo!==false)}
@@ -1711,7 +1775,6 @@
       platforms.ios=false;
       return {
         enabled:Boolean($("apEnabled")&&$("apEnabled").checked),
-        daily_limit:Number($("apDailyLimit")&&$("apDailyLimit").value||3),
         placements:pick("placement"),
         platforms
       };
