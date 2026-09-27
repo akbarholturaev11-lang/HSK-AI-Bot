@@ -107,6 +107,7 @@ from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.app_promo_decision_service import AppPromoDecisionService
+from app.services.user_device_inventory_service import UserDeviceInventoryService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
@@ -1367,6 +1368,7 @@ async def _admin_user_payload(session, user) -> dict:
             "desktop_opened_at": _mini_dt(activity_by_name.get("desktop_app_opened")),
         }
     block_cause = await BotBlockCauseService(session).analyze(user)
+    devices = await UserDeviceInventoryService(session).snapshot(user.telegram_id)
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1415,6 +1417,7 @@ async def _admin_user_payload(session, user) -> dict:
                 for item in reachability_rows
             ],
             "client_activity_after_bot_block": client_activity_after_block,
+            "devices": devices,
             "bot_block_cause": block_cause,
             "bonus": {
                 "total": bonus_total,
