@@ -180,10 +180,9 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(payload["promo"]["placements"]["home_prompt"])
             self.assertFalse(payload["promo"]["placements"]["lesson_end_promo"])
             self.assertTrue(payload["promo"]["placements"]["ad_promo"])
-            # Android relizi chiqdi: promo admin tanloviga bo'ysunadi.
-            # Ilgari bu yerda `False` qattiq yozilgan edi va admin chipni
-            # yoqsa ham Mini App'da Android tugmasi chizilmasdi.
-            self.assertTrue(payload["promo"]["platform_targets"]["android"])
+            # Admin chipning o'zi yetarli emas: real Android release
+            # bo'lmasa o'lik promo tugmasi ko'rsatilmasligi kerak.
+            self.assertFalse(payload["promo"]["platform_targets"]["android"])
             # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
 
