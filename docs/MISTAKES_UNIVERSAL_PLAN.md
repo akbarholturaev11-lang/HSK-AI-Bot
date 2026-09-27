@@ -66,24 +66,24 @@ Test: lug'atdagi **har so'z × har format × 3 til** va gap havzasidagi
 ## Bosqichlar
 
 0. [x] GitHub bilan solishtirish, worktree, reja.
-1. **Ma'lumot qatlami** — `course_mistake_targets` jadvali, `course_mistakes.target_key`,
+1. [x] **Ma'lumot qatlami** — `course_mistake_targets` jadvali, `course_mistakes.target_key`,
    Alembic `0091`, model testlari.
-2. **Drill banki** — lug'at indeksi, gap havzasi, segmentatsiya (kesh).
-3. **Nishon aniqlovchi** — barcha manbalardan nishon; dars/imtihon kartalari bo'yicha qamrov testi.
-4. **Mashq generatori + tekshirgich** — formatlar, 3 tilda ko'rsatma, xususiyat testi.
-5. **Sessiya dvigateli (v3)** — `record_items` nishon yozadi, lazy backfill, `overview.targets`,
+2. [x] **Drill banki** — lug'at indeksi, gap havzasi, segmentatsiya (kesh).
+3. [x] **Nishon aniqlovchi** — barcha manbalardan nishon; dars/imtihon kartalari bo'yicha qamrov testi.
+4. [x] **Mashq generatori + tekshirgich** — formatlar, 3 tilda ko'rsatma, xususiyat testi.
+5. [x] **Sessiya dvigateli (v3)** — `record_items` nishon yozadi, lazy backfill, `overview.targets`,
    `start_review(category, formats)`, aralashtirish, `complete_review` v3; v1/v2 sessiyalar tugatiladi.
-6. **API** — Mini App va Android endpointlari `category`/`formats` qabul qiladi.
-7. **Mini App** — chiplar takror doirasini tanlaydi, ro'yxatda nishonlar + progress,
+6. [x] **API** — Mini App va Android endpointlari `category`/`formats` qabul qiladi.
+7. [x] **Mini App** — chiplar takror doirasini tanlaydi, ro'yxatda nishonlar + progress,
    tinglashda avto-ovoz (blob-kesh), yangi formatlar, natijada "yopildi" soni.
-8. **Android** — DTO (`format`, `tokens`), kategoriya, avto-ovoz, builder, uz/ru/tg,
+8. [x] **Android** — DTO (`format`, `tokens`), kategoriya, avto-ovoz, builder, uz/ru/tg,
    5 statik tekshiruv, unit test, emulyator.
-9. **Tekshiruv** — to'liq pytest (e2e'siz), brauzerda Mini App oqimi, PROJECT_MEMORY.
+9. [x] **Tekshiruv** — to'liq pytest (e2e'siz), brauzerda Mini App oqimi, PROJECT_MEMORY.
 
 ## Qarorlar (foydalanuvchi ishonib topshirdi)
 
 - Yopilish: 3 xil format, xato — progress nolga.
 - UI: yangi ekran qurilmaydi; mavjud chiplar takror doirasini ham tanlaydi,
-  CTA shunga mos yoziladi; ro'yxatda progress nuqtalari (●●○).
+  CTA shunga mos yoziladi; ro'yxatda progress segmentlari va `1/3` (nuqtalar "⋯" menyuga o'xshab qolgani uchun).
 - "O'zi aytish" mashqi keyingi bosqichga qoldirildi (AI/mikrofon talab qiladi).
 - Bepul/reklama qoidalari va XP o'zgarmaydi.

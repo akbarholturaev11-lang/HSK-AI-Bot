@@ -167,6 +167,13 @@ Important fields:
 - `created_at`
 - `confirmed_at`
 
+### course_mistakes / course_mistake_targets
+Purpose: Xatolarim. `course_mistakes` — har bir xato SAVOL (dalil/tarix);
+`course_mistake_targets` — takror birligi: o'quvchi bilmagan so'z yoki gap,
+3 xil mashq progressi (`passed_formats`) bilan. Bog'lanish:
+`course_mistakes.target_key` (+ `user_id`, `category`). Tafsilot 10-bo'limda
+(2026-09-28, universal takror).
+
 ### logs / history
 Purpose: stores important user actions or AI interactions.
 
@@ -226,6 +233,45 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 ---
 
 ## 10. Recent Important Changes
+
+### 2026-09-28 — Xatolarim: universal takror (nishon + 3 xil mashq)
+
+Changed:
+- Takror endi saqlangan savolni qayta o'ynatmaydi. Har xato "nishon"ga
+  aylanadi (`word` — lug'at so'zi, `sentence` — to'g'ri xitoycha gap,
+  `question` — ajratib bo'lmagan eski savol, 1 format) va server har safar
+  lug'at/dars gaplaridan YANGI savol yasaydi. Nishon 3 xil mashqda to'g'ri
+  javob berilgandagina yopiladi; xato javob progressni nolga tushiradi; yangi
+  xato yopilgan nishonni qayta ochadi. Yopilgan so'z `course_word_mastery`
+  ga (interval takrori) uzatiladi.
+- Universal tekshirgich (`mistake_drill_factory.validate_question`): savol
+  matni variantga teng emas, tinglashda ovoz bor va matn yo'q, javob ekranda
+  yozilmagan, omofon/sinonim distraktor yo'q. Test lug'atning har so'zini
+  (1227) va har dars gapini har formatda 3 tilda shu tekshirgichdan o'tkazadi.
+- Review v3: `start_review(category, formats, language)`. Klient `formats`
+  yubormasa (eski build) faqat variantli savollar beriladi. v1/v2 sessiyalar
+  tugatilishi mumkin. Eski qatorlar nishonga lazy bog'lanadi (`_sync_targets`).
+- Mini App va Android: chip takror doirasini ham tanlaydi, ro'yxatda nishonlar
+  va 0/3 progress, tinglashda avto-ovoz, gap tuzish, natijada "To'liq yopildi".
+- Tuzatilgan xatolar: AI Voice xatosida savol = variant; mashqdagi tinglash
+  savolida javob ekranda (`sentence = audio_text`); match_pairs/builder/talaffuz
+  xatolari hech qachon takrorlanmasdi; 30 ta nomzoddan tashqaridagilar ko'rilmasdi.
+
+Files touched:
+- Yangi: `app/db/models/course_mistake_target.py`, Alembic
+  `0091_course_mistake_targets.py`, `app/services/mistake_drill_bank.py`,
+  `mistake_target_resolver.py`, `mistake_drill_factory.py`,
+  `course_mistake_target_store.py`.
+- `course_mistake_service.py`, `learning_signals.py` ("-" qatorlar kunlik
+  reja vazifasini bermaydi), `app/main.py`, `app/api/android_features.py`,
+  `app/static/course_v3_mistakes.html`, Android `feature/practice/*`.
+- Reja: `docs/MISTAKES_UNIVERSAL_PLAN.md`.
+
+Risk / follow-up:
+- DB migratsiyasi SHART (`0091`). Postgres'da upgrade/downgrade tekshirilgan.
+- Android o'zgarishi faqat yangi release bilan foydalanuvchiga yetadi; eski
+  build'lar serverdan faqat variantli savollar oladi (buzilmaydi).
+- "O'zi aytish" (talaffuz) mashqi hali yo'q — keyingi bosqich.
 
 ### 2026-09-28 — 20% referral qualification by phone platform
 
