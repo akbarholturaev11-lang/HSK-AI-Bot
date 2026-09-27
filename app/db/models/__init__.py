@@ -38,3 +38,5 @@ from .course_ad import CourseAdCreative, CourseAdView
 from .desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from .entitlement_shadow_event import EntitlementShadowEvent
 from .user_identity import UserIdentity
+
+from .user_client_presence import UserClientPresence, AppPromoState
