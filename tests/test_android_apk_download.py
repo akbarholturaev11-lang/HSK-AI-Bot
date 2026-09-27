@@ -29,6 +29,7 @@ from app.db.models.course_miniapp_event import (
     CourseMiniAppEvent,
 )
 from app.db.models.user import User
+from app.db.models.user_client_presence import AppPromoState
 from app.bot.utils.i18n import TEXTS
 from app.services.android_release_service import (
     ANDROID_RELEASE_KEY,
@@ -257,6 +258,15 @@ class HandingItToALearnerTests(DatabaseBackedTest):
                 await self._event_names(session),
                 ["android_apk_requested", "android_apk_sent"],
             )
+            promo_state = (
+                await session.execute(
+                    select(AppPromoState).where(
+                        AppPromoState.telegram_id == self.TELEGRAM_ID,
+                        AppPromoState.target_platform == "android",
+                    )
+                )
+            ).scalar_one()
+            self.assertIsNotNone(promo_state.last_download_requested_at)
 
     async def test_the_learner_is_answered_in_their_own_language(self):
         from app.bot.handlers.android_app import send_android_app
