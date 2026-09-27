@@ -192,14 +192,22 @@ class UserDeviceInventoryService:
             )
         ).all()
 
-        native_opened: dict[str, datetime] = {}
+        native_opened_by_device: dict[str, datetime] = {}
+        legacy_opened_by_platform: dict[str, datetime] = {}
+        latest_opened_by_platform: dict[str, datetime] = {}
         for event_name, payload_json, created_at in latest_native_rows:
             payload = self._payload(payload_json)
             platform = normalize_client_platform(payload.get("platform"))
             if event_name == "android_app_opened":
                 platform = "android"
-            if platform in NATIVE_PLATFORMS and platform not in native_opened:
-                native_opened[platform] = created_at
+            if platform not in NATIVE_PLATFORMS:
+                continue
+            device_id = str(payload.get("device_id") or "").strip()
+            if device_id:
+                native_opened_by_device.setdefault(device_id, created_at)
+            else:
+                legacy_opened_by_platform.setdefault(platform, created_at)
+            latest_opened_by_platform.setdefault(platform, created_at)
 
         presences = [
             {
@@ -226,7 +234,10 @@ class UserDeviceInventoryService:
                     "installed": row.revoked_at is None,
                     "first_open_at": _iso(row.first_open_at),
                     "last_contact_at": _iso(row.last_seen_at),
-                    "last_foreground_at": _iso(native_opened.get(platform)),
+                    "last_foreground_at": _iso(
+                        native_opened_by_device.get(str(row.id))
+                        or legacy_opened_by_platform.get(platform)
+                    ),
                     "revoked_at": _iso(row.revoked_at),
                     "created_at": _iso(row.created_at),
                 }
@@ -237,7 +248,7 @@ class UserDeviceInventoryService:
             at = _as_utc(row.last_foreground_at)
             if at:
                 candidates.append((at, row.surface, row.platform))
-        for platform, at_raw in native_opened.items():
+        for platform, at_raw in latest_opened_by_platform.items():
             at = _as_utc(at_raw)
             if at:
                 candidates.append((at, "native", platform))
