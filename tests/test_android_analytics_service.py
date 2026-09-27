@@ -373,6 +373,17 @@ class AndroidAnalyticsQueriesTest(unittest.IsolatedAsyncioTestCase):
             session.add_all(
                 [
                     User(id=1, telegram_id=101, status="free", payment_status="none"),
+                    DesktopDevice(
+                        id="android-1",
+                        user_id=1,
+                        telegram_id=101,
+                        installation_key_hash="period-test-" + ("a" * 52),
+                        platform="android",
+                        app_version="1.6.4",
+                        first_open_at=NOW - timedelta(days=3),
+                        last_seen_at=NOW - timedelta(days=3),
+                        created_at=NOW - timedelta(days=10),
+                    ),
                     CourseMiniAppEvent(
                         id=1,
                         telegram_id=101,
