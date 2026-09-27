@@ -1,15 +1,15 @@
 """Bind Android FCM tokens to native devices.
 
-Revision ID: 0088_android_push_tokens
-Revises: 0087_payment_source
+Revision ID: 0089_android_push_tokens
+Revises: 0088_client_presence_promo
 """
 
 from alembic import op
 import sqlalchemy as sa
 
 
-revision = "0088_android_push_tokens"
-down_revision = "0087_payment_source"
+revision = "0089_android_push_tokens"
+down_revision = "0088_client_presence_promo"
 branch_labels = None
 depends_on = None
 

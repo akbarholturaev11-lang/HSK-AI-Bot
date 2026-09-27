@@ -70,7 +70,7 @@ build'da ekanini bilmay chaqiradi.
 - Adminning bot yoki Mini App'dagi tasdiq/rad qarori Android'ga FCM data xabari
   bilan uzatiladi. Ilova xabarni ko'rsatishdan oldin joriy akkaunt nomidan
   to'lov holatini qayta tekshiradi. `android_push_tokens` jadvali, Alembic
-  `0088_android_push_tokens.py`, `/api/v3/android/push/*` va payment status
+  `0089_android_push_tokens.py`, `/api/v3/android/push/*` va payment status
   endpointi shu oqimga tegishli. Logoutda token o'chadi.
 - FCM yo'q bo'lsa, Android'dan yuborilgan pending chekni WorkManager taxminan
   15 daqiqada bir tekshiradi (OS kechiktirishi mumkin). Tezkor push uchun

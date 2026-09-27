@@ -237,16 +237,20 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
   aktivatsiya renewal muddatini uzaytirish o'rniga qayta boshlashi mumkin.
 - Bot va admin Mini App tasdiq/rad qaroridan keyin `PaymentNotifyService`
   Android FCM data push yuboradi. FCM token `android_push_tokens`da native
-  device'ga bog'lanadi (Alembic 0088); logoutda o'chadi. Android push
+  device'ga bog'lanadi (Alembic 0089); logoutda o'chadi. Android push
   ko'rsatishdan oldin payment statusini joriy bearer bilan tasdiqlaydi.
   Firebase sozlanmaganda Android'dan yuborilgan pending chek WorkManager bilan
-  ~15 daqiqada bir tekshiriladi. Tezkor push uchun release build'dagi public
-  Firebase identifikatorlari va backenddagi maxfiy FCM credential kerak.
+  ~15 daqiqada bir tekshiriladi. Firebase Android app `com.pomp.hskai` ro'yxatdan
+  o'tdi va uning public build identifikatorlari GitHub Actions repository
+  variables'da saqlanadi. Backenddagi service-account credential hali
+  sozlanmagan; Android push production'da ishlashi uchun Railway secret kerak.
 - Study va update notification kanallari yangi HIGH IDlarga o'tdi, chunki
   Android mavjud DEFAULT kanal ahamiyatini kod orqali ko'tarmaydi. Eski
   kanaldagi foydalanuvchi tanlovi hurmat qilinadi; lock-screen ko'rinishi
   belgilandi. Telefonning OS sozlamasi baribir ustuvor.
-- Reliz uchun Android `1.6.12` / `versionCode 27`; hali publish qilinmagan.
+- Keyingi reliz Android `1.6.13` / `versionCode 28`; release workflow va APK
+  tayyor, R2'ga publish qilish hamda Railway FCM credential konfiguratsiyasi
+  yakunlanishi kerak.
 
 ### 2026-09-27 — AI Voice: real-life speaking missions
 
