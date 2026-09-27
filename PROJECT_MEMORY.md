@@ -227,6 +227,22 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-28 — 20% referral qualification by phone platform
+
+- Subscription checkout on Android direct APK and Telegram Mini App shows Pro,
+  follows the saved course `User.language`, and no longer offers the 7-day
+  trial inside checkout. Other trial entry points remain unchanged.
+- The checkout's 20% invite link goes to `/apps?ref=<code>`. That page detects
+  Android/iOS from the visitor's phone and sends `ra_<code>` / `ri_<code>` to
+  Telegram. Android qualification requires a live `desktop_devices` row with
+  `platform=android` after native Telegram account linking; iOS keeps the old
+  2-question referral activation rule. Ordinary referrals and the separate
+  5-active-friend trial keep their existing behavior.
+- Alembic `0090_referral_discount_device` adds `discount_platform` and
+  `discount_qualified_at`. Existing rows are marked `legacy`, with active
+  referral timestamps copied to preserve already earned discount progress.
+  `DiscountService` counts only qualified rows after the offer start time.
+
 ### 2026-09-27 — Android obuna checkout va to'lov qarori push
 
 - `direct` checkout Mini App'dagi tarif, narx, chegirma, usul/mamlakat, to'lov
@@ -248,7 +264,7 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
   Android mavjud DEFAULT kanal ahamiyatini kod orqali ko'tarmaydi. Eski
   kanaldagi foydalanuvchi tanlovi hurmat qilinadi; lock-screen ko'rinishi
   belgilandi. Telefonning OS sozlamasi baribir ustuvor.
-- Keyingi reliz Android `1.6.13` / `versionCode 28`; release workflow va APK
+- Ushbu bosqich relizi Android `1.6.13` / `versionCode 28`; release workflow va APK
   tayyor, R2'ga publish qilish hamda Railway FCM credential konfiguratsiyasi
   yakunlanishi kerak.
 
