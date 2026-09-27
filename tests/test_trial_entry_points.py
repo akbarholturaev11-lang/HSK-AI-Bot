@@ -65,10 +65,10 @@ class TrialEntryPointTests(unittest.TestCase):
         block = COURSE.split("function paywallHtml(ctx)")[1][:1600]
         self.assertIn("trialEligible()", block)
 
-    def test_the_subscription_page_offers_the_trial(self):
-        self.assertIn('id="trialOffer"', SUBSCRIPTION)
-        self.assertIn('"/api/v3/trial/start"', SUBSCRIPTION)
-        self.assertIn("loadTrial();", SUBSCRIPTION)
+    def test_the_subscription_checkout_does_not_offer_the_trial(self):
+        self.assertNotIn('id="trialOffer"', SUBSCRIPTION)
+        self.assertNotIn('"/api/v3/trial/start"', SUBSCRIPTION)
+        self.assertNotIn("loadTrial();", SUBSCRIPTION)
 
     def test_the_profile_shows_a_trial_card(self):
         """Profilda BITTA HSK AI Pro kartasi.
@@ -197,10 +197,8 @@ class TrialCopyIsThreeLanguagesTests(unittest.TestCase):
     def test_the_paywall_button_copy_exists_three_times(self):
         self.assertEqual(3, len(re.findall(r"\blimitTrial:", ADS)))
 
-    def test_the_subscription_page_copy_covers_three_languages(self):
-        for lang in ("uz:", "ru:", "tj:"):
-            with self.subTest(lang=lang):
-                self.assertIn(lang, SUBSCRIPTION.split("function trialCopy()")[1][:900])
+    def test_the_subscription_page_has_no_trial_copy(self):
+        self.assertNotIn("function trialCopy()", SUBSCRIPTION)
 
 
 if __name__ == "__main__":

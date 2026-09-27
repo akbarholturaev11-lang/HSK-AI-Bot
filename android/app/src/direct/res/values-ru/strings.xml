@@ -36,7 +36,7 @@
     <string name="sub_approval_note">Чек и сведения об оплате отправляются администратору. Подписка откроется после подтверждения.</string>
     <string name="sub_qr_missing">QR для этого тарифа сейчас недоступен. Выберите другой способ.</string>
     <string name="sub_retry">Проверить ещё раз</string>
-    <string name="sub_heading">Подписка</string>
+    <string name="sub_heading">Pro</string>
     <string name="sub_benefit_heading">Что дает подписка</string>
     <string name="sub_benefits">📚 Уроки HSK шаг за шагом   🤖 Больше ответов AI   🖼 Анализ фото и иероглифов   🎙 Практика голоса   🧩 Тесты и разбор ошибок</string>
     <string name="sub_focus_course">Откроются все уроки</string>
@@ -55,7 +55,7 @@
     <string name="sub_discount_ready" formatted="false">Скидка 20% применяется</string>
     <string name="sub_discount_active">Она автоматически применится к подписке.</string>
     <string name="sub_discount_locked" formatted="false">Откройте скидку 20%</string>
-    <string name="sub_discount_invite" formatted="false">Когда 3 друга начнут пользоваться ботом, откроется скидка 20%.</string>
+    <string name="sub_discount_invite" formatted="false">Пригласите 3 друзей: на Android нужно установить приложение и привязать Telegram, на iPhone — ответить на 2 вопроса в боте.</string>
     <string name="sub_discount_progress">Скидка 20%%: %1$d/%2$d друзей</string>
     <string name="sub_discount_button">Пригласить друзей</string>
     <string name="sub_offer_expired">Это предложение закончилось или вам не подходит.</string>

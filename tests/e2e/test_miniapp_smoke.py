@@ -2555,6 +2555,11 @@ def test_subscription_page_smoke(page):
 
     page.goto(app_url("/subscription.html?lang=uz&mode=subscription"), wait_until="networkidle")
 
+    expect(page.locator("#title")).to_have_text("Pro")
+    expect(page.locator("#langTabs")).to_have_count(0)
+    expect(page.locator("#trialOffer")).to_have_count(0)
+    expect(page.locator(".tv")).to_have_count(0)
+    expect(page.locator("#helpBtn svg")).to_be_visible()
     expect(page.locator("#plans .plan").first).to_be_visible()
     expect(page.locator("#plans .plan").first).to_contain_text("1 oy")
     expect(page.locator("#methods .choice").first).to_be_visible()
@@ -2626,12 +2631,12 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     page.route("**/api/subscription-miniapp/quote", capture_quote)
     page.route("**/api/subscription-miniapp/event", capture_event)
     page.goto(
-        app_url("/subscription.html?lang=uz&mode=subscription&source=v3_locked_lesson"),
+        app_url("/subscription.html?lang=ru&mode=subscription&source=v3_locked_lesson"),
         wait_until="networkidle",
     )
 
-    expect(page.locator("#tvFocusTitle")).to_contain_text("Barcha darslar ochiladi")
-    expect(page.locator("#tvFocusText")).to_contain_text("progress saqlanib boradi")
+    expect(page.locator("html")).to_have_attribute("lang", "uz")
+    expect(page.locator("#valueText")).to_contain_text("Boshlagan darsingizni davom ettiring")
     page.locator("#nextBtn").click()
     expect(page.locator("#paymentBox")).to_contain_text("0000 0000 0000 0000")
     page.locator("#receiptInput").set_input_files(
