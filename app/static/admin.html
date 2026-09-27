@@ -1723,24 +1723,17 @@
       const ap=d.desktop_app_promo||{};
       const placements=ap.placements||{};
       const platforms=ap.platforms||{};
-      const daily=Number(ap.daily_limit||3);
       const enabled=ap.enabled!==false;
       showPanel("💻 App reklamasi","Mini App ochilganda va reklama joylarida ilova promosi",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
-          <p>Ochilishi: ${enabled?"yoqilgan":"o'chirilgan"} · Kunlik limit: ${daily} marta</p>
+          <p>Ochilishi: ${enabled?"yoqilgan":"o'chirilgan"} · Auto promo: har platforma uchun 14 kunlik server cooldown</p>
           <div class="tags">${tag(enabled?"faol":"o'chirilgan",enabled?"green":"red")}${tag((placements.home_prompt!==false)?"ochilganda":"ochilganda yo'q",(placements.home_prompt!==false)?"blue":"")}${tag((placements.lesson_end_promo!==false)?"dars yakunida":"dars yakunida yo'q",(placements.lesson_end_promo!==false)?"blue":"")}${tag((placements.ad_promo!==false)?"reklama oynasida":"reklama oynasida yo'q",(placements.ad_promo!==false)?"amber":"")}${tag(ap.media_url?"media bor":"media yo'q",ap.media_url?"green":"")}</div>
         </div>
         <div class="mcard">
           <h3>Ko'rsatish sozlamasi</h3>
           <label class="ncsw"><input type="checkbox" id="apEnabled" ${enabled?"checked":""}> App reklamasi yoqilsin</label>
-          <div class="frow"><label>Mini App ochilganda kuniga necha marta chiqsin</label>
-            <select id="apDailyLimit" class="select">
-              <option value="1"${daily===1?" selected":""}>1 marta</option>
-              <option value="2"${daily===2?" selected":""}>2 marta</option>
-              <option value="3"${daily===3?" selected":""}>3 marta</option>
-            </select>
-          </div>
+          <div class="ncnote">Bir platforma uchun promo ko'rilgach barcha avtomatik joylar 14 kun dam oladi. Native ilova ulangan bo'lsa o'sha platforma boshqa avtomatik reklama qilinmaydi.</div>
           <div class="frow"><label>Qayerda chiqsin</label><div class="chips">
             ${appPromoChipHtml("placement","home_prompt","Mini App ochilganda",placements.home_prompt!==false)}
             ${appPromoChipHtml("placement","lesson_end_promo","Dars yakunida",placements.lesson_end_promo!==false)}
@@ -1782,7 +1775,6 @@
       platforms.ios=false;
       return {
         enabled:Boolean($("apEnabled")&&$("apEnabled").checked),
-        daily_limit:Number($("apDailyLimit")&&$("apDailyLimit").value||3),
         placements:pick("placement"),
         platforms
       };
