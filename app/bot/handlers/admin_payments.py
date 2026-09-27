@@ -97,6 +97,7 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
     await payment_notify_service.notify_payment_approved(
         bot=callback.bot,
         user=user,
+        payment=payment,
     )
     if partner:
         await PartnerService(session).notify_partner(

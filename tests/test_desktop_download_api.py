@@ -168,7 +168,9 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         async with self.sessions() as session:
-            payload = await DesktopDownloadService(session, _settings()).status(1001)
+            payload = await DesktopDownloadService(session, _settings()).status(
+                1001, current_platform="windows"
+            )
 
             self.assertTrue(payload["ok"])
             self.assertFalse(payload["platforms"]["macos"])
@@ -178,20 +180,14 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(payload["promo"]["placements"]["home_prompt"])
             self.assertFalse(payload["promo"]["placements"]["lesson_end_promo"])
             self.assertTrue(payload["promo"]["placements"]["ad_promo"])
-            # Android relizi chiqdi: promo admin tanloviga bo'ysunadi.
-            # Ilgari bu yerda `False` qattiq yozilgan edi va admin chipni
-            # yoqsa ham Mini App'da Android tugmasi chizilmasdi.
-            self.assertTrue(payload["promo"]["platform_targets"]["android"])
+            # Admin chipning o'zi yetarli emas: real Android release
+            # bo'lmasa o'lik promo tugmasi ko'rsatilmasligi kerak.
+            self.assertFalse(payload["promo"]["platform_targets"]["android"])
             # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
 
-    async def test_the_home_prompt_no_longer_starves_the_lesson_end_promo(self):
-        """Har joyning sovish muddati O'ZINIKI.
-
-        Ilgari `desktop_promo_seen` joydan qat'i nazar bitta `max()` bilan
-        olinardi. "Mini App ochilganda" promosi kuniga 3 martagacha chiqadi,
-        ya'ni u 14 kunlik sovishni doim yangilab turardi va dars yakunidagi
-        promo hech qachon ochilmasdi — admin uni yoqib qo'ysa ham."""
+    async def test_any_recent_legacy_promo_impression_bridges_to_unified_cooldown(self):
+        """Deploy eski userni darrov qayta reklama bilan bezovta qilmasin."""
         async with self.sessions() as session:
             session.add(
                 CourseMiniAppEvent(
@@ -204,12 +200,17 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         async with self.sessions() as session:
-            promo = (await DesktopDownloadService(session, _settings()).status(1001))[
-                "promo"
-            ]
-            self.assertTrue(promo["placements"]["lesson_end_promo"])
+            promo = (
+                await DesktopDownloadService(session, _settings()).status(
+                    1001, current_platform="windows"
+                )
+            )["promo"]
+            self.assertEqual(promo["reason"], "cooldown")
+            self.assertFalse(promo["placements"]["home_prompt"])
+            self.assertFalse(promo["placements"]["lesson_end_promo"])
+            self.assertFalse(promo["placements"]["ad_promo"])
 
-    async def test_the_lesson_end_promo_still_waits_out_its_own_cooldown(self):
+    async def test_legacy_lesson_end_impression_blocks_all_auto_placements(self):
         async with self.sessions() as session:
             session.add(
                 CourseMiniAppEvent(
@@ -222,13 +223,15 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         async with self.sessions() as session:
-            promo = (await DesktopDownloadService(session, _settings()).status(1001))[
-                "promo"
-            ]
+            promo = (
+                await DesktopDownloadService(session, _settings()).status(
+                    1001, current_platform="macos"
+                )
+            )["promo"]
+            self.assertEqual(promo["reason"], "cooldown")
             self.assertFalse(promo["placements"]["lesson_end_promo"])
-            # Qolgan ikkisi o'z yo'lida qolaveradi.
-            self.assertTrue(promo["placements"]["home_prompt"])
-            self.assertTrue(promo["placements"]["ad_promo"])
+            self.assertFalse(promo["placements"]["home_prompt"])
+            self.assertFalse(promo["placements"]["ad_promo"])
 
     async def test_turning_a_platform_off_removes_its_promo_button(self):
         """Chip o'chirilsa tugma ham yo'qoladi — ikkala tomonda ham.
@@ -298,7 +301,9 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             AndroidReleaseService, "serve", AsyncMock(return_value=release)
         ):
             async with self.sessions() as session:
-                payload = await DesktopDownloadService(session, settings).status(1001)
+                payload = await DesktopDownloadService(session, settings).status(
+                    1001, current_platform="android"
+                )
         return payload["promo"]
 
     async def test_an_android_only_release_still_gets_the_app_promo(self):
@@ -330,13 +335,13 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             android_chip=False,
             release=SimpleNamespace(download_url=None, file_id="tg-file-id"),
         )
-        self.assertEqual(promo["reason"], "disabled")
+        self.assertEqual(promo["reason"], "not_ready")
         self.assertFalse(promo["eligible"])
 
     async def test_no_android_release_means_no_promo_either(self):
         """Chip yoqilgan, lekin hech narsa nashr qilinmagan."""
         promo = await self._android_only_promo(android_chip=True, release=None)
-        self.assertEqual(promo["reason"], "disabled")
+        self.assertEqual(promo["reason"], "not_ready")
         self.assertFalse(promo["eligible"])
 
     async def test_request_returns_tracked_download_page_and_safe_filename(self):

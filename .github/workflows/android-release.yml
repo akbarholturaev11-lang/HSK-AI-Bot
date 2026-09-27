@@ -129,11 +129,20 @@ jobs:
       - name: Build the signed direct release
         working-directory: android
         env:
+          POMP_FIREBASE_APP_ID: ${{ vars.POMP_FIREBASE_APP_ID }}
+          POMP_FIREBASE_SENDER_ID: ${{ vars.POMP_FIREBASE_SENDER_ID }}
+          POMP_FIREBASE_PROJECT_ID: ${{ vars.POMP_FIREBASE_PROJECT_ID }}
+          POMP_FIREBASE_API_KEY: ${{ vars.POMP_FIREBASE_API_KEY }}
           POMP_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/release.jks
           POMP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
           POMP_ANDROID_KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
           POMP_ANDROID_KEY_PASSWORD: ${{ secrets.POMP_ANDROID_KEY_PASSWORD }}
-        run: ./gradlew --no-daemon assembleDirectRelease
+        run: |
+          set -euo pipefail
+          for value in POMP_FIREBASE_APP_ID POMP_FIREBASE_SENDER_ID POMP_FIREBASE_PROJECT_ID POMP_FIREBASE_API_KEY; do
+            test -n "${!value}" || { echo "::error::$value is required for payment push"; exit 1; }
+          done
+          ./gradlew --no-daemon assembleDirectRelease
 
       # An unsigned build is what `build.gradle.kts` produces when any signing
       # value is missing, and it looks like a successful release until someone

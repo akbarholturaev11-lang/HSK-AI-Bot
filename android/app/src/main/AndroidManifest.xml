@@ -37,6 +37,14 @@
         android:theme="@style/Theme.PompHskAi"
         tools:ignore="UnusedAttribute">
 
+        <service
+            android:name=".core.notify.PaymentMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <receiver android:name=".widget.HskAiWidgetReceiver" android:exported="false"
             android:label="@string/widget_name">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>

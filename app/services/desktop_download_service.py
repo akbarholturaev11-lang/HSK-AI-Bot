@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
 from app.services.android_release_service import AndroidReleaseService
+from app.services.app_promo_decision_service import AppPromoDecisionService
 from app.services.desktop_app_promo_settings_service import (
     DesktopAppPromoSettings,
     get_desktop_app_promo_settings,
@@ -296,7 +297,7 @@ class DesktopDownloadService:
             raise DesktopDownloadError("desktop_user_not_found", status_code=404)
         return user
 
-    async def status(self, telegram_id: int) -> dict[str, Any]:
+    async def status(self, telegram_id: int, *, current_platform: str = "unknown") -> dict[str, Any]:
         await self._user(telegram_id)
         await self._resolve_releases()
         promo_settings = await get_desktop_app_promo_settings(self.session)
@@ -329,6 +330,7 @@ class DesktopDownloadService:
             telegram_id,
             promo_settings=promo_settings,
             android_ready=android_ready,
+            current_platform=current_platform,
         )
         return payload
 
@@ -353,6 +355,7 @@ class DesktopDownloadService:
         *,
         promo_settings: DesktopAppPromoSettings | None = None,
         android_ready: bool | None = None,
+        current_platform: str = "unknown",
     ) -> dict[str, Any]:
         promo_settings = promo_settings or await get_desktop_app_promo_settings(
             self.session
@@ -366,135 +369,65 @@ class DesktopDownloadService:
             .limit(1)
         )
         has_learning_progress = completion_result.scalar_one_or_none() is not None
+        learning_ready = (
+            has_learning_progress or not promo_settings.require_learning_progress
+        )
 
-        first_open_result = await self.session.execute(
-            select(CourseMiniAppEvent.id)
-            .where(
-                CourseMiniAppEvent.telegram_id == telegram_id,
-                CourseMiniAppEvent.event_name == "desktop_first_open",
+        desktop_targets = {
+            platform: bool(
+                self.releases.enabled
+                and self.releases.target_for(platform)
+                and promo_settings.platforms.get(platform)
             )
-            .limit(1)
-        )
-        has_desktop_first_open = first_open_result.scalar_one_or_none() is not None
-
-        # Oxirgi ko'rish HAR JOY UCHUN alohida. Ilgari bu yerda joydan
-        # qat'i nazar bitta `max()` olinardi va u dars yakunidagi promoni
-        # o'ldirardi: "Mini App ochilganda" promosi kuniga 3 martagacha
-        # chiqib, 14 kunlik sovishni doim yangilab turardi.
-        last_seen_result = await self.session.execute(
-            select(
-                CourseMiniAppEvent.source,
-                func.max(CourseMiniAppEvent.created_at),
-            )
-            .where(
-                CourseMiniAppEvent.telegram_id == telegram_id,
-                CourseMiniAppEvent.event_name == "desktop_promo_seen",
-            )
-            .group_by(CourseMiniAppEvent.source)
-        )
-        last_seen_by_source: dict[str, datetime] = {}
-        last_seen = None
-        for source_name, seen_at in last_seen_result.all():
-            if seen_at is None:
-                continue
-            if seen_at.tzinfo is None:
-                seen_at = seen_at.replace(tzinfo=timezone.utc)
-            last_seen_by_source[str(source_name or "")] = seen_at
-            if last_seen is None or seen_at > last_seen:
-                last_seen = seen_at
-
-        last_request_result = await self.session.execute(
-            select(func.max(CourseMiniAppEvent.created_at)).where(
-                CourseMiniAppEvent.telegram_id == telegram_id,
-                CourseMiniAppEvent.event_name == "desktop_download_requested",
-            )
-        )
-        last_request = last_request_result.scalar_one_or_none()
-        if last_request is not None and last_request.tzinfo is None:
-            last_request = last_request.replace(tzinfo=timezone.utc)
-
-        now = datetime.now(timezone.utc)
-        cooldown = timedelta(days=PROMO_COOLDOWN_DAYS)
-        promo_cooldown_remaining = (
-            max(0, int((last_seen + cooldown - now).total_seconds()))
-            if last_seen is not None
-            else 0
-        )
-        lesson_end_last_seen = last_seen_by_source.get("lesson_end_promo")
-        lesson_end_cooldown_remaining = (
-            max(0, int((lesson_end_last_seen + cooldown - now).total_seconds()))
-            if lesson_end_last_seen is not None
-            else 0
-        )
-        request_cooldown_remaining = (
-            max(0, int((last_request + cooldown - now).total_seconds()))
-            if last_request is not None
-            else 0
-        )
-        cooldown_remaining = max(
-            promo_cooldown_remaining,
-            request_cooldown_remaining,
-        )
-        # Bu yerdagi `PLATFORMS` faqat DESKTOPni bildiradi (`macos`,
-        # `windows`) — `target_for("android")` har doim `None`. Ilgari
-        # «tarqatadigan narsa bormi?» savoliga shu yolg'iz javob berardi,
-        # ya'ni admin Android chipini yoqib qo'ysa ham, desktop relizi
-        # bo'lmagan holda ilova promosi hamma joyda o'chirilardi — holbuki
-        # `app_downloads_service` aynan o'sha Android relizini «mavjud» deb
-        # ko'rsatib turadi va Mini App kartasi uni chizadi.
-        desktop_ready = self.releases.enabled and any(
-            bool(self.releases.target_for(platform))
-            and bool(promo_settings.platforms.get(platform))
             for platform in PLATFORMS
-        )
+        }
         if android_ready is None:
             android_ready = bool(
                 promo_settings.platforms.get("android")
             ) and await self._android_release_ready()
-        release_ready = desktop_ready or android_ready
-        # `DESKTOP_DOWNLOADS_ENABLED` — DESKTOP yuklab olishning kill
-        # switch'i: u DMG/EXE ni shu origin orqali berishni to'xtatadi.
-        # Android bu yo'ldan umuman o'tmaydi (faylni bot chatga tashlaydi),
-        # shuning uchun o'sha flag Android-only promoni o'chira olmasligi
-        # kerak. Adminning o'z kaliti esa avvalgidek hammasidan ustun.
-        feature_enabled = promo_settings.enabled and (
-            bool(getattr(self.settings, "DESKTOP_DOWNLOADS_ENABLED", False))
-            or android_ready
-        )
-        learning_ready = has_learning_progress or not promo_settings.require_learning_progress
 
-        if not feature_enabled:
-            reason = "disabled"
+        available_targets = {
+            "macos": bool(desktop_targets.get("macos")),
+            "windows": bool(desktop_targets.get("windows")),
+            "android": bool(android_ready),
+            "ios": False,
+        }
+        release_ready = any(available_targets.values())
+        feature_enabled = bool(promo_settings.enabled and release_ready)
+
+        if not promo_settings.enabled:
+            decision = {
+                "eligible": False,
+                "reason": "disabled",
+                "target_platform": None,
+                "cooldown_remaining_seconds": 0,
+            }
         elif not release_ready or not learning_ready:
-            reason = "not_ready"
-        elif has_desktop_first_open:
-            reason = "already_installed"
-        elif request_cooldown_remaining > 0:
-            reason = "recent_request"
-        elif (
-            lesson_end_cooldown_remaining > 0
-            and not promo_settings.placements.get("home_prompt")
-            and not promo_settings.placements.get("ad_promo")
-        ):
-            reason = "cooldown"
+            decision = {
+                "eligible": False,
+                "reason": "not_ready",
+                "target_platform": None,
+                "cooldown_remaining_seconds": 0,
+            }
         else:
-            reason = "eligible"
-        base_eligible = (
-            reason == "eligible"
-            and feature_enabled
-            and release_ready
-            and learning_ready
-            and not has_desktop_first_open
-            and request_cooldown_remaining <= 0
+            decision = await AppPromoDecisionService(self.session).decide(
+                telegram_id=telegram_id,
+                current_platform=current_platform,
+                available_targets=available_targets,
+            )
+
+        auto_eligible = bool(
+            feature_enabled and learning_ready and decision.get("eligible")
         )
-        home_prompt = base_eligible and promo_settings.placements.get("home_prompt", True)
-        lesson_end_promo = (
-            base_eligible
-            # O'Z sovishi, boshqa joylarniki emas.
-            and lesson_end_cooldown_remaining <= 0
-            and promo_settings.placements.get("lesson_end_promo", True)
+        home_prompt = bool(
+            auto_eligible and promo_settings.placements.get("home_prompt", True)
         )
-        ad_promo = base_eligible and promo_settings.placements.get("ad_promo", True)
+        lesson_end_promo = bool(
+            auto_eligible and promo_settings.placements.get("lesson_end_promo", True)
+        )
+        ad_promo = bool(
+            auto_eligible and promo_settings.placements.get("ad_promo", True)
+        )
         eligible = bool(home_prompt or lesson_end_promo or ad_promo)
 
         promo_payload = promo_settings.payload()
@@ -503,32 +436,26 @@ class DesktopDownloadService:
             if promo_payload.get("media_available")
             else None
         )
-        # Android admin tanloviga BO'YSUNADI. Ilgari bu yerda qattiq `False`
-        # turardi (relizi yo'q edi), shuning uchun admin chipni yoqsa ham
-        # Mini App promosida Android tugmasi umuman chizilmasdi: klient
-        # `platform_targets` ni o'qib tugmani tashlab ketardi.
-        # iOS o'chiqligicha qoladi — unga alohida ilova yo'q.
-        platform_targets = {
-            "macos": bool(promo_settings.platforms.get("macos")),
-            "windows": bool(promo_settings.platforms.get("windows")),
-            "android": bool(promo_settings.platforms.get("android")),
-            "ios": False,
-        }
         return {
             "eligible": eligible,
-            "reason": reason,
+            "reason": str(decision.get("reason") or "not_ready"),
+            "target_platform": decision.get("target_platform"),
             "cooldown_days": PROMO_COOLDOWN_DAYS,
             "daily_limit": promo_settings.daily_limit,
-            "cooldown_remaining_seconds": cooldown_remaining,
-            "platform_targets": platform_targets,
+            "cooldown_remaining_seconds": int(
+                decision.get("cooldown_remaining_seconds") or 0
+            ),
+            # Profile/manual entry may always show every actually available app.
+            # Automatic promo uses only target_platform on the client.
+            "platform_targets": available_targets,
             "media_type": promo_payload.get("media_type") if media_url else None,
             "media_url": media_url,
             "media_available": bool(media_url),
             "placements": {
                 "profile": release_ready,
-                "home_prompt": bool(home_prompt),
-                "lesson_end_promo": bool(lesson_end_promo),
-                "ad_promo": bool(ad_promo),
+                "home_prompt": home_prompt,
+                "lesson_end_promo": lesson_end_promo,
+                "ad_promo": ad_promo,
             },
         }
 
@@ -776,6 +703,22 @@ class DesktopDownloadService:
                 status_code=503,
                 platform=platform,
             ) from exc
+
+        try:
+            await AppPromoDecisionService(self.session).mark(
+                telegram_id=telegram_id,
+                target_platform=platform,
+                action="download_requested",
+            )
+            await self.session.commit()
+        except Exception:
+            logger.exception(
+                "App promo cooldown could not be recorded after download telegram_id=%s platform=%s",
+                telegram_id,
+                platform,
+            )
+            await self.session.rollback()
+
         return self._request_response(
             platform=platform,
             request_token=request_token,

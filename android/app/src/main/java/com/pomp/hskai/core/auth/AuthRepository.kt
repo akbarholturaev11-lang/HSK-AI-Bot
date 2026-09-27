@@ -40,7 +40,7 @@ class AuthRepository(
     private val now: () -> Long = System::currentTimeMillis,
     private val onSessionCleared: suspend () -> Unit = {},
     private val onSessionLinked: suspend () -> Unit = {},
-    private val onAuthenticated: suspend () -> Unit = {},
+    private val onAuthenticated: suspend (String) -> Unit = {},
 ) {
 
     private val refreshMutex = Mutex()
@@ -444,7 +444,7 @@ class AuthRepository(
                             accessState = body.user.accessState,
                             isPaid = body.user.isPaid,
                         )
-                        onAuthenticated()
+                        onAuthenticated(body.device.id)
                         _state.value = AuthState.Authenticated(account)
                         ApiResult.Success(account)
                     }

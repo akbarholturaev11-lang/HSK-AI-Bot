@@ -2865,28 +2865,6 @@ def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
     """
 
     mock_telegram_desktop_download(page, platform="android")
-    page.route(
-        "**/api/v3/apps/public-status",
-        lambda route: json_response(
-            route,
-            {
-                "ok": True,
-                "platforms": {
-                    "macos": {"available": False, "download": None},
-                    "windows": {"available": False, "download": None},
-                    # Published to the bot, no storage URL behind it: exactly
-                    # the state the chat hand-off exists for.
-                    "android": {
-                        "available": True,
-                        "version": "1.1.1 (3)",
-                        "download": None,
-                    },
-                },
-                "any": True,
-            },
-        ),
-    )
-
     requests = []
     def capture_event(route):
         try:
@@ -2895,7 +2873,14 @@ def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
             requests.append(None)
         json_response(route, {"ok": True})
 
-    _open_course_profile_with_desktop_release(page, status_handler=None)
+    _open_course_profile_with_desktop_release(page, status_payload={
+        "ok": True,
+        "enabled": False,
+        "platforms": {"macos": False, "windows": False, "android": True},
+        "versions": {"android": "1.1.1 (3)"},
+        "downloads": {},
+        "promo": {"eligible": False, "placements": {"profile": True}},
+    })
     page.route("**/api/miniapp/event", capture_event)
 
     card = page.locator("#pomp-desktop-profile-root .pdd-card")

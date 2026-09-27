@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.update
 
 import android.Manifest
 import android.app.NotificationChannel
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -30,7 +31,10 @@ import com.pomp.hskai.core.i18n.AppLocale
  */
 internal object UpdateNotices {
 
-    const val CHANNEL_ID = "app_updates"
+    // Android never raises the importance of an existing channel. The old
+    // app_updates channel was DEFAULT, so existing installs need a new ID.
+    const val CHANNEL_ID = "app_updates_alerts"
+    private const val LEGACY_CHANNEL_ID = "app_updates"
     private const val NOTIFICATION_ID = 4301
     private const val PREFS_NAME = "app_update_notices"
     private const val ANNOUNCED_KEY = "announced_version_code"
@@ -65,7 +69,9 @@ internal object UpdateNotices {
         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
 
         val localized = AppLocale.wrap(context)
-        ensureChannel(localized)
+        val channelId = ensureChannel(localized)
+        val manager = context.getSystemService(NotificationManager::class.java) ?: return false
+        if (manager.getNotificationChannel(channelId)?.importance == NotificationManager.IMPORTANCE_NONE) return false
 
         // Tapping opens the app as the launcher would. The update itself is a
         // tap on the card or the banner, never something a notification starts
@@ -82,13 +88,14 @@ internal object UpdateNotices {
         )
 
         val body = localized.getString(R.string.notify_update_body, release.versionName)
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(localized.getString(R.string.notify_update_title))
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setAutoCancel(true)
             .setContentIntent(pending)
             .build()
@@ -107,15 +114,20 @@ internal object UpdateNotices {
      * The channel must exist before the first post. Creating it again is a
      * no-op, so this is safe to call on every delivery.
      */
-    private fun ensureChannel(context: Context) {
-        val manager = context.getSystemService(NotificationManager::class.java) ?: return
+    internal fun ensureChannel(context: Context): String {
+        val manager = context.getSystemService(NotificationManager::class.java) ?: return CHANNEL_ID
+        // Keep an explicit user choice to quiet or mute the old channel.
+        // DEFAULT is the level that the app originally created itself.
+        val old = manager.getNotificationChannel(LEGACY_CHANNEL_ID)
+        if (old != null && old.importance != NotificationManager.IMPORTANCE_DEFAULT) return LEGACY_CHANNEL_ID
         manager.createNotificationChannel(
             NotificationChannel(
                 CHANNEL_ID,
                 context.getString(R.string.update_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
+                NotificationManager.IMPORTANCE_HIGH,
+            ).apply { lockscreenVisibility = Notification.VISIBILITY_PUBLIC }
         )
+        return CHANNEL_ID
     }
 
     private fun announcedVersionCode(context: Context): Int =

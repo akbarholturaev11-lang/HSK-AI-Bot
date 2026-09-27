@@ -54,6 +54,7 @@ from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
 from app.api.android_update import create_android_update_router
+from app.api.android_push import create_android_push_router
 from app.api.app_downloads import create_app_downloads_router
 from app.public_site.app_downloads_render import (
     downloads_section,
@@ -106,6 +107,8 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.app_promo_decision_service import AppPromoDecisionService
+from app.services.user_device_inventory_service import UserDeviceInventoryService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
@@ -689,6 +692,9 @@ app.include_router(
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
 app.include_router(create_android_update_router(session_factory=async_session_maker))
+app.include_router(
+    create_android_push_router(session_factory=async_session_maker, settings_obj=settings)
+)
 app.include_router(
     create_app_downloads_router(
         session_factory=async_session_maker,
@@ -1366,6 +1372,7 @@ async def _admin_user_payload(session, user) -> dict:
             "desktop_opened_at": _mini_dt(activity_by_name.get("desktop_app_opened")),
         }
     block_cause = await BotBlockCauseService(session).analyze(user)
+    devices = await UserDeviceInventoryService(session).snapshot(user.telegram_id)
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1414,6 +1421,7 @@ async def _admin_user_payload(session, user) -> dict:
                 for item in reachability_rows
             ],
             "client_activity_after_bot_block": client_activity_after_block,
+            "devices": devices,
             "bot_block_cause": block_cause,
             "bonus": {
                 "total": bonus_total,
@@ -1536,7 +1544,7 @@ async def _review_admin_payment(
             if course_event.get("recorded"):
                 await analytics_session.commit()
         with contextlib.suppress(Exception):
-            await PaymentNotifyService(session).notify_payment_approved(bot=bot, user=user)
+            await PaymentNotifyService(session).notify_payment_approved(bot=bot, user=user, payment=payment)
         if partner:
             with contextlib.suppress(Exception):
                 await PartnerService(session).notify_partner(
@@ -5279,12 +5287,15 @@ async def miniapp_event(request: Request):
             # rather than close over a message that never arrived.
             from app.bot.handlers.android_app import send_android_app
 
+            requested_source = str(
+                payload.get("source") or "miniapp_profile"
+            ).strip()[:40]
             sent = await send_android_app(
                 bot,
                 telegram_id,
                 telegram_id,
                 session,
-                source="miniapp_profile",
+                source=requested_source,
             )
             if sent:
                 return {"ok": True}
@@ -5339,6 +5350,19 @@ async def miniapp_event(request: Request):
                 payload=trusted_payload,
             )
             if result.get("ok"):
+                if event in {"desktop_promo_seen", "desktop_promo_dismissed"}:
+                    action = (
+                        "seen"
+                        if event == "desktop_promo_seen"
+                        else "dismissed"
+                    )
+                    await AppPromoDecisionService(session).mark(
+                        telegram_id=telegram_id,
+                        target_platform=str(
+                            trusted_payload.get("target_platform") or ""
+                        ),
+                        action=action,
+                    )
                 await session.commit()
             return result
 

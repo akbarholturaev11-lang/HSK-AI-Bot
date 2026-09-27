@@ -13,6 +13,11 @@ class DeepLinkRouterTest {
         assertEquals(AppDestination.Voice, DeepLinkRouter.resolve("pomp-hsk-ai://voice"))
         assertEquals(AppDestination.Rating, DeepLinkRouter.resolve("pomp-hsk-ai://rating"))
         assertEquals(AppDestination.Profile, DeepLinkRouter.resolve("pomp-hsk-ai://profile"))
+        assertEquals(AppDestination.Subscription, DeepLinkRouter.resolve("pomp-hsk-ai://subscription"))
+        assertEquals(
+            AppDestination.Subscription,
+            DeepLinkRouter.resolve(DeepLinkRouter.uriFor(AppDestination.Subscription)),
+        )
         assertEquals(
             AppDestination.WidgetSetup,
             DeepLinkRouter.resolve("pomp-hsk-ai://profile/widget"),

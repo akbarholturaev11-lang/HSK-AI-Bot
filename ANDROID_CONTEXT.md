@@ -50,7 +50,7 @@ build'da ekanini bilmay chaqiradi.
   qiladi.
 - Yangilanishdan xabar berish (faqat `direct`): ilova ochilganda va kuniga bir
   marta fonda `…/android-update/check` so'raladi (`UpdateWatch`). Har release
-  uchun **bitta** bildirishnoma (`app_updates` kanali, `UpdateNotices`), va
+  uchun **bitta** bildirishnoma (`app_updates_alerts` kanali, `UpdateNotices`), va
   `versionCode` farqi ≥ 2 bo'lsa tab paneli ustida yopib bo'lmaydigan qator
   (`AppUpdateBanner`). Bitta release qoldirilsa — faqat profildagi karta.
 - Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
@@ -60,6 +60,31 @@ build'da ekanini bilmay chaqiradi.
   orqaga ketishini rad etadi, shuning uchun boshqa branch'dan chiqarilgan
   release keyingi `main` release'ini bloklaydi.
 - Play Market: yo'q. Akkaunt ham ochilmagan.
+
+### 2026-09-27: obuna va telefon bildirishnomalari (1.6.12 / 27)
+
+- `direct` obuna oynasi Mini App'dagi tarif, to'lov usuli/mamlakat, server narxi,
+  chegirma, QR/rekvizit, chek va yuborish oqimiga keltirildi. Narx va to'lov
+  qoidasi `SubscriptionMiniAppService`da qoladi; Android bearer adapteri
+  `app/api/android_features.py`. `play` flavour tashqi checkout ko'rsatmaydi.
+- Adminning bot yoki Mini App'dagi tasdiq/rad qarori Android'ga FCM data xabari
+  bilan uzatiladi. Ilova xabarni ko'rsatishdan oldin joriy akkaunt nomidan
+  to'lov holatini qayta tekshiradi. `android_push_tokens` jadvali, Alembic
+  `0089_android_push_tokens.py`, `/api/v3/android/push/*` va payment status
+  endpointi shu oqimga tegishli. Logoutda token o'chadi.
+- FCM yo'q bo'lsa, Android'dan yuborilgan pending chekni WorkManager taxminan
+  15 daqiqada bir tekshiradi (OS kechiktirishi mumkin). Tezkor push uchun
+  Android release workflow'iga to'rtta **public** `POMP_FIREBASE_*` GitHub
+  variable, Railway'ga `ANDROID_FCM_PROJECT_ID` va maxfiy service-account
+  credential sozlash kerak. Tafsilot `android/README.md`da.
+- `study_reminders_alerts`, `app_updates_alerts` va `payment_decisions_v1`
+  yuqori ahamiyatli notification kanallari. Study/update blokirovka ekranida
+  ochiq, to'lov qarori esa maxfiy umumiy matn bilan ko'rinadi. Eski default
+  kanallar muhimligi Android'da o'zgarmasligi uchun yangi ID ishlatilgan;
+  foydalanuvchi eski kanalni o'zi pasaytirgan bo'lsa shu tanlov saqlanadi.
+- Faol pullik obuna Android adapterida hozircha read-only: markaziy aktivatsiya
+  muddati uzaytirish o'rniga yangidan boshlashi mumkin. Renewal semantikasi
+  serverda tuzatilmaguncha bu holatni ochmang.
 
 ## 3. HOZIR OCHIQ MUAMMOLAR
 

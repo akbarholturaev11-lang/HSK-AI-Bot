@@ -41,8 +41,8 @@ val hasReleaseSigning = releaseStoreFile != null &&
  * APK. `app-direct-release.apk` would leave the admin typing the version from
  * memory on every upload, so the artifact carries it instead.
  */
-val appVersionName = "1.6.11"
-val appVersionCode = 26
+val appVersionName = "1.6.13"
+val appVersionCode = 28
 
 val apiOrigin: String = (project.findProperty("POMP_API_ORIGIN") as String?)
     ?.trim()
@@ -60,6 +60,13 @@ require(apiOrigin.startsWith("https://")) {
 val googleWebClientId: String = (project.findProperty("POMP_GOOGLE_WEB_CLIENT_ID") as String?)
     ?.trim()
     .orEmpty()
+
+// Firebase is optional. Builds without these public app identifiers still
+// support the 15-minute payment-status fallback and never initialize FCM.
+fun firebaseOption(name: String): String =
+    ((project.findProperty(name) as String?) ?: System.getenv(name)).orEmpty().trim()
+
+fun buildString(value: String): String = "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
 
 android {
     namespace = "com.pomp.hskai"
@@ -85,6 +92,10 @@ android {
         buildConfigField("String", "API_ORIGIN", "\"$apiOrigin\"")
         buildConfigField("String", "DEEP_LINK_SCHEME", "\"pomp-hsk-ai\"")
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+        buildConfigField("String", "FIREBASE_APP_ID", buildString(firebaseOption("POMP_FIREBASE_APP_ID")))
+        buildConfigField("String", "FIREBASE_SENDER_ID", buildString(firebaseOption("POMP_FIREBASE_SENDER_ID")))
+        buildConfigField("String", "FIREBASE_PROJECT_ID", buildString(firebaseOption("POMP_FIREBASE_PROJECT_ID")))
+        buildConfigField("String", "FIREBASE_API_KEY", buildString(firebaseOption("POMP_FIREBASE_API_KEY")))
 
         resourceConfigurations += listOf("uz", "ru", "tg")
     }
@@ -198,6 +209,8 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.google.identity.googleid)
     implementation(libs.androidx.browser)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)

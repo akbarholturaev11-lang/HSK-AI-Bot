@@ -14,6 +14,7 @@ from app.services.desktop_release_manifest_service import (
     DesktopReleaseManifestService,
 )
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
+from app.services.user_device_inventory_service import UserDeviceInventoryService
 
 
 logger = logging.getLogger(__name__)
@@ -150,8 +151,22 @@ def create_desktop_download_router(
         if not telegram_id:
             return unauthorized()
         try:
+            current_platform = str(
+                request.query_params.get("client_platform") or ""
+            ).strip()[:16]
             async with session_factory() as session:
-                payload = await make_service(session).status(telegram_id)
+                if current_platform:
+                    await UserDeviceInventoryService(session).record_miniapp_presence(
+                        telegram_id=telegram_id,
+                        platform=current_platform,
+                        source="desktop_download_status",
+                        foreground=True,
+                    )
+                payload = await make_service(session).status(
+                    telegram_id,
+                    current_platform=current_platform or "unknown",
+                )
+                await session.commit()
             return JSONResponse(content=payload, headers={"Cache-Control": "no-store"})
         except DesktopDownloadError as exc:
             return _error_response(exc)

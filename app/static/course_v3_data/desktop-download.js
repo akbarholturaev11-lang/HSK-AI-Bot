@@ -279,6 +279,7 @@
     runtimeUnavailable: { macos: false, windows: false, android: false, ios: true },
     promoEligible: false,
     promoReason: "",
+    autoTargetPlatform: "",
     promoCooldownDays: 0,
     homePromptDailyLimit: DEFAULT_HOME_PROMPT_DAILY_LIMIT,
     promoPlacements: {
@@ -540,7 +541,12 @@
   }
 
   function detectPlatform() {
-    if (isMobileDevice()) return "";
+    var app = telegramWebApp();
+    var telegramPlatform = String((app && app.platform) || "").toLowerCase();
+    if (telegramPlatform === "android") return "android";
+    if (telegramPlatform === "ios") return "ios";
+    if (telegramPlatform === "macos") return "macos";
+
     var value = "";
     try {
       value =
@@ -550,9 +556,16 @@
         "";
     } catch (error) {}
     value = String(value).toLowerCase();
-    if (value.indexOf("mac") >= 0) return "macos";
+    if (/android/.test(value)) return "android";
+    if (/iphone|ipad|ipod/.test(value)) return "ios";
+    if (value.indexOf("mac") >= 0) {
+      try {
+        if (Number(navigator.maxTouchPoints || 0) > 1) return "ios";
+      } catch (error) {}
+      return "macos";
+    }
     if (value.indexOf("win") >= 0) return "windows";
-    return "";
+    return "web";
   }
 
   function isPlatformAvailable(platform) {
@@ -710,8 +723,12 @@
   function buildActions(source) {
     var actions = element("div", "pdd-actions");
     var shown = 0;
+    var automatic = PROMO_SOURCES.indexOf(source) >= 0;
     APP_PROMO_PLATFORMS.forEach(function (platform) {
-      if (isPlatformTargeted(platform)) {
+      if (
+        isPlatformTargeted(platform) &&
+        (!automatic || state.autoTargetPlatform === platform)
+      ) {
         actions.appendChild(buildOsButton(platform, source));
         shown += 1;
       }
@@ -1680,7 +1697,10 @@
   }
 
   function promoPayload(source, meta) {
-    return Object.assign(promoMeta(meta), { source: source });
+    return Object.assign(promoMeta(meta), {
+      source: source,
+      target_platform: state.autoTargetPlatform || detectPlatform()
+    });
   }
 
   function promoCooldownMs() {
@@ -1725,11 +1745,7 @@
      bo'lsa ham u bir marta o'z navbatini oladi. O'zi chiqqandan keyin
      sessiyada boshqa promo chiqmaydi. */
   function sessionSlotAllows(source) {
-    if (!state.sessionPromoSource) return true;
-    return (
-      source === PROMO_PRIORITY_SOURCE &&
-      state.sessionPromoSource !== PROMO_PRIORITY_SOURCE
-    );
+    return !state.sessionPromoSource;
   }
 
   function shouldShowPromo(source) {
@@ -1740,10 +1756,7 @@
       !hasAvailablePlatform() ||
       !promoPlacementAllowed(source) ||
       !sessionSlotAllows(source) ||
-      state.promoOpen ||
-      (source === "home_prompt"
-        ? homePromptDailyLimitReached()
-        : hasLocalPromoCooldown(source))
+      state.promoOpen
     ) {
       return false;
     }
@@ -1758,11 +1771,10 @@
       !hasAvailablePlatform() ||
       state.promoOpen ||
       state.destinationOpen ||
+      state.sessionPromoSource ||
       !state.promoPlacements.ad_promo ||
       state.promoReason === "already_installed" ||
-      state.promoReason === "disabled" ||
-      state.promoReason === "recent_request" ||
-      hasLocalDownloadCooldown()
+      state.promoReason === "disabled"
     ) {
       return false;
     }
@@ -2014,12 +2026,17 @@
 
   function renderAdActions(host, meta) {
     if (!host) return;
+    var firstImpression = !state.entrySeen.ad_promo;
     if (!host.querySelector("[data-pdd-ad-download]")) {
       host.replaceChildren(buildAdDownloadBlock());
     }
     host.classList.add("pdd-ad-actions-host");
     host.hidden = false;
     trackEntrySeen("ad_promo", meta);
+    if (firstImpression) {
+      state.sessionPromoSource = "ad_promo";
+      track("desktop_promo_seen", promoPayload("ad_promo", meta));
+    }
     syncControls();
   }
 
@@ -2069,7 +2086,11 @@
     }
     state.availabilityLoading = true;
     renderProfile();
-    fetch(STATUS_ENDPOINT, {
+    var statusUrl =
+      STATUS_ENDPOINT +
+      "?client_platform=" +
+      encodeURIComponent(detectPlatform());
+    fetch(statusUrl, {
       headers: { "X-Telegram-Init-Data": telegramInitData() }
     })
       .then(function (response) {
@@ -2112,6 +2133,11 @@
             state.promoEligible = promo.eligible === true;
             state.promoReason =
               typeof promo.reason === "string" ? promo.reason : "";
+            state.autoTargetPlatform =
+              typeof promo.target_platform === "string" &&
+              APP_PROMO_PLATFORMS.indexOf(promo.target_platform) >= 0
+                ? promo.target_platform
+                : "";
             state.promoCooldownDays = Math.max(
               1,
               Math.min(

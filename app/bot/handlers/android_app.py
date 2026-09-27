@@ -17,6 +17,7 @@ from aiogram.types import BufferedInputFile, CallbackQuery, Message
 from app.bot.utils.i18n import t
 from app.repositories.user_repo import UserRepository
 from app.services.android_release_service import AndroidReleaseService
+from app.services.app_promo_decision_service import AppPromoDecisionService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 
 
@@ -197,7 +198,24 @@ async def send_android_app(
                 "release_source": release.source,
             },
         )
+
+    # The learner already has the APK. Persist the delivery first; optional
+    # promo bookkeeping must never make the caller report a false failure.
     await session.commit()
+    if track:
+        try:
+            await AppPromoDecisionService(session).mark(
+                telegram_id=telegram_id,
+                target_platform="android",
+                action="download_requested",
+            )
+            await session.commit()
+        except Exception:
+            logger.exception(
+                "Android APK delivered but promo cooldown write failed telegram_id=%s",
+                telegram_id,
+            )
+            await session.rollback()
     return True
 
 

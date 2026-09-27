@@ -30,6 +30,7 @@ from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
+from app.services.user_device_inventory_service import UserDeviceInventoryService
 from app.services.subscription_price_service import SubscriptionPriceService
 from app.services.subscription_currency_service import (
     DEFAULT_USD_CNY_RATE,
@@ -1391,6 +1392,7 @@ class AdminMiniAppService:
         )
         latest_payments = await self._latest_payments()
         data_quality = await self._data_quality(now)
+        client_devices = await UserDeviceInventoryService(self.session).aggregate()
 
         expired_hot = await self._count_users(
             User.status == "expired",
@@ -1534,6 +1536,7 @@ class AdminMiniAppService:
             "subscription_sources": source_rows,
             "course_hot_leads": course_hot,
             "telegram_reachability": telegram_reachability,
+            "client_devices": client_devices,
             "prices": price_rows,
             "users": latest_users,
             "queue": self._queue(
