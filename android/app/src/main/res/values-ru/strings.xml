@@ -428,4 +428,12 @@
     <string name="profile_identity_connect_provider">Подключить %1$s</string>
     <string name="error_account_blocked">Этот аккаунт ограничен администратором. Напишите в поддержку.</string>
     <string name="profile_social_title">HSK AI в соцсетях</string>
+    <string name="notify_payment_channel">Решения по подписке</string>
+    <string name="notify_payment_channel_body">Уведомления о подтверждении или отклонении платежа</string>
+    <string name="notify_payment_approved_title">Платёж подтверждён</string>
+    <string name="notify_payment_approved_body">Подписка активирована. Откройте приложение и продолжайте обучение.</string>
+    <string name="notify_payment_rejected_title">Платёж отклонён</string>
+    <string name="notify_payment_rejected_body">Откройте раздел подписки, проверьте платёж и отправьте его снова.</string>
+    <string name="notify_payment_private_title">Сообщение о подписке HSK AI</string>
+    <string name="notify_payment_private_body">Откройте приложение, чтобы узнать подробности.</string>
 </resources>

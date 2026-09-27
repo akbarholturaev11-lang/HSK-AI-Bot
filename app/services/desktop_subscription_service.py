@@ -277,6 +277,11 @@ class DesktopSubscriptionService:
                 "invalid_subscription_stage",
                 status_code=422,
             )
+        expected_prefix = "android-" if self.source == "android_subscription" else "desktop-"
+        if not attempt_id.startswith(expected_prefix):
+            raise DesktopSubscriptionError(
+                "checkout_attempt_not_opened", status_code=409,
+            )
 
         base_event = (
             await self.session.execute(
@@ -285,7 +290,10 @@ class DesktopSubscriptionService:
                     ConversionFunnelEvent.telegram_id
                     == int(context.user.telegram_id),
                     ConversionFunnelEvent.event_name == "checkout_opened",
-                    ConversionFunnelEvent.source == self.source,
+                    # Android checkout-open events use the originating section
+                    # (for attribution), while follow-up stages use this
+                    # adapter's source. The random attempt ID and user bind
+                    # the stages together across those source labels.
                     ConversionFunnelEvent.payload_json.like(
                         f'%"attempt_id": "{attempt_id}"%'
                     ),

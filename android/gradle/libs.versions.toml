@@ -39,6 +39,7 @@ glance = "1.1.1"
 credentials = "1.3.0"
 googleid = "1.1.1"
 browser = "1.8.0"
+firebaseBom = "34.19.0"
 
 junit = "4.13.2"
 androidxTestJunit = "1.2.1"
@@ -68,6 +69,8 @@ androidx-credentials = { group = "androidx.credentials", name = "credentials", v
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 google-identity-googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }

@@ -88,6 +88,23 @@ is exactly what the server verifies, so the app needs neither the
 it is deliberately not required: leave it blank and the Google button is simply
 never shown, rather than every build failing.
 
+Payment decision alerts use Firebase Cloud Messaging when configured. Supply
+the Android Firebase app's public `POMP_FIREBASE_APP_ID`,
+`POMP_FIREBASE_SENDER_ID`, `POMP_FIREBASE_PROJECT_ID`, and
+`POMP_FIREBASE_API_KEY` as Gradle properties or environment variables. The
+manual release workflow reads these from GitHub Actions repository **variables**.
+The package name must match `com.pomp.hskai`; debug builds use
+`com.pomp.hskai.debug` and need their own Firebase Android app ID.
+
+On the backend, set `ANDROID_FCM_PROJECT_ID` and provide a service account
+with Firebase Messaging permission through the private
+`ANDROID_FCM_SERVICE_ACCOUNT_JSON` environment variable (or Application
+Default Credentials). Never put that JSON in Gradle, GitHub variables, or the
+APK. Without FCM configuration, an Android-submitted pending payment is
+checked by WorkManager about every 15 minutes; Android may defer that work.
+Users must allow app notifications, and the phone's channel/lock-screen
+settings still control heads-up and lock-screen presentation.
+
 Two Google OAuth Android clients cover every variant, because `play` and
 `direct` share an `applicationId` and only the debug build type suffixes it:
 

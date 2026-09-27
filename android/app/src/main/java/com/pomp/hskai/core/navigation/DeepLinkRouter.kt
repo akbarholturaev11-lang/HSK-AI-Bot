@@ -31,6 +31,7 @@ sealed interface AppDestination {
     data object Voice : AppDestination
     data object Rating : AppDestination
     data object Profile : AppDestination
+    data object Subscription : AppDestination
     data object WidgetSetup : AppDestination
     /**
      * Mashq. A null [tool] is the section's own home — `practice` with no tail,
@@ -97,6 +98,7 @@ object DeepLinkRouter {
             "course" -> AppDestination.Course.takeIf { tail.isEmpty() }
             "voice" -> AppDestination.Voice.takeIf { tail.isEmpty() }
             "rating" -> AppDestination.Rating.takeIf { tail.isEmpty() }
+            "subscription" -> AppDestination.Subscription.takeIf { tail.isEmpty() }
 
             "profile" -> when {
                 tail.isEmpty() -> AppDestination.Profile
@@ -128,6 +130,7 @@ object DeepLinkRouter {
         AppDestination.Voice -> "$SCHEME://voice"
         AppDestination.Rating -> "$SCHEME://rating"
         AppDestination.Profile -> "$SCHEME://profile"
+        AppDestination.Subscription -> "$SCHEME://subscription"
         AppDestination.WidgetSetup -> "$SCHEME://profile/widget"
         is AppDestination.Lesson -> "$SCHEME://lesson/${destination.order}"
         is AppDestination.Practice -> destination.tool

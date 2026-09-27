@@ -99,6 +99,10 @@ class Settings(BaseSettings):
     # then removed by the background retention job.
     DESKTOP_AUTH_RECORD_RETENTION_DAYS: int = 30
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
+    # Optional Android FCM delivery. With a blank project ID, Telegram and the
+    # Android WorkManager status fallback continue without Firebase.
+    ANDROID_FCM_PROJECT_ID: str = ""
+    ANDROID_FCM_SERVICE_ACCOUNT_JSON: str = ""
 
     # Google / Apple sign-in. Every provider fails closed: a blank client id
     # means the provider is omitted from the client's provider list, so the

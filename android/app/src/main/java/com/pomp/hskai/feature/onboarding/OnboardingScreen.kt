@@ -107,6 +107,7 @@ data class OnboardingCopy(
     val notifyTitle: String,
     val notifyLessons: String,
     val notifyUpdates: String,
+    val notifyPayments: String,
     val notifyAllow: String,
     val notifyLater: String,
 ) {
@@ -135,6 +136,7 @@ data class OnboardingCopy(
                 notifyTitle = "Bildirishnomalarni yoqing",
                 notifyLessons = "Kechqurun darsni eslatib turamiz",
                 notifyUpdates = "Yangi versiya chiqqanda bir marta xabar beramiz",
+                notifyPayments = "To‘lov tasdiqlansa yoki rad etilsa xabar beramiz",
                 notifyAllow = "Yoqish",
                 notifyLater = "Keyinroq",
             )
@@ -161,6 +163,7 @@ data class OnboardingCopy(
                 notifyTitle = "Огоҳиномаҳоро фаъол кунед",
                 notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
                 notifyUpdates = "Вақте версияи нав барояд, як бор хабар медиҳем",
+                notifyPayments = "Ҳангоми тасдиқ ё рад шудани пардохт хабар медиҳем",
                 notifyAllow = "Фаъол кардан",
                 notifyLater = "Баъдтар",
             )
@@ -187,6 +190,7 @@ data class OnboardingCopy(
                 notifyTitle = "Включите уведомления",
                 notifyLessons = "Вечером напомним про занятие",
                 notifyUpdates = "Один раз сообщим, когда выйдет новая версия",
+                notifyPayments = "Сообщим, когда платёж подтвердят или отклонят",
                 notifyAllow = "Включить",
                 notifyLater = "Позже",
             )

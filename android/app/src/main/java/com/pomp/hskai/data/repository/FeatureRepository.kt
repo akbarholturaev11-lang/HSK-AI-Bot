@@ -17,6 +17,9 @@ import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
+import com.pomp.hskai.data.api.SubscriptionCheckoutEventRequest
+import com.pomp.hskai.data.api.SubscriptionCheckoutEventResponse
+import com.pomp.hskai.data.api.SubscriptionDiscountStartResponse
 import com.pomp.hskai.data.api.SubscriptionQuoteRequest
 import com.pomp.hskai.data.api.SubscriptionQuoteResponse
 import com.pomp.hskai.data.api.SubscriptionSubmitRequest
@@ -97,6 +100,12 @@ class FeatureRepository(
 
     suspend fun checkoutOverview(origin: String): ApiResult<SubscriptionCheckoutOverviewDto> =
         authorized { api.checkoutOverview(it, origin) }
+
+    suspend fun checkoutDiscountStart(): ApiResult<SubscriptionDiscountStartResponse> =
+        authorized { api.checkoutDiscountStart(it) }
+
+    suspend fun checkoutEvent(request: SubscriptionCheckoutEventRequest): ApiResult<SubscriptionCheckoutEventResponse> =
+        authorized { api.checkoutEvent(it, request) }
 
     suspend fun checkoutQuote(request: SubscriptionQuoteRequest): ApiResult<SubscriptionQuoteResponse> =
         authorized { api.checkoutQuote(it, request) }
