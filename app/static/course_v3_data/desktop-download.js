@@ -1771,6 +1771,7 @@
       !hasAvailablePlatform() ||
       state.promoOpen ||
       state.destinationOpen ||
+      state.sessionPromoSource ||
       !state.promoPlacements.ad_promo ||
       state.promoReason === "already_installed" ||
       state.promoReason === "disabled"
@@ -2025,12 +2026,17 @@
 
   function renderAdActions(host, meta) {
     if (!host) return;
+    var firstImpression = !state.entrySeen.ad_promo;
     if (!host.querySelector("[data-pdd-ad-download]")) {
       host.replaceChildren(buildAdDownloadBlock());
     }
     host.classList.add("pdd-ad-actions-host");
     host.hidden = false;
     trackEntrySeen("ad_promo", meta);
+    if (firstImpression) {
+      state.sessionPromoSource = "ad_promo";
+      track("desktop_promo_seen", promoPayload("ad_promo", meta));
+    }
     syncControls();
   }
 
