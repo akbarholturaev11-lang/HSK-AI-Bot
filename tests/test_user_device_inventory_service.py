@@ -192,6 +192,46 @@ class DeviceIntelligenceDatabaseTests(unittest.IsolatedAsyncioTestCase):
             snapshot = await UserDeviceInventoryService(session).snapshot(1001)
         self.assertTrue(snapshot["native_devices"][0]["last_foreground_at"])
 
+    async def test_foreground_open_is_not_copied_to_another_phone(self):
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    _device(
+                        device_id="android-one",
+                        user_id=1,
+                        telegram_id=1001,
+                        platform="android",
+                    ),
+                    _device(
+                        device_id="android-two",
+                        user_id=1,
+                        telegram_id=1001,
+                        platform="android",
+                    ),
+                    CourseMiniAppEvent(
+                        user_id=1,
+                        telegram_id=1001,
+                        event_name="android_app_opened",
+                        source="android_app",
+                        payload_json='{"platform":"android","device_id":"android-one"}',
+                        created_at=NOW,
+                    ),
+                ]
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            snapshot = await UserDeviceInventoryService(session).snapshot(1001)
+
+        rows = {
+            row["app_version"] + ":" + row["created_at"]: row
+            for row in snapshot["native_devices"]
+        }
+        foreground_rows = [
+            row for row in snapshot["native_devices"] if row["last_foreground_at"]
+        ]
+        self.assertEqual(len(foreground_rows), 1)
+
     async def test_aggregate_splits_miniapp_only_native_only_and_both(self):
         async with self.sessions() as session:
             service = UserDeviceInventoryService(session)
