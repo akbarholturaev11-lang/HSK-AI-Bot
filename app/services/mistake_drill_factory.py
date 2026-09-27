@@ -153,10 +153,18 @@ INSTRUCTIONS = {
         "ru": "Дополните диалог",
         "tj": "Гуфтугӯро пурра кунед",
     },
+    # Xato variant o'quvchining O'Z gapi, u ba'zan boshqa ma'noda to'g'ri
+    # xitoycha ham bo'lishi mumkin (我是学生吗 — "talabamanmi?"). Shuning
+    # uchun savol "qaysi gap to'g'ri" emas, "aytgan gapingizning to'g'ri shakli".
     "correct_choice": {
-        "uz": "Qaysi gap to'g'ri?",
-        "ru": "Какая фраза правильная?",
-        "tj": "Кадом ҷумла дуруст аст?",
+        "uz": "Aytgan gapingizning to'g'ri shaklini tanlang",
+        "ru": "Выберите правильный вариант фразы, которую вы сказали",
+        "tj": "Шакли дурусти ҷумлаи гуфтаатонро интихоб кунед",
+    },
+    "correct_choice_hint": {
+        "uz": "Aytmoqchi bo'lgan gapingiz: «{translation}». To'g'ri shaklini tanlang",
+        "ru": "Вы хотели сказать: «{translation}». Выберите правильный вариант",
+        "tj": "Шумо гуфтан мехостед: «{translation}». Шакли дурустро интихоб кунед",
     },
 }
 
@@ -551,9 +559,15 @@ def _correct_choice(target, language, seed):
     wrong = [value for value in (target["payload"].get("wrong") or []) if bank.only_cjk_text(value)]
     if not wrong:
         return None
+    translation = _translation(target, language)
+    prompt = (
+        _instruction("correct_choice_hint", language, translation=translation)
+        if translation
+        else _instruction("correct_choice", language)
+    )
     return _choice(
         target, "correct_choice", language=language, seed=seed,
-        prompt=_instruction("correct_choice", language),
+        prompt=prompt,
         correct=target["zh"],
         distractors=wrong[:2],
         explanation=_sentence_explanation(target, language),

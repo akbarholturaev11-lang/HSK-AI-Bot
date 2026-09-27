@@ -32,6 +32,8 @@ h1{font-size:23px}
 .item .mid .err{font-size:12px;margin-top:3px}.item .mid .err .x{color:var(--cin2)}.item .mid .err .c{color:var(--jade)}
 .item .mid .meta{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 5px}.item .mid .meta span{font-size:10px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:2px 6px}
 .item .cnt{font-size:11px;font-weight:600;color:var(--cin);background:var(--cinbg);border-radius:9px;padding:2px 7px;flex-shrink:0}
+.item .mid .w b.han{font-size:20px;font-weight:600}.item .mid .tr{display:block;font-size:13px;color:var(--ink2);margin-top:2px;line-height:1.4}
+.prog{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;align-self:center}.prog .seg{display:flex;gap:3px}.prog .seg i{display:block;width:12px;height:5px;border-radius:3px;background:var(--line)}.prog .seg i.on{background:var(--jade)}.prog small{font-size:10px;font-weight:600;color:var(--ink3)}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;min-height:55vh}
 .empty .ic{width:84px;height:84px;border-radius:22px;background:var(--jadebg);color:var(--jade);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
 .empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
@@ -47,7 +49,7 @@ h1{font-size:23px}
 .rv-bar span{display:block;height:100%;width:0;background:var(--cin);border-radius:4px;transition:width .25s ease}
 .rv-body{flex:1;overflow-y:auto;padding:14px 16px 8px}
 .rv-prompt{font-size:26px;font-weight:600;line-height:1.35;margin-bottom:20px;word-break:break-word}
-.rv-material{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:-8px 0 16px;text-align:center}.rv-material .han{font-size:24px;line-height:1.4}.rv-material .py{font-size:13px;color:var(--cin2);margin-top:3px}.rv-audio{width:42px;height:42px;border-radius:50%;border:0;background:var(--cinbg);color:var(--cin);font-size:20px;margin-bottom:8px}
+.rv-material{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:-8px 0 16px;text-align:center}.rv-material .han{font-size:24px;line-height:1.4}.rv-material .py{font-size:13px;color:var(--cin2);margin-top:3px}.rv-audio{width:42px;height:42px;border-radius:50%;border:0;background:var(--cinbg);color:var(--cin);font-size:20px;margin-bottom:8px}.rv-audio.big{width:54px;height:54px;font-size:26px}
 .rv-opts{display:flex;flex-direction:column;gap:10px}
 .rv-opt{display:flex;align-items:center;gap:11px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-family:inherit;font-size:16px;color:var(--ink);text-align:left;width:100%;transition:border-color .15s,background .15s}
 .rv-opt .rk{width:26px;height:26px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink2);flex-shrink:0}
@@ -68,6 +70,7 @@ h1{font-size:23px}
 .rv-res .sc{font-size:40px;font-weight:700;color:var(--cin);margin:4px 0}
 .rv-res .xp{font-size:14px;font-weight:600;color:var(--gold);background:#FBF3DF;border-radius:10px;padding:5px 12px;margin:8px 0}
 .rv-res .rm{font-size:14px;color:var(--ink2);margin-top:6px}
+.rv-res .cl{font-size:14px;font-weight:600;color:var(--jade);background:var(--jadebg);border-radius:10px;padding:5px 12px;margin:6px 0}
 /* limit sheet */
 .lim{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
 .lim[hidden]{display:none}
@@ -128,19 +131,22 @@ var SCRIPTS_READY=new Promise(function(res){
 });
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и дуэлей",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"активных ошибок",start:"Начать",all:"Все",retry:"Повторить",loadErr:"Не удалось загрузить ошибки. Проверьте связь и повторите.",cats:{word:"Слова",grammar:"Грамматика",character:"Иероглифы",pronunciation:"Произношение"},sources:{lesson:"Урок",test:"HSK тест",training:"Практика",challenge:"Дуэль",voice:"AI Voice"},lesson:"Урок",
+var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и дуэлей",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"активных ошибок",start:"Начать",all:"Все",retry:"Повторить",loadErr:"Не удалось загрузить ошибки. Проверьте связь и повторите.",cats:{word:"Слова",grammar:"Грамматика",character:"Иероглифы",pronunciation:"Произношение"},sources:{lesson:"Урок",test:"HSK тест",training:"Практика",challenge:"Дуэль",voice:"AI Voice",pronunciation:"Тренажёр произношения",recognition:"Иероглифы",memorize:"Запоминание"},lesson:"Урок",
+    reviewCount:"Ошибок: {n} · каждая — в 3 разных упражнениях",reviewCat:"Повторить: {cat}",progress:"{p} из {r} упражнений",resCleared:"Полностью исправлено: {n}",emptyScope:"Пока нечего повторять — все ошибки в этом разделе исправлены.",
     q:"Вопрос",of:"из",correct:"Верно!",wrong:"Неверно",exp:"Пояснение",next:"Дальше",finish:"Завершить",
     resTitle:"Отличная работа!",resScore:"верно",resRemaining:"Осталось ошибок",resAll:"Вы исправили все свои ошибки!",done:"Готово",
     limitTitle:"Бесплатная попытка использована",limitText:"Оформите HSK AI Pro для безлимитной работы над ошибками.",limitBtn:"Получить HSK AI Pro ⭐️",later:"Позже",
     limitWhy:"Одна бесплатная попытка уже использована. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.",
     loading:"Загрузка…",more:"Показать ещё",err:"Произошла ошибка. Попробуйте снова.",buildHint:"Соберите правильное предложение",undo:"Назад",clear:"Очистить",check:"Проверить"},
-  uz:{title:"Xatolarim",sub:"Darslar, HSK testlari va bellashuvlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"faol xato",start:"Boshlash",all:"Barchasi",retry:"Qayta urinish",loadErr:"Xatolar yuklanmadi. Internetni tekshirib, qayta urinib ko'ring.",cats:{word:"So'zlar",grammar:"Grammatika",character:"Ieroglif",pronunciation:"Talaffuz"},sources:{lesson:"Dars",test:"HSK test",training:"Mashq",challenge:"Bellashuv",voice:"AI Voice"},lesson:"Dars",
+  uz:{title:"Xatolarim",sub:"Darslar, HSK testlari va bellashuvlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"faol xato",start:"Boshlash",all:"Barchasi",retry:"Qayta urinish",loadErr:"Xatolar yuklanmadi. Internetni tekshirib, qayta urinib ko'ring.",cats:{word:"So'zlar",grammar:"Grammatika",character:"Ieroglif",pronunciation:"Talaffuz"},sources:{lesson:"Dars",test:"HSK test",training:"Mashq",challenge:"Bellashuv",voice:"AI Voice",pronunciation:"Talaffuz mashqi",recognition:"Ieroglif tanish",memorize:"Yodlash"},lesson:"Dars",
+    reviewCount:"Xatolar: {n} · har biri 3 xil mashqda",reviewCat:"{cat} bo'yicha takrorlash",progress:"{p} / {r} mashq bajarildi",resCleared:"To'liq yopildi: {n}",emptyScope:"Hozircha takrorlanadigan xato yo'q — bu bo'limdagi xatolar tuzatilgan.",
     q:"Savol",of:"/",correct:"To'g'ri!",wrong:"Noto'g'ri",exp:"Izoh",next:"Keyingi",finish:"Yakunlash",
     resTitle:"Ajoyib ish!",resScore:"to'g'ri",resRemaining:"Qolgan xatolar",resAll:"Barcha xatolaringizni tuzatdingiz!",done:"Tayyor",
     limitTitle:"Bepul urinish ishlatildi",limitText:"Xatolar ustida cheksiz ishlash uchun HSK AI Pro oling.",limitBtn:"HSK AI Pro ⭐️ olish",later:"Keyinroq",
     limitWhy:"Bir martalik bepul urinish ishlatildi. Cheklovsiz mashq uchun HSK AI Pro oling yoki ertaga qayting.",
     loading:"Yuklanmoqda…",more:"Yana ko'rsatish",err:"Xatolik yuz berdi. Qayta urinib ko'ring.",buildHint:"To'g'ri gapni tuzing",undo:"Orqaga",clear:"Tozalash",check:"Tekshirish"},
-  tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳои HSK ва рақобатҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"хатои фаъол",start:"Оғоз",all:"Ҳама",retry:"Боз кӯшиш",loadErr:"Хатоҳо бор нашуданд. Интернетро санҷида, боз кӯшиш кунед.",cats:{word:"Калимаҳо",grammar:"Грамматика",character:"Иероглиф",pronunciation:"Талаффуз"},sources:{lesson:"Дарс",test:"Тести HSK",training:"Машқ",challenge:"Рақобат",voice:"AI Voice"},lesson:"Дарс",
+  tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳои HSK ва рақобатҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"хатои фаъол",start:"Оғоз",all:"Ҳама",retry:"Боз кӯшиш",loadErr:"Хатоҳо бор нашуданд. Интернетро санҷида, боз кӯшиш кунед.",cats:{word:"Калимаҳо",grammar:"Грамматика",character:"Иероглиф",pronunciation:"Талаффуз"},sources:{lesson:"Дарс",test:"Тести HSK",training:"Машқ",challenge:"Рақобат",voice:"AI Voice",pronunciation:"Машқи талаффуз",recognition:"Шинохти иероглиф",memorize:"Ёдгирӣ"},lesson:"Дарс",
+    reviewCount:"Хатоҳо: {n} · ҳар кадом дар 3 машқи гуногун",reviewCat:"Такрор: {cat}",progress:"{p} аз {r} машқ",resCleared:"Пурра ислоҳ шуд: {n}",emptyScope:"Ҳоло чизе барои такрор нест — хатоҳои ин бахш ислоҳ шудаанд.",
     q:"Савол",of:"аз",correct:"Дуруст!",wrong:"Нодуруст",exp:"Шарҳ",next:"Минбаъд",finish:"Анҷом",
     resTitle:"Кори аъло!",resScore:"дуруст",resRemaining:"Хатоҳои боқимонда",resAll:"Шумо ҳамаи хатоҳоятонро ислоҳ кардед!",done:"Тайёр",
     limitTitle:"Кӯшиши ройгон истифода шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо HSK AI Pro гиред.",limitBtn:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",
@@ -159,21 +165,34 @@ var MISTAKE_ITEMS=[],MISTAKE_SUMMARY={total:0,categories:{}},MISTAKE_PAGE={offse
 function catLabel(k){return (L.cats&&L.cats[k])||k}
 function catIcon(k){return {word:"ti-language",grammar:"ti-braces",character:"ti-writing",pronunciation:"ti-microphone"}[k]||"ti-book"}
 function setMistakeFilter(k){if(MISTAKE_LOADING||k===ACTIVE_CAT)return;ACTIVE_CAT=k;loadMistakes(false)}
+function fmt(t,v){return String(t||"").replace(/\{(\w+)\}/g,function(_,k){return v[k]==null?"":v[k]})}
+function progressDots(it){var r=Math.max(1,Number(it.required)||3),p=Math.min(r,Number(it.passed)||0),h='';for(var i=0;i<r;i++)h+='<i class="'+(i<p?'on':'')+'"></i>';return '<span class="prog" role="img" aria-label="'+esc(fmt(L.progress,{p:p,r:r}))+'"><span class="seg">'+h+'</span><small>'+p+'/'+r+'</small></span>'}
+function targetRow(it){
+  var srcKey=(it.sources&&it.sources[0])||"",source=(L.sources&&L.sources[srcKey])||"";
+  var meta='<span>'+esc(catLabel(it.category))+'</span>'+(source&&source!==catLabel(it.category)?'<span>'+esc(source)+'</span>':'');
+  var main,second='',ok='';
+  if(it.kind==="question"){
+    main='<b>'+esc(it.question||it.zh)+'</b>';
+    if(it.zh&&it.zh!==it.question)second='<span class="sentence han">'+esc(it.zh)+'</span>';
+    if(it.answer)ok='<span class="c">✓ '+esc(it.answer)+'</span>';
+  }else{
+    main='<b class="han">'+esc(it.zh)+'</b>'+(it.pinyin?'<span class="py">'+esc(it.pinyin)+'</span>':'');
+    var tr=it.meaning||it.translation;if(tr)second='<span class="tr">'+esc(tr)+'</span>';
+  }
+  var wrong=it.wrong?'<span class="x">✗ '+esc(it.wrong)+'</span> ':'';
+  var err=(wrong||ok)?'<span class="err">'+wrong+ok+'</span>':'';
+  return '<div class="item"><span class="tl"><i class="ti '+catIcon(it.category)+'"></i></span><span class="mid"><span class="meta">'+meta+'</span><span class="w">'+main+'</span>'+second+err+'</span>'+progressDots(it)+'</div>';
+}
 function renderList(){
-  var items=ACTIVE_CAT==="all"?MISTAKE_ITEMS:MISTAKE_ITEMS.filter(function(it){return it.category===ACTIVE_CAT});
   var counts=MISTAKE_SUMMARY.categories||{};
   var keys=["all","word","grammar","character","pronunciation"].filter(function(k){return k==="all"||Number(counts[k]||0)>0});
   var chips='<div class="chips">'+keys.map(function(k){var n=k==="all"?Number(MISTAKE_SUMMARY.total||0):Number(counts[k]||0);return '<button class="'+(ACTIVE_CAT===k?'on':'')+'" onclick="setMistakeFilter(\''+k+'\')">'+esc(k==="all"?L.all:catLabel(k))+' · '+n+'</button>'}).join('')+'</div>';
-  var total=Number(MISTAKE_SUMMARY.total||MISTAKE_ITEMS.length||0);
-  var cta='<div class="cta"><span class="gw han">错</span><b><i class="ti ti-refresh"></i> '+L.review+'</b><p>'+total+' '+L.reviewSub+'</p><button onclick="startReview()"><i class="ti ti-player-play"></i> '+L.start+'</button></div>';
-  var list=items.map(function(it){
-    var wrong=it.user_answer?'<span class="x">✗ '+esc(it.user_answer)+'</span> ':'';
-    var source=(L.sources&&L.sources[it.source])||it.source||"";
-    var meta='<span>'+esc(catLabel(it.category))+'</span>'+(source?'<span>'+esc(source)+'</span>':'')+(it.lesson?'<span>'+esc(L.lesson)+' '+Number(it.lesson)+'</span>':'');
-    var sentence=it.sentence&&it.sentence!==it.question?'<span class="sentence han">'+esc(it.sentence)+'</span>':'';
-    var pinyin=it.pinyin?'<span class="pinyin">'+esc(it.pinyin)+'</span>':'';
-    return '<div class="item"><span class="tl"><i class="ti '+catIcon(it.category)+'"></i></span><span class="mid"><span class="meta">'+meta+'</span><span class="w"><b>'+esc(it.question)+'</b></span>'+sentence+pinyin+'<span class="err">'+wrong+'<span class="c">✓ '+esc(it.correct_answer)+'</span></span></span><span class="cnt">'+(it.count||1)+'×</span></div>';
-  }).join("");
+  /* Chip ikkala ishni qiladi: ro'yxatni filtrlaydi va takror doirasini
+     tanlaydi. Shuning uchun ekranda bitta asosiy tugma qoladi. */
+  var scopeCount=ACTIVE_CAT==="all"?Number(MISTAKE_SUMMARY.total||0):Number(counts[ACTIVE_CAT]||0);
+  var title=ACTIVE_CAT==="all"?L.review:fmt(L.reviewCat,{cat:catLabel(ACTIVE_CAT)});
+  var cta='<div class="cta"><span class="gw han">错</span><b><i class="ti ti-refresh"></i> '+esc(title)+'</b><p>'+esc(fmt(L.reviewCount,{n:scopeCount}))+'</p><button onclick="startReview()"><i class="ti ti-player-play"></i> '+L.start+'</button></div>';
+  var list=MISTAKE_ITEMS.map(targetRow).join("");
   if(!list)list='<div class="state"><i class="ti ti-filter-off"></i><div>'+esc(L.emptyTitle)+'</div></div>';
   var more=MISTAKE_PAGE.has_more?'<button class="more" onclick="loadMoreMistakes()"><i class="ti ti-chevron-down"></i> '+esc(L.more)+'</button>':'';
   $("content").innerHTML=cta+chips+list+more;
@@ -198,27 +217,32 @@ function clearReviewAccessRef(){REVIEW_REF_MEMORY="";try{sessionStorage.removeIt
 function startReview(adSupported){
   if(busy())return;RV={loading:true};
   var accessRef=reviewAccessRef(true);
-  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:accessRef})})
+  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:accessRef,category:ACTIVE_CAT==="all"?null:ACTIVE_CAT,formats:SUPPORTED_FORMATS,language:LANG})})
   .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
   .then(function(res){
     var d=res.d||{};
     if(res.status===403||d.error==="free_feature_limit_reached"||d.error==="ad_authorization_required"){RV=null;showLimit();return}
     if(!d.ok||!d.session||!d.session.questions||!d.session.questions.length){RV=null;
-      if(d.error==="mistake_review_empty"){location.reload()}else{alert(L.err)}return}
+      if(d.error==="mistake_review_empty"){clearReviewAccessRef();alert(L.emptyScope);loadMistakes(false)}else{alert(L.err)}return}
     var safeQuestions=d.session.questions.filter(validateQuestionContract);
     if(safeQuestions.length!==d.session.questions.length){RV=null;alert(L.err);return}
     RV={loading:false,session:d.session.id,questions:safeQuestions,idx:0,answers:[]};
+    safeQuestions.forEach(function(q){if(q.audio_text)prefetchTTS(q.audio_text)});
     openReview();
     if(window.PracticeCoach){PracticeCoach.init({after:".rv-top",lang:LANG});PracticeCoach.reset()}
     renderQuestion();
   }).catch(function(){RV=null;alert(L.err)});
 }
 function openReview(){$("review").hidden=false;document.body.style.overflow="hidden"}
-function closeReview(){$("review").hidden=true;document.body.style.overflow="";RV=null;if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}}
-function isBuilderFormat(f){return["sentence_builder","sentence_reorder","word_order","reorder"].indexOf(String(f||""))>=0}
+function closeReview(){stopSpeak();$("review").hidden=true;document.body.style.overflow="";RV=null;if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}}
+/* Bu sahifa ko'rsata oladigan mashq turlari — server faqat shularni beradi. */
+var SUPPORTED_FORMATS=["meaning_choice","hanzi_choice","hanzi_from_pinyin","pinyin_choice","listening_choice","listening_pinyin","sentence_listening","sentence_meaning","gap_fill","dialog_choice","correct_choice","sentence_builder","listen_builder"];
+var LISTEN_FORMATS=["listening_choice","listening_pinyin","sentence_listening","listen_builder"];
+function isListenFormat(f){return LISTEN_FORMATS.indexOf(String(f||""))>=0}
+function isBuilderFormat(f){return["sentence_builder","sentence_reorder","word_order","reorder","listen_builder"].indexOf(String(f||""))>=0}
 function validateQuestionContract(q){
   if(!q||!q.id||!q.prompt)return false;var f=String(q.format||"");
-  if(f==="listening_choice"&&!q.audio_text)return false;
+  if(isListenFormat(f)&&!q.audio_text)return false;
   if(isBuilderFormat(f))return Array.isArray(q.tokens)&&q.tokens.length>=2;
   if(["pronunciation_correction","voice_pronunciation","match_pairs","pair_match","matching"].indexOf(f)>=0)return false;
   return Array.isArray(q.options)&&q.options.length>=2;
@@ -236,7 +260,7 @@ function renderQuestion(){
   RV.builder=[];RV.locked=false;
   $("rv-fill").style.width=Math.round((RV.idx/n)*100)+"%";
   var qcat=q.category?catLabel(q.category):L.q;
-  var audio=q.audio_text?'<button class="rv-audio" onclick="speakMistake(\''+jsq(q.audio_text)+'\')"><i class="ti ti-volume"></i></button>':'';
+  var audio=q.audio_text?'<button class="rv-audio'+(isListenFormat(q.format)?' big':'')+'" onclick="speakMistake(\''+jsq(q.audio_text)+'\')" aria-label="audio"><i class="ti ti-volume"></i></button>':'';
   var sentence=q.sentence?'<div class="han">'+esc(q.sentence)+'</div>':'';
   var pinyin=q.pinyin?'<div class="py">'+esc(q.pinyin)+'</div>':'';
   var material=(audio||sentence||pinyin)?'<div class="rv-material">'+audio+sentence+pinyin+'</div>':'';
@@ -258,11 +282,36 @@ function renderQuestion(){
        ustuniga ko'chadi, javob tugmalari pastda to'liq enda qoladi. */
     PracticeCoach.beside(document.querySelectorAll("#rv-body > .rv-prompt, #rv-body > .rv-material"));
   }
+  /* Tinglash mashqida ovoz o'zi chalinadi; bloklansa katta tugma turibdi. */
+  if(q.autoplay&&q.audio_text){var idx=RV.idx;setTimeout(function(){if(RV&&RV.idx===idx)speakMistake(q.audio_text)},250)}
+  var nx=RV.questions[RV.idx+1];if(nx&&nx.audio_text)prefetchTTS(nx.audio_text);
 }
 function jsq(s){return String(s==null?"":s).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/[\r\n]/g," ").replace(/</g,"\\u003c")}
+/* Darsdagi (course-v3) TTS yo'li: server ovozi + blob-kesh. Zaxira faqat
+   server xato bersa ishlaydi — play() bloklansa jim qoladi (ikki ovoz yo'q). */
+var _ttsAudio=null,_ttsCache={},_ttsPending={};
+function ttsUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
+function prefetchTTS(t){
+  t=String(t||"").trim();
+  if(!t||t.length>240||!/[\u4e00-\u9fff]/.test(t))return Promise.resolve(null);
+  if(_ttsCache[t])return Promise.resolve(_ttsCache[t]);
+  if(_ttsPending[t])return _ttsPending[t];
+  _ttsPending[t]=fetch(ttsUrl(t)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){
+    delete _ttsPending[t];if(b&&b.size){_ttsCache[t]=URL.createObjectURL(b);return _ttsCache[t]}return null;
+  }).catch(function(){delete _ttsPending[t];return null});
+  return _ttsPending[t];
+}
+function _ttsFallback(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
 function speakMistake(text){
-  function local(){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
-  try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(text));a.play().catch(local)}catch(e){local()}
+  var t=String(text||"").trim();if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  function playSource(src){
+    if(tok!==window._ttsTok)return;
+    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+  }
+  if(_ttsCache[t]){playSource(_ttsCache[t]);return}
+  if(_ttsPending[t]){_ttsPending[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||ttsUrl(t))});return}
+  playSource(ttsUrl(t));
 }
 function renderBuilderState(){
   var q=RV.questions[RV.idx],answer=$("rv-builder-answer"),bank=$("rv-builder-bank");if(!answer||!bank)return;
@@ -335,7 +384,8 @@ function renderResult(d){
   var xp=(d.reward&&d.reward.awarded_xp)||0;
   /* Nechta xato qolgani — murabbiyning gapida, natija ustunida emas. */
   var rmText=d.remaining>0?(L.resRemaining+': '+d.remaining):L.resAll;
-  var rm='';
+  var cleared=Number(d.cleared)||0;
+  var rm=cleared>0?'<div class="cl"><i class="ti ti-circle-check"></i> '+esc(fmt(L.resCleared,{n:cleared}))+'</div>':'';
   $("rv-body").innerHTML='<div class="rv-res"><h3>'+L.resTitle+'</h3><div class="sc">'+d.score+' / '+d.total+'</div><div style="font-size:13px;color:var(--ink2)">'+L.resScore+'</div>'+(xp>0?'<div class="xp">+'+xp+' XP</div>':'')+rm+'</div>';
   $("rv-foot").innerHTML='<button onclick="closeReview();location.reload()"><i class="ti ti-check"></i> '+L.done+'</button>';
   if(window.PracticeCoach)PracticeCoach.finish(Number(d.score)||0,Number(d.total)||0,rmText);
@@ -358,9 +408,9 @@ function loadMistakes(append){
   if(MISTAKE_LOADING)return;MISTAKE_LOADING=true;
   var offset=append?MISTAKE_ITEMS.length:0;
   if(!append)$("content").innerHTML='<div class="state"><i class="ti ti-loader-2"></i><div>'+esc(L.loading)+'</div></div>';
-  var url="/api/miniapp/mistakes?limit=30&offset="+offset+(ACTIVE_CAT!=="all"?"&category="+encodeURIComponent(ACTIVE_CAT):"");
+  var url="/api/miniapp/mistakes?view=targets&lang="+LANG+"&limit=30&offset="+offset+(ACTIVE_CAT!=="all"?"&category="+encodeURIComponent(ACTIVE_CAT):"");
   fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){if(!r.ok)throw new Error("load");return r.json()}).then(function(d){
-    var incoming=(d&&d.items)||[];MISTAKE_ITEMS=append?MISTAKE_ITEMS.concat(incoming):incoming;
+    var incoming=(d&&d.targets)||[];MISTAKE_ITEMS=append?MISTAKE_ITEMS.concat(incoming):incoming;
     MISTAKE_SUMMARY=(d&&d.summary)||{total:MISTAKE_ITEMS.length,categories:{}};
     MISTAKE_PAGE=(d&&d.pagination)||{offset:offset,limit:30,returned:incoming.length,has_more:false};MISTAKE_LOADING=false;
     if(Number(MISTAKE_SUMMARY.total||0)>0)renderList();else renderEmpty();

@@ -95,6 +95,12 @@ def _word_or_adhoc(zh: str, *, material: dict, explanation: str, language: str, 
     word = bank.lookup_word(bank.normalize_zh(zh)) or bank.lookup_word(zh)
     if word:
         return _word_target(word)
+    if len(bank.normalize_zh(zh)) >= 2 and bank.find_pool_sentence(zh, level):
+        # Lug'atda alohida so'z emas, lekin darsdagi ibora (你好) — tarjimasi
+        # bilan gap sifatida mashq qilinadi.
+        target = _sentence_target(zh, level=level, language=language)
+        if target:
+            return target
     exp_zh, exp_meaning, exp_pinyin = _explanation_parts(explanation)
     pinyin = _text(material.get("pinyin"), 120)
     if exp_zh and bank.normalize_zh(exp_zh) == bank.normalize_zh(zh):

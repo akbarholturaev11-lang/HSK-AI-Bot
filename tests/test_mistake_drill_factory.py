@@ -137,7 +137,11 @@ class DrillFormatTests(unittest.TestCase):
         question = drills.build_question(target, "correct_choice", language="uz", seed="s")
         self.assertEqual(sorted(question["options"]), sorted(["我是学生。", "我是学生吗"]))
         self.assertEqual(question["options"][question["answer_index"]], "我是学生。")
-        self.assertEqual(question["prompt"], "Qaysi gap to'g'ri?")
+        # 我是学生吗 ham boshqa ma'noda to'g'ri gap — shuning uchun ma'no beriladi.
+        self.assertEqual(
+            question["prompt"],
+            "Aytmoqchi bo'lgan gapingiz: «Men talabaman.». To'g'ri shaklini tanlang",
+        )
 
     def test_builder_is_shuffled_and_graded_by_answer_tokens(self):
         target = sentence("我是学生。")

@@ -185,7 +185,9 @@ class SourceTests(unittest.TestCase):
             prompt="你好 (nǐ hǎo)", correct_answer="你好", user_answer="你号",
             explanation="nǐ hǎo", level="hsk1", language="uz",
         )
-        self.assertEqual((target["kind"], target["zh"]), ("word", "你好"))
+        # 你好 lug'atda alohida so'z emas, lekin darsdagi ibora — tarjimasi bilan.
+        self.assertEqual((target["kind"], target["zh"]), ("sentence", "你好"))
+        self.assertEqual(target["payload"]["translation"]["uz"], "Salom!")
 
     def test_meaning_answer_resolves_through_the_prompt_word(self):
         target = resolve_target(
