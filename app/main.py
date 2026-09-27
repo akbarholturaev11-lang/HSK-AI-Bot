@@ -5294,19 +5294,6 @@ async def miniapp_event(request: Request):
                 source=requested_source,
             )
             if sent:
-                try:
-                    await AppPromoDecisionService(session).mark(
-                        telegram_id=telegram_id,
-                        target_platform="android",
-                        action="download_requested",
-                    )
-                    await session.commit()
-                except Exception:
-                    logger.exception(
-                        "Android app promo cooldown write failed telegram_id=%s",
-                        telegram_id,
-                    )
-                    await session.rollback()
                 return {"ok": True}
             return {"ok": False, "error": "android_apk_send_failed"}
 
