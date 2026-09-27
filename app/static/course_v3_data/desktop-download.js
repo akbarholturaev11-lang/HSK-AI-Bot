@@ -1773,9 +1773,7 @@
       state.destinationOpen ||
       !state.promoPlacements.ad_promo ||
       state.promoReason === "already_installed" ||
-      state.promoReason === "disabled" ||
-      state.promoReason === "recent_request" ||
-      hasLocalDownloadCooldown()
+      state.promoReason === "disabled"
     ) {
       return false;
     }
