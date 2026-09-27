@@ -65,7 +65,7 @@ class DiscountService:
                 await self.session.flush()
             return 0, False
 
-        count = await self.referral_repo.count_active_since(
+        count = await self.referral_repo.count_discount_qualified_since(
             referrer_telegram_id=user.telegram_id,
             started_at=started_at,
         )

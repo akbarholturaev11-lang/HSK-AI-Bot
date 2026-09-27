@@ -10,7 +10,7 @@ These tests protect two things at once:
 """
 
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -31,6 +31,7 @@ from app.db.models.course_miniapp_event import (
     CourseMiniAppEvent,
 )
 from app.db.models.user import User
+from app.db.models.referral import Referral
 from app.services.desktop_auth_service import (
     DESKTOP_PLATFORMS,
     MOBILE_PLATFORMS,
@@ -162,6 +163,50 @@ class AndroidAuthServiceTests(unittest.IsolatedAsyncioTestCase):
             )
         )
         return set(result.scalars().all())
+
+    async def test_android_discount_invite_counts_only_after_account_link(self):
+        async with self.sessions() as session:
+            referrer = await session.scalar(select(User).where(User.telegram_id == 1001))
+            referrer.discount_offer_started_at = datetime.now(timezone.utc) - timedelta(minutes=1)
+            session.add(Referral(
+                referrer_telegram_id=1001,
+                invited_user_telegram_id=1002,
+                status="pending",
+                discount_platform="android",
+            ))
+            await session.commit()
+            self.assertEqual(0, referrer.discount_referral_count)
+
+            _, _, linked = await self._link(session, platform="android", telegram_id=1002)
+            self.assertEqual("linked", linked["status"])
+
+            referral = await session.scalar(select(Referral).where(Referral.invited_user_telegram_id == 1002))
+            self.assertIsNotNone(referral.discount_qualified_at)
+            self.assertEqual("pending", referral.status)
+            await session.refresh(referrer)
+            self.assertEqual(1, referrer.discount_referral_count)
+
+    async def test_android_discount_survives_optional_analytics_failure(self):
+        async with self.sessions() as session:
+            referrer = await session.scalar(select(User).where(User.telegram_id == 1001))
+            referrer.discount_offer_started_at = datetime.now(timezone.utc) - timedelta(minutes=1)
+            session.add(Referral(
+                referrer_telegram_id=1001,
+                invited_user_telegram_id=1002,
+                discount_platform="android",
+            ))
+            await session.commit()
+
+            with patch(
+                "app.services.desktop_auth_service.CourseMiniAppAnalyticsService.record_server_event",
+                new_callable=AsyncMock,
+                side_effect=RuntimeError("analytics unavailable"),
+            ):
+                _, _, linked = await self._link(session, platform="android", telegram_id=1002)
+
+            self.assertEqual("linked", linked["status"])
+            await session.refresh(referrer)
+            self.assertEqual(1, referrer.discount_referral_count)
 
     async def test_every_native_platform_can_start_a_link(self):
         for index, platform in enumerate(sorted(NATIVE_PLATFORMS)):

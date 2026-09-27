@@ -878,11 +878,14 @@ class DesktopAuthService:
         )
         link_request.status = "consumed"
         link_request.consumed_at = now
+        linked_device_id = device.id
+        linked_platform = device.platform
+        linked_telegram_id = device.telegram_id
         # Persist the device/session/token state before optional analytics.
         # Course analytics is best-effort and must never roll back credentials
         # that have already been returned to the native client.
         await self.session.commit()
-        prefix = analytics_prefix(device.platform)
+        prefix = analytics_prefix(linked_platform)
         try:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name=f"{prefix}_session_linked",
@@ -904,6 +907,19 @@ class DesktopAuthService:
                 device.id,
             )
             await self.session.rollback()
+        if linked_platform == "android":
+            try:
+                from app.services.referral_service import ReferralService
+
+                await ReferralService(self.session).qualify_android_discount_referral(
+                    linked_telegram_id
+                )
+            except Exception:
+                logger.exception(
+                    "Android linked but referral qualification failed for device=%s",
+                    linked_device_id,
+                )
+                await self.session.rollback()
         return {
             "ok": True,
             "status": "linked",

@@ -37,16 +37,15 @@ class _DownloadPageHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802 - stdlib handler contract
         path = urlsplit(self.path).path
-        if path == "/api/v3/desktop-download/public-status":
+        if path == "/api/v3/apps/public-status":
             origin = f"http://127.0.0.1:{self.server.server_port}"
             payload = {
                 "ok": True,
-                "enabled": True,
-                "platforms": {"macos": True, "windows": True},
-                "versions": {"macos": "1.3.0", "windows": "1.3.0"},
-                "downloads": {
-                    "macos": f"{origin}/downloads/macos",
-                    "windows": f"{origin}/downloads/windows",
+                "platforms": {
+                    "macos": {"available": True, "version": "1.3.0", "download": f"{origin}/downloads/macos"},
+                    "windows": {"available": True, "version": "1.3.0", "download": f"{origin}/downloads/windows"},
+                    "android": {"available": True, "version": "1.3.0", "download": f"{origin}/downloads/android"},
+                    "ios": {"available": False, "download": None},
                 },
             }
             self._send_bytes(
@@ -70,6 +69,13 @@ class _DownloadPageHandler(SimpleHTTPRequestHandler):
                 disposition=(
                     'attachment; filename="Pomp-HSK-AI_1.3.0_x64-setup.exe"'
                 ),
+            )
+            return
+        if path == "/downloads/android":
+            self._send_bytes(
+                b"test-apk",
+                content_type="application/vnd.android.package-archive",
+                disposition='attachment; filename="HSK-AI.apk"',
             )
             return
         if path == "/desktop-download":
@@ -278,5 +284,48 @@ def test_mobile_share_uses_public_platform_link_and_copy_fallback(
     assert copied_value.endswith("/downloads/windows")
     assert page.locator("[data-transfer-status]").inner_text() == "Нусха шуд"
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    assert errors == []
+    context.close()
+
+
+def test_referral_uses_detected_android_and_requires_app_link(
+    desktop_download_url, browser,
+):
+    context, page, errors = _page(
+        browser,
+        viewport={"width": 390, "height": 844},
+        user_agent="Mozilla/5.0 (Linux; Android 15; Pixel 8) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36",
+        has_touch=True,
+    )
+    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=ios", wait_until="networkidle")
+    assert page.locator('[data-download-button]').get_attribute('href').endswith('/downloads/android')
+    guide = page.locator('[data-referral-guide]')
+    playwright.expect(guide).to_be_visible()
+    assert "Telegram hisobingizni ulang" in guide.inner_text()
+    assert page.locator('[data-referral-link]').get_attribute('href') == (
+        'https://t.me/darsi_chini_bot?start=ra_a1b2c3d4'
+    )
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    assert errors == []
+    context.close()
+
+
+def test_referral_uses_ios_bot_flow_and_does_not_trust_platform_query(
+    desktop_download_url, browser,
+):
+    context, page, errors = _page(
+        browser,
+        viewport={"width": 390, "height": 844},
+        user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148",
+        has_touch=True,
+    )
+    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=android", wait_until="networkidle")
+    assert page.locator('[data-download-button]').get_attribute('href') == (
+        'https://t.me/darsi_chini_bot?start=ri_a1b2c3d4'
+    )
+    guide = page.locator('[data-referral-guide]')
+    playwright.expect(guide).to_be_visible()
+    assert "2 ta savol" in guide.inner_text()
+    playwright.expect(page.locator('[data-referral-link]')).to_be_hidden()
     assert errors == []
     context.close()

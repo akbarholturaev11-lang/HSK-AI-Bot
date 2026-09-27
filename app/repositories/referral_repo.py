@@ -29,6 +29,7 @@ class ReferralRepository:
         self,
         referrer_telegram_id: int,
         invited_user_telegram_id: int,
+        discount_platform: str = "unknown",
     ) -> Referral:
         referral = Referral(
             referrer_telegram_id=referrer_telegram_id,
@@ -36,6 +37,7 @@ class ReferralRepository:
             status="pending",
             bonus_granted=False,
             counts_for_discount=False,
+            discount_platform=discount_platform,
             created_at=datetime.now(timezone.utc),
         )
         self.session.add(referral)
@@ -86,6 +88,18 @@ class ReferralRepository:
             .where(Referral.status == "active")
             .where(Referral.activated_at.is_not(None))
             .where(Referral.activated_at >= started_at)
+        )
+        return result.scalar() or 0
+
+    async def count_discount_qualified_since(
+        self, referrer_telegram_id: int, started_at: datetime,
+    ) -> int:
+        result = await self.session.execute(
+            select(func.count())
+            .select_from(Referral)
+            .where(Referral.referrer_telegram_id == referrer_telegram_id)
+            .where(Referral.discount_qualified_at.is_not(None))
+            .where(Referral.discount_qualified_at >= started_at)
         )
         return result.scalar() or 0
 

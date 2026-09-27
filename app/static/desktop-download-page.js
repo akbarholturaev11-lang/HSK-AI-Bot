@@ -7,6 +7,8 @@
   // iOS has no build of its own. It is offered because an iPhone owner
   // deserves an answer, and the answer is the Mini App inside Telegram.
   var BOT_URL = "https://t.me/darsi_chini_bot";
+  var referralCode = /^[0-9a-f]{8}$/.test(String(params.get("ref") || ""))
+    ? String(params.get("ref")) : "";
   // The copy keys are prefixed per platform; `macos` is historically "mac".
   var COPY_KEY = { ios: "ios", macos: "mac", android: "android", windows: "windows" };
   // The quick guide keeps one step list per platform in the DOM; the prefix
@@ -21,6 +23,13 @@
 
   var COPY = {
     uz: {
+      referralAndroidTitle: "Do‘stingiz uchun 20% chegirma qadamlari",
+      referralAndroidBody: "APK’ni yuklab o‘rnating. Keyin quyidagi havola orqali Telegram botiga kiring va HSK AI ilovasida Telegram hisobingizni ulang. Ulanish tasdiqlangach taklif hisoblanadi.",
+      referralAndroidButton: "Telegram botida ro‘yxatdan o‘tish",
+      referralIosTitle: "Do‘stingiz uchun 20% chegirma",
+      referralIosBody: "Telegram botini oching va unda 2 ta savol ishlating. Shunda taklif hisoblanadi.",
+      referralOtherTitle: "Havolani telefonda oching",
+      referralOtherBody: "Taklif Android yoki iPhone qurilmasida ochilganda mos shartlar ko‘rsatiladi.",
       iosSecurityTitle: "Hech narsa o‘rnatilmaydi",
       androidSecurityTitle: "O‘rnatishda ogohlantirish chiqishi mumkin",
       macSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
@@ -143,6 +152,13 @@
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
+      referralAndroidTitle: "Как засчитывается приглашение",
+      referralAndroidBody: "Скачайте и установите APK. Затем откройте Telegram-бота по ссылке ниже и привяжите аккаунт Telegram в приложении HSK AI. Приглашение засчитается после привязки.",
+      referralAndroidButton: "Зарегистрироваться в Telegram-боте",
+      referralIosTitle: "Как засчитывается приглашение",
+      referralIosBody: "Откройте Telegram-бота и ответьте на 2 вопроса. После этого приглашение засчитается.",
+      referralOtherTitle: "Откройте ссылку на телефоне",
+      referralOtherBody: "Условия приглашения появятся при открытии на Android или iPhone.",
       iosSecurityTitle: "Ничего устанавливать не нужно",
       androidSecurityTitle: "При установке может появиться предупреждение",
       macSecurityTitle: "При первом запуске может появиться предупреждение",
@@ -265,6 +281,13 @@
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
+      referralAndroidTitle: "Шарти даъват барои тахфифи 20%",
+      referralAndroidBody: "APK-ро боргирӣ ва насб кунед. Сипас бо пайванди поён ба боти Telegram дароед ва ҳисоби Telegram-ро дар барномаи HSK AI пайваст кунед. Пас аз пайвастшавӣ даъват ҳисоб мешавад.",
+      referralAndroidButton: "Дар боти Telegram сабти ном шудан",
+      referralIosTitle: "Шарти даъват барои тахфифи 20%",
+      referralIosBody: "Боти Telegram-ро кушоед ва ба 2 савол ҷавоб диҳед. Пас даъват ҳисоб мешавад.",
+      referralOtherTitle: "Пайвандро дар телефон кушоед",
+      referralOtherBody: "Шартҳои даъват дар Android ё iPhone нишон дода мешаванд.",
       iosSecurityTitle: "Ҳеҷ чиз насб намешавад",
       androidSecurityTitle: "Ҳангоми насб огоҳӣ пайдо шуда метавонад",
       macSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
@@ -423,6 +446,8 @@
   }
 
   function initialPlatform() {
+    if (referralCode && ["android", "ios"].indexOf(detectedPlatform()) >= 0)
+      return detectedPlatform();
     var requested = String(params.get("platform") || "").toLowerCase();
     return supportedPlatforms.indexOf(requested) >= 0
       ? requested
@@ -662,8 +687,35 @@
     }
   }
 
+  function referralLinkFor(platform) {
+    var prefix = platform === "android" ? "ra_" : "ri_";
+    return BOT_URL + "?start=" + prefix + referralCode;
+  }
+
+  function renderReferral() {
+    var block = document.querySelector("[data-referral-guide]");
+    if (!block) return;
+    block.hidden = !referralCode;
+    if (!referralCode) return;
+    var localized = copy();
+    var platform = detectedPlatform();
+    var kind = platform === "android" ? "Android" : platform === "ios" ? "Ios" : "Other";
+    setText("[data-referral-title]", localized["referral" + kind + "Title"]);
+    setText("[data-referral-body]", localized["referral" + kind + "Body"]);
+    var link = document.querySelector("[data-referral-link]");
+    if (!link) return;
+    link.hidden = platform !== "android";
+    if (platform === "android") {
+      link.href = referralLinkFor(platform);
+      link.textContent = localized.referralAndroidButton;
+    } else {
+      link.removeAttribute("href");
+    }
+  }
+
   function renderRelease() {
     var localized = copy();
+    renderReferral();
     var button = document.querySelector("[data-download-button]");
     var status = document.querySelector("[data-download-status]");
     var selected = supportedPlatforms.indexOf(state.platform) >= 0;
@@ -677,7 +729,8 @@
       setText("[data-version]", "");
       setText("[data-published]", "");
       if (!button || !status) return;
-      button.href = BOT_URL;
+      button.href = referralCode && detectedPlatform() === "ios"
+        ? referralLinkFor("ios") : BOT_URL;
       button.removeAttribute("aria-disabled");
       button.dataset.action = "open";
       status.dataset.state = "ready";
@@ -724,6 +777,8 @@
 
   function setPlatform(platform) {
     if (supportedPlatforms.indexOf(platform) < 0) return;
+    if (referralCode && ["android", "ios"].indexOf(detectedPlatform()) >= 0 &&
+        platform !== detectedPlatform()) return;
     state.platform = platform;
     resetTransferFeedback();
     renderPlatform();

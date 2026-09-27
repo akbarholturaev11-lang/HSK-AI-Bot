@@ -15,6 +15,7 @@ from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
     normalize_referral_code,
+    discount_platform_from_payload,
 )
 
 
@@ -227,6 +228,7 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
         service.referral_repo.create.assert_awaited_once_with(
             referrer_telegram_id=777,
             invited_user_telegram_id=123,
+            discount_platform="unknown",
         )
         service.activate_referral_if_eligible.assert_awaited_once_with(
             bot=bot,
@@ -235,6 +237,14 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
 
 
 class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
+    def test_download_site_payload_preserves_platform_and_code(self):
+        self.assertEqual("android", discount_platform_from_payload("ra_a1b2c3d4"))
+        self.assertEqual("ios", discount_platform_from_payload("ri_a1b2c3d4"))
+        self.assertEqual("a1b2c3d4", normalize_referral_code("ra_a1b2c3d4"))
+        self.assertEqual("a1b2c3d4", normalize_referral_code("ri_a1b2c3d4"))
+        self.assertEqual("unknown", discount_platform_from_payload("ref_a1b2c3d4"))
+        self.assertEqual("unknown", discount_platform_from_payload("ra_bad"))
+
     def test_legacy_prefixed_payload_resolves_to_the_stored_code(self):
         self.assertEqual("abc123", normalize_referral_code("ref_abc123"))
         self.assertEqual("abc123", normalize_referral_code(" abc123 "))
@@ -274,6 +284,7 @@ class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
         service.referral_repo.create.assert_awaited_once_with(
             referrer_telegram_id=777,
             invited_user_telegram_id=123,
+            discount_platform="unknown",
         )
 
 
