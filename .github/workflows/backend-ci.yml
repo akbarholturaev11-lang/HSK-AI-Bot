@@ -30,6 +30,9 @@ jobs:
       - name: Run block, feedback, and admin integrity tests
         run: |
           python -m unittest tests.test_bot_block_status_service tests.test_bot_feedback_service tests.test_admin_stats_integrity
+      - name: Run Pro trial and anti-abuse regressions
+        run: |
+          python -m unittest tests.test_pro_trial_service tests.test_trial_risk_service tests.test_trial_risk_entry_points tests.test_admin_limits_api tests.test_trial_entry_points
       - name: Run adjacent reminder and access regressions
         run: |
           python -m unittest tests.test_admin_stats_service tests.test_trial_reminder_service tests.test_motivation_reminder_service tests.test_blocked_user_guard tests.test_blocked_user_guard_cache
