@@ -31,6 +31,7 @@ from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.services.trial_risk_service import TrialRiskService
 
 
 logger = logging.getLogger(__name__)
@@ -253,11 +254,19 @@ def create_miniapp_entitlements_router(
                 return JSONResponse(
                     status_code=403, content={"ok": False, "error": "access_start_first"}
                 )
+            risk_service = TrialRiskService(session, settings_obj)
+            risk_snapshot = await risk_service.analyze(
+                user,
+                client=CLIENT,
+                source="miniapp_trial",
+                remote_ip=request.headers.get("X-Real-IP"),
+            )
             result = await ProTrialService(session).start(
                 user, source="miniapp_trial", client=CLIENT
             )
             if not result.get("ok"):
                 return JSONResponse(status_code=409, content=result)
+            await risk_service.record_started(user, risk_snapshot)
             await session.commit()
         return JSONResponse(content=result)
 
