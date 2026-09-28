@@ -16,7 +16,7 @@ from app.config import settings
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.desktop import DesktopDevice
 from app.repositories.bot_setting_repo import BotSettingRepository
-from app.services.android_push_service import AndroidPushService
+from app.services.android_push_service import AndroidPushService, AndroidPushTarget
 from app.services.android_release_service import AndroidReleaseService
 
 
@@ -68,30 +68,23 @@ class AndroidRealtimePushService:
         if not rows:
             return 0
 
-        accepted = 0
-        transient_failure = False
-        for token, device_id in rows:
-            try:
-                result = await self.push.send_token(
-                    token=token,
-                    device_id=device_id,
-                    data={
-                        "kind": "app_update",
-                        "version_code": release.version_code,
-                    },
-                    ttl_seconds=86400,
-                )
-                if result.accepted:
-                    accepted += 1
-                elif not result.stale_token:
-                    transient_failure = True
-            except Exception:
-                transient_failure = True
-                logger.exception(
-                    "Android update push failed device=%s version=%s",
-                    device_id,
-                    release.version_code,
-                )
+        targets = [
+            AndroidPushTarget(
+                token=token,
+                device_id=device_id,
+                data={
+                    "kind": "app_update",
+                    "version_code": release.version_code,
+                },
+            )
+            for token, device_id in rows
+        ]
+        results = await self.push.send_batch(targets, ttl_seconds=86400)
+        accepted = sum(1 for result in results if result.accepted)
+        transient_failure = any(
+            not result.accepted and not result.stale_token
+            for result in results
+        )
 
         # Client-side UpdateNotices has its own per-version dedupe, so retrying
         # after a partial transport failure cannot show duplicate notices.
@@ -125,8 +118,8 @@ class AndroidRealtimePushService:
             )
         ).all()
 
-        accepted = 0
-        dirty = False
+        due_rows = []
+        targets = []
         for row, device in rows:
             try:
                 local_now = now_utc.astimezone(ZoneInfo(row.timezone_name or ""))
@@ -137,26 +130,32 @@ class AndroidRealtimePushService:
             local_day = local_now.date().isoformat()
             if row.last_study_push_day == local_day:
                 continue
-
-            try:
-                result = await self.push.send_token(
+            due_rows.append((row, local_day))
+            targets.append(
+                AndroidPushTarget(
                     token=row.token,
                     device_id=device.id,
                     data={
                         "kind": "study_reminder",
                         "local_day": local_day,
                     },
-                    ttl_seconds=STUDY_PUSH_TTL_SECONDS,
                 )
-            except Exception:
-                logger.exception("Android study push failed device=%s", device.id)
-                continue
+            )
 
-            if result.accepted:
-                row.last_study_push_day = local_day
-                row.updated_at = now_utc
-                dirty = True
-                accepted += 1
+        results = await self.push.send_batch(
+            targets,
+            ttl_seconds=STUDY_PUSH_TTL_SECONDS,
+        )
+
+        accepted = 0
+        dirty = False
+        for (row, local_day), result in zip(due_rows, results):
+            if not result.accepted:
+                continue
+            row.last_study_push_day = local_day
+            row.updated_at = now_utc
+            dirty = True
+            accepted += 1
 
         if dirty:
             await self.session.commit()
