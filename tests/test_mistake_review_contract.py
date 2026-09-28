@@ -59,6 +59,82 @@ class MistakeReviewContractTests(unittest.TestCase):
         self.assertEqual(question["pinyin"], "")
         self.assertEqual(question["format"], "listening_choice")
 
+    def test_old_listening_mistake_does_not_print_the_spoken_answer(self):
+        # Practice and duels used to copy `audio_text` into `sentence`; those
+        # mistakes are already stored and must not show the answer in review.
+        item = mistake(
+            prompt="Tinglang — qaysi so'z?",
+            material={
+                "material_version": 2,
+                "format": "listening_choice",
+                "language": "uz",
+                "prompt": "Tinglang — qaysi so'z?",
+                "sentence": "好吃",
+                "audio_text": "好吃",
+                "pinyin": "hǎochī",
+                "options": ["会", "好吃", "说", "妈妈"],
+            },
+            correct_answer="好吃",
+            user_answer="会",
+            category="word",
+            source="practice",
+        )
+
+        question = CourseMistakeService._review_question(item, [])
+
+        self.assertIsNotNone(question)
+        self.assertEqual(question["sentence"], "")
+        self.assertEqual(question["pinyin"], "")
+        self.assertEqual(question["audio_text"], "好吃")
+
+    def test_listen_and_fill_keeps_its_gapped_sentence(self):
+        item = mistake(
+            prompt="Eshiting va bo'sh joyni to'ldiring",
+            material={
+                "material_version": 2,
+                "format": "listening_choice",
+                "language": "uz",
+                "prompt": "Eshiting va bo'sh joyni to'ldiring",
+                "sentence": "这个很____。",
+                "audio_text": "好吃",
+                "options": ["会", "好吃", "说", "妈妈"],
+            },
+            correct_answer="好吃",
+            user_answer="会",
+            category="word",
+            source="practice",
+        )
+
+        question = CourseMistakeService._review_question(item, [])
+
+        self.assertIsNotNone(question)
+        self.assertEqual(question["sentence"], "这个很____。")
+
+    def test_audio_true_false_keeps_the_written_statement(self):
+        # HSK exam true/false: the written line IS the question, even when it
+        # matches the audio (that is the "true" case).
+        item = mistake(
+            prompt="Eshiting va gap mosligini belgilang.",
+            material={
+                "material_version": 2,
+                "format": "audio_truefalse",
+                "language": "uz",
+                "prompt": "Eshiting va gap mosligini belgilang.",
+                "sentence": "我喜欢喝茶。",
+                "audio_text": "我喜欢喝茶。",
+                "options": ["To'g'ri", "Noto'g'ri"],
+            },
+            correct_answer="To'g'ri",
+            user_answer="Noto'g'ri",
+            category="listening",
+            source="hsk_exam",
+        )
+
+        question = CourseMistakeService._review_question(item, [])
+
+        self.assertIsNotNone(question)
+        self.assertEqual(question["sentence"], "我喜欢喝茶。")
+
     def test_retry_snapshot_preserves_interaction_contract(self):
         snapshot = CourseMistakeService._review_session_question(
             {
