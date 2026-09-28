@@ -608,6 +608,9 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
 /**
  * What the coach says on a placement question: the speaker for a listening
  * one, and the sentence with its pinyin. The instruction is the heading.
+ *
+ * The bubble is the button, so the speaker's description is what names it —
+ * without one a screen reader finds a button with nothing to say.
  */
 @Composable
 private fun PracticeBubbleMaterial(question: PracticeQuestionDto, isAudioLoading: Boolean) {
@@ -618,7 +621,7 @@ private fun PracticeBubbleMaterial(question: PracticeQuestionDto, isAudioLoading
             } else {
                 Icon(
                     imageVector = Icons.Filled.VolumeUp,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.dictionary_listen),
                     tint = PompColors.Cinnabar,
                     modifier = Modifier.size(30.dp),
                 )

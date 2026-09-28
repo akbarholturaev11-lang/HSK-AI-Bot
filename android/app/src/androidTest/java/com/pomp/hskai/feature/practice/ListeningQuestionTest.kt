@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.data.api.PracticeQuestionDto
@@ -89,7 +90,10 @@ class ListeningQuestionTest {
     @Test
     fun aSpeakerIsOfferedInstead() {
         runPractice(listening())
-        compose.onNodeWithContentDescription("Talaffuzni eshitish").assertIsDisplayed()
+        // The coach's bubble is the speaker; the icon's description names it.
+        compose.onNodeWithContentDescription("Talaffuzni eshitish").assertIsDisplayed().performClick()
+        // Once as the question appears, once more when asked.
+        assertEquals(listOf("您", "您"), spoken)
     }
 
     @Test
