@@ -12,7 +12,7 @@ from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.trial_risk_event import TrialRiskEvent
 from app.db.models.user import User
-from app.services.trial_risk_service import TrialRiskService
+from app.services.trial_risk_service import RISK_SCORE_THRESHOLD, TrialRiskService, TrialRiskSnapshot
 
 
 SECRET = "trial-risk-test-secret-" + "x" * 40
@@ -108,6 +108,50 @@ class TrialRiskServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(64, len(row.ip_hash or ""))
         self.assertEqual(device_hash, row.installation_key_hash)
         self.assertNotIn(raw_ip, row.signals_json)
+
+    def test_new_account_age_is_only_a_weak_signal(self):
+        snapshot = TrialRiskSnapshot(
+            client="miniapp",
+            source="miniapp_trial",
+            installation_key_hash=None,
+            ip_hash=None,
+            account_age_minutes=5,
+        )
+        decision = TrialRiskService.evaluate(snapshot)
+
+        self.assertEqual(5, decision.score)
+        self.assertFalse(decision.denied)
+        self.assertEqual(RISK_SCORE_THRESHOLD, decision.threshold)
+
+    def test_reused_android_installation_crosses_the_threshold_by_itself(self):
+        snapshot = TrialRiskSnapshot(
+            client="android",
+            source="android_trial",
+            installation_key_hash="a" * 64,
+            ip_hash=None,
+            account_age_minutes=7 * 24 * 60,
+            prior_device_trial_users=1,
+        )
+        decision = TrialRiskService.evaluate(snapshot)
+
+        self.assertEqual(80, decision.score)
+        self.assertTrue(decision.denied)
+        self.assertIn("device_reuse", decision.reasons)
+
+    def test_busy_shared_ip_does_not_block_a_normal_new_learner_by_itself(self):
+        snapshot = TrialRiskSnapshot(
+            client="miniapp",
+            source="miniapp_trial",
+            installation_key_hash=None,
+            ip_hash="b" * 64,
+            account_age_minutes=10,
+            prior_ip_trial_users_24h=10,
+            prior_ip_trial_users_7d=10,
+        )
+        decision = TrialRiskService.evaluate(snapshot)
+
+        self.assertEqual(65, decision.score)
+        self.assertFalse(decision.denied)
 
     async def test_invalid_ip_and_missing_secret_are_not_persisted_as_identifiers(self):
         async with self.sessions() as session:
