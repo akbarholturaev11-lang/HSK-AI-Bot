@@ -27,6 +27,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.ad_placement_service import AdPlacementService
 from app.services.entitlements.limits_config import LimitConfigService
 from app.services.pro_trial_service import ProTrialService
+from app.services.trial_risk_service import TrialRiskService
 from app.services.entitlements.shadow import (
     ROLLOUT_CLEAN_DAYS,
     ROLLOUT_MIN_SAMPLES,
@@ -114,6 +115,25 @@ def create_admin_entitlements_router(*, session_factory, admin_guard) -> APIRout
             await session.commit()
         logger.info("admin_ad_placements_saved admin_id=%s", telegram_id)
         return JSONResponse(content={"ok": True, "ads": settings.public_payload()})
+
+    @router.post("/api/admin-miniapp/trial-risk")
+    async def admin_trial_risk(request: Request):
+        """Pro trial shadow anti-abuse hisoboti; raw IP/device hash qaytarmaydi."""
+        _telegram_id, auth_error = admin_guard(request)
+        if auth_error:
+            return auth_error
+        payload = await _body(request)
+        try:
+            days = int(payload.get("days") or 7)
+        except (TypeError, ValueError):
+            days = 7
+        try:
+            limit = int(payload.get("limit") or 20)
+        except (TypeError, ValueError):
+            limit = 20
+        async with session_factory() as session:
+            report = await TrialRiskService(session).report(days=days, limit=limit)
+        return JSONResponse(content={"ok": True, "risk": report})
 
     @router.post("/api/admin-miniapp/trial/revoke")
     async def admin_trial_revoke(request: Request):
