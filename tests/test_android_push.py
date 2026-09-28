@@ -181,9 +181,9 @@ class AndroidPushTests(unittest.IsolatedAsyncioTestCase):
             service = AndroidRealtimePushService(session, self.settings)
             with patch.object(
                 service.push,
-                "send_token",
+                "send_batch",
                 new_callable=AsyncMock,
-                return_value=AndroidPushResult(True),
+                return_value=[AndroidPushResult(True)],
             ) as send:
                 now = datetime(2026, 9, 28, 20, 5, tzinfo=timezone.utc)
                 self.assertEqual(1, await service.send_due_study(now))
