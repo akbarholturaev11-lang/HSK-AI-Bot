@@ -15,7 +15,7 @@ kerak. Bu yerda esa o'sha xavfsizlikning sababi qotiriladi:
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 from unittest.mock import patch
@@ -171,6 +171,26 @@ class ProTrialServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertFalse(second["ok"])
         self.assertEqual(REASON_ALREADY_USED, second["error"])
+
+    async def test_start_refreshes_the_locked_row_before_deciding(self):
+        """A stale identity-map value must not reopen an already-used trial."""
+        await self._seed()
+
+        async with self.sessions() as session:
+            stale = await self._get(session)
+            self.assertFalse(stale.trial_used)
+            await session.execute(
+                update(User)
+                .where(User.telegram_id == TELEGRAM_ID)
+                .values(trial_used=True)
+                .execution_options(synchronize_session=False)
+            )
+            self.assertFalse(stale.trial_used)
+
+            result = await ProTrialService(session).start(stale, source="miniapp")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(REASON_ALREADY_USED, result["error"])
 
     async def test_starting_the_trial_never_touches_the_subscription_columns(self):
         """Butun modulning eng muhim invarianti.

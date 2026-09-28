@@ -123,6 +123,33 @@ class ProTrialService:
 
     # --- boshlash ---------------------------------------------------------
 
+    async def _lock_user_for_start(self, user):
+        """Trial start qarorini bitta user qatori bo'yicha atomik qiladi.
+
+        `trial_used` tekshiruvi bilan yozuvi orasida parallel request kirib
+        qolmasligi kerak. `populate_existing=True` muhim: row lock kutib
+        turgan paytda boshqa transaction qiymatni o'zgartirsa, session
+        identity map'dagi eski `trial_used=False` ni qayta ishlatmaydi.
+        """
+        if user is None:
+            return None
+
+        user_id = getattr(user, "id", None)
+        telegram_id = getattr(user, "telegram_id", None)
+        if user_id is None and telegram_id is None:
+            return user
+
+        query = select(User)
+        if user_id is not None:
+            query = query.where(User.id == int(user_id))
+        else:
+            query = query.where(User.telegram_id == int(telegram_id))
+
+        result = await self.session.execute(
+            query.with_for_update().execution_options(populate_existing=True)
+        )
+        return result.scalar_one_or_none()
+
     async def start(
         self,
         user,
@@ -133,6 +160,7 @@ class ProTrialService:
     ) -> dict:
         """Trialni boshlaydi. Qaytadi: `{ok, error?, ends_at?, days?}`."""
         now = now or datetime.now(timezone.utc)
+        user = await self._lock_user_for_start(user)
         verdict = await self.eligibility(user, now=now)
         if not verdict["eligible"]:
             return {"ok": False, "error": verdict["reason"] or REASON_NOT_APPLICABLE}

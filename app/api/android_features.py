@@ -84,6 +84,7 @@ from app.services.ad_placement_service import (
 )
 from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.pro_trial_service import ProTrialService
+from app.services.trial_risk_service import TrialRiskService
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
@@ -742,7 +743,24 @@ def create_android_features_router(
         """
         try:
             async with session_factory() as session:
-                user = await _user(session, request)
+                context = await _context(session, request)
+                user = await UserRepository(session).get_by_telegram_id(
+                    int(context.user.telegram_id)
+                )
+                if not user:
+                    raise AndroidFeatureError("android_user_not_found", status_code=404)
+                risk_service = TrialRiskService(session, settings_obj)
+                risk_snapshot = await risk_service.analyze(
+                    user,
+                    client="android",
+                    source="android_trial",
+                    installation_key_hash=getattr(
+                        getattr(context, "device", None),
+                        "installation_key_hash",
+                        None,
+                    ),
+                    remote_ip=request.headers.get("X-Real-IP"),
+                )
                 result = await ProTrialService(session).start(
                     user, source="android_trial", client="android"
                 )
@@ -752,6 +770,7 @@ def create_android_features_router(
                         content=result,
                         headers={"Cache-Control": "no-store"},
                     )
+                await risk_service.record_started(user, risk_snapshot)
                 await session.commit()
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, AndroidFeatureError) as exc:
