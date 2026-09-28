@@ -89,6 +89,7 @@ async def send_android_app(
     *,
     source: str,
     track: bool = True,
+    language: str | None = None,
 ) -> bool:
     """Send the published APK, or explain why there is nothing to send.
 
@@ -101,7 +102,7 @@ async def send_android_app(
     """
 
     user = await UserRepository(session).get_by_telegram_id(telegram_id)
-    lang = getattr(user, "language", None) or "ru"
+    lang = language or getattr(user, "language", None) or "ru"
 
     analytics = CourseMiniAppAnalyticsService(session)
     if track:

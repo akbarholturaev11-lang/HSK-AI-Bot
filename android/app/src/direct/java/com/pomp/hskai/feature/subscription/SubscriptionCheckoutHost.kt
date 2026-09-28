@@ -15,7 +15,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +35,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -116,7 +116,6 @@ fun SubscriptionCheckoutHost(
     var hintExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { model.load() }
-    LaunchedEffect(state.trialActivated) { if (state.trialActivated) onClose() }
     LaunchedEffect(state.discount, state.discountStarting) {
         if (waitingInvite && !state.discountStarting && state.discount?.referralLink?.isNotBlank() == true) {
             waitingInvite = false
@@ -147,23 +146,11 @@ fun SubscriptionCheckoutHost(
                     Text(copy.getString(R.string.sub_heading), color = TextMain, fontSize = 27.sp,
                         lineHeight = 30.sp, fontWeight = FontWeight.Black)
                 }
-                Row(Modifier.border(1.dp, Line, CircleShape).background(Raised, CircleShape)
-                    .padding(4.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                    listOf("uz" to "UZ", "ru" to "RU", "tj" to "TJ").forEach { (code, label) ->
-                        val selected = state.language == code
-                        Box(Modifier.size(width = 34.dp, height = 28.dp)
-                            .background(if (selected) Emerald else Color.Transparent, CircleShape)
-                            .clickable { model.setLanguage(code) }, contentAlignment = Alignment.Center) {
-                            Text(label, color = if (selected) InkOnMint else Muted,
-                                fontSize = 12.sp, fontWeight = FontWeight.ExtraBold)
-                        }
-                    }
-                }
-                Spacer(Modifier.width(8.dp))
                 Box(Modifier.size(38.dp).border(1.dp, Line, CircleShape)
                     .background(Raised, CircleShape).clickable { supportOpen = true },
                     contentAlignment = Alignment.Center) {
-                    Text("?", color = Mint, fontSize = 18.sp, fontWeight = FontWeight.Black)
+                    Icon(Icons.Filled.HeadsetMic, contentDescription = copy.getString(R.string.sub_help_title),
+                        tint = Mint, modifier = Modifier.size(20.dp))
                 }
                 IconButton(onClick = onClose, modifier = Modifier.size(38.dp)) {
                     Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close),
@@ -202,9 +189,8 @@ fun SubscriptionCheckoutHost(
                 Spacer(Modifier.height(16.dp))
                 when (state.step) {
                     CheckoutStep.START -> StartContent(
-                        state = state, copy = copy, origin = origin,
+                        state = state, copy = copy,
                         onPlan = model::choosePlan, onMethod = model::chooseMethod,
-                        onTrial = model::startTrial,
                         onDiscount = { waitingInvite = true; model.startDiscount() },
                     )
                     CheckoutStep.COUNTRY -> CountryContent(
@@ -302,50 +288,15 @@ fun SubscriptionCheckoutHost(
 
 @Composable
 private fun StartContent(
-    state: SubscriptionCheckoutState, copy: Context, origin: String,
+    state: SubscriptionCheckoutState, copy: Context,
     onPlan: (String) -> Unit, onMethod: (String, String) -> Unit,
-    onTrial: () -> Unit, onDiscount: () -> Unit,
+    onDiscount: () -> Unit,
 ) {
-    val focus = when {
-        origin.contains("voice") || origin.contains("pronunciation") -> R.string.sub_focus_voice
-        origin.contains("practice") || origin.contains("recognition") -> R.string.sub_focus_practice
-        origin.contains("course") -> R.string.sub_focus_course
-        else -> null
-    }
-    CardBlock {
-        Text(copy.getString(R.string.sub_benefit_heading).uppercase(), color = Mint,
-            fontSize = 11.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Black)
-        Spacer(Modifier.height(12.dp))
-        if (focus != null) {
-            Text(copy.getString(focus), color = TextMain, fontSize = 17.sp, fontWeight = FontWeight.Black)
-            Text(copy.getString(R.string.sub_focus_body), color = Muted, fontSize = 12.sp)
-        } else {
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                copy.getString(R.string.sub_benefits).split("   ").forEach { benefit ->
-                    Box(Modifier.border(1.dp, Line, CircleShape).background(Raised, CircleShape)
-                        .padding(horizontal = 12.dp, vertical = 10.dp)) {
-                        Text(benefit, color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.Bold,
-                            maxLines = 1)
-                    }
-                }
-            }
-        }
-    }
-    Spacer(Modifier.height(16.dp))
     Text(copy.getString(R.string.sub_plans_heading), color = TextMain, fontSize = 16.sp, fontWeight = FontWeight.Black)
     Spacer(Modifier.height(7.dp))
     Text(copy.getString(R.string.sub_value), color = Muted, fontSize = 12.sp,
         lineHeight = 17.sp, fontWeight = FontWeight.SemiBold)
     Spacer(Modifier.height(10.dp))
-    if (state.trial?.eligible == true) {
-        CardBlock {
-            Text(copy.getString(R.string.sub_trial_title), color = TextMain, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-            Text(copy.getString(R.string.sub_trial_body), color = Muted, fontSize = 12.sp)
-            Spacer(Modifier.height(10.dp))
-            CheckoutButton(copy.getString(R.string.sub_trial_button), state.trialStarting, true, onTrial)
-        }
-        Spacer(Modifier.height(10.dp))
-    }
     val prices = state.overview?.prices?.get(state.method).orEmpty()
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
         listOf("1_month", "10_days").forEach { plan ->
@@ -383,7 +334,7 @@ private fun StartContent(
                         color = TextMain, fontSize = 14.sp, fontWeight = FontWeight.Black)
                     Text(if (discount.referral20Available) copy.getString(R.string.sub_discount_active)
                         else if (discount.offerStarted) copy.getString(R.string.sub_discount_progress,
-                            discount.referralCount, discount.referralRequired)
+                            discount.referralCount, discount.referralRequired) + "\n" + copy.getString(R.string.sub_discount_invite)
                         else copy.getString(R.string.sub_discount_invite), color = Muted, fontSize = 12.sp)
                 }
             }

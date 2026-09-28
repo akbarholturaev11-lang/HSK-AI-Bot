@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<title>HSK AI Subscription</title>
+<title>HSK AI Pro</title>
 <style>
 :root{
   color-scheme:dark;
@@ -43,10 +43,7 @@ button:active{transform:scale(.98)}
 .kicker{font-size:11px;color:var(--emerald);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
 h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.lang{display:grid;grid-template-columns:repeat(3,34px);gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);backdrop-filter:blur(8px)}
-.lang button{height:28px;border-radius:999px;color:var(--muted);font-size:12px;font-weight:850;transition:.16s}
-.lang button.active{background:linear-gradient(135deg,var(--emerald),var(--emerald2));color:#04130d;box-shadow:0 4px 14px rgba(52,227,164,.4)}
-.help-btn{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mint);font-size:17px;font-weight:950;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.help-btn{display:grid;place-items:center;width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mint);box-shadow:0 8px 22px rgba(0,0,0,.18)}
 .status{display:none;margin:0 0 12px;border:1px solid rgba(255,210,125,.3);border-radius:var(--radius-sm);background:rgba(255,210,125,.1);padding:11px 13px;color:#ffe3ad;font-size:12px;line-height:1.4;font-weight:750}
 .status.show{display:block}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
@@ -58,22 +55,6 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(135% 100% at 88% -12%,rgba(52,227,164,.16),transparent 55%)}
 .hero h2{position:relative;font-size:22px;line-height:1.12;letter-spacing:-.01em;font-weight:900}
 .hero p{position:relative;margin-top:9px;color:var(--muted);font-size:13px;line-height:1.5}
-.tv{position:relative;margin-bottom:14px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(165deg,rgba(52,227,164,.12),rgba(5,17,13,.55));overflow:hidden;box-shadow:0 0 0 1px rgba(52,227,164,.08),0 16px 40px rgba(0,0,0,.32)}
-.tv::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background:radial-gradient(75% 120% at 50% -20%,rgba(52,227,164,.16),transparent 58%)}
-.tv-head{position:relative;z-index:2;display:flex;align-items:center;gap:8px;padding:11px 14px 0}
-.tv-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 11px var(--emerald);animation:pulse 1.9s ease-in-out infinite}
-.tv-title{font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;color:var(--mint)}
-.tv-screen{position:relative;z-index:2;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-.tv-track{display:flex;gap:9px;width:max-content;padding:12px 14px;animation:marquee 28s linear infinite;will-change:transform}
-.tv-screen:active .tv-track{animation-play-state:paused}
-.perk{flex:0 0 auto;display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:13px;font-weight:800;white-space:nowrap;color:var(--text)}
-.tv-focus{position:relative;z-index:2;display:none;gap:13px;align-items:center;padding:12px 15px 15px}
-.tv.focus .tv-screen{display:none}
-.tv.focus .tv-focus{display:flex}
-.tv-focus-ico{flex:0 0 auto;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:25px;background:rgba(52,227,164,.15);border:1px solid rgba(52,227,164,.3);box-shadow:0 8px 22px rgba(52,227,164,.16)}
-.tv-focus-body{flex:1;min-width:0}
-.tv-focus-body strong{display:block;font-size:16px;font-weight:900;line-height:1.22;letter-spacing:-.01em}
-.tv-focus-body span{display:block;margin-top:5px;color:#b9dccf;font-size:12.5px;line-height:1.42;font-weight:650}
 .discount{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;border:1px solid rgba(255,210,125,.34);border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,210,125,.13),rgba(52,227,164,.05));padding:14px;overflow:hidden;animation:fade .4s ease}
 .discount::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(115% 130% at 6% -25%,rgba(255,210,125,.2),transparent 55%)}
 .discount.used{border-color:var(--line);background:rgba(255,255,255,.04)}
@@ -97,10 +78,6 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .section small{color:var(--emerald);font-size:12px;font-weight:850;text-align:right}
 .value-copy{margin:-1px 0 10px;color:#b9dccf;font-size:12px;line-height:1.45;font-weight:750}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.trial-offer{border:1px solid var(--line,rgba(0,0,0,.12));border-radius:14px;padding:14px;margin-bottom:12px}
-.trial-offer h4{margin:0 0 4px;font-size:15px}
-.trial-offer p{margin:0 0 10px;font-size:13px;opacity:.75}
-.trial-offer button{width:100%;border:none;border-radius:12px;padding:12px;font:inherit;font-weight:600;cursor:pointer}
 .plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
 .plan.selected,.choice.selected{border-color:var(--emerald);box-shadow:0 0 0 1px var(--emerald),0 10px 30px rgba(52,227,164,.22);background:linear-gradient(160deg,rgba(52,227,164,.14),rgba(52,227,164,.05))}
 .plan.wide{grid-column:1/-1;min-height:auto}
@@ -221,7 +198,6 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
 @keyframes sheetUp{from{transform:translateY(18px);opacity:.7}to{transform:translateY(0);opacity:1}}
-@media (prefers-reduced-motion:reduce){.tv-track{animation-duration:60s}}
 @media (min-width:620px){
   .app{padding-top:26px}
   .bottom{left:50%;right:auto;transform:translateX(-50%);width:520px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0}
@@ -239,15 +215,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
   <header class="top">
     <div class="brand">
       <div class="kicker">HSK AI</div>
-      <h1 id="title">Obuna</h1>
+      <h1 id="title">Pro</h1>
     </div>
     <div class="top-actions">
-      <div class="lang" id="langTabs">
-        <button type="button" data-lang="uz">UZ</button>
-        <button type="button" data-lang="ru">RU</button>
-        <button type="button" data-lang="tj">TJ</button>
-      </div>
-      <button class="help-btn" type="button" id="helpBtn" aria-label="Help">?</button>
+      <button class="help-btn" type="button" id="helpBtn" aria-label="Yordam"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 14v4a2 2 0 0 0 2 2h2v-8H5a2 2 0 0 0-2 2Zm18 0v4a2 2 0 0 1-2 2h-2v-8h2a2 2 0 0 1 2 2Z"/><path d="M17 20c0 2-2 3-5 3h-2"/><rect x="8" y="21" width="3" height="2" rx="1"/></svg></button>
     </div>
   </header>
 
@@ -255,27 +226,11 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
   <div class="steps" id="steps"><i></i><i></i><i></i></div>
 
   <section class="screen active" data-screen="start">
-    <div class="tv">
-      <div class="tv-head"><span class="tv-dot"></span><span class="tv-title" id="tvTitle"></span></div>
-      <div class="tv-screen"><div class="tv-track" id="tvTrack"></div></div>
-      <div class="tv-focus" id="tvFocus">
-        <div class="tv-focus-ico" id="tvFocusIco"></div>
-        <div class="tv-focus-body"><strong id="tvFocusTitle"></strong><span id="tvFocusText"></span></div>
-      </div>
-    </div>
-
     <section class="section">
       <div class="section-head">
         <h3 id="plansTitle"></h3>
       </div>
       <p class="value-copy" id="valueText"></p>
-      <!-- 7 kunlik bepul Pro. Faqat hali olmagan odamga ko'rinadi; qaror
-           serverniki, klient uni o'zi hal qilmaydi. -->
-      <div class="trial-offer" id="trialOffer" style="display:none">
-        <h4 id="trialTitle"></h4>
-        <p id="trialBody"></p>
-        <button type="button" id="trialBtn"></button>
-      </div>
       <div class="plans" id="plans"></div>
     </section>
 
@@ -419,7 +374,7 @@ const CHECKOUT_ATTEMPT_ID=(function(){
 const I18N={
   uz:{
     title:"Obuna",
-    modeTitles:{subscription:"Obuna",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
+    modeTitles:{subscription:"Pro",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
     modeTv:{subscription:"Obuna nima beradi",referral_discount:"Referral chegirma",admin_discount:"Admin maxsus taklifi",feedback_discount:"Siz uchun chegirma"},
     modePlans:{subscription:"Tarif",referral_discount:"Chegirmali tarif",admin_discount:"Maxsus tarif",feedback_discount:"20% chegirmali tarif"},
     adminDiscountTitle:"Maxsus chegirma {percent}%",
@@ -451,12 +406,12 @@ const I18N={
     },
     discountActiveText:"Bu obunaga avtomatik qo'llanadi.",
     discountLockTitle:"20% chegirmani oching",
-    discountInviteText:"3 do'stingiz botdan foydalansa, 20% chegirma ochiladi.",
+    discountInviteText:"3 do‘st taklif qiling: Androidda ilovani o‘rnatib Telegramni ulaydi, iPhone’da botda 2 savol ishlatadi.",
     discountUsed:"20% chegirma allaqachon ishlatilgan.",
     discountBtn:"Do'stlarni chaqirish",
     shareText:"HSK AI — xitoy tilini AI bilan o'rgan. Qo'shilsang menga 20% chegirma ochiladi 👇",
     inviteTitle:"Referral link tayyor",
-    inviteText:"Xabar siz tanlagan tilda yuboriladi. Xohlasangiz faqat linkni copy qiling.",
+    inviteText:"Havola do‘stingizni telefoniga mos yo‘lga olib boradi. Xohlasangiz faqat linkni copy qiling.",
     shareLocalized:"Xabar bilan yuborish",
     copyLink:"Faqat linkni copy qilish",
     copied:"Link copy qilindi.",
@@ -548,7 +503,7 @@ const I18N={
   },
   ru:{
     title:"Подписка",
-    modeTitles:{subscription:"Подписка",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
+    modeTitles:{subscription:"Pro",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
     modeTv:{subscription:"Что дает подписка",referral_discount:"Реферальная скидка",admin_discount:"Спецпредложение админа",feedback_discount:"Скидка для вас"},
     modePlans:{subscription:"Тариф",referral_discount:"Тариф со скидкой",admin_discount:"Специальный тариф",feedback_discount:"Тариф со скидкой 20%"},
     adminDiscountTitle:"Специальная скидка {percent}%",
@@ -580,12 +535,12 @@ const I18N={
     },
     discountActiveText:"Применится к этой подписке автоматически.",
     discountLockTitle:"Откройте скидку 20%",
-    discountInviteText:"Пригласите 3 друзей — откроется скидка 20%.",
+    discountInviteText:"Пригласите 3 друзей: на Android установите приложение и привяжите Telegram, на iPhone ответьте на 2 вопроса в боте.",
     discountUsed:"Скидка 20% уже использована.",
     discountBtn:"Пригласить друзей",
     shareText:"HSK AI — учи китайский с AI. Присоединяйся, и мне откроется скидка 20% 👇",
     inviteTitle:"Реферальная ссылка готова",
-    inviteText:"Сообщение отправится на выбранном языке. Можно скопировать только ссылку.",
+    inviteText:"Ссылка покажет шаги для телефона друга. Можно скопировать только ссылку.",
     shareLocalized:"Отправить с текстом",
     copyLink:"Скопировать только ссылку",
     copied:"Ссылка скопирована.",
@@ -677,7 +632,7 @@ const I18N={
   },
   tj:{
     title:"Обуна",
-    modeTitles:{subscription:"Обуна",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
+    modeTitles:{subscription:"Pro",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
     modeTv:{subscription:"Обуна чӣ медиҳад",referral_discount:"Тахфифи referral",admin_discount:"Пешниҳоди махсуси admin",feedback_discount:"Тахфиф барои шумо"},
     modePlans:{subscription:"Тариф",referral_discount:"Тарифи тахфифӣ",admin_discount:"Тарифи махсус",feedback_discount:"Тарифи 20% тахфиф"},
     adminDiscountTitle:"Тахфифи махсус {percent}%",
@@ -709,12 +664,12 @@ const I18N={
     },
     discountActiveText:"Ба ин обуна худкор татбиқ мешавад.",
     discountLockTitle:"Тахфифи 20%-ро кушоед",
-    discountInviteText:"3 дӯстро даъват кунед — тахфифи 20% кушода мешавад.",
+    discountInviteText:"3 дӯст даъват кунед: дар Android барномаро насб карда Telegram-ро пайваст кунанд, дар iPhone ба 2 саволи бот ҷавоб диҳанд.",
     discountUsed:"Тахфифи 20% аллакай истифода шуд.",
     discountBtn:"Даъвати дӯстон",
     shareText:"HSK AI — забони хитоиро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇",
     inviteTitle:"Referral link тайёр аст",
-    inviteText:"Паём бо забони интихобшуда фиристода мешавад. Метавонед танҳо link-ро copy кунед.",
+    inviteText:"Пайванд қадамҳои мувофиқи телефони дӯстатонро нишон медиҳад. Метавонед танҳо link-ро нусха гиред.",
     shareLocalized:"Бо паём фиристодан",
     copyLink:"Танҳо link-ро copy кардан",
     copied:"Link copy шуд.",
@@ -807,7 +762,7 @@ const I18N={
 };
 
 const state={
-  lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
+  lang:normalizeLang(tg?.initDataUnsafe?.user?.language_code||"uz"),
   source:String(PARAMS.get("source")||"").trim(),
   attemptId:CHECKOUT_ATTEMPT_ID,
   mode:normalizeMode(PARAMS.get("mode")),
@@ -1107,7 +1062,7 @@ async function loadOverview(){
     }else{
       const data=await api(API.overview,contextPayload());
       applyOverview(data);
-      state.lang=normalizeLang(PARAMS.get("lang")||data.language||state.lang);
+      state.lang=normalizeLang(data.language||state.lang);
       state.loadError=false;
     }
   }catch(error){
@@ -1165,11 +1120,6 @@ function setStep(step){
   if(currentScreen()==="pay")loadQuote();
   render();
 }
-function setLang(lang){
-  state.lang=normalizeLang(lang);
-  document.documentElement.lang=state.lang;
-  render();
-}
 function modeText(text,key){
   return text[key]?.[state.mode]||text[key]?.subscription||text.title;
 }
@@ -1177,55 +1127,13 @@ function localizedOfferField(offer,field){
   if(!offer)return "";
   return offer[`${field}_${state.lang}`]||offer[field]||"";
 }
-/* 7 kunlik bepul Pro. Holat SERVERDAN — bir Telegram akkaunt bir marta
-   trial olishi kerak va buni faqat server biladi. */
-let trialState=null;
-function trialCopy(){
-  return ({
-    uz:{title:"7 kun Pro bepul",body:"Barcha asosiy imkoniyatlarni sinab ko'rasiz. Avtomatik pul yechilmaydi.",cta:"7 kun bepul sinash",fail:"Hozir ochib bo'lmadi"},
-    ru:{title:"7 дней Pro бесплатно",body:"Попробуете все основные возможности. Деньги автоматически не спишутся.",cta:"Попробовать 7 дней бесплатно",fail:"Сейчас не получилось"},
-    tj:{title:"7 рӯз Pro ройгон",body:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",cta:"7 рӯз ройгон санҷидан",fail:"Ҳозир нашуд"}
-  })[state.lang]||({title:"7 kun Pro bepul",body:"",cta:"7 kun bepul sinash",fail:""});
-}
-async function loadTrial(){
-  try{
-    const r=await fetch("/api/v3/trial/status",{method:"POST",
-      headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},body:"{}"});
-    const d=await r.json();
-    trialState=(d&&d.ok&&d.trial)?d.trial:null;
-  }catch(e){trialState=null}
-  renderTrial();
-}
-function renderTrial(){
-  const box=$("#trialOffer");if(!box)return;
-  if(!trialState||!trialState.eligible){box.style.display="none";return}
-  const c=trialCopy();
-  $("#trialTitle").textContent=c.title;
-  $("#trialBody").textContent=c.body;
-  const btn=$("#trialBtn");btn.textContent=c.cta;
-  btn.onclick=async function(){
-    btn.disabled=true;
-    try{
-      const r=await fetch("/api/v3/trial/start",{method:"POST",
-        headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-        body:JSON.stringify({source:"subscription_page"})});
-      const d=await r.json();
-      if(r.status===200&&d&&d.ok){location.reload();return}
-    }catch(e){}
-    btn.disabled=false;
-    $("#trialBody").textContent=c.fail;
-  };
-  box.style.display="";
-}
-
 function render(){
-  renderTrial();
   const text=tr();
   document.body.classList.remove("mode-subscription","mode-referral_discount","mode-admin_discount","mode-feedback_discount");
   document.body.classList.add(`mode-${state.mode}`);
   document.documentElement.lang=state.lang;
   $("#title").textContent=modeText(text,"modeTitles");
-  $$("#langTabs button").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===state.lang));
+  $("#helpBtn").setAttribute("aria-label",text.supportTitle);
   const statusText=state.preview?text.preview:(state.loadError?text.loadError:"");
   $("#status").textContent=statusText;
   $("#status").classList.toggle("show",Boolean(statusText));
@@ -1258,30 +1166,10 @@ function nextCtaText(text,screen){
   return text.payWithTjCard||text.continueToPayment||text.next;
 }
 function renderStart(text){
-  const focus=focusContent(text);
-  const tv=$("#tvFocus")?.closest(".tv");
-  if(focus){
-    if(tv)tv.classList.add("focus");
-    $("#tvTitle").textContent=text.tvFocusTitle||modeText(text,"modeTv");
-    $("#tvFocusIco").textContent=focus.ico||"✨";
-    $("#tvFocusTitle").textContent=focus.t||"";
-    $("#tvFocusText").textContent=focus.d||"";
-    $("#tvTrack").innerHTML="";
-  }else{
-    if(tv)tv.classList.remove("focus");
-    $("#tvTitle").textContent=modeText(text,"modeTv");
-    const perks=text.perks||[];
-    $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
-  }
   $("#plansTitle").textContent=modeText(text,"modePlans");
   const valueEl=$("#valueText");
-  if(focus){
-    valueEl.textContent="";
-    valueEl.style.display="none";
-  }else{
-    valueEl.textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
-    valueEl.style.display="";
-  }
+  valueEl.textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
+  valueEl.style.display="";
   renderDiscount(text);
   renderInviteSheet(text);
   const plans=availablePlans(state.method);
@@ -1394,7 +1282,7 @@ function renderDiscount(text){
   }else{
     $("#discountTitle").textContent=text.discountLockTitle;
     $("#discountText").textContent=discount.offer_started
-      ? text.discountProgress.replace("{count}",count).replace("{required}",required)
+      ? text.discountProgress.replace("{count}",count).replace("{required}",required)+" · "+text.discountInviteText
       : text.discountInviteText;
     bar.style.display="block";
     bar.firstElementChild.style.width=Math.round(count/required*100)+"%";
@@ -1760,8 +1648,6 @@ document.addEventListener("click",event=>{
   if(detailHint){state.detailHintOpen=!state.detailHintOpen;render();return}
   const copyBtn=event.target.closest("[data-copy-detail]");
   if(copyBtn){copyText(copyBtn.dataset.copyValue,tr().copiedValue,tr().copyFailed);return}
-  const langBtn=event.target.closest("[data-lang]");
-  if(langBtn){setLang(langBtn.dataset.lang);return}
   const planBtn=event.target.closest("[data-plan]");
   if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;state.qrActionsOpen=false;state.qrPreviewOpen=false;state.detailHintOpen=false;render();return}
   const methodBtn=event.target.closest("[data-method]");
@@ -1958,8 +1844,6 @@ $("#receiptInput").addEventListener("change",async event=>{
 });
 render();
 loadOverview();
-/* Trial holati alohida olinadi — obuna ma'lumoti kechiksa ham taklif chiqsin. */
-loadTrial();
 </script>
 </body>
 </html>

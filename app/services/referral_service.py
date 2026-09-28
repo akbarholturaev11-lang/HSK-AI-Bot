@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import re
 from types import SimpleNamespace
 from typing import Optional
 
@@ -12,17 +13,27 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.referral import Referral
+from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.repositories.referral_repo import ReferralRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.discount_service import DiscountService
 from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
 
 REFERRAL_START_PREFIX = "ref_"
+DISCOUNT_PAYLOAD = re.compile(r"^r([ai])_([0-9a-f]{8})$")
+
+
+def discount_platform_from_payload(payload: Optional[str]) -> str:
+    match = DISCOUNT_PAYLOAD.fullmatch(str(payload or "").strip())
+    if not match:
+        return "unknown"
+    return {"a": "android", "i": "ios"}[match.group(1)]
 
 
 def normalize_referral_code(referral_code: Optional[str]) -> str:
@@ -35,6 +46,9 @@ def normalize_referral_code(referral_code: Optional[str]) -> str:
     """
 
     code = str(referral_code or "").strip()
+    match = DISCOUNT_PAYLOAD.fullmatch(code)
+    if match:
+        return match.group(2)
     if code.startswith(REFERRAL_START_PREFIX):
         code = code[len(REFERRAL_START_PREFIX):]
     return code
@@ -341,8 +355,11 @@ class ReferralService:
         await self.referral_repo.create(
             referrer_telegram_id=referrer.telegram_id,
             invited_user_telegram_id=invited_user_telegram_id,
+            discount_platform=discount_platform_from_payload(referral_code),
         )
         await self.session.commit()
+        if discount_platform_from_payload(referral_code) == "android":
+            await self.qualify_android_discount_referral(invited_user_telegram_id)
         if int(getattr(invited_user, "questions_used", 0) or 0) >= 2:
             await self.activate_referral_if_eligible(
                 bot=bot,
@@ -351,6 +368,35 @@ class ReferralService:
             return
         if bot:
             await self.update_trial_progress_message(bot, referrer)
+
+    async def qualify_android_discount_referral(self, invited_user_telegram_id: int) -> bool:
+        """Count an Android invite only after native Telegram account linking."""
+        referral = await self.referral_repo.get_by_invited_user_telegram_id(
+            invited_user_telegram_id, for_update=True,
+        )
+        if not referral or referral.discount_platform != "android":
+            return False
+        if referral.discount_qualified_at is not None:
+            return False
+        linked = await self.session.scalar(
+            select(DesktopDevice.id)
+            .where(DesktopDevice.telegram_id == invited_user_telegram_id)
+            .where(DesktopDevice.platform == "android")
+            .where(DesktopDevice.revoked_at.is_(None))
+            .limit(1)
+        )
+        if not linked:
+            return False
+        referrer = await self.user_repo.get_by_telegram_id_for_update(
+            referral.referrer_telegram_id
+        )
+        if not referrer:
+            return False
+        referral.discount_qualified_at = datetime.now(timezone.utc)
+        referral.counts_for_discount = True
+        await DiscountService(self.session).sync_referral_discount_progress(referrer)
+        await self.session.commit()
+        return True
 
     async def activate_referral_if_eligible(
         self,
@@ -393,11 +439,14 @@ class ReferralService:
         if (
             referrer.discount_offer_started_at
             and referral.activated_at
-            and referral.activated_at >= referrer.discount_offer_started_at
-            and not referral.counts_for_discount
+            and self._as_utc(referral.activated_at)
+            >= self._as_utc(referrer.discount_offer_started_at)
+            and referral.discount_platform in {"ios", "legacy"}
+            and referral.discount_qualified_at is None
         ):
-            await self.user_repo.increment_discount_referral_count(referrer, 1)
+            referral.discount_qualified_at = referral.activated_at
             referral.counts_for_discount = True
+            await DiscountService(self.session).sync_referral_discount_progress(referrer)
 
         trial_activation_progress = await self.get_trial_activation_progress(referrer)
         trial_access_unlocked = await self._grant_trial_access_if_ready(

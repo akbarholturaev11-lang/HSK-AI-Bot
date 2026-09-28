@@ -18,6 +18,10 @@ class Referral(Base):
     status: Mapped[str] = mapped_column(String(16), default="pending", nullable=False)
     bonus_granted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     counts_for_discount: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    discount_platform: Mapped[str] = mapped_column(String(16), default="unknown", nullable=False)
+    discount_qualified_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True,
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

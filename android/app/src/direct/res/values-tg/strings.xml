@@ -37,7 +37,7 @@
     <string name="sub_approval_note">Расид ва маълумоти пардохт ба админ фиристода мешавад. Обуна баъди тасдиқ фаъол мегардад.</string>
     <string name="sub_qr_missing">QR барои ин нақша дастрас нест. Усули дигарро интихоб кунед.</string>
     <string name="sub_retry">Аз нав санҷидан</string>
-    <string name="sub_heading">Обуна</string>
+    <string name="sub_heading">Pro</string>
     <string name="sub_benefit_heading">Обуна чӣ медиҳад</string>
     <string name="sub_benefits">📚 Дарсҳои HSK қадам ба қадам   🤖 Ҷавобҳои бештари AI   🖼 Таҳлили акс ва иероглиф   🎙 Машқи овоз   🧩 Тест ва таҳлили хато</string>
     <string name="sub_focus_course">Ҳамаи дарсҳо кушода мешаванд</string>
@@ -56,7 +56,7 @@
     <string name="sub_discount_ready" formatted="false">Тахфифи 20% татбиқ мешавад</string>
     <string name="sub_discount_active">Ба ин обуна худкор татбиқ мешавад.</string>
     <string name="sub_discount_locked" formatted="false">Тахфифи 20% кушоед</string>
-    <string name="sub_discount_invite" formatted="false">Агар 3 дӯстатон аз бот истифода баранд, тахфифи 20% кушода мешавад.</string>
+    <string name="sub_discount_invite" formatted="false">3 дӯст даъват кунед: дар Android барномаро насб карда Telegram-ро пайваст кунанд, дар iPhone ба 2 саволи бот ҷавоб диҳанд.</string>
     <string name="sub_discount_progress">Тахфифи 20%%: %1$d/%2$d дӯст</string>
     <string name="sub_discount_button">Дӯстонро даъват кардан</string>
     <string name="sub_offer_expired">Ин пешниҳод анҷом ёфтааст ё ба шумо мувофиқ нест.</string>

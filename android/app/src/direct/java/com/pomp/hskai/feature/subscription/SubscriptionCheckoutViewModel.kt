@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.R
 import com.pomp.hskai.core.network.ApiResult
-import com.pomp.hskai.data.api.AndroidTrialDto
 import com.pomp.hskai.data.api.SubscriptionCheckoutEventRequest
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
 import com.pomp.hskai.data.api.SubscriptionDiscountDto
@@ -21,7 +20,6 @@ import com.pomp.hskai.data.api.SubscriptionSubmitRequest
 import com.pomp.hskai.data.repository.FeatureRepository
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -34,24 +32,20 @@ data class SubscriptionCheckoutState(
     val loading: Boolean = true,
     val quoting: Boolean = false,
     val submitting: Boolean = false,
-    val trialStarting: Boolean = false,
     val discountStarting: Boolean = false,
     val overview: SubscriptionCheckoutOverviewDto? = null,
     val discount: SubscriptionDiscountDto? = null,
-    val trial: AndroidTrialDto? = null,
     val quote: SubscriptionQuoteDto? = null,
     val step: CheckoutStep = CheckoutStep.START,
     val plan: String = "1_month",
     val method: String = "visa",
     val country: String = "tj",
     val language: String = "uz",
-    val languageChanged: Boolean = false,
     val receiptName: String = "",
     val receiptBytes: Int = 0,
     val receiptNoteRes: Int? = null,
     val submitted: Boolean = false,
     val alreadyPending: Boolean = false,
-    val trialActivated: Boolean = false,
     val errorRes: Int? = null,
 )
 
@@ -71,11 +65,7 @@ class SubscriptionCheckoutViewModel(
         _state.update { it.copy(loading = true, quoting = false, errorRes = null, quote = null,
             step = CheckoutStep.START, submitted = false, alreadyPending = false) }
         viewModelScope.launch {
-            val overview = async { repository.checkoutOverview(origin) }
-            val trial = async { repository.trialStatus() }
-            val overviewResult = overview.await()
-            val trialResult = trial.await()
-            val trialData = (trialResult as? ApiResult.Success)?.value?.trial
+            val overviewResult = repository.checkoutOverview(origin)
             when (overviewResult) {
                 is ApiResult.Success -> {
                     val data = overviewResult.value
@@ -85,21 +75,17 @@ class SubscriptionCheckoutViewModel(
                         val plan = current.plan.takeIf { data.prices[method]?.containsKey(it) == true }
                             ?: PLANS.firstOrNull { data.prices[method]?.containsKey(it) == true } ?: current.plan
                         current.copy(loading = false, overview = data, discount = data.discount,
-                            trial = trialData, method = method, plan = plan,
-                            language = if (current.languageChanged) current.language else normalizeLanguage(data.language),
+                            method = method, plan = plan,
+                            language = normalizeLanguage(data.language),
                             errorRes = if (data.ok) null else R.string.sub_unavailable)
                     }
                     data.pendingPayment?.id?.takeIf { it > 0 }?.let(onPendingPayment)
                 }
                 is ApiResult.Failure -> _state.update {
-                    it.copy(loading = false, trial = trialData, errorRes = overviewResult.error.messageRes)
+                    it.copy(loading = false, errorRes = overviewResult.error.messageRes)
                 }
             }
         }
-    }
-
-    fun setLanguage(value: String) {
-        _state.update { it.copy(language = normalizeLanguage(value), languageChanged = true) }
     }
 
     fun choosePlan(plan: String) {
@@ -190,21 +176,6 @@ class SubscriptionCheckoutViewModel(
                     errorRes = if (result.value.ok) null else R.string.sub_unavailable) }
                 is ApiResult.Failure -> _state.update {
                     it.copy(discountStarting = false, errorRes = result.error.messageRes)
-                }
-            }
-        }
-    }
-
-    fun startTrial() {
-        if (_state.value.trialStarting || _state.value.trial?.eligible != true) return
-        _state.update { it.copy(trialStarting = true, errorRes = null) }
-        viewModelScope.launch {
-            when (val result = repository.trialStart()) {
-                is ApiResult.Success -> _state.update { it.copy(trialStarting = false,
-                    trialActivated = result.value.ok,
-                    errorRes = if (result.value.ok) null else R.string.sub_trial_failed) }
-                is ApiResult.Failure -> _state.update {
-                    it.copy(trialStarting = false, errorRes = result.error.messageRes)
                 }
             }
         }

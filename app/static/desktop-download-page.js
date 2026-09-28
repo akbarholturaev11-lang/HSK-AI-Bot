@@ -7,6 +7,8 @@
   // iOS has no build of its own. It is offered because an iPhone owner
   // deserves an answer, and the answer is the Mini App inside Telegram.
   var BOT_URL = "https://t.me/darsi_chini_bot";
+  var referralCode = /^[0-9a-f]{8}$/.test(String(params.get("ref") || ""))
+    ? String(params.get("ref")) : "";
   // The copy keys are prefixed per platform; `macos` is historically "mac".
   var COPY_KEY = { ios: "ios", macos: "mac", android: "android", windows: "windows" };
   // The quick guide keeps one step list per platform in the DOM; the prefix
@@ -21,6 +23,19 @@
 
   var COPY = {
     uz: {
+      referralAndroidTitle: "Avval taklifni Telegramda qayd eting",
+      referralAndroidBody: "Telegram tugmasini bosib, botda Start ni bosing. Bot APK faylining o‘zini chatga yuboradi. Ilovani o‘rnatib, shu Telegram hisobini ulang. Shundan keyin taklif hisoblanadi.",
+      referralAndroidButton: "Telegram orqali davom etish",
+      referralAndroidStatus: "Botda Start ni bosing — APK fayli chatga yuboriladi.",
+      androidReferralSteps: [
+        ["Taklifni Telegramda qayd eting", "Yuqoridagi tugma botni ochadi. Botda Start ni bosing."],
+        ["APK ni o‘rnating", "Bot chatga yuborgan APK faylini ochib o‘rnating."],
+        ["Shu Telegram hisobini ulang", "Ilovadagi ulashni tasdiqlang. Shundan keyin taklif hisoblanadi."],
+      ],
+      referralIosTitle: "Do‘stingiz uchun 20% chegirma",
+      referralIosBody: "Telegram botini oching va unda 2 ta savol ishlating. Shunda taklif hisoblanadi.",
+      referralOtherTitle: "Havolani telefonda oching",
+      referralOtherBody: "Taklif Android yoki iPhone qurilmasida ochilganda mos shartlar ko‘rsatiladi.",
       iosSecurityTitle: "Hech narsa o‘rnatilmaydi",
       androidSecurityTitle: "O‘rnatishda ogohlantirish chiqishi mumkin",
       macSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
@@ -143,6 +158,19 @@
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
+      referralAndroidTitle: "Сначала закрепите приглашение в Telegram",
+      referralAndroidBody: "Нажмите кнопку Telegram и затем Start в боте. Бот отправит сам APK файл в чат. Установите приложение и подключите тот же аккаунт Telegram. После этого приглашение засчитается.",
+      referralAndroidButton: "Продолжить в Telegram",
+      referralAndroidStatus: "Нажмите Start в боте — APK файл придёт в чат.",
+      androidReferralSteps: [
+        ["Закрепите приглашение в Telegram", "Откройте бота кнопкой выше и нажмите Start."],
+        ["Установите APK", "Откройте APK файл, который бот отправит в чат."],
+        ["Подключите тот же аккаунт Telegram", "Подтвердите подключение в приложении. После этого приглашение засчитается."],
+      ],
+      referralIosTitle: "Как засчитывается приглашение",
+      referralIosBody: "Откройте Telegram-бота и ответьте на 2 вопроса. После этого приглашение засчитается.",
+      referralOtherTitle: "Откройте ссылку на телефоне",
+      referralOtherBody: "Условия приглашения появятся при открытии на Android или iPhone.",
       iosSecurityTitle: "Ничего устанавливать не нужно",
       androidSecurityTitle: "При установке может появиться предупреждение",
       macSecurityTitle: "При первом запуске может появиться предупреждение",
@@ -265,6 +293,19 @@
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
+      referralAndroidTitle: "Аввал даъватро дар Telegram қайд кунед",
+      referralAndroidBody: "Тугмаи Telegram-ро пахш кунед ва дар бот Start-ро интихоб кунед. Бот худи файли APK-ро ба чат мефиристад. Барномаро насб карда, ҳамин ҳисоби Telegram-ро пайваст кунед. Баъд даъват ҳисоб мешавад.",
+      referralAndroidButton: "Идома дар Telegram",
+      referralAndroidStatus: "Дар бот Start-ро пахш кунед — файли APK ба чат меояд.",
+      androidReferralSteps: [
+        ["Даъватро дар Telegram қайд кунед", "Бо тугмаи боло ботро кушоед ва Start-ро пахш кунед."],
+        ["APK-ро насб кунед", "Файли APK-ро, ки бот ба чат мефиристад, кушоед."],
+        ["Ҳамин ҳисоби Telegram-ро пайваст кунед", "Пайвастшавиро дар барнома тасдиқ кунед. Баъд даъват ҳисоб мешавад."],
+      ],
+      referralIosTitle: "Шарти даъват барои тахфифи 20%",
+      referralIosBody: "Боти Telegram-ро кушоед ва ба 2 савол ҷавоб диҳед. Пас даъват ҳисоб мешавад.",
+      referralOtherTitle: "Пайвандро дар телефон кушоед",
+      referralOtherBody: "Шартҳои даъват дар Android ё iPhone нишон дода мешаванд.",
       iosSecurityTitle: "Ҳеҷ чиз насб намешавад",
       androidSecurityTitle: "Ҳангоми насб огоҳӣ пайдо шуда метавонад",
       macSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
@@ -423,6 +464,8 @@
   }
 
   function initialPlatform() {
+    if (referralCode && ["android", "ios"].indexOf(detectedPlatform()) >= 0)
+      return detectedPlatform();
     var requested = String(params.get("platform") || "").toLowerCase();
     return supportedPlatforms.indexOf(requested) >= 0
       ? requested
@@ -507,7 +550,8 @@
 
   function renderSteps() {
     if (supportedPlatforms.indexOf(state.platform) < 0) return;
-    var steps = forPlatform(copy(), "Steps");
+    var steps = referralCode && detectedPlatform() === "android" && state.platform === "android"
+      ? copy().androidReferralSteps : forPlatform(copy(), "Steps");
     if (!steps) return;
     ["one", "two", "three"].forEach(function (key, index) {
       var step = steps[index] || ["", ""];
@@ -662,8 +706,30 @@
     }
   }
 
+  function referralLinkFor(platform) {
+    var prefix = platform === "android" ? "ra_" : "ri_";
+    return BOT_URL + "?start=" + prefix + referralCode;
+  }
+
+  function renderReferral() {
+    var block = document.querySelector("[data-referral-guide]");
+    if (!block) return;
+    block.hidden = !referralCode;
+    if (!referralCode) return;
+    var localized = copy();
+    var platform = detectedPlatform();
+    var kind = platform === "android" ? "Android" : platform === "ios" ? "Ios" : "Other";
+    setText("[data-referral-title]", localized["referral" + kind + "Title"]);
+    setText("[data-referral-body]", localized["referral" + kind + "Body"]);
+    var link = document.querySelector("[data-referral-link]");
+    if (!link) return;
+    link.hidden = true;
+    link.removeAttribute("href");
+  }
+
   function renderRelease() {
     var localized = copy();
+    renderReferral();
     var button = document.querySelector("[data-download-button]");
     var status = document.querySelector("[data-download-status]");
     var selected = supportedPlatforms.indexOf(state.platform) >= 0;
@@ -677,7 +743,8 @@
       setText("[data-version]", "");
       setText("[data-published]", "");
       if (!button || !status) return;
-      button.href = BOT_URL;
+      button.href = referralCode && detectedPlatform() === "ios"
+        ? referralLinkFor("ios") : BOT_URL;
       button.removeAttribute("aria-disabled");
       button.dataset.action = "open";
       status.dataset.state = "ready";
@@ -715,6 +782,16 @@
       return;
     }
 
+    if (referralCode && detectedPlatform() === "android" && state.platform === "android") {
+      button.href = referralLinkFor("android");
+      button.removeAttribute("aria-disabled");
+      button.dataset.action = "referral";
+      setText("[data-download-label]", localized.referralAndroidButton);
+      status.dataset.state = "ready";
+      status.lastElementChild.textContent = localized.referralAndroidStatus;
+      return;
+    }
+
     button.href = url;
     button.removeAttribute("aria-disabled");
     button.dataset.action = "download";
@@ -724,6 +801,8 @@
 
   function setPlatform(platform) {
     if (supportedPlatforms.indexOf(platform) < 0) return;
+    if (referralCode && ["android", "ios"].indexOf(detectedPlatform()) >= 0 &&
+        platform !== detectedPlatform()) return;
     state.platform = platform;
     resetTransferFeedback();
     renderPlatform();
@@ -878,6 +957,7 @@
           event.preventDefault();
           return;
         }
+        if (downloadButton.dataset.action === "referral") return;
         var startedPlatform = state.platform;
         setText("[data-download-label]", copy().opening);
         openQuickGuide();

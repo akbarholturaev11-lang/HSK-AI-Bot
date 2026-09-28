@@ -37,7 +37,7 @@
     <string name="sub_approval_note">Chek va to‘lov tafsilotlari adminga yuboriladi. Obuna admin tasdiqlagach ochiladi.</string>
     <string name="sub_qr_missing">Bu tarif uchun QR hozir mavjud emas. Boshqa usulni tanlang.</string>
     <string name="sub_retry">Qayta urinish</string>
-    <string name="sub_heading">Obuna</string>
+    <string name="sub_heading">Pro</string>
     <string name="sub_benefit_heading">Obuna nima beradi</string>
     <string name="sub_benefits">📚 HSK darslari bosqichma-bosqich   🤖 AI savol-javob kengayadi   🖼 Rasm va ieroglif tahlili   🎙 Voice savollar bilan practice   🧩 Quiz, test va xato tahlili</string>
     <string name="sub_focus_course">Barcha darslar ochiladi</string>
@@ -56,7 +56,7 @@
     <string name="sub_discount_ready" formatted="false">20% chegirma qo‘llanadi</string>
     <string name="sub_discount_active">Bu obunaga avtomatik qo‘llanadi.</string>
     <string name="sub_discount_locked" formatted="false">20% chegirmani oching</string>
-    <string name="sub_discount_invite" formatted="false">3 do‘stingiz botdan foydalansa, 20% chegirma ochiladi.</string>
+    <string name="sub_discount_invite" formatted="false">3 do‘st taklif qiling: Androidda ilovani o‘rnatib Telegram hisobini ulaydi, iPhone’da botda 2 savol ishlatadi.</string>
     <string name="sub_discount_progress">20%% chegirma: %1$d/%2$d referral</string>
     <string name="sub_discount_button">Do‘stlarni chaqirish</string>
     <string name="sub_offer_expired">Bu taklif tugagan yoki sizga mos emas.</string>

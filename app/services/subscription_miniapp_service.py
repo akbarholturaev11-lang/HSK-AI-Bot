@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -9,6 +10,7 @@ from typing import Any
 from aiogram import Bot
 
 from app.config import settings
+from app.public_site.render import public_origin
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
@@ -388,10 +390,9 @@ class SubscriptionMiniAppService:
             return None
         referral_count, referral_available = await DiscountService(self.session).sync_referral_discount_progress(user)
         referral_code = getattr(user, "referral_code", None)
-        bot_username = await self._bot_username(bot)
         referral_link = (
-            f"https://t.me/{bot_username}?start={referral_code}"
-            if referral_code and bot_username
+            f"{public_origin(settings)}/apps?ref={referral_code}"
+            if re.fullmatch(r"[0-9a-f]{8}", str(referral_code or ""))
             else ""
         )
         return {

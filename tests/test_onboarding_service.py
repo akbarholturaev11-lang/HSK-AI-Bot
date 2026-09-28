@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from app.bot.fsm.onboarding import OnboardingStates
-from app.bot.handlers.start import cmd_start
+from app.bot.handlers.start import _send_android_referral_apk, cmd_start
 from app.services.onboarding_service import (
     ONBOARDING_LANGUAGE_MODE,
     ONBOARDING_MODE_CHOICE_MODE,
@@ -15,6 +15,7 @@ from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
     normalize_referral_code,
+    discount_platform_from_payload,
 )
 
 
@@ -227,6 +228,7 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
         service.referral_repo.create.assert_awaited_once_with(
             referrer_telegram_id=777,
             invited_user_telegram_id=123,
+            discount_platform="unknown",
         )
         service.activate_referral_if_eligible.assert_awaited_once_with(
             bot=bot,
@@ -235,6 +237,14 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
 
 
 class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
+    def test_download_site_payload_preserves_platform_and_code(self):
+        self.assertEqual("android", discount_platform_from_payload("ra_a1b2c3d4"))
+        self.assertEqual("ios", discount_platform_from_payload("ri_a1b2c3d4"))
+        self.assertEqual("a1b2c3d4", normalize_referral_code("ra_a1b2c3d4"))
+        self.assertEqual("a1b2c3d4", normalize_referral_code("ri_a1b2c3d4"))
+        self.assertEqual("unknown", discount_platform_from_payload("ref_a1b2c3d4"))
+        self.assertEqual("unknown", discount_platform_from_payload("ra_bad"))
+
     def test_legacy_prefixed_payload_resolves_to_the_stored_code(self):
         self.assertEqual("abc123", normalize_referral_code("ref_abc123"))
         self.assertEqual("abc123", normalize_referral_code(" abc123 "))
@@ -274,10 +284,64 @@ class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
         service.referral_repo.create.assert_awaited_once_with(
             referrer_telegram_id=777,
             invited_user_telegram_id=123,
+            discount_platform="unknown",
         )
 
 
 class StartHandlerOnboardingTests(unittest.IsolatedAsyncioTestCase):
+    async def test_android_referral_start_registers_owner_before_offering_apk(self):
+        user = SimpleNamespace(telegram_id=123, learning_mode=ONBOARDING_LANGUAGE_MODE)
+        message = SimpleNamespace(
+            from_user=SimpleNamespace(id=123, first_name="Ali", full_name="Ali", username="ali", language_code="uz"),
+            chat=SimpleNamespace(id=123),
+            answer=AsyncMock(),
+            bot=SimpleNamespace(),
+        )
+        state = SimpleNamespace(clear=AsyncMock(), update_data=AsyncMock(), set_state=AsyncMock())
+        with patch("app.bot.handlers.start.OnboardingService") as onboarding, patch(
+            "app.bot.handlers.start.UserRepository"
+        ) as users, patch("app.bot.handlers.start.ReferralRepository") as referrals, patch(
+            "app.bot.handlers.start.send_android_app", new_callable=AsyncMock
+        ) as send_apk:
+            onboarding.return_value.get_or_create_user = AsyncMock(return_value=(user, True))
+            users.return_value.get_by_referral_code = AsyncMock(return_value=SimpleNamespace(telegram_id=777))
+            referrals.return_value.get_by_invited_user_telegram_id = AsyncMock(
+                return_value=SimpleNamespace(referrer_telegram_id=777, discount_platform="android")
+            )
+            send_apk.return_value = True
+            await cmd_start(message, state, SimpleNamespace(), SimpleNamespace(args="ra_a1b2c3d4"))
+
+        onboarding.return_value.get_or_create_user.assert_awaited_once()
+        message.answer.assert_awaited_once()
+        body = message.answer.await_args.args[0]
+        self.assertIn("Taklif hisobingizga biriktirildi", body)
+        send_apk.assert_awaited_once()
+        self.assertEqual((message.bot, 123, 123), send_apk.await_args.args[:3])
+        self.assertEqual("android_referral_start", send_apk.await_args.kwargs["source"])
+        self.assertEqual("uz", send_apk.await_args.kwargs["language"])
+        state.clear.assert_awaited_once()
+        state.update_data.assert_not_awaited()
+
+    async def test_android_referral_download_is_not_offered_for_different_owner(self):
+        message = SimpleNamespace(
+            from_user=SimpleNamespace(language_code="uz"),
+            answer=AsyncMock(),
+        )
+        user = SimpleNamespace(telegram_id=123)
+        with patch("app.bot.handlers.start.UserRepository") as users, patch(
+            "app.bot.handlers.start.ReferralRepository"
+        ) as referrals:
+            users.return_value.get_by_referral_code = AsyncMock(return_value=SimpleNamespace(telegram_id=777))
+            referrals.return_value.get_by_invited_user_telegram_id = AsyncMock(
+                return_value=SimpleNamespace(referrer_telegram_id=888, discount_platform="android")
+            )
+            sent = await _send_android_referral_apk(
+                message, SimpleNamespace(), user, "ra_a1b2c3d4"
+            )
+
+        self.assertFalse(sent)
+        message.answer.assert_not_awaited()
+
     async def test_start_resumes_mode_choice_for_incomplete_user(self):
         user = SimpleNamespace(
             language="uz",

@@ -3,19 +3,8 @@ from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from app.repositories.user_repo import UserRepository
-from app.services.onboarding_service import (
-    ONBOARDING_MODE_CHOICE_MODE,
-    OnboardingService,
-    onboarding_stage,
-)
-from app.services.access_service import AccessService
-from app.services.course_engine_service import CourseEngineService
-from app.services.conversion_funnel_service import ConversionFunnelService
-from app.services.daily_practice_service import DailyPracticeService
-from app.bot.utils.i18n import t
-from app.bot.utils.qa_entry import send_qa_entry
-from app.bot.utils.menu_bar import send_menu_bar
+from app.bot.handlers.android_app import send_android_app
+from app.bot.fsm.onboarding import OnboardingStates, QA_MODE_LEVEL_CHOICE_KEY
 from app.bot.keyboards.onboarding import (
     course_mode_entry_keyboard,
     daily_practice_check_keyboard,
@@ -24,13 +13,87 @@ from app.bot.keyboards.onboarding import (
     level_keyboard,
     trial_lesson_selection_keyboard,
 )
-from app.bot.fsm.onboarding import OnboardingStates, QA_MODE_LEVEL_CHOICE_KEY
+from app.bot.utils.i18n import t
+from app.bot.utils.menu_bar import send_menu_bar
+from app.bot.utils.qa_entry import send_qa_entry
+from app.repositories.referral_repo import ReferralRepository
+from app.repositories.user_repo import UserRepository
+from app.services.conversion_funnel_service import ConversionFunnelService
+from app.services.course_engine_service import CourseEngineService
+from app.services.daily_practice_service import DailyPracticeService
+from app.services.referral_service import (
+    discount_platform_from_payload,
+    normalize_referral_code,
+)
+from app.services.onboarding_service import (
+    ONBOARDING_MODE_CHOICE_MODE,
+    OnboardingService,
+    onboarding_stage,
+)
 
 
 router = Router()
 
 
+async def _send_android_referral_apk(
+    message: Message, session, user, payload: str | None,
+) -> bool:
+    """Send the APK only after this Telegram account has the invite owner."""
+    if discount_platform_from_payload(payload) != "android":
+        return False
+    referrer = await UserRepository(session).get_by_referral_code(
+        normalize_referral_code(payload)
+    )
+    referral = await ReferralRepository(session).get_by_invited_user_telegram_id(
+        user.telegram_id
+    )
+    if (
+        not referrer
+        or not referral
+        or referral.referrer_telegram_id != referrer.telegram_id
+        or referral.discount_platform != "android"
+    ):
+        return False
 
+    if onboarding_stage(user) == "language":
+        language_code = str(getattr(message.from_user, "language_code", "") or "").lower()
+        if language_code.startswith("ru"):
+            lang = "ru"
+        elif language_code.startswith(("tg", "tj")):
+            lang = "tj"
+        else:
+            lang = "uz"
+    else:
+        lang = str(getattr(user, "language", "") or "")
+        if lang not in {"uz", "ru", "tj"}:
+            lang = "uz"
+    copy = {
+        "uz": (
+            "Taklif hisobingizga biriktirildi. APK fayli shu chatga yuboriladi. "
+            "Uni o‘rnating va ilovada shu Telegram hisobini ulang. Shundan keyin taklif "
+            "hisoblanadi."
+        ),
+        "ru": (
+            "Приглашение привязано к вашему аккаунту. Файл APK будет отправлен "
+            "в этот чат. Установите его и подключите тот же аккаунт Telegram. "
+            "Приглашение засчитается после подключения."
+        ),
+        "tj": (
+            "Даъват ба ҳисоби шумо пайваст шуд. Файли APK ба ҳамин чат "
+            "фиристода мешавад. Онро насб кунед ва ҳамин ҳисоби Telegram-ро "
+            "пайваст кунед. Пас аз пайвастшавӣ даъват ҳисоб мешавад."
+        ),
+    }
+    await message.answer(copy[lang])
+    sent = await send_android_app(
+        message.bot,
+        message.chat.id,
+        user.telegram_id,
+        session,
+        source="android_referral_start",
+        language=lang,
+    )
+    return sent
 
 def _mode_choice_text(lang: str) -> str:
     texts = {
@@ -210,6 +273,9 @@ async def cmd_start(
     )
 
     await state.clear()
+
+    if await _send_android_referral_apk(message, session, user, referral_code):
+        return
 
     stage = onboarding_stage(user)
     if not created and stage == "mode":

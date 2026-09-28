@@ -27,6 +27,7 @@ from app.db import models  # noqa: F401 — barcha jadval Base ga ro'yxatdan o't
 from app.db.base import Base
 from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.user import User
+from app.db.models.referral import Referral
 from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
 from app.services.referral_service import (
     REFERRAL_TRIAL_ACCESS_DAYS,
@@ -102,6 +103,7 @@ class ReferralTrialContractTests(unittest.IsolatedAsyncioTestCase):
                 await service.referral_repo.create(
                     referrer_telegram_id=REFERRER_TELEGRAM_ID,
                     invited_user_telegram_id=6000 + index,
+                    discount_platform="legacy",
                 )
             await session.commit()
 
@@ -209,11 +211,8 @@ class ReferralTrialContractTests(unittest.IsolatedAsyncioTestCase):
         # Chegirma hisoblagichi faqat taklif chegirma oynasi ochilgandan
         # KEYIN faollashgan bo'lsa oshadi.
         #
-        # `discount_offer_started_at` shu sessiyada qo'yiladi, chunki
-        # `referral_service.py:391` ikki sanani XOM solishtiradi. Postgres
-        # `DateTime(timezone=True)` ustunini timezone bilan qaytaradi, SQLite
-        # esa naive qaytaradi — shuning uchun bu yerda production bilan bir xil
-        # (aware) qiymat beriladi. Xom solishtiruv o'zi alohida masala.
+        # Migratsiyadan oldingi takliflar `legacy` sifatida saqlanadi va
+        # faollashganda eski 2-savol qoidasi bilan hisoblanadi.
         await self._seed(invited_count=1)
 
         async with self.sessions() as session:
@@ -236,6 +235,23 @@ class ReferralTrialContractTests(unittest.IsolatedAsyncioTestCase):
 
         # Takroriy chaqiruv hisoblagichni ikkinchi marta oshirmaydi.
         await self._activate(0)
+        self.assertEqual(1, (await self._referrer()).discount_referral_count)
+
+    async def test_ios_keeps_old_activation_rule_and_plain_invite_does_not_count(self):
+        await self._seed(invited_count=2, referrer_kwargs={
+            "discount_offer_started_at": datetime.now(timezone.utc) - timedelta(days=1),
+        })
+        async with self.sessions() as session:
+            ios = await session.scalar(select(Referral).where(Referral.invited_user_telegram_id == 6000))
+            plain = await session.scalar(select(Referral).where(Referral.invited_user_telegram_id == 6001))
+            ios.discount_platform = "ios"
+            plain.discount_platform = "unknown"
+            await session.commit()
+
+        self.assertEqual(0, (await self._referrer()).discount_referral_count)
+        await self._activate(0)
+        self.assertEqual(1, (await self._referrer()).discount_referral_count)
+        await self._activate(1)
         self.assertEqual(1, (await self._referrer()).discount_referral_count)
 
     # --- mukofotning o'zi -------------------------------------------------
