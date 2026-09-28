@@ -7,6 +7,7 @@ state before showing a notification, and WorkManager remains the fallback.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import hashlib
 import logging
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -23,7 +24,14 @@ from app.services.android_release_service import AndroidReleaseService
 logger = logging.getLogger(__name__)
 LAST_UPDATE_PUSH_VERSION_KEY = "android_last_update_push_version"
 STUDY_PUSH_HOUR = 20
+STUDY_PUSH_BUCKETS = 30
 STUDY_PUSH_TTL_SECONDS = 2 * 60 * 60
+
+
+def study_push_minute(device_id: str) -> int:
+    """Stable 0..29 minute bucket to avoid a local-20:00 thundering herd."""
+    digest = hashlib.sha256(str(device_id).encode("utf-8")).digest()
+    return int.from_bytes(digest[:4], "big") % STUDY_PUSH_BUCKETS
 
 
 class AndroidRealtimePushService:
@@ -126,6 +134,11 @@ class AndroidRealtimePushService:
             except (ZoneInfoNotFoundError, ValueError):
                 continue
             if local_now.hour != STUDY_PUSH_HOUR:
+                continue
+            # Spread devices deterministically through the first half-hour.
+            # If one scheduler tick is late, <= means missed buckets catch up
+            # on the next tick without waiting until tomorrow.
+            if local_now.minute < study_push_minute(device.id):
                 continue
             local_day = local_now.date().isoformat()
             if row.last_study_push_day == local_day:
