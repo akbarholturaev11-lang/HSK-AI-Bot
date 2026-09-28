@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import json
 import logging
-from typing import Mapping
+from typing import Mapping, Sequence
 
 import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
@@ -27,6 +27,7 @@ from app.db.models.desktop import DesktopDevice
 
 logger = logging.getLogger(__name__)
 FCM_SCOPE = "https://www.googleapis.com/auth/firebase.messaging"
+FCM_CONCURRENCY = 20
 
 
 @dataclass(frozen=True)
@@ -35,12 +36,20 @@ class AndroidPushResult:
     stale_token: bool = False
 
 
+@dataclass(frozen=True)
+class AndroidPushTarget:
+    token: str
+    device_id: str
+    data: Mapping[str, object]
+
+
 class AndroidPushService:
     """Owns Android FCM token lifecycle and generic data-only delivery."""
 
     def __init__(self, session, settings_obj=settings):
         self.session = session
         self.settings = settings_obj
+        self._authorization: str | None = None
 
     @property
     def configured(self) -> bool:
@@ -87,11 +96,6 @@ class AndroidPushService:
         study_reminders_enabled: bool,
         timezone_name: str,
     ) -> None:
-        """Update device push preferences when this install has a registered token.
-
-        No token means there is nowhere to push yet, so this is intentionally a
-        no-op. Android re-sends preferences immediately after token registration.
-        """
         row = await self.session.get(AndroidPushToken, device.id)
         if row is None:
             return
@@ -109,6 +113,14 @@ class AndroidPushService:
         else:
             credentials, _ = google.auth.default(scopes=[FCM_SCOPE])
         return credentials
+
+    async def _authorization_header(self) -> str:
+        if self._authorization:
+            return self._authorization
+        credentials = await asyncio.to_thread(self._credentials)
+        await asyncio.to_thread(credentials.refresh, GoogleAuthRequest())
+        self._authorization = f"Bearer {credentials.token}"
+        return self._authorization
 
     @staticmethod
     def _payload_data(data: Mapping[str, object]) -> dict[str, str]:
@@ -137,11 +149,89 @@ class AndroidPushService:
                 return True
         return False
 
-    async def _drop_token(self, *, device_id: str, token: str) -> None:
-        row = await self.session.get(AndroidPushToken, device_id)
-        if row is not None and row.token == token:
-            await self.session.delete(row)
+    async def _post_target(
+        self,
+        *,
+        client: httpx.AsyncClient,
+        authorization: str,
+        target: AndroidPushTarget,
+        ttl_seconds: int,
+    ) -> AndroidPushResult:
+        project_id = str(self.settings.ANDROID_FCM_PROJECT_ID).strip()
+        data = self._payload_data(target.data)
+        payload = {
+            "message": {
+                "token": target.token,
+                "data": data,
+                "android": {
+                    "priority": "HIGH",
+                    "ttl": f"{max(0, int(ttl_seconds))}s",
+                },
+            }
+        }
+        response = await client.post(
+            f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send",
+            headers={"Authorization": authorization},
+            json=payload,
+        )
+        if response.is_success:
+            return AndroidPushResult(True)
+        stale = self._is_stale_token(response)
+        logger.warning(
+            "Android FCM refused kind=%s device=%s status=%s stale=%s",
+            data.get("kind"),
+            target.device_id,
+            response.status_code,
+            stale,
+        )
+        return AndroidPushResult(False, stale_token=stale)
+
+    async def send_batch(
+        self,
+        targets: Sequence[AndroidPushTarget],
+        *,
+        ttl_seconds: int = 86400,
+    ) -> list[AndroidPushResult]:
+        if not targets:
+            return []
+        if not self.configured:
+            return [AndroidPushResult(False) for _ in targets]
+
+        authorization = await self._authorization_header()
+        semaphore = asyncio.Semaphore(FCM_CONCURRENCY)
+
+        async with httpx.AsyncClient(timeout=6.0) as client:
+            async def send_one(target: AndroidPushTarget) -> AndroidPushResult:
+                async with semaphore:
+                    try:
+                        return await self._post_target(
+                            client=client,
+                            authorization=authorization,
+                            target=target,
+                            ttl_seconds=ttl_seconds,
+                        )
+                    except Exception:
+                        logger.exception(
+                            "Android push failed kind=%s device=%s",
+                            target.data.get("kind"),
+                            target.device_id,
+                        )
+                        return AndroidPushResult(False)
+
+            results = list(await asyncio.gather(*(send_one(target) for target in targets)))
+
+        stale_dirty = False
+        for target, result in zip(targets, results):
+            if not result.stale_token:
+                continue
+            row = await self.session.get(AndroidPushToken, target.device_id)
+            if row is not None and row.token == target.token:
+                await self.session.delete(row)
+                stale_dirty = True
+        if stale_dirty:
             await self.session.commit()
+
+        return results
 
     async def send_token(
         self,
@@ -151,40 +241,11 @@ class AndroidPushService:
         data: Mapping[str, object],
         ttl_seconds: int = 86400,
     ) -> AndroidPushResult:
-        if not self.configured:
-            return AndroidPushResult(False)
-        credentials = await asyncio.to_thread(self._credentials)
-        await asyncio.to_thread(credentials.refresh, GoogleAuthRequest())
-        project_id = str(self.settings.ANDROID_FCM_PROJECT_ID).strip()
-        payload = {
-            "message": {
-                "token": token,
-                "data": self._payload_data(data),
-                "android": {
-                    "priority": "HIGH",
-                    "ttl": f"{max(0, int(ttl_seconds))}s",
-                },
-            }
-        }
-        async with httpx.AsyncClient(timeout=6.0) as client:
-            response = await client.post(
-                f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send",
-                headers={"Authorization": f"Bearer {credentials.token}"},
-                json=payload,
-            )
-        if response.is_success:
-            return AndroidPushResult(True)
-        stale = self._is_stale_token(response)
-        if stale:
-            await self._drop_token(device_id=device_id, token=token)
-        logger.warning(
-            "Android FCM refused kind=%s device=%s status=%s stale=%s",
-            payload["message"]["data"].get("kind"),
-            device_id,
-            response.status_code,
-            stale,
+        results = await self.send_batch(
+            [AndroidPushTarget(token=token, device_id=device_id, data=data)],
+            ttl_seconds=ttl_seconds,
         )
-        return AndroidPushResult(False, stale_token=stale)
+        return results[0]
 
     async def send_to_user(
         self,
@@ -193,7 +254,6 @@ class AndroidPushService:
         data: Mapping[str, object],
         ttl_seconds: int = 86400,
     ) -> int:
-        """Best-effort fan-out to every current Android device for one account."""
         if not self.configured:
             return 0
         rows = (
@@ -207,20 +267,11 @@ class AndroidPushService:
                 )
             )
         ).all()
-        accepted = 0
-        for token, device_id in rows:
-            try:
-                result = await self.send_token(
-                    token=token,
-                    device_id=device_id,
-                    data=data,
-                    ttl_seconds=ttl_seconds,
-                )
-                accepted += int(result.accepted)
-            except Exception:
-                logger.exception(
-                    "Android push failed kind=%s device=%s",
-                    data.get("kind"),
-                    device_id,
-                )
-        return accepted
+        results = await self.send_batch(
+            [
+                AndroidPushTarget(token=token, device_id=device_id, data=data)
+                for token, device_id in rows
+            ],
+            ttl_seconds=ttl_seconds,
+        )
+        return sum(1 for result in results if result.accepted)
