@@ -14,7 +14,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, or_, select
 
 from app.db.models.trial_risk_event import TrialRiskEvent
 
@@ -190,6 +190,108 @@ class TrialRiskService:
             prior_ip_trial_users_7d=prior_ip_7d,
             signals=tuple(signals),
         )
+
+    async def report(self, *, days: int = 7, limit: int = 20) -> dict:
+        """Admin uchun hashlarni oshkor qilmaydigan shadow hisoboti."""
+        days = max(1, min(int(days), 90))
+        limit = max(1, min(int(limit), 50))
+        since = datetime.now(timezone.utc) - timedelta(days=days)
+
+        summary_result = await self.session.execute(
+            select(
+                func.count(TrialRiskEvent.id),
+                func.sum(
+                    case((TrialRiskEvent.prior_device_trial_users > 0, 1), else_=0)
+                ),
+                func.sum(
+                    case(
+                        (
+                            or_(
+                                TrialRiskEvent.prior_ip_trial_users_24h > 0,
+                                TrialRiskEvent.prior_ip_trial_users_7d > 0,
+                            ),
+                            1,
+                        ),
+                        else_=0,
+                    )
+                ),
+                func.sum(
+                    case((TrialRiskEvent.account_age_minutes < 60, 1), else_=0)
+                ),
+                func.sum(
+                    case((TrialRiskEvent.account_age_minutes < 24 * 60, 1), else_=0)
+                ),
+            ).where(TrialRiskEvent.created_at >= since)
+        )
+        total, device_reuse, shared_ip, under_1h, under_24h = summary_result.one()
+
+        client_rows = (
+            await self.session.execute(
+                select(TrialRiskEvent.client, func.count(TrialRiskEvent.id))
+                .where(TrialRiskEvent.created_at >= since)
+                .group_by(TrialRiskEvent.client)
+                .order_by(TrialRiskEvent.client)
+            )
+        ).all()
+
+        suspicious = (
+            await self.session.execute(
+                select(TrialRiskEvent)
+                .where(
+                    TrialRiskEvent.created_at >= since,
+                    or_(
+                        TrialRiskEvent.prior_device_trial_users > 0,
+                        TrialRiskEvent.prior_ip_trial_users_24h > 0,
+                        TrialRiskEvent.prior_ip_trial_users_7d > 0,
+                        TrialRiskEvent.account_age_minutes < 24 * 60,
+                    ),
+                )
+                .order_by(TrialRiskEvent.created_at.desc())
+                .limit(limit)
+            )
+        ).scalars().all()
+
+        examples = []
+        for row in suspicious:
+            try:
+                signals = json.loads(row.signals_json or "[]")
+            except (TypeError, ValueError):
+                signals = []
+            examples.append(
+                {
+                    "telegram_id": int(row.telegram_id),
+                    "client": row.client,
+                    "source": row.source,
+                    "account_age_minutes": row.account_age_minutes,
+                    "prior_device_trial_users": int(
+                        row.prior_device_trial_users or 0
+                    ),
+                    "prior_ip_trial_users_24h": int(
+                        row.prior_ip_trial_users_24h or 0
+                    ),
+                    "prior_ip_trial_users_7d": int(
+                        row.prior_ip_trial_users_7d or 0
+                    ),
+                    "signals": signals if isinstance(signals, list) else [],
+                    "created_at": (
+                        row.created_at.isoformat() if row.created_at else None
+                    ),
+                }
+            )
+
+        return {
+            "mode": MODE_SHADOW,
+            "days": days,
+            "summary": {
+                "trial_starts": int(total or 0),
+                "device_reuse": int(device_reuse or 0),
+                "shared_ip": int(shared_ip or 0),
+                "account_under_1h": int(under_1h or 0),
+                "account_under_24h": int(under_24h or 0),
+            },
+            "clients": {str(client): int(count or 0) for client, count in client_rows},
+            "examples": examples,
+        }
 
     async def record_started(self, user, snapshot: TrialRiskSnapshot) -> bool:
         """Persist the snapshot inside a savepoint; failure is fail-open."""
