@@ -8,11 +8,11 @@ HSK AI Pro: soddaroq obuna va telefonga mos do‘st taklifi
 
 ## Userga yuboriladigan qisqa matn
 
-Pro obuna oynasi soddalashdi: tariflar darhol ko‘rinadi, matn dars tilingizga mos. 20% chegirma uchun do‘st taklif qilsangiz, havola do‘stingiz telefoniga mos qadamlarni ko‘rsatadi. Androidda do‘st ilovani o‘rnatib Telegram hisobini ulaydi; iPhone’da botdagi 2 savolni ishlatadi.
+Pro obuna oynasi soddalashdi: tariflar darhol ko‘rinadi, matn dars tilingizga mos. 20% chegirma uchun do‘st taklif qilsangiz, havola do‘stingiz telefoniga mos qadamlarni ko‘rsatadi. Androidda do‘st avval botda taklifni qayd etadi, APK faylini shu chatdan oladi va o‘sha Telegram hisobini ilovaga ulaydi; iPhone’da botdagi 2 savolni ishlatadi.
 
 ## Nima yangilandi va qayerda sinash
 
-Android ilovasini 1.6.14 ga yangilang yoki Telegram Mini App’ni oching → Pro → tarif va yordam tugmasini tekshiring. “Do‘stlarni chaqirish” orqali havolani Android va iPhone’da ochib, ko‘rsatmalarni tekshiring. Test hisoblarda haqiqiy ulanishdan keyin 20% hisoblagichi yangilanishini ko‘ring.
+Android ilovasini 1.6.14 ga yangilang yoki Telegram Mini App’ni oching → Pro → tarif va yordam tugmasini tekshiring. “Do‘stlarni chaqirish” havolasini Androidda oching → Telegram tugmasi → botda Start → chatga yuborilgan APK faylini o‘rnatish → ilovada o‘sha hisobni ulash. iPhone’da botdagi 2 savol yo‘lini tekshiring. Test hisoblarda haqiqiy ulanishdan keyin 20% hisoblagichi yangilanishini ko‘ring.
 
 ## “Sinab ko‘rish” tugmasi
 

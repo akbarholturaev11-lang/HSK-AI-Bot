@@ -288,7 +288,7 @@ def test_mobile_share_uses_public_platform_link_and_copy_fallback(
     context.close()
 
 
-def test_referral_uses_detected_android_and_requires_app_link(
+def test_referral_uses_detected_android_and_registers_before_download(
     desktop_download_url, browser,
 ):
     context, page, errors = _page(
@@ -298,13 +298,15 @@ def test_referral_uses_detected_android_and_requires_app_link(
         has_touch=True,
     )
     page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=ios", wait_until="networkidle")
-    assert page.locator('[data-download-button]').get_attribute('href').endswith('/downloads/android')
-    guide = page.locator('[data-referral-guide]')
-    playwright.expect(guide).to_be_visible()
-    assert "Telegram hisobingizni ulang" in guide.inner_text()
-    assert page.locator('[data-referral-link]').get_attribute('href') == (
+    assert page.locator('[data-download-button]').get_attribute('href') == (
         'https://t.me/darsi_chini_bot?start=ra_a1b2c3d4'
     )
+    assert page.locator('[data-download-button]').get_attribute('data-action') == 'referral'
+    guide = page.locator('[data-referral-guide]')
+    playwright.expect(guide).to_be_visible()
+    assert "Bot APK faylining o‘zini chatga yuboradi" in guide.inner_text()
+    assert page.locator('[data-step-title="one"]').inner_text() == "Taklifni Telegramda qayd eting"
+    playwright.expect(page.locator('[data-referral-link]')).to_be_hidden()
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
     assert errors == []
     context.close()

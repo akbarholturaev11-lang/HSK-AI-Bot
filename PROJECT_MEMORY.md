@@ -10098,3 +10098,25 @@ Verified:
   JS xatosi yo'q.
 - `tests/test_subscription_miniapp_submit.py` — 14 test; to'liq suite:
   1584 passed.
+
+### 2026-09-28 — Android referalni APK ochilishidan oldin Telegramda qayd etish
+
+Changed:
+- `/apps?ref=<code>` Android sahifasidagi asosiy tugma avval botga
+  `?start=ra_<code>` yuboradi. Bot referal egasi haqiqatan bog'langanini
+  tekshiradi va shundan keyin mavjud `send_android_app` orqali APK faylining
+  o'zini Telegram chatiga yuboradi.
+- Do'st o'sha Telegram akkauntini Android ilovasiga ulaganda mavjud
+  `poll_link` oqimi referalni 20% chegirma hisobiga qo'shadi.
+
+Why:
+- APK ni to'g'ridan to'g'ri yuklab ochish `ref` kodini ilovaga uzatmaydi;
+  ichki Telegram ulash havolasi kodsiz bo'lgani uchun referal egasi yo'qolardi.
+
+Files touched:
+- `app/static/desktop-download-page.js`, `app/bot/handlers/start.py`.
+
+Risk:
+- Oldin yuklab olingan APK ni saytdagi referal Telegram tugmasisiz ochgan
+  foydalanuvchida kod avtomatik tiklanmaydi; referal havolasini botda ochishi
+  kerak. iOS va oddiy APK yuklash yo'llari o'zgarmaydi.

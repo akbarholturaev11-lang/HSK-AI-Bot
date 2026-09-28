@@ -23,9 +23,15 @@
 
   var COPY = {
     uz: {
-      referralAndroidTitle: "Do‘stingiz uchun 20% chegirma qadamlari",
-      referralAndroidBody: "APK’ni yuklab o‘rnating. Keyin quyidagi havola orqali Telegram botiga kiring va HSK AI ilovasida Telegram hisobingizni ulang. Ulanish tasdiqlangach taklif hisoblanadi.",
-      referralAndroidButton: "Telegram botida ro‘yxatdan o‘tish",
+      referralAndroidTitle: "Avval taklifni Telegramda qayd eting",
+      referralAndroidBody: "Telegram tugmasini bosib, botda Start ni bosing. Bot APK faylining o‘zini chatga yuboradi. Ilovani o‘rnatib, shu Telegram hisobini ulang. Shundan keyin taklif hisoblanadi.",
+      referralAndroidButton: "Telegram orqali davom etish",
+      referralAndroidStatus: "Botda Start ni bosing — APK fayli chatga yuboriladi.",
+      androidReferralSteps: [
+        ["Taklifni Telegramda qayd eting", "Yuqoridagi tugma botni ochadi. Botda Start ni bosing."],
+        ["APK ni o‘rnating", "Bot chatga yuborgan APK faylini ochib o‘rnating."],
+        ["Shu Telegram hisobini ulang", "Ilovadagi ulashni tasdiqlang. Shundan keyin taklif hisoblanadi."],
+      ],
       referralIosTitle: "Do‘stingiz uchun 20% chegirma",
       referralIosBody: "Telegram botini oching va unda 2 ta savol ishlating. Shunda taklif hisoblanadi.",
       referralOtherTitle: "Havolani telefonda oching",
@@ -152,9 +158,15 @@
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
-      referralAndroidTitle: "Как засчитывается приглашение",
-      referralAndroidBody: "Скачайте и установите APK. Затем откройте Telegram-бота по ссылке ниже и привяжите аккаунт Telegram в приложении HSK AI. Приглашение засчитается после привязки.",
-      referralAndroidButton: "Зарегистрироваться в Telegram-боте",
+      referralAndroidTitle: "Сначала закрепите приглашение в Telegram",
+      referralAndroidBody: "Нажмите кнопку Telegram и затем Start в боте. Бот отправит сам APK файл в чат. Установите приложение и подключите тот же аккаунт Telegram. После этого приглашение засчитается.",
+      referralAndroidButton: "Продолжить в Telegram",
+      referralAndroidStatus: "Нажмите Start в боте — APK файл придёт в чат.",
+      androidReferralSteps: [
+        ["Закрепите приглашение в Telegram", "Откройте бота кнопкой выше и нажмите Start."],
+        ["Установите APK", "Откройте APK файл, который бот отправит в чат."],
+        ["Подключите тот же аккаунт Telegram", "Подтвердите подключение в приложении. После этого приглашение засчитается."],
+      ],
       referralIosTitle: "Как засчитывается приглашение",
       referralIosBody: "Откройте Telegram-бота и ответьте на 2 вопроса. После этого приглашение засчитается.",
       referralOtherTitle: "Откройте ссылку на телефоне",
@@ -281,9 +293,15 @@
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
-      referralAndroidTitle: "Шарти даъват барои тахфифи 20%",
-      referralAndroidBody: "APK-ро боргирӣ ва насб кунед. Сипас бо пайванди поён ба боти Telegram дароед ва ҳисоби Telegram-ро дар барномаи HSK AI пайваст кунед. Пас аз пайвастшавӣ даъват ҳисоб мешавад.",
-      referralAndroidButton: "Дар боти Telegram сабти ном шудан",
+      referralAndroidTitle: "Аввал даъватро дар Telegram қайд кунед",
+      referralAndroidBody: "Тугмаи Telegram-ро пахш кунед ва дар бот Start-ро интихоб кунед. Бот худи файли APK-ро ба чат мефиристад. Барномаро насб карда, ҳамин ҳисоби Telegram-ро пайваст кунед. Баъд даъват ҳисоб мешавад.",
+      referralAndroidButton: "Идома дар Telegram",
+      referralAndroidStatus: "Дар бот Start-ро пахш кунед — файли APK ба чат меояд.",
+      androidReferralSteps: [
+        ["Даъватро дар Telegram қайд кунед", "Бо тугмаи боло ботро кушоед ва Start-ро пахш кунед."],
+        ["APK-ро насб кунед", "Файли APK-ро, ки бот ба чат мефиристад, кушоед."],
+        ["Ҳамин ҳисоби Telegram-ро пайваст кунед", "Пайвастшавиро дар барнома тасдиқ кунед. Баъд даъват ҳисоб мешавад."],
+      ],
       referralIosTitle: "Шарти даъват барои тахфифи 20%",
       referralIosBody: "Боти Telegram-ро кушоед ва ба 2 савол ҷавоб диҳед. Пас даъват ҳисоб мешавад.",
       referralOtherTitle: "Пайвандро дар телефон кушоед",
@@ -532,7 +550,8 @@
 
   function renderSteps() {
     if (supportedPlatforms.indexOf(state.platform) < 0) return;
-    var steps = forPlatform(copy(), "Steps");
+    var steps = referralCode && detectedPlatform() === "android" && state.platform === "android"
+      ? copy().androidReferralSteps : forPlatform(copy(), "Steps");
     if (!steps) return;
     ["one", "two", "three"].forEach(function (key, index) {
       var step = steps[index] || ["", ""];
@@ -704,13 +723,8 @@
     setText("[data-referral-body]", localized["referral" + kind + "Body"]);
     var link = document.querySelector("[data-referral-link]");
     if (!link) return;
-    link.hidden = platform !== "android";
-    if (platform === "android") {
-      link.href = referralLinkFor(platform);
-      link.textContent = localized.referralAndroidButton;
-    } else {
-      link.removeAttribute("href");
-    }
+    link.hidden = true;
+    link.removeAttribute("href");
   }
 
   function renderRelease() {
@@ -765,6 +779,16 @@
       status.lastElementChild.textContent = state.release
         ? localized.unavailable
         : localized.checking;
+      return;
+    }
+
+    if (referralCode && detectedPlatform() === "android" && state.platform === "android") {
+      button.href = referralLinkFor("android");
+      button.removeAttribute("aria-disabled");
+      button.dataset.action = "referral";
+      setText("[data-download-label]", localized.referralAndroidButton);
+      status.dataset.state = "ready";
+      status.lastElementChild.textContent = localized.referralAndroidStatus;
       return;
     }
 
@@ -933,6 +957,7 @@
           event.preventDefault();
           return;
         }
+        if (downloadButton.dataset.action === "referral") return;
         var startedPlatform = state.platform;
         setText("[data-download-label]", copy().opening);
         openQuickGuide();
