@@ -83,7 +83,7 @@ from app.services.ad_placement_service import (
     normalize_placement as normalize_ad_placement,
 )
 from app.services.entitlements.gate_shadow import shadow_compare_gate
-from app.services.pro_trial_service import ProTrialService
+from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
 from app.services.trial_risk_service import TrialRiskService
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
@@ -761,6 +761,19 @@ def create_android_features_router(
                     ),
                     remote_ip=request.headers.get("X-Real-IP"),
                 )
+                risk_decision = risk_service.evaluate(risk_snapshot)
+                if risk_decision.denied:
+                    logger.info(
+                        "trial_risk_denied telegram_id=%s client=android score=%s reasons=%s",
+                        user.telegram_id,
+                        risk_decision.score,
+                        ",".join(risk_decision.reasons),
+                    )
+                    return JSONResponse(
+                        status_code=409,
+                        content={"ok": False, "error": REASON_NOT_APPLICABLE},
+                        headers={"Cache-Control": "no-store"},
+                    )
                 result = await ProTrialService(session).start(
                     user, source="android_trial", client="android"
                 )
@@ -785,8 +798,33 @@ def create_android_features_router(
     async def android_trial_status(request: Request):
         try:
             async with session_factory() as session:
-                user = await _user(session, request)
+                context = await _context(session, request)
+                user = await UserRepository(session).get_by_telegram_id(
+                    int(context.user.telegram_id)
+                )
+                if not user:
+                    raise AndroidFeatureError("android_user_not_found", status_code=404)
                 verdict = await ProTrialService(session).eligibility(user)
+                if verdict.get("eligible"):
+                    risk_service = TrialRiskService(session, settings_obj)
+                    risk_snapshot = await risk_service.analyze(
+                        user,
+                        client="android",
+                        source="android_status",
+                        installation_key_hash=getattr(
+                            getattr(context, "device", None),
+                            "installation_key_hash",
+                            None,
+                        ),
+                        remote_ip=request.headers.get("X-Real-IP"),
+                    )
+                    risk_decision = risk_service.evaluate(risk_snapshot)
+                    if risk_decision.denied:
+                        verdict = {
+                            **verdict,
+                            "eligible": False,
+                            "reason": REASON_NOT_APPLICABLE,
+                        }
             return JSONResponse(
                 content={"ok": True, "trial": verdict},
                 headers={"Cache-Control": "no-store"},

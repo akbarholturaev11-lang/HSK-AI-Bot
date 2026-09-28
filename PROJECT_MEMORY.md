@@ -234,21 +234,30 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
-### 2026-09-28 — Pro trial anti-abuse shadow telemetry
+### 2026-09-28 — Pro trial anti-abuse risk enforcement
 
 Changed:
-- Pro trial start now re-locks and refreshes the user row with SELECT FOR UPDATE
+- Pro trial start re-locks and refreshes the user row with SELECT FOR UPDATE
   before eligibility, closing the parallel-request race around trial_used.
-- New trial_risk_events snapshots observe Android installation reuse, Railway
+- trial_risk_events snapshots observe Android installation reuse, Railway
   X-Real-IP as a one-way HMAC, and account age. Raw IP, raw installation keys,
   card/payment identifiers, email, and OAuth tokens are not stored.
-- Mini App records account/IP signals; Android also uses the already-bound
-  native installation hash. V1 is shadow-only: no score and no new deny rule.
-- Admin Limits shows a read-only 7-day anti-abuse report without hashes.
+- Fixed server-side risk score (0..100, not a fraud probability) now protects
+  the offer. Threshold is 80. Reusing an Android installation that already
+  started another account's trial contributes 80 by itself. Shared-IP activity
+  is weaker (3+/5+/10+ in 24h => 15/30/50; 10+ in 7d => +10). Account age is
+  intentionally weak (<1h => +5; <24h => +2) so legitimate new users may take
+  a trial immediately.
+- /trial/status hides the offer (eligible=false) when score >=80, so Mini App
+  and Android do not render the free-trial CTA. /trial/start independently
+  re-checks the same score and returns generic trial_not_applicable if a stale
+  or direct client still calls it.
+- Admin Limits remains read-only for anti-abuse: it shows the fixed threshold
+  and risk score, but has no switch/weight controls.
 
 Why:
-- Detect repeat free-trial abuse using signals HSK AI actually owns, without
-  adding payment-card verification or risking false bans before real data exists.
+- Stop repeat free-trial reuse without making account age or shared dorm/Wi-Fi
+  IPs strong enough to deny normal learners.
 
 Files touched:
 - app/services/pro_trial_service.py, app/services/trial_risk_service.py
@@ -256,11 +265,9 @@ Files touched:
 - Mini App/Android trial endpoints, admin entitlement API/UI, tests
 
 Risk:
-- MEDIUM — database schema and trial-start instrumentation changed, but current
-  entitlement/payment/referral rules stay authoritative and telemetry is fail-open.
-
-Follow-up:
-- Observe real shadow distributions before introducing any score or enforcement.
+- MEDIUM — trial visibility/access changes at score >=80. Existing entitlement,
+  payment and referral rules remain authoritative. Risk analysis remains
+  fail-open if its telemetry/query layer fails.
 
 ### 2026-09-28 — Tinglash savoli javobni ekranga yozmaydi
 

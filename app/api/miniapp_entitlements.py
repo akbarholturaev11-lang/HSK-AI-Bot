@@ -29,7 +29,7 @@ from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.miniapp_hint_service import MiniAppHintService
-from app.services.pro_trial_service import ProTrialService
+from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.services.trial_risk_service import TrialRiskService
 
@@ -261,6 +261,19 @@ def create_miniapp_entitlements_router(
                 source="miniapp_trial",
                 remote_ip=request.headers.get("X-Real-IP"),
             )
+            risk_decision = risk_service.evaluate(risk_snapshot)
+            if risk_decision.denied:
+                logger.info(
+                    "trial_risk_denied telegram_id=%s client=%s score=%s reasons=%s",
+                    telegram_id,
+                    CLIENT,
+                    risk_decision.score,
+                    ",".join(risk_decision.reasons),
+                )
+                return JSONResponse(
+                    status_code=409,
+                    content={"ok": False, "error": REASON_NOT_APPLICABLE},
+                )
             result = await ProTrialService(session).start(
                 user, source="miniapp_trial", client=CLIENT
             )
@@ -286,6 +299,21 @@ def create_miniapp_entitlements_router(
                     status_code=403, content={"ok": False, "error": "access_start_first"}
                 )
             verdict = await ProTrialService(session).eligibility(user)
+            if verdict.get("eligible"):
+                risk_service = TrialRiskService(session, settings_obj)
+                risk_snapshot = await risk_service.analyze(
+                    user,
+                    client=CLIENT,
+                    source="miniapp_status",
+                    remote_ip=request.headers.get("X-Real-IP"),
+                )
+                risk_decision = risk_service.evaluate(risk_snapshot)
+                if risk_decision.denied:
+                    verdict = {
+                        **verdict,
+                        "eligible": False,
+                        "reason": REASON_NOT_APPLICABLE,
+                    }
         return JSONResponse(content={"ok": True, "trial": verdict})
 
     @router.post("/api/v3/hints/dismiss")
