@@ -13,6 +13,12 @@ import retrofit2.http.Path
 data class PushTokenRequest(@SerialName("token") val token: String)
 
 @Serializable
+data class PushPreferencesRequest(
+    @SerialName("study_reminders_enabled") val studyRemindersEnabled: Boolean,
+    @SerialName("timezone_name") val timezoneName: String,
+)
+
+@Serializable
 data class PushOkResponse(@SerialName("ok") val ok: Boolean = false)
 
 @Serializable
@@ -27,6 +33,12 @@ interface AndroidPushApi {
     suspend fun register(
         @Header("Authorization") authorization: String,
         @Body body: PushTokenRequest,
+    ): Response<PushOkResponse>
+
+    @POST("api/v3/android/push/preferences")
+    suspend fun preferences(
+        @Header("Authorization") authorization: String,
+        @Body body: PushPreferencesRequest,
     ): Response<PushOkResponse>
 
     @POST("api/v3/android/push/unregister")
