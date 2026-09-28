@@ -42,6 +42,11 @@
     <string name="action_close">Закрыть</string>
 
     <string name="error_offline">Нет подключения к интернету. Проверьте связь.</string>
+    <string name="offline_banner">Нет интернета</string>
+    <string name="offline_section_title">Для этого раздела нужен интернет</string>
+    <string name="offline_section_body">Без интернета работают словарь и карта курса. Когда связь появится, приложение подключится само.</string>
+    <string name="offline_lesson">Для урока нужен интернет</string>
+    <string name="offline_practice">Без интернета работает только словарь</string>
     <string name="error_timeout">Сервер не ответил. Попробуйте ещё раз.</string>
     <string name="error_server">Временная ошибка сервера. Попробуйте немного позже.</string>
     <string name="error_unknown">Произошла непредвиденная ошибка.</string>

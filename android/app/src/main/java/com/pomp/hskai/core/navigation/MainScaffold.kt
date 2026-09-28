@@ -122,6 +122,11 @@ fun MainScaffold(
      * the Mini App shows no tabs there either.
      */
     bottomBarVisible: Boolean = true,
+    /**
+     * A strip under the status bar, above every tab — the offline notice.
+     * The tab is laid out below it, not under it, so nothing is covered.
+     */
+    topNotice: (@Composable () -> Unit)? = null,
     content: @Composable (MainTab, Modifier) -> Unit,
 ) {
     val tabs = remember { MainTab.visible }
@@ -141,7 +146,13 @@ fun MainScaffold(
     Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
         Box(Modifier.fillMaxSize()) {
             CompositionLocalProvider(LocalMainBottomInset provides bottomInset) {
-                content(selectedTab, Modifier.fillMaxSize().statusBarsPadding())
+                // One layout with or without the notice, so the tab underneath
+                // keeps its state (scroll, open lists) when the notice comes
+                // and goes.
+                Column(Modifier.fillMaxSize().statusBarsPadding()) {
+                    topNotice?.invoke()
+                    content(selectedTab, Modifier.fillMaxWidth().weight(1f))
+                }
             }
 
             if (bottomBarVisible) {

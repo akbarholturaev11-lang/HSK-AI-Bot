@@ -1055,6 +1055,48 @@ instrumentation: `DictionaryEntryTest` (5 — haqiqiy teginish bilan 3 raund, qo
 rejim, ko'p belgili so'z, ramka yozuv) va `BundledWordAudioTest` (2 — MP3 qurilmada
 o'ynaydi); samolyot rejimida o'tgan.
 
+### 3.23 Ilova internetsiz ochiladi (offline rejim) — 2026-09-28
+
+Oldin internetsiz sovuq start `BootstrapErrorScreen` («Qayta urinish»)da
+to'xtardi — APK ichidagi lug'atga yetib bo'lmasdi. Endi (foydalanuvchi «B»
+variantini tanlagan):
+
+- **Hisob nusxasi.** Har muvaffaqiyatli `bootstrap()` oxirgi tasdiqlangan
+  `LinkedAccount` ni `SecureCredentialStore` ga shifrlab yozadi
+  (`cached_account`, `AccountCache` JSON). `clearSession()`/`clearEverything()`
+  uni ham o'chiradi — chiqishdan keyin offline ochilish yo'q.
+- **`AuthState.Offline(account, error)`.** Faqat `ApiError.Offline`/`Timeout`
+  bo'lsa va nusxa bor bo'lsa. Server javob bergan xato (blok, 5xx, …) doim
+  `BootstrapFailed` bo'lib qoladi; `SessionExpired` — `Unauthenticated`.
+  `Authenticated` va `Offline` umumiy `AuthState.SignedIn` ostida: MainActivity
+  bitta shox bilan chizadi, shuning uchun internet qaytganda ekran (ochiq
+  lug'at sahifasi, tab) yo'qolmaydi.
+- **Offline'da nima ishlaydi.** Tepada «Internet yo‘q» yozuvi (`OfflineBanner`,
+  bosilsa qayta urinadi). Kurs xaritasi keshdan (eski StaleBanner bilan);
+  dars/skip-test bosilsa toast «Dars uchun internet kerak». Mashqda faqat
+  lug'at ochiladi, qolgan qatorlar o'chiq + «Internetsiz faqat lug‘at
+  ishlaydi». AI Voice / Reyting / Profil → `OfflineRequired`. AI yordamchi
+  tugmasi yashirin (u faqat `Authenticated` da). Onboarding darvozasi va
+  bildirishnoma primeri offline'da o'tkazib yuboriladi; deep link faqat tabni
+  ochadi va tashlanadi (keyin o'zi dars ochmasin).
+- **Qayta ulanish.** `rememberOfflineReconnect`: tarmoq paydo bo'lsa/VALIDATED
+  bo'lsa, ilova oldinga qaytsa yoki yozuv bosilsa `bootstrap()` (urinishlar
+  ustma-ust tushmaydi). Muvaffaqiyatda holat `Authenticated`; onboarding
+  statusi splash'siz qayta o'qiladi (`loadStatus(showSplash = false)`),
+  kurs va profil qayta yuklanadi, tanlangan tab o'z yuklashini qiladi.
+- `FoundationActivity` meros qilingan `Offline` holatda darhol yopilmaydi —
+  o'z `bootstrap()` natijasini kutadi.
+- **Cheklov:** 1.7.0 dan yangilangan odam offline rejimni yangi versiyani
+  **bir marta internet bilan** ochgandan keyin oladi (nusxa o'shanda yoziladi).
+
+Qamrov: `AuthRepositoryTest` (+5: offline ochilish va qaytish, bootstrap
+chaqiruvi yo'qolsa, server xatosi offline ochmaydi, buzuq nusxa, chiqish
+nusxani o'chiradi); instrumentation `OfflineModeTest` (5 — yozuv va qayta
+urinish, mashqda faqat lug'at, so'rov tashlanadi, «internet kerak» ekrani,
+qorong'i rejim). MainActivity simlari faqat kompilyatsiya bilan tekshirilgan:
+debug ilovada Telegram sessiyasi yo'q, haqiqiy offline sovuq startni
+emulyatorda o'tkazib bo'lmadi — ichki telefonda samolyot rejimida sinash kerak.
+
 ### 3.11 Boshqa ochiqlar
 
 - Dars yakunidan keyingi reklama oynasida (`AdScreen`) tizim «orqaga»si hali

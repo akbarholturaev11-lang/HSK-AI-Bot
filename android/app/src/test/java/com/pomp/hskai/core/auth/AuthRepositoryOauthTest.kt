@@ -43,6 +43,8 @@ private class OauthFakeStore : CredentialStore {
     override suspend fun installationKey(): String = "installation-key-" + "k".repeat(40)
     override suspend fun refreshToken(): String? = storedRefresh
     override suspend fun saveRefreshToken(token: String) { storedRefresh = token }
+    override suspend fun cachedAccount(): String? = null
+    override suspend fun saveCachedAccount(value: String) = Unit
     override suspend fun clearSession() { storedRefresh = null }
     override suspend fun clearEverything() { storedRefresh = null }
 }

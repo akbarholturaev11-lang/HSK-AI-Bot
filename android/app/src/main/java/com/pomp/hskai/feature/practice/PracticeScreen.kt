@@ -118,6 +118,8 @@ fun PracticeScreen(
     onResetExam: () -> Unit,
     request: PracticeRequest? = null,
     onRequestConsumed: () -> Unit = {},
+    /** Without the server only the dictionary works; the other tools say so. */
+    offline: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     var mistakesOpen by rememberSaveable { mutableStateOf(false) }
@@ -189,6 +191,7 @@ fun PracticeScreen(
                 onOpenDrill = onOpenDrill,
                 request = request,
                 onRequestConsumed = onRequestConsumed,
+                offline = offline,
             )
         }
 
@@ -261,8 +264,11 @@ private fun PracticeHome(
     onOpenDrill: (DrillMode) -> Unit,
     request: PracticeRequest?,
     onRequestConsumed: () -> Unit,
+    offline: Boolean,
 ) {
     var openGroup by rememberSaveable { mutableStateOf<PracticeGroup?>(null) }
+    // The dictionary is in the APK; every other tool asks the server first.
+    val toolsEnabled = !state.isStarting && !offline
     val placementTool = remember {
         PracticeToolSpec(
             mode = "placement",
@@ -274,12 +280,15 @@ private fun PracticeHome(
     }
 
     LaunchedEffect(request) {
-        when (request) {
-            null -> return@LaunchedEffect
-            PracticeRequest.MISTAKES -> { openGroup = null; onOpenMistakes() }
-            PracticeRequest.RECOGNITION -> { openGroup = null; onOpenDrill(DrillMode.RECOGNITION) }
-            PracticeRequest.TESTS -> openGroup = PracticeGroup.TEST
-            PracticeRequest.PRONUNCIATION -> { openGroup = null; onOpenDrill(DrillMode.PRONUNCIATION) }
+        if (request == null) return@LaunchedEffect
+        // Offline a tool is not opened just to fail; the notice says why.
+        if (!offline) {
+            when (request) {
+                PracticeRequest.MISTAKES -> { openGroup = null; onOpenMistakes() }
+                PracticeRequest.RECOGNITION -> { openGroup = null; onOpenDrill(DrillMode.RECOGNITION) }
+                PracticeRequest.TESTS -> openGroup = PracticeGroup.TEST
+                PracticeRequest.PRONUNCIATION -> { openGroup = null; onOpenDrill(DrillMode.PRONUNCIATION) }
+            }
         }
         onRequestConsumed()
     }
@@ -299,22 +308,22 @@ private fun PracticeHome(
     ) {
         item {
             PracticeHeader(group = openGroup, onBack = { openGroup = null }, hints = hints, onDismissHint = onDismissHint)
-            PracticeNotice(state = state)
+            PracticeNotice(state = state, offline = offline)
         }
         when (openGroup) {
             null -> {
                 item { GroupLabel(stringResource(R.string.practice_group_skills)) }
                 item { ToolRow("字", null, TintAmber, stringResource(R.string.practice_dictionary_title), stringResource(R.string.practice_dictionary_body), true, false, onOpenDictionary) }
-                item { ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), !state.isStarting, false) { onOpenDrill(DrillMode.RECOGNITION) } }
-                item { ToolRow(null, Icons.Filled.Mic, TintJade, stringResource(R.string.practice_pronunciation_row_title), stringResource(R.string.practice_pronunciation_row_body), !state.isStarting, false) { onOpenDrill(DrillMode.PRONUNCIATION) } }
+                item { ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled, false) { onOpenDrill(DrillMode.RECOGNITION) } }
+                item { ToolRow(null, Icons.Filled.Mic, TintJade, stringResource(R.string.practice_pronunciation_row_title), stringResource(R.string.practice_pronunciation_row_body), toolsEnabled, false) { onOpenDrill(DrillMode.PRONUNCIATION) } }
                 item { GroupLabel(stringResource(R.string.practice_group_test_short)) }
-                item { ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.practice_group_tests), stringResource(R.string.practice_test_center_body), !state.isStarting, false) { openGroup = PracticeGroup.TEST } }
+                item { ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.practice_group_tests), stringResource(R.string.practice_test_center_body), toolsEnabled, false) { openGroup = PracticeGroup.TEST } }
                 item {
                     val total = state.mistakes?.summary?.total ?: 0
-                    ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), !state.isStarting, state.isLoadingMistakes, onOpenMistakes)
+                    ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onOpenMistakes)
                 }
             }
-            PracticeGroup.TEST -> testCentre(level, !state.isStarting, { onStartPractice(placementTool, level, language) }, onStartExam)
+            PracticeGroup.TEST -> testCentre(level, toolsEnabled, { onStartPractice(placementTool, level, language) }, onStartExam)
         }
     }
 }
@@ -450,10 +459,26 @@ private fun PracticeHeader(group: PracticeGroup?, onBack: () -> Unit, hints: Lis
 }
 
 @Composable
-private fun PracticeNotice(state: PracticeUiState) {
+private fun PracticeNotice(state: PracticeUiState, offline: Boolean) {
     val error = state.error
-    if (error != null && error !is ApiError.LimitReached) {
+    if (offline) {
+        // The banner above the tabs already says the connection is gone; a
+        // failed load's own error would only repeat it.
+        Spacer(Modifier.height(12.dp)); PracticeInfoPill(stringResource(R.string.offline_practice))
+    } else if (error != null && error !is ApiError.LimitReached) {
         Spacer(Modifier.height(12.dp)); PracticeErrorPill(stringResource(error.messageRes))
+    }
+}
+
+@Composable
+private fun PracticeInfoPill(text: String) {
+    Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.Ink,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        )
     }
 }
 

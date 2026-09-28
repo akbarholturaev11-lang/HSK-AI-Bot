@@ -14,7 +14,8 @@ private val Context.credentialDataStore: DataStore<Preferences> by preferencesDa
 )
 
 /**
- * The only place a refresh token or installation key is ever persisted.
+ * The only place a refresh token or installation key is ever persisted, and
+ * where the last confirmed account is kept so the app can open offline.
  *
  * Values are encrypted with a Keystore-backed AES-GCM key before they touch
  * disk. They are never written to logs, analytics, crash reports or URLs.
@@ -52,12 +53,23 @@ class SecureCredentialStore(context: Context) : CredentialStore {
      */
     override suspend fun saveRefreshToken(token: String) = write(REFRESH_TOKEN, token)
 
+    override suspend fun cachedAccount(): String? = read(CACHED_ACCOUNT)
+
+    /** Unlike a token, the cache is optional: without the Keystore it is skipped. */
+    override suspend fun saveCachedAccount(value: String) {
+        val encrypted = cipher.encrypt(value) ?: return
+        appContext.credentialDataStore.edit { it[CACHED_ACCOUNT] = encrypted }
+    }
+
     /**
      * Clears the session but keeps the installation key, so the device stays
      * the same installation when the user links again.
      */
     override suspend fun clearSession() {
-        appContext.credentialDataStore.edit { it.remove(REFRESH_TOKEN) }
+        appContext.credentialDataStore.edit {
+            it.remove(REFRESH_TOKEN)
+            it.remove(CACHED_ACCOUNT)
+        }
     }
 
     /**
@@ -91,5 +103,6 @@ class SecureCredentialStore(context: Context) : CredentialStore {
         const val INSTALLATION_KEY_BYTES = 48
         val INSTALLATION_KEY = stringPreferencesKey("installation_key")
         val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+        val CACHED_ACCOUNT = stringPreferencesKey("cached_account")
     }
 }

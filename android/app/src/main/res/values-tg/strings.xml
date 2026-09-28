@@ -43,6 +43,11 @@
     <string name="action_close">Пӯшидан</string>
 
     <string name="error_offline">Пайвасти интернет нест. Пайвастро санҷед.</string>
+    <string name="offline_banner">Интернет нест</string>
+    <string name="offline_section_title">Барои ин бахш интернет лозим аст</string>
+    <string name="offline_section_body">Бе интернет луғат ва харитаи курс кор мекунанд. Вақте ки пайваст барқарор шавад, барнома худаш пайваст мешавад.</string>
+    <string name="offline_lesson">Барои дарс интернет лозим аст</string>
+    <string name="offline_practice">Бе интернет танҳо луғат кор мекунад</string>
     <string name="error_timeout">Сервер ҷавоб надод. Аз нав кӯшиш кунед.</string>
     <string name="error_server">Хатогии муваққатии сервер. Каме дертар кӯшиш кунед.</string>
     <string name="error_unknown">Хатогии ғайричашмдошт рух дод.</string>

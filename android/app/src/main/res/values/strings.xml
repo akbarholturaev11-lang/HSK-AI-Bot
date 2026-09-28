@@ -69,6 +69,11 @@
 
     <!-- Error copy mapped from stable server error codes -->
     <string name="error_offline">Internet aloqasi yo\'q. Ulanishni tekshiring.</string>
+    <string name="offline_banner">Internet yo‘q</string>
+    <string name="offline_section_title">Bu bo‘lim uchun internet kerak</string>
+    <string name="offline_section_body">Internetsiz lug‘at va kurs xaritasi ishlaydi. Aloqa tiklansa, ilova o‘zi ulanadi.</string>
+    <string name="offline_lesson">Dars uchun internet kerak</string>
+    <string name="offline_practice">Internetsiz faqat lug‘at ishlaydi</string>
     <string name="error_timeout">Server javob bermadi. Qayta urinib ko\'ring.</string>
     <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
     <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>

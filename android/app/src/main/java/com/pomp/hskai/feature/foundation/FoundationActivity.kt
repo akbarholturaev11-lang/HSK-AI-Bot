@@ -19,6 +19,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -77,12 +80,20 @@ private fun FoundationActivityContent(
 ) {
     val auth by app.authRepository.state.collectAsStateWithLifecycle()
 
+    // The app may be offline when this opens; only this screen's own check
+    // decides whether the server is back, not the state it inherited.
+    var checked by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         app.authRepository.bootstrap()
+        checked = true
     }
 
-    LaunchedEffect(auth) {
-        if (auth is AuthState.Unauthenticated || auth is AuthState.BootstrapFailed) {
+    LaunchedEffect(auth, checked) {
+        if (
+            auth is AuthState.Unauthenticated ||
+            auth is AuthState.BootstrapFailed ||
+            (checked && auth is AuthState.Offline)
+        ) {
             onClose()
         }
     }

@@ -88,6 +88,9 @@ import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
+import com.pomp.hskai.feature.offline.OfflineBanner
+import com.pomp.hskai.feature.offline.OfflineRequired
+import com.pomp.hskai.feature.offline.rememberOfflineReconnect
 import com.pomp.hskai.feature.practice.DrillMode
 import com.pomp.hskai.feature.practice.PracticeRequest
 import com.pomp.hskai.feature.practice.toRequest
@@ -267,7 +270,13 @@ private fun AppRoot(
             )
         }
 
-        is AuthState.Authenticated -> {
+        is AuthState.SignedIn -> {
+            // Offline the app opens on the account the server last confirmed:
+            // the dictionary and the course map work, every other section says
+            // it needs the internet, and the app lets itself back in. One
+            // branch for both states, so coming back online keeps the screen.
+            val offline = state is AuthState.Offline
+            val reconnect = if (offline) rememberOfflineReconnect { authRepository.bootstrap() } else null
             LaunchedEffect(Unit) { offlineCourseEntry = false }
             val localeHost = LocalContext.current
             var localeReady by rememberSaveable(state.account.language.backendCode) {
@@ -432,6 +441,26 @@ private fun AppRoot(
                     profileViewModel.load()
                 }
             }
+
+            // Back online: re-read what could not load while offline. Tabs that
+            // load on first open do it from the effect on the selected tab.
+            var wasOffline by remember { mutableStateOf(offline) }
+            LaunchedEffect(offline) {
+                if (offline) {
+                    wasOffline = true
+                } else if (wasOffline) {
+                    if (!onboardingViewModel.state.value.completed) {
+                        onboardingViewModel.loadStatus(showSplash = false)
+                    }
+                    courseViewModel.load()
+                    profileViewModel.load()
+                }
+            }
+            // Offline — or back online before the answer arrives — the server
+            // has not said whether onboarding is done. The app opens on what it
+            // has rather than starting onboarding over.
+            val onboardingUnknown = offline ||
+                (wasOffline && !onboardingState.completed && onboardingState.error != null)
 
             // Existing learners who still have no widget see the same prompt
             // once per local day when the app returns to the foreground.
@@ -639,7 +668,8 @@ private fun AppRoot(
 
             // Secondary tabs own their first server load. Returning to an already
             // opened tab is local unless that feature explicitly requests refresh.
-            LaunchedEffect(selectedTab) {
+            LaunchedEffect(selectedTab, offline) {
+                if (offline) return@LaunchedEffect
                 when (selectedTab) {
                     MainTab.PRACTICE -> practiceViewModel.ensureMistakesLoaded()
                     MainTab.VOICE -> voiceViewModel.ensureStatusLoaded()
@@ -653,7 +683,17 @@ private fun AppRoot(
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
 
+            // Lessons report progress to the server, so offline they say so
+            // instead of opening.
+            val lessonNeedsInternet = {
+                android.widget.Toast.makeText(context, R.string.offline_lesson, android.widget.Toast.LENGTH_SHORT).show()
+            }
+
             fun launchLesson(lesson: CourseLesson) {
+                if (offline) {
+                    lessonNeedsInternet()
+                    return
+                }
                 openLesson = LessonLaunch(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
@@ -711,7 +751,17 @@ private fun AppRoot(
                 }
             }
 
-            LaunchedEffect(requestedDestination, onboardingState.completed) {
+            LaunchedEffect(requestedDestination, onboardingState.completed, offline) {
+                if (offline) {
+                    // Nothing behind a link can be checked with the server now.
+                    // Show its section and drop it, so it cannot open a lesson
+                    // on its own later.
+                    val request = requestedDestination ?: return@LaunchedEffect
+                    dictionaryOpen = false
+                    selectedTab = request.destination.toTab() ?: selectedTab
+                    onDestinationConsumed()
+                    return@LaunchedEffect
+                }
                 if (!onboardingState.completed) return@LaunchedEffect
                 val request = requestedDestination ?: return@LaunchedEffect
                 val destination = request.destination
@@ -794,9 +844,9 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (onboardingState.loading) {
+            if (onboardingState.loading && !onboardingUnknown) {
                 SplashScreen()
-            } else if (!onboardingState.completed) {
+            } else if (!onboardingState.completed && !onboardingUnknown) {
                 OnboardingScreen(
                     language = currentLanguage,
                     state = onboardingState.ui,
@@ -805,7 +855,7 @@ private fun AppRoot(
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
                 )
-            } else if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
+            } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled) {
                 // Asked once, at the end of onboarding, for both kinds of
                 // notification at once: Android grants them for the whole app,
                 // not per kind, and it stops showing its dialog after two
@@ -1038,6 +1088,9 @@ private fun AppRoot(
                         selectedTab = selectedTab,
                         onTabSelected = { selectedTab = it },
                         bottomBarVisible = !voiceCallActive,
+                        topNotice = reconnect?.let { retry ->
+                            { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
+                        },
                     ) { tab, contentModifier ->
                         when (tab) {
                             MainTab.COURSE -> CourseScreen(
@@ -1047,7 +1100,9 @@ private fun AppRoot(
                                 hints = hints,
                                 onDismissHint = hintsViewModel::dismiss,
                                 onLesson = { lesson -> launchLesson(lesson) },
-                                onLockedLesson = { lesson -> skipTestLesson = lesson },
+                                onLockedLesson = { lesson ->
+                                    if (offline) lessonNeedsInternet() else skipTestLesson = lesson
+                                },
                                 onTodayTask = ::openTodayTask,
                                 onOpenGoal = { goalPickerOpen = true },
                                 onOpenChest = courseViewModel::openRewardChest,
@@ -1088,10 +1143,11 @@ private fun AppRoot(
                                 onOpenDrill = ::launchDrill,
                                 request = practiceRequest,
                                 onRequestConsumed = { practiceRequest = null },
+                                offline = offline,
                                 modifier = contentModifier,
                             )
 
-                            MainTab.VOICE -> VoiceScreen(
+                            MainTab.VOICE -> if (offline) OfflineRequired(contentModifier) else VoiceScreen(
                                 state = voiceState,
                                 level = currentLevel,
                                 language = currentLanguage,
@@ -1118,7 +1174,7 @@ private fun AppRoot(
                                 modifier = contentModifier,
                             )
 
-                            MainTab.RATING -> RatingScreen(
+                            MainTab.RATING -> if (offline) OfflineRequired(contentModifier) else RatingScreen(
                                 state = ratingState,
                                 hints = hints,
                                 onDismissHint = hintsViewModel::dismiss,
@@ -1136,7 +1192,7 @@ private fun AppRoot(
                                 modifier = contentModifier,
                             )
 
-                            MainTab.PROFILE -> ProfileScreen(
+                            MainTab.PROFILE -> if (offline) OfflineRequired(contentModifier) else ProfileScreen(
                                 account = state.account,
                                 state = profileState,
                                 settings = settingsState,

@@ -40,7 +40,23 @@ sealed interface AuthState {
      */
     data class BootstrapFailed(val error: ApiError) : AuthState
 
-    data class Authenticated(val account: LinkedAccount) : AuthState
+    /** A session the app is running with: live, or remembered while offline. */
+    sealed interface SignedIn : AuthState {
+        val account: LinkedAccount
+    }
+
+    data class Authenticated(override val account: LinkedAccount) : SignedIn
+
+    /**
+     * The server could not be reached, but this phone was signed in before.
+     *
+     * [account] is the last one the server confirmed. The app opens with it
+     * so what works without a connection — the dictionary, the course map —
+     * is not locked behind a retry screen; everything else says it needs the
+     * internet. Nothing here is a new grant: the server was already asked
+     * for all of it while it was reachable.
+     */
+    data class Offline(override val account: LinkedAccount, val error: ApiError) : SignedIn
 }
 
 /** How the account is being proven. */

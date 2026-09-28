@@ -34,8 +34,14 @@ class OnboardingViewModel(
         loadStatus()
     }
 
-    fun loadStatus() {
-        _state.update { it.copy(loading = true, error = null) }
+    /**
+     * [showSplash] false re-reads the status behind the screen already shown,
+     * for a connection that has just come back: the splash would blink over
+     * the app the learner is using, and the last error stays until the
+     * answer replaces it.
+     */
+    fun loadStatus(showSplash: Boolean = true) {
+        if (showSplash) _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
             when (val result = repository.status()) {
                 is ApiResult.Success -> {

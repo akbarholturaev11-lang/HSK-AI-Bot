@@ -30,6 +30,7 @@ import retrofit2.Response
 
 private class FakeCredentialStore(
     var storedRefresh: String? = null,
+    var storedAccount: String? = null,
 ) : CredentialStore {
     var clearSessionCalls = 0
     var clearEverythingCalls = 0
@@ -44,14 +45,22 @@ private class FakeCredentialStore(
         storedRefresh = token
     }
 
+    override suspend fun cachedAccount(): String? = storedAccount
+
+    override suspend fun saveCachedAccount(value: String) {
+        storedAccount = value
+    }
+
     override suspend fun clearSession() {
         clearSessionCalls++
         storedRefresh = null
+        storedAccount = null
     }
 
     override suspend fun clearEverything() {
         clearEverythingCalls++
         storedRefresh = null
+        storedAccount = null
     }
 }
 
@@ -322,6 +331,125 @@ class AuthRepositoryTest {
         val account = repository.bootstrap().success()
         assertEquals("Akbar", account.displayName)
         assertEquals(AuthState.Authenticated(account), repository.state.value)
+    }
+
+    /** Refresh and bootstrap succeed unless [offline] says the network is gone. */
+    private class SwitchableApi(var offline: Boolean = false) : FakeAuthApi() {
+        override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> {
+            if (offline) throw java.io.IOException("offline")
+            return Response.success(
+                RefreshResponse(
+                    ok = true,
+                    accessToken = "access-1",
+                    accessExpiresIn = 900,
+                    refreshToken = "pomp_r1_next",
+                    refreshExpiresIn = 2_592_000,
+                )
+            )
+        }
+
+        override suspend fun bootstrap(
+            authorization: String,
+            appVersion: String,
+        ): Response<BootstrapResponse> = Response.success(
+            BootstrapResponse(
+                ok = true,
+                authenticated = true,
+                user = BootstrapUser(
+                    name = "Akbar",
+                    language = "tj",
+                    level = "hsk2",
+                    accessState = "active",
+                    isPaid = true,
+                ),
+            )
+        )
+    }
+
+    @Test
+    fun `offline start opens the remembered account and reconnects without a blink`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first")
+        val api = SwitchableApi()
+        val account = repository(api, store).bootstrap().success()
+
+        // A cold start later, in the metro.
+        api.offline = true
+        val coldStart = repository(api, store)
+        assertEquals(ApiError.Offline, coldStart.bootstrap().failure())
+        assertEquals(AuthState.Offline(account, ApiError.Offline), coldStart.state.value)
+        assertEquals("tj", (coldStart.state.value as AuthState.SignedIn).account.language.backendCode)
+        assertEquals("pomp_r1_next", store.storedRefresh)
+
+        // Still offline: the state stays where it was instead of dropping to a retry screen.
+        coldStart.bootstrap()
+        assertEquals(AuthState.Offline(account, ApiError.Offline), coldStart.state.value)
+
+        api.offline = false
+        coldStart.bootstrap().success()
+        assertEquals(AuthState.Authenticated(account), coldStart.state.value)
+    }
+
+    @Test
+    fun `a bootstrap call lost after a good refresh also opens offline`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first")
+        val online = SwitchableApi()
+        val account = repository(online, store).bootstrap().success()
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> =
+                online.refresh(body)
+
+            override suspend fun bootstrap(
+                authorization: String,
+                appVersion: String,
+            ): Response<BootstrapResponse> = throw java.net.SocketTimeoutException("slow")
+        }
+        val repository = repository(api, store)
+
+        assertEquals(ApiError.Timeout, repository.bootstrap().failure())
+        assertEquals(AuthState.Offline(account, ApiError.Timeout), repository.state.value)
+    }
+
+    @Test
+    fun `a server that answers with an error never opens the remembered account`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first")
+        repository(SwitchableApi(), store).bootstrap().success()
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> =
+                errorResponse(503, """{"ok":false,"error":"android_auth_unavailable"}""")
+        }
+        val repository = repository(api, store)
+
+        val error = repository.bootstrap().failure()
+
+        assertEquals(AuthState.BootstrapFailed(error), repository.state.value)
+    }
+
+    @Test
+    fun `a corrupt remembered account falls back to the retry screen`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first", storedAccount = "{not json")
+        val repository = repository(SwitchableApi(offline = true), store)
+
+        repository.bootstrap()
+
+        assertEquals(AuthState.BootstrapFailed(ApiError.Offline), repository.state.value)
+    }
+
+    @Test
+    fun `logout forgets the remembered account`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first")
+        val api = SwitchableApi()
+        val repository = repository(api, store)
+        repository.bootstrap().success()
+        assertTrue(store.storedAccount != null)
+
+        repository.logout()
+
+        assertNull(store.storedAccount)
+        api.offline = true
+        repository(api, store).let { next ->
+            next.bootstrap()
+            assertEquals(AuthState.Unauthenticated, next.state.value)
+        }
     }
 
     @Test

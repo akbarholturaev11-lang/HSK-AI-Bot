@@ -396,7 +396,12 @@ class AuthRepository(
 
     // -------------------------------------------------------------- lifecycle
 
-    /** Restores the session on cold start and refreshes the canonical account. */
+    /**
+     * Restores the session on cold start and refreshes the canonical account.
+     *
+     * Also the way back from [AuthState.Offline]: the state stays offline
+     * until this succeeds, so the screen underneath never blinks.
+     */
     suspend fun bootstrap(): ApiResult<LinkedAccount> {
         val generation = refreshMutex.withLock {
             if (store.refreshToken() == null) {
@@ -407,10 +412,12 @@ class AuthRepository(
         }
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> {
-                if (result.error is ApiError.SessionExpired) {
-                    _state.value = AuthState.Unauthenticated
-                } else {
-                    _state.value = AuthState.BootstrapFailed(result.error)
+                refreshMutex.withLock {
+                    when {
+                        result.error is ApiError.SessionExpired -> _state.value = AuthState.Unauthenticated
+                        // A logout while the refresh was in flight has the last word.
+                        sessionGeneration == generation -> _state.value = unreachable(result.error)
+                    }
                 }
                 return result
             }
@@ -426,7 +433,7 @@ class AuthRepository(
                     if (result.error is ApiError.SessionExpired) {
                         clearLocalSession()
                     } else {
-                        _state.value = AuthState.BootstrapFailed(result.error)
+                        _state.value = unreachable(result.error)
                     }
                     result
                 }
@@ -444,6 +451,7 @@ class AuthRepository(
                             accessState = body.user.accessState,
                             isPaid = body.user.isPaid,
                         )
+                        store.saveCachedAccount(AccountCache.encode(account))
                         onAuthenticated(body.device.id)
                         _state.value = AuthState.Authenticated(account)
                         ApiResult.Success(account)
@@ -485,6 +493,23 @@ class AuthRepository(
     private companion object {
         const val MODE_NATIVE_ID_TOKEN = "native_id_token"
         const val MODE_BROWSER_REDIRECT = "browser_redirect"
+    }
+
+    /**
+     * Where a start goes when the account could not be refreshed. Called under
+     * [refreshMutex].
+     *
+     * Only a missing connection opens the app on the remembered account. A
+     * server that answered — with an error, a block, anything — is shown as
+     * the error it is.
+     */
+    private suspend fun unreachable(error: ApiError): AuthState {
+        val remembered = if (error is ApiError.Offline || error is ApiError.Timeout) {
+            AccountCache.decode(store.cachedAccount())
+        } else {
+            null
+        }
+        return remembered?.let { AuthState.Offline(it, error) } ?: AuthState.BootstrapFailed(error)
     }
 
     private suspend fun clearLocalSession(unlinkDevice: Boolean = false) {
