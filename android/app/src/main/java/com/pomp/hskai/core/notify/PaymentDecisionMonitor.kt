@@ -109,7 +109,7 @@ class PaymentDecisionMonitor(
     }
 
     suspend fun syncPreferences() {
-        if (app.credentialStore.refreshToken() == null) return
+        if (!firebaseConfigured() || app.credentialStore.refreshToken() == null) return
         val access = app.authRepository.accessToken() as? ApiResult.Success ?: return
         syncPreferences(access.value)
     }
