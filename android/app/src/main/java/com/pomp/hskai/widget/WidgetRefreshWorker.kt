@@ -66,6 +66,13 @@ class WidgetClockReceiver : BroadcastReceiver() {
                 app.widgetCoordinator.render()
                 WidgetScheduler.schedule(app)
                 if (app.widgetStore.read().reminderEnabled) StudyReminderScheduler.schedule(app)
+                if (intent.action == Intent.ACTION_TIMEZONE_CHANGED) {
+                    app.paymentDecisionMonitor.syncPreferences()
+                }
+                if (intent.action == Intent.ACTION_MY_PACKAGE_REPLACED) {
+                    app.paymentDecisionMonitor.syncRegistration()
+                    app.paymentDecisionMonitor.syncPreferences()
+                }
             } finally { pending.finish() }
         }
     }

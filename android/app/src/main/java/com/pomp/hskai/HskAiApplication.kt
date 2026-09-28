@@ -36,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import com.pomp.hskai.widget.*
+import com.pomp.hskai.core.notify.StudyReminderCoordinator
 import com.pomp.hskai.core.notify.StudyReminderScheduler
 import com.pomp.hskai.feature.update.UpdateWatch
 import com.pomp.hskai.core.notify.StudyNotifications
@@ -61,6 +62,7 @@ class HskAiApplication : Application() {
     val paymentDecisionMonitor by lazy {
         PaymentDecisionMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
+    val studyReminderCoordinator by lazy { StudyReminderCoordinator(this) }
 
     override fun onCreate() {
         super.onCreate()

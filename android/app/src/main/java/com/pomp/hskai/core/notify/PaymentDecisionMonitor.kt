@@ -2,6 +2,11 @@ package com.pomp.hskai.core.notify
 
 import android.content.Context
 import android.util.Log
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -13,7 +18,9 @@ import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidPushApi
+import com.pomp.hskai.data.api.PushPreferencesRequest
 import com.pomp.hskai.data.api.PushTokenRequest
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -75,7 +82,7 @@ class PaymentDecisionMonitor(
     }
 
     suspend fun syncRegistration() {
-        if (!initializeFirebase() || !PaymentNotifications.canPost(app) ||
+        if (!initializeFirebase() || !canRegisterPush() ||
             prefs.getString(DEVICE_ID, null).isNullOrBlank() ||
             app.credentialStore.refreshToken() == null
         ) return
@@ -90,12 +97,43 @@ class PaymentDecisionMonitor(
     }
 
     suspend fun registerToken(token: String) {
-        if (!firebaseConfigured() || token.isBlank() || !PaymentNotifications.canPost(app) ||
+        if (!firebaseConfigured() || token.isBlank() || !canRegisterPush() ||
             prefs.getString(DEVICE_ID, null).isNullOrBlank() ||
             app.credentialStore.refreshToken() == null
         ) return
         val access = app.authRepository.accessToken() as? ApiResult.Success ?: return
-        apiCall { api.register("Bearer ${access.value}", PushTokenRequest(token)) }
+        val registered = apiCall { api.register("Bearer ${access.value}", PushTokenRequest(token)) }
+        if (registered is ApiResult.Success && registered.value.ok) {
+            syncPreferences(access.value)
+        }
+    }
+
+    suspend fun syncPreferences() {
+        if (!firebaseConfigured() || app.credentialStore.refreshToken() == null) return
+        val access = app.authRepository.accessToken() as? ApiResult.Success ?: return
+        syncPreferences(access.value)
+    }
+
+    private suspend fun syncPreferences(accessToken: String) {
+        val session = app.widgetStore.read()
+        apiCall {
+            api.preferences(
+                "Bearer $accessToken",
+                PushPreferencesRequest(
+                    studyRemindersEnabled = session.reminderEnabled,
+                    timezoneName = ZoneId.systemDefault().id,
+                ),
+            )
+        }
+    }
+
+    private fun canRegisterPush(): Boolean {
+        if (!NotificationManagerCompat.from(app).areNotificationsEnabled()) return false
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                app,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) == PackageManager.PERMISSION_GRANTED
     }
 
     /** Called on every local logout, including an offline logout. */
