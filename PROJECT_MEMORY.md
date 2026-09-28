@@ -234,6 +234,34 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-28 — Pro trial anti-abuse shadow telemetry
+
+Changed:
+- Pro trial start now re-locks and refreshes the user row with SELECT FOR UPDATE
+  before eligibility, closing the parallel-request race around trial_used.
+- New trial_risk_events snapshots observe Android installation reuse, Railway
+  X-Real-IP as a one-way HMAC, and account age. Raw IP, raw installation keys,
+  card/payment identifiers, email, and OAuth tokens are not stored.
+- Mini App records account/IP signals; Android also uses the already-bound
+  native installation hash. V1 is shadow-only: no score and no new deny rule.
+- Admin Limits shows a read-only 7-day anti-abuse report without hashes.
+
+Why:
+- Detect repeat free-trial abuse using signals HSK AI actually owns, without
+  adding payment-card verification or risking false bans before real data exists.
+
+Files touched:
+- app/services/pro_trial_service.py, app/services/trial_risk_service.py
+- app/db/models/trial_risk_event.py, Alembic 0092_trial_risk_events
+- Mini App/Android trial endpoints, admin entitlement API/UI, tests
+
+Risk:
+- MEDIUM — database schema and trial-start instrumentation changed, but current
+  entitlement/payment/referral rules stay authoritative and telemetry is fail-open.
+
+Follow-up:
+- Observe real shadow distributions before introducing any score or enforcement.
+
 ### 2026-09-28 — Tinglash savoli javobni ekranga yozmaydi
 
 - `CourseMiniAppPracticeService._static_card_question` endi `listening_choice`

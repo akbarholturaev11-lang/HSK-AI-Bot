@@ -12,6 +12,7 @@ Eng muhim uch tekshiruv:
 """
 
 import unittest
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
 from fastapi import FastAPI
@@ -24,6 +25,8 @@ from app.api.admin_entitlements import create_admin_entitlements_router
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.entitlement_shadow_event import EntitlementShadowEvent
+from app.db.models.trial_risk_event import TrialRiskEvent
+from app.db.models.user import User
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import WINDOW_DAILY, LimitConfigService
 from app.services.entitlements.shadow import (
@@ -94,6 +97,7 @@ class AdminLimitsApiTests(unittest.IsolatedAsyncioTestCase):
             "/api/admin-miniapp/limits/save",
             "/api/admin-miniapp/entitlement-shadow",
             "/api/admin-miniapp/entitlement-shadow/rollout",
+            "/api/admin-miniapp/trial-risk",
         ):
             with self.subTest(path=path):
                 response = await self._post(path, admin=None)
@@ -209,6 +213,129 @@ class AdminLimitsApiTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertFalse(config.trial["enabled"])
         self.assertEqual("fake akkauntlar", config.trial["disabled_reason"])
+
+
+class AdminTrialRiskApiTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.db = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
+        )
+        async with self.db.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.db, expire_on_commit=False)
+        self.app = FastAPI()
+        self.app.include_router(
+            create_admin_entitlements_router(
+                session_factory=self.sessions, admin_guard=_Guard()
+            )
+        )
+        self.client = AsyncClient(
+            transport=ASGITransport(app=self.app), base_url="https://admin.test"
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.db.dispose()
+
+    async def test_report_summarizes_shadow_signals_without_hashes(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            session.add_all(
+                [
+                    User(
+                        id=1,
+                        telegram_id=101,
+                        full_name="Risk one",
+                        language="uz",
+                        level="hsk1",
+                        learning_mode="course",
+                        voice_mode="none",
+                        status="free",
+                        payment_status="none",
+                        question_limit=5,
+                        questions_used=0,
+                        bonus_questions=0,
+                        bonus_questions_used=0,
+                        discount_referral_count=0,
+                        discount_eligible=False,
+                        discount_used=False,
+                        created_at=now,
+                        last_active_at=now,
+                    ),
+                    User(
+                        id=2,
+                        telegram_id=202,
+                        full_name="Risk two",
+                        language="uz",
+                        level="hsk1",
+                        learning_mode="course",
+                        voice_mode="none",
+                        status="free",
+                        payment_status="none",
+                        question_limit=5,
+                        questions_used=0,
+                        bonus_questions=0,
+                        bonus_questions_used=0,
+                        discount_referral_count=0,
+                        discount_eligible=False,
+                        discount_used=False,
+                        created_at=now,
+                        last_active_at=now,
+                    ),
+                ]
+            )
+            await session.flush()
+            session.add_all(
+                [
+                    TrialRiskEvent(
+                        user_id=1,
+                        telegram_id=101,
+                        client="android",
+                        source="android_trial",
+                        installation_key_hash="a" * 64,
+                        ip_hash="b" * 64,
+                        account_age_minutes=12,
+                        prior_device_trial_users=1,
+                        prior_ip_trial_users_24h=2,
+                        prior_ip_trial_users_7d=3,
+                        signals_json='["device_used_for_other_trial","shared_ip_24h"]',
+                        mode="shadow",
+                        created_at=now,
+                    ),
+                    TrialRiskEvent(
+                        user_id=2,
+                        telegram_id=202,
+                        client="miniapp",
+                        source="miniapp_trial",
+                        account_age_minutes=3000,
+                        prior_device_trial_users=0,
+                        prior_ip_trial_users_24h=0,
+                        prior_ip_trial_users_7d=0,
+                        signals_json="[]",
+                        mode="shadow",
+                        created_at=now - timedelta(hours=2),
+                    ),
+                ]
+            )
+            await session.commit()
+
+        response = await self.client.post(
+            "/api/admin-miniapp/trial-risk",
+            json={"days": 7},
+            headers={"X-Test-Admin": str(ADMIN_ID)},
+        )
+
+        self.assertEqual(200, response.status_code)
+        risk = response.json()["risk"]
+        self.assertEqual("shadow", risk["mode"])
+        self.assertEqual(2, risk["summary"]["trial_starts"])
+        self.assertEqual(1, risk["summary"]["device_reuse"])
+        self.assertEqual(1, risk["summary"]["shared_ip"])
+        self.assertEqual(1, len(risk["examples"]))
+        example = risk["examples"][0]
+        self.assertEqual(101, example["telegram_id"])
+        self.assertNotIn("ip_hash", example)
+        self.assertNotIn("installation_key_hash", example)
 
 
 class AdminShadowReportApiTests(unittest.IsolatedAsyncioTestCase):
