@@ -18,7 +18,7 @@ from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.services.android_payment_push_service import AndroidPaymentPushService
 from app.services.android_push_service import AndroidPushResult
-from app.services.android_realtime_push_service import AndroidRealtimePushService
+from app.services.android_realtime_push_service import AndroidRealtimePushService, study_push_minute
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.payment_notify_service import PaymentNotifyService
@@ -161,6 +161,11 @@ class AndroidPushTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(422, invalid.status_code)
 
+    def test_study_push_bucket_is_stable_and_bounded(self):
+        first = study_push_minute(self.device_a)
+        self.assertEqual(first, study_push_minute(self.device_a))
+        self.assertGreaterEqual(first, 0)
+        self.assertLess(first, 30)
     async def test_study_push_is_once_per_local_day(self):
         token = "fcm-token-" + "s" * 32
         await self.client.post(
@@ -185,7 +190,7 @@ class AndroidPushTests(unittest.IsolatedAsyncioTestCase):
                 new_callable=AsyncMock,
                 return_value=[AndroidPushResult(True)],
             ) as send:
-                now = datetime(2026, 9, 28, 20, 5, tzinfo=timezone.utc)
+                now = datetime(2026, 9, 28, 20, 59, tzinfo=timezone.utc)
                 self.assertEqual(1, await service.send_due_study(now))
                 self.assertEqual(0, await service.send_due_study(now))
                 self.assertEqual(1, send.await_count)
