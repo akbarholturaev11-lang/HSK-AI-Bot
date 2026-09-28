@@ -800,6 +800,15 @@ class CourseMistakeService:
             return None
         if needs_listen:
             pinyin = ""
+        if (
+            material_format == "listening_choice"
+            and sentence
+            and cls._answer_key(sentence) == cls._answer_key(audio_text)
+        ):
+            # Eski mashq/bellashuv xatolarida `sentence` = `audio_text`, ya'ni
+            # to'g'ri javob yozilgan. `audio_truefalse` bu yerga kirmaydi: u
+            # yerda yozilgan gap savolning o'zi.
+            sentence = ""
 
         if material_format in MISTAKE_BUILDER_FORMATS:
             tokens = [

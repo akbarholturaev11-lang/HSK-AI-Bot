@@ -259,6 +259,7 @@ fun SubscriptionCheckoutHost(
         CheckoutSheet(onDismiss = { inviteOpen = false }) {
             Text(copy.getString(R.string.sub_invite_title), color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Black)
             Text(copy.getString(R.string.sub_invite_body), color = Muted, fontSize = 13.sp)
+            Text(copy.getString(R.string.sub_discount_invite), color = Muted, fontSize = 13.sp)
             MessageCard(link)
             Spacer(Modifier.height(8.dp))
             CheckoutButton(copy.getString(R.string.sub_invite_share), false, link.isNotBlank(), onClick = {
@@ -333,9 +334,8 @@ private fun StartContent(
                     Text(copy.getString(if (discount.referral20Available) R.string.sub_discount_ready else R.string.sub_discount_locked),
                         color = TextMain, fontSize = 14.sp, fontWeight = FontWeight.Black)
                     Text(if (discount.referral20Available) copy.getString(R.string.sub_discount_active)
-                        else if (discount.offerStarted) copy.getString(R.string.sub_discount_progress,
-                            discount.referralCount, discount.referralRequired) + "\n" + copy.getString(R.string.sub_discount_invite)
-                        else copy.getString(R.string.sub_discount_invite), color = Muted, fontSize = 12.sp)
+                        else copy.getString(R.string.sub_discount_progress,
+                            discount.referralCount, discount.referralRequired), color = Muted, fontSize = 12.sp)
                 }
             }
             if (!discount.referral20Available) {

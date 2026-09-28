@@ -328,5 +328,48 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         self.service.gamification.award.assert_awaited_once()
 
 
+class StaticListeningQuestionTests(unittest.TestCase):
+    """A listening card is heard: its `audio_text` is the answer and must not
+    reach the screen through `sentence` (Android, desktop and Mini App duels
+    all print `sentence`)."""
+
+    def test_listening_card_keeps_the_answer_out_of_sentence(self):
+        card = {
+            "type": "listening_choice",
+            "title": "Tinglang — qaysi so'z?",
+            "audio_text": "好吃",
+            "pinyin": "hǎochī",
+            "options": ["会", "好吃", "说", "妈妈"],
+            "correct_index": 1,
+            "explanation": "好吃 — mazali (hǎochī)",
+        }
+
+        question = CourseMiniAppPracticeService._static_card_question(
+            card,
+            level="hsk1",
+            lesson_order=19,
+            section_no=1,
+            card_index=1,
+            question_index=1,
+        )
+
+        self.assertEqual(question["sentence"], "")
+        self.assertEqual(question["audio_text"], "好吃")
+        self.assertEqual(question["format"], "listening_choice")
+        self.assertTrue(CourseMiniAppPracticeService._skill_match(question, "listening"))
+        self.assertEqual(question["options"][question["answer_index"]], "好吃")
+
+    def test_checked_in_listening_cards_never_carry_their_answer_as_sentence(self):
+        questions = CourseMiniAppPracticeService._static_level_questions(
+            "hsk1", "uz", 10, "listening"
+        )
+        listening = [item for item in questions if item["type"] == "listening_choice"]
+
+        self.assertGreaterEqual(len(listening), 10)
+        for item in listening:
+            self.assertTrue(item["audio_text"], item["id"])
+            self.assertEqual(item["sentence"], "", item["id"])
+
+
 if __name__ == "__main__":
     unittest.main()

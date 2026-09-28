@@ -204,13 +204,10 @@ class CourseMiniAppPracticeService:
         question_type = "fill_blank_choice" if card_type == "gap_fill" else card_type
         subtype = STATIC_CARD_SUBTYPES.get(card_type, "")
         audio_text = str(card.get("audio_text") or card.get("audioText") or "")
-        sentence = str(
-            card.get("sentence")
-            or card.get("zh")
-            or card.get("phrase")
-            or (audio_text if card_type == "listening_choice" else "")
-            or ""
-        )
+        # Tinglash kartasida `audio_text` — to'g'ri javobning o'zi. U faqat
+        # ovoz uchun; `sentence` ga ko'chirilsa klient uni ekranga yozib
+        # qo'yadi. Xatolar nishoni ham `audio_text` dan olinadi.
+        sentence = str(card.get("sentence") or card.get("zh") or card.get("phrase") or "")
         material_format = (
             "listening_choice"
             if audio_text or question_type in {"listening_choice", "listen_and_fill"}

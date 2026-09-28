@@ -537,6 +537,70 @@ test("desktop bridge preserves practice error codes", async () => {
   }
 });
 
+test("a listening question is heard, never printed with its answer", async () => {
+  const previousDocument = globalThis.document;
+  globalThis.document = {
+    createElement: (tag) => ({
+      tag,
+      className: "",
+      textContent: "",
+      dataset: {},
+      children: [],
+      append(...items) {
+        this.children.push(...items);
+      },
+      addEventListener() {},
+    }),
+  };
+  try {
+    const { DesktopPracticeController } = await import("./js/practice.js");
+    const texts = (element) => [
+      element.textContent,
+      ...element.children.flatMap(texts),
+    ];
+    const shown = (question) => {
+      const controller = new DesktopPracticeController({ t: (key) => key });
+      controller.drill = { id: "listening" };
+      controller.session = { questions: [question] };
+      return texts(controller.renderQuestion()).filter(Boolean);
+    };
+    const listening = {
+      id: "hsk1:19:v3:1:1:1",
+      prompt: "Tinglang — qaysi so'z?",
+      sentence: "",
+      audio_text: "好吃",
+      pinyin: "hǎochī",
+      options: ["会", "好吃", "说", "妈妈"],
+      answer_index: 1,
+    };
+
+    // The answer appears once — as an option — and its pinyin not at all.
+    let screen = shown(listening);
+    assert.equal(screen.filter((text) => text === "好吃").length, 1);
+    assert.ok(!screen.includes("hǎochī"));
+    assert.ok(screen.includes("listen"));
+
+    // Sessions started before the server fix carry the answer in `sentence`.
+    screen = shown({ ...listening, sentence: "好吃" });
+    assert.equal(screen.filter((text) => text === "好吃").length, 1);
+
+    // Listen-and-fill keeps its gapped sentence: the blank is the question.
+    screen = shown({ ...listening, sentence: "这个很____。" });
+    assert.ok(screen.includes("这个很____。"));
+
+    // Without audio the sentence and pinyin are the question itself.
+    screen = shown({ ...listening, audio_text: "", sentence: "你好", pinyin: "nǐ hǎo" });
+    assert.ok(screen.includes("你好"));
+    assert.ok(screen.includes("nǐ hǎo"));
+  } finally {
+    if (previousDocument === undefined) {
+      delete globalThis.document;
+    } else {
+      globalThis.document = previousDocument;
+    }
+  }
+});
+
 test("the dictionary is a full offline word bank", async () => {
   const vocabulary = await source("desktop/ui/js/vocabulary.js");
   const dataModule = await source("desktop/ui/data/vocabulary.js");
