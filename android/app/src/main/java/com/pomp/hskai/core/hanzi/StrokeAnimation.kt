@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
@@ -61,8 +60,9 @@ data class CharacterStrokes(
  * long sweeping stroke is not over in the same instant as a short tick, and
  * the strokes are separated by a pause. Both are the Mini App's numbers.
  *
- * The stroke paths are given in a grid whose origin is bottom-left, so the
- * whole set is flipped once and scaled to the canvas.
+ * The stroke paths are given in a grid whose y axis points up, so the whole
+ * set is flipped once and scaled to the canvas — by [HanziGrid], the same
+ * mapping the handwriting practice uses.
  *
  * This lives outside any one screen because two of them show the same thing:
  * the lesson's writing sheet and the dictionary entry. One drawing, so a
@@ -109,14 +109,9 @@ fun StrokeAnimation(
             .aspectRatio(1f)
             .padding(18.dp),
     ) {
-        val scale = size.minDimension / GRID
-        val matrix = Matrix().apply {
-            // hanzi-writer's own transform: flip the y axis, then fit the box.
-            translate(0f, size.height)
-            scale(scale, -scale)
-        }
+        val matrix = HanziGrid.matrix(size.minDimension)
         // Wide enough to cover the stroke it is clipped to, whatever its shape.
-        val brushWidth = GRID * BRUSH_WIDTH_RATIO * scale
+        val brushWidth = size.minDimension * BRUSH_WIDTH_RATIO
 
         paths.forEachIndexed { index, source ->
             val path = Path().apply { addPath(source) }
@@ -156,11 +151,11 @@ fun StrokeAnimation(
     }
 }
 
-private fun parseStroke(data: String): Path? =
+internal fun parseStroke(data: String): Path? =
     runCatching { PathParser().parsePathString(data).toPath() }.getOrNull()
 
 /** The brush's route down one stroke, as a path through its median points. */
-private fun medianPath(points: List<Offset>): Path? {
+internal fun medianPath(points: List<Offset>): Path? {
     if (points.size < 2) return null
     return Path().apply {
         moveTo(points.first().x, points.first().y)
@@ -175,7 +170,7 @@ private fun medianPath(points: List<Offset>): Path? {
  * stroke the same time, which is what keeps a long sweep from finishing as
  * abruptly as a short tick.
  */
-private fun strokeDurationMillis(median: List<Offset>): Int {
+internal fun strokeDurationMillis(median: List<Offset>): Int {
     var length = 0f
     for (index in 1 until median.size) {
         length += (median[index] - median[index - 1]).getDistance()
@@ -186,7 +181,7 @@ private fun strokeDurationMillis(median: List<Offset>): Int {
 }
 
 /** The first [fraction] of the brush's route. */
-private fun partial(path: Path, fraction: Float): Path {
+internal fun partial(path: Path, fraction: Float): Path {
     val measure = PathMeasure().apply { setPath(path, false) }
     val cut = Path()
     measure.getSegment(0f, measure.length * fraction, cut, true)
@@ -200,7 +195,7 @@ private const val MIN_STROKE_MILLIS = 220
 private const val MAX_STROKE_MILLIS = 900
 
 /** `delayBetweenStrokes` on the Mini App's dictionary writer. */
-private const val DELAY_BETWEEN_STROKES_MILLIS = 280L
+internal const val DELAY_BETWEEN_STROKES_MILLIS = 280L
 
 /**
  * Brush width as a share of the 1024 grid.
@@ -208,7 +203,4 @@ private const val DELAY_BETWEEN_STROKES_MILLIS = 280L
  * It only has to be wide enough to cover the widest stroke once clipped to it,
  * so it is generous on purpose — the stroke's own outline decides the edge.
  */
-private const val BRUSH_WIDTH_RATIO = 0.22f
-
-/** hanzi-writer draws on a 1024 grid. */
-private const val GRID = 1024f
+internal const val BRUSH_WIDTH_RATIO = 0.22f

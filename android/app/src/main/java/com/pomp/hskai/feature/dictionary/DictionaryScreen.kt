@@ -1,6 +1,7 @@
 package com.pomp.hskai.feature.dictionary
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,22 +13,28 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Draw
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,67 +43,117 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
-import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.hanzi.StrokeAnimation
+import com.pomp.hskai.data.repository.CharacterBreakdown
 import com.pomp.hskai.data.repository.DictionaryWord
+import com.pomp.hskai.data.repository.ExampleSentence
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.dictionaryAssistantContext
 
-/** Native dictionary backed by the same HSK 1–4 list and writer API as Mini App. */
+/** Everything the dictionary screen can be asked to do. */
+data class DictionaryActions(
+    val onQueryChange: (String) -> Unit,
+    val onRetry: () -> Unit,
+    val onOpenWord: (DictionaryWord) -> Unit,
+    val onOpenRecent: (DictionaryWord) -> Unit,
+    val onCloseWord: () -> Unit,
+    val onPreviousCharacter: () -> Unit,
+    val onNextCharacter: () -> Unit,
+    val onPlayStrokeOrder: () -> Unit,
+    val onPlayAudio: () -> Unit,
+    val onPreviousWord: () -> Unit,
+    val onNextWord: () -> Unit,
+    val onStartWriting: () -> Unit,
+    val onCloseWriting: () -> Unit,
+    val onWritingDemoAgain: () -> Unit,
+    val onBeginWriting: () -> Unit,
+    val onWritingStroke: (List<Offset>) -> Unit,
+    val onWritingHint: () -> Unit,
+    val onRestartWritingRound: () -> Unit,
+    val onWriteAgain: () -> Unit,
+    val onWriteNextCharacter: () -> Unit,
+    val onBack: () -> Unit,
+)
+
+/**
+ * The HSK 1–4 dictionary. Everything it shows — words, writing order,
+ * examples, breakdowns and pronunciation — ships inside the APK, so it works
+ * the same with no connection.
+ */
 @Composable
 fun DictionaryScreen(
     state: DictionaryUiState,
-    onQueryChange: (String) -> Unit,
-    onRetry: () -> Unit,
-    onOpenWord: (DictionaryWord) -> Unit,
-    onCloseWord: () -> Unit,
-    onPreviousCharacter: () -> Unit,
-    onNextCharacter: () -> Unit,
-    onPreviousStroke: () -> Unit,
-    onReplayStrokes: () -> Unit,
-    onNextStroke: () -> Unit,
-    onPlayAudio: () -> Unit,
-    onPreviousWord: () -> Unit,
-    onNextWord: () -> Unit,
-    onOpenRecognition: () -> Unit,
-    onOpenPronunciation: () -> Unit,
-    onBack: () -> Unit,
+    actions: DictionaryActions,
     modifier: Modifier = Modifier,
 ) {
-    AssistantScreen(dictionaryAssistantContext(state), bottomBar = false)
-    // An open word closes back to the list; the list closes back to where the
-    // dictionary was opened from. The phone's back used to close the app here.
-    BackHandler { if (state.selectedWord != null) onCloseWord() else onBack() }
+    AssistantScreen(
+        dictionaryAssistantContext(state),
+        bottomBar = false,
+        // Clear of the previous/next bar on an entry.
+        bottomInset = if (state.selectedWord != null) WORD_NAVIGATION_HEIGHT else 0.dp,
+        // The practice square takes every touch; a button floating over it
+        // would swallow strokes.
+        showButton = state.writing == null,
+    )
+    // Practice closes back to the entry, an entry to the list, and the list
+    // to wherever the dictionary was opened from.
+    BackHandler {
+        when {
+            state.writing != null -> actions.onCloseWriting()
+            state.selectedWord != null -> actions.onCloseWord()
+            else -> actions.onBack()
+        }
+    }
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        if (state.selectedWord == null) {
-            DictionaryList(state, onQueryChange, onRetry, onOpenWord, onBack)
-        } else {
-            DictionaryDetail(
-                state,
-                onCloseWord,
-                onPreviousCharacter,
-                onNextCharacter,
-                onPreviousStroke,
-                onReplayStrokes,
-                onNextStroke,
-                onPlayAudio,
-                onPreviousWord,
-                onNextWord,
-                onOpenRecognition,
-                onOpenPronunciation,
+        val writing = state.writing
+        when {
+            writing != null -> HanziWritingScreen(
+                writing = writing,
+                hasNextCharacter = state.hasNextCharacter,
+                onClose = actions.onCloseWriting,
+                onDemoAgain = actions.onWritingDemoAgain,
+                onBegin = actions.onBeginWriting,
+                onStroke = actions.onWritingStroke,
+                onHint = actions.onWritingHint,
+                onRestart = actions.onRestartWritingRound,
+                onWriteAgain = actions.onWriteAgain,
+                onNextCharacter = actions.onWriteNextCharacter,
+            )
+            state.selectedWord != null -> DictionaryDetail(state, actions)
+            else -> DictionaryList(
+                state = state,
+                onQueryChange = actions.onQueryChange,
+                onRetry = actions.onRetry,
+                onOpenWord = actions.onOpenWord,
+                onOpenRecent = actions.onOpenRecent,
+                onBack = actions.onBack,
             )
         }
     }
@@ -108,10 +165,21 @@ private fun DictionaryList(
     onQueryChange: (String) -> Unit,
     onRetry: () -> Unit,
     onOpenWord: (DictionaryWord) -> Unit,
+    onOpenRecent: (DictionaryWord) -> Unit,
     onBack: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+    // Opening the dictionary shows the list; the history appears only once
+    // the learner goes to search, and goes again when they start typing.
+    var searchFocused by remember { mutableStateOf(false) }
+    val showRecent = searchFocused && state.query.isBlank() && state.history.isNotEmpty()
+    val listState = rememberLazyListState()
+    LaunchedEffect(showRecent) { if (showRecent) listState.scrollToItem(0) }
+    // With the search box focused, back leaves the search first.
+    BackHandler(enabled = searchFocused) { focusManager.clearFocus() }
+
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        DictionaryHeader(onBack, stringResource(R.string.practice_dictionary_title), state.total)
+        DictionaryHeader(onBack, stringResource(R.string.practice_dictionary_title), trailing = state.total.takeIf { it > 0 }?.toString())
         OutlinedTextField(
             value = state.query,
             onValueChange = onQueryChange,
@@ -133,7 +201,10 @@ private fun DictionaryList(
                 unfocusedTextColor = PompColors.Ink,
                 cursorColor = PompColors.Cinnabar,
             ),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .onFocusChanged { searchFocused = it.isFocused },
         )
         when {
             state.isLoading && state.words.isEmpty() -> DictionarySkeleton()
@@ -146,10 +217,21 @@ private fun DictionaryList(
                 null,
             )
             else -> LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                if (showRecent) {
+                    item(key = "recent-title") { ListSectionTitle(stringResource(R.string.dictionary_recent_title)) }
+                    items(state.history, key = { "recent-${it.hanzi}" }) { word ->
+                        WordRow(word) {
+                            focusManager.clearFocus()
+                            onOpenRecent(word)
+                        }
+                    }
+                    item(key = "all-title") { ListSectionTitle(stringResource(R.string.dictionary_all_words)) }
+                }
                 items(state.words, key = { it.hanzi }) { word -> WordRow(word) { onOpenWord(word) } }
             }
         }
@@ -157,151 +239,335 @@ private fun DictionaryList(
 }
 
 @Composable
-private fun DictionaryDetail(
-    state: DictionaryUiState,
-    onBack: () -> Unit,
-    onPreviousCharacter: () -> Unit,
-    onNextCharacter: () -> Unit,
-    onPreviousStroke: () -> Unit,
-    onReplayStrokes: () -> Unit,
-    onNextStroke: () -> Unit,
-    onPlayAudio: () -> Unit,
-    onPreviousWord: () -> Unit,
-    onNextWord: () -> Unit,
-    onOpenRecognition: () -> Unit,
-    onOpenPronunciation: () -> Unit,
-) {
+private fun ListSectionTitle(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.labelLarge,
+        color = PompColors.InkSecondary,
+        modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 2.dp),
+    )
+}
+
+@Composable
+private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryActions) {
     val word = requireNotNull(state.selectedWord)
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = 28.dp),
-    ) {
-        item { DictionaryHeader(onBack, stringResource(R.string.dictionary_detail_title), 0) }
-        item {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                HskGlassSurface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(20.dp),
-                    shadowElevation = 8.dp,
-                ) {
-                    Box(Modifier.fillMaxWidth().aspectRatio(1f)) {
-                        WriterGrid(Modifier.fillMaxSize())
-                        when {
-                            state.isStrokeLoading -> HskBrandLoader(
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                            state.strokes.isNotEmpty() -> StrokeAnimation(
-                                strokes = state.strokes,
-                                replayKey = state.replayKey,
-                                visibleStrokeCount = state.visibleStrokeCount,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                            else -> Text(
-                                text = state.currentCharacter.orEmpty(),
-                                style = PompTextStyles.hanziLarge,
-                                color = PompColors.Ink,
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                        }
-                    }
-                }
-                if (state.characters.size > 1) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        HskGlassButton(
-                            text = "‹",
-                            onClick = onPreviousCharacter,
-                            enabled = state.characterIndex > 0,
-                        )
-                        Text(
-                            stringResource(
-                                R.string.dictionary_character_position,
-                                state.characterIndex + 1,
-                                state.characters.size,
-                            ),
-                            color = PompColors.InkSecondary,
-                        )
-                        HskGlassButton(
-                            text = "›",
-                            onClick = onNextCharacter,
-                            enabled = state.characterIndex < state.characters.lastIndex,
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(onClick = onPreviousStroke, enabled = state.strokes.isNotEmpty()) {
-                        Text("‹", style = MaterialTheme.typography.headlineMedium)
-                    }
-                    Surface(color = PompColors.CinnabarSoft, shape = CircleShape) {
-                        IconButton(onClick = onReplayStrokes, enabled = state.strokes.isNotEmpty()) {
-                            Icon(Icons.Filled.Refresh, stringResource(R.string.dictionary_replay), tint = PompColors.CinnabarDark)
-                        }
-                    }
-                    IconButton(onClick = onNextStroke, enabled = state.strokes.isNotEmpty()) {
-                        Text("›", style = MaterialTheme.typography.headlineMedium)
-                    }
-                    Spacer(Modifier.width(12.dp))
-                    Text(
-                        stringResource(R.string.dictionary_stroke_count, state.strokes.size),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = PompColors.InkSecondary,
+    val isPhrase = state.characters.size > 1
+    // A new entry starts at the top, not where the previous one was left.
+    val listState = remember(word.hanzi) { LazyListState() }
+    Column(Modifier.fillMaxSize().statusBarsPadding()) {
+        DictionaryHeader(actions.onCloseWord, stringResource(R.string.dictionary_detail_title), level = word.level)
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            item(key = "card") { CharacterCard(state) }
+            if (isPhrase) {
+                item(key = "switcher") {
+                    CharacterSwitcher(
+                        index = state.characterIndex,
+                        count = state.characters.size,
+                        onPrevious = actions.onPreviousCharacter,
+                        onNext = actions.onNextCharacter,
                     )
                 }
-                Spacer(Modifier.height(18.dp))
-                Text(word.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(word.pinyin, style = PompTextStyles.pinyin, color = PompColors.CinnabarDark)
-                        Text(word.meaning, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    Surface(color = PompColors.CinnabarSoft, shape = CircleShape) {
-                        IconButton(onClick = onPlayAudio, enabled = !state.isAudioLoading) {
-                            if (state.isAudioLoading) {
-                                HskBrandLoader(compact = true)
-                            } else {
-                                Icon(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.dictionary_listen), tint = PompColors.CinnabarDark)
+            }
+            item(key = "word") { WordHeading(word, showHanzi = isPhrase) }
+            item(key = "actions") {
+                ActionRow(
+                    isAudioLoading = state.isAudioLoading,
+                    canShowOrder = state.strokes.isNotEmpty(),
+                    canWrite = state.canWrite,
+                    onListen = actions.onPlayAudio,
+                    onOrder = actions.onPlayStrokeOrder,
+                    onWrite = actions.onStartWriting,
+                )
+            }
+            if (state.breakdowns.isNotEmpty()) {
+                item(key = "parts") { PartsSection(state.breakdowns, showCharacter = isPhrase) }
+            }
+            if (state.examples.isNotEmpty()) {
+                item(key = "examples") { ExamplesSection(state.examples, word.hanzi) }
+            }
+        }
+        WordNavigation(
+            previous = state.previousWord,
+            next = state.nextWord,
+            onPrevious = actions.onPreviousWord,
+            onNext = actions.onNextWord,
+        )
+    }
+}
+
+/** The character large, on the practice grid; the stroke order plays here. */
+@Composable
+private fun CharacterCard(state: DictionaryUiState) {
+    HskGlassSurface(
+        modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = 8.dp,
+    ) {
+        Box(Modifier.fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
+            WriterGrid(Modifier.fillMaxSize())
+            when {
+                state.isStrokeLoading -> HskBrandLoader()
+                state.strokes.isNotEmpty() -> StrokeAnimation(
+                    strokes = state.strokes,
+                    replayKey = state.replayKey,
+                    visibleStrokeCount = state.visibleStrokeCount,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                // Without stroke data the character is still shown whole.
+                else -> Text(
+                    text = state.currentCharacter.orEmpty(),
+                    style = PompTextStyles.hanziLarge.copy(fontSize = 150.sp),
+                    color = PompColors.Ink,
+                )
+            }
+        }
+    }
+}
+
+/** ‹ 1 / 2 › — which character of a phrase the card shows. */
+@Composable
+private fun CharacterSwitcher(index: Int, count: Int, onPrevious: () -> Unit, onNext: () -> Unit) {
+    Row(
+        modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onPrevious, enabled = index > 0) {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                stringResource(R.string.lesson_writer_previous),
+                tint = if (index > 0) PompColors.CinnabarDark else PompColors.InkDisabled,
+            )
+        }
+        Text(
+            stringResource(R.string.dictionary_character_position, index + 1, count),
+            style = MaterialTheme.typography.labelLarge,
+            color = PompColors.InkSecondary,
+        )
+        IconButton(onClick = onNext, enabled = index < count - 1) {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                stringResource(R.string.lesson_writer_next),
+                tint = if (index < count - 1) PompColors.CinnabarDark else PompColors.InkDisabled,
+            )
+        }
+    }
+}
+
+@Composable
+private fun WordHeading(word: DictionaryWord, showHanzi: Boolean) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        if (showHanzi) {
+            Text(word.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
+        }
+        Text(
+            word.pinyin,
+            style = PompTextStyles.pinyin.copy(fontSize = 22.sp),
+            color = PompColors.CinnabarDark,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            word.meaning,
+            style = MaterialTheme.typography.bodyLarge,
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp),
+        )
+    }
+}
+
+/** Listen · stroke order · write it yourself. */
+@Composable
+private fun ActionRow(
+    isAudioLoading: Boolean,
+    canShowOrder: Boolean,
+    canWrite: Boolean,
+    onListen: () -> Unit,
+    onOrder: () -> Unit,
+    onWrite: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
+        horizontalArrangement = Arrangement.spacedBy(28.dp, Alignment.CenterHorizontally),
+    ) {
+        EntryAction(
+            icon = Icons.AutoMirrored.Filled.VolumeUp,
+            label = stringResource(R.string.dictionary_action_listen),
+            description = stringResource(R.string.dictionary_listen),
+            onClick = onListen,
+            enabled = !isAudioLoading,
+            loading = isAudioLoading,
+        )
+        EntryAction(
+            icon = Icons.Filled.Edit,
+            label = stringResource(R.string.dictionary_action_order),
+            onClick = onOrder,
+            enabled = canShowOrder,
+        )
+        EntryAction(
+            icon = Icons.Filled.Draw,
+            label = stringResource(R.string.dictionary_action_write),
+            onClick = onWrite,
+            enabled = canWrite,
+        )
+    }
+}
+
+@Composable
+private fun EntryAction(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    description: String = label,
+    loading: Boolean = false,
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(
+            onClick = onClick,
+            enabled = enabled,
+            shape = CircleShape,
+            color = if (enabled || loading) PompColors.CinnabarSoft else PompColors.Divider,
+            modifier = Modifier.size(56.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (loading) {
+                    HskBrandLoader(compact = true)
+                } else {
+                    Icon(
+                        icon,
+                        contentDescription = description,
+                        tint = if (enabled) PompColors.CinnabarDark else PompColors.InkDisabled,
+                        modifier = Modifier.size(26.dp),
+                    )
+                }
+            }
+        }
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            color = PompColors.InkSecondary,
+            modifier = Modifier.padding(top = 6.dp),
+        )
+    }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.titleSmall,
+        color = PompColors.InkSecondary,
+        modifier = Modifier.fillMaxWidth().padding(top = 26.dp, bottom = 10.dp),
+    )
+}
+
+/** What each character is built from, and the line that makes it stick. */
+@Composable
+private fun PartsSection(breakdowns: List<CharacterBreakdown>, showCharacter: Boolean) {
+    Column(Modifier.fillMaxWidth()) {
+        SectionTitle(stringResource(R.string.dictionary_parts_title))
+        breakdowns.forEachIndexed { index, breakdown ->
+            if (index > 0) Spacer(Modifier.height(16.dp))
+            if (showCharacter) {
+                Text(
+                    breakdown.character,
+                    style = PompTextStyles.hanziSmall,
+                    color = PompColors.Ink,
+                    modifier = Modifier.padding(bottom = 6.dp),
+                )
+            }
+            if (breakdown.parts.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    breakdown.parts.forEachIndexed { partIndex, part ->
+                        if (partIndex > 0) {
+                            Text(
+                                "+",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = PompColors.InkSecondary,
+                                modifier = Modifier.padding(horizontal = 6.dp),
+                            )
+                        }
+                        Surface(
+                            color = PompColors.PaperRaised,
+                            shape = RoundedCornerShape(14.dp),
+                            border = BorderStroke(1.dp, PompColors.Divider),
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(part.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
+                                Text(
+                                    part.pinyin,
+                                    style = PompTextStyles.pinyin.copy(fontSize = 13.sp),
+                                    color = PompColors.CinnabarDark,
+                                )
+                                Text(
+                                    part.meaning,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = PompColors.InkSecondary,
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
                             }
                         }
                     }
                 }
-                if (word.level.isNotBlank()) {
-                    Text(word.level, style = MaterialTheme.typography.labelMedium, color = PompColors.InkSecondary, modifier = Modifier.padding(top = 8.dp))
-                }
-                Spacer(Modifier.height(24.dp))
-                Text(
-                    stringResource(R.string.dictionary_practice_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(Modifier.height(10.dp))
-                PracticeRow(Icons.Filled.Visibility, stringResource(R.string.practice_characters_title), onOpenRecognition)
-                Spacer(Modifier.height(8.dp))
-                PracticeRow(Icons.Filled.Mic, stringResource(R.string.practice_pronunciation_row_title), onOpenPronunciation)
-                Spacer(Modifier.height(18.dp))
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    HskGlassButton(
-                        text = stringResource(R.string.dictionary_previous_word),
-                        onClick = onPreviousWord,
-                        enabled = state.words.indexOfFirst { it.hanzi == word.hanzi } > 0,
-                        modifier = Modifier.weight(1f),
+            }
+            Text(
+                breakdown.hint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.Ink,
+                modifier = Modifier.padding(top = if (breakdown.parts.isEmpty()) 0.dp else 10.dp),
+            )
+        }
+    }
+}
+
+/** Real sentences with the word marked, each in hanzi, pinyin and translation. */
+@Composable
+private fun ExamplesSection(examples: List<ExampleSentence>, word: String) {
+    Column(Modifier.fillMaxWidth()) {
+        SectionTitle(stringResource(R.string.dictionary_examples_title))
+        examples.forEachIndexed { index, example ->
+            if (index > 0) Spacer(Modifier.height(8.dp))
+            Surface(
+                color = PompColors.PaperRaised,
+                shape = RoundedCornerShape(14.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+                    Text(
+                        highlighted(example.hanzi, word),
+                        style = PompTextStyles.hanziSmall.copy(fontSize = 19.sp, lineHeight = 28.sp),
+                        color = PompColors.Ink,
                     )
-                    HskGlassButton(
-                        text = stringResource(R.string.dictionary_next_word),
-                        onClick = onNextWord,
-                        enabled = state.words.indexOfFirst { it.hanzi == word.hanzi } in 0 until state.words.lastIndex,
-                        modifier = Modifier.weight(1f),
+                    Text(
+                        example.pinyin,
+                        style = PompTextStyles.pinyin.copy(fontSize = 14.sp),
+                        color = PompColors.CinnabarDark,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                    Text(
+                        example.translation,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = PompColors.InkSecondary,
+                        modifier = Modifier.padding(top = 2.dp),
                     )
                 }
             }
@@ -309,8 +575,123 @@ private fun DictionaryDetail(
     }
 }
 
+/**
+ * The sentence with the entry marked. An entry such as 不但……而且…… or 春(天)
+ * is marked by its parts, the way the example was matched to it.
+ */
+internal fun highlighted(sentence: String, word: String): AnnotatedString = buildAnnotatedString {
+    val terms = exampleTerms(word)
+    var from = 0
+    while (true) {
+        val next = terms
+            .mapNotNull { term -> sentence.indexOf(term, from).takeIf { it >= 0 }?.let { it to term } }
+            .minByOrNull { it.first }
+            ?: break
+        append(sentence.substring(from, next.first))
+        withStyle(SpanStyle(color = PompColors.Cinnabar)) { append(next.second) }
+        from = next.first + next.second.length
+    }
+    append(sentence.substring(from))
+}
+
+/** 春(天) -> [春天, 春]; 不但……而且…… -> [不但, 而且]. Longest first. */
+internal fun exampleTerms(word: String): List<String> =
+    word.split('…')
+        .filter { it.isNotBlank() }
+        .flatMap { part ->
+            listOf(part.replace(OPTIONAL_PART, "$1"), part.replace(OPTIONAL_PART, ""))
+        }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .sortedByDescending { it.length }
+
+private val OPTIONAL_PART = Regex("[(（]([^)）]*)[)）]")
+
+/** The entries either side of this one in the list the learner came from. */
 @Composable
-private fun WriterGrid(modifier: Modifier = Modifier) {
+private fun WordNavigation(
+    previous: DictionaryWord?,
+    next: DictionaryWord?,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+) {
+    Column(Modifier.fillMaxWidth().navigationBarsPadding()) {
+        HorizontalDivider(color = PompColors.Divider)
+        Row(
+            modifier = Modifier.fillMaxWidth().height(WORD_NAVIGATION_HEIGHT).padding(horizontal = 20.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            NeighbourButton(
+                word = previous,
+                label = stringResource(R.string.dictionary_previous_word),
+                forward = false,
+                onClick = onPrevious,
+                modifier = Modifier.weight(1f),
+            )
+            NeighbourButton(
+                word = next,
+                label = stringResource(R.string.dictionary_next_word),
+                forward = true,
+                onClick = onNext,
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun NeighbourButton(
+    word: DictionaryWord?,
+    label: String,
+    forward: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val enabled = word != null
+    val tint = if (enabled) PompColors.Ink else PompColors.InkDisabled
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = modifier.fillMaxSize(),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp),
+            horizontalArrangement = if (forward) Arrangement.End else Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (!forward) Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, null, tint = tint)
+            Column(
+                modifier = Modifier.weight(1f, fill = false).padding(horizontal = 4.dp),
+                horizontalAlignment = if (forward) Alignment.End else Alignment.Start,
+            ) {
+                Text(
+                    word?.hanzi ?: label,
+                    style = if (word != null) PompTextStyles.hanziSmall.copy(fontSize = 17.sp) else MaterialTheme.typography.labelMedium,
+                    color = tint,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (word != null) {
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = PompColors.InkSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+            if (forward) Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = tint)
+        }
+    }
+}
+
+/** 米字格: the practice grid a character is written on. */
+@Composable
+internal fun WriterGrid(modifier: Modifier = Modifier) {
     Canvas(modifier) {
         val line = PompColors.Divider.copy(alpha = .8f)
         drawLine(line, Offset(size.width / 2, 0f), Offset(size.width / 2, size.height), 1.dp.toPx())
@@ -321,23 +702,12 @@ private fun WriterGrid(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun PracticeRow(icon: ImageVector, title: String, onClick: () -> Unit) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        shadowElevation = 5.dp,
-        onClick = onClick,
-    ) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = PompColors.CinnabarDark)
-            Text(title, style = MaterialTheme.typography.titleSmall, color = PompColors.Ink, modifier = Modifier.padding(start = 12.dp).weight(1f))
-            Text("›", style = MaterialTheme.typography.titleLarge, color = PompColors.InkSecondary)
-        }
-    }
-}
-
-@Composable
-private fun DictionaryHeader(onBack: () -> Unit, title: String, total: Int) {
+private fun DictionaryHeader(
+    onBack: () -> Unit,
+    title: String,
+    trailing: String? = null,
+    level: String = "",
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 16.dp, top = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -346,7 +716,15 @@ private fun DictionaryHeader(onBack: () -> Unit, title: String, total: Int) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back), tint = PompColors.Ink)
         }
         Text(title, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink, modifier = Modifier.weight(1f))
-        if (total > 0) Text(total.toString(), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+        if (trailing != null) Text(trailing, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+        if (level.isNotBlank()) LevelPill(level)
+    }
+}
+
+@Composable
+private fun LevelPill(level: String) {
+    Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(999.dp)) {
+        Text(level, style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
     }
 }
 
@@ -366,9 +744,7 @@ private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
             }
             if (word.level.isNotBlank()) {
                 Spacer(Modifier.width(10.dp))
-                Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(999.dp)) {
-                    Text(word.level, style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
-                }
+                LevelPill(word.level)
             }
         }
     }
@@ -402,3 +778,5 @@ private fun DictionaryMessage(text: String, onRetry: (() -> Unit)?) {
         }
     }
 }
+
+private val WORD_NAVIGATION_HEIGHT = 68.dp

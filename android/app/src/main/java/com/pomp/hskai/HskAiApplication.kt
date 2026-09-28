@@ -20,10 +20,13 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
+import com.pomp.hskai.data.local.BundledDictionaryInsights
 import com.pomp.hskai.data.local.BundledStrokes
+import com.pomp.hskai.data.local.BundledWordAudio
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.AssetBundledDictionarySource
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.DictionaryInsightsSource
 import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.data.repository.OnboardingRepository
@@ -204,6 +207,7 @@ class HskAiApplication : Application() {
             onSessionExpired = authRepository::invalidateSession,
             ttsCache = ttsCache,
             bundledStrokes = bundledStrokes,
+            bundledAudio = bundledWordAudio,
         )
     }
 
@@ -250,6 +254,14 @@ class HskAiApplication : Application() {
         BundledStrokes(context = this, json = json)
     }
 
+    /** The dictionary words' pronunciation, so listening needs no connection either. */
+    private val bundledWordAudio: BundledWordAudio by lazy { BundledWordAudio(this) }
+
+    /** Examples and character breakdowns for the dictionary entry. */
+    val dictionaryInsights: DictionaryInsightsSource by lazy {
+        BundledDictionaryInsights(context = this, json = json)
+    }
+
     val featureRepository: FeatureRepository by lazy {
         FeatureRepository(
             api = retrofit.create(AndroidFeatureApi::class.java),
@@ -276,6 +288,7 @@ class HskAiApplication : Application() {
 
     suspend fun clearLocalData() {
         courseRepository.clearCache()
+        appSettings.clearDictionaryHistory()
         // Dictionary rows are public release data, not account data. Keeping
         // them across logout preserves the version that the ETag stamp refers to
         // and avoids replacing a newer server copy with the bundled APK seed.

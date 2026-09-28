@@ -195,6 +195,31 @@ class DictionaryRepositoryTest {
     }
 
     @Test
+    fun `prepare fills the dictionary from the apk without asking the network`() = runTest {
+        val dao = FakeDictionaryDao()
+        val api = DictionaryApi()
+        var tokenAsked = false
+        val repository = DictionaryRepository(
+            api = api,
+            accessToken = {
+                tokenAsked = true
+                ApiResult.Success("token")
+            },
+            dao = dao,
+            bundledSource = FakeBundledDictionarySource(sampleWords(12)),
+        )
+
+        val stored = repository.prepare(AppLanguage.UZBEK)
+
+        assertEquals(12, stored)
+        assertEquals(12, repository.search("").size)
+        assertEquals(0, api.calls)
+        assertTrue(!tokenAsked)
+        // A second open reads the cache as it is.
+        assertEquals(12, repository.prepare(AppLanguage.UZBEK))
+    }
+
+    @Test
     fun `etag check is skipped inside ttl and repeated at expiry`() = runTest {
         val dao = FakeDictionaryDao()
         dao.insertAll(sampleWords(3))

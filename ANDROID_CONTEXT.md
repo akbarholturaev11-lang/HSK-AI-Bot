@@ -979,6 +979,82 @@ Kurs tabida turgani uchun ilovadan chiqaradi — reklama mantig'iga tegilmadi.
 **Tekshirilmagan:** telefonda — juftlikda xato bosish, avto-ovoz (sekin
 internet), back — dars, drill, lug'at, tablar.
 
+### 3.22 Lug'at: yangi ieroglif sahifasi, yozish mashqi, to'liq offline — 2026-09-28
+
+Foydalanuvchi talabi: so'z sahifasi — katta ieroglif, tarjima, uchta tugma
+(Eshitish · Tartibi · Yozish), qismlar bilan eslatma, real misollar,
+oldingi/keyingi. Lug'at **butunlay internetsiz** ishlashi, hamma material
+APK ichida bo'lishi kerak. Qarorlar (foydalanuvchi tanlagan): har chiziq
+tekshiriladi, namoyish 1 marta + «Yana ko'rsat» (jami 3 gacha), eski
+«Mashq bilan mustahkamlang» bloki olib tashlandi.
+
+**Sahifa** (`DictionaryScreen.kt`): 米字格 kartada ieroglif (chiziq
+ma'lumotidan chizilgan, «Tartibi» shu joyda animatsiya qiladi), ko'p
+belgili so'zda `‹ 1/2 ›`, pinyin + ma'no, uchta dumaloq tugma, «Qismlari»,
+«Misollar» (so'z qizil bilan belgilanadi), pastda qotirilgan oldingi/keyingi
+(qo'shni so'z ieroglifi bilan). Ekran parametrlari `DictionaryActions` ga
+yig'ildi. Back: mashq → sahifa → ro'yxat → chiqish.
+
+**Yozish mashqi** (`HanziWriting.kt` + `HanziWritingScreen.kt`): DEMO →
+TRACE (kulrang kontur + boshlanish nuqtasi) → HINT (faqat nuqta) → MEMORY
+(bo'sh) → DONE. Tekshirgich `core/hanzi/StrokeMatcher.kt` — hanzi-writer
+`strokeMatches` ning aniq ko'chirmasi, chegaralari o'zgarmagan. 3 xatodan
+keyin to'g'ri chiziq ko'rsatiladi; «Ko'rsat» xato hisoblanmaydi; teskari
+chiziq alohida aytiladi. Ko'p belgili so'zda yakunda «Keyingi belgi».
+Mashq paytida AI tugmasi yashirin (chiziqlarni yutib yubormasligi uchun).
+
+**Koordinata xatosi tuzatildi.** hanzi-writer ma'lumotida y o'qi
+-124..900, `StrokeAnimation` esa 0..1024 deb flip qilardi — ieroglif
+kartada ~12% pastga siljib chizilardi (dars varag'ida ham). Endi yagona
+`core/hanzi/HanziGrid.kt`; chizish ham, teginish ham shundan o'tadi.
+
+**APK ichidagi material** (hammasi generator + CI tekshiruvi bilan):
+
+| Asset | Nima | Manba | Generator |
+|---|---|---|---|
+| `hsk-examples.json` (~395 KB) | 1247 so'zga 1–3 real gap | kurs dialoglari/grammatika + `tools/dictionary_insights/examples*.json` (367 ta, pinyin qo'lda) | `build_dictionary_insights.py` |
+| `hanzi-parts.json` (~400 KB) | 1055 ieroglif qismlari + eslatma, 3 tilda | `tools/dictionary_insights/parts/*.json` (qo'lda) | `build_dictionary_insights.py` |
+| `audio/words/*.mp3` (3.3 MB) | 1247 so'z talaffuzi | server bilan bir xil ovoz (Xiaoxiao, -10%), jimlik kesilgan, 32 kbps | `build_word_audio.py` (tarmoq + `edge-tts miniaudio lameenc` kerak) |
+
+`check_dictionary_assets.py` CI'da: assetlar eskirmaganini, parts
+formatini va har so'zning audio fayli borligini tekshiradi.
+`CourseRepository.ttsAudio` avval APK ovozini oladi — darsdagi lug'at so'zlari
+ham offline eshitiladi. Fayl nomi — kod nuqtalari (`你们` →
+`20320_20204.mp3`, qavslar ham kiradi).
+
+**Offline-birinchi ochilish.** `DictionaryRepository.prepare()` bundle'dan
+Room'ni to'ldiradi va tarmoqqa tegmaydi; ro'yxat darhol chiqadi, `sync()`
+esa keyin fonda. Ilgari sekin internetda skeleton timeout'gacha turardi.
+
+**Qidiruv tarixi.** Qidiruv maydoni fokusda va bo'sh bo'lsa, ro'yxat tepasida
+«Oxirgi qidiruvlar» (5 tagacha), ostida «Barcha so'zlar». Lug'atga kirganda
+va yozishni boshlaganda tarix ko'rinmaydi. Tarixga faqat **qidiruv orqali**
+ochilgan so'z yoziladi (oddiy ro'yxatdan yoki oldingi/keyingi bilan ochilgani
+emas); qayta ochilsa tepaga ko'tariladi (`DictionaryHistory.record`). Faqat
+ieroglif saqlanadi (`AppSettings.dictionaryHistory`, DataStore), ma'no joriy
+tildan o'qiladi. Akkauntdan chiqishda o'chadi (`clearLocalData`). Fokusda
+back avval qidiruvdan chiqaradi.
+
+**Kontent to'liq (2026-09-28):** qismlar 1055/1055 ieroglifda (46 ta
+`memo.js` dan, qolgani `parts/01..21_*.json` da, makemeahanzi tarkibiga
+tayanib qo'lda yozilgan), misollar 1247/1247 so'zda (kurs gaplari + qo'lda
+yozilgan `examples*.json`). `check_dictionary_assets.py` endi to'liqlikni
+**majburlaydi**: yangi so'z yoki ieroglif misolsiz/qismsiz bo'lsa CI yiqiladi.
+Yig'uvchi aralash alifbo (`qulоqqa` — kirill «о») va telefonda
+ko'rinmaydigan CJK Ext-A belgilarini (㒼, 㕣) ham rad etadi.
+
+Qavsli yozuvlar (`春(天)`, `极（了）`, `不但……而且……`) `uses_word()` bilan
+moslanadi: qavs ichidagisi avval qo'shib o'qiladi, olib tashlangani faqat
+o'zi so'z bo'lsa (≥2 belgi) — `极（了）` `积极` ichidagi `极` ga tushmaydi.
+Ekranda ham xuddi shunday belgilanadi (`exampleTerms`).
+
+Qamrov: `StrokeMatcherTest` (7), `HanziWritingTest` (8), `ExampleTermsTest` (4),
+`DictionaryAssetsTest` (7 — haqiqiy assetlar, to'liqlik, Python va Kotlin fayl nomi
+mosligi), `DictionaryRepositoryTest` (+1: `prepare` tarmoqqa tegmaydi);
+instrumentation: `DictionaryEntryTest` (5 — haqiqiy teginish bilan 3 raund, qorong'i
+rejim, ko'p belgili so'z, ramka yozuv) va `BundledWordAudioTest` (2 — MP3 qurilmada
+o'ynaydi); samolyot rejimida o'tgan.
+
 ### 3.11 Boshqa ochiqlar
 
 - Dars yakunidan keyingi reklama oynasida (`AdScreen`) tizim «orqaga»si hali
@@ -1152,7 +1228,7 @@ yaxshi.
 | Import qolib ketishi | `check_unresolved_references.py` — chaqirilgan nom import qilinganini tekshiradi |
 | Server tomoni | `app/api/android_*.py`, `app/services/android_*.py` |
 | Rang palitrasi | Mini App bilan bir xil bo'lishi shart, `check_palette_matches_miniapp.py` tekshiradi |
-| Offline lug'at | `android/app/src/main/assets/` — so'zlar `hsk-words.js`, chiziqlar `strokes/`. `build_stroke_assets.py` yasaydi, `check_stroke_assets.py` eskirmaganini tekshiradi |
+| Offline lug'at | `android/app/src/main/assets/` — so'zlar `hsk-words.js`, chiziqlar `strokes/`, misollar `hsk-examples.json`, qismlar `hanzi-parts.json`, ovoz `audio/words/`. Generatorlar `build_stroke_assets.py`, `build_dictionary_insights.py`, `build_word_audio.py`; tekshiruv `check_stroke_assets.py`, `check_dictionary_assets.py` (3.22) |
 
 ## 6. Ishlash qoidalari
 

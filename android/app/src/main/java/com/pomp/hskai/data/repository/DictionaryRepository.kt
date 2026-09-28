@@ -52,23 +52,10 @@ class DictionaryRepository(
      * cache the learner keeps their dictionary rather than an error.
      */
     suspend fun sync(language: AppLanguage): ApiResult<Int> {
-        var cached = dao.meta()
-        var cachedCount = dao.count()
-        var sameLanguage = cached?.language == language.backendCode
-        if ((cachedCount == 0 || !sameLanguage) && bundledSource != null) {
-            bundledSource.load(language)?.let { bundled ->
-                dao.replace(
-                    words = bundled.words,
-                    meta = DictionaryMetaEntity(
-                        version = bundled.version,
-                        language = bundled.language,
-                    ),
-                )
-                cached = dao.meta()
-                cachedCount = dao.count()
-                sameLanguage = cached?.language == language.backendCode
-            }
-        }
+        prepare(language)
+        val cached = dao.meta()
+        val cachedCount = dao.count()
+        val sameLanguage = cached?.language == language.backendCode
         val languageKey = language.backendCode
         if (cachedCount > 0 && sameLanguage && clientVersionCode > 0) {
             val checkedAt = runCatching { readLastCheckedAtMillis(languageKey) }.getOrNull()
@@ -142,6 +129,29 @@ class DictionaryRepository(
         )
         markChecked(languageKey)
         return ApiResult.Success(words.size)
+    }
+
+    /**
+     * Makes the dictionary usable with nothing asked of the network.
+     *
+     * An empty cache, or one in another language, is filled from the copy in
+     * the APK. Returns how many entries are now stored. The screen shows
+     * these at once; [sync] then checks the server in the background, so a
+     * slow or absent connection never stands between the learner and a word.
+     */
+    suspend fun prepare(language: AppLanguage): Int {
+        val count = dao.count()
+        val sameLanguage = dao.meta()?.language == language.backendCode
+        if ((count > 0 && sameLanguage) || bundledSource == null) return count
+        val bundled = bundledSource.load(language) ?: return count
+        dao.replace(
+            words = bundled.words,
+            meta = DictionaryMetaEntity(
+                version = bundled.version,
+                language = bundled.language,
+            ),
+        )
+        return dao.count()
     }
 
     /** Cache-only read; [sync] is what talks to the server. */

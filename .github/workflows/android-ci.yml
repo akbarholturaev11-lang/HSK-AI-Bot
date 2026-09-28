@@ -133,6 +133,11 @@ jobs:
       - name: Check the bundled stroke data matches the Mini App
         run: python3 tools/check_stroke_assets.py
 
+      # Examples, character breakdowns and word audio ship in the APK so the
+      # dictionary works offline; a stale or missing file is silent on a phone.
+      - name: Check the bundled dictionary material is complete
+        run: python3 tools/check_dictionary_assets.py
+
       # A composable that moved file and kept its old call site, or a Modifier
       # extension used without its import, is an `Unresolved reference` the
       # other checks cannot see — and it has failed a release build here.

@@ -206,14 +206,21 @@ fun dictionaryAssistantContext(state: DictionaryUiState): ScreenContext {
         if (word != null) {
             appendLine("Selected word: ${word.hanzi} · ${word.pinyin} · ${word.meaning}")
             appendLine("Level: ${word.level}")
-            state.currentCharacter?.let { appendLine("Writing character ${state.characterIndex + 1}: $it") }
-            state.visibleStrokeCount?.let { appendLine("Visible stroke step: $it") }
+            state.currentCharacter?.let { appendLine("Character on screen ${state.characterIndex + 1}/${state.characters.size}: $it") }
+            state.breakdowns.forEach { breakdown ->
+                val parts = breakdown.parts.joinToString(" + ") { "${it.hanzi} (${it.pinyin}, ${it.meaning})" }
+                appendLine("Breakdown ${breakdown.character}: ${parts.ifEmpty { "pictograph" }} — ${breakdown.hint}")
+            }
+            state.examples.forEach { appendLine("Example: ${it.hanzi} · ${it.pinyin} · ${it.translation}") }
+            state.writing?.let {
+                appendLine("Handwriting practice: ${it.stage.name.lowercase()}, stroke ${it.strokeIndex}/${it.strokeCount}, mistakes ${it.totalMistakes}")
+            }
         } else {
             appendLine("Dictionary search query: ${state.query}")
             appendLine("Visible results: ${state.words.take(8).joinToString(" | ") { "${it.hanzi} ${it.pinyin} ${it.meaning}" }}")
         }
     }
-    return ScreenContext("dictionary", word?.hanzi ?: "Ieroglif lug'ati", details.trim(), word?.hanzi.orEmpty(), revision = "${state.query}:${word?.hanzi}:${state.characterIndex}:${state.visibleStrokeCount}")
+    return ScreenContext("dictionary", word?.hanzi ?: "Ieroglif lug'ati", details.trim(), word?.hanzi.orEmpty(), revision = "${state.query}:${word?.hanzi}:${state.characterIndex}:${state.examples.size}:${state.writing?.stage}")
 }
 
 fun voiceAssistantContext(state: VoiceUiState, level: String): ScreenContext {

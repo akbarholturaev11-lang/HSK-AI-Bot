@@ -194,6 +194,28 @@ class AppSettings(context: Context) : LessonResumeStore {
     }
 
     /**
+     * The dictionary entries the learner last opened from a search, newest
+     * first. Kept by the characters alone: the meaning is read from the
+     * dictionary in whatever language the account uses at the time.
+     */
+    suspend fun dictionaryHistory(): List<String> =
+        appContext.settingsDataStore.data.first()[DICTIONARY_HISTORY_KEY]
+            ?.split(HISTORY_SEPARATOR)
+            ?.filter { it.isNotBlank() }
+            .orEmpty()
+
+    suspend fun setDictionaryHistory(words: List<String>) {
+        appContext.settingsDataStore.edit {
+            it[DICTIONARY_HISTORY_KEY] = words.joinToString(HISTORY_SEPARATOR)
+        }
+    }
+
+    /** What someone searched for is theirs, not the next account's on this phone. */
+    suspend fun clearDictionaryHistory() {
+        appContext.settingsDataStore.edit { it.remove(DICTIONARY_HISTORY_KEY) }
+    }
+
+    /**
      * Mini App `hsk_v3_lesson_resume:v2:<level>:<order>` — the card the learner
      * stopped on. Leaving a lesson halfway and starting it again from the top
      * is the fastest way to lose someone, so the position is kept for a week
@@ -244,5 +266,9 @@ class AppSettings(context: Context) : LessonResumeStore {
         val VOICE_SUBTITLES_KEY = booleanPreferencesKey("hsk_voice_sub")
         val VOICE_SLOW_SPEECH_KEY = booleanPreferencesKey("hsk_voice_rate_slow")
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
+        val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")
+
+        /** A dictionary entry never contains a line break. */
+        const val HISTORY_SEPARATOR = "\n"
     }
 }

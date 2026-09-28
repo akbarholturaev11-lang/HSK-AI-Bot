@@ -77,6 +77,7 @@ import com.pomp.hskai.feature.course.SkipTestScreen
 import com.pomp.hskai.feature.course.SkipTestViewModel
 import com.pomp.hskai.feature.course.StudySetupSheet
 import com.pomp.hskai.feature.course.StudySetupViewModel
+import com.pomp.hskai.feature.dictionary.DictionaryActions
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
@@ -957,32 +958,37 @@ private fun AppRoot(
                         courseRepository = app.courseRepository,
                         audioPlayer = app.lessonAudioPlayer,
                         language = state.account.language,
+                        insights = app.dictionaryInsights,
+                        readHistory = app.appSettings::dictionaryHistory,
+                        writeHistory = app.appSettings::setDictionaryHistory,
                     ),
                 )
                 val dictionaryState by dictionaryViewModel.state.collectAsStateWithLifecycle()
                 DictionaryScreen(
                     state = dictionaryState,
-                    onQueryChange = dictionaryViewModel::onQueryChange,
-                    onRetry = dictionaryViewModel::load,
-                    onOpenWord = dictionaryViewModel::openWord,
-                    onCloseWord = dictionaryViewModel::closeWord,
-                    onPreviousCharacter = dictionaryViewModel::previousCharacter,
-                    onNextCharacter = dictionaryViewModel::nextCharacter,
-                    onPreviousStroke = dictionaryViewModel::previousStroke,
-                    onReplayStrokes = dictionaryViewModel::replayStrokes,
-                    onNextStroke = dictionaryViewModel::nextStroke,
-                    onPlayAudio = dictionaryViewModel::playAudio,
-                    onPreviousWord = dictionaryViewModel::previousWord,
-                    onNextWord = dictionaryViewModel::nextWord,
-                    onOpenRecognition = {
-                        dictionaryOpen = false
-                        launchDrill(DrillMode.RECOGNITION)
-                    },
-                    onOpenPronunciation = {
-                        dictionaryOpen = false
-                        launchDrill(DrillMode.PRONUNCIATION)
-                    },
-                    onBack = { dictionaryOpen = false },
+                    actions = DictionaryActions(
+                        onQueryChange = dictionaryViewModel::onQueryChange,
+                        onRetry = dictionaryViewModel::load,
+                        onOpenWord = dictionaryViewModel::openWord,
+                        onOpenRecent = dictionaryViewModel::openRecent,
+                        onCloseWord = dictionaryViewModel::closeWord,
+                        onPreviousCharacter = dictionaryViewModel::previousCharacter,
+                        onNextCharacter = dictionaryViewModel::nextCharacter,
+                        onPlayStrokeOrder = dictionaryViewModel::playStrokeOrder,
+                        onPlayAudio = dictionaryViewModel::playAudio,
+                        onPreviousWord = dictionaryViewModel::previousWord,
+                        onNextWord = dictionaryViewModel::nextWord,
+                        onStartWriting = dictionaryViewModel::startWriting,
+                        onCloseWriting = dictionaryViewModel::closeWriting,
+                        onWritingDemoAgain = dictionaryViewModel::playWritingDemoAgain,
+                        onBeginWriting = dictionaryViewModel::beginWriting,
+                        onWritingStroke = dictionaryViewModel::submitWritingStroke,
+                        onWritingHint = dictionaryViewModel::showWritingHint,
+                        onRestartWritingRound = dictionaryViewModel::restartWritingRound,
+                        onWriteAgain = dictionaryViewModel::writeAgain,
+                        onWriteNextCharacter = dictionaryViewModel::writeNextCharacter,
+                        onBack = { dictionaryOpen = false },
+                    ),
                 )
             } else if (launch != null) {
                 LessonHost(
