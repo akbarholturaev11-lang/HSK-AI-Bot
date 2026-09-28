@@ -58,7 +58,7 @@
     <string name="sub_discount_locked" formatted="false">20% chegirmani oching</string>
     <string name="sub_discount_invite" formatted="false">3 do‘st taklif qiling: Androidda ilovani o‘rnatib Telegram hisobini ulaydi, iPhone’da botda 2 savol ishlatadi.</string>
     <string name="sub_discount_progress">20%% chegirma: %1$d/%2$d referral</string>
-    <string name="sub_discount_button">Do‘stlarni chaqirish</string>
+    <string name="sub_discount_button">Chegirmani ochish</string>
     <string name="sub_offer_expired">Bu taklif tugagan yoki sizga mos emas.</string>
     <string name="sub_method_tj">Tojikiston kartasi / oddiy karta</string>
     <string name="sub_method_tj_body">Dushanbe City, Alif, Eskhata, Amonatbank va boshqa kartalar</string>
