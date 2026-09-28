@@ -1,8 +1,10 @@
 import hashlib
+import logging
 import unicodedata
 import json
 import re
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 from sqlalchemy import func, select
 
@@ -16,13 +18,28 @@ from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_mistake_target_store import (
+    UNRESOLVABLE_TARGET_KEY,
+    CourseMistakeTargetStore,
+    aware,
+    drill_target,
+    split_csv,
+)
+from app.services import mistake_drill_factory as drills
+from app.services.mistake_target_resolver import resolve_target, target_key as make_target_key
 
 
-MISTAKE_REVIEW_VERSION = 2
-# New starts use v2 so stale v1 snapshots cannot poison the Start button.
-# Answer/complete still accept v1: a learner who was already inside a review
-# when the backend deploys must be able to finish it.
-MISTAKE_REVIEW_ACCEPTED_VERSIONS = frozenset({1, MISTAKE_REVIEW_VERSION})
+logger = logging.getLogger(__name__)
+
+# v3: takror NISHON bo'yicha (so'z/gap), har nishon 3 xil mashqda
+# (`mistake_drill_factory`). v1/v2 — savolning o'zini qayta o'ynatardi.
+MISTAKE_REVIEW_VERSION = 3
+# Answer/complete still accept v1/v2: a learner who was already inside a
+# review when the backend deploys must be able to finish it.
+MISTAKE_REVIEW_ACCEPTED_VERSIONS = frozenset({1, 2, MISTAKE_REVIEW_VERSION})
+# Bitta sessiyada nechta nishon (har biri 3 tagacha mashq bilan).
+MISTAKE_REVIEW_TARGETS = 4
+MISTAKE_REVIEW_TARGET_CANDIDATES = 40
 MISTAKE_REVIEW_MATERIAL_VERSION = 2
 MISTAKE_REVIEW_FORMATS = {
     "word": "word_choice",
@@ -58,6 +75,7 @@ MISTAKE_BUILDER_FORMATS = {
     "sentence_reorder",
     "word_order",
     "reorder",
+    "listen_builder",
 }
 MISTAKE_UNSUPPORTED_EXACT_FORMATS = {
     "pronunciation_correction",
@@ -161,6 +179,7 @@ class CourseMistakeService:
             "total": number("total"),
             "percent": number("percent"),
             "remaining": number("remaining"),
+            "cleared": number("cleared"),
             "reward": {"awarded_xp": 0, "duplicate": True},
         }
 
@@ -327,6 +346,7 @@ class CourseMistakeService:
                     "correct_answer": correct_answer,
                     "explanation": explanation,
                     "material_json": json.dumps(material, ensure_ascii=False, separators=(",", ":")),
+                    "material": material,
                 }
             )
         if not normalized:
@@ -366,27 +386,150 @@ class CourseMistakeService:
                 mistake.lesson_order = lesson_order or mistake.lesson_order
                 mistake.last_seen_at = now
             else:
-                self.session.add(
-                    CourseMistake(
-                        user_id=user.id,
-                        lesson_id=lesson_id,
-                        mistake_key=data["mistake_key"],
-                        category=data["category"],
-                        source=normalized_source,
-                        level=self._text(level, 32) or None,
-                        lesson_order=lesson_order,
-                        prompt=data["prompt"],
-                        user_answer=data["user_answer"],
-                        correct_answer=data["correct_answer"],
-                        explanation=data["explanation"],
-                        material_json=data["material_json"],
-                        first_seen_at=now,
-                        last_seen_at=now,
-                    )
+                mistake = CourseMistake(
+                    user_id=user.id,
+                    lesson_id=lesson_id,
+                    mistake_key=data["mistake_key"],
+                    category=data["category"],
+                    source=normalized_source,
+                    level=self._text(level, 32) or None,
+                    lesson_order=lesson_order,
+                    prompt=data["prompt"],
+                    user_answer=data["user_answer"],
+                    correct_answer=data["correct_answer"],
+                    explanation=data["explanation"],
+                    material_json=data["material_json"],
+                    first_seen_at=now,
+                    last_seen_at=now,
                 )
+                self.session.add(mistake)
+            await self._link_target(
+                user.id,
+                mistake,
+                material=data["material"],
+                source=normalized_source,
+                now=now,
+            )
             recorded += 1
         await self.session.flush()
         return recorded
+
+    # ------------------------------------------------------------ nishon ---
+
+    @property
+    def targets(self) -> CourseMistakeTargetStore:
+        store = getattr(self, "_target_store", None)
+        if store is None:
+            store = CourseMistakeTargetStore(self.session)
+            self._target_store = store
+        return store
+
+    @classmethod
+    def _resolve_row_target(cls, row, material: dict) -> dict | None:
+        """Xato qatoridan nishon; topilmasa eski savolning o'zi (`question`)."""
+        category = cls._text(getattr(row, "category", None), 24).lower() or "word"
+        try:
+            target = resolve_target(
+                category=category,
+                source=cls._text(getattr(row, "source", None), 32),
+                material=material,
+                prompt=cls._text(getattr(row, "prompt", None)),
+                correct_answer=cls._text(getattr(row, "correct_answer", None)),
+                user_answer=cls._text(getattr(row, "user_answer", None)),
+                explanation=cls._text(getattr(row, "explanation", None)),
+                level=getattr(row, "level", None),
+                language=material.get("language"),
+            )
+        except Exception:  # noqa: BLE001 — nishon topilmasa ham xato yozuvi saqlanadi
+            logger.exception("Mistake target resolution failed")
+            target = None
+        if target:
+            return target
+        probe = SimpleNamespace(
+            id=0,
+            category=category,
+            source=getattr(row, "source", None),
+            level=getattr(row, "level", None),
+            lesson_order=getattr(row, "lesson_order", None),
+            prompt=getattr(row, "prompt", None) or "",
+            user_answer=getattr(row, "user_answer", None),
+            correct_answer=getattr(row, "correct_answer", None) or "",
+            explanation=getattr(row, "explanation", None),
+            material_json=json.dumps(material, ensure_ascii=False) if material else None,
+        )
+        question = cls._review_question(probe, [])
+        if not question:
+            return None
+        stored = {
+            key: question.get(key)
+            for key in (
+                "prompt", "format", "sentence", "audio_text", "pinyin", "options",
+                "answer_index", "tokens", "answer_tokens", "correct_answer", "explanation",
+            )
+            if question.get(key) not in (None, "", [])
+        }
+        if "answer_index" in question:
+            stored["answer_index"] = question["answer_index"]
+        ref = cls._text(material.get("material_ref"), 160) or cls._text(getattr(row, "mistake_key", None), 64)
+        return {
+            "kind": "question",
+            "zh": cls._text(question.get("prompt"), 300),
+            "key": make_target_key("question", ref or cls._text(getattr(row, "prompt", None))),
+            "level": getattr(row, "level", None),
+            "payload": {"question": stored},
+        }
+
+    async def _link_target(self, user_id: int, row, *, material: dict, source: str, now) -> None:
+        """Yangi xatoni nishonga bog'laydi (yangi xato progressni nolga tushiradi)."""
+        target = self._resolve_row_target(row, material or {})
+        if not target:
+            row.target_key = UNRESOLVABLE_TARGET_KEY
+            return
+        await self.targets.upsert(
+            user_id,
+            category=row.category,
+            target=target,
+            source=source,
+            now=now,
+        )
+        row.target_key = target["key"]
+
+    async def _sync_targets(self, user) -> bool:
+        """Nishonga bog'lanmagan eski faol xatolarni bog'laydi (lazy backfill)."""
+        rows = await self.targets.unsynced_rows(user.id)
+        if not rows:
+            return False
+        await self.session.execute(select(User.id).where(User.id == user.id).with_for_update())
+        now = datetime.now(timezone.utc)
+        for row in rows:
+            target = self._resolve_row_target(row, self._stored_material(row))
+            if not target:
+                row.target_key = UNRESOLVABLE_TARGET_KEY
+                continue
+            existing = await self.targets.get(user.id, row.category, target["key"])
+            if (
+                existing is not None
+                and existing.status == "cleared"
+                and existing.cleared_at is not None
+                and aware(row.last_seen_at) <= aware(existing.cleared_at)
+            ):
+                # Nishon bu xatodan KEYIN yopilgan — qator ham yopiladi.
+                row.target_key = target["key"]
+                row.resolved_count = row.wrong_count
+                continue
+            await self.targets.upsert(
+                user.id,
+                category=row.category,
+                target=target,
+                source=self._text(row.source, 32),
+                now=now,
+                weight=self._weakness(row),
+                seen_at=row.last_seen_at,
+                new_mistake=existing is not None and existing.status == "cleared",
+            )
+            row.target_key = target["key"]
+        await self.session.flush()
+        return True
 
     async def _items(
         self,
@@ -407,6 +550,85 @@ class CourseMistakeService:
         result = await self.session.execute(query.offset(max(0, int(offset or 0))).limit(max(1, int(limit or 1))))
         return list(result.scalars().all())
 
+    @staticmethod
+    def _review_language(user, language: str | None = None) -> str:
+        for value in (language, getattr(user, "language", None)):
+            normalized = str(value or "").strip().lower()
+            if normalized in {"tg", "tg-cyrl"}:
+                normalized = "tj"
+            if normalized in MISTAKE_MATERIAL_LANGUAGES:
+                return normalized
+        return "uz"
+
+    async def _target_overview(
+        self,
+        user,
+        *,
+        category: str | None,
+        limit: int,
+        offset: int,
+        language: str,
+    ) -> tuple[list[dict], bool]:
+        rows = await self.targets.active(user.id, category=category, limit=limit + 1, offset=offset)
+        has_more = len(rows) > limit
+        rows = rows[:limit]
+        last_answers: dict[tuple[str, str], str] = {}
+        keys = [row.target_key for row in rows]
+        if keys:
+            result = await self.session.execute(
+                select(CourseMistake.category, CourseMistake.target_key, CourseMistake.user_answer)
+                .where(CourseMistake.user_id == user.id, CourseMistake.target_key.in_(keys))
+                .order_by(CourseMistake.last_seen_at.desc(), CourseMistake.id.desc())
+            )
+            for row_category, row_key, user_answer in result.all():
+                text = self._text(user_answer, 300)
+                if text:
+                    last_answers.setdefault((str(row_category), str(row_key)), text)
+        items = []
+        for row in rows:
+            target = drill_target(row)
+            payload = target["payload"]
+            available = drills.available_questions(
+                target, language=language, seed="overview", client_formats=drills.ALL_FORMATS
+            )
+            required = min(drills.REQUIRED_FORMATS, len(available)) or 1
+            passed = min(len(split_csv(row.passed_formats)), required)
+            item = {
+                "id": int(row.id),
+                "category": row.category,
+                "kind": row.kind,
+                "zh": row.zh,
+                "pinyin": self._text(payload.get("pinyin"), 300),
+                "meaning": self._text((payload.get("meaning") or {}).get(language), 300),
+                "translation": self._text((payload.get("translation") or {}).get(language), 400),
+                "wrong": self._text(
+                    ((payload.get("wrong") or [None])[-1])
+                    or last_answers.get((row.category, row.target_key)),
+                    300,
+                ),
+                "passed": passed,
+                "required": required,
+                "count": int(row.wrong_count or 0),
+                "level": row.level,
+                "sources": split_csv(row.sources),
+            }
+            if row.kind == "question":
+                question = payload.get("question") or {}
+                options = question.get("options") or []
+                answer_index = question.get("answer_index")
+                answer = self._text(question.get("correct_answer"))
+                if not answer and isinstance(answer_index, int) and 0 <= answer_index < len(options):
+                    answer = self._text(options[answer_index])
+                item.update(
+                    {
+                        "zh": self._text(question.get("sentence")) or row.zh,
+                        "question": self._text(question.get("prompt")),
+                        "answer": answer,
+                    }
+                )
+            items.append(item)
+        return items, has_more
+
     async def overview(
         self,
         telegram_id: int,
@@ -414,6 +636,8 @@ class CourseMistakeService:
         category: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        view: str | None = None,
+        language: str | None = None,
     ) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -426,6 +650,36 @@ class CourseMistakeService:
             offset = max(0, min(100000, int(offset)))
         except (TypeError, ValueError):
             return {"ok": False, "error": "invalid_mistake_pagination"}
+        view = self._text(view, 16).lower()
+        if view == "targets":
+            try:
+                if await self._sync_targets(user):
+                    await self.session.commit()
+            except Exception:  # noqa: BLE001 — backfill ro'yxatni yiqitmasin
+                logger.exception("Mistake target sync failed for user %s", user.id)
+                await self.session.rollback()
+            target_counts = await self.targets.counts(user.id)
+            language = self._review_language(user, language)
+            targets, has_more = await self._target_overview(
+                user, category=category, limit=limit, offset=offset, language=language
+            )
+            return {
+                "ok": True,
+                "summary": {
+                    "total": sum(target_counts.values()),
+                    "categories": target_counts,
+                    "unit": "targets",
+                },
+                "filter": {"category": category},
+                "pagination": {
+                    "offset": offset,
+                    "limit": limit,
+                    "returned": len(targets),
+                    "has_more": has_more,
+                },
+                "targets": targets,
+                "items": [],
+            }
         page_items = await self._items(
             user.id,
             limit=limit + 1,
@@ -611,6 +865,14 @@ class CourseMistakeService:
         options = options[:4]
         if len(options) < 2:
             return None
+        # Savol matni variantlardan biriga teng bo'lsa (AI Voice: savol ham,
+        # "sizning javobingiz" ham o'quvchining o'z gapi) — bu savol emas.
+        prompt_key = cls._answer_key(prompt_text)
+        if any(cls._answer_key(option) == prompt_key for option in options):
+            return None
+        if needs_listen and sentence and cls._answer_key(correct_answer) in cls._answer_key(sentence):
+            # Tinglash savolida ekrandagi gap javobni ochib qo'ymasin.
+            sentence = ""
         options.sort(
             key=lambda value: hashlib.sha256(
                 f"mistake-review:{item.id}:{value}".encode("utf-8")
@@ -760,8 +1022,21 @@ class CourseMistakeService:
             return None
         payload = self._json_dict(getattr(event, "payload_json", None))
         questions = payload.get("questions")
-        mistake_ids = payload.get("mistake_ids")
-        if not isinstance(questions, list) or not questions or not isinstance(mistake_ids, list):
+        if not isinstance(questions, list) or not questions:
+            return {"ok": False, "error": "invalid_mistake_review_session"}
+        if int(payload.get("version") or 0) == MISTAKE_REVIEW_VERSION:
+            return {
+                "ok": True,
+                "duplicate": True,
+                "session": {
+                    "id": session_id,
+                    "version": MISTAKE_REVIEW_VERSION,
+                    "category": payload.get("category") or "all",
+                    "targets": len(payload.get("target_ids") or []),
+                    "questions": [drills.public_question(question) for question in questions],
+                },
+            }
+        if not isinstance(payload.get("mistake_ids"), list):
             return {"ok": False, "error": "invalid_mistake_review_session"}
         return {
             "ok": True,
@@ -772,12 +1047,71 @@ class CourseMistakeService:
             },
         }
 
+    @classmethod
+    def _client_formats(cls, formats) -> frozenset:
+        """Klient ko'rsata oladigan mashq turlari. Ro'yxat yo'q — eski klient."""
+        if not isinstance(formats, (list, tuple)):
+            return drills.LEGACY_CLIENT_FORMATS
+        declared = frozenset(cls._text(value, 40) for value in formats[:40]) & drills.ALL_FORMATS
+        return declared or drills.LEGACY_CLIENT_FORMATS
+
+    @classmethod
+    def _review_v3_snapshot_question(cls, question: dict) -> dict:
+        """Sessiya snapshot'i uchun ixcham savol (baholash maydonlari bilan)."""
+        base = {
+            "id": cls._text(question.get("id"), 160),
+            "target_id": int(question.get("target_id") or 0),
+            "category": cls._text(question.get("category"), 24),
+            "format": cls._text(question.get("format"), 64),
+            "language": cls._language(question.get("language")),
+            "prompt": cls._text(question.get("prompt"), 600),
+            "sentence": cls._text(question.get("sentence"), 600),
+            "pinyin": cls._text(question.get("pinyin"), 300),
+            "audio_text": cls._text(question.get("audio_text"), 240),
+            "explanation": cls._text(question.get("explanation"), 600),
+            "material_version": int(question.get("material_version") or drills.DRILL_MATERIAL_VERSION),
+        }
+        if question.get("replay_format"):
+            base["replay_format"] = cls._text(question.get("replay_format"), 64)
+        tokens = question.get("tokens")
+        if isinstance(tokens, list) and tokens:
+            base.update(
+                {
+                    "options": [],
+                    "tokens": [cls._text(value, 200) for value in tokens[:30]],
+                    "answer_tokens": [cls._text(value, 200) for value in (question.get("answer_tokens") or [])[:30]],
+                    "correct_answer": cls._text(question.get("correct_answer"), 700),
+                }
+            )
+            return base
+        base.update(
+            {
+                "options": [cls._text(value, 300) for value in (question.get("options") or [])[:6]],
+                "answer_index": int(question.get("answer_index")),
+            }
+        )
+        return base
+
+    @staticmethod
+    def _interleave(plans: list[tuple]) -> list[dict]:
+        """Bitta nishonning mashqlari ketma-ket kelmasin: t1f1, t2f1, ..., t1f2, ..."""
+        ordered = []
+        depth = max((len(questions) for _, questions, _ in plans), default=0)
+        for index in range(depth):
+            for _, questions, _ in plans:
+                if index < len(questions):
+                    ordered.append(questions[index])
+        return ordered
+
     async def start_review(
         self,
         telegram_id: int,
         *,
         ad_supported: bool = False,
         access_ref: str = "",
+        category: str | None = None,
+        formats=None,
+        language: str | None = None,
     ) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -786,22 +1120,49 @@ class CourseMistakeService:
             access_ref = self.access.normalize_access_ref(access_ref)
         except ValueError:
             return {"ok": False, "error": "invalid_access_ref"}
+        category = self._text(category, 24).lower() or None
+        if category == "all":
+            category = None
+        if category and category not in COURSE_MISTAKE_CATEGORIES:
+            return {"ok": False, "error": "invalid_mistake_category"}
+        scope = category or "all"
+        client_formats = self._client_formats(formats)
         session_digest = hashlib.sha256(
-            f"mistake-review:{user.id}:{access_ref}".encode("utf-8")
+            f"mistake-review:{user.id}:{access_ref}:{scope}".encode("utf-8")
         ).hexdigest()[:16]
         session_id = f"mistake-review:{user.id}:v{MISTAKE_REVIEW_VERSION}:{session_digest}"
         existing = await self._existing_review_session(user, session_id)
         if existing:
             return existing
-        # Nomzodlarni keragidan ko'proq olamiz: eski (kontentsiz) xatolar
-        # `_review_question` da tashlanadi, shuning uchun 10 tasini olsak
-        # sessiya kamayib qolardi. Yaroqlilaridan birinchi 10 tasi olinadi.
-        items = await self._items(user.id, limit=MISTAKE_REVIEW_CANDIDATES)
-        if not items:
-            return {"ok": False, "error": "mistake_review_empty"}
-        review_items = self._review_questions(items)[:MISTAKE_REVIEW_QUESTIONS]
-        if not review_items:
-            return {"ok": False, "error": "mistake_review_empty"}
+        language = self._review_language(user, language)
+        try:
+            await self._sync_targets(user)
+        except Exception:  # noqa: BLE001 — backfill takrorni yiqitmasin
+            logger.exception("Mistake target sync failed for user %s", user.id)
+            await self.session.rollback()
+
+        # Nomzodlar ko'p olinadi: ba'zi nishon shu klientda savol bera olmasligi
+        # mumkin (masalan eski klient builder'ni ko'rsata olmaydi).
+        rows = await self.targets.active(
+            user.id, category=category, limit=MISTAKE_REVIEW_TARGET_CANDIDATES
+        )
+        plans = []
+        for row in rows:
+            questions, required = drills.plan_target(
+                drill_target(row),
+                language=language,
+                seed=session_id,
+                client_formats=client_formats,
+                passed=set(split_csv(row.passed_formats)),
+            )
+            if questions:
+                plans.append((row, questions, required))
+            if len(plans) >= MISTAKE_REVIEW_TARGETS:
+                break
+        if not plans:
+            await self.session.commit()
+            return {"ok": False, "error": "mistake_review_empty", "category": scope}
+
         usage_ref = f"mistake-review:v{MISTAKE_REVIEW_VERSION}"
         # Xatolar bo'limi AI token sarflamaydi — reklama bilan davom CHEKSIZ.
         # Bepul: umrbod 1 marta (consume_free_use, lifetime). Bepul tugagach ham
@@ -813,6 +1174,7 @@ class CourseMistakeService:
                 access_ref=access_ref,
             )
             if not ad_access.get("allowed"):
+                await self.session.commit()
                 return {
                     "ok": False,
                     "error": ad_access.get("error") or "ad_authorization_required",
@@ -824,34 +1186,44 @@ class CourseMistakeService:
                 usage_ref=f"{usage_ref}:{access_ref}",
             )
             if not access.get("allowed"):
+                await self.session.commit()
                 return {
                     "ok": False,
                     "error": access.get("error") or "free_feature_limit_reached",
                     # Reklama cheksiz (AI emas) — har doim mavjud.
                     "ad": {"available": True, "limited": False},
                 }
-        items = [item for item, _ in review_items]
-        questions = [question for _, question in review_items]
-        question_snapshot = [self._review_session_question(question) for question in questions]
-        started_payload = {
-            "question_count": len(question_snapshot),
-            "mistake_ids": [item.id for item in items],
-            "questions": question_snapshot,
-            "answer_commit_required": True,
-            "access_ref": access_ref,
-            "ad_supported": bool(ad_supported),
-        }
-        # Keep the immutable snapshot intact instead of letting the analytics
-        # serializer replace an oversized payload with a truncated preview.
+
+        questions = self._interleave(plans)
+        snapshot = [self._review_v3_snapshot_question(question) for question in questions]
+        required = {str(int(row.id)): int(need) for row, _, need in plans}
+
+        def payload_for(items: list[dict]) -> dict:
+            target_ids = []
+            for item in items:
+                if item["target_id"] not in target_ids:
+                    target_ids.append(item["target_id"])
+            return {
+                "version": MISTAKE_REVIEW_VERSION,
+                "question_count": len(items),
+                "target_ids": target_ids,
+                "required": {key: value for key, value in required.items() if int(key) in target_ids},
+                "questions": items,
+                "answer_commit_required": True,
+                "access_ref": access_ref,
+                "ad_supported": bool(ad_supported),
+                "category": scope,
+                "language": language,
+            }
+
+        started_payload = payload_for(snapshot)
+        # Snapshot butun qolishi shart (analitika katta payload'ni kesib qo'yardi).
         while (
-            len(items) > 1
+            len(snapshot) > 1
             and self._review_started_payload_size(started_payload) > MAX_EVENT_PAYLOAD_CHARS - 200
         ):
-            items.pop()
-            questions.pop()
-            question_snapshot.pop()
-            started_payload["question_count"] = len(question_snapshot)
-            started_payload["mistake_ids"] = [item.id for item in items]
+            snapshot.pop()
+            started_payload = payload_for(snapshot)
         if self._review_started_payload_size(started_payload) > MAX_EVENT_PAYLOAD_CHARS - 200:
             return {"ok": False, "error": "mistake_review_material_too_large"}
         event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
@@ -875,7 +1247,10 @@ class CourseMistakeService:
             "ok": True,
             "session": {
                 "id": session_id,
-                "questions": [self._public_review_question(question) for question in questions],
+                "version": MISTAKE_REVIEW_VERSION,
+                "category": scope,
+                "targets": len(started_payload["target_ids"]),
+                "questions": [drills.public_question(question) for question in snapshot],
             },
         }
 
@@ -1082,6 +1457,202 @@ class CourseMistakeService:
             "explanation": answer_payload["explanation"],
         }
 
+    async def _v3_submitted(self, user, session_id: str, questions: dict[str, dict]) -> dict | None:
+        """Serverga Tekshirish'da yozilgan javoblar (savol id -> tanlov)."""
+        answered_result = await self.session.execute(
+            select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.user_id == user.id,
+                CourseMiniAppEvent.event_name == "mistake_review_answered",
+                CourseMiniAppEvent.session_id == session_id,
+            )
+        )
+        submitted = {}
+        for event in answered_result.scalars().all():
+            answer_payload = self._json_dict(getattr(event, "payload_json", None))
+            question_id = self._text(answer_payload.get("question_id"), 160)
+            if not question_id or question_id in submitted or question_id not in questions:
+                return None
+            if answer_payload.get("answer_type") == "tokens":
+                selected = answer_payload.get("selected_tokens")
+                if not isinstance(selected, list):
+                    return None
+                submitted[question_id] = [self._text(value, 200) for value in selected]
+            else:
+                try:
+                    submitted[question_id] = int(answer_payload.get("selected_index"))
+                except (TypeError, ValueError):
+                    return None
+        return submitted
+
+    async def _hand_off_to_word_mastery(self, user, rows: list) -> None:
+        """Yopilgan so'z interval takroriga o'tadi (1 -> 3 -> 7 -> 21 kun).
+
+        SAVEPOINT ichida: bu yozuv muvaffaqiyatsiz bo'lsa ham takror natijasi saqlanadi.
+        """
+        words = [row for row in rows if row.kind == "word"]
+        if not words or not hasattr(self.session, "begin_nested"):
+            return
+        from app.services.course_word_mastery_service import CourseWordMasteryService
+
+        try:
+            async with self.session.begin_nested():
+                service = CourseWordMasteryService(self.session)
+                for skill, group in (
+                    ("pronunciation", [row for row in words if row.category == "pronunciation"]),
+                    ("recognition", [row for row in words if row.category != "pronunciation"]),
+                ):
+                    if group:
+                        await service.record_drill(
+                            user,
+                            skill=skill,
+                            results=[{"hanzi": row.zh, "correct": True} for row in group],
+                        )
+        except Exception:  # noqa: BLE001
+            logger.exception("Word mastery hand-off failed for user %s", getattr(user, "id", None))
+
+    async def _complete_review_v3(self, user, telegram_id: int, session_id: str, started_payload: dict) -> dict:
+        snapshot = started_payload.get("questions")
+        if not isinstance(snapshot, list) or not snapshot:
+            return {"ok": False, "error": "invalid_mistake_review_session"}
+        questions: dict[str, dict] = {}
+        for raw in snapshot:
+            if not isinstance(raw, dict):
+                return {"ok": False, "error": "invalid_mistake_review_session"}
+            question_id = self._text(raw.get("id"), 160)
+            if not question_id or question_id in questions:
+                return {"ok": False, "error": "invalid_mistake_review_session"}
+            questions[question_id] = raw
+        submitted = await self._v3_submitted(user, session_id, questions)
+        if submitted is None:
+            return {"ok": False, "error": "invalid_mistake_review_session"}
+        if set(submitted) != set(questions):
+            return {"ok": False, "error": "mistake_review_answers_incomplete"}
+
+        try:
+            target_ids = [int(value) for value in started_payload.get("target_ids") or []]
+        except (TypeError, ValueError):
+            return {"ok": False, "error": "invalid_mistake_review_session"}
+        required = started_payload.get("required") if isinstance(started_payload.get("required"), dict) else {}
+        rows = await self.targets.by_ids(user.id, target_ids, lock=True)
+        now = datetime.now(timezone.utc)
+        progress = {target_id: set(split_csv(row.passed_formats)) for target_id, row in rows.items()}
+        answered_correct: set[int] = set()
+        score = 0
+        for raw in snapshot:
+            question_id = self._text(raw.get("id"), 160)
+            selected = submitted[question_id]
+            if isinstance(raw.get("tokens"), list) and raw.get("tokens"):
+                correct = isinstance(selected, list) and selected == [
+                    self._text(value, 200) for value in raw.get("answer_tokens") or []
+                ]
+            else:
+                try:
+                    correct = int(selected) == int(raw.get("answer_index"))
+                except (TypeError, ValueError):
+                    correct = False
+            score += int(correct)
+            try:
+                target_id = int(raw.get("target_id"))
+            except (TypeError, ValueError):
+                continue
+            row = rows.get(target_id)
+            if row is None:
+                continue
+            row.review_count = int(row.review_count or 0) + 1
+            row.last_reviewed_at = now
+            format_key = "replay" if raw.get("replay_format") else self._text(raw.get("format"), 64)
+            if correct:
+                progress[target_id].add(format_key)
+                answered_correct.add(target_id)
+            else:
+                # Xato — progress nolga: nishon keyingi sessiyada qaytadi.
+                progress[target_id].clear()
+
+        cleared = []
+        for target_id, row in rows.items():
+            need = max(1, int(required.get(str(target_id)) or drills.REQUIRED_FORMATS))
+            passed = progress.get(target_id, set())
+            if row.status == "active" and len(passed) >= need:
+                row.status = "cleared"
+                row.cleared_at = now
+                row.cleared_count = int(row.cleared_count or 0) + 1
+                row.passed_formats = ""
+                await self.targets.resolve_rows(row, now)
+                cleared.append(row)
+            else:
+                row.passed_formats = ",".join(sorted(passed))[:300]
+        await self.session.flush()
+        await self._hand_off_to_word_mastery(user, cleared)
+
+        total = len(snapshot)
+        percent = round((score / total) * 100) if total else 0
+        remaining = sum((await self.targets.counts(user.id)).values())
+        # "Ishonchli" manbadan kelgan nishonda to'g'ri javob bo'lsa — 5 XP
+        # (sessiyaga bir marta). Qoida v2 bilan bir xil: mijoz o'zi
+        # "yozgan" xatoni tuzatib XP yig'a olmasin.
+        reward_eligible = any(
+            set(split_csv(rows[target_id].sources)) & TRUSTED_MISTAKE_REWARD_SOURCES
+            for target_id in answered_correct
+            if target_id in rows
+        )
+        if reward_eligible:
+            reward = await self.gamification.award(
+                user,
+                activity_type="mistake_review",
+                activity_ref=f"{session_id}:xp",
+                base_xp=5,
+                level=getattr(user, "level", None),
+            )
+        else:
+            reward = {"awarded_xp": 0, "duplicate": False}
+        cleared_items = [
+            {"id": int(row.id), "zh": row.zh, "category": row.category, "kind": row.kind}
+            for row in cleared
+        ]
+        event = await CourseMiniAppAnalyticsService(self.session).record_server_event(
+            event_name="mistake_review_completed",
+            telegram_id=telegram_id,
+            user_id=user.id,
+            session_id=session_id,
+            dedupe_key=f"{session_id}:completed",
+            payload={
+                "version": MISTAKE_REVIEW_VERSION,
+                "score": score,
+                "total": total,
+                "percent": percent,
+                "remaining": remaining,
+                "cleared": len(cleared),
+                "cleared_targets": cleared_items[:10],
+                "category": started_payload.get("category") or "all",
+            },
+        )
+        if not event.get("ok"):
+            return {"ok": False, "error": "mistake_review_result_write_failed"}
+        if event.get("duplicate"):
+            await self.session.rollback()
+            completed_result = await self.session.execute(
+                select(CourseMiniAppEvent).where(
+                    CourseMiniAppEvent.user_id == user.id,
+                    CourseMiniAppEvent.event_name == "mistake_review_completed",
+                    CourseMiniAppEvent.session_id == session_id,
+                )
+            )
+            completed = completed_result.scalar_one_or_none()
+            if completed:
+                return self._completed_review_response(completed)
+            return {"ok": False, "error": "mistake_review_result_write_failed"}
+        await self.session.commit()
+        return {
+            "ok": True,
+            "score": score,
+            "total": total,
+            "percent": percent,
+            "remaining": remaining,
+            "cleared": len(cleared),
+            "cleared_targets": cleared_items,
+            "reward": reward,
+        }
+
     async def complete_review(self, telegram_id: int, *, session_id: str, answers: list) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -1109,6 +1680,9 @@ class CourseMistakeService:
         completed = completed_result.scalar_one_or_none()
         if completed:
             return self._completed_review_response(completed)
+        v3_payload = self._json_dict(getattr(started, "payload_json", None))
+        if int(v3_payload.get("version") or 0) == MISTAKE_REVIEW_VERSION:
+            return await self._complete_review_v3(user, telegram_id, session_id, v3_payload)
         try:
             started_payload = json.loads(started.payload_json or "{}")
             mistake_ids = [int(value) for value in started_payload.get("mistake_ids", [])]

@@ -355,6 +355,13 @@ class AndroidMistakeReviewStartRequest(BaseModel):
 
     ad_supported: bool = False
     access_ref: str = Field(default="", max_length=160)
+    # Universal takror (v3): kategoriya doirasi va ilova ko'rsata oladigan
+    # mashq turlari. `formats` yo'q — eski build, faqat variantli savollar.
+    category: str | None = Field(default=None, max_length=24)
+    formats: list[Annotated[str, StringConstraints(max_length=40)]] | None = Field(
+        default=None, max_length=40
+    )
+    language: str | None = Field(default=None, max_length=8)
 
 
 class AndroidMistakeReviewAnswerRequest(BaseModel):
@@ -362,14 +369,25 @@ class AndroidMistakeReviewAnswerRequest(BaseModel):
 
     session_id: AndroidSessionId
     question_id: AndroidQuestionId
-    selected_index: int = Field(ge=0, le=32)
+    selected_index: int | None = Field(default=None, ge=0, le=32)
+    # Gap tuzish savoli: tanlangan bo'laklar tartibi.
+    selected_tokens: list[Annotated[str, StringConstraints(max_length=200)]] | None = Field(
+        default=None, max_length=30
+    )
+
+    @model_validator(mode="after")
+    def _one_answer(self):
+        if (self.selected_index is None) == (self.selected_tokens is None):
+            raise ValueError("exactly one of selected_index / selected_tokens is required")
+        return self
 
 
 class AndroidMistakeReviewCompleteAnswer(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     question_id: AndroidQuestionId
-    selected_index: int = Field(ge=0, le=32)
+    # v3 javoblarni serverdagi yozuvdan oladi; bo'lak javobida indeks yo'q.
+    selected_index: int | None = Field(default=None, ge=0, le=32)
 
 
 class AndroidMistakeReviewCompleteRequest(BaseModel):
@@ -1205,7 +1223,7 @@ def create_android_features_router(
     @router.get("/api/v3/android/mistakes")
     async def android_mistakes(request: Request):
         try:
-            unexpected = set(request.query_params) - {"category", "limit", "offset"}
+            unexpected = set(request.query_params) - {"category", "limit", "offset", "view", "lang"}
             if unexpected:
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
             category = str(request.query_params.get("category") or "").strip().lower()
@@ -1218,6 +1236,8 @@ def create_android_features_router(
                     category=category or None,
                     limit=request.query_params.get("limit", "30"),
                     offset=request.query_params.get("offset", "0"),
+                    view=request.query_params.get("view"),
+                    language=request.query_params.get("lang"),
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1238,6 +1258,9 @@ def create_android_features_router(
                     telegram_id,
                     ad_supported=payload.ad_supported,
                     access_ref=payload.access_ref,
+                    category=payload.category,
+                    formats=payload.formats,
+                    language=payload.language,
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1258,7 +1281,11 @@ def create_android_features_router(
                     telegram_id,
                     session_id=payload.session_id,
                     question_id=payload.question_id,
-                    selected_index=payload.selected_index,
+                    selected_index=(
+                        payload.selected_tokens
+                        if payload.selected_tokens is not None
+                        else payload.selected_index
+                    ),
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1284,7 +1311,7 @@ def create_android_features_router(
                     answers=[
                         {
                             "question_id": item.question_id,
-                            "selected_index": int(item.selected_index),
+                            "selected_index": int(item.selected_index or 0),
                         }
                         for item in payload.answers
                     ],

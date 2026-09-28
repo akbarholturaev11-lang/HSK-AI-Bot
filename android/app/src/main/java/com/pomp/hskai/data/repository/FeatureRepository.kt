@@ -70,6 +70,27 @@ import com.pomp.hskai.data.api.VoiceStartResponse
 import com.pomp.hskai.data.api.VoiceStatusResponse
 import java.util.TimeZone
 
+/**
+ * Mistake-review exercises this build can draw (`MistakesReviewRun`): every
+ * option question, plus sentence building from tiles. The server only issues
+ * these; an older build sends none and receives option questions only.
+ */
+internal val MISTAKE_REVIEW_FORMATS = listOf(
+    "meaning_choice",
+    "hanzi_choice",
+    "hanzi_from_pinyin",
+    "pinyin_choice",
+    "listening_choice",
+    "listening_pinyin",
+    "sentence_listening",
+    "sentence_meaning",
+    "gap_fill",
+    "dialog_choice",
+    "correct_choice",
+    "sentence_builder",
+    "listen_builder",
+)
+
 class FeatureRepository(
     private val api: AndroidFeatureApi,
     private val accessToken: suspend () -> ApiResult<String>,
@@ -134,26 +155,35 @@ class FeatureRepository(
         api.referral(it, timezoneOffsetMinutes())
     }
 
+    /** One row per word/sentence the learner got wrong (`view=targets`). */
     suspend fun mistakes(
         category: String? = null,
         limit: Int = 30,
         offset: Int = 0,
     ): ApiResult<MistakesOverviewResponse> = authorized {
-        api.mistakes(it, category = category, limit = limit, offset = offset)
+        api.mistakes(it, category = category, limit = limit, offset = offset, view = "targets")
     }
 
-    suspend fun startMistakeReview(accessRef: String = ""): ApiResult<MistakeReviewStartResponse> =
+    suspend fun startMistakeReview(
+        accessRef: String = "",
+        category: String? = null,
+    ): ApiResult<MistakeReviewStartResponse> =
         authorized {
             api.mistakeReviewStart(
                 it,
-                MistakeReviewStartRequest(accessRef = accessRef),
+                MistakeReviewStartRequest(
+                    accessRef = accessRef,
+                    category = category?.takeIf { value -> value != "all" },
+                    formats = MISTAKE_REVIEW_FORMATS,
+                ),
             )
         }
 
     suspend fun answerMistakeReview(
         sessionId: String,
         questionId: String,
-        selectedIndex: Int,
+        selectedIndex: Int? = null,
+        selectedTokens: List<String>? = null,
     ): ApiResult<MistakeReviewAnswerResponse> = authorized {
         api.mistakeReviewAnswer(
             it,
@@ -161,6 +191,7 @@ class FeatureRepository(
                 sessionId = sessionId,
                 questionId = questionId,
                 selectedIndex = selectedIndex,
+                selectedTokens = selectedTokens,
             ),
         )
     }

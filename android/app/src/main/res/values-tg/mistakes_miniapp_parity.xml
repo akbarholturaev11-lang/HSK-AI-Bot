@@ -6,7 +6,6 @@
     <string name="mistakes_empty_subtitle">Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.</string>
     <string name="mistakes_to_course">Ба дарсҳо</string>
     <string name="mistakes_review">Кор бар хатоҳо</string>
-    <string name="mistakes_review_subtitle">хатои фаъол</string>
     <string name="mistakes_start">Оғоз</string>
     <string name="mistakes_all">Ҳама</string>
     <string name="mistakes_retry">Боз кӯшиш</string>
@@ -36,4 +35,11 @@
     <string name="mistakes_loading">Боргирӣ…</string>
     <string name="mistakes_more">Боз нишон додан</string>
     <string name="mistakes_error">Хатогӣ рух дод. Боз кӯшиш кунед.</string>
+    <string name="mistakes_review_count">Хатоҳо: %1$d · ҳар кадом дар 3 машқи гуногун</string>
+    <string name="mistakes_review_category">Такрор: %1$s</string>
+    <string name="mistakes_progress">%1$d аз %2$d машқ</string>
+    <string name="mistakes_result_cleared">Пурра ислоҳ шуд: %1$d</string>
+    <string name="mistakes_source_pronunciation">Машқи талаффуз</string>
+    <string name="mistakes_source_recognition">Шинохти иероглиф</string>
+    <string name="mistakes_source_memorize">Ёдгирӣ</string>
 </resources>

@@ -62,10 +62,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -83,7 +86,7 @@ import com.pomp.hskai.core.design.components.hskReactionFor
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
-import com.pomp.hskai.data.api.MistakeItemDto
+import com.pomp.hskai.data.api.MistakeTargetDto
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
 import com.pomp.hskai.data.api.MistakeReviewQuestionDto
@@ -99,12 +102,15 @@ internal fun MistakesOverviewScreen(
     onBack: () -> Unit,
     onStartReview: () -> Unit,
     onReload: () -> Unit,
+    onSelectCategory: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val overview = state.mistakes
     val total = overview?.summary?.total ?: 0
-    var category by rememberSaveable { mutableStateOf("all") }
+    // The chip lives in the view model: it also scopes the review that Start
+    // opens, so the list and the review never disagree about the category.
+    val category = state.mistakeCategory
     var visibleCount by rememberSaveable { mutableIntStateOf(MISTAKES_VISIBLE_PAGE) }
 
     val availableCategories = remember(overview?.summary?.categories) {
@@ -115,10 +121,10 @@ internal fun MistakesOverviewScreen(
             }
         }
     }
-    if (category !in availableCategories) category = "all"
+    if (category !in availableCategories && overview != null) onSelectCategory("all")
 
-    val filteredItems = remember(overview?.items, category) {
-        overview?.items.orEmpty().filter { category == "all" || it.category == category }
+    val filteredItems = remember(overview?.targets, category) {
+        overview?.targets.orEmpty().filter { category == "all" || it.category == category }
     }
     val shownItems = filteredItems.take(visibleCount)
 
@@ -161,7 +167,17 @@ internal fun MistakesOverviewScreen(
             }
             else -> {
                 item {
-                    MistakesReviewCta(total = total, busy = state.isStarting, onStartReview = onStartReview)
+                    val scopeCount = if (category == "all") total else overview.summary.categories[category] ?: 0
+                    MistakesReviewCta(
+                        title = if (category == "all") {
+                            stringResource(R.string.mistakes_review)
+                        } else {
+                            stringResource(R.string.mistakes_review_category, mistakeCategoryLabel(category))
+                        },
+                        count = scopeCount,
+                        busy = state.isStarting,
+                        onStartReview = onStartReview,
+                    )
                     Spacer(Modifier.height(14.dp))
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(7.dp),
@@ -173,7 +189,7 @@ internal fun MistakesOverviewScreen(
                                 text = "${mistakeCategoryLabel(key)} · $count",
                                 selected = category == key,
                                 onClick = {
-                                    category = key
+                                    onSelectCategory(key)
                                     visibleCount = MISTAKES_VISIBLE_PAGE
                                 },
                             )
@@ -191,7 +207,7 @@ internal fun MistakesOverviewScreen(
                     }
                 } else {
                     items(shownItems, key = { it.id }) { item ->
-                        MistakeCard(item)
+                        MistakeTargetCard(item)
                         Spacer(Modifier.height(10.dp))
                     }
                 }
@@ -260,7 +276,7 @@ private fun MistakesHeader(onBack: () -> Unit) {
 }
 
 @Composable
-private fun MistakesReviewCta(total: Int, busy: Boolean, onStartReview: () -> Unit) {
+private fun MistakesReviewCta(title: String, count: Int, busy: Boolean, onStartReview: () -> Unit) {
     val foreground = if (PompColors.IsDark) PompColors.Ink else Color.White
     val surface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
     Surface(
@@ -282,14 +298,14 @@ private fun MistakesReviewCta(total: Int, busy: Boolean, onStartReview: () -> Un
                     Icon(Icons.Filled.Refresh, contentDescription = null, tint = foreground, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = stringResource(R.string.mistakes_review),
+                        text = title,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = foreground,
                     )
                 }
                 Text(
-                    text = "$total ${stringResource(R.string.mistakes_review_subtitle)}",
+                    text = stringResource(R.string.mistakes_review_count, count),
                     fontSize = 13.sp,
                     color = foreground.copy(alpha = 0.72f),
                     modifier = Modifier.padding(top = 5.dp, bottom = 13.dp),
@@ -323,9 +339,14 @@ private fun MistakeCategoryChip(text: String, selected: Boolean, onClick: () -> 
     }
 }
 
+/**
+ * One thing the learner got wrong: the word or sentence with its pinyin and
+ * meaning, what they answered instead, and how many of its three exercises
+ * are already passed.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun MistakeCard(item: MistakeItemDto) {
+private fun MistakeTargetCard(item: MistakeTargetDto) {
     HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(15.dp),
@@ -357,51 +378,104 @@ private fun MistakeCard(item: MistakeItemDto) {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier.padding(bottom = 5.dp),
                 ) {
-                    MistakeMetaTag(mistakeCategoryLabel(item.category))
-                    val source = mistakeSourceLabel(item.source)
-                    if (source.isNotBlank()) MistakeMetaTag(source)
-                    item.lesson?.takeIf { it > 0 }?.let { lesson ->
-                        MistakeMetaTag("${stringResource(R.string.mistakes_lesson)} $lesson")
-                    }
+                    val categoryLabel = mistakeCategoryLabel(item.category)
+                    MistakeMetaTag(categoryLabel)
+                    val source = mistakeSourceLabel(item.sources.firstOrNull().orEmpty())
+                    if (source.isNotBlank() && source != categoryLabel) MistakeMetaTag(source)
                 }
 
-                Text(item.question, fontSize = 17.sp, fontWeight = FontWeight.Bold, color = PompColors.Ink)
-                if (item.sentence.isNotBlank() && item.sentence != item.question) {
+                if (item.kind == "question") {
                     Text(
-                        text = item.sentence,
-                        style = PompTextStyles.hanziSmall,
-                        fontSize = 16.sp,
-                        lineHeight = 23.sp,
+                        text = item.question.ifBlank { item.zh },
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
                         color = PompColors.Ink,
-                        modifier = Modifier.padding(top = 5.dp),
                     )
-                }
-                if (item.pinyin.isNotBlank()) {
-                    Text(
-                        text = item.pinyin,
-                        fontSize = 12.sp,
-                        color = PompColors.Cinnabar,
-                        modifier = Modifier.padding(top = 2.dp),
-                    )
+                    if (item.zh.isNotBlank() && item.zh != item.question) {
+                        Text(
+                            text = item.zh,
+                            style = PompTextStyles.hanziSmall,
+                            fontSize = 16.sp,
+                            lineHeight = 23.sp,
+                            color = PompColors.Ink,
+                            modifier = Modifier.padding(top = 5.dp),
+                        )
+                    }
+                } else {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp),
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = item.zh,
+                            style = PompTextStyles.hanziMedium,
+                            fontSize = 20.sp,
+                            lineHeight = 28.sp,
+                            color = PompColors.Ink,
+                        )
+                        if (item.pinyin.isNotBlank()) {
+                            Text(
+                                text = item.pinyin,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = PompColors.Cinnabar,
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                            )
+                        }
+                    }
+                    val meaning = item.meaning.ifBlank { item.translation }
+                    if (meaning.isNotBlank()) {
+                        Text(
+                            text = meaning,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                            color = PompColors.InkSecondary,
+                            modifier = Modifier.padding(top = 2.dp),
+                        )
+                    }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 3.dp)) {
-                    item.userAnswer?.takeIf { it.isNotBlank() }?.let { wrong ->
-                        Text(text = "✗ $wrong", fontSize = 12.sp, color = PompColors.Flame)
+                    if (item.wrong.isNotBlank()) {
+                        Text(text = "✗ ${item.wrong}", fontSize = 12.sp, color = PompColors.Flame)
                     }
-                    Text(text = "✓ ${item.correctAnswer}", fontSize = 12.sp, color = PompColors.Jade)
+                    if (item.kind == "question" && item.answer.isNotBlank()) {
+                        Text(text = "✓ ${item.answer}", fontSize = 12.sp, color = PompColors.Jade)
+                    }
                 }
             }
 
-            Surface(color = PompColors.FlameSoft, shape = RoundedCornerShape(9.dp)) {
-                Text(
-                    text = "${maxOf(item.count, 1)}×",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = PompColors.Flame,
-                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
+            MistakeProgress(passed = item.passed, required = item.required)
+        }
+    }
+}
+
+/** Three short bars and "1/3": how many different exercises this mistake has passed. */
+@Composable
+private fun MistakeProgress(passed: Int, required: Int) {
+    val total = required.coerceAtLeast(1)
+    val done = passed.coerceIn(0, total)
+    val description = stringResource(R.string.mistakes_progress, done, total)
+    Column(
+        horizontalAlignment = Alignment.End,
+        modifier = Modifier.semantics { contentDescription = description },
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            repeat(total) { index ->
+                Box(
+                    Modifier
+                        .size(width = 12.dp, height = 5.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(if (index < done) PompColors.Jade else PompColors.Divider),
                 )
             }
         }
+        Text(
+            text = "$done/$total",
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = PompColors.InkDisabled,
+            modifier = Modifier.padding(top = 4.dp),
+        )
     }
 }
 
@@ -502,6 +576,7 @@ internal fun MistakesReviewRun(
     onCancel: () -> Unit,
     onSpeak: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onSubmitTokens: (List<String>) -> Unit = {},
 ) {
     val session = state.reviewSession ?: return
     val question = session.questions.getOrNull(state.reviewIndex) ?: return
@@ -509,8 +584,10 @@ internal fun MistakesReviewRun(
     val total = session.questions.size.coerceAtLeast(1)
     val progress = (state.reviewIndex + if (feedback != null) 1 else 0).toFloat() / total
     var picked by remember(state.reviewIndex) { mutableStateOf<Int?>(null) }
+    // Sentence building: indexes into question.tokens, in the order laid.
+    var laid by remember(state.reviewIndex) { mutableStateOf(listOf<Int>()) }
     // Sent, and waiting for the server to say whether it was right.
-    val checking = state.reviewSelectedIndex != null && feedback == null
+    val checking = (state.reviewSelectedIndex != null || state.reviewSelectedTokens != null) && feedback == null
     val bottomInset = LocalMainBottomInset.current
 
     Box(modifier = modifier.fillMaxSize().background(PompColors.Paper)) {
@@ -560,6 +637,15 @@ internal fun MistakesReviewRun(
                         modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
+                        if (question.isBuilder) {
+                            ReviewTokenBuilder(
+                                tokens = question.tokens,
+                                laid = laid,
+                                enabled = feedback == null && !checking,
+                                onLay = { laid = laid + it },
+                                onLift = { position -> laid = laid.filterIndexed { index, _ -> index != position } },
+                            )
+                        }
                         question.options.forEachIndexed { index, option ->
                             HskAnswerOption(
                                 text = option,
@@ -608,6 +694,13 @@ internal fun MistakesReviewRun(
                     onContinue = onAdvance,
                     bottomInset = bottomInset,
                 )
+            } else if (question.isBuilder) {
+                PracticeCheckFooter(
+                    enabled = laid.size == question.tokens.size,
+                    loading = checking,
+                    onCheck = { onSubmitTokens(laid.map { question.tokens[it] }) },
+                    bottomInset = bottomInset,
+                )
             } else {
                 PracticeCheckFooter(
                     enabled = picked != null,
@@ -617,6 +710,74 @@ internal fun MistakesReviewRun(
                 )
             }
         }
+    }
+}
+
+/**
+ * Build the sentence from tiles: tap a tile to lay it, tap a laid tile to
+ * lift it back. Tekshirish (the footer) sends the order; the server grades.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ReviewTokenBuilder(
+    tokens: List<String>,
+    laid: List<Int>,
+    enabled: Boolean,
+    onLay: (Int) -> Unit,
+    onLift: (Int) -> Unit,
+) {
+    Column {
+        Surface(
+            color = PompColors.PaperRaised,
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+        ) {
+            if (laid.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.lesson_build_sentence),
+                    fontSize = 13.sp,
+                    color = PompColors.InkDisabled,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 22.dp),
+                )
+            } else {
+                FlowRow(modifier = Modifier.padding(10.dp)) {
+                    laid.forEachIndexed { position, index ->
+                        ReviewTile(text = tokens[index], enabled = enabled, onClick = { onLift(position) })
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        FlowRow {
+            tokens.indices.filterNot { it in laid }.forEach { index ->
+                ReviewTile(text = tokens[index], enabled = enabled, onClick = { onLay(index) })
+            }
+        }
+    }
+}
+
+/** The lesson's tile (`LessonCards.Tile`): cinnabar edge, dimmed when it cannot be tapped. */
+@Composable
+private fun ReviewTile(text: String, enabled: Boolean, onClick: () -> Unit) {
+    Surface(
+        color = if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper,
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(1.dp, PompColors.Cinnabar),
+        modifier = Modifier
+            .padding(4.dp)
+            .heightIn(min = 48.dp)
+            .alpha(if (enabled) 1f else 0.4f),
+        onClick = onClick,
+        enabled = enabled,
+    ) {
+        Text(
+            text = text,
+            style = PompTextStyles.hanziMedium,
+            fontSize = 20.sp,
+            color = PompColors.Ink,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        )
     }
 }
 
@@ -632,10 +793,13 @@ private fun ReviewMaterial(
     onSpeak: () -> Unit,
 ) {
     if (question.audioText.isNotBlank()) {
+        // A listening exercise has nothing else to look at: the speaker is the
+        // question, so it is the biggest thing in the bubble.
+        val speaker = if (question.autoplay) 54.dp else 42.dp
         Surface(
             color = PompColors.CinnabarSoft,
             shape = RoundedCornerShape(999.dp),
-            modifier = Modifier.size(42.dp).clickable(enabled = !isAudioLoading, onClick = onSpeak),
+            modifier = Modifier.size(speaker).clickable(enabled = !isAudioLoading, onClick = onSpeak),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 if (isAudioLoading) {
@@ -645,7 +809,7 @@ private fun ReviewMaterial(
                         Icons.Filled.VolumeUp,
                         contentDescription = stringResource(R.string.dictionary_listen),
                         tint = PompColors.Cinnabar,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(if (question.autoplay) 26.dp else 20.dp),
                     )
                 }
             }
@@ -765,7 +929,10 @@ private fun mistakeSourceLabel(source: String): String = when (source) {
     "training" -> stringResource(R.string.mistakes_source_training)
     "challenge" -> stringResource(R.string.mistakes_source_challenge)
     "voice" -> stringResource(R.string.mistakes_source_voice)
-    else -> source
+    "pronunciation" -> stringResource(R.string.mistakes_source_pronunciation)
+    "recognition" -> stringResource(R.string.mistakes_source_recognition)
+    "memorize" -> stringResource(R.string.mistakes_source_memorize)
+    else -> ""
 }
 
 private fun mistakeCategoryIcon(category: String): ImageVector = when (category) {

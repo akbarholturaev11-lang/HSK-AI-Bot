@@ -6,7 +6,6 @@
     <string name="mistakes_empty_subtitle">Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.</string>
     <string name="mistakes_to_course">К урокам</string>
     <string name="mistakes_review">Работа над ошибками</string>
-    <string name="mistakes_review_subtitle">активных ошибок</string>
     <string name="mistakes_start">Начать</string>
     <string name="mistakes_all">Все</string>
     <string name="mistakes_retry">Повторить</string>
@@ -36,4 +35,11 @@
     <string name="mistakes_loading">Загрузка…</string>
     <string name="mistakes_more">Показать ещё</string>
     <string name="mistakes_error">Произошла ошибка. Попробуйте снова.</string>
+    <string name="mistakes_review_count">Ошибок: %1$d · каждая — в 3 разных упражнениях</string>
+    <string name="mistakes_review_category">Повторить: %1$s</string>
+    <string name="mistakes_progress">%1$d из %2$d упражнений</string>
+    <string name="mistakes_result_cleared">Полностью исправлено: %1$d</string>
+    <string name="mistakes_source_pronunciation">Тренажёр произношения</string>
+    <string name="mistakes_source_recognition">Иероглифы</string>
+    <string name="mistakes_source_memorize">Запоминание</string>
 </resources>

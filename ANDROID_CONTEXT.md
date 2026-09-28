@@ -86,6 +86,17 @@ build'da ekanini bilmay chaqiradi.
   muddati uzaytirish o'rniga yangidan boshlashi mumkin. Renewal semantikasi
   serverda tuzatilmaguncha bu holatni ochmang.
 
+### 2026-09-28: Xatolarim — universal takror
+
+- Ro'yxat `view=targets` bilan nishonlarni oladi (`MistakeTargetDto`): ieroglif,
+  pinyin, ma'no, xato javob va `passed/required` progress. Chip
+  `PracticeUiState.mistakeCategory` da — u Boshlash takrorining doirasini ham belgilaydi.
+- Start `formats = MISTAKE_REVIEW_FORMATS` yuboradi (`FeatureRepository.kt`).
+  Yangi format qo'shilsa — avval `MistakesReviewRun` uni chiza olishi, keyin
+  ro'yxatga yozilishi shart. Ro'yxatsiz eski build faqat variantli savol oladi.
+- Gap tuzish (`ReviewTokenBuilder`) javobni `selected_tokens` bilan yuboradi;
+  tinglash savolida (`autoplay`) ovoz o'zi chalinadi, karnaycha kattaroq.
+
 ## 3. HOZIR OCHIQ MUAMMOLAR
 
 ### 3.1 ~~Mashq savollari buzuq~~ — TUZATILDI 2026-09-15

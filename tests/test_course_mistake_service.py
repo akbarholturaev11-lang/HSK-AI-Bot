@@ -43,6 +43,30 @@ def mistake(
     )
 
 
+def word_target_row(target_id=1, *, zh="你", category="word", passed=""):
+    return SimpleNamespace(
+        id=target_id,
+        user_id=7,
+        category=category,
+        kind="word",
+        target_key=f"key-{target_id}",
+        zh=zh,
+        level="hsk1",
+        payload_json=json.dumps(
+            {"pinyin": "nǐ", "meaning": {"uz": "sen", "ru": "ты", "tj": "ту"}},
+            ensure_ascii=False,
+        ),
+        sources="test",
+        status="active",
+        passed_formats=passed,
+        wrong_count=1,
+        review_count=0,
+        cleared_count=0,
+        last_reviewed_at=None,
+        cleared_at=None,
+    )
+
+
 class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.session = SimpleNamespace(commit=AsyncMock(), flush=AsyncMock())
@@ -221,7 +245,8 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(questions[1]["language"], "uz")
 
     async def test_review_uses_shared_training_entitlement(self):
-        self.service._items = AsyncMock(return_value=[mistake()])
+        self.service._sync_targets = AsyncMock(return_value=False)
+        self.service._target_store = SimpleNamespace(active=AsyncMock(return_value=[word_target_row()]))
         self.session.execute = AsyncMock(
             return_value=SimpleNamespace(scalar_one_or_none=lambda: None)
         )
@@ -237,14 +262,17 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
             result = await self.service.start_review(123, access_ref="review-ref-123")
 
         self.assertTrue(result["ok"])
-        self.assertTrue(result["session"]["id"].startswith("mistake-review:7:v2:"))
+        self.assertTrue(result["session"]["id"].startswith("mistake-review:7:v3:"))
         self.service.access.consume_free_use.assert_awaited_once_with(
             self.user,
             feature_key="training_test",
-            usage_ref="mistake-review:v2:review-ref-123",
+            usage_ref="mistake-review:v3:review-ref-123",
         )
         event_payload = analytics.record_server_event.await_args.kwargs["payload"]
-        self.assertEqual(event_payload["mistake_ids"], [1])
+        self.assertEqual(event_payload["target_ids"], [1])
+        # Bitta so'z nishoni — 3 xil mashq.
+        self.assertEqual(len(event_payload["questions"]), 3)
+        self.assertEqual(len({q["format"] for q in event_payload["questions"]}), 3)
         stored_question = event_payload["questions"][0]
         issued_question = result["session"]["questions"][0]
         self.assertEqual(stored_question["id"], issued_question["id"])
@@ -291,7 +319,8 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         )
 
     async def test_unreviewable_items_do_not_consume_free_entitlement(self):
-        self.service._items = AsyncMock(return_value=[mistake(user_answer=None, correct_answer="对")])
+        self.service._sync_targets = AsyncMock(return_value=False)
+        self.service._target_store = SimpleNamespace(active=AsyncMock(return_value=[]))
         self.session.execute = AsyncMock(
             return_value=SimpleNamespace(scalar_one_or_none=lambda: None)
         )
@@ -302,11 +331,12 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
 
         result = await self.service.start_review(123, access_ref="review-ref-123")
 
-        self.assertEqual(result, {"ok": False, "error": "mistake_review_empty"})
+        self.assertEqual(result, {"ok": False, "error": "mistake_review_empty", "category": "all"})
         self.service.access.consume_free_use.assert_not_awaited()
 
     async def test_ad_supported_review_requires_server_authorization(self):
-        self.service._items = AsyncMock(return_value=[mistake()])
+        self.service._sync_targets = AsyncMock(return_value=False)
+        self.service._target_store = SimpleNamespace(active=AsyncMock(return_value=[word_target_row()]))
         self.session.execute = AsyncMock(
             return_value=SimpleNamespace(scalar_one_or_none=lambda: None)
         )
@@ -695,6 +725,8 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
                     SimpleNamespace(scalar_one_or_none=lambda: self.user.id),
                     SimpleNamespace(scalar_one_or_none=lambda: None),
                     SimpleNamespace(scalar_one_or_none=lambda: None),
+                    # course_mistake_targets: hali nishon yo'q.
+                    SimpleNamespace(scalar_one_or_none=lambda: None),
                 ]
             ),
             add=Mock(side_effect=added.append),
@@ -711,7 +743,11 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertEqual(recorded, 1)
-        self.assertEqual(len(added), 1)
+        # Xato qatori + uning nishoni (你 so'zi).
+        self.assertEqual(len(added), 2)
+        self.assertEqual(added[1].kind, "word")
+        self.assertEqual(added[1].zh, "你")
+        self.assertEqual(added[0].target_key, added[1].target_key)
         material = json.loads(added[0].material_json)
         self.assertEqual(material["material_version"], 2)
         self.assertEqual(material["format"], "meaning_guess")

@@ -106,6 +106,8 @@ fun PracticeScreen(
     onResetPractice: () -> Unit,
     onStartMistakeReview: () -> Unit,
     onAnswerReview: (Int) -> Unit,
+    onAnswerReviewTokens: (List<String>) -> Unit = {},
+    onSelectMistakeCategory: (String) -> Unit = {},
     onAdvanceReview: () -> Unit,
     onResetReview: () -> Unit,
     onSpeakReview: (String) -> Unit,
@@ -161,6 +163,7 @@ fun PracticeScreen(
                 onAdvance = onAdvanceReview,
                 onCancel = rememberRunExit(onResetReview),
                 onSpeak = onSpeakReview,
+                onSubmitTokens = onAnswerReviewTokens,
             )
             mistakesOpen -> {
                 BackHandler { mistakesOpen = false }
@@ -169,6 +172,7 @@ fun PracticeScreen(
                     onBack = { mistakesOpen = false },
                     onStartReview = onStartMistakeReview,
                     onReload = onResetReview,
+                    onSelectCategory = onSelectMistakeCategory,
                 )
             }
             else -> PracticeHome(
