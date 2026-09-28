@@ -1639,7 +1639,7 @@
     async function loadTrialRiskReport(){
       const box=$("trialRiskReport");
       if(!box) return;
-      box.innerHTML="<p class='empty'>Shadow ma'lumoti yuklanmoqda…</p>";
+      box.innerHTML="<p class='empty'>Risk hisoboti yuklanmoqda…</p>";
       try{
         const data=await apiPost("/api/admin-miniapp/trial-risk",{days:7,limit:12});
         const risk=(data&&data.risk)||{}, sum=risk.summary||{}, examples=risk.examples||[];
@@ -1652,11 +1652,11 @@
           </div>`;
         const rows=examples.length?examples.map(item=>{
           const signals=(item.signals||[]).map(x=>esc(trialRiskSignalLabel(x))).join(" · ")||"signal yo'q";
-          return `<div class="frow"><div><b>User ${esc(item.telegram_id)}</b> · ${esc(item.client||"")}</div>
+          return `<div class="frow"><div><b>User ${esc(item.telegram_id)}</b> · ${esc(item.client||"")} · Risk ${Number(item.risk_score||0)}/100</div>
             <div class="hint">Akkaunt: ${esc(trialRiskAge(item.account_age_minutes))} · Device oldingi trial: ${Number(item.prior_device_trial_users||0)} · IP 24h: ${Number(item.prior_ip_trial_users_24h||0)} · IP 7d: ${Number(item.prior_ip_trial_users_7d||0)}</div>
             <div class="hint">${signals}</div></div>`;
         }).join(""):"<p class='empty'>7 kunda shubhali signal yozilmagan.</p>";
-        box.innerHTML=cards+`<div class="hint" style="margin-top:10px">Rejim: <b>SHADOW</b> — bu ma'lumotlar hozir hech kimni bloklamaydi.</div><div style="margin-top:10px">${rows}</div>`;
+        box.innerHTML=cards+`<div class="hint" style="margin-top:10px">Rejim: <b>ENFORCED</b> · threshold <b>${Number(risk.threshold||80)}/100</b>. Thresholdga yetgan hisobga trial taklifi user UI'da ko'rsatilmaydi. Risk score — ichki baho, fraud foizi emas.</div><div style="margin-top:10px">${rows}</div>`;
       }catch(e){
         box.innerHTML="<div class='danger-note'>Anti-abuse hisoboti yuklanmadi.</div>";
       }
@@ -1679,7 +1679,7 @@
         </div>
         <div class="mcard">
           <h3>🛡 Trial anti-abuse</h3>
-          <p>Android qurilma tarixi, IP va akkaunt yoshi kuzatiladi. Raw IP va qurilma kaliti saqlanmaydi.</p>
+          <p>Risk score serverda avtomatik hisoblanadi; admin sozlamasi yo'q. Raw IP va qurilma kaliti saqlanmaydi.</p>
           <div id="trialRiskReport"><p class="empty">Yuklanmoqda…</p></div>
           <button class="btn" type="button" data-trial-risk-refresh>Hisobotni yangilash</button>
         </div>

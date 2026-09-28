@@ -1,4 +1,4 @@
-"""HTTP-level regression for Pro-trial shadow telemetry on both clients."""
+"""HTTP-level regression for Pro-trial risk enforcement on both clients."""
 
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -57,7 +57,7 @@ class TrialRiskEntryPointTests(unittest.IsolatedAsyncioTestCase):
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.db, expire_on_commit=False)
         async with self.sessions() as session:
-            session.add_all([_user(1, 1001), _user(2, 2002)])
+            session.add_all([_user(1, 1001), _user(2, 2002), _user(3, 3003)])
             await session.commit()
 
         self.settings = SimpleNamespace(
@@ -146,6 +146,67 @@ class TrialRiskEntryPointTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(1, rows[1].prior_ip_trial_users_24h)
         self.assertNotEqual(REMOTE_IP, rows[0].ip_hash)
         self.assertEqual(rows[0].ip_hash, rows[1].ip_hash)
+
+    async def test_reused_android_installation_hides_offer_and_blocks_start(self):
+        device_hash = "c" * 64
+        now = datetime.now(timezone.utc)
+
+        async with self.sessions() as session:
+            session.add(
+                TrialRiskEvent(
+                    user_id=1,
+                    telegram_id=1001,
+                    client="android",
+                    source="android_trial",
+                    installation_key_hash=device_hash,
+                    ip_hash=None,
+                    account_age_minutes=4000,
+                    prior_device_trial_users=0,
+                    prior_ip_trial_users_24h=0,
+                    prior_ip_trial_users_7d=0,
+                    signals_json="[]",
+                    mode="shadow",
+                    created_at=now - timedelta(hours=2),
+                )
+            )
+            await session.commit()
+
+        android_context = SimpleNamespace(
+            user=SimpleNamespace(telegram_id=3003),
+            device=SimpleNamespace(installation_key_hash=device_hash),
+        )
+        with patch.object(
+            DesktopAuthService,
+            "authenticate",
+            AsyncMock(return_value=android_context),
+        ):
+            status = await self.client.get(
+                "/api/v3/android/trial/status",
+                headers={"Authorization": "Bearer test-token"},
+            )
+            start = await self.client.post(
+                "/api/v3/android/trial/start",
+                headers={"Authorization": "Bearer test-token"},
+            )
+
+        self.assertEqual(200, status.status_code)
+        trial = status.json()["trial"]
+        self.assertFalse(trial["eligible"])
+        self.assertEqual("trial_not_applicable", trial["reason"])
+
+        self.assertEqual(409, start.status_code)
+        self.assertEqual("trial_not_applicable", start.json()["error"])
+
+        async with self.sessions() as session:
+            user = await session.get(User, 3)
+            rows = (
+                await session.execute(
+                    select(TrialRiskEvent).order_by(TrialRiskEvent.id)
+                )
+            ).scalars().all()
+
+        self.assertFalse(user.trial_used)
+        self.assertEqual(1, len(rows))
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
-"""Pro trial anti-abuse shadow telemetry.
+"""Pro trial anti-abuse risk engine.
 
-V1 only observes facts. It never grants or denies access and never assigns a
-risk score. Raw IP addresses and raw native installation keys are not stored.
+The engine uses only privacy-safe signals already available to HSK AI. The
+score is an internal 0..100 risk score, not a fraud probability. Raw IP
+addresses and raw native installation keys are never stored.
 """
 
 from __future__ import annotations
@@ -21,7 +22,18 @@ from app.db.models.trial_risk_event import TrialRiskEvent
 
 logger = logging.getLogger(__name__)
 
-MODE_SHADOW = "shadow"
+MODE_ENFORCED = "enforced"
+
+# Fixed server-side policy. There is intentionally no admin control: changing
+# these values requires code review + tests + deploy.
+RISK_SCORE_THRESHOLD = 80
+RISK_SCORE_DEVICE_REUSE = 80
+RISK_SCORE_IP_24H_3 = 15
+RISK_SCORE_IP_24H_5 = 30
+RISK_SCORE_IP_24H_10 = 50
+RISK_SCORE_IP_7D_10 = 10
+RISK_SCORE_ACCOUNT_UNDER_1H = 5
+RISK_SCORE_ACCOUNT_UNDER_24H = 2
 
 
 def _as_utc(value: datetime | None) -> datetime | None:
@@ -43,7 +55,15 @@ class TrialRiskSnapshot:
     prior_ip_trial_users_24h: int = 0
     prior_ip_trial_users_7d: int = 0
     signals: tuple[str, ...] = ()
-    mode: str = MODE_SHADOW
+    mode: str = MODE_ENFORCED
+
+
+@dataclass(frozen=True)
+class TrialRiskDecision:
+    score: int
+    denied: bool
+    reasons: tuple[str, ...] = ()
+    threshold: int = RISK_SCORE_THRESHOLD
 
 
 class TrialRiskService:
@@ -97,7 +117,7 @@ class TrialRiskService:
         remote_ip: str | None = None,
         now: datetime | None = None,
     ) -> TrialRiskSnapshot:
-        """Build a fail-open shadow snapshot without changing trial behavior."""
+        """Build a fail-open risk snapshot without changing entitlement state."""
         now = now or datetime.now(timezone.utc)
         installation_hash = self._clean_installation_hash(installation_key_hash)
         ip_hash = self._hash_ip(remote_ip)
@@ -191,8 +211,53 @@ class TrialRiskService:
             signals=tuple(signals),
         )
 
+    @staticmethod
+    def evaluate(snapshot: TrialRiskSnapshot) -> TrialRiskDecision:
+        """Deterministically score one snapshot.
+
+        Account age is deliberately weak: a legitimate new learner may start
+        a trial immediately. Device reuse is the only single signal strong
+        enough to cross the threshold; IP needs corroborating evidence.
+        """
+        score = 0
+        reasons: list[str] = []
+
+        if snapshot.prior_device_trial_users > 0:
+            score += RISK_SCORE_DEVICE_REUSE
+            reasons.append("device_reuse")
+
+        ip24 = int(snapshot.prior_ip_trial_users_24h or 0)
+        if ip24 >= 10:
+            score += RISK_SCORE_IP_24H_10
+            reasons.append("ip_24h_10_plus")
+        elif ip24 >= 5:
+            score += RISK_SCORE_IP_24H_5
+            reasons.append("ip_24h_5_plus")
+        elif ip24 >= 3:
+            score += RISK_SCORE_IP_24H_3
+            reasons.append("ip_24h_3_plus")
+
+        if int(snapshot.prior_ip_trial_users_7d or 0) >= 10:
+            score += RISK_SCORE_IP_7D_10
+            reasons.append("ip_7d_10_plus")
+
+        age = snapshot.account_age_minutes
+        if age is not None and age < 60:
+            score += RISK_SCORE_ACCOUNT_UNDER_1H
+            reasons.append("account_under_1h")
+        elif age is not None and age < 24 * 60:
+            score += RISK_SCORE_ACCOUNT_UNDER_24H
+            reasons.append("account_under_24h")
+
+        score = min(100, max(0, int(score)))
+        return TrialRiskDecision(
+            score=score,
+            denied=score >= RISK_SCORE_THRESHOLD,
+            reasons=tuple(reasons),
+        )
+
     async def report(self, *, days: int = 7, limit: int = 20) -> dict:
-        """Admin uchun hashlarni oshkor qilmaydigan shadow hisoboti."""
+        """Admin uchun hashlarni oshkor qilmaydigan anti-abuse hisoboti."""
         days = max(1, min(int(days), 90))
         limit = max(1, min(int(limit), 50))
         since = datetime.now(timezone.utc) - timedelta(days=days)
@@ -257,6 +322,19 @@ class TrialRiskService:
                 signals = json.loads(row.signals_json or "[]")
             except (TypeError, ValueError):
                 signals = []
+            row_snapshot = TrialRiskSnapshot(
+                client=row.client,
+                source=row.source,
+                installation_key_hash=row.installation_key_hash,
+                ip_hash=row.ip_hash,
+                account_age_minutes=row.account_age_minutes,
+                prior_device_trial_users=int(row.prior_device_trial_users or 0),
+                prior_ip_trial_users_24h=int(row.prior_ip_trial_users_24h or 0),
+                prior_ip_trial_users_7d=int(row.prior_ip_trial_users_7d or 0),
+                signals=tuple(signals if isinstance(signals, list) else []),
+                mode=row.mode or MODE_ENFORCED,
+            )
+            decision = self.evaluate(row_snapshot)
             examples.append(
                 {
                     "telegram_id": int(row.telegram_id),
@@ -273,6 +351,8 @@ class TrialRiskService:
                         row.prior_ip_trial_users_7d or 0
                     ),
                     "signals": signals if isinstance(signals, list) else [],
+                    "risk_score": decision.score,
+                    "would_deny": decision.denied,
                     "created_at": (
                         row.created_at.isoformat() if row.created_at else None
                     ),
@@ -280,7 +360,8 @@ class TrialRiskService:
             )
 
         return {
-            "mode": MODE_SHADOW,
+            "mode": MODE_ENFORCED,
+            "threshold": RISK_SCORE_THRESHOLD,
             "days": days,
             "summary": {
                 "trial_starts": int(total or 0),

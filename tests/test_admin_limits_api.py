@@ -237,7 +237,7 @@ class AdminTrialRiskApiTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.db.dispose()
 
-    async def test_report_summarizes_shadow_signals_without_hashes(self):
+    async def test_report_summarizes_enforced_signals_without_hashes(self):
         now = datetime.now(timezone.utc)
         async with self.sessions() as session:
             session.add_all(
@@ -327,13 +327,16 @@ class AdminTrialRiskApiTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(200, response.status_code)
         risk = response.json()["risk"]
-        self.assertEqual("shadow", risk["mode"])
+        self.assertEqual("enforced", risk["mode"])
+        self.assertEqual(80, risk["threshold"])
         self.assertEqual(2, risk["summary"]["trial_starts"])
         self.assertEqual(1, risk["summary"]["device_reuse"])
         self.assertEqual(1, risk["summary"]["shared_ip"])
         self.assertEqual(1, len(risk["examples"]))
         example = risk["examples"][0]
         self.assertEqual(101, example["telegram_id"])
+        self.assertEqual(85, example["risk_score"])
+        self.assertTrue(example["would_deny"])
         self.assertNotIn("ip_hash", example)
         self.assertNotIn("installation_key_hash", example)
 
