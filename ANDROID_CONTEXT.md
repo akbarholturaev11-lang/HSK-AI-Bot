@@ -96,8 +96,6 @@ build'da ekanini bilmay chaqiradi.
   ro'yxatga yozilishi shart. Ro'yxatsiz eski build faqat variantli savol oladi.
 - Gap tuzish (`ReviewTokenBuilder`) javobni `selected_tokens` bilan yuboradi;
   tinglash savolida (`autoplay`) ovoz o'zi chalinadi, karnaycha kattaroq.
-- `ListeningQuestionTest.aSpeakerIsOfferedInstead` bu o'zgarishdan OLDIN ham
-  yiqilardi (8013e2e5 da tekshirildi) — PracticeRun'ga tegishli, alohida ish.
 
 ## 3. HOZIR OCHIQ MUAMMOLAR
 
