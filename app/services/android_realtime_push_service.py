@@ -142,6 +142,9 @@ class AndroidRealtimePushService:
                 )
             )
 
+        if not targets:
+            return 0
+
         results = await self.push.send_batch(
             targets,
             ttl_seconds=STUDY_PUSH_TTL_SECONDS,
