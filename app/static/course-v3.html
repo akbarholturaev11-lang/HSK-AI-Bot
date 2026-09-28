@@ -4067,7 +4067,10 @@ function cardChoice(c){
   /* Server (challenge/mashq) savollarida gap alohida `sentence` maydonida
      keladi — uni ko'rsatmasak "Gapdagi so'zni tanlang" gapisiz chiqadi. */
   var sent=c.sentence?'<div class="gap han" style="margin-top:10px">'+esc(c.sentence).replace("____","<u>?</u>")+'</div>':"";
-  if(t==="listening_choice"||t==="listen_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button>'+sent+'</div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
+  /* Tinglash savoli eshitiladi, yozilmaydi: eski bellashuvlarda `sentence` =
+     `audio_text`, ya'ni javob. Faqat bo'sh joyli gap (eshit va to'ldir) qoladi. */
+  var listenSent=String(c.sentence||"").indexOf("____")>=0?sent:"";
+  if(t==="listening_choice"||t==="listen_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button>'+listenSent+'</div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
   else if(t==="gap_fill"){head='<div class="qcard"><div class="gap han">'+esc(c.sentence||"").replace("____","<u>?</u>")+'</div></div>'}
   else if(t==="dialog_context"){var dl=(c.dialog||[]).map(function(l){return '<div class="line '+l.speaker+'"><div class="ava">'+l.speaker+'</div><div class="bub"><div class="z3 han">'+esc(l.text)+'</div></div></div>'}).join("");head='<div class="dia">'+dl+'</div>'}
   else if(t==="dialog_cloze"){var dl2=(c.lines||[]).map(function(l){var body=l.blank?'<div class="z3 han cloze-gap">？</div>':'<div class="z3 han">'+esc(l.zh)+'</div>';return '<div class="line '+esc(l.speaker)+'"><div class="ava">'+esc(l.speaker)+'</div><div class="bub">'+body+'</div></div>'}).join("");head='<div class="dia">'+dl2+'</div>'}

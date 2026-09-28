@@ -234,6 +234,24 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-28 — Tinglash savoli javobni ekranga yozmaydi
+
+- `CourseMiniAppPracticeService._static_card_question` endi `listening_choice`
+  kartasida `sentence` ni `audio_text` bilan to'ldirmaydi (bu to'g'ri javob
+  edi). Mashq, placement/mock va bellashuv savollari shu yerdan keladi.
+- Qoida: `audio_text` bo'lsa savol eshitiladi — gap va pinyin ekranga
+  chiqmaydi. Yagona istisno: bo'sh joyli gap (`____`, listen-and-fill).
+  Desktop `practice.js`, Mini App bellashuv kartasi (`course-v3.html`
+  `cardChoice`) va Xatolarim review (`_review_question`, eski saqlangan
+  xatolar uchun) shu qoidaga keltirildi.
+- HSK imtihon ekrani (`exRender`) ATAYLAB o'zgarmadi: `audio_truefalse`
+  savolida yozilgan gap — savolning o'zi, u audio bilan bir xil bo'lishi ham
+  mumkin ("to'g'ri" holat).
+- Desktop qismi desktop release bilan tarqaladi.
+- Ochiq (Android, release kerak): `ChallengeRunScreen` hali
+  `sentence.ifBlank { audioText }` qiladi, `PracticeBubbleMaterial` tinglash
+  savolida pinyinni (javob pinyini) ko'rsatadi.
+
 ### 2026-09-28 — Xatolarim: universal takror (nishon + 3 xil mashq)
 
 Changed:

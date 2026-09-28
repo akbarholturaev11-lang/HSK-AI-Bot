@@ -331,14 +331,18 @@ export class DesktopPracticeController {
     if (question.prompt) {
       card.append(node("p", "practice-prompt", String(question.prompt)));
     }
-    const sentence = String(question.sentence || question.audio_text || "");
-    if (sentence) {
+    // A question with `audio_text` is a listening question: it is heard, never
+    // shown. The spoken text and its pinyin are the answer, so only a gapped
+    // sentence (listen-and-fill) stays on screen — its blank hides the answer.
+    // Same rule as Android (`PracticeScreen.kt`) and the Mini App.
+    const audioText = String(question.audio_text || "");
+    const sentence = String(question.sentence || "");
+    if (sentence && (!audioText || sentence.includes("____"))) {
       card.append(node("strong", "practice-sentence hanzi", sentence));
     }
-    if (question.pinyin) {
+    if (question.pinyin && !audioText) {
       card.append(node("span", "pinyin", String(question.pinyin)));
     }
-    const audioText = String(question.audio_text || "");
     if (audioText) {
       const listen = node("button", "listen-button", this.t("listen"));
       listen.type = "button";
