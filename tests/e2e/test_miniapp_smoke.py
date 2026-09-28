@@ -3355,7 +3355,7 @@ def test_branded_download_page_exposes_direct_tracked_installers(page):
     )
     expect(page.locator(".brand-seal")).to_have_attribute(
         "src",
-        "/assets/hsk-ai-avatar.webp",
+        "/assets/hsk-ai-logo-256.png",
     )
     expect(page.locator(".mini-seal")).to_have_attribute(
         "src",

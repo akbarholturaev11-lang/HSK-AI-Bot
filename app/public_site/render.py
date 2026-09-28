@@ -116,10 +116,10 @@ def render_page(path, settings_obj, tags=None):
 <meta property="og:image:alt" content="HSK AI"><meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{esc(page['title'])}"><meta name="twitter:description" content="{esc(page['description'])}">
 <meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp">
-<link rel="icon" href="/public-assets/avatar.webp" type="image/webp">
-<link rel="stylesheet" href="/public-assets/site.css?v=1">
+<link rel="icon" href="/public-assets/logo.png" type="image/png">
+<link rel="stylesheet" href="/public-assets/site.css?v=2">
 <script type="application/ld+json">{schema}</script></head>
-<body><header><a class="brand" href="{esc(with_attribution('/', tags))}"><img src="/public-assets/avatar.webp" width="40" height="40" alt="">HSK AI</a><nav aria-label="Language">{nav}</nav></header>
+<body><header><a class="brand" href="{esc(with_attribution('/', tags))}"><img src="/public-assets/logo.png" width="40" height="40" alt="">HSK AI</a><nav aria-label="Language">{nav}</nav></header>
 <main><div class="hero"><div><p class="eyebrow">HSK 1–4 · Telegram Mini App</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p><div class="actions">{cta}{secondary}</div><p class="handle"><a href="{esc(cta_url)}"{handle_rel}>{esc(handle_text)}</a></p></div>
 <aside class="example" aria-label="中文"><span lang="zh" class="hanzi">你好</span><span class="pinyin">nǐ hǎo</span><span>{labels[0]}</span></aside></div>
 <article>{sections}</article><aside class="guides" lang="tg"><h2>{labels[1]}</h2><ul>{guides}</ul></aside>
@@ -156,7 +156,7 @@ def render_google_signin_privacy(path, settings_obj):
 <meta name="robots" content="index,follow"><link rel="canonical" href="{esc(canonical)}">{alternates}
 <meta property="og:title" content="{esc(page["title"])}"><meta property="og:description" content="{esc(page["description"])}">
 <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}"><meta property="og:site_name" content="HSK AI">
-<link rel="icon" href="/public-assets/avatar.webp" type="image/webp"><link rel="stylesheet" href="/public-assets/site.css?v=1"></head>
-<body><header><a class="brand" href="/"><img src="/public-assets/avatar.webp" width="40" height="40" alt="">HSK AI</a><nav aria-label="Language">{language_links}</nav></header>
+<link rel="icon" href="/public-assets/logo.png" type="image/png"><link rel="stylesheet" href="/public-assets/site.css?v=2"></head>
+<body><header><a class="brand" href="/"><img src="/public-assets/logo.png" width="40" height="40" alt="">HSK AI</a><nav aria-label="Language">{language_links}</nav></header>
 <main><article><p class="eyebrow">HSK AI · GOOGLE SIGN-IN</p><h1>{esc(page["h1"])}</h1><p class="intro">{esc(page["intro"])}</p>{sections}</article></main>
 <footer><span>HSK AI · {esc(page["title"])} · {esc(page["updated"])}</span></footer></body></html>'''

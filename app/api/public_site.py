@@ -242,6 +242,7 @@ def create_public_site_router(*, settings_obj):
 
     assets = {"site.css": (STATIC / "public-site.css", "text/css"),
               "avatar.webp": (STATIC / "assets/hsk-ai-avatar.webp", "image/webp"),
+              "logo.png": (STATIC / "assets/hsk-ai-logo-256.png", "image/png"),
               "social-cover.webp": (STATIC / "assets/hsk-ai-cover.webp", "image/webp")}
 
     @router.get("/public-assets/{filename}")

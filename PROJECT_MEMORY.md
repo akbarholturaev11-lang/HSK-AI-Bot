@@ -10219,3 +10219,28 @@ Risk:
 - Oldin yuklab olingan APK ni saytdagi referal Telegram tugmasisiz ochgan
   foydalanuvchida kod avtomatik tiklanmaydi; referal havolasini botda ochishi
   kerak. iOS va oddiy APK yuklash yo'llari o'zgarmaydi.
+
+### 2026-09-29 — Yuklab olish sahifasi va ommaviy saytda yangi logo
+
+Changed:
+- `/download` (`desktop-download.html`) sarlavhasidagi `.brand-seal` va
+  ommaviy sayt (`/`, `/tj/`, `/ru/`, `/uz/`, Google sign-in sahifasi) header
+  logosi hamda favicon'i panda o'rniga `branding/` dagi tugun-logoga
+  (`app/static/assets/hsk-ai-logo-256.png`) o'tdi.
+- `/assets/hsk-ai-logo-256.png` uchun route qo'shildi. 2026-09-19 dagi
+  branding commit favicon'ni shu manzilga ulagan, lekin route yo'q edi —
+  productionda 404 qaytarardi.
+- Ommaviy saytda `/public-assets/logo.png` qo'shildi; logo doira emas,
+  ilova ikonkasi kabi yumaloq burchakli kvadrat (`site.css?v=2`).
+
+Why:
+- Foydalanuvchi ikkala saytda haqiqiy logo turishini so'radi.
+
+Boundaries:
+- Mini App, admin panel va desktop UI hali `hsk-ai-avatar.webp` (panda)
+  ishlatadi; `/public-assets/avatar.webp` eski keshlangan HTML uchun qoldi.
+  OG/social cover (`hsk-ai-cover.webp`) o'zgarmadi.
+
+Files touched:
+- `app/main.py`, `app/api/public_site.py`, `app/public_site/render.py`,
+  `app/static/desktop-download.html`, `app/static/public-site.css`, testlar.

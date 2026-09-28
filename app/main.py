@@ -1789,6 +1789,14 @@ async def hsk_ai_avatar():
     )
 
 
+@app.get("/assets/hsk-ai-logo-256.png")
+async def hsk_ai_logo():
+    return static_asset_response(
+        "app/static/assets/hsk-ai-logo-256.png",
+        "image/png",
+    )
+
+
 @app.get("/assets/hsk-ai-cover.webp")
 async def hsk_ai_cover():
     return static_asset_response(

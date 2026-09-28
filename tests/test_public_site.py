@@ -162,7 +162,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/go/telegram?page=/api/private")).status_code, 400)
 
     async def test_assets_and_unknown_paths(self):
-        for path in ("site.css", "avatar.webp", "social-cover.webp"):
+        for path in ("site.css", "avatar.webp", "logo.png", "social-cover.webp"):
             r = await self.client.get("/public-assets/" + path)
             self.assertEqual(r.status_code, 200)
             self.assertTrue(r.content)
