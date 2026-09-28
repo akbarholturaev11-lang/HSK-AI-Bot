@@ -57,7 +57,7 @@
     <string name="sub_discount_locked" formatted="false">Откройте скидку 20%</string>
     <string name="sub_discount_invite" formatted="false">Пригласите 3 друзей: на Android нужно установить приложение и привязать Telegram, на iPhone — ответить на 2 вопроса в боте.</string>
     <string name="sub_discount_progress">Скидка 20%%: %1$d/%2$d друзей</string>
-    <string name="sub_discount_button">Пригласить друзей</string>
+    <string name="sub_discount_button">Открыть скидку</string>
     <string name="sub_offer_expired">Это предложение закончилось или вам не подходит.</string>
     <string name="sub_method_tj">Карта Таджикистана / обычная карта</string>
     <string name="sub_method_tj_body">Dushanbe City, Alif, Eskhata, Amonatbank и другие карты</string>

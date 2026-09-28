@@ -305,6 +305,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
   <div class="sheet-panel">
     <h3 id="inviteTitle"></h3>
     <p id="inviteText"></p>
+    <p id="inviteRequirements"></p>
     <code class="invite-link" id="inviteLinkText"></code>
     <div class="sheet-actions">
       <button class="sheet-primary" type="button" id="shareInviteBtn"></button>
@@ -408,7 +409,7 @@ const I18N={
     discountLockTitle:"20% chegirmani oching",
     discountInviteText:"3 do‘st taklif qiling: Androidda ilovani o‘rnatib Telegramni ulaydi, iPhone’da botda 2 savol ishlatadi.",
     discountUsed:"20% chegirma allaqachon ishlatilgan.",
-    discountBtn:"Do'stlarni chaqirish",
+    discountBtn:"Chegirmani ochish",
     shareText:"HSK AI — xitoy tilini AI bilan o'rgan. Qo'shilsang menga 20% chegirma ochiladi 👇",
     inviteTitle:"Referral link tayyor",
     inviteText:"Havola do‘stingizni telefoniga mos yo‘lga olib boradi. Xohlasangiz faqat linkni copy qiling.",
@@ -537,7 +538,7 @@ const I18N={
     discountLockTitle:"Откройте скидку 20%",
     discountInviteText:"Пригласите 3 друзей: на Android установите приложение и привяжите Telegram, на iPhone ответьте на 2 вопроса в боте.",
     discountUsed:"Скидка 20% уже использована.",
-    discountBtn:"Пригласить друзей",
+    discountBtn:"Открыть скидку",
     shareText:"HSK AI — учи китайский с AI. Присоединяйся, и мне откроется скидка 20% 👇",
     inviteTitle:"Реферальная ссылка готова",
     inviteText:"Ссылка покажет шаги для телефона друга. Можно скопировать только ссылку.",
@@ -666,7 +667,7 @@ const I18N={
     discountLockTitle:"Тахфифи 20%-ро кушоед",
     discountInviteText:"3 дӯст даъват кунед: дар Android барномаро насб карда Telegram-ро пайваст кунанд, дар iPhone ба 2 саволи бот ҷавоб диҳанд.",
     discountUsed:"Тахфифи 20% аллакай истифода шуд.",
-    discountBtn:"Даъвати дӯстон",
+    discountBtn:"Кушодани тахфиф",
     shareText:"HSK AI — забони хитоиро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇",
     inviteTitle:"Referral link тайёр аст",
     inviteText:"Пайванд қадамҳои мувофиқи телефони дӯстатонро нишон медиҳад. Метавонед танҳо link-ро нусха гиред.",
@@ -1281,9 +1282,7 @@ function renderDiscount(text){
     btn.style.display="none";
   }else{
     $("#discountTitle").textContent=text.discountLockTitle;
-    $("#discountText").textContent=discount.offer_started
-      ? text.discountProgress.replace("{count}",count).replace("{required}",required)+" · "+text.discountInviteText
-      : text.discountInviteText;
+    $("#discountText").textContent=text.discountProgress.replace("{count}",count).replace("{required}",required);
     bar.style.display="block";
     bar.firstElementChild.style.width=Math.round(count/required*100)+"%";
     btn.style.display="block";
@@ -1462,6 +1461,7 @@ function renderInviteSheet(text){
   sheet.setAttribute("aria-hidden",visible?"false":"true");
   $("#inviteTitle").textContent=text.inviteTitle;
   $("#inviteText").textContent=text.inviteText;
+  $("#inviteRequirements").textContent=text.discountInviteText;
   $("#inviteLinkText").textContent=state.inviteLink||"";
   $("#shareInviteBtn").textContent=text.shareLocalized;
   $("#copyInviteBtn").textContent=state.inviteCopied?(text.copiedButton||text.copied):text.copyLink;

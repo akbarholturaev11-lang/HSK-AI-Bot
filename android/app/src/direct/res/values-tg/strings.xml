@@ -58,7 +58,7 @@
     <string name="sub_discount_locked" formatted="false">Тахфифи 20% кушоед</string>
     <string name="sub_discount_invite" formatted="false">3 дӯст даъват кунед: дар Android барномаро насб карда Telegram-ро пайваст кунанд, дар iPhone ба 2 саволи бот ҷавоб диҳанд.</string>
     <string name="sub_discount_progress">Тахфифи 20%%: %1$d/%2$d дӯст</string>
-    <string name="sub_discount_button">Дӯстонро даъват кардан</string>
+    <string name="sub_discount_button">Кушодани тахфиф</string>
     <string name="sub_offer_expired">Ин пешниҳод анҷом ёфтааст ё ба шумо мувофиқ нест.</string>
     <string name="sub_method_tj">Корти Тоҷикистон / корти одӣ</string>
     <string name="sub_method_tj_body">Dushanbe City, Alif, Eskhata, Amonatbank ва дигар кортҳо</string>
