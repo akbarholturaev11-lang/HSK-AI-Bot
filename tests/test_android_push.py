@@ -17,6 +17,8 @@ from app.db.models.android_push import AndroidPushToken
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.services.android_payment_push_service import AndroidPaymentPushService
+from app.services.android_push_service import AndroidPushResult
+from app.services.android_realtime_push_service import AndroidRealtimePushService
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.payment_notify_service import PaymentNotifyService
@@ -31,6 +33,8 @@ def settings():
         BOT_USERNAME="pomp_test_bot",
         ANDROID_FCM_PROJECT_ID="test-project",
         ANDROID_FCM_SERVICE_ACCOUNT_JSON="",
+        ANDROID_PUSH_UPDATES_ENABLED=True,
+        ANDROID_PUSH_STUDY_ENABLED=True,
     )
 
 
@@ -124,6 +128,70 @@ class AndroidPushTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(1, len(rows))
         self.assertEqual(self.device_b, rows[0].device_id)
 
+    async def test_preferences_are_device_bound_and_timezone_is_validated(self):
+        token = "fcm-token-" + "p" * 32
+        registered = await self.client.post(
+            "/api/v3/android/push/register",
+            json={"token": token},
+            headers=self.bearer(self.token_a),
+        )
+        self.assertEqual(200, registered.status_code)
+
+        updated = await self.client.post(
+            "/api/v3/android/push/preferences",
+            json={
+                "study_reminders_enabled": True,
+                "timezone_name": "Asia/Shanghai",
+            },
+            headers=self.bearer(self.token_a),
+        )
+        self.assertEqual(200, updated.status_code)
+        async with self.sessions() as session:
+            row = await session.get(AndroidPushToken, self.device_a)
+            self.assertTrue(row.study_reminders_enabled)
+            self.assertEqual("Asia/Shanghai", row.timezone_name)
+
+        invalid = await self.client.post(
+            "/api/v3/android/push/preferences",
+            json={
+                "study_reminders_enabled": True,
+                "timezone_name": "Not/A_Real_Zone",
+            },
+            headers=self.bearer(self.token_a),
+        )
+        self.assertEqual(422, invalid.status_code)
+
+    async def test_study_push_is_once_per_local_day(self):
+        token = "fcm-token-" + "s" * 32
+        await self.client.post(
+            "/api/v3/android/push/register",
+            json={"token": token},
+            headers=self.bearer(self.token_a),
+        )
+        await self.client.post(
+            "/api/v3/android/push/preferences",
+            json={
+                "study_reminders_enabled": True,
+                "timezone_name": "UTC",
+            },
+            headers=self.bearer(self.token_a),
+        )
+
+        async with self.sessions() as session:
+            service = AndroidRealtimePushService(session, self.settings)
+            with patch.object(
+                service.push,
+                "send_token",
+                new_callable=AsyncMock,
+                return_value=AndroidPushResult(True),
+            ) as send:
+                now = datetime(2026, 9, 28, 20, 5, tzinfo=timezone.utc)
+                self.assertEqual(1, await service.send_due_study(now))
+                self.assertEqual(0, await service.send_due_study(now))
+                self.assertEqual(1, send.await_count)
+
+            row = await session.get(AndroidPushToken, self.device_a)
+            self.assertEqual("2026-09-28", row.last_study_push_day)
     async def test_payment_status_is_owner_only_for_android_and_miniapp_receipts(self):
         for payment_id, expected in [(11, "approved"), (12, "rejected")]:
             path = f"/api/v3/android/subscription/payments/{payment_id}/status"
