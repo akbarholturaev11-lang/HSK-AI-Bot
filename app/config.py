@@ -103,6 +103,10 @@ class Settings(BaseSettings):
     # Android WorkManager status fallback continue without Firebase.
     ANDROID_FCM_PROJECT_ID: str = ""
     ANDROID_FCM_SERVICE_ACCOUNT_JSON: str = ""
+    # Realtime Android push is introduced behind independent kill switches.
+    # Payment decision push is unchanged and does not depend on these flags.
+    ANDROID_PUSH_UPDATES_ENABLED: bool = False
+    ANDROID_PUSH_STUDY_ENABLED: bool = False
 
     # Google / Apple sign-in. Every provider fails closed: a blank client id
     # means the provider is omitted from the client's provider list, so the

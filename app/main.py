@@ -114,6 +114,7 @@ from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
 from app.services.android_analytics_service import AndroidAnalyticsService
 from app.services.android_release_service import AndroidReleaseService
+from app.services.android_realtime_push_service import AndroidRealtimePushService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_release_manifest_service import (
@@ -505,6 +506,10 @@ async def _background_scheduler(bot: Bot) -> None:
                 await ExpiryReminderService(session).send_expiry_reminders(bot)
             async with async_session_maker() as session:
                 await MotivationReminderService(session).send_due_reminders(bot)
+            async with async_session_maker() as session:
+                android_push = AndroidRealtimePushService(session, settings)
+                await android_push.send_release_if_needed()
+                await android_push.send_due_study()
             async with async_session_maker() as session:
                 await CourseReminderService(session).send_due_reminders(bot)
             async with async_session_maker() as session:

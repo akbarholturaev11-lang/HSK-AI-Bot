@@ -177,6 +177,14 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         # records persist their canonical question snapshot here.
         "material_json": "TEXT",
     },
+    "android_push_tokens": {
+        # Railway production starts through init_db(), not Alembic upgrade.
+        # Keep the formal migration too, but patch the existing table here.
+        "updated_at": "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL",
+        "study_reminders_enabled": "BOOLEAN DEFAULT false NOT NULL",
+        "timezone_name": "VARCHAR(64)",
+        "last_study_push_day": "VARCHAR(10)",
+    },
 }
 
 

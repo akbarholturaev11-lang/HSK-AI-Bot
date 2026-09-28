@@ -535,13 +535,16 @@ private fun AppRoot(
                 when (notificationsOn) {
                     true -> if (StudyNotifications.canPost(context)) {
                         StudyReminderScheduler.schedule(context)
-                        app.paymentDecisionMonitor.syncRegistration()
                     }
                     false -> {
                         StudyReminderScheduler.cancel(context)
                         StudyNotifications.cancelReminder(context)
                     }
                 }
+                // Token registration is app-wide: updates and payments still
+                // need FCM even when the local study reminder is off.
+                app.paymentDecisionMonitor.syncRegistration()
+                app.paymentDecisionMonitor.syncPreferences()
             }
 
             val toggleLocalReminder: (Boolean) -> Unit = { enabled ->
