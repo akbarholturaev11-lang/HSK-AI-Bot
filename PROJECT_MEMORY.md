@@ -8271,6 +8271,14 @@ Priority 2:
 Priority 3:
 - Public flaglarni faqat yuqoridagi tekshiruvlar o'tgach yoqish.
 
+### HSK 3.0 versiyasi — alohida kurs (reja tasdiqlangan, ish boshlanmagan)
+
+- To'liq reja va egasining 2026-09-29 qarorlari: `docs/HSK_3.0_VERSIYASI.md`.
+- Qisqasi: HSK 3.0 · 1–4 eski kursdan alohida trek (`nhsk1`–`nhsk4`
+  kalitlari), eski kurs qoladi, bitta obuna ikkalasini ochadi, XP/reyting va
+  lug'at umumiy (lug'atda filtr). Ish egasi "boshla" deganda va rasmiy
+  syllabus fayli kelgach boshlanadi.
+
 ### Android klientini Mini App bilan tenglashtirish
 
 Rang palitrasi TUGALLANDI (19/19 token mos, CI tekshiradi).

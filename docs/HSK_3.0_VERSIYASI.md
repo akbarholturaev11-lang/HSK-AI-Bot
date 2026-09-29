@@ -1,0 +1,365 @@
+# HSK 3.0 versiyasi — alohida kurs qo'shish rejasi
+
+Holat: 2026-09-29 — **reja aniqlashtirildi va tasdiqlandi. Ish hali
+boshlanmagan, kod o'zgartirilmagan.** Ish egasi "boshla" deganda va rasmiy
+so'zlar ro'yxati kelgach 0-bosqichdan boshlanadi.
+
+Research: `research/hsk-3.0/`.
+
+## Egasining qarorlari (2026-09-29)
+
+| # | Savol | Qaror |
+|---|---|---|
+| 1 | Kurs turi | HSK 3.0 — **to'liq alohida kurs**. Darslari eski HSK (2.0) bilan aralashmaydi |
+| 2 | Eski kurs | Qoladi, yangisi qo'shiladi. Onboardingda va sozlamalarda almashtirgich |
+| 3 | Darajalar | **HSK 3.0 · 1–4** |
+| 4 | Rasmiy so'zlar ro'yxati | Egasi o'zi beradi |
+| 5 | Onboarding | User o'zi tanlaydi, **default — HSK 3.0** |
+| 6 | Obuna | **Bitta obuna ikkala kursni ochadi.** To'lov logikasi o'zgarmaydi |
+| 7 | XP, streak, reyting | **Ikkala kurs uchun umumiy** |
+| 8 | Promo ekran | Eski userlarga ilova ichida **jami 2 marta**, orasi **kamida 3 kun** |
+| 9 | Bot xabari | **Kerak** (tafsiloti pastda) |
+| 10 | Test markazi (HSK 3.0 userlar) | Yangi format tayyor bo'lguncha **"Tez orada"** turadi |
+| 11 | Tarjimalar (uz/ru/tj) | **Claude** tayyorlaydi va tekshiradi |
+| 12 | Lug'at bo'limi | **Bitta umumiy lug'at**, faqat filtr qo'shiladi (versiya va daraja) |
+
+## Hozirgi holat (kodda tekshirilgan)
+
+- Daraja kalitlari: `beginner`, `hsk1`–`hsk4`. `{"hsk1","hsk2","hsk3","hsk4"}`
+  to'plamlari 40 dan ortiq backend, 8 ta Mini App, 9 ta Android va 4 ta
+  Desktop faylida qo'lda yozilgan.
+- `users.level` — QA ham, kurs ham uchun yagona manba. `course_progress` —
+  har userga bitta qator.
+- Band almashsa progress nolga tushadi (`app/main.py`, `/api/v3/map`:
+  `completed_lessons_count = 0`). Ya'ni boshqa darajaga o'tib qaytganda
+  progress hozir saqlanmaydi.
+- Kontent zanjiri: `scripts/seed_*` → `scripts/gen_course_v3_from_seed.py` →
+  `app/static/course_v3_data/{level}/lesson_NN.json`, `{level}.json`,
+  `parts_manifest.json`, `lesson_gate.js`.
+- Onboarding (`CourseMiniAppOnboardingService.complete`) birinchi darsni
+  legacy `course_lessons` jadvalidan qidiradi. Yangi daraja uchun qator
+  bo'lmasa `course_no_lessons_available` qaytadi.
+- Lug'at: `app/static/hsk-words.js` (1247 so'z, `lv:"HSK1"`…). Android'da
+  offline asset sifatida ham bor. `hsk-lugat.html` `lv` bo'yicha filtrlaydi.
+- Test markazi: `course_v3_data/exams/hsk1..4.json` — eski format.
+- Mini App'dagi `App.levelPicker` hech qayerdan chaqirilmaydi. Daraja botdagi
+  `/level` va onboarding orqali o'zgaradi.
+
+## Asosiy arxitektura qarorlari
+
+### 1. Alohida daraja kalitlari
+
+HSK 3.0 uchun yangi kalitlar: `nhsk1`, `nhsk2`, `nhsk3`, `nhsk4`, noldan
+boshlovchi uchun `nbeginner`. Bu ichki kalit, user ko'rmaydi. Ekranda
+"HSK 3.0 · 1-daraja" ko'rinadi.
+
+**Nega yangi kalit:** daraja kaliti allaqachon hamma joyda ajratuvchi —
+statik fayl yo'li, XP ref `v3-part:{level}:{n}`, `course_mistakes.level`,
+eventlar, reklama, audio, challenge. Yangi kalit bo'lsa ma'lumot o'zi
+ajraladi, eski userlar ma'lumotiga tegilmaydi.
+
+**Nega `nhsk`, `hsk30_1` emas:** kodda `startswith("hsk")` va
+`startswith("hsk4")` bor (`commands.py`, `course.py`, voice, drill va
+challenge normalizerlari). `hsk…` bilan boshlangan kalit eski darajaga
+adashib tushadi.
+
+### 2. Yagona daraja reestri
+
+Yangi modul `app/services/course_levels.py`: darajalar, trek, tartib,
+keyingi daraja, uz/ru/tj yorliqlari, AI uchun tavsif, bepul qismlar soni.
+Qo'lda yozilgan to'plamlar shu reestrga o'tkaziladi. Mini App, Android va
+Desktop darajalar ro'yxatini `/api/v3/map` javobidan oladi (`track`,
+`levels`), o'zida qattiq yozmaydi.
+
+Birinchi qadam — reestrni faqat eski darajalar bilan kiritish (xulq
+o'zgarmaydi, testlar bilan). Shundan keyin `nhsk*` qo'shish bitta joyda
+bo'ladi.
+
+### 3. Trek almashganda progress saqlanadi
+
+Yangi jadval `course_track_states`:
+`user_id`, `track`, `level`, `completed_lessons_count`, `updated_at`;
+`unique(user_id, track)`.
+
+Almashtirishda joriy trek holati saqlanadi, boshqa trekning saqlangan holati
+qaytariladi (yo'q bo'lsa tanlangan darajadan noldan). `users.level` va
+`course_progress` avvalgidek bitta faol holatni saqlaydi, shuning uchun
+mavjud kod o'zgarmaydi. Trek ichidagi band almashish xulqi (nolga tushish)
+o'zgartirilmaydi.
+
+### 4. Nima alohida, nima umumiy
+
+| Alohida (aralashmaydi) | Umumiy (bitta profil) |
+|---|---|
+| Darslar, xarita, progress | Obuna va to'lov (logika o'zgarmaydi) |
+| Mashq bo'limlari so'z puli (faol kurs darajasidan) | Lug'at (bitta ro'yxat + versiya/daraja filtri) |
+| Xatolarim va takror (faol trek bo'yicha filtr) | XP, streak, reyting, liga |
+| Test markazi imtihonlari | Til, bildirishnoma, kunlik maqsad |
+| QA AI daraja chegarasi | AI Voice (daraja faol trekdan olinadi) |
+| | Akkaunt va qurilmalar |
+
+### 5. Bepul qismlar
+
+Obuna ikkala kursni ochadi. HSK 3.0 da bepul qismlar eski qoida bo'yicha:
+1-daraja — birinchi to'liq dars (hozirgi `hsk1` kabi), 2–4-darajalar —
+2 qism (`free_course_parts_for_level`). To'lov, narx, referal va chegirma
+logikasi o'zgarmaydi.
+
+### 6. Umumiy lug'at
+
+- Bitta fayl qoladi: `app/static/hsk-words.js` (Android asseti ham shu).
+- Har so'zga ikkinchi daraja maydoni qo'shiladi: `lv3` (`"N1"`…`"N4"`).
+  Eski `lv` o'zgarmaydi.
+- HSK 3.0 da bor, eski ro'yxatda yo'q so'zlar ham shu faylga qo'shiladi:
+  `lv` bo'sh, `lv3` to'ldirilgan.
+- `hsk-lugat.html` filtri: versiya (HSK 3.0 / HSK 2.0) va daraja. Default —
+  userning faol kursi.
+- Mashq sahifalari (`course_v3_recognition/pronunciation/memorize.html`) so'z
+  pulini faol kurs darajasi bo'yicha tanlaydi: HSK 2.0 da `lv`, HSK 3.0 da
+  `lv3`. `lv` bo'sh so'z eski kurs pulida chiqmaydi.
+- `scripts/split_hsk_data.py`, `memo_lv.js` va Android lug'at generatorlari
+  yangi maydonni tanishi kerak.
+
+### 7. Kontent joylashuvi
+
+```
+app/static/course_v3_data/
+  nhsk1.json … nhsk4.json       # xarita
+  nhsk1/lesson_NN.json …        # mini-darslar
+  parts_manifest.json           # nhsk kalitlari qo'shiladi
+  lesson_gate_hsk30.js          # so'z -> [daraja, qism]; eski gate raqamli darajaga bog'langan
+  exams/nhsk1.json …            # yangi format imtihon (8-bosqich)
+app/static/hsk-words.js         # umumiy lug'at, lv3 maydoni bilan
+scripts/hsk30/
+  wordlist.json                 # rasmiy ro'yxatdan: hanzi, pinyin, daraja, so'z turkumi
+  grammar.json, hanzi.json
+  seed_nhsk1_lesson_01.py …     # dars manbalari
+  verify_hsk30_*.py             # tekshiruvlar
+```
+
+`gen_course_v3_from_seed.py` `--track hsk30` bilan kengaytiriladi. Qismlarga
+bo'lish va checkpoint mantiqi qayta ishlatiladi.
+
+### 8. Tarjimalar (Claude tayyorlaydi va tekshiradi)
+
+- Eski lug'at va darslardagi tekshirilgan uz/ru/tj tarjimalar HSK 3.0 dagi
+  bir xil so'zlar uchun qayta ishlatiladi.
+- Yangi so'zlar va gaplar uchun Claude uch tilda tarjima yozadi.
+- Avtomatik tekshiruv:
+  - uchala til to'liq;
+  - bir so'z hamma joyda bir xil tarjima qilingan;
+  - uz — lotin, ru va tj — kirill, aralash yozuv yo'q;
+  - tj matnida rus so'zi aralashmagan.
+- Xato topilsa, reliz feedback orqali tuzatiladi.
+
+## Sxema
+
+```mermaid
+flowchart TD
+  U[users.level] -->|beginner, hsk1..hsk4| T2[Trek: HSK 2.0 — eski]
+  U -->|nbeginner, nhsk1..nhsk4| T3[Trek: HSK 3.0 — yangi]
+  T2 --> D2[course_v3_data/hsk*]
+  T3 --> D3[course_v3_data/nhsk*]
+  W[hsk-words.js: lv + lv3] --> DICT[Umumiy lug'at + filtr]
+  S[Onboarding / Sozlamalar / Promo ekran / Bot xabari] -->|POST /api/v3/course/track| SW[CourseTrackService.switch]
+  SW -->|joriy trekni saqlaydi| CTS[(course_track_states)]
+  SW -->|boshqa trekni tiklaydi| U
+  R[course_levels.py reestri] --> API[/api/v3/map: track, levels/]
+  API --> MA[Mini App]
+  API --> AN[Android]
+  API --> DT[Desktop]
+```
+
+### User oqimi
+
+```
+Yangi user:
+  Onboarding → [HSK 3.0 | HSK 2.0] almashtirgich (default HSK 3.0) → daraja → maqsad → 1-dars
+
+Eski user (HSK 2.0 da):
+  Reliz kuni bot xabari (1 marta) ──┐
+  Ilova ochiladi → "Yangi HSK 3.0" ekrani (jami 2 marta, orasi ≥ 3 kun)
+      ├─ [HSK 3.0 ga o'tish] → daraja tanlash (tavsiya belgilangan) → tasdiq → yangi xarita
+      └─ [Keyinroq]          → eski kurs davom etadi
+
+Istalgan user:
+  Sozlamalar → "Kurs versiyasi" → HSK 2.0 / HSK 3.0 → tasdiq (progress saqlanadi) → xarita
+```
+
+## UI (koddan oldin maket egasiga ko'rsatiladi)
+
+1. **Onboarding:** daraja qadamining tepasida ikki segmentli almashtirgich
+   `HSK 3.0 | HSK 2.0`, **default HSK 3.0**. Savollar soni 2 ligicha qoladi,
+   faqat daraja ro'yxati trekka qarab o'zgaradi.
+2. **Sozlamalar:** bitta qator "Kurs versiyasi · HSK 3.0" (til qatori
+   uslubida) → ikki variantli varaq → tasdiqlash oynasi: "Eski progress
+   saqlanadi, istalgan payt qaytasiz".
+3. **Promo ekran (eski userlar):** sarlavha, nima o'zgargani haqida 2–3
+   qator, ikkita tugma: "HSK 3.0 ga o'tish" va "Keyinroq". Qo'shimcha bezak,
+   badge yoki animatsiya yo'q.
+   - Kimga: HSK 2.0 trekidagi va reliz sanasigacha onboardingdan o'tgan
+     userlar.
+   - Hisobni server yuritadi (`course_miniapp_profiles.hsk30_promo_shown_count`,
+     `hsk30_promo_last_shown_at`). Mini App, Android va Desktop'da **jami
+     2 marta**, har qurilmada 2 martadan emas.
+   - Ikkinchisi birinchisidan **kamida 3 kun** keyin. User o'tsa, boshqa
+     chiqmaydi.
+   - "O'tish" bosilganda tavsiya etilgan daraja: hsk1 → N1, hsk2 → N1,
+     hsk3 → N2, hsk4 → N3. User o'zgartira oladi. (Eski HSK2 jami 300 so'z
+     = yangi 1-daraja 300 so'z.)
+4. **Bot xabari:**
+   - Reliz kuni **1 marta**, faqat HSK 2.0 trekidagi userlarga (bloklangan
+     va botni bloklagan userlar chiqariladi).
+   - Mavjud admin broadcast moduli orqali yuboriladi. Segment filtriga trek
+     qo'shiladi. **Admin tasdig'isiz yuborilmaydi** (AGENTS.md qoidasi).
+   - Tugma Mini App'ni to'g'ridan-to'g'ri promo/almashtirish varag'ida ochadi.
+   - Bot xabari ilova ichidagi 2 marta hisobiga kirmaydi.
+   - Matn uz/ru/tj.
+5. **Test markazi (HSK 3.0 userlar):** bo'lim joyida qoladi, yangi format
+   tayyor bo'lguncha "Tez orada" holatida. Eski imtihonlar HSK 3.0 userlarga
+   ko'rsatilmaydi. Joy va tartib o'zgarmaydi, alohida karta qo'shilmaydi.
+6. **Lug'at:** mavjud ro'yxat ustida filtr — versiya (HSK 3.0 / HSK 2.0) va
+   daraja. Default — userning faol kursi.
+7. **Tillar:** hamma matn uz/ru/tj. Android'da `values`, `values-ru`,
+   `values-tg`; Desktop'da ham xuddi shu.
+
+## Bosqichlar
+
+### 0-bosqich — Rasmiy manba (egasidan)
+
+- Egasi rasmiy syllabus PDF (yoki Excel/CSV) ni yuboradi.
+- PDF git'ga qo'shilmaydi (`research/hsk-3.0/.gitignore`). Undan faqat
+  1–4-daraja ro'yxatlari ajratiladi: `scripts/hsk30/wordlist.json`,
+  `grammar.json`, `hanzi.json`.
+- Tekshiruv: so'zlar 300/200/500/1000 (jami 2000), tanib o'qish hanzi
+  246/125/284/441. Har yozuvda hanzi, pinyin va daraja bor. Takrorlar va
+  ko'p o'qilishli belgilar qayd etiladi.
+- Mezon: `verify_hsk30_wordlist.py` toza o'tadi.
+
+### 1-bosqich — Poydevor (userga ko'rinmaydi)
+
+- `course_levels.py` reestri. Qo'lda yozilgan to'plamlar reestrga
+  o'tkaziladi (faqat eski darajalar bilan, xulq o'zgarmaydi).
+- `nhsk*` kalitlari reestrga qo'shiladi, `bot_settings` da
+  `hsk30_enabled` flag o'chiq turadi.
+- Migratsiya `0094_course_track_states` (+ profilga promo uchun 2 ustun).
+- `CourseTrackService` (saqlash/tiklash) va endpointlar. Mini App, Android
+  va Desktop bitta servisdan foydalanadi.
+- Onboarding: `nhsk*` uchun legacy `course_lessons` ga bog'liqlik olib
+  tashlanadi (manifestdan olinadi). Eski darajalar xulqi o'zgarmaydi.
+- AI: `app/prompts/qa_system.txt` va `course_tutor_service.py` ga
+  reestrdan daraja tavsifi beriladi ("HSK 3.0, 2-daraja, jami ~500 so'z").
+- Xatolarim, takror va mashq so'z puli faol trek bo'yicha filtrlanadi.
+- Testlar: reestr, trek almashish (saqlash, tiklash, ikki marta almashish),
+  izolyatsiya (nhsk XP ref, xatolar filtri), eski xulq regressiyasi.
+- Mezon: flag o'chiq holatda eski userlar uchun hech narsa o'zgarmaydi.
+  `pytest` o'tadi (PROJECT_MEMORY 11-bo'limdagi 3 ta avvaldan yiqiladigan
+  testdan tashqari).
+
+### 2-bosqich — HSK 3.0 · 1-daraja kontenti
+
+- Dars rejasi: 300 so'z, syllabus mavzulari bo'yicha ~15 dars, grammatika
+  tartibi bilan.
+- Har dars: yangi so'zlar, grammatika, original dialog (kitobdan
+  ko'chirilmaydi — `research/hsk-3.0/USAGE_NOTES.md`), uz/ru/tj.
+- Tarjima: 8-qarordagi tartibda (Claude).
+- Generator orqali `nhsk1/lesson_NN.json` (~100 mini-dars), xarita,
+  manifest va gate yasaladi.
+- Lug'at: `hsk-words.js` ga `lv3:"N1"` va yangi so'zlar; memo/strokes
+  qamrovi; Android asseti qayta yasaladi.
+- Tekshiruvlar:
+  - har syllabus so'zi kamida bir marta o'rgatiladi;
+  - misollarda shu darsgacha o'rgatilmagan so'z yo'q;
+  - 3 til to'liq va 8-qarordagi tarjima tekshiruvlari o'tadi.
+- Mezon: `verify_hsk30_level.py nhsk1` toza. Lokal preview'da 1-dars,
+  checkpoint va paywall ishlaydi.
+
+### 3-bosqich — Mini App UI (maket tasdiqlangach)
+
+- Onboarding almashtirgichi, sozlamalar qatori, promo ekran, xarita
+  sarlavhasida "HSK 3.0 · 1".
+- Lug'at filtri (versiya va daraja).
+- Test markazi HSK 3.0 userlarga "Tez orada".
+- Mashq sahifalari (`course_v3_recognition/pronunciation/memorize/test.html`):
+  `normLv` va so'z puli yangi kalitlarni taniydi.
+- Mezon: flag yoqilgan test akkauntda oqim to'liq ishlaydi. Flag o'chiq
+  bo'lsa hech narsa o'zgarmaydi.
+
+### 4-bosqich — Android va Desktop paritet
+
+- Android: onboarding, sozlamalar, promo, xarita, lug'at filtri, Test
+  markazi "Tez orada", offline lug'at asseti. `android/tools/check_*.py`
+  tekshiruvlari, 3 til, `appVersionCode` +1.
+- Desktop: macOS va Windows bir vaqtda (DMG/EXE parity qoidasi).
+- Mezon: bitta akkaunt uchta klientda bir xil trek va daraja ko'rsatadi.
+  Promo jami 2 marta chiqadi.
+
+### 5-bosqich — Bot va admin
+
+- `/level` va bot daraja klaviaturasi faol trek darajalarini ko'rsatadi.
+  `_course_level_label` yorliqlari reestrdan olinadi.
+- Legacy bot kursi (`app/bot/handlers/course.py`) nhsk userlarni Mini App'ga
+  yo'naltiradi, ularni legacy oqimga kiritmaydi.
+- Admin broadcast: segment filtriga trek va HSK 3.0 darajalari; bot xabari
+  shabloni (uz/ru/tj) va Mini App'ga olib boradigan tugma.
+- Admin statistika trek bo'yicha; reklama darajalariga HSK 3.0 qo'shiladi.
+
+### 6-bosqich — Ishga tushirish (HSK 3.0 · 1)
+
+- Atomik deploy: data, backend, frontend va migratsiya bitta relizda.
+  Flag faqat 1-daraja uchun yoqiladi (`hsk30_live_levels = nhsk1`).
+- 1-darajani tugatgan user uchun keyingi daraja tayyor bo'lguncha oddiy
+  "tez orada" holati (3 tilda, qo'shimcha bezaksiz).
+- Bot xabari admin tasdig'idan keyin yuboriladi.
+- `PROJECT_MEMORY.md` yozuvi. Release feedback qoralamasi (AGENTS.md
+  qoidasi) — admin tasdig'isiz yuborilmaydi.
+- Kuzatiladi: onboardingda trek tanlovi ulushi, promo va bot xabari →
+  o'tish konversiyasi, eski kursga qaytishlar soni, 1-dars yakuni.
+
+### 7-bosqich — 2, 3, 4-darajalar
+
+Har daraja 2-bosqich tartibida, alohida reliz sifatida, flag orqali ochiladi.
+
+| Daraja | Yangi so'z | Taxminiy mini-dars |
+|---|---:|---:|
+| 2 | 200 | ~70 |
+| 3 | 500 | ~160 |
+| 4 | 1000 | ~300 |
+
+### 8-bosqich — Test markazi (yangi format)
+
+Rasmiy namuna tuzilishi:
+
+| Daraja | Listening | Reading | Writing |
+|---|---:|---:|---:|
+| 1 | 20 | 20 | — |
+| 2 | 25 | 25 | 10 |
+| 3 | 30 | 30 | 10 |
+| 4 | 32 | 32 | 6 |
+
+- Tayyor bo'lgan daraja uchun "Tez orada" o'rniga shu joyning o'zida haqiqiy
+  test ochiladi (alohida tugma yoki karta qo'shilmaydi).
+- 3–4-darajalarning og'zaki qismi keyinroq AI Voice bilan qo'shiladi.
+- Final ball shkalasi hali rasmiy tasdiqlanmagan, shuning uchun test
+  "tayyorgarlik testi" deb ataladi, "rasmiy natija" deb emas.
+
+## Xavflar
+
+| Xavf | Himoya |
+|---|---|
+| Qo'lda yozilgan daraja to'plami qolib ketadi va nhsk user `hsk1` ga tushadi | Reestr + test: `app/` da yangi `{"hsk1","hsk2",…}` literali taqiqlanadi |
+| Trek almashganda progress yo'qoladi | `course_track_states` + testlar, almashtirishdan oldin tasdiq oynasi |
+| Kontent hajmi katta (2000 so'z, 3 til) | Darajama-daraja reliz, eski tarjimalarni qayta ishlatish |
+| Tarjimalarni odam tekshirmaydi | Eski tekshirilgan tarjimalar qayta ishlatiladi, avtomatik tekshiruvlar, reliz feedback orqali tuzatish |
+| Umumiy lug'atga yangi so'z qo'shilsa eski mashqlarga tushib qoladi | Mashq puli `lv` / `lv3` bo'yicha filtrlanadi, test bilan mixlanadi |
+| Kitob mualliflik huquqi | Faqat syllabus ro'yxati olinadi; dialog va mashqlar original yoziladi |
+| Imtihon formati o'zgarishi (hali pilot) | Test markazi eng oxirida, "tayyorgarlik" deb nomlanadi |
+| Android offline hajmi oshadi | Lug'at asseti o'lchami reliz oldidan o'lchanadi |
+
+## Keyingi qadam
+
+Ochiq savol qolmadi. Ish egasi "boshla" deganda boshlanadi:
+
+1. Egasi rasmiy syllabus faylini yuboradi.
+2. 0-bosqich: ro'yxat ajratiladi va tekshiriladi.
+3. 1-bosqich: poydevor (flag o'chiq, userlar hech narsa sezmaydi).
