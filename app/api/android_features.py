@@ -93,6 +93,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.subscription_entry_analytics_service import (
     SubscriptionEntryAnalyticsService,
 )
+from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.voice_practice_service import (
     LANGUAGE_NAMES,
@@ -513,6 +514,45 @@ def _bot_url(settings_obj) -> str:
 
     username = str(getattr(settings_obj, "BOT_USERNAME", "") or "").strip().lstrip("@")
     return f"https://t.me/{username}" if username else ""
+
+
+async def _localize_android_checkout_prices(session, result: dict[str, Any]) -> dict[str, Any]:
+    """Attach language-default display prices without changing canonical amounts."""
+
+    prices = result.get("prices")
+    visa_prices = prices.get("visa") if isinstance(prices, dict) else None
+    if not isinstance(visa_prices, dict) or not visa_prices:
+        return result
+
+    language = str(result.get("language") or "").strip().lower()
+    country = "ru" if language == "ru" else "tj" if language in {"tj", "tg", "tg-cyrl"} else "uz"
+
+    rows: list[tuple[dict[str, Any], int, int]] = []
+    amounts: list[int] = []
+    for price in visa_prices.values():
+        if not isinstance(price, dict):
+            continue
+        try:
+            base_amount = int(price.get("base_amount") or 0)
+            final_amount = int(price.get("final_amount") or 0)
+        except (TypeError, ValueError):
+            continue
+        rows.append((price, base_amount, final_amount))
+        amounts.extend((base_amount, final_amount))
+
+    if not rows:
+        return result
+
+    quotes = await SubscriptionCurrencyService(session).quote_card_amounts(amounts, country)
+    quote_iter = iter(quotes)
+    for price, _base_amount, _final_amount in rows:
+        base_quote = next(quote_iter)
+        final_quote = next(quote_iter)
+        price["display_base_amount"] = base_quote.amount
+        price["display_final_amount"] = final_quote.amount
+        price["display_currency"] = final_quote.currency
+
+    return result
 
 
 def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -> dict[str, Any]:
@@ -943,6 +983,7 @@ def create_android_features_router(
                     _access_token(request),
                     entry_source=entry_source,
                 )
+                result = await _localize_android_checkout_prices(session, result)
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
             return _error_response(exc)
