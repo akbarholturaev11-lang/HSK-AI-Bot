@@ -30,8 +30,8 @@ enum class CheckoutStep { START, COUNTRY, PAY, DONE }
 
 internal fun defaultCheckoutCountry(language: String): String = when (language) {
     "ru" -> "ru"
-    "uz" -> "uz"
-    else -> "tj"
+    "tj" -> "tj"
+    else -> "uz"
 }
 
 data class SubscriptionCheckoutState(
