@@ -224,6 +224,12 @@ class RegionFlowCopyTests(unittest.TestCase):
             with self.subTest(needle=needle):
                 self.assertEqual(SUBSCRIPTION_HTML.count(needle), 3)
 
+    def test_bank_instructions_name_the_app_button_in_all_three_languages(self):
+        # Tugma nomi ilovadagidek: Dushanbe City — «DC (по номеру карты)»,
+        # Alif — «На карту».
+        self.assertEqual(SUBSCRIPTION_HTML.count("«DC (по номеру карты)»"), 3)
+        self.assertEqual(SUBSCRIPTION_HTML.count("«На карту»"), 3)
+
     def test_admin_panel_edits_both_requisites(self):
         self.assertIn('id="payDetails"', ADMIN_HTML)
         self.assertIn('id="payDetailsAlif"', ADMIN_HTML)
