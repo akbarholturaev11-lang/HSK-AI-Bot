@@ -19,8 +19,12 @@ from sqlalchemy import select
 
 from app.bot.utils.i18n import t
 from app.db.models.user import User
-from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_notification_service import CourseNotificationService
+from app.services.notification_delivery_service import (
+    DELIVERED,
+    NotificationDeliveryService,
+    TelegramNotice,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -59,11 +63,11 @@ class TrialReminderService:
         users = list(result.scalars().all())
 
         notifications = CourseNotificationService(self.session)
-        blocks = BotBlockStatusService(self.session)
+        delivery = NotificationDeliveryService(self.session)
         sent = 0
 
         for user in users:
-            if BotBlockStatusService.is_bot_blocked(user):
+            if not await delivery.reachable(user):
                 continue
             ends_at = _as_utc(user.pro_trial_ends_at)
             if not ends_at:
@@ -97,15 +101,16 @@ class TrialReminderService:
             ):
                 continue
 
-            try:
-                await bot.send_message(
-                    chat_id=user.telegram_id, text=text, parse_mode="HTML"
-                )
-                await blocks.handle_send_success(user, reason="trial_reminder")
-            except Exception as exc:  # noqa: BLE001 — blok holati alohida yuriladi
-                await blocks.handle_send_exception(
-                    user.telegram_id, exc, reason="trial_reminder"
-                )
+            # Android ilova birinchi; telefon ko'rsata olmasa — Telegram.
+            outcome = await delivery.deliver(
+                bot,
+                user,
+                key="trial_expiring",
+                lang=lang,
+                telegram=TelegramNotice(text=text, parse_mode="HTML"),
+                reason="trial_reminder",
+            )
+            if outcome not in DELIVERED:
                 continue
             sent += 1
 

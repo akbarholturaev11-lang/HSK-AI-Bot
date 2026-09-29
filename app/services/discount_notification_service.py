@@ -11,8 +11,12 @@ from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_notification_service import CourseNotificationService
+from app.services.notification_delivery_service import (
+    DELIVERED,
+    NotificationDeliveryService,
+    TelegramNotice,
+)
 from app.services.user_access_state_service import UserAccessStateService
-from app.services.bot_block_status_service import BotBlockStatusService
 
 
 @dataclass
@@ -45,44 +49,46 @@ class DiscountNotificationService:
     ) -> DiscountNotificationResult:
         users = await self._target_users(campaign)
         admin_ids = set(settings.admin_id_list)
+        delivery = NotificationDeliveryService(self.session)
+        # A learner who blocked the bot can still get it in the Android app.
         target_users = [
             user for user in users
             if user.telegram_id not in admin_ids
-            and not BotBlockStatusService.is_bot_blocked(user)
+            and await delivery.reachable(user)
         ]
 
         sent_count = 0
         failed_count = 0
-        blocks = BotBlockStatusService(self.session)
 
         for user in target_users:
             lang = user.language or "uz"
             text = await self._notification_text(campaign, lang, user.payment_method)
-            try:
-                if campaign.notify_media_type == "photo" and campaign.notify_media_file_id:
-                    await bot.send_photo(
-                        chat_id=user.telegram_id,
-                        photo=campaign.notify_media_file_id,
-                        caption=text,
-                        reply_markup=admin_discount_entry_keyboard(lang, campaign_id=campaign.id),
-                        parse_mode="HTML",
-                    )
-                elif campaign.notify_media_type == "video" and campaign.notify_media_file_id:
-                    await bot.send_video(
-                        chat_id=user.telegram_id,
-                        video=campaign.notify_media_file_id,
-                        caption=text,
-                        reply_markup=admin_discount_entry_keyboard(lang, campaign_id=campaign.id),
-                        parse_mode="HTML",
-                    )
-                else:
-                    await bot.send_message(
-                        chat_id=user.telegram_id,
-                        text=text,
-                        reply_markup=admin_discount_entry_keyboard(lang, campaign_id=campaign.id),
-                        parse_mode="HTML",
-                        disable_web_page_preview=True,
-                    )
+            media_type = (
+                campaign.notify_media_type
+                if campaign.notify_media_type in ("photo", "video") and campaign.notify_media_file_id
+                else None
+            )
+            # Android app first; Telegram (with the campaign media) as fallback.
+            # The phone copy leaves out the "opens in the Mini App" line.
+            outcome = await delivery.deliver(
+                bot,
+                user,
+                key="discount_offer",
+                lang=lang,
+                telegram=TelegramNotice(
+                    text=text,
+                    reply_markup=admin_discount_entry_keyboard(lang, campaign_id=campaign.id),
+                    parse_mode="HTML",
+                    media_type=media_type,
+                    media_file_id=campaign.notify_media_file_id if media_type else None,
+                    disable_web_page_preview=None if media_type else True,
+                ),
+                reason="discount_notification",
+                body=await self._notification_text(
+                    campaign, lang, user.payment_method, for_phone=True
+                ),
+            )
+            if outcome in DELIVERED:
                 await CourseNotificationService(self.session).record_from_text(
                     user,
                     key="subscription_offer",
@@ -92,15 +98,9 @@ class DiscountNotificationService:
                     source="discount_notification",
                     dedupe_key=f"discount_campaign:{campaign.id}",
                 )
-                await blocks.handle_send_success(user, reason="discount_notification")
                 sent_count += 1
-            except Exception as exc:
+            else:
                 failed_count += 1
-                await blocks.handle_send_exception(
-                    user.telegram_id,
-                    exc,
-                    reason="discount_notification",
-                )
             await asyncio.sleep(0.05)
 
         await self.repo.mark_notification_sent(
@@ -134,7 +134,15 @@ class DiscountNotificationService:
         campaign: DiscountCampaign,
         lang: str,
         user_payment_method: Optional[str],
+        *,
+        for_phone: bool = False,
     ) -> str:
+        """Telegram text; ``for_phone`` is the Android body under the headline.
+
+        The phone shows the headline as the notification title and opens the
+        app's own subscription screen, so it drops both the headline and the
+        "opens in the Mini App" line.
+        """
         title = (
             getattr(campaign, f"title_{lang}", None)
             or campaign.title
@@ -167,12 +175,13 @@ class DiscountNotificationService:
             },
         }.get(lang, {})
         lines = [
-            labels.get("title", "🎁 <b>Maxsus chegirma tayyor</b>"),
-            "",
             f"<b>{title}</b>",
             f"{labels.get('discount', 'Chegirma')}: <b>{campaign.percent}%</b>",
         ]
         if reason:
             lines.extend(["", reason])
+        if for_phone:
+            return "\n".join(lines)
+        lines = [labels.get("title", "🎁 <b>Maxsus chegirma tayyor</b>"), "", *lines]
         lines.extend(["", labels.get("open", "Tarif va to'lov Mini App ichida ochiladi.")])
         return "\n".join(lines)

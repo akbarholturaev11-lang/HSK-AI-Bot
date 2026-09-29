@@ -457,6 +457,8 @@
     <string name="profile_social_title">HSK AI дар шабакаҳои иҷтимоӣ</string>
     <string name="notify_payment_channel">Қарорҳои обуна</string>
     <string name="notify_payment_channel_body">Огоҳӣ дар бораи тасдиқ ё рад шудани пардохт</string>
+    <string name="notify_account_channel">Обуна ва лимитҳо</string>
+    <string name="notify_account_channel_body">Паёмҳо дар бораи мӯҳлати обуна, тахфифҳо ва лимити рӯзона</string>
     <string name="notify_payment_approved_title">Пардохти шумо тасдиқ шуд</string>
     <string name="notify_payment_approved_body">Обуна фаъол шуд. Барномаро кушоед ва омӯзишро идома диҳед.</string>
     <string name="notify_payment_rejected_title">Пардохти шумо рад шуд</string>

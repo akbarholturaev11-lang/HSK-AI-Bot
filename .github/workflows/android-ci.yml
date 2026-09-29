@@ -197,6 +197,7 @@ jobs:
             tests/test_android_course_rank_completion.py \
             tests/test_android_features_api.py \
             tests/test_android_push.py \
+            tests/test_android_account_notices.py \
             tests/test_course_card_contract.py \
             tests/test_course_gamification_service.py \
             tests/test_course_hsk_exam_service.py \

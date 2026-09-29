@@ -43,6 +43,7 @@ import com.pomp.hskai.core.notify.StudyReminderCoordinator
 import com.pomp.hskai.core.notify.StudyReminderScheduler
 import com.pomp.hskai.feature.update.UpdateWatch
 import com.pomp.hskai.core.notify.StudyNotifications
+import com.pomp.hskai.core.notify.AccountNoticeMonitor
 import com.pomp.hskai.core.notify.PaymentDecisionMonitor
 import com.pomp.hskai.data.api.AndroidPushApi
 import kotlinx.serialization.json.Json
@@ -66,6 +67,9 @@ class HskAiApplication : Application() {
         PaymentDecisionMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
     val studyReminderCoordinator by lazy { StudyReminderCoordinator(this) }
+    val accountNoticeMonitor by lazy {
+        AccountNoticeMonitor(this, retrofit.create(AndroidPushApi::class.java))
+    }
 
     override fun onCreate() {
         super.onCreate()

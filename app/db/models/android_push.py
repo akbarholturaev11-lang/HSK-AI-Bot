@@ -34,3 +34,6 @@ class AndroidPushToken(Base):
     )
     timezone_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     last_study_push_day: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    # Whether the phone can show an account notice right now. NULL means the
+    # installed build predates account notices, so they go to Telegram.
+    notifications_allowed: Mapped[bool | None] = mapped_column(Boolean, nullable=True)

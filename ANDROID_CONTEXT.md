@@ -89,6 +89,23 @@ build'da ekanini bilmay chaqiradi.
   muddati uzaytirish o'rniga yangidan boshlashi mumkin. Renewal semantikasi
   serverda tuzatilmaguncha bu holatni ochmang.
 
+### 2026-09-29: obuna va limit xabarlari avval ilovaga (1.7.3 / 34)
+
+- Kunlik limit yangilandi, obuna ertaga tugaydi, obuna tugadi taklifi, Pro
+  trial tugashi va admin chegirmasi: ilova bor va ruxsat berilgan bo'lsa —
+  FCM `account_notice`, aks holda Telegram. Server tomoni
+  `app/services/notification_delivery_service.py`.
+- Push faqat `notice_id` olib keladi. `AccountNoticeMonitor` matnni
+  `GET /api/v3/android/notices/{id}` bilan oladi (server matni, foydalanuvchi
+  tilida), `account_notices_v1` kanaliga chiqaradi va `.../ack` bilan
+  natijani aytadi. Javob bo'lmasa 10 daqiqadan keyin Telegram ketadi;
+  `show=false` kelsa — Telegram allaqachon yuborgan, ko'rsatilmaydi.
+- `syncPreferences` endi `notifications_allowed` yuboradi; bildirishnoma
+  o'chirilgan bo'lsa ham yuboradi, shunda server Telegram'ga o'tadi. Eski
+  build bu maydonni yubormaydi — unga xabarlar Telegram'da qoladi.
+- Bosilganda: limit yangilandi → Kurs, qolganlari → Obuna ekrani. Play
+  build'da ham ko'rsatiladi. Server kill switch: `ANDROID_PUSH_NOTICES_ENABLED`.
+
 ### 2026-09-28: Xatolarim — universal takror
 
 - Ro'yxat `view=targets` bilan nishonlarni oladi (`MistakeTargetDto`): ieroglif,

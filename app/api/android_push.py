@@ -1,4 +1,4 @@
-"""Authenticated FCM token lifecycle, preferences and payment fallback."""
+"""Authenticated FCM token lifecycle, preferences, notices and payment fallback."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from app.api.desktop_auth import (
 from app.repositories.payment_repo import PaymentRepository
 from app.services.android_push_service import AndroidPushService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.notification_delivery_service import NotificationDeliveryService
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,14 @@ class AndroidPushPreferencesRequest(BaseModel):
 
     study_reminders_enabled: bool
     timezone_name: str = Field(min_length=1, max_length=64)
+    # Sent by builds that can show account notices; None on older builds.
+    notifications_allowed: bool | None = None
+
+
+class AndroidNoticeAckRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    shown: bool
 
 
 def _timezone_name(value: str) -> str:
@@ -87,6 +96,7 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
                     device=current.device,
                     study_reminders_enabled=payload.study_reminders_enabled,
                     timezone_name=timezone_name,
+                    notifications_allowed=payload.notifications_allowed,
                 )
             return JSONResponse({"ok": True}, headers={"Cache-Control": "no-store"})
         except DesktopAuthError as exc:
@@ -143,6 +153,56 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
             logger.exception("Android payment status failed")
             return JSONResponse(
                 {"ok": False, "error": "android_payment_unavailable"},
+                status_code=503,
+            )
+
+    @router.get("/api/v3/android/notices/{notice_id}")
+    async def notice(notice_id: int, request: Request):
+        try:
+            if notice_id <= 0 or request.query_params:
+                raise DesktopAuthError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                current = await context(session, request)
+                notice = await NotificationDeliveryService(session, settings_obj).claim(
+                    notice_id, telegram_id=current.user.telegram_id
+                )
+            if notice is None:
+                raise DesktopAuthError("notice_not_found", status_code=404)
+            return JSONResponse(
+                {"ok": True, "notice": notice}, headers={"Cache-Control": "no-store"}
+            )
+        except DesktopAuthError as exc:
+            return auth_error_response(exc)
+        except Exception:
+            logger.exception("Android notice lookup failed")
+            return JSONResponse(
+                {"ok": False, "error": "android_notice_unavailable"},
+                status_code=503,
+            )
+
+    @router.post("/api/v3/android/notices/{notice_id}/ack")
+    async def notice_ack(notice_id: int, request: Request):
+        try:
+            if notice_id <= 0 or request.query_params:
+                raise DesktopAuthError("android_request_invalid", status_code=422)
+            payload = await validated_auth_payload(request, AndroidNoticeAckRequest)
+            async with session_factory() as session:
+                current = await context(session, request)
+                known = await NotificationDeliveryService(session, settings_obj).acknowledge(
+                    notice_id,
+                    telegram_id=current.user.telegram_id,
+                    device_id=current.device.id,
+                    shown=payload.shown,
+                )
+            if not known:
+                raise DesktopAuthError("notice_not_found", status_code=404)
+            return JSONResponse({"ok": True}, headers={"Cache-Control": "no-store"})
+        except DesktopAuthError as exc:
+            return auth_error_response(exc)
+        except Exception:
+            logger.exception("Android notice acknowledgement failed")
+            return JSONResponse(
+                {"ok": False, "error": "android_notice_unavailable"},
                 status_code=503,
             )
 

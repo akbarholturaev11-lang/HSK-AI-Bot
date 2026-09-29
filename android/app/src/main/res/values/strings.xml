@@ -495,6 +495,8 @@
     <string name="profile_social_title">HSK AI ijtimoiy tarmoqlarda</string>
     <string name="notify_payment_channel">Obuna qarorlari</string>
     <string name="notify_payment_channel_body">To‘lov tasdiqlangani yoki rad etilgani haqida xabar</string>
+    <string name="notify_account_channel">Obuna va limitlar</string>
+    <string name="notify_account_channel_body">Obuna muddati, chegirmalar va kunlik limit haqida xabarlar</string>
     <string name="notify_payment_approved_title">To‘lovingiz tasdiqlandi</string>
     <string name="notify_payment_approved_body">Obunangiz faollashdi. Ilovani ochib davom eting.</string>
     <string name="notify_payment_rejected_title">To‘lovingiz rad etildi</string>

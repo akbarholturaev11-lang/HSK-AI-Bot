@@ -5,7 +5,11 @@ from sqlalchemy import select
 
 from app.db.models.user import User
 from app.bot.utils.i18n import t
-from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.notification_delivery_service import (
+    DELIVERED,
+    NotificationDeliveryService,
+    TelegramNotice,
+)
 
 
 class DailyResetService:
@@ -15,7 +19,7 @@ class DailyResetService:
     async def send_daily_reset_notifications(self, bot: Bot) -> int:
         today = datetime.now(timezone.utc).date()
         now = datetime.now(timezone.utc)
-        block_service = BotBlockStatusService(self.session)
+        delivery = NotificationDeliveryService(self.session)
 
         result = await self.session.execute(
             select(User).where(User.status == "trial")
@@ -37,19 +41,20 @@ class DailyResetService:
             user.questions_used = 0
             user.last_limit_reset_at = now
 
-            if should_notify and not BotBlockStatusService.is_bot_blocked(user):
+            if should_notify and await delivery.reachable(user):
                 lang = user.language if user.language else "ru"
-                try:
-                    await bot.send_message(
-                        chat_id=user.telegram_id,
-                        text=t("daily_limit_renewed", lang),
-                    )
-                    await block_service.handle_send_success(user, reason="daily_reset")
+                # Android app first; Telegram when the phone cannot show it.
+                outcome = await delivery.deliver(
+                    bot,
+                    user,
+                    key="daily_limit_renewed",
+                    lang=lang,
+                    telegram=TelegramNotice(text=t("daily_limit_renewed", lang)),
+                    reason="daily_reset",
+                    action="course",
+                )
+                if outcome in DELIVERED:
                     sent_count += 1
-                except Exception as exc:
-                    await block_service.handle_send_exception(
-                        user.telegram_id, exc, reason="daily_reset"
-                    )
 
         await self.session.commit()
         return sent_count

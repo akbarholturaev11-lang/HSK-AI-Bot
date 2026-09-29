@@ -107,6 +107,9 @@ class Settings(BaseSettings):
     # Payment decision push is unchanged and does not depend on these flags.
     ANDROID_PUSH_UPDATES_ENABLED: bool = False
     ANDROID_PUSH_STUDY_ENABLED: bool = False
+    # Subscription/limit notices go to the Android app first and fall back to
+    # Telegram when the phone does not confirm showing them.
+    ANDROID_PUSH_NOTICES_ENABLED: bool = False
 
     # Google / Apple sign-in. Every provider fails closed: a blank client id
     # means the provider is omitted from the client's provider list, so the

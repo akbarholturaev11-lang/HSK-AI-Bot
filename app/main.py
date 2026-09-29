@@ -115,6 +115,11 @@ from app.services.entitlements.state import EntitlementState, access_expires_at,
 from app.services.android_analytics_service import AndroidAnalyticsService
 from app.services.android_release_service import AndroidReleaseService
 from app.services.android_realtime_push_service import AndroidRealtimePushService
+from app.services.notification_delivery_service import (
+    DELIVERED as NOTICE_DELIVERED,
+    NotificationDeliveryService,
+    TelegramNotice,
+)
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_release_manifest_service import (
@@ -392,12 +397,21 @@ async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
 
     lang = user.language if user.language else "ru"
     try:
-        await bot.send_message(
-            chat_id=telegram_id,
-            text=t("subscription_expired_soft_text", lang),
-            reply_markup=subscription_expired_offer_keyboard(lang),
-            parse_mode="HTML",
+        # Android ilova birinchi; telefon ko'rsata olmasa — Telegram.
+        outcome = await NotificationDeliveryService(session).deliver(
+            bot,
+            user,
+            key="subscription_offer",
+            lang=lang,
+            telegram=TelegramNotice(
+                text=t("subscription_expired_soft_text", lang),
+                reply_markup=subscription_expired_offer_keyboard(lang),
+                parse_mode="HTML",
+            ),
+            reason="subscription_expired_offer",
         )
+        if outcome not in NOTICE_DELIVERED:
+            return
         await CourseNotificationService(session).record_from_text(
             user,
             key="subscription_offer",
@@ -510,6 +524,9 @@ async def _background_scheduler(bot: Bot) -> None:
                 android_push = AndroidRealtimePushService(session, settings)
                 await android_push.send_release_if_needed()
                 await android_push.send_due_study()
+            async with async_session_maker() as session:
+                # Telefon 10 daqiqada tasdiqlamagan bildirishnomalar Telegram'ga.
+                await NotificationDeliveryService(session, settings).send_due_fallbacks(bot)
             async with async_session_maker() as session:
                 await CourseReminderService(session).send_due_reminders(bot)
             async with async_session_maker() as session:

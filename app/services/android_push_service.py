@@ -95,12 +95,16 @@ class AndroidPushService:
         device: DesktopDevice,
         study_reminders_enabled: bool,
         timezone_name: str,
+        notifications_allowed: bool | None = None,
     ) -> None:
         row = await self.session.get(AndroidPushToken, device.id)
         if row is None:
             return
         row.study_reminders_enabled = bool(study_reminders_enabled)
         row.timezone_name = timezone_name
+        # Older builds do not send it; their account notices stay on Telegram.
+        if notifications_allowed is not None:
+            row.notifications_allowed = bool(notifications_allowed)
         row.updated_at = datetime.now(timezone.utc)
         await self.session.commit()
 

@@ -234,6 +234,54 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-29 — Obuna va limit xabarlari: avval Android ilova, keyin Telegram
+
+Changed:
+- Beshta xabar endi `NotificationDeliveryService` orqali ketadi: kunlik limit
+  yangilandi (`DailyResetService`), obuna ertaga tugaydi
+  (`ExpiryReminderService`), obuna tugadi taklifi (`main.py`
+  `_send_subscription_expired_offer`), Pro trial 2 kun / oxirgi kun
+  (`TrialReminderService`), admin chegirma kampaniyasi
+  (`DiscountNotificationService`).
+- Foydalanuvchida Android ilova bo'lsa va telefon bildirishnomaga ruxsat
+  bergan bo'lsa — FCM `account_notice` (faqat id). Telefon matnni
+  `GET /api/v3/android/notices/{id}` bilan o'qiydi, ko'rsatadi va
+  `POST .../ack` bilan «ko'rsatdim / ko'rsata olmayman» deydi.
+- Telefon 10 daqiqada tasdiqlamasa, «ko'rsata olmayman» desa, FCM qabul
+  qilmasa yoki ilova/ruxsat yo'q bo'lsa — saqlangan Telegram xabari (tugma va
+  media bilan) ketadi. Kech qolgan telefon `show=false` oladi, ya'ni xabar ikki
+  marta kelmaydi. Kechikkanlarni minutlik scheduler `send_due_fallbacks` yuboradi.
+- Yangi jadval `account_notice_deliveries` (Alembic 0094; production'da
+  `create_all`). `android_push_tokens.notifications_allowed`: NULL = eski build,
+  u uchun hammasi Telegram'da qoladi.
+- Botni bloklagan, lekin ilovasi bor foydalanuvchi ham bu xabarlarni oladi.
+- Kill switch: `ANDROID_PUSH_NOTICES_ENABLED` (default `false`). O'chiq bo'lsa
+  hammasi avvalgidek Telegram.
+- Android 1.7.3 (34): `account_notices_v1` kanali (uz/ru/tg), `AccountNoticeMonitor`.
+  Play build'da ham ko'rsatiladi (egasi qarori).
+- «Kunlik limit tugadi» (`LimitNotificationService.daily_limit_spent`)
+  O'ZGARMADI: u faqat Android'da limitga urilganda Telegram'ga ketadi; egasining
+  qarori kutilmoqda.
+
+Why:
+- Ilova va Telegram bir-birini bilgan holda yuborishi kerak: ilova bor
+  foydalanuvchi xabarni telefonda oladi, Telegram faqat zaxira.
+
+Files touched:
+- `app/services/notification_delivery_service.py` (yangi),
+  `app/db/models/account_notice_delivery.py` (yangi), `alembic/versions/0094_*`,
+  `app/api/android_push.py`, `app/services/android_push_service.py`,
+  `app/db/session.py`, `app/config.py`, `app/main.py`, beshta xabar servisi.
+- Android: `core/notify/AccountNotifications.kt`, `AccountNoticeMonitor.kt`,
+  `AccountNoticePolicy.kt`, `HskAiMessagingService.kt`,
+  `PaymentDecisionMonitor.kt`, `AndroidPushApi.kt`, `strings.xml` (3 til).
+- `tests/test_android_account_notices.py`.
+
+Risk / follow-up:
+- Railway'da `ANDROID_PUSH_NOTICES_ENABLED=true` qo'yilmaguncha va 1.7.3
+  o'rnatilmaguncha hech narsa o'zgarmaydi.
+- Batareya tejaydigan telefonlarda Telegram ~10 daqiqa kechikishi mumkin.
+
 ### 2026-09-29 — Dars sahifalarida promo skripti versiyasi ko'tarildi
 
 Changed:

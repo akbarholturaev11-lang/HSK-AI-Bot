@@ -28,6 +28,14 @@ class HskAiMessagingService : FirebaseMessagingService() {
                     UpdatePushHandler.handle(applicationContext, versionCode)
                 }
 
+                "account_notice" -> {
+                    val noticeId = data["notice_id"]?.toIntOrNull() ?: return@runBlocking
+                    app.accountNoticeMonitor.receive(
+                        deviceId = data["device_id"].orEmpty(),
+                        noticeId = noticeId,
+                    )
+                }
+
                 "study_reminder" -> {
                     val localDay = data["local_day"]?.takeIf {
                         it.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))

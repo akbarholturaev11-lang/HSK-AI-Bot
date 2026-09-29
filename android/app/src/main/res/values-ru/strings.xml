@@ -456,6 +456,8 @@
     <string name="profile_social_title">HSK AI в соцсетях</string>
     <string name="notify_payment_channel">Решения по подписке</string>
     <string name="notify_payment_channel_body">Уведомления о подтверждении или отклонении платежа</string>
+    <string name="notify_account_channel">Подписка и лимиты</string>
+    <string name="notify_account_channel_body">Сообщения о сроке подписки, скидках и дневном лимите</string>
     <string name="notify_payment_approved_title">Платёж подтверждён</string>
     <string name="notify_payment_approved_body">Подписка активирована. Откройте приложение и продолжайте обучение.</string>
     <string name="notify_payment_rejected_title">Платёж отклонён</string>

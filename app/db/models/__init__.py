@@ -38,6 +38,7 @@ from .subscription_entry_event import SubscriptionEntryEvent
 from .course_ad import CourseAdCreative, CourseAdView
 from .desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from .android_push import AndroidPushToken
+from .account_notice_delivery import AccountNoticeDelivery
 from .entitlement_shadow_event import EntitlementShadowEvent
 from .trial_risk_event import TrialRiskEvent
 from .user_identity import UserIdentity

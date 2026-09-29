@@ -184,6 +184,7 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "study_reminders_enabled": "BOOLEAN DEFAULT false NOT NULL",
         "timezone_name": "VARCHAR(64)",
         "last_study_push_day": "VARCHAR(10)",
+        "notifications_allowed": "BOOLEAN",
     },
 }
 

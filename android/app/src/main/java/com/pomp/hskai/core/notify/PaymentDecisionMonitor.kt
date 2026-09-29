@@ -81,11 +81,20 @@ class PaymentDecisionMonitor(
         }
     }
 
+    /** The device this login is bound to; account notices must name it. */
+    fun currentDeviceId(): String? = prefs.getString(DEVICE_ID, null)
+
     suspend fun syncRegistration() {
-        if (!initializeFirebase() || !canRegisterPush() ||
+        if (!initializeFirebase() ||
             prefs.getString(DEVICE_ID, null).isNullOrBlank() ||
             app.credentialStore.refreshToken() == null
         ) return
+        if (!canRegisterPush()) {
+            // Notifications were switched off: the server should stop routing
+            // account notices here and keep them on Telegram.
+            syncPreferences()
+            return
+        }
         val token = suspendCancellableCoroutine<String?> { continuation ->
             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                 if (continuation.isActive) {
@@ -122,6 +131,7 @@ class PaymentDecisionMonitor(
                 PushPreferencesRequest(
                     studyRemindersEnabled = session.reminderEnabled,
                     timezoneName = ZoneId.systemDefault().id,
+                    notificationsAllowed = AccountNotifications.canPost(app),
                 ),
             )
         }
