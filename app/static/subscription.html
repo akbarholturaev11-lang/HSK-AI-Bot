@@ -1428,14 +1428,17 @@ function renderPaymentDetails(details,text){
   if(!rows.length){
     return `<h4>${text.detailsTitle}</h4><div class="detail-empty">${text.noDetails}</div>`;
   }
-  const instruction=cardInstructionText(text);
-  const hintClass=state.detailHintOpen?"":"collapsed";
-  const hintToggleText=state.detailHintOpen?(text.showLess||"Less"):(text.showMore||"More");
+  const instruction=escapeHtml(cardInstructionText(text));
+  /* Tojikiston kartasi (DC City / Alif) yo'riqnomasi qisqa va qadamma-qadam —
+     doim to'liq ko'rinadi. Boshqa davlat kartasiniki uzun, u yig'iq turadi. */
+  const hint=state.country==="tj"
+    ?`<div class="detail-hint"><span class="detail-hint-text">${instruction}</span></div>`
+    :`<button class="detail-hint ${state.detailHintOpen?"":"collapsed"}" type="button" data-detail-hint-toggle>
+      <span class="detail-hint-text">${instruction}</span>
+      <span class="detail-hint-more">${escapeHtml(state.detailHintOpen?(text.showLess||"Less"):(text.showMore||"More"))}</span>
+    </button>`;
   return `<h4>${text.detailsTitle}</h4>
-    <button class="detail-hint ${hintClass}" type="button" data-detail-hint-toggle>
-      <span class="detail-hint-text">${escapeHtml(instruction)}</span>
-      <span class="detail-hint-more">${escapeHtml(hintToggleText)}</span>
-    </button>
+    ${hint}
     <div class="detail-list">
       ${rows.map(row=>`<div class="detail-row ${row.copyValue?"copyable":""}">
         <span>${escapeHtml(row.line)}</span>

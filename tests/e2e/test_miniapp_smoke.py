@@ -2583,6 +2583,8 @@ def test_subscription_page_smoke(page):
     expect(page.locator("#summaryRows")).to_contain_text("Rossiya kartasi")
     expect(page.locator("#summaryRows")).to_contain_text("Alif")
     expect(page.locator("#paymentBox")).to_contain_text("Alif")
+    # Boshqa davlat kartasi yo'riqnomasi uzun — yig'iq turadi.
+    expect(page.locator("#paymentBox .detail-hint-more")).to_be_visible()
 
     # Tojikiston: to'lov turi — Dushanbe City yoki Alif.
     page.locator("#backBtn").click()
@@ -2597,6 +2599,10 @@ def test_subscription_page_smoke(page):
     page.locator("#nextBtn").click()
     expect(page.locator("#summaryRows")).to_contain_text("Alif")
     expect(page.locator("#paymentBox")).to_contain_text("Alif")
+    # DC City / Alif yo'riqnomasi qisqa — doim to'liq, «Ko'proq» siz.
+    expect(page.locator("#paymentBox .detail-hint")).to_contain_text("«На карту»")
+    expect(page.locator("#paymentBox .detail-hint")).to_contain_text("to'lov qiling")
+    expect(page.locator("#paymentBox .detail-hint-more")).to_have_count(0)
 
     # Xitoy: narx ¥ da, to'lov turi — Alipay yoki WeChat Pay.
     page.locator("#backBtn").click()
