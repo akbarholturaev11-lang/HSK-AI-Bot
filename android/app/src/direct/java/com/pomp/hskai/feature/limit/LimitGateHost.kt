@@ -26,6 +26,8 @@ fun rememberLimitGate(
     trialStarting: Boolean = false,
     trialError: String = "",
     onStartTrial: () -> Unit = {},
+    onLimitPresented: () -> Unit = {},
+    onLimitDismissed: () -> Unit = {},
 ): LimitGate {
     val context = LocalContext.current
     var recheckAsked by remember { mutableStateOf(false) }
@@ -49,6 +51,8 @@ fun rememberLimitGate(
             canSubscribe = true,
         ),
         actions = LimitGateActions(
+            onPresented = onLimitPresented,
+            onDismissed = onLimitDismissed,
             onUnlock = onOpenSubscription,
             onRecheck = {
                 recheckAsked = true
