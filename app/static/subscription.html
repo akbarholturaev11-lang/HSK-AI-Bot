@@ -73,6 +73,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .section h3{font-size:15px;font-weight:900}
 .section small{color:var(--accent-ink);font-size:12px;font-weight:850;text-align:right}
 .value-copy{margin:-1px 0 10px;color:var(--muted);font-size:12px;line-height:1.45;font-weight:750}
+.value-copy:empty,#payText:empty{display:none}
+#payText:empty+.quote-card{margin-top:0}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
 .plan.selected,.choice.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
@@ -245,7 +247,6 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 
   <section class="screen" data-screen="pay">
     <div class="hero">
-      <h2 id="payTitle"></h2>
       <p id="payText"></p>
       <div class="quote-card">
         <div class="quote-label" id="amountLabel"></div>
@@ -424,7 +425,6 @@ const I18N={
     supportText:"To'lov yoki mini appda muammo bo'lsa, adminga qisqa yozing va screenshot yuboring.",
     supportButton:"Adminga yozish",
     plansTitle:"Tarif",
-    valueText:"Barcha darslar, AI savollar, talaffuz, testlar va xatolar takrori ochiladi.",
     lockedValueText:"Boshlagan darsingizni davom ettiring va keyingi HSK darslarini ketma-ket oching.",
     methodsTitle:"To'lov usuli",
     discountReady:"20% chegirma qo'llanadi",
@@ -445,11 +445,9 @@ const I18N={
       cn:["Xitoy","Alipay yoki WeChat Pay, ¥ da to'lov"],
       other:["Boshqa davlat kartasi","USD ekvivalentida to'lov"]
     },
-    payTitle:"To'lovni yakunlash",
-    payText:"Summani to'lang va to'lov screenshotini yuklang.",
     lockedPayText:"To'lov tasdiqlangach, yopilgan darsingiz shu kursda darhol ochiladi.",
     amountLabel:"To'lanadigan summa",
-    rows:{plan:"Tarif",method:"Usul",bank:"TJK bank nomi",rate:"Kurs"},
+    rows:{plan:"Tarif",bank:"TJK bank nomi",rate:"Kurs"},
     detailsTitle:"Karta rekvizitlari",
     detailsHint:"To'lovni shu rekvizitlarga qiling. Karta raqamini copy qilish uchun yonidagi tugmani bosing.",
     cardHints:{
@@ -551,7 +549,6 @@ const I18N={
     supportText:"Если возникла проблема с оплатой или mini app, коротко напишите админу и отправьте screenshot.",
     supportButton:"Написать админу",
     plansTitle:"Тариф",
-    valueText:"Открываются все уроки, AI-вопросы, произношение, тесты и повторение ошибок.",
     lockedValueText:"Продолжите начатый урок и открывайте следующие уроки HSK по порядку.",
     methodsTitle:"Способ оплаты",
     discountReady:"Скидка 20% применится",
@@ -572,11 +569,9 @@ const I18N={
       cn:["Китай","Alipay или WeChat Pay, оплата в ¥"],
       other:["Карта другой страны","Оплата в USD"]
     },
-    payTitle:"Завершение оплаты",
-    payText:"Оплатите сумму и загрузите screenshot оплаты.",
     lockedPayText:"После подтверждения оплаты закрытый урок сразу откроется в этом курсе.",
     amountLabel:"Сумма к оплате",
-    rows:{plan:"Тариф",method:"Способ",bank:"Банк TJK",rate:"Курс"},
+    rows:{plan:"Тариф",bank:"Банк TJK",rate:"Курс"},
     detailsTitle:"Реквизиты карты",
     detailsHint:"Оплатите по этим реквизитам. Чтобы скопировать номер карты, нажмите кнопку рядом.",
     cardHints:{
@@ -678,7 +673,6 @@ const I18N={
     supportText:"Агар пардохт ё mini app кор накунад, ба admin кӯтоҳ нависед ва screenshot фиристед.",
     supportButton:"Ба admin навиштан",
     plansTitle:"Тариф",
-    valueText:"Ҳамаи дарсҳо, AI-саволҳо, талаффуз, тестҳо ва такрори хатоҳо кушода мешаванд.",
     lockedValueText:"Дарси оғозкардаатонро идома диҳед ва дарсҳои навбатии HSK-ро пайдарпай кушоед.",
     methodsTitle:"Усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
@@ -699,11 +693,9 @@ const I18N={
       cn:["Чин","Alipay ё WeChat Pay, пардохт бо ¥"],
       other:["Корти дигар давлат","Пардохт бо USD"]
     },
-    payTitle:"Пардохтро тамом кунед",
-    payText:"Маблағро пардохт кунед ва screenshot-и пардохтро бор кунед.",
     lockedPayText:"Пас аз тасдиқи пардохт дарси басташуда дар ҳамин курс фавран кушода мешавад.",
     amountLabel:"Маблағи пардохт",
-    rows:{plan:"Тариф",method:"Усул",bank:"Номи банк",rate:"Курс"},
+    rows:{plan:"Тариф",bank:"Номи банк",rate:"Курс"},
     detailsTitle:"Реквизити корт",
     detailsHint:"Ба ҳамин реквизит пардохт кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.",
     cardHints:{
@@ -1221,9 +1213,9 @@ function nextCtaText(text,screen){
 }
 function renderPlans(text){
   $("#plansTitle").textContent=modeText(text,"modePlans");
-  const valueEl=$("#valueText");
-  valueEl.textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
-  valueEl.style.display="";
+  /* Umumiy ta'rif matni olib tashlandi: faqat yopiq darsdan kelganlarga
+     «darsingizni davom ettiring» matni qoladi. */
+  $("#valueText").textContent=isLockedLessonSource()?text.lockedValueText:"";
   renderDiscount(text);
   renderInviteSheet(text);
   const plans=availablePlans(state.method);
@@ -1330,8 +1322,9 @@ function renderCountry(text){
 }
 function renderPay(text){
   const quote=state.quote||(state.preview?mockQuote():null);
-  $("#payTitle").textContent=text.payTitle;
-  $("#payText").textContent=(isLockedLessonSource()?text.lockedPayText:text.payText)||text.payText;
+  /* Sarlavha va umumiy matn olib tashlandi: faqat yopiq darsdan kelganlarga
+     «to'lov tasdiqlangach darsingiz ochiladi» matni qoladi. */
+  $("#payText").textContent=isLockedLessonSource()?text.lockedPayText:"";
   $("#amountLabel").textContent=text.amountLabel;
   if(!quote){
     $("#amountValue").textContent="...";
@@ -1350,12 +1343,7 @@ function renderPay(text){
   const hasOldAmount=Boolean(quote.discount_applied&&oldAmount&&(`${oldAmount}`!==`${quote.pay_amount}`||oldCurrency!==quote.pay_currency));
   $("#amountOld").textContent=hasOldAmount?`${money(oldAmount)} ${oldCurrency}`:"";
   $("#amountOld").classList.toggle("show",hasOldAmount);
-  const planText=planName(text,state.plan);
-  const methodText=state.method==="visa"?text.countries[state.country][0]:text.methods[state.method][0];
-  const rows=[
-    [text.rows.plan,planText],
-    [text.rows.method,methodText]
-  ];
+  const rows=[[text.rows.plan,planName(text,state.plan)]];
   if(state.method==="visa"){
     rows.push([text.rows.bank,CARD_BANK_NAMES[cardBank()]]);
     if(state.country!=="tj"&&quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);

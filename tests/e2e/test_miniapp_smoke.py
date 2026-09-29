@@ -2578,10 +2578,15 @@ def test_subscription_page_smoke(page):
     page.locator("#nextBtn").click()
     expect(page.locator("#plans .plan").first).to_contain_text("1 oy")
     expect(page.locator("#plans .plan").first).to_contain_text("RUB")
+    # Tarif ostidagi umumiy ta'rif matni olib tashlangan.
+    expect(page.locator("#valueText")).to_be_hidden()
     expect(page.locator("#nextBtn")).to_contain_text("To'lovga davom etish")
     page.locator("#nextBtn").click()
     expect(page.locator("#amountCurrency")).to_have_text("RUB")
-    expect(page.locator("#summaryRows")).to_contain_text("Rossiya kartasi")
+    # To'lov ekranida sarlavha, umumiy matn va «Usul» qatori yo'q.
+    expect(page.locator("#payTitle")).to_have_count(0)
+    expect(page.locator("#payText")).to_be_hidden()
+    expect(page.locator("#summaryRows")).not_to_contain_text("Rossiya kartasi")
     expect(page.locator("#summaryRows")).to_contain_text("Alif")
     expect(page.locator("#paymentBox")).to_contain_text("Alif")
     # Boshqa davlat kartasi yo'riqnomasi uzun — yig'iq turadi.
@@ -2705,6 +2710,8 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     page.locator("#nextBtn").click()
     page.locator("[data-bank=dc_city]").click()
     page.locator("#nextBtn").click()
+    # Yopiq darsdan kelganlarga to'lov ekranidagi maxsus matn qoladi.
+    expect(page.locator("#payText")).to_contain_text("darsingiz shu kursda darhol ochiladi")
     expect(page.locator("#paymentBox")).to_contain_text("0000 0000 0000 0000")
     page.locator("#receiptInput").set_input_files(
         {
