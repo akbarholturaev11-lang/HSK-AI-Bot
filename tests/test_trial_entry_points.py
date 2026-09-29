@@ -97,21 +97,17 @@ class TrialEntryPointTests(unittest.TestCase):
 
 
 class AndroidOffersTheSameTrialTests(unittest.TestCase):
-    """Android'da ham AYNI kirish nuqtalari.
+    """Android trial faqat foydalanuvchi ehtiyoj sezadigan joyda taklif qilinadi.
 
-    Bitta hisob, bir nechta qurilma: telefonda trial taklif qilinmasa,
-    foydalanuvchi uchun u yo'q bilan barobar. Mini App'dagi to'rtta joyning
-    Android'dagi ekvivalenti shu yerda qotiriladi (obuna sahifasi Android'da
-    alohida ekran emas — u profilning o'zi).
+    Onboardingdan keyin alohida Pro/trial oynasi chiqmaydi. Trial yo'qolgani
+    yo'q: lesson/practice limiti tugagach mavjud limit paywalli server bergan
+    eligibility bo'yicha aynan shu taklifni ko'rsatadi.
     """
 
-    def test_the_plan_choice_appears_after_onboarding(self):
-        self.assertIn("PlanChoiceSheet(", ANDROID_MAIN)
-        # Faqat endigina onboarding tugatgan odamga: `launch` shu chaqiruvda
-        # to'ladi va allaqachon ro'yxatdan o'tgan hisobda null bo'lib qoladi.
-        self.assertIn("onboardingState.launch != null", ANDROID_MAIN)
-        # Bir marta.
-        self.assertIn("planChoiceSeen", ANDROID_MAIN)
+    def test_onboarding_does_not_interrupt_with_a_plan_choice(self):
+        self.assertNotIn("PlanChoiceSheet(", ANDROID_MAIN)
+        self.assertNotIn("planChoiceSeen", ANDROID_MAIN)
+        self.assertNotIn('onUnlock("onboarding_plan")', ANDROID_MAIN)
 
     def test_the_limit_block_offers_the_trial_in_both_channels(self):
         for name, source in (
