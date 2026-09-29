@@ -270,7 +270,8 @@ Files touched:
   `tests/test_subscription_miniapp_card_banks.py`, `tests/e2e/test_miniapp_smoke.py`
 
 Risk:
-- Deploydan OLDIN admin Mini App'da Alif rekvizitini kiritish shart, aks holda
+- Alif maydoni admin Mini App'da faqat shu deploydan keyin paydo bo'ladi:
+  deploydan keyin DARHOL Alif rekvizitini kiritish shart. U kiritilmaguncha
   Alif, Rossiya, O'zbekiston va boshqa davlat to'lovlari «rekvizit tayyor emas»
   bilan to'xtaydi.
 - AUTO kurs yoqilgan bo'lsa overview endi bitta tashqi kurs so'rovini qiladi
