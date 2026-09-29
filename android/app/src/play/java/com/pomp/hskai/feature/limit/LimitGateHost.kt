@@ -38,6 +38,8 @@ fun rememberLimitGate(
     trialStarting: Boolean = false,
     trialError: String = "",
     onStartTrial: () -> Unit = {},
+    onLimitPresented: () -> Unit = {},
+    onLimitDismissed: () -> Unit = {},
 ): LimitGate {
     val context = LocalContext.current
     // A re-check that changed nothing has to say so: a subscription that
@@ -65,6 +67,8 @@ fun rememberLimitGate(
             canSubscribe = false,
         ),
         actions = LimitGateActions(
+            onPresented = onLimitPresented,
+            onDismissed = onLimitDismissed,
             onRecheck = {
                 recheckAsked = true
                 recheckFoundNothing = false
