@@ -368,6 +368,9 @@ private fun AppRoot(
             var dictionaryOpen by remember { mutableStateOf(false) }
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
             var screenCenterAdAsked by rememberSaveable { mutableStateOf(false) }
+            val adsUnlockedAfterLimit by app.appSettings.adsUnlockedAfterLimit
+                .collectAsStateWithLifecycle(initialValue = false)
+            var limitOverlayVisible by remember { mutableStateOf(false) }
             var widgetSetupOpen by remember { mutableStateOf(false) }
             var widgetPlacedNotice by remember { mutableStateOf(false) }
             var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
@@ -585,6 +588,13 @@ private fun AppRoot(
                 trialStarting = profileState.trialStarting,
                 trialError = profileState.trialError,
                 onStartTrial = profileViewModel::startTrial,
+                onLimitPresented = {
+                    limitOverlayVisible = true
+                    if (!adsUnlockedAfterLimit) {
+                        scope.launch { app.appSettings.unlockAdsAfterLimit() }
+                    }
+                },
+                onLimitDismissed = { limitOverlayVisible = false },
             )
 
             // A trial or an admin-approved payment changes every section's
@@ -615,19 +625,26 @@ private fun AppRoot(
             // in the moment before the store has been read.
             val notificationPrimerSeen by app.appSettings.notificationPrimerSeen
                 .collectAsStateWithLifecycle(initialValue = true)
+            // Ads are a post-limit experience. A new learner gets the product
+            // first; only after a real limit screen has appeared once may the
+            // existing server-controlled ad placements start requesting ads.
             LaunchedEffect(
                 onboardingState.completed,
                 notificationPrimerSeen,
                 widgetSession.reminderEnabled,
+                adsUnlockedAfterLimit,
+                limitOverlayVisible,
             ) {
                 if (
                     !screenCenterAdAsked &&
+                    adsUnlockedAfterLimit &&
+                    !limitOverlayVisible &&
                     onboardingState.completed &&
                     (notificationPrimerSeen || widgetSession.reminderEnabled)
                 ) {
                     screenCenterAdAsked = true
                     delay(SCREEN_CENTER_AD_DELAY_MS)
-                    if (adRequest == null) {
+                    if (adRequest == null && !limitOverlayVisible) {
                         adRequest = AdRequest(placement = AdViewModel.PLACEMENT_SCREEN_CENTER)
                     }
                 }
@@ -1032,10 +1049,10 @@ private fun AppRoot(
                         val finishedOrder = launch.lesson.order
                         openLesson = null
                         courseViewModel.load()
-                        if (completed) {
-                            // Mini App `playLessonEnd`: one block after the
-                            // lesson, for learners the server still shows ads
-                            // to. It opens nothing, so it carries no gate.
+                        if (completed && adsUnlockedAfterLimit) {
+                            // The lesson-end placement joins the same product
+                            // timing rule: no ad of any kind before the learner
+                            // has encountered a real limit screen once.
                             adRequest = AdRequest(
                                 placement = AdViewModel.PLACEMENT_LESSON_END,
                                 lessonOrder = finishedOrder,
