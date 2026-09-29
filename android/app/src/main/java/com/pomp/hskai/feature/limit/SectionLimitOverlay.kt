@@ -32,7 +32,7 @@ fun SectionLimitOverlay(
     reason: String? = null,
     resetAt: String? = null,
 ) {
-    DisposableEffect(limit) {
+    DisposableEffect(Unit) {
         limit.actions.onPresented()
         onDispose { limit.actions.onDismissed() }
     }
