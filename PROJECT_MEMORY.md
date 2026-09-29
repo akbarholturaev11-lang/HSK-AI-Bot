@@ -234,6 +234,23 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-29 — Dars sahifalarida promo skripti versiyasi ko'tarildi
+
+Changed:
+- `de0e904` `desktop-download.js/.css` ni o'zgartirib `?v=` ni faqat
+  `course-v3.html` da `20260929-1` ga ko'targan edi. Qolgan 5 dars sahifasi
+  (`course_v3_memorize/mistakes/pronunciation/recognition/test.html`) ham
+  `20260929-1` ga o'tdi. Fayllar `immutable` — ko'tarilmasa darslarda eski
+  keshdagi promo kodi (platformaga moslashsiz, 14 kunlik server cooldown'siz) qolardi.
+- `tests/test_course_v3_static_data.py` yangi kodga moslandi: profil kartasi
+  `buildProfileDeviceVisual()`, skript hash'i, sessiyada bitta promo (dars
+  yakuni ham band o'ringa kirmaydi — `4312c54` dagi 14 kunlik cooldown bilan).
+
+Risk:
+- Bu test fayli hech bir CI workflow'da ishlamaydi — promo JS o'zgarsa uni
+  qo'lda ishga tushiring. `sessionSlotAllows` ustidagi izoh eski qoidani
+  tasvirlaydi (JS'ga tegilmadi, aks holda yana `?v=` ko'tarish kerak edi).
+
 ### 2026-09-29 — Android obuna oynasi Mini App bilan tenglashtirildi (1.7.2 / 33)
 
 Changed:

@@ -846,7 +846,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('HSK AI Apps / Download — macOS, Windows va Android', landing)
         self.assertIn('seal.src = "/assets/hsk-ai-avatar.webp"', download)
         self.assertIn('logo.src = "/assets/hsk-ai-avatar.webp"', download)
-        self.assertIn('buildProductPreview("card")', download)
+        # Profil kartasi qurilmalar rasmini ko'rsatadi; mahsulot ko'rinishi
+        # faqat promo oynasida qoldi.
+        self.assertIn("buildProfileDeviceVisual()", download)
         self.assertIn('buildProductPreview("modal")', download)
         self.assertNotIn('element("span", "pdd-seal", "桌")', download)
         self.assertNotIn('element("span", "pdd-laptop-seal", "桌")', download)
@@ -868,13 +870,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260920-1", html, page
+                "/course_v3_data/desktop-download.css?v=20260929-1", html, page
             )
             # Ikkala skript `immutable`, bir yillik cache bilan beriladi
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
             # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260923-2", html, page
+                "/course_v3_data/desktop-download.js?v=20260929-1", html, page
             )
             self.assertIn("/course_v3_data/ads.js?v=20260923-2", html, page)
 
@@ -908,7 +910,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # No platform is pinned: the page reads the device it was opened on.
         self.assertNotIn('searchParams.set("platform"', download)
         self.assertEqual(download.count("previewTranslation:"), 3)
-        self.assertIn('main.appendChild(buildProductPreview("card"))', download)
+        self.assertIn("main.appendChild(buildProfileDeviceVisual())", download)
         self.assertIn("main.appendChild(buildBenefits(true))", download)
         self.assertIn("copy.macUnavailable", download)
         self.assertIn("copy.windowsUnavailable", download)
@@ -989,12 +991,13 @@ class DesktopPromoCooldownIsPerPlacementTests(unittest.TestCase):
 
 
 class SessionSlotGoesToTheLessonEndPromoTests(unittest.TestCase):
-    """Sessiyada bitta promo — lekin dars yakuni o'z navbatini oladi.
+    """Sessiyada bitta promo — qaysi joy olgani eslab qolinadi.
 
     `promoSeenInSession` bitta umumiy bayroq edi va uni HAR QANDAY promo
-    yoqardi. "Mini App ochilganda" promosi har ochilishda birinchi bo'lib
-    chiqadi, ya'ni dars yakunidagi promo o'sha sessiyada hech qachon
-    chiqmasdi — sovish muddati joyga ajratilgandan keyin ham.
+    yoqardi. Endi o'rin manbasi bilan saqlanadi. Dars yakuni ilgari band
+    o'ringa bir marta kira olardi; server platforma bo'yicha 14 kunlik
+    sovish muddatini boshqargach (`AppPromoDecisionService`), bitta
+    ko'rsatilgan promo shu muddatni boshlaydi — sessiyada ikkinchisi chiqmaydi.
     """
 
     def setUp(self):
@@ -1007,15 +1010,13 @@ class SessionSlotGoesToTheLessonEndPromoTests(unittest.TestCase):
         self.assertIn("sessionPromoSource: \"\",", self.js)
         self.assertIn("state.sessionPromoSource = source;", self.js)
 
-    def test_the_lesson_end_promo_may_take_an_occupied_slot_once(self):
-        self.assertIn(
-            'var PROMO_PRIORITY_SOURCE = "lesson_end_promo";', self.js
-        )
+    def test_an_occupied_slot_blocks_every_automatic_promo(self):
         self.assertIn("function sessionSlotAllows(source)", self.js)
+        self.assertIn("    return !state.sessionPromoSource;\n", self.js)
         self.assertIn("!sessionSlotAllows(source) ||", self.js)
-        # O'zi chiqqandan keyin sessiya yopiladi: shu shart bo'lmasa dars
-        # yakunidagi promo bitta sessiyada qayta-qayta chiqaverardi.
-        self.assertIn(
+        # Dars yakuni ham band o'ringa kirmaydi: aks holda bitta sessiyada
+        # ikkinchi promo 14 kunlik sovish muddati ichida chiqardi.
+        self.assertNotIn(
             "state.sessionPromoSource !== PROMO_PRIORITY_SOURCE", self.js
         )
 
@@ -1034,7 +1035,7 @@ class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
     """
 
     EXPECTED = {
-        "desktop-download.js": "dabde559cf9ec41e",
+        "desktop-download.js": "4b32cc7a790b071b",
         "ads.js": "6238d6aa34689f86",
     }
 
