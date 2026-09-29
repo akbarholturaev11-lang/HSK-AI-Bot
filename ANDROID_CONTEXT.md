@@ -72,11 +72,14 @@ build'da ekanini bilmay chaqiradi.
   to'lov holatini qayta tekshiradi. `android_push_tokens` jadvali, Alembic
   `0089_android_push_tokens.py`, `/api/v3/android/push/*` va payment status
   endpointi shu oqimga tegishli. Logoutda token o'chadi.
-- FCM yo'q bo'lsa, Android'dan yuborilgan pending chekni WorkManager taxminan
-  15 daqiqada bir tekshiradi (OS kechiktirishi mumkin). Tezkor push uchun
-  Android release workflow'iga to'rtta **public** `POMP_FIREBASE_*` GitHub
-  variable, Railway'ga `ANDROID_FCM_PROJECT_ID` va maxfiy service-account
-  credential sozlash kerak. Tafsilot `android/README.md`da.
+- FCM production'da sozlangan va ishlaydi (2026-09-29, loyiha egasi
+  tasdiqlagan): to'rtta **public** `POMP_FIREBASE_*` GitHub variable, Railway'da
+  `ANDROID_FCM_PROJECT_ID` va maxfiy service-account credential. Tafsilot
+  `android/README.md`da. Study va update push'lari qo'shimcha ravishda
+  `ANDROID_PUSH_STUDY_ENABLED` / `ANDROID_PUSH_UPDATES_ENABLED` bayroqlariga
+  bog'liq (kodda default `False`).
+- WorkManager zaxira yo'l bo'lib qoladi: push kelmasa, Android'dan yuborilgan
+  pending chekni taxminan 15 daqiqada bir tekshiradi (OS kechiktirishi mumkin).
 - `study_reminders_alerts`, `app_updates_alerts` va `payment_decisions_v1`
   yuqori ahamiyatli notification kanallari. Study/update blokirovka ekranida
   ochiq, to'lov qarori esa maxfiy umumiy matn bilan ko'rinadi. Eski default
