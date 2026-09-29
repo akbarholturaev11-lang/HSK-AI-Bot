@@ -55,7 +55,7 @@ from app.services.subscription_currency_service import (
     format_subscription_price,
 )
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
-from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
+from app.services.subscription_miniapp_service import PAYMENT_DETAILS_ALIF_KEY, PAYMENT_DETAILS_KEY
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.support_contact_service import (
     ADMIN_CONTACT_KEY,
@@ -493,10 +493,14 @@ async def _prices_text(session) -> str:
     details = await BotSettingRepository(session).get(PAYMENT_DETAILS_KEY)
     details = (details or settings.PAYMENT_DETAILS or "").strip()
     short = (details[:60] + "…") if len(details) > 60 else (details or "—")
+    alif_details = (await BotSettingRepository(session).get(PAYMENT_DETAILS_ALIF_KEY) or "").strip()
+    alif_short = (alif_details[:60] + "…") if len(alif_details) > 60 else (alif_details or "—")
     lines.extend([
         "",
-        "💳 <b>Karta rekviziti (mini app)</b>",
+        "💳 <b>Dushanbe City rekviziti (mini app)</b>",
         f"<code>{escape(short)}</code>",
+        "💳 <b>Alif rekviziti</b> (admin Mini App'da o'zgartiriladi)",
+        f"<code>{escape(alif_short)}</code>",
         "",
         "<i>Visa/Card obuna narxi faqat TJSda yuradi. Alipay/WeChat narxlari ¥ bo'lib qoladi.</i>",
         "",
@@ -1484,8 +1488,9 @@ async def admin_payment_details_callback(callback: CallbackQuery, state: FSMCont
     await _edit_admin_flow_callback(
         callback,
         state,
-        "💳 <b>Bank karta rekviziti</b>\n\n"
-        "Bu matn mini appda VISA/karta to'lovida foydalanuvchiga ko'rsatiladi.\n\n"
+        "💳 <b>Dushanbe City rekviziti</b>\n\n"
+        "Bu matn mini appda Tojikiston → Dushanbe City to'lovida ko'rsatiladi. "
+        "Alif rekviziti admin Mini App'da alohida.\n\n"
         f"Joriy:\n<code>{escape(current or '—')}</code>\n\n"
         "Yangi rekvizit matnini yuboring (ism, karta raqami va boshqalar).",
         reply_markup=admin_back_keyboard(),

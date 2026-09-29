@@ -9,16 +9,21 @@
 <title>HSK AI Pro</title>
 <style>
 :root{
-  color-scheme:dark;
-  --bg:#05110d;
-  --line:rgba(180,240,214,.13);
-  --line2:rgba(180,240,214,.32);
-  --text:#eafff6;
-  --muted:#93b7ab;
-  --emerald:#34e3a4;
-  --emerald2:#16c98a;
-  --mint:#8ff5cf;
-  --gold:#ffd27d;
+  color-scheme:light;
+  --bg:#ffffff;
+  --card:#f6f8f7;
+  --line:#e3e8e6;
+  --line2:#cbd5d1;
+  --text:#14201b;
+  --muted:#687770;
+  --accent:#0e9a64;
+  --accent-ink:#0a7a4f;
+  --accent-soft:#e9f7f0;
+  --accent-line:#bfe6d3;
+  --gold:#f5b93f;
+  --gold-soft:#fff7e6;
+  --gold-line:#f3d9a4;
+  --gold-ink:#8a5a00;
   --radius:18px;
   --radius-sm:13px;
   --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
@@ -26,177 +31,153 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
-body{overflow-x:hidden;position:relative;background:radial-gradient(125% 80% at 50% -8%,#0d3127 0%,#08201a 44%,#05110d 100%)}
-body.mode-referral_discount{--gold:#ffe08f}
-body.mode-admin_discount{--gold:#ffd36d;--emerald:#62e6b2;--mint:#a8f7d8}
-body.mode-feedback_discount{--gold:#ffd08a;--emerald:#74e7ff;--mint:#c2f7ff}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(58% 40% at 82% 6%,rgba(52,227,164,.16),transparent 70%),
-    radial-gradient(52% 34% at 10% 16%,rgba(255,210,125,.10),transparent 70%)}
+body{overflow-x:hidden;position:relative}
 button,input{font:inherit}
 button{border:0;color:inherit;background:none;touch-action:manipulation;cursor:pointer}
 button:active{transform:scale(.98)}
 .app{position:relative;z-index:1;min-height:100dvh;max-width:520px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 15px calc(110px + env(safe-area-inset-bottom,0px))}
 .top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
 .brand{display:flex;flex-direction:column;gap:4px}
-.kicker{font-size:11px;color:var(--emerald);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
+.kicker{font-size:11px;color:var(--accent-ink);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
 h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.help-btn{display:grid;place-items:center;width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mint);box-shadow:0 8px 22px rgba(0,0,0,.18)}
-.status{display:none;margin:0 0 12px;border:1px solid rgba(255,210,125,.3);border-radius:var(--radius-sm);background:rgba(255,210,125,.1);padding:11px 13px;color:#ffe3ad;font-size:12px;line-height:1.4;font-weight:750}
+.help-btn{display:grid;place-items:center;width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--accent-ink)}
+.status{display:none;margin:0 0 12px;border:1px solid var(--gold-line);border-radius:var(--radius-sm);background:var(--gold-soft);padding:11px 13px;color:var(--gold-ink);font-size:12px;line-height:1.4;font-weight:750}
 .status.show{display:block}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
-.steps i{height:5px;border-radius:999px;background:rgba(255,255,255,.09);transition:.3s}
-.steps i.active{background:linear-gradient(90deg,var(--emerald),var(--mint));box-shadow:0 0 12px rgba(52,227,164,.5)}
+.steps i{height:5px;border-radius:999px;background:var(--line);transition:.3s}
+.steps i.active{background:var(--accent)}
 .screen{display:none;animation:fade .36s cubic-bezier(.22,.61,.36,1)}
 .screen.active{display:block}
-.hero{position:relative;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(160deg,rgba(52,227,164,.08),rgba(255,255,255,.02));padding:17px;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(135% 100% at 88% -12%,rgba(52,227,164,.16),transparent 55%)}
+.hero{position:relative}
 .hero h2{position:relative;font-size:22px;line-height:1.12;letter-spacing:-.01em;font-weight:900}
 .hero p{position:relative;margin-top:9px;color:var(--muted);font-size:13px;line-height:1.5}
-.discount{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;border:1px solid rgba(255,210,125,.34);border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,210,125,.13),rgba(52,227,164,.05));padding:14px;overflow:hidden;animation:fade .4s ease}
-.discount::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(115% 130% at 6% -25%,rgba(255,210,125,.2),transparent 55%)}
-.discount.used{border-color:var(--line);background:rgba(255,255,255,.04)}
+.discount{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;border:1px solid var(--gold-line);border-radius:var(--radius);background:var(--gold-soft);padding:14px;overflow:hidden;animation:fade .4s ease}
+.discount.used{border-color:var(--line);background:var(--card)}
 .discount-row{position:relative;display:flex;align-items:center;gap:13px}
-.discount-badge{flex:0 0 auto;min-width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#ffba4d);color:#2a1c00;font-size:18px;font-weight:950;box-shadow:0 10px 24px rgba(255,186,77,.3)}
-.discount.used .discount-badge{background:rgba(255,255,255,.08);color:var(--muted);box-shadow:none}
+.discount-badge{flex:0 0 auto;min-width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#ffd27d,#ffba4d);color:#2a1c00;font-size:18px;font-weight:950}
+.discount.used .discount-badge{background:var(--line);color:var(--muted)}
 .discount-body{flex:1;min-width:0}
 .discount-body strong{display:block;font-size:14px;font-weight:900;line-height:1.25}
 .discount-body span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.38}
-.discount-bar{position:relative;height:6px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
-.discount-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--emerald));transition:width .6s cubic-bezier(.22,.61,.36,1)}
-.discount-btn{position:relative;height:46px;border-radius:13px;border:1px solid var(--emerald);background:rgba(52,227,164,.13);color:var(--mint);font-weight:850;font-size:13px;transition:.18s}
-.discount-btn:active{background:rgba(52,227,164,.2)}
+.discount-bar{position:relative;height:6px;border-radius:999px;background:var(--gold-line);overflow:hidden}
+.discount-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .6s cubic-bezier(.22,.61,.36,1)}
+.discount-btn{position:relative;height:46px;border-radius:13px;border:1px solid var(--accent);background:var(--bg);color:var(--accent-ink);font-weight:850;font-size:13px;transition:.18s}
+.discount-btn:active{background:var(--accent-soft)}
 .benefits{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
-.benefit{position:relative;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.04);padding:12px;min-height:78px}
+.benefit{position:relative;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--card);padding:12px;min-height:78px}
 .benefit strong{display:block;font-size:13px;line-height:1.28;font-weight:850}
 .benefit span{display:block;margin-top:6px;color:var(--muted);font-size:12px;line-height:1.35}
 .section{margin-top:16px}
 .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:9px}
 .section h3{font-size:15px;font-weight:900}
-.section small{color:var(--emerald);font-size:12px;font-weight:850;text-align:right}
-.value-copy{margin:-1px 0 10px;color:#b9dccf;font-size:12px;line-height:1.45;font-weight:750}
+.section small{color:var(--accent-ink);font-size:12px;font-weight:850;text-align:right}
+.value-copy{margin:-1px 0 10px;color:var(--muted);font-size:12px;line-height:1.45;font-weight:750}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
-.plan.selected,.choice.selected{border-color:var(--emerald);box-shadow:0 0 0 1px var(--emerald),0 10px 30px rgba(52,227,164,.22);background:linear-gradient(160deg,rgba(52,227,164,.14),rgba(52,227,164,.05))}
+.plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
+.plan.selected,.choice.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
 .plan.wide{grid-column:1/-1;min-height:auto}
 .plan-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:800}
 .plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .plan-name{font-size:13px;color:var(--muted);font-weight:850}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:linear-gradient(135deg,rgba(255,210,125,.22),rgba(255,186,77,.16));color:var(--gold);font-size:10px;line-height:1.12;font-weight:900;border:1px solid rgba(255,210,125,.3)}
-.price{display:inline-block;font-size:30px;line-height:1;font-weight:950;letter-spacing:-.02em;margin-top:12px;background:linear-gradient(135deg,#ffffff,var(--mint));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px;-webkit-text-fill-color:var(--muted)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:var(--gold-soft);color:var(--gold-ink);font-size:10px;line-height:1.12;font-weight:900;border:1px solid var(--gold-line)}
+.price{display:inline-block;font-size:30px;line-height:1;font-weight:950;letter-spacing:-.02em;margin-top:12px;color:var(--text)}
+.price.long{font-size:23px}
+.price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
 .discounted .old-price{display:block}
 .list{display:grid;gap:9px}
-.choice{min-height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:0 14px;text-align:left;transition:.18s}
+.choice{min-height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:0 14px;text-align:left;transition:.18s}
 .choice strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
 .choice span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
 .choice .choice-tx{flex:1;min-width:0;margin-top:0;color:inherit}
-.country-flag{flex:0 0 auto;width:46px;height:34px;border-radius:0;display:grid;place-items:center;background:transparent;font-size:38px;line-height:1;overflow:visible;box-shadow:none}
-.choice-ic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:19px;font-weight:900;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.28)}
-.choice-ic.flag-ic{width:46px;border-radius:0;background:transparent;font-size:40px;line-height:1;overflow:visible;box-shadow:none}
-.choice-ic.card-ic{font-size:28px;line-height:1}
-.choice-group{align-items:flex-start;padding-top:12px;padding-bottom:12px}
-.choice .choice-subgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.choice .choice-subgrid.show{display:grid}
-.mini-choice{min-height:42px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);padding:0 10px;color:var(--muted);font-size:12px;font-weight:900;text-align:center}
-.mini-choice.selected{border-color:var(--emerald);background:rgba(52,227,164,.14);color:var(--mint);box-shadow:0 0 0 1px rgba(52,227,164,.4)}
-.ic-visa{background:linear-gradient(135deg,#3a6ff7,#1f4fd6)}
-.ic-foreign{background:linear-gradient(135deg,#4f6b85,#263849)}
-.ic-alipay{background:linear-gradient(135deg,#1aa3ff,#1677ff)}
-.ic-wechat{background:linear-gradient(135deg,#2dd36f,#07c160)}
-.ic-china{background:linear-gradient(135deg,#1aa3ff,#07c160)}
+.country-flag{flex:0 0 auto;width:46px;height:34px;border-radius:0;display:grid;place-items:center;background:transparent;font-size:38px;line-height:1;overflow:visible;box-shadow:none;font-style:normal}
 .dot{flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);transition:.18s}
-.selected .dot{border-color:var(--emerald);box-shadow:inset 0 0 0 5px var(--bg);background:var(--emerald)}
-.quote-card{position:relative;border:1px solid rgba(52,227,164,.4);border-radius:var(--radius);background:linear-gradient(160deg,rgba(52,227,164,.16),rgba(52,227,164,.05));padding:16px;margin-top:14px;overflow:hidden}
-.quote-card::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 120% at 90% -20%,rgba(52,227,164,.22),transparent 55%)}
-.quote-label{position:relative;color:var(--mint);font-size:12px;font-weight:850}
+.selected .dot{border-color:var(--accent);box-shadow:inset 0 0 0 4px var(--bg);background:var(--accent)}
+.quote-card{position:relative;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:16px;margin-top:14px;overflow:hidden}
+.quote-label{position:relative;color:var(--accent-ink);font-size:12px;font-weight:850}
 .quote-amount{position:relative;margin-top:8px;font-size:36px;line-height:1;font-weight:950;letter-spacing:-.02em}
-.quote-amount small{font-size:15px;color:#cdeee0;font-weight:850;margin-left:6px}
+.quote-amount small{font-size:15px;color:var(--muted);font-weight:850;margin-left:6px}
 .quote-old{display:none;position:relative;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.25;font-weight:850;text-decoration:line-through}
 .quote-old.show{display:block}
 .meta{display:grid;gap:8px;margin-top:14px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.04);padding:11px 13px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);padding:11px 13px}
 .row span{color:var(--muted);font-size:12px;font-weight:800}
 .row strong{font-size:13px;text-align:right;line-height:1.28;font-weight:850}
-.paybox{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:16px}
+.paybox{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:16px}
 .paybox h4{font-size:15px;margin-bottom:8px;font-weight:900}
 .paybox p,.paybox pre{color:var(--muted);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.detail-hint{display:block;width:100%;margin-bottom:11px;color:#b9dccf;font-size:12px;line-height:1.45;text-align:left}
+.detail-hint{display:block;width:100%;margin-bottom:11px;color:var(--muted);font-size:12px;line-height:1.45;text-align:left}
 .detail-hint-text{display:block}
 .detail-hint.collapsed .detail-hint-text{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.detail-hint-more{display:block;margin-top:4px;color:var(--mint);font-size:11px;font-weight:900}
+.detail-hint-more{display:block;margin-top:4px;color:var(--accent-ink);font-size:11px;font-weight:900}
 .detail-list{display:grid;gap:9px}
-.detail-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.045);padding:11px 12px;min-height:48px}
+.detail-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--card);padding:11px 12px;min-height:48px}
 .detail-row span{min-width:0;color:var(--text);font-size:13px;line-height:1.38;font-weight:750;word-break:break-word}
-.detail-row.copyable{border-color:rgba(52,227,164,.34);background:linear-gradient(160deg,rgba(52,227,164,.1),rgba(255,255,255,.035))}
-.copy-detail{height:34px;min-width:66px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:12px;font-weight:950;padding:0 10px}
-.detail-empty{border:1px dashed var(--line2);border-radius:var(--radius-sm);padding:16px;color:var(--muted);font-size:13px;line-height:1.45;text-align:center;background:rgba(255,255,255,.035)}
+.detail-row.copyable{border-color:var(--accent-line);background:var(--accent-soft)}
+.copy-detail{height:34px;min-width:66px;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;font-weight:950;padding:0 10px}
+.detail-empty{border:1px dashed var(--line2);border-radius:var(--radius-sm);padding:16px;color:var(--muted);font-size:13px;line-height:1.45;text-align:center;background:var(--card)}
 .qr{display:flex;align-items:center;justify-content:center;width:100%;min-height:220px;border:1px dashed var(--line2);border-radius:var(--radius-sm);background:#fff;margin-top:11px;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
 .qr-tappable{cursor:pointer}
 .qr-tappable:active{transform:scale(.99)}
 .qr img{display:block;max-width:100%;max-height:280px}
-.qr.empty{background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;text-align:center;padding:20px}
+.qr.empty{background:var(--card);color:var(--muted);font-size:13px;text-align:center;padding:20px}
 .qr-hint{margin-top:9px;text-align:center;color:var(--muted);font-size:12px;line-height:1.35}
 .qr-actions{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-4px);transition:grid-template-rows .2s ease,opacity .2s ease,transform .2s ease}
 .qr-actions.show{grid-template-rows:1fr;opacity:1;transform:translateY(0)}
 .qr-actions-inner{overflow:hidden}
-.qr-download{width:100%;height:46px;margin-top:10px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:14px;font-weight:950}
-.qr-preview{position:fixed;inset:0;z-index:28;display:none;background:radial-gradient(110% 70% at 50% 0%,#0d3127 0%,#05110d 58%,#030a08 100%);padding:calc(18px + env(safe-area-inset-top,0px)) 15px calc(88px + env(safe-area-inset-bottom,0px))}
+.qr-download{width:100%;height:46px;margin-top:10px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-size:14px;font-weight:950}
+.qr-preview{position:fixed;inset:0;z-index:28;display:none;background:var(--bg);padding:calc(18px + env(safe-area-inset-top,0px)) 15px calc(88px + env(safe-area-inset-bottom,0px))}
 .qr-preview.show{display:flex;flex-direction:column}
 .qr-preview-head{width:100%;max-width:520px;margin:0 auto 12px}
 .qr-preview-head h3{font-size:18px;line-height:1.2;font-weight:950}
 .qr-preview-body{flex:1;display:flex;align-items:center;justify-content:center;width:100%;max-width:520px;margin:0 auto}
-.qr-preview-frame{display:grid;place-items:center;width:100%;max-width:430px;aspect-ratio:1/1;border:1px solid rgba(255,255,255,.16);border-radius:var(--radius);background:#fff;padding:12px;box-shadow:0 22px 70px rgba(0,0,0,.42)}
+.qr-preview-frame{display:grid;place-items:center;width:100%;max-width:430px;aspect-ratio:1/1;border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:12px;box-shadow:0 12px 40px rgba(20,32,27,.1)}
 .qr-preview-frame img{display:block;width:100%;height:100%;object-fit:contain}
-.qr-preview-bottom{position:fixed;left:0;right:0;bottom:0;z-index:29;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(5,17,13,.22),rgba(5,17,13,.95));backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+.qr-preview-bottom{position:fixed;left:0;right:0;bottom:0;z-index:29;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line)}
 .qr-preview-bottom-inner{max-width:520px;margin:0 auto}
-.qr-preview-back{width:100%;height:54px;border-radius:var(--radius);border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font-size:15px;font-weight:950}
-.upload{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px;margin-top:14px;min-height:150px;border:2px dashed var(--line2);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:22px 16px;cursor:pointer;transition:.18s}
+.qr-preview-back{width:100%;height:54px;border-radius:var(--radius);border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;font-weight:950}
+.upload{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px;margin-top:14px;min-height:150px;border:2px dashed var(--line2);border-radius:var(--radius);background:var(--card);padding:22px 16px;cursor:pointer;transition:.18s}
 .upload input{display:none}
 .upload:active{transform:scale(.99)}
-.upload-plus{display:flex;align-items:center;justify-content:center;width:62px;height:62px;border-radius:50%;background:rgba(52,227,164,.12);border:1.5px solid var(--line2);color:var(--emerald);font-size:38px;font-weight:300;line-height:1;transition:.18s}
+.upload-plus{display:flex;align-items:center;justify-content:center;width:62px;height:62px;border-radius:50%;background:var(--accent-soft);border:1.5px solid var(--accent-line);color:var(--accent);font-size:38px;font-weight:300;line-height:1;transition:.18s}
 .upload strong{display:block;font-size:15px;font-weight:850}
 .upload span{display:block;color:var(--muted);font-size:12px;line-height:1.4}
-.upload.ready{border-style:solid;border-color:var(--emerald);background:linear-gradient(160deg,rgba(52,227,164,.14),rgba(52,227,164,.05))}
-.upload.ready .upload-plus{background:var(--emerald);color:#04130d;border-color:var(--emerald)}
+.upload.ready{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+.upload.ready .upload-plus{background:var(--accent);color:#fff;border-color:var(--accent)}
 .done{display:grid;gap:14px;text-align:center;padding-top:54px;animation:fade .3s ease}
-.done-mark{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:linear-gradient(135deg,var(--emerald),var(--emerald2));color:#04130d;font-size:42px;font-weight:950;box-shadow:0 0 0 10px rgba(52,227,164,.12),0 18px 50px rgba(52,227,164,.4);animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
+.done-mark{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:var(--accent);color:#fff;font-size:42px;font-weight:950;box-shadow:0 0 0 10px var(--accent-soft);animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
 .done h2{font-size:25px;font-weight:900}
 .done p{color:var(--muted);font-size:13px;line-height:1.5;max-width:320px;margin:0 auto}
-.done-return{height:54px;border-radius:var(--radius);background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:15px;font-weight:950;margin:8px auto 0;padding:0 24px;min-width:190px}
-.bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(5,17,13,.35),rgba(5,17,13,.94));backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+.done-return{height:54px;border-radius:var(--radius);background:var(--accent);color:#fff;font-size:15px;font-weight:950;margin:8px auto 0;padding:0 24px;min-width:190px}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line)}
 .bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:96px 1fr;gap:9px}
 .back,.cta{height:54px;border-radius:var(--radius);font-weight:950;font-size:15px;transition:.18s}
-.back{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text)}
+.back{background:var(--bg);border:1px solid var(--line);color:var(--text)}
 .back.hide{display:none}
 .back.hide+.cta{grid-column:1/3}
-.cta{background:linear-gradient(135deg,var(--mint),var(--emerald) 45%,var(--emerald2));color:#04130d;box-shadow:0 10px 30px rgba(52,227,164,.36);letter-spacing:.01em}
-.cta:disabled{opacity:.5;box-shadow:none}
-.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);max-width:calc(100% - 28px);border-radius:999px;background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;padding:11px 15px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.2s ease;box-shadow:0 18px 45px rgba(0,0,0,.42);z-index:20}
+.cta{background:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(14,154,100,.22);letter-spacing:.01em}
+.cta:disabled{opacity:.45;box-shadow:none}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);max-width:calc(100% - 28px);border-radius:999px;background:var(--text);color:#fff;padding:11px 15px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.2s ease;box-shadow:0 12px 30px rgba(20,32,27,.2);z-index:20}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .sheet{position:fixed;inset:0;z-index:25;display:none;align-items:flex-end;justify-content:center}
 .sheet.show{display:flex}
-.sheet-backdrop{position:absolute;inset:0;background:rgba(2,8,6,.62);backdrop-filter:blur(8px);transform:none}
-.sheet-panel{position:relative;width:100%;max-width:520px;border:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;background:#071a14;padding:17px 15px calc(17px + env(safe-area-inset-bottom,0px));box-shadow:0 -18px 60px rgba(0,0,0,.45);animation:sheetUp .22s ease}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(20,32,27,.35);backdrop-filter:blur(4px);transform:none}
+.sheet-panel{position:relative;width:100%;max-width:520px;border:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;background:var(--bg);padding:17px 15px calc(17px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 40px rgba(20,32,27,.12);animation:sheetUp .22s ease}
 .sheet-panel h3{font-size:17px;line-height:1.25;font-weight:900}
 .sheet-panel p{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45}
-.invite-link{display:block;margin-top:10px;border:1px solid var(--line2);border-radius:var(--radius-sm);background:rgba(255,255,255,.05);padding:10px 11px;color:var(--mint);font-size:12px;line-height:1.4;word-break:break-all;user-select:all}
+.invite-link{display:block;margin-top:10px;border:1px solid var(--line2);border-radius:var(--radius-sm);background:var(--card);padding:10px 11px;color:var(--accent-ink);font-size:12px;line-height:1.4;word-break:break-all;user-select:all}
 .sheet-actions{display:grid;gap:9px;margin-top:14px}
 .sheet-actions button{min-height:50px;border-radius:var(--radius-sm);font-weight:900;font-size:14px}
-.sheet-primary{background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d}
-.sheet-secondary{border:1px solid var(--line2);background:rgba(255,255,255,.06);color:var(--text)}
+.sheet-primary{background:var(--accent);color:#fff}
+.sheet-secondary{border:1px solid var(--line2);background:var(--bg);color:var(--text)}
 .sheet-close{color:var(--muted)}
-.loading{position:fixed;inset:0;display:none;place-items:center;background:rgba(5,17,13,.66);backdrop-filter:blur(8px);z-index:30}
+.loading{position:fixed;inset:0;display:none;place-items:center;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);z-index:30}
 .loading.show{display:grid}
-.spinner{width:38px;height:38px;border-radius:50%;border:3px solid rgba(143,245,207,.2);border-top-color:var(--emerald);animation:spin .8s linear infinite}
+.spinner{width:38px;height:38px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);animation:spin .8s linear infinite}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
 @keyframes sheetUp{from{transform:translateY(18px);opacity:.7}to{transform:translateY(0);opacity:1}}
 @media (min-width:620px){
   .app{padding-top:26px}
@@ -223,9 +204,17 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
   </header>
 
   <div class="status" id="status"></div>
-  <div class="steps" id="steps"><i></i><i></i><i></i></div>
+  <div class="steps" id="steps"><i></i><i></i><i></i><i></i></div>
 
-  <section class="screen active" data-screen="start">
+  <section class="screen active" data-screen="country">
+    <div class="hero">
+      <h2 id="countryTitle"></h2>
+      <p id="countryText"></p>
+      <div class="list section" id="countries"></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="plans">
     <section class="section">
       <div class="section-head">
         <h3 id="plansTitle"></h3>
@@ -245,21 +234,12 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       <div class="discount-bar" id="discountBar" style="display:none"><i></i></div>
       <button class="discount-btn" id="discountBtn" type="button" style="display:none"></button>
     </div>
-
-    <section class="section">
-      <div class="section-head">
-        <h3 id="methodsTitle"></h3>
-        <small id="methodHint"></small>
-      </div>
-      <div class="list" id="methods"></div>
-    </section>
   </section>
 
-  <section class="screen" data-screen="country">
+  <section class="screen" data-screen="method">
     <div class="hero">
-      <h2 id="countryTitle"></h2>
-      <p id="countryText"></p>
-      <div class="list section" id="countries"></div>
+      <h2 id="methodsTitle"></h2>
+      <div class="list section" id="methods"></div>
     </div>
   </section>
 
@@ -345,6 +325,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 <script>
 const tg=window.Telegram?.WebApp;
 try{tg?.ready?.();tg?.expand?.();}catch(e){}
+try{tg?.setHeaderColor?.("#ffffff");tg?.setBackgroundColor?.("#ffffff");}catch(e){}
 
 const API={
   overview:"/api/subscription-miniapp/overview",
@@ -358,8 +339,13 @@ const INIT_DATA=tg?.initData||"";
 const PLAN_ORDER=["1_month","10_days","3_months"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const CHINA_METHODS=["alipay","wechat"];
-const COUNTRY_ORDER=["tj","uz","ru","other"];
-const CARD_BANK_NAME="Dushanbe City";
+/* Region — user to'laydigan karta davlati; Xitoy — Alipay/WeChat. */
+const REGION_ORDER=["tj","uz","ru","cn","other"];
+const REGION_FLAGS={tj:"🇹🇯",uz:"🇺🇿",ru:"🇷🇺",cn:"🇨🇳",other:"🌐"};
+/* Tojikiston kartasi ikki bankdan birini tanlaydi; boshqa davlat kartalari
+   doim Alif (Visa) rekvizitiga to'laydi. Rekvizitlar admin panelda alohida. */
+const CARD_BANKS=["dc_city","alif"];
+const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
 const CHECKOUT_ATTEMPT_ID=(function(){
   const key="hsk_subscription_attempt_v1",now=Date.now();
@@ -430,19 +416,18 @@ const I18N={
     discountProgress:"20% chegirma: {count}/{required} referral",
     planLabels:{ten:"10 kun",month:"1 oy",quarter:"3 oy",fast:"Sinab ko'rish",best:"Eng yaxshi tanlov",quarterBadge:"Foydali",quarterNote:"≈ 2 TJS/kun"},
     methods:{
-      visa:["Tojikiston kartasi / oddiy karta","Dushanbe City, Alif, Eskhata, Amonatbank va boshqa kartalar"],
-      foreign:["Xorijiy karta / Visa / Mastercard","Tojikiston tashqarisidagi karta bilan to'lov"],
-      china:["Xitoydan to'lov","Alipay yoki WeChat Pay"],
+      dc_city:["Dushanbe City","DC City kartasiga to'lov"],
+      alif:["Alif","Alif kartasiga to'lov"],
       alipay:["Alipay","QR orqali yuan to'lovi"],
       wechat:["WeChat Pay","QR orqali yuan to'lovi"]
     },
-    methodHint:"",
-    countryTitle:"Karta qaysi davlatniki?",
-    countryText:"Karta davlatini tanlang, summa shu valyutada ko'rsatiladi.",
+    countryTitle:"Qaysi davlatdan to'laysiz?",
+    countryText:"Kartangiz davlatini tanlang — narxlar shu davlat valyutasida ko'rsatiladi.",
     countries:{
       tj:["Tojikiston kartasi","TJS ko'rinishida to'lov"],
       uz:["O'zbekiston kartasi","UZS ekvivalentida to'lov"],
       ru:["Rossiya kartasi","RUB ekvivalentida to'lov"],
+      cn:["Xitoy","Alipay yoki WeChat Pay, ¥ da to'lov"],
       other:["Boshqa davlat kartasi","USD ekvivalentida to'lov"]
     },
     payTitle:"To'lovni yakunlash",
@@ -454,6 +439,7 @@ const I18N={
     detailsHint:"To'lovni shu rekvizitlarga qiling. Karta raqamini copy qilish uchun yonidagi tugmani bosing.",
     cardHints:{
       tj:"Tojikistonning hamma kartalari orqali to'lov qilishingiz mumkin. Agar kartangiz DC City bo'lsa, pul o'tkazish bo'limiga kirib, 'po nomeru karta' variantini tanlab to'lov qiling. Agar kartangiz boshqa bankniki bo'lsa, bank ilovasida 'DC City' deb qidiring yoki 'Korti Milli Tojikiston' variantini tanlab to'lov qiling.",
+      alif:"Tojikistonning hamma kartalari orqali to'lov qilishingiz mumkin. Bank ilovangizda kartaga pul o'tkazish bo'limini oching va rekvizitdagi Alif karta raqamini kiriting.",
       foreign:"Karta Tojikiston VISA kartasi. Agar bankingizda Tojikiston bank kartasiga pul jo'natish imkoni bo'lsa, o'sha variantdan foydalaning. Bo'lmasa, 'Mejdunarodniy VISA' orqali ham to'lov qilishingiz mumkin."
     },
     showMore:"Ko'proq",
@@ -470,8 +456,6 @@ const I18N={
     uploaded:"Screenshot tanlandi: {name}",
     next:"Davom etish",
     continueToPayment:"To'lovga davom etish",
-    payWithTjCard:"Tojikiston kartasi bilan to'lash",
-    payWithForeignCard:"Xorijiy karta bilan to'lash",
     payWithAlipay:"Alipay bilan to'lash",
     payWithWechat:"WeChat Pay bilan to'lash",
     back:"Orqaga",
@@ -559,19 +543,18 @@ const I18N={
     discountProgress:"Скидка 20%: {count}/{required} реферала",
     planLabels:{ten:"10 дней",month:"1 месяц",quarter:"3 месяца",fast:"Для пробы",best:"Лучший выбор",quarterBadge:"Выгодно",quarterNote:"≈ 2 TJS/день"},
     methods:{
-      visa:["Карта Таджикистана / обычная карта","Душанбе Сити, Алиф, Эсхата, Амонатбанк и другие карты"],
-      foreign:["Иностранная карта / Visa / Mastercard","Оплата картой не из Таджикистана"],
-      china:["Оплата из Китая","Alipay или WeChat Pay"],
+      dc_city:["Dushanbe City","Оплата на карту DC City"],
+      alif:["Alif","Оплата на карту Алиф"],
       alipay:["Alipay","Оплата в юанях через QR"],
       wechat:["WeChat Pay","Оплата в юанях через QR"]
     },
-    methodHint:"",
-    countryTitle:"Из какой страны карта?",
-    countryText:"Выберите страну карты, сумма будет показана в нужной валюте.",
+    countryTitle:"Из какой страны оплачиваете?",
+    countryText:"Выберите страну вашей карты — цены будут показаны в её валюте.",
     countries:{
       tj:["Карта Таджикистана","Оплата в TJS"],
       uz:["Карта Узбекистана","Оплата в UZS"],
       ru:["Карта России","Оплата в RUB"],
+      cn:["Китай","Alipay или WeChat Pay, оплата в ¥"],
       other:["Карта другой страны","Оплата в USD"]
     },
     payTitle:"Завершение оплаты",
@@ -583,6 +566,7 @@ const I18N={
     detailsHint:"Оплатите по этим реквизитам. Чтобы скопировать номер карты, нажмите кнопку рядом.",
     cardHints:{
       tj:"Можно оплатить с любой карты Таджикистана. Если карта DC City, откройте перевод и выберите перевод по номеру карты. Если карта другого банка, в приложении банка найдите DC City или вариант «Корти миллии Точикистон».",
+      alif:"Можно оплатить с любой карты Таджикистана. В приложении банка откройте перевод на карту и введите номер карты Алиф из реквизитов.",
       foreign:"Это таджикская VISA-карта. Если в вашем банке есть перевод на карту банка Таджикистана, используйте его. Если нет, можно оплатить через «Международный VISA»."
     },
     showMore:"Показать полностью",
@@ -599,8 +583,6 @@ const I18N={
     uploaded:"Screenshot выбран: {name}",
     next:"Продолжить",
     continueToPayment:"Перейти к оплате",
-    payWithTjCard:"Оплатить картой Таджикистана",
-    payWithForeignCard:"Оплатить иностранной картой",
     payWithAlipay:"Оплатить через Alipay",
     payWithWechat:"Оплатить через WeChat Pay",
     back:"Назад",
@@ -688,19 +670,18 @@ const I18N={
     discountProgress:"20% тахфиф: {count}/{required} referral",
     planLabels:{ten:"10 рӯз",month:"1 моҳ",quarter:"3 моҳ",fast:"Барои санҷидан",best:"Беҳтарин интихоб",quarterBadge:"Фоиданок",quarterNote:"≈ 2 TJS/рӯз"},
     methods:{
-      visa:["Корти Тоҷикистон / корти оддӣ","Душанбе Сити, Алиф, Эсхата, Амонатбанк ва дигар кортҳо"],
-      foreign:["Корти хориҷӣ / Visa / Mastercard","Пардохт бо корти берун аз Тоҷикистон"],
-      china:["Пардохт аз Чин","Alipay ё WeChat Pay"],
+      dc_city:["Dushanbe City","Пардохт ба корти DC City"],
+      alif:["Alif","Пардохт ба корти Алиф"],
       alipay:["Alipay","Пардохти юан бо QR"],
       wechat:["WeChat Pay","Пардохти юан бо QR"]
     },
-    methodHint:"",
-    countryTitle:"Кортатон аз кадом давлат аст?",
-    countryText:"Давлати кортро интихоб кунед, маблағ бо ҳамон валюта мебарояд.",
+    countryTitle:"Аз кадом давлат пардохт мекунед?",
+    countryText:"Давлати корти худро интихоб кунед — нархҳо бо асъори ҳамон давлат нишон дода мешаванд.",
     countries:{
       tj:["Корти Тоҷикистон","Пардохт бо TJS"],
       uz:["Корти Ӯзбекистон","Пардохт бо UZS"],
       ru:["Корти Русия","Пардохт бо RUB"],
+      cn:["Чин","Alipay ё WeChat Pay, пардохт бо ¥"],
       other:["Корти дигар давлат","Пардохт бо USD"]
     },
     payTitle:"Пардохтро тамом кунед",
@@ -712,6 +693,7 @@ const I18N={
     detailsHint:"Ба ҳамин реквизит пардохт кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.",
     cardHints:{
       tj:"Бо ҳама кортҳои Тоҷикистон пардохт карда метавонед. Агар кортатон DC City бошад, ба бахши перевод дароед ва варианти 'по номеру карты'-ро интихоб кунед. Агар кортатон аз дигар банк бошад, дар app-и банк 'DC City' ё 'Корти миллии Тоҷикистон'-ро ёфта пардохт кунед.",
+      alif:"Бо ҳама кортҳои Тоҷикистон пардохт карда метавонед. Дар app-и банк бахши перевод ба кортро кушоед ва рақами корти Алифро аз реквизит ворид кунед.",
       foreign:"Ин реквизит корти VISA-и Тоҷикистон аст. Агар дар app-и банки шумо фиристодани пул ба корти Тоҷикистон бошад, ҳамонро интихоб кунед. Агар набошад, аз варианти 'Международный VISA' ҳам пардохт карда метавонед."
     },
     showMore:"Пурра дидан",
@@ -728,8 +710,6 @@ const I18N={
     uploaded:"Screenshot интихоб шуд: {name}",
     next:"Давом",
     continueToPayment:"Идома додан ба пардохт",
-    payWithTjCard:"Бо корти Тоҷикистон пардохт кардан",
-    payWithForeignCard:"Бо корти хориҷӣ пардохт кардан",
     payWithAlipay:"Бо Alipay пардохт кардан",
     payWithWechat:"Бо WeChat Pay пардохт кардан",
     back:"Бозгашт",
@@ -773,7 +753,9 @@ const state={
   overview:null,
   plan:PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month",
   method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
+  region:CHINA_METHODS.includes(PARAMS.get("method"))?"cn":"",
   country:"tj",
+  bank:"dc_city",
   step:0,
   quote:null,
   screenshotDataUrl:"",
@@ -845,11 +827,44 @@ function availablePlans(method=state.method){
   const prices=overviewPrices();
   return PLAN_ORDER.filter(plan=>prices?.[method]?.[plan]);
 }
+function regionMethods(region){return region==="cn"?CHINA_METHODS:["visa"]}
+function availableRegions(){
+  const methods=availableMethods();
+  return REGION_ORDER.filter(region=>regionMethods(region).some(method=>methods.includes(method)));
+}
+/* To'lov turi faqat Tojikistonda (bank) va Xitoyda (Alipay/WeChat) so'raladi. */
+function hasMethodStep(){return state.region==="tj"||state.region==="cn"}
+function cardBank(){return state.country==="tj"?state.bank:"alif"}
 function ensureSelection(){
   const methods=availableMethods();
-  if(!methods.includes(state.method))state.method=methods[0]||"visa";
+  if(state.region&&!availableRegions().includes(state.region))state.region="";
+  if(state.region){
+    const options=regionMethods(state.region).filter(method=>methods.includes(method));
+    if(!options.includes(state.method))state.method=options[0];
+    if(state.method==="visa")state.country=state.region;
+  }else if(!methods.includes(state.method)){
+    state.method=methods[0]||"visa";
+  }
+  if(!CARD_BANKS.includes(state.bank))state.bank="dc_city";
   const plans=availablePlans(state.method);
   if(!plans.includes(state.plan))state.plan=plans[0]||"1_month";
+}
+function cardPrices(){
+  if(state.overview?.card_prices)return state.overview.card_prices;
+  return state.preview?mockOverview().card_prices:{};
+}
+/* Tarif narxi region valyutasida: TJS, ¥ yoki server hisoblagan UZS/RUB/USD.
+   To'lanadigan aniq summa baribir quote'dan keladi. */
+function planPrice(plan){
+  const info=priceInfo(state.method,plan);
+  if(!info)return null;
+  const local=state.method==="visa"&&state.country!=="tj"?cardPrices()?.[state.country]?.[plan]:null;
+  return {
+    final:local?local.final_amount:info.final_amount,
+    base:local?local.base_amount:info.base_amount,
+    currency:local?local.currency:info.currency,
+    discounted:Boolean(info.discount_applied)
+  };
 }
 function contextPayload(){
   return {
@@ -861,9 +876,11 @@ function contextPayload(){
   };
 }
 function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
-function isForeignCard(){return state.method==="visa"&&state.country!=="tj"}
-function flow(){return state.done||state.pending?["done"]:(isForeignCard()?["start","country","pay"]:["start","pay"])}
-function currentScreen(){return flow()[state.step]||"start"}
+function flow(){
+  if(state.done||state.pending)return ["done"];
+  return hasMethodStep()?["country","plans","method","pay"]:["country","plans","pay"];
+}
+function currentScreen(){return flow()[state.step]||"country"}
 function isLockedLessonSource(){
   const source=state.source.toLowerCase();
   return ["course_locked","locked_lesson","v3_locked_lesson"].some(alias=>source===alias||source.includes(alias));
@@ -968,6 +985,15 @@ function mockOverview(){
     discount_source:state.mode==="admin_discount"?"admin_campaign":"feedback_price_offer",
     discount_title:state.mode==="admin_discount"?"Preview admin discount":"Preview feedback discount"
   }:item;
+  const visa={
+    "10_days":apply({base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0}),
+    "1_month":apply({base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0}),
+    "3_months":apply({base_amount:179,final_amount:179,currency:"TJS",discount_applied:false,discount_percent:0})
+  };
+  const cardPrice=country=>Object.fromEntries(Object.entries(visa).map(([plan,item])=>{
+    const final=mockCardAmount(item.final_amount,country),base=mockCardAmount(item.base_amount,country);
+    return [plan,{final_amount:final.amount,base_amount:base.amount,currency:final.currency}];
+  }));
   return {
     ok:true,
     language:state.lang,
@@ -976,12 +1002,9 @@ function mockOverview(){
     offer:special?{type:state.mode,available:true,percent,title:"Preview discount"}:null,
     discount:{referral_20_available:false,referral_count:0,referral_required:3,discount_used:false,offer_started:false,referral_link:""},
     payment_details:"Preview karta rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000",
+    card_prices:{uz:cardPrice("uz"),ru:cardPrice("ru"),other:cardPrice("other")},
     prices:{
-      visa:{
-        "10_days":apply({base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0}),
-        "3_months":apply({base_amount:179,final_amount:179,currency:"TJS",discount_applied:false,discount_percent:0})
-      },
+      visa,
       alipay:{
         "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
         "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}),
@@ -995,21 +1018,25 @@ function mockOverview(){
     }
   };
 }
-function mockQuote(){
-  const info=priceInfo();
-  if(!info)return null;
-  const cardAmount=tjsAmount=>({
+function mockCardAmount(tjsAmount,country){
+  return ({
     tj:{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"},
     uz:{amount:Math.round(tjsAmount*1300/1000)*1000,currency:"UZS",rate:"1 TJS = 1 298.13 UZS"},
     ru:{amount:(tjsAmount*7.68).toFixed(2),currency:"RUB",rate:"1 TJS = 7.68 RUB"},
     other:{amount:(tjsAmount/9.2464).toFixed(2),currency:"USD",rate:"1 TJS = 0.1082 USD"}
-  }[state.country]||{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"});
-  const card=cardAmount(info.final_amount);
-  const baseCard=cardAmount(info.base_amount);
+  })[country]||{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"};
+}
+function mockQuote(){
+  const info=priceInfo();
+  if(!info)return null;
+  const card=mockCardAmount(info.final_amount,state.country);
+  const baseCard=mockCardAmount(info.base_amount,state.country);
+  const bank=state.method==="visa"?cardBank():null;
   return {
     plan_type:state.plan,
     payment_method:state.method,
     card_country:state.method==="visa"?state.country:null,
+    card_bank:bank,
     base_amount:info.base_amount,
     base_currency:info.currency,
     final_amount:info.final_amount,
@@ -1021,7 +1048,7 @@ function mockQuote(){
     exchange_rate:state.method==="visa"?card.rate:"",
     discount_applied:info.discount_applied,
     discount_percent:info.discount_percent,
-    payment_details:state.method==="visa"?(state.overview?.payment_details||mockOverview().payment_details):"",
+    payment_details:bank?`Preview ${CARD_BANK_NAMES[bank]} rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000`:"",
     qr:state.method==="visa"?null:{available:false}
   };
 }
@@ -1095,7 +1122,8 @@ async function loadQuote(){
         ...contextPayload(),
         plan_type:state.plan,
         payment_method:state.method,
-        card_country:state.method==="visa"?state.country:null
+        card_country:state.method==="visa"?state.country:null,
+        card_bank:state.method==="visa"?cardBank():null
       });
       state.quote=data.quote;
       trackSubscriptionStage("payment_instructions_viewed");
@@ -1142,13 +1170,15 @@ function render(){
   const screen=currentScreen();
   const finalScreen=state.done||state.pending;
   $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
+  $("#steps").style.gridTemplateColumns=`repeat(${items.length},1fr)`;
   $$("#steps i").forEach((node,index)=>{
     node.style.display=finalScreen||index>=items.length?"none":"block";
     node.classList.toggle("active",index<=state.step);
   });
   $("#bottom").style.display=finalScreen||state.qrPreviewOpen?"none":"block";
-  renderStart(text);
   renderCountry(text);
+  renderPlans(text);
+  renderMethod(text);
   renderPay(text);
   renderDone(text);
   renderSupportSheet(text);
@@ -1156,17 +1186,16 @@ function render(){
   $("#backBtn").textContent=text.back;
   $("#nextBtn").textContent=nextCtaText(text,screen);
   $("#backBtn").classList.toggle("hide",state.step===0);
-  $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="pay"&&!state.preview&&!state.quote);
+  $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="country"&&!state.region)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function nextCtaText(text,screen){
   if(screen==="pay")return text.submit;
-  if(screen==="country")return text.continueToPayment||text.next;
+  if(screen==="country"||(screen==="plans"&&hasMethodStep()))return text.next;
   if(state.method==="alipay")return text.payWithAlipay||text.next;
   if(state.method==="wechat")return text.payWithWechat||text.next;
-  if(isForeignCard())return text.payWithForeignCard||text.continueToPayment||text.next;
-  return text.payWithTjCard||text.continueToPayment||text.next;
+  return text.continueToPayment||text.next;
 }
-function renderStart(text){
+function renderPlans(text){
   $("#plansTitle").textContent=modeText(text,"modePlans");
   const valueEl=$("#valueText");
   valueEl.textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
@@ -1174,73 +1203,40 @@ function renderStart(text){
   renderDiscount(text);
   renderInviteSheet(text);
   const plans=availablePlans(state.method);
+  /* "≈ 2 TJS/kun" faqat TJS narxiga to'g'ri keladi. */
+  const tjsPrices=state.method==="visa"&&state.country==="tj";
   $("#plans").innerHTML=(plans.length?plans:[]).map(plan=>{
-    const info=priceInfo(state.method,plan);
-    if(!info)return "";
+    const price=planPrice(plan);
+    if(!price)return "";
     const selected=state.plan===plan?"selected":"";
-    const discounted=info.discount_applied?"discounted":"";
+    const discounted=price.discounted?"discounted":"";
     const wide=plan==="3_months"?"wide":"";
     const name=planName(text,plan);
     const badge=planBadge(text,plan);
-    const note=(plan==="3_months"&&!info.discount_applied&&text.planLabels.quarterNote)?`<span class="plan-note">${text.planLabels.quarterNote}</span>`:"";
+    const amount=money(price.final);
+    /* UZS kabi uzun summa yarim kenglikdagi kartaga sig'sin. */
+    const long=amount.length>5?"long":"";
+    const note=(tjsPrices&&plan==="3_months"&&!price.discounted&&text.planLabels.quarterNote)?`<span class="plan-note">${text.planLabels.quarterNote}</span>`:"";
     return `<button class="plan ${selected} ${discounted} ${wide}" type="button" data-plan="${plan}">
       <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
       <span>
-        <span class="price">${money(info.final_amount)}<small>${info.currency}</small></span>
-        <span class="old-price">${money(info.base_amount)} ${info.currency}</span>
+        <span class="price ${long}">${amount}<small>${price.currency}</small></span>
+        <span class="old-price">${money(price.base)} ${price.currency}</span>
         ${note}
       </span>
     </button>`;
   }).join("") || `<div class="detail-empty">${text.offerExpired}</div>`;
+}
+function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
-  $("#methodHint").textContent=text.methodHint;
-  $("#methodHint").style.display=text.methodHint?"block":"none";
-  $("#methods").innerHTML=renderMethodChoices(text);
-}
-function renderMethodChoices(text){
   const methods=availableMethods();
-  const parts=[];
-  if(methods.includes("visa")){
-    parts.push(methodChoice({
-      key:"tj-card",
-      icon:"🇹🇯",
-      iconClass:"ic-visa flag-ic",
-      item:text.methods.visa,
-      selected:state.method==="visa"&&state.country==="tj",
-      attr:"data-card-method=\"tj\""
-    }));
-    parts.push(methodChoice({
-      key:"foreign-card",
-      icon:"💳",
-      iconClass:"ic-foreign card-ic",
-      item:text.methods.foreign,
-      selected:isForeignCard(),
-      attr:"data-card-method=\"foreign\""
-    }));
-  }
-  const chinaMethods=CHINA_METHODS.filter(method=>methods.includes(method));
-  if(chinaMethods.length){
-    const selected=chinaMethods.includes(state.method);
-    const sub=chinaMethods.map(method=>{
-      const item=text.methods[method];
-      return `<button class="mini-choice ${state.method===method?"selected":""}" type="button" data-method="${method}">${item[0]}</button>`;
-    }).join("");
-    parts.push(`<div class="choice choice-group ${selected?"selected":""}" data-china-group>
-      <i class="choice-ic ic-china flag-ic">🇨🇳</i>
-      <span class="choice-tx"><strong>${text.methods.china[0]}</strong><span>${text.methods.china[1]}</span>
-        <span class="choice-subgrid ${selected?"show":""}">${sub}</span>
-      </span>
-      <i class="dot"></i>
-    </div>`);
-  }
-  return parts.join("");
-}
-function methodChoice({icon,iconClass,item,selected,attr}){
-  return `<button class="choice ${selected?"selected":""}" type="button" ${attr}>
-    <i class="choice-ic ${iconClass}">${icon}</i>
+  const options=state.region==="cn"
+    ?CHINA_METHODS.filter(method=>methods.includes(method)).map(method=>({attr:`data-method="${method}"`,item:text.methods[method],selected:state.method===method}))
+    :(state.region==="tj"?CARD_BANKS.map(bank=>({attr:`data-bank="${bank}"`,item:text.methods[bank],selected:state.bank===bank})):[]);
+  $("#methods").innerHTML=options.map(({attr,item,selected})=>`<button class="choice ${selected?"selected":""}" type="button" ${attr}>
     <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span>
     <i class="dot"></i>
-  </button>`;
+  </button>`).join("");
 }
 function renderDiscount(text){
   const discount=state.overview?.discount;
@@ -1299,16 +1295,14 @@ function renderDone(text){
 function renderCountry(text){
   $("#countryTitle").textContent=text.countryTitle;
   $("#countryText").textContent=text.countryText;
-  const flags={tj:"🇹🇯",uz:"🇺🇿",ru:"🇷🇺",other:"🌐"};
-  const countries=isForeignCard()?COUNTRY_ORDER.filter(country=>country!=="tj"):COUNTRY_ORDER;
-  $("#countries").innerHTML=countries.map(country=>{
-    const item=text.countries[country];
-    const selected=state.country===country?"selected":"";
-    return `<button class="choice ${selected}" type="button" data-country="${country}">
-      <i class="country-flag">${flags[country]||"🌐"}</i>
+  $("#countries").innerHTML=availableRegions().map(region=>{
+    const item=text.countries[region];
+    const selected=state.region===region?"selected":"";
+    return `<button class="choice ${selected}" type="button" data-region="${region}">
+      <i class="country-flag">${REGION_FLAGS[region]}</i>
       <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot"></i>
     </button>`;
-  }).join("");
+  }).join("")||`<div class="detail-empty">${text.offerExpired}</div>`;
 }
 function renderPay(text){
   const quote=state.quote||(state.preview?mockQuote():null);
@@ -1333,18 +1327,19 @@ function renderPay(text){
   $("#amountOld").textContent=hasOldAmount?`${money(oldAmount)} ${oldCurrency}`:"";
   $("#amountOld").classList.toggle("show",hasOldAmount);
   const planText=planName(text,state.plan);
-  const methodText=isForeignCard()?(text.methods.foreign?.[0]||text.methods[state.method][0]):text.methods[state.method][0];
+  const methodText=state.method==="visa"?text.countries[state.country][0]:text.methods[state.method][0];
   const rows=[
     [text.rows.plan,planText],
     [text.rows.method,methodText]
   ];
   if(state.method==="visa"){
-    rows.push([text.rows.bank,CARD_BANK_NAME]);
+    rows.push([text.rows.bank,CARD_BANK_NAMES[cardBank()]]);
     if(state.country!=="tj"&&quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);
   }
   $("#summaryRows").innerHTML=rows.map(row=>`<div class="row"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join("");
   if(state.method==="visa"){
-    $("#paymentBox").innerHTML=renderPaymentDetails(quote.payment_details||state.overview?.payment_details||"",text);
+    /* Faqat quote'dagi rekvizit: overview'dagisi boshqa bankniki bo'lishi mumkin. */
+    $("#paymentBox").innerHTML=renderPaymentDetails(quote.payment_details||"",text);
   }else if(quote.qr?.available&&quote.qr?.image_data_url){
     $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4>
       <button class="qr qr-tappable" type="button" data-qr-toggle aria-label="${escapeAttr(text.downloadQr)}">
@@ -1424,8 +1419,9 @@ function paymentDetailRows(details){
 }
 function cardInstructionText(text){
   const hints=text.cardHints||{};
-  if(state.country==="tj")return hints.tj||text.detailsHint;
-  return hints.foreign||text.detailsHint;
+  if(state.country!=="tj")return hints.foreign||text.detailsHint;
+  if(cardBank()==="alif")return hints.alif||text.detailsHint;
+  return hints.tj||text.detailsHint;
 }
 function renderPaymentDetails(details,text){
   const rows=paymentDetailRows(details);
@@ -1616,6 +1612,7 @@ async function submitPayment(){
       plan_type:state.plan,
       payment_method:state.method,
       card_country:state.method==="visa"?state.country:null,
+      card_bank:state.method==="visa"?cardBank():null,
       screenshot_data_url:state.screenshotDataUrl
     },SUBMIT_TIMEOUT_MS);
     state.pending=Boolean(data.already_pending);
@@ -1649,60 +1646,44 @@ document.addEventListener("click",event=>{
   const copyBtn=event.target.closest("[data-copy-detail]");
   if(copyBtn){copyText(copyBtn.dataset.copyValue,tr().copiedValue,tr().copyFailed);return}
   const planBtn=event.target.closest("[data-plan]");
-  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;state.qrActionsOpen=false;state.qrPreviewOpen=false;state.detailHintOpen=false;render();return}
+  if(planBtn){state.plan=planBtn.dataset.plan;clearQuote();render();return}
+  const regionBtn=event.target.closest("[data-region]");
+  if(regionBtn){
+    const region=regionBtn.dataset.region;
+    if(region!==state.region){
+      state.region=region;
+      state.method=region==="cn"?(CHINA_METHODS.includes(state.method)?state.method:CHINA_METHODS[0]):"visa";
+      ensureSelection();
+      clearQuote();
+    }
+    render();
+    return;
+  }
   const methodBtn=event.target.closest("[data-method]");
   if(methodBtn){
     state.method=methodBtn.dataset.method;
     ensureSelection();
-    state.quote=null;
-    state.qrActionsOpen=false;
-    state.qrPreviewOpen=false;
-    state.detailHintOpen=false;
-    state.step=0;
+    clearQuote();
     render();
     return;
   }
-  const cardMethodBtn=event.target.closest("[data-card-method]");
-  if(cardMethodBtn){
-    state.method="visa";
-    state.country=cardMethodBtn.dataset.cardMethod==="foreign"?"other":"tj";
-    ensureSelection();
-    state.quote=null;
-    state.qrActionsOpen=false;
-    state.qrPreviewOpen=false;
-    state.detailHintOpen=false;
-    state.step=0;
-    render();
-    return;
-  }
-  const chinaGroup=event.target.closest("[data-china-group]");
-  if(chinaGroup){
-    const methods=availableMethods();
-    const preferred=CHINA_METHODS.find(method=>methods.includes(method));
-    if(preferred)state.method=CHINA_METHODS.includes(state.method)?state.method:preferred;
-    ensureSelection();
-    state.quote=null;
-    state.qrActionsOpen=false;
-    state.qrPreviewOpen=false;
-    state.detailHintOpen=false;
-    state.step=0;
-    render();
-    return;
-  }
-  const countryBtn=event.target.closest("[data-country]");
-  if(countryBtn){
-    state.country=countryBtn.dataset.country;
-    state.quote=null;
-    state.qrActionsOpen=false;
-    state.qrPreviewOpen=false;
-    state.detailHintOpen=false;
-    if(currentScreen()==="pay"){loadQuote();return}
+  const bankBtn=event.target.closest("[data-bank]");
+  if(bankBtn){
+    state.bank=bankBtn.dataset.bank;
+    clearQuote();
     render();
     return;
   }
 });
+function clearQuote(){
+  state.quote=null;
+  state.qrActionsOpen=false;
+  state.qrPreviewOpen=false;
+  state.detailHintOpen=false;
+}
 $("#nextBtn").addEventListener("click",()=>{
   const screen=currentScreen();
+  if(screen==="country"&&!state.region)return;
   if(!hasCurrentPrice()){toast(tr().offerExpired);return}
   if(screen==="pay"){submitPayment();return}
   setStep(state.step+1);

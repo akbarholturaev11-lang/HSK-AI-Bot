@@ -64,6 +64,7 @@ class AdminNotifyService:
         local_currency: str = None,
         exchange_rate: str = None,
         source: str = "telegram_bot",
+        card_bank: str = None,
     ) -> str:
         plan_label = {"10_days": "10 kunlik", "1_month": "1 oylik", "3_months": "3 oylik"}.get(plan_type, plan_type)
         origin = {
@@ -103,6 +104,10 @@ class AdminNotifyService:
             )
             if exchange_rate:
                 lines.append(f"💱 Kurs: {exchange_rate}")
+            # Admin pul qaysi hisobga tushganini tekshirishi uchun.
+            bank_label = {"dc_city": "Dushanbe City", "alif": "Alif"}.get(card_bank or "")
+            if bank_label:
+                lines.append(f"🏦 Rekvizit: {bank_label}")
 
         if discount_percent > 0:
             source_label = {
@@ -166,6 +171,7 @@ class AdminNotifyService:
         screenshot_bytes: bytes | None = None,
         screenshot_filename: str = "payment.jpg",
         require_delivery: bool = False,
+        card_bank: str | None = None,
     ) -> str | None:
         if not self.admin_ids:
             if require_delivery:
@@ -193,6 +199,7 @@ class AdminNotifyService:
             local_currency=getattr(payment, "local_currency", None),
             exchange_rate=getattr(payment, "exchange_rate", None),
             source=getattr(payment, "source", "telegram_bot"),
+            card_bank=card_bank,
         )
 
         keyboard = admin_payment_review_keyboard(payment.id, "uz")

@@ -234,6 +234,48 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-29 — Obuna Mini App: region → tarif → to'lov turi → rekvizit, oq rang
+
+Changed:
+- `subscription.html` oq rangga o'tdi (fon `#ffffff`, yashil aksent qoldi;
+  Telegram header ham oq). Klass nomlari va joylashuv o'zgarmadi.
+- Oqim: 1) karta regioni (Tojikiston, O'zbekiston, Rossiya, Xitoy, Boshqa
+  davlat) → 2) tarif + chegirma, narx region valyutasida (TJS/UZS/RUB/¥/USD)
+  → 3) to'lov turi FAQAT Tojikiston (Dushanbe City / Alif) va Xitoy
+  (Alipay / WeChat) uchun → 4) summa, rekvizit, chek. Rossiya, O'zbekiston va
+  boshqa davlat kartalari 3-qadamsiz to'g'ri Alif (Visa) rekvizitiga o'tadi.
+- Rekvizit bank bo'yicha: `subscription_payment_details` (eski yagona kalit)
+  endi Dushanbe City; yangi `subscription_payment_details_alif` — Alif. Admin
+  Mini App'da ikkita maydon; bot `/admin` narxlar oynasi ikkalasini ko'rsatadi,
+  lekin faqat Dushanbe City'ni tahrirlaydi.
+- quote/submit ixtiyoriy `card_bank` (`dc_city`|`alif`) oladi. Server qoidasi
+  (`SubscriptionMiniAppService._card_bank`): TJ — tanlangan bank, TJ bo'lmasa
+  doim `alif`. Alif bo'sh bo'lsa `payment_details_missing` — Dushanbe City'ga
+  TUSHMAYDI. overview `card_prices` (uz/ru/other, bitta kurs so'rovi bilan)
+  qaytaradi; admin xabarida `🏦 Rekvizit: ...` qatori.
+
+Boundaries:
+- `card_bank` yubormagan klient (Android direct checkout, desktop) eskicha —
+  hamma karta Dushanbe City rekvizitiga. Android'da bank nomi qat'iy yozilgan;
+  tenglashtirish alohida Android release bilan qilinadi.
+- DB migratsiyasi yo'q: bank `payments` jadvalida saqlanmaydi, faqat admin
+  xabarida ko'rinadi. Narx/chegirma/QR/tasdiqlash mantig'i o'zgarmadi.
+
+Files touched:
+- `app/static/subscription.html`, `app/static/admin.html`, `app/main.py`,
+  `app/services/subscription_miniapp_service.py`,
+  `app/services/subscription_currency_service.py`,
+  `app/services/admin_notify_service.py`,
+  `app/services/desktop_subscription_service.py`, `app/bot/handlers/admin.py`,
+  `tests/test_subscription_miniapp_card_banks.py`, `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Deploydan OLDIN admin Mini App'da Alif rekvizitini kiritish shart, aks holda
+  Alif, Rossiya, O'zbekiston va boshqa davlat to'lovlari «rekvizit tayyor emas»
+  bilan to'xtaydi.
+- AUTO kurs yoqilgan bo'lsa overview endi bitta tashqi kurs so'rovini qiladi
+  (5s timeout, xatoda qo'lda kiritilgan kurs).
+
 ### 2026-09-28 — Pro trial anti-abuse risk enforcement
 
 Changed:

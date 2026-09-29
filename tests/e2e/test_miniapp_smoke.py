@@ -2560,20 +2560,55 @@ def test_subscription_page_smoke(page):
     expect(page.locator("#trialOffer")).to_have_count(0)
     expect(page.locator(".tv")).to_have_count(0)
     expect(page.locator("#helpBtn svg")).to_be_visible()
-    expect(page.locator("#plans .plan").first).to_be_visible()
-    expect(page.locator("#plans .plan").first).to_contain_text("1 oy")
-    expect(page.locator("#methods .choice").first).to_be_visible()
-    expect(page.locator("#methods .choice").first).to_contain_text("🇹🇯")
-    expect(page.locator("#methods .choice").first).to_contain_text("Tojikiston kartasi")
-    expect(page.locator("[data-card-method=foreign]")).to_contain_text("💳")
-    expect(page.locator("[data-china-group]")).to_contain_text("🇨🇳")
-    expect(page.locator("#nextBtn")).to_contain_text("Tojikiston kartasi")
-    page.locator("[data-card-method=foreign]").click()
+
+    # 1-qadam — karta regioni; tanlanmaguncha davom etib bo'lmaydi.
+    regions = page.locator("#countries .choice")
+    expect(regions).to_have_count(5)
+    expect(regions.first).to_contain_text("🇹🇯")
+    expect(regions.first).to_contain_text("Tojikiston kartasi")
+    expect(page.locator("[data-region=uz]")).to_contain_text("🇺🇿")
+    expect(page.locator("[data-region=ru]")).to_contain_text("🇷🇺")
+    expect(page.locator("[data-region=cn]")).to_contain_text("🇨🇳")
+    expect(page.locator("[data-region=other]")).to_contain_text("🌐")
+    expect(page.locator("#nextBtn")).to_be_disabled()
+
+    # Rossiya: tarif RUB da, to'lov turi so'ralmaydi, rekvizit — Alif.
+    page.locator("[data-region=ru]").click()
     page.locator("#nextBtn").click()
-    expect(page.locator("#countries")).not_to_contain_text("Tojikiston kartasi")
-    expect(page.locator("#countries")).to_contain_text("🇺🇿")
-    expect(page.locator("#countries")).to_contain_text("🇷🇺")
-    expect(page.locator("#paymentBox")).to_have_count(1)
+    expect(page.locator("#plans .plan").first).to_contain_text("1 oy")
+    expect(page.locator("#plans .plan").first).to_contain_text("RUB")
+    expect(page.locator("#nextBtn")).to_contain_text("To'lovga davom etish")
+    page.locator("#nextBtn").click()
+    expect(page.locator("#amountCurrency")).to_have_text("RUB")
+    expect(page.locator("#summaryRows")).to_contain_text("Rossiya kartasi")
+    expect(page.locator("#summaryRows")).to_contain_text("Alif")
+    expect(page.locator("#paymentBox")).to_contain_text("Alif")
+
+    # Tojikiston: to'lov turi — Dushanbe City yoki Alif.
+    page.locator("#backBtn").click()
+    page.locator("#backBtn").click()
+    page.locator("[data-region=tj]").click()
+    page.locator("#nextBtn").click()
+    expect(page.locator("#plans .plan").first).to_contain_text("TJS")
+    page.locator("#nextBtn").click()
+    expect(page.locator("[data-bank=dc_city]")).to_contain_text("Dushanbe City")
+    expect(page.locator("[data-bank=alif]")).to_contain_text("Alif")
+    page.locator("[data-bank=alif]").click()
+    page.locator("#nextBtn").click()
+    expect(page.locator("#summaryRows")).to_contain_text("Alif")
+    expect(page.locator("#paymentBox")).to_contain_text("Alif")
+
+    # Xitoy: narx ¥ da, to'lov turi — Alipay yoki WeChat Pay.
+    page.locator("#backBtn").click()
+    page.locator("#backBtn").click()
+    page.locator("#backBtn").click()
+    page.locator("[data-region=cn]").click()
+    page.locator("#nextBtn").click()
+    expect(page.locator("#plans .plan").first).to_contain_text("¥")
+    page.locator("#nextBtn").click()
+    expect(page.locator("[data-method=alipay]")).to_contain_text("Alipay")
+    page.locator("[data-method=wechat]").click()
+    expect(page.locator("#nextBtn")).to_contain_text("WeChat Pay bilan to'lash")
 
 
 def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
@@ -2636,7 +2671,11 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     )
 
     expect(page.locator("html")).to_have_attribute("lang", "uz")
+    page.locator("[data-region=tj]").click()
+    page.locator("#nextBtn").click()
     expect(page.locator("#valueText")).to_contain_text("Boshlagan darsingizni davom ettiring")
+    page.locator("#nextBtn").click()
+    page.locator("[data-bank=dc_city]").click()
     page.locator("#nextBtn").click()
     expect(page.locator("#paymentBox")).to_contain_text("0000 0000 0000 0000")
     page.locator("#receiptInput").set_input_files(
@@ -2656,6 +2695,77 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     assert attempt_ids and len(set(attempt_ids)) == 1
     assert "payment_instructions_viewed" in event_stages
     assert "payment_receipt_selected" in event_stages
+    quote_bodies = [body for kind, body in requests if kind == "quote"]
+    assert quote_bodies[-1]["card_country"] == "tj"
+    assert quote_bodies[-1]["card_bank"] == "dc_city"
+
+
+def test_subscription_foreign_region_skips_payment_type_and_pays_to_alif(page):
+    mock_telegram_ready(page)
+    quotes = []
+    overview = {
+        "ok": True,
+        "language": "ru",
+        "mode": "subscription",
+        "pending_payment": None,
+        "offer": None,
+        "discount": None,
+        "payment_details": "",
+        "prices": {
+            "visa": {
+                "1_month": {
+                    "base_amount": 89,
+                    "final_amount": 89,
+                    "currency": "TJS",
+                    "discount_applied": False,
+                    "discount_percent": 0,
+                }
+            }
+        },
+        "card_prices": {
+            "ru": {"1_month": {"final_amount": "683.52", "base_amount": "683.52", "currency": "RUB"}},
+        },
+    }
+
+    def capture_quote(route):
+        quotes.append(route.request.post_data_json)
+        json_response(
+            route,
+            {
+                "ok": True,
+                "quote": {
+                    "plan_type": "1_month",
+                    "payment_method": "visa",
+                    "card_country": "ru",
+                    "card_bank": "alif",
+                    "pay_amount": "683.52",
+                    "pay_currency": "RUB",
+                    "base_amount": 89,
+                    "base_currency": "TJS",
+                    "exchange_rate": "1 TJS = 7.68 RUB",
+                    "discount_applied": False,
+                    "payment_details": "ALIF VISA 4444 5555 6666 7777",
+                },
+            },
+        )
+
+    page.route("**/api/subscription-miniapp/overview", lambda route: json_response(route, overview))
+    page.route("**/api/subscription-miniapp/quote", capture_quote)
+    page.route("**/api/subscription-miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.goto(app_url("/subscription.html?mode=subscription"), wait_until="networkidle")
+
+    # Xitoy narxi yo'q — region ro'yxatida ham chiqmaydi.
+    expect(page.locator("[data-region=cn]")).to_have_count(0)
+    page.locator("[data-region=ru]").click()
+    page.locator("#nextBtn").click()
+    expect(page.locator("#plans .plan").first).to_contain_text("RUB")
+    page.locator("#nextBtn").click()
+
+    expect(page.locator("#paymentBox")).to_contain_text("ALIF VISA 4444 5555 6666 7777")
+    expect(page.locator("#summaryRows")).to_contain_text("Alif")
+    expect(page.locator("#summaryRows")).to_contain_text("1 TJS = 7.68 RUB")
+    assert quotes[-1]["card_country"] == "ru"
+    assert quotes[-1]["card_bank"] == "alif"
 
 
 def _open_course_profile_with_desktop_release(

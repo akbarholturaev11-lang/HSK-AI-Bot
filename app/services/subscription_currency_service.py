@@ -121,10 +121,29 @@ class SubscriptionCurrencyService:
     async def quote_card_amount(self, tjs_amount: int, country: str | None) -> CardCurrencyQuote:
         return (await self.quote_card_amounts([tjs_amount], country))[0]
 
+    async def quote_card_amounts_by_country(
+        self,
+        tjs_amounts: list[int],
+        countries: list[str],
+    ) -> dict[str, list[CardCurrencyQuote]]:
+        """Convert the same TJS prices for several card countries.
+
+        The Mini App shows plan prices in each region's currency before
+        checkout. One rate lookup keeps every region on the same rates.
+        """
+
+        rates = await self.effective_rates()
+        return {
+            country: await self.quote_card_amounts(tjs_amounts, country, preloaded_rates=rates)
+            for country in countries
+        }
+
     async def quote_card_amounts(
         self,
         tjs_amounts: list[int],
         country: str | None,
+        *,
+        preloaded_rates: tuple[dict[str, Decimal], str] | None = None,
     ) -> list[CardCurrencyQuote]:
         """Convert several TJS prices with one rate lookup.
 
@@ -147,7 +166,7 @@ class SubscriptionCurrencyService:
                 for tjs_amount in tjs_amounts
             ]
 
-        rates, source = await self.effective_rates()
+        rates, source = preloaded_rates or await self.effective_rates()
         quotes: list[CardCurrencyQuote] = []
         for tjs_amount in tjs_amounts:
             usd_amount = Decimal(tjs_amount) / rates["tjs"]

@@ -161,7 +161,7 @@ from app.services.subscription_service import (
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
-from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
+from app.services.subscription_miniapp_service import PAYMENT_DETAILS_ALIF_KEY, PAYMENT_DETAILS_KEY
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.admin_miniapp_service import (
     HOT_LEAD_ACTIVITY_WINDOW,
@@ -1031,6 +1031,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "ok": True,
         "prices": price_items,
         "payment_details": (await setting_repo.get(PAYMENT_DETAILS_KEY) or settings.PAYMENT_DETAILS or "").strip(),
+        "payment_details_alif": (await setting_repo.get(PAYMENT_DETAILS_ALIF_KEY) or "").strip(),
         "gemini": {
             "configured": bool(settings.GEMINI_API_KEY),
             "active_model": await get_active_gemini_model(),
@@ -3691,8 +3692,10 @@ async def admin_miniapp_payment_details_save(request: Request):
     text_value = str(payload.get("payment_details") or "").strip()
     if not text_value or len(text_value) > 1500:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_payment_details"})
+    # Dushanbe City — eski yagona kalit; Alif alohida saqlanadi.
+    key = PAYMENT_DETAILS_ALIF_KEY if payload.get("bank") == "alif" else PAYMENT_DETAILS_KEY
     async with async_session_maker() as session:
-        await BotSettingRepository(session).set(PAYMENT_DETAILS_KEY, text_value)
+        await BotSettingRepository(session).set(key, text_value)
         await session.commit()
     return JSONResponse(content={"ok": True})
 
@@ -5109,6 +5112,7 @@ async def subscription_miniapp_quote(request: Request):
             plan_type=str(payload.get("plan_type") or ""),
             payment_method=str(payload.get("payment_method") or ""),
             card_country=payload.get("card_country"),
+            card_bank=payload.get("card_bank"),
             bot=bot,
             mode=str(payload.get("mode") or ""),
             campaign_id=_positive_int(payload.get("campaign_id")),
@@ -5212,6 +5216,7 @@ async def subscription_miniapp_submit(request: Request):
                 plan_type=str(payload.get("plan_type") or ""),
                 payment_method=str(payload.get("payment_method") or ""),
                 card_country=payload.get("card_country"),
+                card_bank=payload.get("card_bank"),
                 screenshot_data_url=str(payload.get("screenshot_data_url") or ""),
                 bot=bot,
                 mode=str(payload.get("mode") or ""),

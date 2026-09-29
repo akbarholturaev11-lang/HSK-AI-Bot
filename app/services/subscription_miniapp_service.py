@@ -26,9 +26,14 @@ from app.services.support_contact_service import get_admin_contact_url
 logger = logging.getLogger(__name__)
 
 CARD_COUNTRIES = {"tj", "uz", "ru", "other"}
+# Tarif ekranida narx shu davlatlar valyutasida ko'rsatiladi (tj — TJS o'zi).
+FOREIGN_CARD_COUNTRIES = ("uz", "ru", "other")
 MINIAPP_METHODS = {"visa", "alipay", "wechat"}
 MINIAPP_MODES = {"subscription", "referral_discount", "admin_discount", "feedback_discount"}
+# Karta rekvizitlari bank bo'yicha: eski yagona kalit — Dushanbe City.
 PAYMENT_DETAILS_KEY = "subscription_payment_details"
+PAYMENT_DETAILS_ALIF_KEY = "subscription_payment_details_alif"
+CARD_BANKS = {"dc_city", "alif"}
 MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024
 _STATIC_PAYMENTS = Path(__file__).parent.parent / "static" / "payments"
 _BOT_USERNAME_CACHE: str | None = None
@@ -62,11 +67,29 @@ class SubscriptionMiniAppService:
         self.currency_service = SubscriptionCurrencyService(session)
         self.setting_repo = BotSettingRepository(session)
 
-    async def payment_details(self) -> str:
+    async def payment_details(self, card_bank: str | None = None) -> str:
+        if card_bank == "alif":
+            # Alif rekviziti bo'sh bo'lsa Dushanbe City rekvizitiga
+            # tushmaydi: user boshqa bankka pul o'tkazib yubormasin.
+            stored = await self.setting_repo.get(PAYMENT_DETAILS_ALIF_KEY)
+            return (stored or "").strip()
         stored = await self.setting_repo.get(PAYMENT_DETAILS_KEY)
         if stored and stored.strip():
             return stored.strip()
         return settings.PAYMENT_DETAILS.strip()
+
+    @staticmethod
+    def _card_bank(card_country: str | None, card_bank: str | None) -> str | None:
+        """Karta to'lovi qaysi bank rekvizitiga borishi.
+
+        Bankni faqat Telegram Mini App yuboradi. Yubormagan klient (Android,
+        desktop) — None, ya'ni eski yagona Dushanbe City rekviziti.
+        Tojikistondan tashqaridagi kartalar doim Alif (Visa) ga to'laydi.
+        """
+        if card_bank not in CARD_BANKS:
+            return None
+        country = card_country if card_country in CARD_COUNTRIES else "tj"
+        return card_bank if country == "tj" else "alif"
 
     async def overview(
         self,
@@ -92,6 +115,7 @@ class SubscriptionMiniAppService:
                 "offer": None,
                 "discount": None,
                 "prices": {},
+                "card_prices": {},
                 "card_countries": ["tj", "uz", "ru", "other"],
                 "payment_details": "",
                 "payment_details_configured": False,
@@ -118,6 +142,7 @@ class SubscriptionMiniAppService:
             "offer": self._offer_payload(mode, prices),
             "discount": await self._discount_payload(user, bot=bot),
             "prices": prices,
+            "card_prices": await self._card_prices_payload(prices.get("visa") or {}),
             "card_countries": ["tj", "uz", "ru", "other"],
             "payment_details": payment_details,
             "payment_details_configured": bool(payment_details),
@@ -143,6 +168,7 @@ class SubscriptionMiniAppService:
         plan_type: str,
         payment_method: str,
         card_country: str | None = None,
+        card_bank: str | None = None,
         bot: Bot | None = None,
         include_qr: bool = True,
         mode: str | None = None,
@@ -164,7 +190,8 @@ class SubscriptionMiniAppService:
         )
         if not checkout_info:
             return {"ok": False, "error": "payment_invalid_plan"}
-        payment_details = await self.payment_details() if payment_method == "visa" else ""
+        bank = self._card_bank(card_country, card_bank) if payment_method == "visa" else None
+        payment_details = await self.payment_details(bank) if payment_method == "visa" else ""
         if payment_method == "visa" and not payment_details:
             return {"ok": False, "error": "payment_details_missing"}
 
@@ -175,6 +202,7 @@ class SubscriptionMiniAppService:
                 plan_type=plan_type,
                 payment_method=payment_method,
                 card_country=card_country,
+                card_bank=bank,
                 checkout_info=checkout_info,
                 payment_details=payment_details,
             ),
@@ -198,6 +226,7 @@ class SubscriptionMiniAppService:
         card_country: str | None,
         screenshot_data_url: str,
         bot: Bot,
+        card_bank: str | None = None,
         mode: str | None = None,
         campaign_id: int | None = None,
         feedback_id: int | None = None,
@@ -233,7 +262,8 @@ class SubscriptionMiniAppService:
         )
         if not checkout_info:
             return {"ok": False, "error": "payment_invalid_plan"}
-        payment_details = await self.payment_details() if payment_method == "visa" else ""
+        bank = self._card_bank(card_country, card_bank) if payment_method == "visa" else None
+        payment_details = await self.payment_details(bank) if payment_method == "visa" else ""
         if payment_method == "visa" and not payment_details:
             return {"ok": False, "error": "payment_details_missing"}
 
@@ -253,6 +283,7 @@ class SubscriptionMiniAppService:
             plan_type=plan_type,
             payment_method=payment_method,
             card_country=card_country,
+            card_bank=bank,
             checkout_info=checkout_info,
             payment_details=payment_details,
         )
@@ -290,6 +321,7 @@ class SubscriptionMiniAppService:
                 screenshot_bytes=screenshot.data,
                 screenshot_filename=screenshot.filename,
                 require_delivery=True,
+                card_bank=bank,
             )
         except Exception:
             logger.exception(
@@ -349,6 +381,37 @@ class SubscriptionMiniAppService:
                     "discount_reason_uz": info["discount_reason_uz"],
                     "discount_details": info["discount_details"],
                 }
+        return result
+
+    async def _card_prices_payload(
+        self,
+        visa_prices: dict[str, dict[str, Any]],
+    ) -> dict[str, dict[str, dict[str, str]]]:
+        """Karta tariflari UZS/RUB/USD da — tarif ekrani uchun.
+
+        To'lanadigan summa baribir quote'da shu kurs xizmatidan hisoblanadi;
+        bu faqat region tanlangandan keyingi narx ko'rinishi.
+        """
+        plans = [plan for plan in PLANS if plan in visa_prices]
+        if not plans:
+            return {}
+        amounts = [int(visa_prices[plan]["final_amount"]) for plan in plans]
+        amounts += [int(visa_prices[plan]["base_amount"]) for plan in plans]
+        quotes_by_country = await self.currency_service.quote_card_amounts_by_country(
+            amounts,
+            list(FOREIGN_CARD_COUNTRIES),
+        )
+        result: dict[str, dict[str, dict[str, str]]] = {}
+        for country, quotes in quotes_by_country.items():
+            final_quotes, base_quotes = quotes[: len(plans)], quotes[len(plans):]
+            result[country] = {
+                plan: {
+                    "final_amount": final_quote.amount,
+                    "base_amount": base_quote.amount,
+                    "currency": final_quote.currency,
+                }
+                for plan, final_quote, base_quote in zip(plans, final_quotes, base_quotes)
+            }
         return result
 
     def _offer_payload(self, mode: str, prices: dict[str, dict[str, dict[str, Any]]]) -> dict[str, Any] | None:
@@ -495,6 +558,7 @@ class SubscriptionMiniAppService:
         payment_method: str,
         card_country: str | None,
         checkout_info: dict[str, Any],
+        card_bank: str | None = None,
         payment_details: str | None = None,
     ) -> dict[str, Any]:
         pay_amount = str(checkout_info["final_amount"])
@@ -527,6 +591,7 @@ class SubscriptionMiniAppService:
             "plan_type": plan_type,
             "payment_method": payment_method,
             "card_country": normalized_country,
+            "card_bank": card_bank,
             "base_amount": checkout_info["base_amount"],
             "base_currency": checkout_info["currency"],
             "final_amount": checkout_info["final_amount"],

@@ -178,6 +178,7 @@ class DesktopSubscriptionService:
             result["offer"] = None
             result["discount"] = None
             result["prices"] = {}
+            result["card_prices"] = {}
             result["payment_details"] = ""
             result["payment_details_configured"] = False
 
