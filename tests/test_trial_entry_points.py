@@ -28,6 +28,11 @@ ANDROID_MAIN = (ANDROID / "MainActivity.kt").read_text(encoding="utf-8")
 ANDROID_PROFILE = (ANDROID / "feature/profile/ProfileScreen.kt").read_text(
     encoding="utf-8"
 )
+ANDROID_LIMIT_OVERLAY = (ANDROID / "feature/limit/SectionLimitOverlay.kt").read_text(
+    encoding="utf-8"
+)
+ANDROID_SETTINGS = (ANDROID / "core/settings/AppSettings.kt").read_text(encoding="utf-8")
+ANDROID_APPLICATION = (ANDROID / "HskAiApplication.kt").read_text(encoding="utf-8")
 ANDROID_LIMIT_DIRECT = Path(
     "android/app/src/direct/java/com/pomp/hskai/feature/limit/SectionLimitBlock.kt"
 ).read_text(encoding="utf-8")
@@ -153,6 +158,18 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
             with self.subTest(channel=name):
                 self.assertNotIn("onWatchAd", source)
                 self.assertNotIn("limit_watch_ad", source)
+
+    def test_android_ads_start_only_after_a_limit_screen_has_been_seen(self):
+        # Limit oynasi haqiqatan ko'ringanda gate ochiladi va yopilgani ham
+        # AppRoot'ga qaytadi — markaziy reklama paywall ustiga chiqmasin.
+        self.assertIn("limit.actions.onPresented()", ANDROID_LIMIT_OVERLAY)
+        self.assertIn("limit.actions.onDismissed()", ANDROID_LIMIT_OVERLAY)
+        self.assertIn("app.appSettings.unlockAdsAfterLimit()", ANDROID_MAIN)
+        self.assertIn("adsUnlockedAfterLimit &&", ANDROID_MAIN)
+        self.assertIn("completed && adsUnlockedAfterLimit", ANDROID_MAIN)
+        # Qaror restartdan keyin ham qoladi, ammo boshqa accountga oqib o'tмайди.
+        self.assertIn("ADS_UNLOCKED_AFTER_LIMIT_KEY", ANDROID_SETTINGS)
+        self.assertIn("clearAdsUnlockedAfterLimit()", ANDROID_APPLICATION)
 
 
 def _android_api() -> str:
