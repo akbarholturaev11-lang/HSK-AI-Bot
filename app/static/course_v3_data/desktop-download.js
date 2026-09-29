@@ -268,6 +268,105 @@
     }
   };
 
+  var ANDROID_PROMO_COPY = {
+    uz: {
+      course: {
+        eyebrow: "HSK AI · Android",
+        title: "HSK AI’ni bir bosishda oching",
+        body: "Har safar Telegram → bot → Mini App orqali kirish shart emas. Android ilovasini to‘g‘ridan-to‘g‘ri oching. Ayrim funksiyalar internetsiz ham ishlaydi.",
+        benefits: [["device-mobile", "Alohida ilova"], ["wifi-off", "Ayrim funksiyalar offline"], ["arrows-exchange", "Progress saqlanadi"]]
+      },
+      mashq: {
+        eyebrow: "HSK AI · Android",
+        title: "Mashq ichida AI yordamchi",
+        body: "Android ilovada mashqdan chiqmasdan AI’dan savol so‘rang va aynan shu mashq bo‘yicha tushuntirish oling.",
+        benefits: [["sparkles", "AI mashq ichida"], ["message-circle", "Darhol savol bering"], ["arrows-exchange", "Progress saqlanadi"]]
+      },
+      voice: {
+        eyebrow: "HSK AI · Android",
+        title: "AI Voice’ni to‘g‘ridan-to‘g‘ri oching",
+        body: "Telegram va Mini App’ni alohida ochib yurmasdan Android ilovadan AI Voice mashqiga kiring.",
+        benefits: [["microphone-2", "AI Voice"], ["device-mobile", "Alohida ilova"], ["arrows-exchange", "Progress saqlanadi"]]
+      },
+      dictionary: {
+        eyebrow: "HSK AI · Android",
+        title: "Lug‘at Android’da qulayroq",
+        body: "Ieroglifni barmoq bilan yozib mashq qiling va lug‘atdan internet bo‘lmasa ham foydalaning.",
+        benefits: [["pencil", "Qo‘lda yozish"], ["wifi-off", "To‘liq offline lug‘at"], ["book-2", "Misollar va yozish tartibi"]]
+      },
+      lesson_end: {
+        eyebrow: "HSK AI · Android",
+        title: "Xatoni shu zahoti tushuning",
+        body: "Android ilovada xato qilgan zahoti AI’dan «Xatoyim nimada?» deb so‘rang — u xatoni real misollar bilan tushuntiradi.",
+        benefits: [["message-circle", "AI xatoni tahlil qiladi"], ["bulb", "Real misollar"], ["arrows-exchange", "Progress saqlanadi"]]
+      }
+    },
+    ru: {
+      course: {
+        eyebrow: "HSK AI · Android",
+        title: "Открывайте HSK AI одним нажатием",
+        body: "Не нужно каждый раз открывать Telegram → бот → Mini App. Запускайте Android-приложение напрямую. Часть функций работает без интернета.",
+        benefits: [["device-mobile", "Отдельное приложение"], ["wifi-off", "Часть функций офлайн"], ["arrows-exchange", "Прогресс сохраняется"]]
+      },
+      mashq: {
+        eyebrow: "HSK AI · Android",
+        title: "AI-помощник прямо в упражнении",
+        body: "В Android-приложении можно не выходить из упражнения: спросите AI и получите объяснение именно по текущему заданию.",
+        benefits: [["sparkles", "AI внутри упражнения"], ["message-circle", "Спросить сразу"], ["arrows-exchange", "Прогресс сохраняется"]]
+      },
+      voice: {
+        eyebrow: "HSK AI · Android",
+        title: "Открывайте AI Voice напрямую",
+        body: "Переходите к AI Voice прямо из Android-приложения, без отдельного открытия Telegram и Mini App.",
+        benefits: [["microphone-2", "AI Voice"], ["device-mobile", "Отдельное приложение"], ["arrows-exchange", "Прогресс сохраняется"]]
+      },
+      dictionary: {
+        eyebrow: "HSK AI · Android",
+        title: "Словарь удобнее в Android-приложении",
+        body: "Тренируйте написание иероглифов пальцем и пользуйтесь словарём даже без интернета.",
+        benefits: [["pencil", "Письмо от руки"], ["wifi-off", "Словарь полностью офлайн"], ["book-2", "Примеры и порядок черт"]]
+      },
+      lesson_end: {
+        eyebrow: "HSK AI · Android",
+        title: "Разберите ошибку сразу",
+        body: "Сразу после ошибки спросите AI «В чём моя ошибка?» — Android-приложение объяснит её на реальных примерах.",
+        benefits: [["message-circle", "AI разбирает ошибку"], ["bulb", "Реальные примеры"], ["arrows-exchange", "Прогресс сохраняется"]]
+      }
+    },
+    tj: {
+      course: {
+        eyebrow: "HSK AI · Android",
+        title: "HSK AI-ро бо як пахш кушоед",
+        body: "Ҳар дафъа Telegram → бот → Mini App кушодан шарт нест. Барномаи Android-ро мустақим кушоед. Баъзе имкониятҳо бе интернет ҳам кор мекунанд.",
+        benefits: [["device-mobile", "Барномаи алоҳида"], ["wifi-off", "Баъзе имкониятҳо офлайн"], ["arrows-exchange", "Пешрафт нигоҳ дошта мешавад"]]
+      },
+      mashq: {
+        eyebrow: "HSK AI · Android",
+        title: "AI дар дохили худи машқ",
+        body: "Дар барномаи Android аз машқ набаромада ба AI савол диҳед ва шарҳи айнан ҳамин машқро гиред.",
+        benefits: [["sparkles", "AI дар дохили машқ"], ["message-circle", "Дарҳол савол диҳед"], ["arrows-exchange", "Пешрафт нигоҳ дошта мешавад"]]
+      },
+      voice: {
+        eyebrow: "HSK AI · Android",
+        title: "AI Voice-ро мустақим кушоед",
+        body: "Бе кушодани алоҳидаи Telegram ва Mini App, ба AI Voice мустақим аз барномаи Android гузаред.",
+        benefits: [["microphone-2", "AI Voice"], ["device-mobile", "Барномаи алоҳида"], ["arrows-exchange", "Пешрафт нигоҳ дошта мешавад"]]
+      },
+      dictionary: {
+        eyebrow: "HSK AI · Android",
+        title: "Луғат дар Android қулайтар аст",
+        body: "Иероглифро бо ангушт навишта машқ кунед ва аз луғат ҳатто бе интернет истифода баред.",
+        benefits: [["pencil", "Навиштан бо даст"], ["wifi-off", "Луғати пурра офлайн"], ["book-2", "Мисолҳо ва тартиби хатҳо"]]
+      },
+      lesson_end: {
+        eyebrow: "HSK AI · Android",
+        title: "Хаторо ҳамон лаҳза фаҳмед",
+        body: "Ҳамин ки хато кардед, аз AI «Хатоям дар чист?» пурсед — барномаи Android онро бо мисолҳои воқеӣ мефаҳмонад.",
+        benefits: [["message-circle", "AI хаторо таҳлил мекунад"], ["bulb", "Мисолҳои воқеӣ"], ["arrows-exchange", "Пешрафт нигоҳ дошта мешавад"]]
+      }
+    }
+  };
+
   var state = {
     availabilityLoaded: false,
     availabilityLoading: false,
@@ -323,6 +422,39 @@
 
   function text() {
     return COPY[language()];
+  }
+
+  function promoContext(source, meta) {
+    var data = meta && typeof meta === "object" ? meta : {};
+    var explicit = String(data.context || data.promo_context || "").toLowerCase();
+    if (["course", "mashq", "voice", "dictionary", "lesson_end"].indexOf(explicit) >= 0) {
+      return explicit;
+    }
+    if (
+      source === "lesson_end_promo" ||
+      String(data.placement || "").toLowerCase() === "lesson_end_ad"
+    ) {
+      return "lesson_end";
+    }
+    var screen = "";
+    try {
+      screen = String(window.SCREEN || "").toLowerCase();
+    } catch (error) {}
+    if (screen === "mashq") return "mashq";
+    if (screen === "voice") return "voice";
+    if (screen === "dictionary" || screen === "lugat") return "dictionary";
+    return "course";
+  }
+
+  function androidPromoCopy(source, meta) {
+    if (
+      detectPlatform() !== "android" ||
+      state.autoTargetPlatform !== "android"
+    ) {
+      return null;
+    }
+    var localized = ANDROID_PROMO_COPY[language()] || ANDROID_PROMO_COPY.uz;
+    return localized[promoContext(source, meta)] || localized.course;
   }
 
   function telegramInitData() {
@@ -593,6 +725,16 @@
     );
   }
 
+  function automaticTargetMatchesCurrentClient() {
+    var target = String(state.autoTargetPlatform || "");
+    return Boolean(
+      APP_PROMO_PLATFORMS.indexOf(target) >= 0 &&
+        target === detectPlatform() &&
+        isPlatformTargeted(target) &&
+        isPlatformAvailable(target)
+    );
+  }
+
   function isPlatformTargeted(platform) {
     return state.platformTargets[platform] !== false;
   }
@@ -636,6 +778,29 @@
       row.appendChild(buildBenefit("arrows-exchange", copy.sharedProgress));
     }
     return row;
+  }
+
+  function buildPromoBenefits(source, meta, includeProgress) {
+    var contextual = androidPromoCopy(source, meta);
+    if (!contextual || !Array.isArray(contextual.benefits)) {
+      return buildBenefits(includeProgress);
+    }
+    var row = element("div", "pdd-benefits");
+    contextual.benefits.forEach(function (definition) {
+      if (!Array.isArray(definition) || definition.length < 2) return;
+      row.appendChild(buildBenefit(definition[0], definition[1]));
+    });
+    return row;
+  }
+
+  function buildProfileDeviceVisual() {
+    var visual = element("div", "pdd-profile-device-visual");
+    visual.setAttribute("aria-hidden", "true");
+    var image = element("img", "pdd-profile-device-image");
+    image.src = "/assets/hsk-ai-devices.jpg";
+    image.alt = "";
+    visual.appendChild(image);
+    return visual;
   }
 
   function buildProductPreview(mode) {
@@ -799,7 +964,7 @@
     content.appendChild(element("p", "", copy.cardBody));
     head.appendChild(content);
     main.appendChild(head);
-    main.appendChild(buildProductPreview("card"));
+    main.appendChild(buildProfileDeviceVisual());
     main.appendChild(buildBenefits(true));
     var actions = buildActions("profile");
     // The page behind this one reads the device and opens its tab, which is
@@ -1754,6 +1919,7 @@
       !telegramInitData() ||
       !state.availabilityLoaded ||
       !hasAvailablePlatform() ||
+      !automaticTargetMatchesCurrentClient() ||
       !promoPlacementAllowed(source) ||
       !sessionSlotAllows(source) ||
       state.promoOpen
@@ -1769,6 +1935,8 @@
       !telegramInitData() ||
       !state.availabilityLoaded ||
       !hasAvailablePlatform() ||
+      !state.promoEligible ||
+      !automaticTargetMatchesCurrentClient() ||
       state.promoOpen ||
       state.destinationOpen ||
       state.sessionPromoSource ||
@@ -1901,6 +2069,7 @@
       return false;
     }
     var copy = text();
+    var contextualCopy = androidPromoCopy(source, meta);
     if (state.promoTimer) window.clearTimeout(state.promoTimer);
     if (state.queuedPromoTimer) window.clearTimeout(state.queuedPromoTimer);
     state.promoTimer = 0;
@@ -1941,12 +2110,24 @@
     shell.appendChild(buildPromoVisual());
 
     var body = element("div", "pdd-promo-body");
-    body.appendChild(element("span", "pdd-eyebrow", copy.eyebrow));
-    var title = element("h2", "", copy.promoTitle);
+    body.appendChild(
+      element(
+        "span",
+        "pdd-eyebrow",
+        contextualCopy ? contextualCopy.eyebrow : copy.eyebrow
+      )
+    );
+    var title = element(
+      "h2",
+      "",
+      contextualCopy ? contextualCopy.title : copy.promoTitle
+    );
     title.id = "pdd-promo-title";
     body.appendChild(title);
-    body.appendChild(element("p", "", copy.promoBody));
-    body.appendChild(buildBenefits(true));
+    body.appendChild(
+      element("p", "", contextualCopy ? contextualCopy.body : copy.promoBody)
+    );
+    body.appendChild(buildPromoBenefits(source, meta, true));
     body.appendChild(buildActions(source));
     body.appendChild(buildInlineStatus());
     var later = element("button", "pdd-promo-dismiss", copy.dismiss);
@@ -1995,8 +2176,9 @@
     closePromo();
   }
 
-  function buildAdDownloadBlock() {
+  function buildAdDownloadBlock(meta) {
     var copy = text();
+    var contextualCopy = androidPromoCopy("ad_promo", meta);
     var block = element("section", "pdd-ad-download");
     block.dataset.pddAdDownload = "true";
 
@@ -2009,8 +2191,12 @@
     badge.appendChild(avatar);
     heading.appendChild(badge);
     var labels = element("span", "pdd-ad-download-copy");
-    labels.appendChild(element("strong", "", copy.adEntry));
-    labels.appendChild(element("small", "", copy.adEntrySub));
+    labels.appendChild(
+      element("strong", "", contextualCopy ? contextualCopy.title : copy.adEntry)
+    );
+    labels.appendChild(
+      element("small", "", contextualCopy ? contextualCopy.body : copy.adEntrySub)
+    );
     heading.appendChild(labels);
     block.appendChild(heading);
 
@@ -2028,7 +2214,7 @@
     if (!host) return;
     var firstImpression = !state.entrySeen.ad_promo;
     if (!host.querySelector("[data-pdd-ad-download]")) {
-      host.replaceChildren(buildAdDownloadBlock());
+      host.replaceChildren(buildAdDownloadBlock(meta));
     }
     host.classList.add("pdd-ad-actions-host");
     host.hidden = false;
