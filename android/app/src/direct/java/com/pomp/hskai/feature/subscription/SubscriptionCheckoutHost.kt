@@ -542,6 +542,9 @@ private fun PayContent(
 @Composable
 private fun PlanCard(plan: String, price: SubscriptionPriceDto, selected: Boolean,
     copy: Context, onClick: () -> Unit, modifier: Modifier = Modifier, wide: Boolean = false) {
+    val displayAmount = price.displayFinalAmount.ifBlank { price.finalAmount.toString() }
+    val displayBaseAmount = price.displayBaseAmount.ifBlank { price.baseAmount.toString() }
+    val displayCurrency = price.displayCurrency.ifBlank { price.currency }
     Column(modifier.heightIn(min = if (wide) 95.dp else 130.dp)
         .border(1.dp, if (selected) Emerald else Line, RoundedCornerShape(18.dp))
         .background(if (selected) Color(0xFF113D2F) else Raised, RoundedCornerShape(18.dp))
@@ -559,12 +562,12 @@ private fun PlanCard(plan: String, price: SubscriptionPriceDto, selected: Boolea
                     .padding(horizontal = 7.dp, vertical = 4.dp))
         }
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(price.finalAmount.toString(), color = TextMain, fontSize = 30.sp, fontWeight = FontWeight.Black)
+            Text(displayAmount, color = TextMain, fontSize = 30.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.width(3.dp))
-            Text(price.currency, color = Muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text(displayCurrency, color = Muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
         if (price.discountApplied) {
-            Text("${price.baseAmount} ${price.currency}", color = Muted, fontSize = 12.sp,
+            Text("$displayBaseAmount $displayCurrency", color = Muted, fontSize = 12.sp,
                 textDecoration = TextDecoration.LineThrough)
         }
     }
