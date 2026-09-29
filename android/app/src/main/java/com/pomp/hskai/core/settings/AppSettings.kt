@@ -165,6 +165,23 @@ class AppSettings(context: Context) : LessonResumeStore {
         appContext.settingsDataStore.edit { it.remove(ADS_UNLOCKED_AFTER_LIMIT_KEY) }
     }
 
+    /**
+     * The payment region the learner confirmed in checkout, mirroring the Mini
+     * App's `hsk_sub_region_v1:<telegram_id>`: the next checkout opens on the
+     * plans instead of asking again. It belongs to the account, so logout
+     * clears it like the other account-local values.
+     */
+    suspend fun paymentRegion(): String? =
+        appContext.settingsDataStore.data.first()[PAYMENT_REGION_KEY]
+
+    suspend fun setPaymentRegion(value: String) {
+        appContext.settingsDataStore.edit { it[PAYMENT_REGION_KEY] = value }
+    }
+
+    suspend fun clearPaymentRegion() {
+        appContext.settingsDataStore.edit { it.remove(PAYMENT_REGION_KEY) }
+    }
+
     suspend fun setVoiceSubtitles(value: Boolean) {
         appContext.settingsDataStore.edit { it[VOICE_SUBTITLES_KEY] = value }
     }
@@ -284,6 +301,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val VOICE_SLOW_SPEECH_KEY = booleanPreferencesKey("hsk_voice_rate_slow")
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
         val ADS_UNLOCKED_AFTER_LIMIT_KEY = booleanPreferencesKey("ads_unlocked_after_limit:v1")
+        val PAYMENT_REGION_KEY = stringPreferencesKey("payment_region:v1")
         val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")
 
         /** A dictionary entry never contains a line break. */

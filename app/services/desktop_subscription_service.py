@@ -235,10 +235,11 @@ class DesktopSubscriptionService:
         plan_type: str,
         payment_method: str,
         card_country: str | None,
+        card_bank: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         self._ensure_checkout_allowed(context.user)
-        if payment_method != "visa" and card_country is not None:
+        if payment_method != "visa" and (card_country is not None or card_bank is not None):
             raise DesktopSubscriptionError(
                 "desktop_subscription_request_invalid",
                 status_code=422,
@@ -249,6 +250,7 @@ class DesktopSubscriptionService:
                 plan_type=plan_type,
                 payment_method=payment_method,
                 card_country=card_country,
+                card_bank=card_bank,
                 bot=self.bot,
                 mode=DESKTOP_SUBSCRIPTION_MODE,
             )
@@ -336,10 +338,11 @@ class DesktopSubscriptionService:
         card_country: str | None,
         screenshot_data_url: str,
         attempt_id: str | None = None,
+        card_bank: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         self._ensure_checkout_allowed(context.user)
-        if payment_method != "visa" and card_country is not None:
+        if payment_method != "visa" and (card_country is not None or card_bank is not None):
             raise DesktopSubscriptionError(
                 "desktop_subscription_request_invalid",
                 status_code=422,
@@ -350,6 +353,7 @@ class DesktopSubscriptionService:
                 plan_type=plan_type,
                 payment_method=payment_method,
                 card_country=card_country,
+                card_bank=card_bank,
                 screenshot_data_url=screenshot_data_url,
                 bot=self.bot,
                 mode=DESKTOP_SUBSCRIPTION_MODE,

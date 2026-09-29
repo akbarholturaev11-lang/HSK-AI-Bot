@@ -34,6 +34,9 @@ PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 DesktopPlan = Literal["10_days", "1_month", "3_months"]
 DesktopPaymentMethod = Literal["visa", "alipay", "wechat"]
 DesktopCardCountry = Literal["tj", "uz", "ru", "other"]
+# Karta rekviziti qaysi bankniki: Tojikistonda tanlanadi, boshqa davlat
+# kartalari server tomonda doim Alif. Yubormagan klient — eski rekvizit.
+DesktopCardBank = Literal["dc_city", "alif"]
 DesktopAttemptId = Annotated[
     str,
     StringConstraints(
@@ -62,6 +65,7 @@ class DesktopSubscriptionQuoteRequest(BaseModel):
     plan_type: DesktopPlan
     payment_method: DesktopPaymentMethod
     card_country: DesktopCardCountry | None = None
+    card_bank: DesktopCardBank | None = None
 
 
 class DesktopSubscriptionEventRequest(BaseModel):
@@ -313,6 +317,7 @@ def create_desktop_subscription_router(
                     plan_type=payload.plan_type,
                     payment_method=payload.payment_method,
                     card_country=payload.card_country,
+                    card_bank=payload.card_bank,
                 )
             return JSONResponse(
                 content=result,
@@ -379,6 +384,7 @@ def create_desktop_subscription_router(
                     plan_type=payload.plan_type,
                     payment_method=payload.payment_method,
                     card_country=payload.card_country,
+                    card_bank=payload.card_bank,
                     screenshot_data_url=payload.screenshot_data_url,
                     attempt_id=payload.attempt_id,
                 )

@@ -97,6 +97,29 @@ build'da ekanini bilmay chaqiradi.
 - Gap tuzish (`ReviewTokenBuilder`) javobni `selected_tokens` bilan yuboradi;
   tinglash savolida (`autoplay`) ovoz o'zi chalinadi, karnaycha kattaroq.
 
+### 2026-09-29: obuna oynasi Mini App bilan tenglashtirildi (1.7.2 / 33)
+
+- `direct` checkout Mini App'dagi yangi oqimda: region (Tojikiston, O‘zbekiston,
+  Rossiya, Xitoy, boshqa davlat) → tarif/chegirma → to'lov turi (faqat
+  Tojikiston: Dushanbe City/Alif, Xitoy: Alipay/WeChat) → rekvizit va chek.
+  Qoidalar `SubscriptionCheckoutViewModel.kt` tepasidagi funksiyalarda
+  (`availableRegions`, `checkoutFlow`, `cardBankFor`, `methodFor`), testi
+  `testDirect/.../SubscriptionCheckoutFlowTest.kt`.
+- Tasdiqlangan region `AppSettings.paymentRegion` (`payment_region:v1`) da;
+  keyingi safar oyna tarifdan ochiladi, «Orqaga» regionga qaytaradi. Logout'da
+  `clearLocalData` uni tozalaydi.
+- Narx: TJS va ¥ — `prices` dan, UZS/RUB/USD — overview'dagi `card_prices` dan.
+  Serverdagi eski `display_*` maydonlari eski APK'lar uchun qoldirilgan.
+- Karta so'rovlari `card_bank` (`dc_city`/`alif`) yuboradi; server Tojikistondan
+  tashqaridagi kartani doim Alif qiladi. Umumiy so'rov modeli `extra="forbid"`:
+  eski server `card_bank`ni 422 bilan rad etadi — **backend APK'dan oldin deploy
+  bo'lishi shart**.
+- Oddiy rejimda admin chegirmasi qo'llansa `offer.type = "admin_discount"` keladi
+  va referal bloki o'rniga admin chegirmasi ko'rsatiladi.
+- Ranglar ekranning o'zida (`CheckoutColors`): och mavzu — Mini App
+  `subscription.html` (oq), to'q mavzu — ilovaning to'q palitrasi
+  (`PompColors.IsDark`). `check_palette_matches_miniapp.py` ularni tekshirmaydi.
+
 ## 3. HOZIR OCHIQ MUAMMOLAR
 
 ### 3.1 ~~Mashq savollari buzuq~~ — TUZATILDI 2026-09-15

@@ -117,6 +117,8 @@ data class SubscriptionCheckoutOverviewDto(
     @SerialName("prices") val prices: Map<String, Map<String, SubscriptionPriceDto>> = emptyMap(),
     @SerialName("discount") val discount: SubscriptionDiscountDto? = null,
     @SerialName("offer") val offer: SubscriptionOfferDto? = null,
+    /** Card plan prices in UZS, RUB and USD for the region step; TJS is `prices`. */
+    @SerialName("card_prices") val cardPrices: Map<String, Map<String, SubscriptionCardPriceDto>> = emptyMap(),
     @SerialName("support_url") val supportUrl: String = "",
     @SerialName("attempt_id") val attemptId: String? = null,
     @SerialName("access") val access: AndroidSubscriptionAccessDto = AndroidSubscriptionAccessDto(),
@@ -133,7 +135,16 @@ data class SubscriptionDiscountDto(
 )
 
 @Serializable
+data class SubscriptionCardPriceDto(
+    @SerialName("final_amount") val finalAmount: String = "",
+    @SerialName("base_amount") val baseAmount: String = "",
+    @SerialName("currency") val currency: String = "",
+)
+
+@Serializable
 data class SubscriptionOfferDto(
+    /** `admin_discount` also arrives in the regular checkout when a campaign applied. */
+    @SerialName("type") val type: String = "",
     @SerialName("available") val available: Boolean = false,
     @SerialName("percent") val percent: Int = 0,
     @SerialName("title") val title: String = "",
@@ -170,6 +181,8 @@ data class SubscriptionQuoteRequest(
     @SerialName("plan_type") val planType: String,
     @SerialName("payment_method") val paymentMethod: String,
     @SerialName("card_country") val cardCountry: String? = null,
+    /** `dc_city` or `alif`; only for cards. Omitted (null) by older builds. */
+    @SerialName("card_bank") val cardBank: String? = null,
 )
 
 @Serializable
@@ -202,6 +215,7 @@ data class SubscriptionSubmitRequest(
     @SerialName("plan_type") val planType: String,
     @SerialName("payment_method") val paymentMethod: String,
     @SerialName("card_country") val cardCountry: String? = null,
+    @SerialName("card_bank") val cardBank: String? = null,
     @SerialName("screenshot_data_url") val screenshotDataUrl: String,
     @SerialName("attempt_id") val attemptId: String? = null,
 )

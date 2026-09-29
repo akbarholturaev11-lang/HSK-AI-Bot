@@ -1040,6 +1040,7 @@ def create_android_features_router(
                     plan_type=payload.plan_type,
                     payment_method=payload.payment_method,
                     card_country=payload.card_country,
+                    card_bank=payload.card_bank,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
@@ -1065,6 +1066,7 @@ def create_android_features_router(
                     plan_type=payload.plan_type,
                     payment_method=payload.payment_method,
                     card_country=payload.card_country,
+                    card_bank=payload.card_bank,
                     screenshot_data_url=payload.screenshot_data_url,
                     attempt_id=payload.attempt_id,
                 )

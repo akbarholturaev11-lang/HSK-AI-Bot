@@ -20,8 +20,13 @@ from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.payment import Payment
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.admin_notify_service import AdminNotifyService
+from app.services.subscription_miniapp_service import (
+    PAYMENT_DETAILS_ALIF_KEY,
+    PAYMENT_DETAILS_KEY,
+)
 
 
 PNG_1X1_DATA_URL = (
@@ -540,6 +545,36 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             amount=payment.amount, currency=payment.currency, payment_id=payment.id,
             source=payment.source,
         ))
+
+    async def test_android_card_quote_uses_the_chosen_bank_requisites(self):
+        async with self.sessions() as session:
+            await BotSettingRepository(session).set(PAYMENT_DETAILS_KEY, "DC 4713380023849546")
+            await BotSettingRepository(session).set(PAYMENT_DETAILS_ALIF_KEY, "ALIF 4444555566667777")
+            await session.commit()
+        base = "/api/v3/android/subscription/checkout"
+
+        async def quote(**body):
+            return await self.client.post(
+                base + "/quote", headers=self._headers(self.token_a),
+                json={"plan_type": "1_month", **body},
+            )
+
+        dc_city = await quote(payment_method="visa", card_country="tj", card_bank="dc_city")
+        alif = await quote(payment_method="visa", card_country="tj", card_bank="alif")
+        russia = await quote(payment_method="visa", card_country="ru", card_bank="dc_city")
+        # Bank yubormaydigan eski APK — eski yagona rekvizit.
+        old_apk = await quote(payment_method="visa", card_country="ru")
+        unknown_bank = await quote(payment_method="visa", card_country="tj", card_bank="eskhata")
+        qr_with_bank = await quote(payment_method="alipay", card_bank="alif")
+
+        self.assertEqual(dc_city.json()["quote"]["payment_details"], "DC 4713380023849546")
+        self.assertEqual(alif.json()["quote"]["payment_details"], "ALIF 4444555566667777")
+        # Tojikistondan tashqaridagi karta doim Alif (Visa) ga to'laydi.
+        self.assertEqual(russia.json()["quote"]["payment_details"], "ALIF 4444555566667777")
+        self.assertEqual(russia.json()["quote"]["card_bank"], "alif")
+        self.assertEqual(old_apk.json()["quote"]["payment_details"], "DC 4713380023849546")
+        self.assertEqual(unknown_bank.status_code, 422)
+        self.assertEqual(qr_with_bank.status_code, 422)
 
     async def test_android_failed_admin_delivery_does_not_leave_pending_payment(self):
         with patch(

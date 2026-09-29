@@ -234,6 +234,21 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-29 — Android obuna oynasi Mini App bilan tenglashtirildi (1.7.2 / 33)
+
+Changed:
+- `direct` APK checkout: region → tarif → to'lov turi (TJ/CN) → rekvizit; oq
+  (to'q mavzuda ilova ranglari); «HSK AI Pro»; ortiqcha matnlar olib tashlandi;
+  DC/Alif yo'riqnomalari; region akkaunt bo'yicha eslab qolinadi; admin
+  chegirmasi bloki oddiy rejimda ham. Tafsilot: `ANDROID_CONTEXT.md` (2026-09-29).
+- Server: desktop/Android umumiy so'rov modeliga ixtiyoriy `card_bank`
+  (`DesktopSubscriptionQuoteRequest`), `DesktopSubscriptionService.quote/submit`
+  uni `SubscriptionMiniAppService` ga uzatadi. Desktop yubormaydi — o'zgarmaydi.
+
+Risk:
+- Kotlin kodi bu muhitda kompilyatsiya qilinmadi (Gradle yo'q) — PR'dagi Android
+  CI tekshiradi. Backend APK release'dan oldin deploy bo'lishi shart.
+
 ### 2026-09-29 — Admin chegirmasi oddiy obunada ham o'zi qo'llanadi
 
 Changed:
