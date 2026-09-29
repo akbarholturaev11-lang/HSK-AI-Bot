@@ -1,8 +1,8 @@
 # HSK 3.0 versiyasi — alohida kurs qo'shish rejasi
 
-Holat: 2026-09-29 — **reja aniqlashtirildi va tasdiqlandi. Ish hali
-boshlanmagan, kod o'zgartirilmagan.** Ish egasi "boshla" deganda va rasmiy
-so'zlar ro'yxati kelgach 0-bosqichdan boshlanadi.
+Holat: 2026-09-29 — **reja to'liq tasdiqlandi, ochiq savol yo'q. Ish hali
+boshlanmagan, kod o'zgartirilmagan.** Ish egasi "boshla" deganda va rasmiy so'zlar ro'yxati
+kelgach 0-bosqichdan boshlanadi.
 
 Research: `research/hsk-3.0/`.
 
@@ -14,14 +14,21 @@ Research: `research/hsk-3.0/`.
 | 2 | Eski kurs | Qoladi, yangisi qo'shiladi. Onboardingda va sozlamalarda almashtirgich |
 | 3 | Darajalar | **HSK 3.0 · 1–4** |
 | 4 | Rasmiy so'zlar ro'yxati | Egasi o'zi beradi |
-| 5 | Onboarding | User o'zi tanlaydi, **default — HSK 3.0** |
-| 6 | Obuna | **Bitta obuna ikkala kursni ochadi.** To'lov logikasi o'zgarmaydi |
+| 5 | Onboarding | User o'zi tanlaydi. **Default — HSK 2.0**, HSK 3.0 yonida narx yoziladi (13-qaror sababli o'zgardi; avval default HSK 3.0 edi) |
+| 6 | Obuna | Faol obuna HSK 3.0 ni ham ochadi. Obuna va to'lov logikasi o'zgarmaydi |
 | 7 | XP, streak, reyting | **Ikkala kurs uchun umumiy** |
 | 8 | Promo ekran | Eski userlarga ilova ichida **jami 2 marta**, orasi **kamida 3 kun** |
 | 9 | Bot xabari | **Kerak** (tafsiloti pastda) |
 | 10 | Test markazi (HSK 3.0 userlar) | Yangi format tayyor bo'lguncha **"Tez orada"** turadi |
 | 11 | Tarjimalar (uz/ru/tj) | **Claude** tayyorlaydi va tekshiradi |
 | 12 | Lug'at bo'limi | **Bitta umumiy lug'at**, faqat filtr qo'shiladi (versiya va daraja) |
+| 13 | HSK 3.0 ni ochish | **Bir martalik 10 somoni.** Obunasi yo'q har bir user to'laydi — yangi ham, eski ham |
+| 14 | Obunachilar | **10 somoni to'lamaydi** |
+| 15 | Boshqa valyutalar | 10 somoni joriy kurs bo'yicha kerakli valyutaga o'giriladi |
+| 16 | Chegirmalar | Referal 20%, admin chegirmalari va partnyor komissiyasi **qo'llanmaydi** |
+| 17 | Obuna tugasa | 10 somoni to'lamagan obunachining obunasi tugasa, HSK 3.0 **yopiladi** (10 somoni yoki obunani yangilash taklif qilinadi). Progress saqlanadi, HSK 2.0 ga bepul qaytadi |
+| 18 | Trial | 7 kunlik Pro trial, referal trial va vaqtinchalik bonus (`TRIAL`, `TEMPORARY_TRIAL`) **obuna hisoblanmaydi** — HSK 3.0 uchun 10 somoni kerak |
+| 19 | Alipay/WeChat | Shu summa uchun admin QR kod yuklamaguncha 10 somonilik ekranda **ko'rinmaydi** |
 
 ## Hozirgi holat (kodda tekshirilgan)
 
@@ -44,6 +51,16 @@ Research: `research/hsk-3.0/`.
 - Test markazi: `course_v3_data/exams/hsk1..4.json` — eski format.
 - Mini App'dagi `App.levelPicker` hech qayerdan chaqirilmaydi. Daraja botdagi
   `/level` va onboarding orqali o'zgaradi.
+- **To'lov:** `payments.plan_type` bor, lekin admin tasdig'i
+  (`app/bot/handlers/admin_payments.py`, `admin_payment_approve_handler`)
+  **har qanday** to'lovda `SubscriptionService.activate_plan` ni chaqiradi —
+  `status="active"`, `payment_status="approved"`, `end_date` qo'yadi, partnyor
+  komissiyasini yozadi. Tariflar: `PLAN_DURATIONS` (`10_days`, `1_month`,
+  `3_months`).
+- Valyuta: `SubscriptionCurrencyService.quote_card_amount(tjs_amount, country)`
+  somonini joriy kurs bo'yicha UZS/RUB/USD ga o'giradi.
+- "Obunachi" holati: `user_access_state_service.py` — `PAID`, `TRIAL`,
+  `TEMPORARY_TRIAL` holatlari bor.
 
 ## Asosiy arxitektura qarorlari
 
@@ -78,8 +95,8 @@ bo'ladi.
 ### 3. Trek almashganda progress saqlanadi
 
 Yangi jadval `course_track_states`:
-`user_id`, `track`, `level`, `completed_lessons_count`, `updated_at`;
-`unique(user_id, track)`.
+`user_id`, `track`, `level`, `completed_lessons_count`, `unlocked_at`,
+`unlock_payment_id`, `updated_at`; `unique(user_id, track)`.
 
 Almashtirishda joriy trek holati saqlanadi, boshqa trekning saqlangan holati
 qaytariladi (yo'q bo'lsa tanlangan darajadan noldan). `users.level` va
@@ -87,25 +104,73 @@ qaytariladi (yo'q bo'lsa tanlangan darajadan noldan). `users.level` va
 mavjud kod o'zgarmaydi. Trek ichidagi band almashish xulqi (nolga tushish)
 o'zgartirilmaydi.
 
-### 4. Nima alohida, nima umumiy
+### 4. HSK 3.0 ni ochish to'lovi (10 somoni)
+
+**Qoida:** HSK 3.0 ga kirish = bir martalik to'lov qilingan
+(`course_track_states.unlocked_at`) **yoki** faol obuna bor.
+
+- **Kim to'laydi:** faol obunasi yo'q har bir user — yangi (onboardingda
+  HSK 3.0 ni tanlasa) ham, eski (promo, sozlamalar yoki bot xabaridan) ham.
+- **Obunachi to'lamaydi.** Obunachi — `UserAccessState.PAID` (pullik obuna
+  va admin bergan cheksiz ruxsat). Trial va vaqtinchalik bonuslar obuna
+  hisoblanmaydi (18-qaror).
+- **Obuna tugasa** va 10 somoni to'lanmagan bo'lsa, HSK 3.0 yopiladi: 10
+  somoni yoki obunani yangilash taklif qilinadi, progress
+  `course_track_states` da saqlanadi, HSK 2.0 ga bepul qaytadi (17-qaror).
+- **Bir marta, umrbod.** 2.0 ga qaytib, yana 3.0 ga o'tganda qayta
+  to'lanmaydi.
+- **To'lovdan keyin hammasi odatdagidek:** bepul rejim cheklovlari, bepul
+  qismlar va obuna qoidalari o'zgarmaydi.
+- **Narx:** `bot_settings` da `hsk30_unlock_price_tjs`, default 10, admin
+  o'zgartira oladi. Boshqa davlatlar uchun
+  `SubscriptionCurrencyService.quote_card_amount` joriy kurs bo'yicha
+  UZS/RUB/USD ga o'giradi.
+- **Chegirma yo'q:** referal 20%, admin kampaniyalari va partnyor komissiyasi
+  bu to'lovga qo'llanmaydi.
+- **To'lov yo'li — mavjud:** region → to'lov turi → rekvizit → chek rasmi →
+  (mavjud AI chek tekshiruvi) → admin tasdig'i. `subscription.html` qayta
+  ishlatiladi, `product=hsk30_unlock` bilan tarif qadami o'tkazib
+  yuboriladi. Alipay/WeChat faqat shu summa uchun admin QR kod yuklagan
+  bo'lsa ko'rinadi.
+- **Alohida mahsulot turi:** `payments.plan_type = "hsk30_unlock"`.
+  - Admin tasdig'ida bu tur uchun **`activate_plan` chaqirilmaydi**. Faqat
+    `Hsk30UnlockService.grant` HSK 3.0 ni ochadi. `status`, `payment_status`,
+    `end_date`, `selected_plan_type`, partnyor komissiyasi va
+    `subscription_approved` eventiga tegilmaydi.
+  - Rad etishda ham obuna maydonlariga tegilmaydi.
+  - User xabari (bot va Android push) alohida, 3 tilda: "HSK 3.0 ochildi" +
+    "Boshlash" tugmasi.
+- **Statistika:** tasdiqlangan to'lovni obuna deb hisoblaydigan joylar
+  (`admin_finance_stats_service.py`, `admin_stats_service.py`,
+  `partner_service.py`, `app/main.py` dagi oxirgi tasdiqlangan to'lov
+  qidiruvi) `plan_type` bo'yicha filtrlanadi. Admin panelda alohida qator:
+  "HSK 3.0 ochish" — soni va summasi.
+- **Kutish holati:** chek yuborilgach "To'lov tekshirilmoqda". Shu vaqtda
+  user HSK 2.0 da o'qiy oladi ("Keyinroq"). Tasdiqlangach xabar keladi va
+  3.0 ochiladi.
+- **Android:** Google Play build'da to'lov olinmaydi (Google qoidasi) —
+  Telegram'ga yuboriladi, obuna bilan bir xil. Direct build mavjud direct
+  checkout orqali to'laydi. Desktop ham mavjud obuna oqimi orqali.
+
+### 5. Nima alohida, nima umumiy
 
 | Alohida (aralashmaydi) | Umumiy (bitta profil) |
 |---|---|
-| Darslar, xarita, progress | Obuna va to'lov (logika o'zgarmaydi) |
+| Darslar, xarita, progress | Obuna (HSK 3.0 ni ham ochadi) |
 | Mashq bo'limlari so'z puli (faol kurs darajasidan) | Lug'at (bitta ro'yxat + versiya/daraja filtri) |
 | Xatolarim va takror (faol trek bo'yicha filtr) | XP, streak, reyting, liga |
 | Test markazi imtihonlari | Til, bildirishnoma, kunlik maqsad |
 | QA AI daraja chegarasi | AI Voice (daraja faol trekdan olinadi) |
 | | Akkaunt va qurilmalar |
 
-### 5. Bepul qismlar
+### 6. Bepul qismlar
 
-Obuna ikkala kursni ochadi. HSK 3.0 da bepul qismlar eski qoida bo'yicha:
-1-daraja — birinchi to'liq dars (hozirgi `hsk1` kabi), 2–4-darajalar —
-2 qism (`free_course_parts_for_level`). To'lov, narx, referal va chegirma
-logikasi o'zgarmaydi.
+HSK 3.0 ochilgandan keyin bepul qismlar eski qoida bo'yicha: 1-daraja —
+birinchi to'liq dars (hozirgi `hsk1` kabi), 2–4-darajalar — 2 qism
+(`free_course_parts_for_level`). To'lov, narx, referal va chegirma logikasi
+o'zgarmaydi.
 
-### 6. Umumiy lug'at
+### 7. Umumiy lug'at
 
 - Bitta fayl qoladi: `app/static/hsk-words.js` (Android asseti ham shu).
 - Har so'zga ikkinchi daraja maydoni qo'shiladi: `lv3` (`"N1"`…`"N4"`).
@@ -113,14 +178,14 @@ logikasi o'zgarmaydi.
 - HSK 3.0 da bor, eski ro'yxatda yo'q so'zlar ham shu faylga qo'shiladi:
   `lv` bo'sh, `lv3` to'ldirilgan.
 - `hsk-lugat.html` filtri: versiya (HSK 3.0 / HSK 2.0) va daraja. Default —
-  userning faol kursi.
+  userning faol kursi. Lug'at to'lovsiz hammaga ochiq (hozirgidek).
 - Mashq sahifalari (`course_v3_recognition/pronunciation/memorize.html`) so'z
   pulini faol kurs darajasi bo'yicha tanlaydi: HSK 2.0 da `lv`, HSK 3.0 da
   `lv3`. `lv` bo'sh so'z eski kurs pulida chiqmaydi.
 - `scripts/split_hsk_data.py`, `memo_lv.js` va Android lug'at generatorlari
   yangi maydonni tanishi kerak.
 
-### 7. Kontent joylashuvi
+### 8. Kontent joylashuvi
 
 ```
 app/static/course_v3_data/
@@ -140,7 +205,7 @@ scripts/hsk30/
 `gen_course_v3_from_seed.py` `--track hsk30` bilan kengaytiriladi. Qismlarga
 bo'lish va checkpoint mantiqi qayta ishlatiladi.
 
-### 8. Tarjimalar (Claude tayyorlaydi va tekshiradi)
+### 9. Tarjimalar (Claude tayyorlaydi va tekshiradi)
 
 - Eski lug'at va darslardagi tekshirilgan uz/ru/tj tarjimalar HSK 3.0 dagi
   bir xil so'zlar uchun qayta ishlatiladi.
@@ -161,7 +226,12 @@ flowchart TD
   T2 --> D2[course_v3_data/hsk*]
   T3 --> D3[course_v3_data/nhsk*]
   W[hsk-words.js: lv + lv3] --> DICT[Umumiy lug'at + filtr]
-  S[Onboarding / Sozlamalar / Promo ekran / Bot xabari] -->|POST /api/v3/course/track| SW[CourseTrackService.switch]
+  S[Onboarding / Sozlamalar / Promo ekran / Bot xabari] -->|HSK 3.0 tanlandi| G{Ochilganmi yoki obuna bormi?}
+  G -->|ha| SW[CourseTrackService.switch]
+  G -->|yo'q| PAY[10 somoni: subscription.html, plan_type=hsk30_unlock]
+  PAY -->|admin tasdig'i| UNL[Hsk30UnlockService.grant]
+  UNL --> CTS
+  UNL --> SW
   SW -->|joriy trekni saqlaydi| CTS[(course_track_states)]
   SW -->|boshqa trekni tiklaydi| U
   R[course_levels.py reestri] --> API[/api/v3/map: track, levels/]
@@ -174,29 +244,41 @@ flowchart TD
 
 ```
 Yangi user:
-  Onboarding → [HSK 3.0 | HSK 2.0] almashtirgich (default HSK 3.0) → daraja → maqsad → 1-dars
+  Onboarding → [HSK 2.0 | HSK 3.0 · 10 somoni] (default HSK 2.0)
+      ├─ HSK 2.0 → daraja → maqsad → 1-dars (hozirgidek)
+      └─ HSK 3.0 → daraja → maqsad → to'lov ekrani
+                      ├─ to'ladi → "tekshirilmoqda" → tasdiq → HSK 3.0 · 1-dars
+                      └─ Keyinroq → HSK 2.0 da boshlaydi
 
 Eski user (HSK 2.0 da):
   Reliz kuni bot xabari (1 marta) ──┐
   Ilova ochiladi → "Yangi HSK 3.0" ekrani (jami 2 marta, orasi ≥ 3 kun)
-      ├─ [HSK 3.0 ga o'tish] → daraja tanlash (tavsiya belgilangan) → tasdiq → yangi xarita
+      ├─ [HSK 3.0 ga o'tish] → obuna bor / ochilgan? → daraja tanlash → tasdiq → yangi xarita
+      │                        yo'q → to'lov ekrani (10 somoni)
       └─ [Keyinroq]          → eski kurs davom etadi
 
 Istalgan user:
-  Sozlamalar → "Kurs versiyasi" → HSK 2.0 / HSK 3.0 → tasdiq (progress saqlanadi) → xarita
+  Sozlamalar → "Kurs versiyasi" → HSK 2.0 / HSK 3.0
+      → HSK 3.0 yopiq bo'lsa to'lov ekrani, aks holda tasdiq (progress saqlanadi) → xarita
 ```
 
 ## UI (koddan oldin maket egasiga ko'rsatiladi)
 
 1. **Onboarding:** daraja qadamining tepasida ikki segmentli almashtirgich
-   `HSK 3.0 | HSK 2.0`, **default HSK 3.0**. Savollar soni 2 ligicha qoladi,
-   faqat daraja ro'yxati trekka qarab o'zgaradi.
-2. **Sozlamalar:** bitta qator "Kurs versiyasi · HSK 3.0" (til qatori
-   uslubida) → ikki variantli varaq → tasdiqlash oynasi: "Eski progress
-   saqlanadi, istalgan payt qaytasiz".
-3. **Promo ekran (eski userlar):** sarlavha, nima o'zgargani haqida 2–3
-   qator, ikkita tugma: "HSK 3.0 ga o'tish" va "Keyinroq". Qo'shimcha bezak,
-   badge yoki animatsiya yo'q.
+   `HSK 2.0 | HSK 3.0`, **default HSK 2.0**. HSK 3.0 segmentida narx
+   ko'rsatiladi (obunachida ko'rsatilmaydi). Savollar soni 2 ligicha
+   qoladi, faqat daraja ro'yxati trekka qarab o'zgaradi.
+2. **Sozlamalar:** bitta qator "Kurs versiyasi · HSK 2.0" (til qatori
+   uslubida) → ikki variantli varaq → HSK 3.0 yopiq bo'lsa to'lov ekrani,
+   ochiq bo'lsa tasdiqlash oynasi: "Eski progress saqlanadi, istalgan payt
+   qaytasiz".
+3. **To'lov ekrani (HSK 3.0 ni ochish):** HSK 3.0 nima ekanini tushuntiruvchi
+   2–3 qator, narx (userning valyutasida), "bir marta to'lanadi" izohi,
+   "To'lash" va "Keyinroq" tugmalari. To'lash mavjud `subscription.html`
+   to'lov qadamlariga olib boradi.
+4. **Promo ekran (eski userlar):** sarlavha, nima o'zgargani haqida 2–3
+   qator, ikkita tugma: "HSK 3.0 ga o'tish" va "Keyinroq". Obunasizlarga
+   narx ko'rsatiladi. Qo'shimcha bezak, badge yoki animatsiya yo'q.
    - Kimga: HSK 2.0 trekidagi va reliz sanasigacha onboardingdan o'tgan
      userlar.
    - Hisobni server yuritadi (`course_miniapp_profiles.hsk30_promo_shown_count`,
@@ -207,20 +289,21 @@ Istalgan user:
    - "O'tish" bosilganda tavsiya etilgan daraja: hsk1 → N1, hsk2 → N1,
      hsk3 → N2, hsk4 → N3. User o'zgartira oladi. (Eski HSK2 jami 300 so'z
      = yangi 1-daraja 300 so'z.)
-4. **Bot xabari:**
+5. **Bot xabari:**
    - Reliz kuni **1 marta**, faqat HSK 2.0 trekidagi userlarga (bloklangan
      va botni bloklagan userlar chiqariladi).
    - Mavjud admin broadcast moduli orqali yuboriladi. Segment filtriga trek
      qo'shiladi. **Admin tasdig'isiz yuborilmaydi** (AGENTS.md qoidasi).
+   - Matnda narx va "obunachilar uchun bepul" yoziladi.
    - Tugma Mini App'ni to'g'ridan-to'g'ri promo/almashtirish varag'ida ochadi.
    - Bot xabari ilova ichidagi 2 marta hisobiga kirmaydi.
    - Matn uz/ru/tj.
-5. **Test markazi (HSK 3.0 userlar):** bo'lim joyida qoladi, yangi format
+6. **Test markazi (HSK 3.0 userlar):** bo'lim joyida qoladi, yangi format
    tayyor bo'lguncha "Tez orada" holatida. Eski imtihonlar HSK 3.0 userlarga
    ko'rsatilmaydi. Joy va tartib o'zgarmaydi, alohida karta qo'shilmaydi.
-6. **Lug'at:** mavjud ro'yxat ustida filtr — versiya (HSK 3.0 / HSK 2.0) va
+7. **Lug'at:** mavjud ro'yxat ustida filtr — versiya (HSK 3.0 / HSK 2.0) va
    daraja. Default — userning faol kursi.
-7. **Tillar:** hamma matn uz/ru/tj. Android'da `values`, `values-ru`,
+8. **Tillar:** hamma matn uz/ru/tj. Android'da `values`, `values-ru`,
    `values-tg`; Desktop'da ham xuddi shu.
 
 ## Bosqichlar
@@ -243,15 +326,26 @@ Istalgan user:
 - `nhsk*` kalitlari reestrga qo'shiladi, `bot_settings` da
   `hsk30_enabled` flag o'chiq turadi.
 - Migratsiya `0094_course_track_states` (+ profilga promo uchun 2 ustun).
-- `CourseTrackService` (saqlash/tiklash) va endpointlar. Mini App, Android
-  va Desktop bitta servisdan foydalanadi.
+- `CourseTrackService` (saqlash/tiklash, ochiqlik tekshiruvi) va
+  endpointlar. Mini App, Android va Desktop bitta servisdan foydalanadi.
+- **To'lov qismi** (4-qaror bo'yicha):
+  - `plan_type = "hsk30_unlock"`, `Hsk30UnlockService.grant`;
+  - admin tasdig'i va rad etishda alohida tarmoq (`activate_plan` chaqirilmaydi);
+  - `hsk30_unlock_price_tjs` sozlamasi va valyuta o'girish;
+  - statistika va partnyor hisobida `plan_type` filtri;
+  - 3 tilda tasdiq/rad xabarlari.
 - Onboarding: `nhsk*` uchun legacy `course_lessons` ga bog'liqlik olib
   tashlanadi (manifestdan olinadi). Eski darajalar xulqi o'zgarmaydi.
 - AI: `app/prompts/qa_system.txt` va `course_tutor_service.py` ga
   reestrdan daraja tavsifi beriladi ("HSK 3.0, 2-daraja, jami ~500 so'z").
 - Xatolarim, takror va mashq so'z puli faol trek bo'yicha filtrlanadi.
-- Testlar: reestr, trek almashish (saqlash, tiklash, ikki marta almashish),
-  izolyatsiya (nhsk XP ref, xatolar filtri), eski xulq regressiyasi.
+- Testlar:
+  - reestr va trek almashish (saqlash, tiklash, ikki marta almashish);
+  - izolyatsiya (nhsk XP ref, xatolar filtri);
+  - **10 somoni tasdig'i obuna maydonlarini o'zgartirmaydi**; obuna
+    tasdig'i avvalgidek ishlaydi; obunachi to'lovsiz o'tadi; to'lamagan
+    obunasiz user o'ta olmaydi; chegirma va komissiya qo'llanmaydi;
+  - eski xulq regressiyasi.
 - Mezon: flag o'chiq holatda eski userlar uchun hech narsa o'zgarmaydi.
   `pytest` o'tadi (PROJECT_MEMORY 11-bo'limdagi 3 ta avvaldan yiqiladigan
   testdan tashqari).
@@ -262,7 +356,7 @@ Istalgan user:
   tartibi bilan.
 - Har dars: yangi so'zlar, grammatika, original dialog (kitobdan
   ko'chirilmaydi — `research/hsk-3.0/USAGE_NOTES.md`), uz/ru/tj.
-- Tarjima: 8-qarordagi tartibda (Claude).
+- Tarjima: 9-qarordagi tartibda (Claude).
 - Generator orqali `nhsk1/lesson_NN.json` (~100 mini-dars), xarita,
   manifest va gate yasaladi.
 - Lug'at: `hsk-words.js` ga `lv3:"N1"` va yangi so'zlar; memo/strokes
@@ -270,29 +364,31 @@ Istalgan user:
 - Tekshiruvlar:
   - har syllabus so'zi kamida bir marta o'rgatiladi;
   - misollarda shu darsgacha o'rgatilmagan so'z yo'q;
-  - 3 til to'liq va 8-qarordagi tarjima tekshiruvlari o'tadi.
+  - 3 til to'liq va 9-qarordagi tarjima tekshiruvlari o'tadi.
 - Mezon: `verify_hsk30_level.py nhsk1` toza. Lokal preview'da 1-dars,
   checkpoint va paywall ishlaydi.
 
 ### 3-bosqich — Mini App UI (maket tasdiqlangach)
 
-- Onboarding almashtirgichi, sozlamalar qatori, promo ekran, xarita
-  sarlavhasida "HSK 3.0 · 1".
+- Onboarding almashtirgichi (default HSK 2.0, narx), sozlamalar qatori,
+  to'lov ekrani, promo ekran, xarita sarlavhasida "HSK 3.0 · 1".
+- `subscription.html` da `product=hsk30_unlock` rejimi (tarif qadamisiz).
 - Lug'at filtri (versiya va daraja).
 - Test markazi HSK 3.0 userlarga "Tez orada".
 - Mashq sahifalari (`course_v3_recognition/pronunciation/memorize/test.html`):
   `normLv` va so'z puli yangi kalitlarni taniydi.
-- Mezon: flag yoqilgan test akkauntda oqim to'liq ishlaydi. Flag o'chiq
-  bo'lsa hech narsa o'zgarmaydi.
+- Mezon: flag yoqilgan test akkauntda oqim to'liq ishlaydi (to'lov → admin
+  tasdig'i → 3.0 ochiladi). Flag o'chiq bo'lsa hech narsa o'zgarmaydi.
 
 ### 4-bosqich — Android va Desktop paritet
 
-- Android: onboarding, sozlamalar, promo, xarita, lug'at filtri, Test
-  markazi "Tez orada", offline lug'at asseti. `android/tools/check_*.py`
-  tekshiruvlari, 3 til, `appVersionCode` +1.
+- Android: onboarding, sozlamalar, to'lov ekrani (direct — checkout, play —
+  Telegram'ga), promo, xarita, lug'at filtri, Test markazi "Tez orada",
+  offline lug'at asseti, to'lov push xabari. `android/tools/check_*.py`
+  tekshiruvlari (`check_flavor_parity.py` ham), 3 til, `appVersionCode` +1.
 - Desktop: macOS va Windows bir vaqtda (DMG/EXE parity qoidasi).
-- Mezon: bitta akkaunt uchta klientda bir xil trek va daraja ko'rsatadi.
-  Promo jami 2 marta chiqadi.
+- Mezon: bitta akkaunt uchta klientda bir xil trek, daraja va ochiqlik
+  holatini ko'rsatadi. Promo jami 2 marta chiqadi.
 
 ### 5-bosqich — Bot va admin
 
@@ -300,9 +396,11 @@ Istalgan user:
   `_course_level_label` yorliqlari reestrdan olinadi.
 - Legacy bot kursi (`app/bot/handlers/course.py`) nhsk userlarni Mini App'ga
   yo'naltiradi, ularni legacy oqimga kiritmaydi.
+- Admin: to'lov kartasida mahsulot nomi ("HSK 3.0 ochish · 10 TJS"),
+  narx sozlamasi, statistikada alohida qator.
 - Admin broadcast: segment filtriga trek va HSK 3.0 darajalari; bot xabari
   shabloni (uz/ru/tj) va Mini App'ga olib boradigan tugma.
-- Admin statistika trek bo'yicha; reklama darajalariga HSK 3.0 qo'shiladi.
+- Reklama darajalariga HSK 3.0 qo'shiladi.
 
 ### 6-bosqich — Ishga tushirish (HSK 3.0 · 1)
 
@@ -313,12 +411,14 @@ Istalgan user:
 - Bot xabari admin tasdig'idan keyin yuboriladi.
 - `PROJECT_MEMORY.md` yozuvi. Release feedback qoralamasi (AGENTS.md
   qoidasi) — admin tasdig'isiz yuborilmaydi.
-- Kuzatiladi: onboardingda trek tanlovi ulushi, promo va bot xabari →
-  o'tish konversiyasi, eski kursga qaytishlar soni, 1-dars yakuni.
+- Kuzatiladi: onboardingda trek tanlovi ulushi, to'lov ekrani → to'lov →
+  tasdiq konversiyasi, promo va bot xabari → o'tish konversiyasi, eski
+  kursga qaytishlar soni, 1-dars yakuni.
 
 ### 7-bosqich — 2, 3, 4-darajalar
 
 Har daraja 2-bosqich tartibida, alohida reliz sifatida, flag orqali ochiladi.
+10 somoni butun HSK 3.0 ni ochadi — keyingi darajalar uchun qayta to'lov yo'q.
 
 | Daraja | Yangi so'z | Taxminiy mini-dars |
 |---|---:|---:|
@@ -347,6 +447,9 @@ Rasmiy namuna tuzilishi:
 
 | Xavf | Himoya |
 |---|---|
+| 10 somonilik to'lov tasdiqlanganda obuna yoqilib ketadi | `plan_type` bo'yicha alohida tarmoq, `activate_plan` chaqirilmaydi, test bilan mixlanadi |
+| Obuna daromadi va konversiya statistikasi buziladi | Tasdiqlangan to'lovni o'qiydigan joylar `plan_type` bo'yicha filtrlanadi, alohida qator |
+| Yangi user admin tasdig'ini kutib qoladi | Kutish paytida HSK 2.0 da o'qiy oladi; tasdiqda xabar keladi |
 | Qo'lda yozilgan daraja to'plami qolib ketadi va nhsk user `hsk1` ga tushadi | Reestr + test: `app/` da yangi `{"hsk1","hsk2",…}` literali taqiqlanadi |
 | Trek almashganda progress yo'qoladi | `course_track_states` + testlar, almashtirishdan oldin tasdiq oynasi |
 | Kontent hajmi katta (2000 so'z, 3 til) | Darajama-daraja reliz, eski tarjimalarni qayta ishlatish |

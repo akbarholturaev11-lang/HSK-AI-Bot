@@ -8326,9 +8326,11 @@ Priority 3:
 
 - To'liq reja va egasining 2026-09-29 qarorlari: `docs/HSK_3.0_VERSIYASI.md`.
 - Qisqasi: HSK 3.0 · 1–4 eski kursdan alohida trek (`nhsk1`–`nhsk4`
-  kalitlari), eski kurs qoladi, bitta obuna ikkalasini ochadi, XP/reyting va
-  lug'at umumiy (lug'atda filtr). Ish egasi "boshla" deganda va rasmiy
-  syllabus fayli kelgach boshlanadi.
+  kalitlari), eski kurs qoladi, XP/reyting va lug'at umumiy (lug'atda filtr).
+  HSK 3.0 ni ochish — obunasizlar uchun bir martalik 10 somoni
+  (`plan_type="hsk30_unlock"`, admin tasdig'ida `activate_plan` CHAQIRILMAYDI);
+  obunachilar to'lamaydi. Ish egasi "boshla" deganda va rasmiy syllabus fayli
+  kelgach boshlanadi.
 
 ### Android klientini Mini App bilan tenglashtirish
 
