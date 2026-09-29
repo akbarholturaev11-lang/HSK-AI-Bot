@@ -58,6 +58,7 @@ class SubscriptionCheckoutViewModel(
     val state = _state.asStateFlow()
     private var receiptDataUrl: String? = null
     private var quoteGeneration = 0
+    private var countrySelectedByUser = false
 
     fun load() {
         quoteGeneration++
@@ -74,10 +75,17 @@ class SubscriptionCheckoutViewModel(
                             ?: METHODS.firstOrNull { data.prices[it]?.isNotEmpty() == true } ?: current.method
                         val plan = current.plan.takeIf { data.prices[method]?.containsKey(it) == true }
                             ?: PLANS.firstOrNull { data.prices[method]?.containsKey(it) == true } ?: current.plan
-                        current.copy(loading = false, overview = data, discount = data.discount,
-                            method = method, plan = plan,
-                            language = normalizeLanguage(data.language),
-                            errorRes = if (data.ok) null else R.string.sub_unavailable)
+                        val language = normalizeLanguage(data.language)
+                        current.copy(
+                            loading = false,
+                            overview = data,
+                            discount = data.discount,
+                            method = method,
+                            plan = plan,
+                            country = if (countrySelectedByUser) current.country else defaultCountry(language),
+                            language = language,
+                            errorRes = if (data.ok) null else R.string.sub_unavailable,
+                        )
                     }
                     data.pendingPayment?.id?.takeIf { it > 0 }?.let(onPendingPayment)
                 }
@@ -100,6 +108,7 @@ class SubscriptionCheckoutViewModel(
         val current = _state.value
         val overview = current.overview ?: return
         if (overview.prices[method].isNullOrEmpty()) return
+        countrySelectedByUser = true
         val plan = current.plan.takeIf { overview.prices[method]?.containsKey(it) == true }
             ?: PLANS.firstOrNull { overview.prices[method]?.containsKey(it) == true } ?: current.plan
         quoteGeneration++
@@ -110,6 +119,7 @@ class SubscriptionCheckoutViewModel(
 
     fun chooseCountry(country: String) {
         if (country !in COUNTRIES) return
+        countrySelectedByUser = true
         quoteGeneration++
         clearReceipt()
         _state.update { it.copy(country = country, quoting = false, quote = null, errorRes = null, receiptNoteRes = null) }
@@ -262,6 +272,12 @@ class SubscriptionCheckoutViewModel(
             "ru" -> "ru"
             "tj", "tg", "tg-cyrl" -> "tj"
             else -> "uz"
+        }
+
+        fun defaultCountry(language: String): String = when (language) {
+            "ru" -> "ru"
+            "uz" -> "uz"
+            else -> "tj"
         }
 
         fun receiptName(context: Context, uri: Uri): String = runCatching {
