@@ -2644,6 +2644,58 @@ def test_subscription_remembers_the_region_until_the_user_changes_it(page):
     expect(page.locator("#plans .plan").first).to_contain_text("TJS")
 
 
+def test_regular_subscription_shows_the_users_admin_discount(page):
+    mock_telegram_ready(page)
+    discounted = {
+        "base_amount": 89,
+        "final_amount": 62,
+        "currency": "TJS",
+        "discount_applied": True,
+        "discount_percent": 30,
+        "discount_source": "admin_campaign",
+    }
+    overview = {
+        "ok": True,
+        "language": "uz",
+        "mode": "subscription",
+        "pending_payment": None,
+        "discount": {
+            "referral_20_available": False,
+            "referral_count": 0,
+            "referral_required": 3,
+            "discount_used": False,
+            "offer_started": False,
+            "referral_link": "",
+        },
+        "offer": {
+            "type": "admin_discount",
+            "available": True,
+            "percent": 30,
+            "title": "Kuzgi chegirma",
+            "title_uz": "",
+            "reason": "Faqat 3 kun",
+            "reason_uz": "",
+        },
+        "payment_details": "",
+        "prices": {"visa": {"1_month": discounted}},
+        "card_prices": {},
+    }
+    page.route("**/api/subscription-miniapp/overview", lambda route: json_response(route, overview))
+    page.route("**/api/subscription-miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.goto(app_url("/subscription.html?mode=subscription"), wait_until="networkidle")
+
+    page.locator("[data-region=tj]").click()
+    page.locator("#nextBtn").click()
+    # Oddiy «Obuna» sahifasi: narx chegirma bilan, eski narx chizilgan.
+    expect(page.locator("#plans .plan").first).to_contain_text("62")
+    expect(page.locator("#plans .plan .old-price").first).to_contain_text("89")
+    # Referal bloki o'rniga admin chegirmasi.
+    expect(page.locator("#discountBadge")).to_have_text("30%")
+    expect(page.locator("#discountTitle")).to_have_text("Kuzgi chegirma")
+    expect(page.locator("#discountText")).to_have_text("Faqat 3 kun")
+    expect(page.locator("#discountBtn")).to_be_hidden()
+
+
 def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     mock_telegram_ready(page)
     requests = []

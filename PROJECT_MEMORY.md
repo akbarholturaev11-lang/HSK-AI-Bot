@@ -234,6 +234,36 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-29 — Admin chegirmasi oddiy obunada ham o'zi qo'llanadi
+
+Changed:
+- `SubscriptionMiniAppService._checkout_info`: oddiy rejimda (`subscription`,
+  `referral_discount`) `get_best_discount(include_admin_campaigns=True)` —
+  userga mos faol kampaniya (target/segment, usul, tarif, muddat, kvota,
+  bir martalik qoida) referal 20% bilan solishtiriladi, kattasi olinadi.
+  Ilgari admin chegirmasi faqat xabardagi tugmadan (`mode=admin_discount`)
+  ochilganda hisoblanardi; «Obuna» tugmasi / kurs ichidan to'liq narx edi.
+- `_offer_payload`: oddiy rejimda admin kampaniya qo'llangan bo'lsa
+  `type=admin_discount` offer qaytadi (bo'lmasa `None` — referal bloki).
+  Offer matn maydonlari endi hech qachon `null` emas (`""`): Android
+  `SubscriptionOfferDto` ularni `String` deb o'qiydi, `coerceInputValues`
+  yo'q — null butun overview'ni o'qitmay qo'yardi.
+- `subscription.html` `renderDiscount`: admin offer bo'lsa referal bloki
+  o'rniga admin chegirmasi (nomi, sababi, foizi) ko'rsatiladi.
+
+Boundaries:
+- Server o'zgarishi Android direct va desktop checkout'ga ham ta'sir qiladi
+  (ular ham `subscription` rejimi): narxlar chegirma bilan chiqadi, lekin
+  ular admin offer blokini faqat `admin_discount` rejimida chizadi.
+- Segment kampaniyasi endi segmentdagi har kimga checkout'da qo'llanadi,
+  xabar olmagan bo'lsa ham (masalan faol obunachi uzaytirayotganda, agar
+  kampaniya `audience_status` bilan cheklanmagan bo'lsa).
+- Feedback 20% taklifi o'zgarmadi — faqat o'z tugmasidan.
+
+Files touched:
+- `app/services/subscription_miniapp_service.py`, `app/static/subscription.html`,
+  `tests/test_subscription_miniapp_admin_discount.py`, `tests/e2e/test_miniapp_smoke.py`
+
 ### 2026-09-29 — Obuna Mini App: region → tarif → to'lov turi → rekvizit, oq rang
 
 Changed:

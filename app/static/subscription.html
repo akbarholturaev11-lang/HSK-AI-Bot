@@ -1260,14 +1260,17 @@ function renderDiscount(text){
   const box=$("#discountBox");
   const bar=$("#discountBar");
   const btn=$("#discountBtn");
-  if(state.mode==="admin_discount"||state.mode==="feedback_discount"){
+  /* Oddiy obunada ham userning faol admin chegirmasi server tomonda o'zi
+     qo'llanadi: u bo'lsa referal bloki o'rniga shu chegirma ko'rsatiladi. */
+  const adminOffer=state.mode==="admin_discount"||(state.mode!=="feedback_discount"&&Boolean(offer?.available)&&offer?.type==="admin_discount");
+  if(adminOffer||state.mode==="feedback_discount"){
     box.style.display="flex";
     box.classList.toggle("used",!offer?.available);
     $("#discountBadge").textContent=offer?.available?`${offer.percent||0}%`:"!";
     if(!offer?.available){
       $("#discountTitle").textContent=text.offerExpired;
       $("#discountText").textContent="";
-    }else if(state.mode==="admin_discount"){
+    }else if(adminOffer){
       $("#discountTitle").textContent=localizedOfferField(offer,"title")||text.adminDiscountTitle.replace("{percent}",offer.percent||0);
       $("#discountText").textContent=localizedOfferField(offer,"reason")||text.adminDiscountText;
     }else{

@@ -415,37 +415,46 @@ class SubscriptionMiniAppService:
         return result
 
     def _offer_payload(self, mode: str, prices: dict[str, dict[str, dict[str, Any]]]) -> dict[str, Any] | None:
-        if mode not in {"admin_discount", "feedback_discount"}:
-            return None
-
-        offers = [
+        applied = [
             item
             for plans in prices.values()
             for item in plans.values()
             if item.get("discount_applied")
         ]
-        if not offers:
-            return {
-                "type": mode,
-                "available": False,
-                "percent": 0,
-            }
+        if mode in {"admin_discount", "feedback_discount"}:
+            offer_type = mode
+            offers = applied
+            if not offers:
+                return {
+                    "type": mode,
+                    "available": False,
+                    "percent": 0,
+                }
+        else:
+            # Oddiy obuna: admin chegirmasi o'zi qo'llangan bo'lsa, u ham shu
+            # yerda ko'rsatiladi. Bo'lmasa offer yo'q — referal bloki chiqadi.
+            offer_type = "admin_discount"
+            offers = [item for item in applied if item.get("discount_source") == "admin_campaign"]
+            if not offers:
+                return None
 
         best = max(offers, key=lambda item: int(item.get("discount_percent") or 0))
+        # Matn maydonlari hech qachon null emas: Android ularni `String` deb
+        # o'qiydi va null kelsa butun overview javobi o'qilmay qoladi.
         return {
-            "type": mode,
+            "type": offer_type,
             "available": True,
             "percent": int(best.get("discount_percent") or 0),
             "campaign_id": best.get("discount_campaign_id"),
-            "title": best.get("discount_title"),
-            "title_tj": best.get("discount_title_tj"),
-            "title_ru": best.get("discount_title_ru"),
-            "title_uz": best.get("discount_title_uz"),
-            "reason": best.get("discount_reason"),
-            "reason_tj": best.get("discount_reason_tj"),
-            "reason_ru": best.get("discount_reason_ru"),
-            "reason_uz": best.get("discount_reason_uz"),
-            "details": best.get("discount_details"),
+            "title": best.get("discount_title") or "",
+            "title_tj": best.get("discount_title_tj") or "",
+            "title_ru": best.get("discount_title_ru") or "",
+            "title_uz": best.get("discount_title_uz") or "",
+            "reason": best.get("discount_reason") or "",
+            "reason_tj": best.get("discount_reason_tj") or "",
+            "reason_ru": best.get("discount_reason_ru") or "",
+            "reason_uz": best.get("discount_reason_uz") or "",
+            "details": best.get("discount_details") or "",
         }
 
     async def _discount_payload(self, user, bot: Bot | None = None) -> dict[str, Any] | None:
@@ -518,11 +527,15 @@ class SubscriptionMiniAppService:
             if discount.source != "feedback_price_offer":
                 return None
         else:
+            # Oddiy obunada (Obuna tugmasi, kurs ichidan, Android/desktop) ham
+            # userga mos faol admin chegirmasi o'zi qo'llanadi: referal 20% bilan
+            # solishtirilib, kattasi olinadi. Ilgari admin chegirmasi faqat
+            # chegirma xabaridagi tugmadan ochilganda hisoblanardi.
             discount = await discount_service.get_best_discount(
                 user=user,
                 plan_type=plan_type,
                 payment_method=payment_method,
-                include_admin_campaigns=False,
+                include_admin_campaigns=True,
             )
         final_amount = self.payment_service.calculate_percent_discounted_price(price.amount, discount.percent)
         return {
