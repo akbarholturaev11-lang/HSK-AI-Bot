@@ -291,6 +291,7 @@ class HskAiApplication : Application() {
     suspend fun clearLocalData() {
         courseRepository.clearCache()
         appSettings.clearDictionaryHistory()
+        appSettings.clearAdsUnlockedAfterLimit()
         // Dictionary rows are public release data, not account data. Keeping
         // them across logout preserves the version that the ETag stamp refers to
         // and avoids replacing a newer server copy with the bundled APK seed.
