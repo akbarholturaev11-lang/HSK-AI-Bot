@@ -780,6 +780,7 @@ const state={
   done:false,
   pending:false,
   pendingPayment:null,
+  offerExpired:false,
   qrActionsOpen:false,
   qrPreviewOpen:false,
   detailHintOpen:false,
@@ -1080,6 +1081,9 @@ function applyOverview(data){
   state.supportUrl=data?.support_url||"";
   state.pending=Boolean(data?.pending_payment);
   state.pendingPayment=data?.pending_payment||null;
+  /* Chatdagi eski chegirma tugmasi: taklif tugagan bo'lsa server oddiy
+     narxlarni beradi, tepada esa «taklif tugagan» yozuvi turadi. */
+  state.offerExpired=Boolean(data?.offer_expired);
   ensureSelection();
   /* Eslab qolingan region bu safar mavjud bo'lmasa (masalan chegirma faqat
      kartaga) — region qayta so'raladi. */
@@ -1179,7 +1183,7 @@ function render(){
      sahifalarida «HSK AI» ustida qoladi. */
   $("#kicker").style.display=state.mode==="subscription"?"none":"";
   $("#helpBtn").setAttribute("aria-label",text.supportTitle);
-  const statusText=state.preview?text.preview:(state.loadError?text.loadError:"");
+  const statusText=state.preview?text.preview:(state.loadError?text.loadError:(state.offerExpired?text.offerExpired:""));
   $("#status").textContent=statusText;
   $("#status").classList.toggle("show",Boolean(statusText));
   const items=flow();

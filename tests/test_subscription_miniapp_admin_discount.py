@@ -11,6 +11,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -21,6 +22,7 @@ from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.services.subscription_miniapp_service import (
     PAYMENT_DETAILS_KEY,
     SubscriptionMiniAppService,
@@ -80,7 +82,23 @@ class _BotStub:
         return SimpleNamespace(message_id=1)
 
 
-class RegularCheckoutAdminDiscountTests(unittest.IsolatedAsyncioTestCase):
+_original_get_by_id = DiscountCampaignRepository.get_by_id
+
+
+async def _get_by_id_utc(self, campaign_id):
+    # Faqat sinov muhiti: SQLite `DateTime(timezone=True)` ni timezone'siz
+    # qaytaradi (Postgres timezone bilan), `get_campaign_discount` esa uni
+    # `now` bilan solishtiradi.
+    campaign = await _original_get_by_id(self, campaign_id)
+    if campaign is not None:
+        for field in ("starts_at", "ends_at"):
+            value = getattr(campaign, field)
+            if value is not None and value.tzinfo is None:
+                setattr(campaign, field, value.replace(tzinfo=timezone.utc))
+    return campaign
+
+
+class _CheckoutCase(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.engine = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
         async with self.engine.begin() as connection:
@@ -111,10 +129,13 @@ class RegularCheckoutAdminDiscountTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
             return campaign.id
 
-    async def _overview(self):
+    async def _overview(self, **kwargs):
+        kwargs.setdefault("mode", "subscription")
         async with self.sessions() as session:
-            return await SubscriptionMiniAppService(session).overview(5001, mode="subscription")
+            return await SubscriptionMiniAppService(session).overview(5001, **kwargs)
 
+
+class RegularCheckoutAdminDiscountTests(_CheckoutCase):
     async def test_regular_checkout_applies_the_users_admin_discount(self):
         campaign_id = await self._campaign()
 
@@ -204,6 +225,60 @@ class RegularCheckoutAdminDiscountTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(overview["offer"]["percent"], 30)
 
 
+class ExpiredDiscountLinkTests(_CheckoutCase):
+    """Chatdagi eski chegirma tugmasi muddat tugagach bosilsa."""
+
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
+        patcher = patch.object(DiscountCampaignRepository, "get_by_id", _get_by_id_utc)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    async def test_expired_link_falls_back_to_regular_prices(self):
+        campaign_id = await self._campaign(ends_in=timedelta(hours=-1))
+
+        overview = await self._overview(mode="admin_discount", campaign_id=campaign_id)
+
+        # Sahifa bo'sh qolmaydi: oddiy obuna narxlari va «taklif tugagan».
+        self.assertEqual(overview["mode"], "subscription")
+        self.assertTrue(overview["offer_expired"])
+        self.assertIsNone(overview["offer"])
+        month = overview["prices"]["visa"]["1_month"]
+        self.assertFalse(month["discount_applied"])
+        self.assertEqual(month["final_amount"], month["base_amount"])
+
+    async def test_active_link_keeps_the_discount_page(self):
+        campaign_id = await self._campaign()
+
+        overview = await self._overview(mode="admin_discount", campaign_id=campaign_id)
+
+        self.assertEqual(overview["mode"], "admin_discount")
+        self.assertFalse(overview["offer_expired"])
+        self.assertTrue(overview["offer"]["available"])
+
+    async def test_expired_link_does_not_silently_charge_the_full_price(self):
+        # To'lov ekranida chegirmali summani ko'rib turgan user uchun so'rov
+        # jimgina to'liq narxga o'tkazilmaydi — «taklif tugagan» xatosi.
+        campaign_id = await self._campaign(ends_in=timedelta(hours=-1))
+
+        async with self.sessions() as session:
+            result = await SubscriptionMiniAppService(session).submit(
+                telegram_id=5001,
+                plan_type="1_month",
+                payment_method="visa",
+                card_country="tj",
+                card_bank="dc_city",
+                screenshot_data_url=PNG_1X1_DATA_URL,
+                bot=self.bot,
+                mode="admin_discount",
+                campaign_id=campaign_id,
+            )
+
+        self.assertEqual(result, {"ok": False, "error": "payment_invalid_plan"})
+        async with self.sessions() as session:
+            self.assertEqual((await session.execute(select(Payment))).scalars().all(), [])
+
+
 class RegularCheckoutAdminDiscountPageTests(unittest.TestCase):
     def test_regular_page_shows_the_admin_offer_instead_of_the_referral_block(self):
         self.assertIn(
@@ -212,6 +287,10 @@ class RegularCheckoutAdminDiscountPageTests(unittest.TestCase):
             SUBSCRIPTION_HTML,
         )
         self.assertIn('if(adminOffer||state.mode==="feedback_discount"){', SUBSCRIPTION_HTML)
+
+    def test_expired_offer_is_explained_at_the_top(self):
+        self.assertIn("state.offerExpired=Boolean(data?.offer_expired);", SUBSCRIPTION_HTML)
+        self.assertIn("(state.offerExpired?text.offerExpired:\"\")", SUBSCRIPTION_HTML)
 
 
 if __name__ == "__main__":

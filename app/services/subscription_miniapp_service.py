@@ -113,6 +113,7 @@ class SubscriptionMiniAppService:
                 "support_url": await get_admin_contact_url(self.session),
                 "pending_payment": self._pending_payment_payload(pending_payment),
                 "offer": None,
+                "offer_expired": False,
                 "discount": None,
                 "prices": {},
                 "card_prices": {},
@@ -132,6 +133,17 @@ class SubscriptionMiniAppService:
             campaign_id=campaign_id,
             feedback_id=feedback_id,
         )
+        offer = self._offer_payload(mode, prices)
+        offer_expired = False
+        if mode in {"admin_discount", "feedback_discount"} and not (offer or {}).get("available"):
+            # Chegirma tugagan yoki userga mos emas (chatdagi eski tugma):
+            # sahifa bo'sh qolmasin — oddiy obuna narxlari ko'rsatiladi,
+            # Mini App tepada «taklif tugagan» yozuvini chiqaradi. Keyingi
+            # quote/submit ham shu javobdagi `mode` bilan keladi.
+            mode = "subscription"
+            prices = await self._prices_payload(user, mode=mode)
+            offer = self._offer_payload(mode, prices)
+            offer_expired = True
 
         return {
             "ok": True,
@@ -139,7 +151,8 @@ class SubscriptionMiniAppService:
             "mode": mode,
             "support_url": await get_admin_contact_url(self.session),
             "pending_payment": None,
-            "offer": self._offer_payload(mode, prices),
+            "offer": offer,
+            "offer_expired": offer_expired,
             "discount": await self._discount_payload(user, bot=bot),
             "prices": prices,
             "card_prices": await self._card_prices_payload(prices.get("visa") or {}),

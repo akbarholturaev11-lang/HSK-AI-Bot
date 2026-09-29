@@ -2696,6 +2696,42 @@ def test_regular_subscription_shows_the_users_admin_discount(page):
     expect(page.locator("#discountBtn")).to_be_hidden()
 
 
+def test_expired_discount_link_opens_regular_prices(page):
+    mock_telegram_ready(page)
+    overview = {
+        "ok": True,
+        "language": "uz",
+        "mode": "subscription",
+        "offer_expired": True,
+        "pending_payment": None,
+        "offer": None,
+        "discount": None,
+        "payment_details": "",
+        "prices": {
+            "visa": {
+                "1_month": {
+                    "base_amount": 89,
+                    "final_amount": 89,
+                    "currency": "TJS",
+                    "discount_applied": False,
+                    "discount_percent": 0,
+                }
+            }
+        },
+        "card_prices": {},
+    }
+    page.route("**/api/subscription-miniapp/overview", lambda route: json_response(route, overview))
+    page.route("**/api/subscription-miniapp/event", lambda route: json_response(route, {"ok": True}))
+    # Chatdagi eski chegirma tugmasi — muddat tugagan.
+    page.goto(app_url("/subscription.html?mode=admin_discount&campaign_id=7"), wait_until="networkidle")
+
+    expect(page.locator("#status")).to_have_text("Bu taklif tugagan yoki sizga mos emas.")
+    expect(page.locator("#title")).to_have_text("HSK AI Pro")
+    page.locator("[data-region=tj]").click()
+    page.locator("#nextBtn").click()
+    expect(page.locator("#plans .plan").first).to_contain_text("89")
+
+
 def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     mock_telegram_ready(page)
     requests = []

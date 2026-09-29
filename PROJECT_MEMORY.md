@@ -250,6 +250,12 @@ Changed:
   yo'q — null butun overview'ni o'qitmay qo'yardi.
 - `subscription.html` `renderDiscount`: admin offer bo'lsa referal bloki
   o'rniga admin chegirmasi (nomi, sababi, foizi) ko'rsatiladi.
+- Muddati tugagan / mos bo'lmagan chegirma havolasi (`admin_discount`,
+  `feedback_discount`, chatdagi eski tugma): `overview` oddiy narxlarni
+  `mode=subscription` va `offer_expired=true` bilan qaytaradi, Mini App tepada
+  mavjud `offerExpired` matnini ko'rsatadi. Ilgari sahifa bo'sh qolardi.
+  Chegirmali to'lov ekranida turgan userning submit'i esa avvalgidek
+  `payment_invalid_plan` — jimgina to'liq narxga o'tkazilmaydi.
 
 Boundaries:
 - Server o'zgarishi Android direct va desktop checkout'ga ham ta'sir qiladi
