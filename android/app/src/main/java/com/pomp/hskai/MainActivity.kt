@@ -400,9 +400,9 @@ private fun AppRoot(
                 onDispose { widgetLifecycle.removeObserver(observer) }
             }
 
-            // Onboarding uses the same full-screen prompt as the daily reminder.
-            // Keep the plan-choice gate closed until this prompt is dismissed,
-            // so the two full-screen experiences never stack or swap order.
+            // Onboarding uses the same full-screen widget prompt as the daily reminder.
+            // The widget offer stays in this position; only the old Pro/trial
+            // interruption after onboarding was removed.
             LaunchedEffect(onboardingState.launch) {
                 if (onboardingState.launch != null && !widgetOfferHandled && !widgetSetupOpen) {
                     val today = LocalDate.now().toString()
