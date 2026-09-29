@@ -25,6 +25,7 @@ from app.api.desktop_rating import challenge_ref
 from app.api.android_features import (
     _bot_url,
     _invite_link,
+    _localize_android_checkout_prices,
     _public_android_referral_item,
     _service_response,
     _subscription_payload,
@@ -88,6 +89,52 @@ class AndroidBotUrlTests(unittest.TestCase):
         self.assertEqual("", _bot_url(_settings("")))
         self.assertEqual("", _bot_url(_settings(None)))
         self.assertEqual("", _bot_url(SimpleNamespace()))
+
+
+class AndroidCheckoutDisplayCurrencyTests(unittest.IsolatedAsyncioTestCase):
+    async def test_plan_cards_follow_the_account_language_without_changing_canonical_prices(self):
+        cases = (
+            ("tj", "tj", "TJS"),
+            ("uz", "uz", "UZS"),
+            ("ru", "ru", "RUB"),
+        )
+        for language, country, currency in cases:
+            with self.subTest(language=language):
+                payload = {
+                    "language": language,
+                    "prices": {
+                        "visa": {
+                            "1_month": {
+                                "base_amount": 89,
+                                "final_amount": 69,
+                                "currency": "TJS",
+                                "discount_applied": True,
+                            }
+                        }
+                    },
+                }
+                converter = SimpleNamespace(
+                    quote_card_amounts=AsyncMock(
+                        return_value=[
+                            SimpleNamespace(amount="89", currency=currency),
+                            SimpleNamespace(amount="69", currency=currency),
+                        ]
+                    )
+                )
+                with patch(
+                    "app.api.android_features.SubscriptionCurrencyService",
+                    return_value=converter,
+                ):
+                    result = await _localize_android_checkout_prices(object(), payload)
+
+                converter.quote_card_amounts.assert_awaited_once_with([89, 69], country)
+                price = result["prices"]["visa"]["1_month"]
+                self.assertEqual(89, price["base_amount"])
+                self.assertEqual(69, price["final_amount"])
+                self.assertEqual("TJS", price["currency"])
+                self.assertEqual("89", price["display_base_amount"])
+                self.assertEqual("69", price["display_final_amount"])
+                self.assertEqual(currency, price["display_currency"])
 
 
 class AndroidReferralPayloadTests(unittest.TestCase):
