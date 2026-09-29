@@ -253,6 +253,11 @@ Changed:
   doim `alif`. Alif bo'sh bo'lsa `payment_details_missing` — Dushanbe City'ga
   TUSHMAYDI. overview `card_prices` (uz/ru/other, bitta kurs so'rovi bilan)
   qaytaradi; admin xabarida `🏦 Rekvizit: ...` qatori.
+- Region «Davom» bilan tasdiqlanganda `localStorage` ga yoziladi
+  (`hsk_sub_region_v1:<telegram_id>`, shu qurilma): keyingi safar obuna
+  tarif ekranidan ochiladi, region «Orqaga» orqali o'zgartiriladi. Saqlangan
+  region bu safar mavjud bo'lmasa (chegirma usuli) region qayta so'raladi.
+  Sarlavha obuna rejimida bitta qator «HSK AI Pro».
 
 Boundaries:
 - `card_bank` yubormagan klient (Android direct checkout, desktop) eskicha —

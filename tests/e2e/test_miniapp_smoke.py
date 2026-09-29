@@ -2555,7 +2555,8 @@ def test_subscription_page_smoke(page):
 
     page.goto(app_url("/subscription.html?lang=uz&mode=subscription"), wait_until="networkidle")
 
-    expect(page.locator("#title")).to_have_text("Pro")
+    expect(page.locator("#title")).to_have_text("HSK AI Pro")
+    expect(page.locator("#kicker")).to_be_hidden()
     expect(page.locator("#langTabs")).to_have_count(0)
     expect(page.locator("#trialOffer")).to_have_count(0)
     expect(page.locator(".tv")).to_have_count(0)
@@ -2615,6 +2616,27 @@ def test_subscription_page_smoke(page):
     expect(page.locator("[data-method=alipay]")).to_contain_text("Alipay")
     page.locator("[data-method=wechat]").click()
     expect(page.locator("#nextBtn")).to_contain_text("WeChat Pay bilan to'lash")
+
+
+def test_subscription_remembers_the_region_until_the_user_changes_it(page):
+    page.route("**/api/subscription-miniapp/**", lambda route: route.abort())
+    page.goto(app_url("/subscription.html?lang=uz&mode=subscription"), wait_until="networkidle")
+    page.locator("[data-region=ru]").click()
+    page.locator("#nextBtn").click()
+
+    # Qayta ochilganda region so'ralmaydi: to'g'ri tarif ekrani, narx RUB da.
+    page.reload(wait_until="networkidle")
+    expect(page.locator('[data-screen="plans"]')).to_be_visible()
+    expect(page.locator("#plans .plan").first).to_contain_text("RUB")
+
+    # «Orqaga» region ro'yxatini ochadi; yangi tanlov ham eslab qolinadi.
+    page.locator("#backBtn").click()
+    expect(page.locator("[data-region=ru]")).to_have_class(re.compile(r"\bselected\b"))
+    page.locator("[data-region=tj]").click()
+    page.locator("#nextBtn").click()
+    page.reload(wait_until="networkidle")
+    expect(page.locator('[data-screen="plans"]')).to_be_visible()
+    expect(page.locator("#plans .plan").first).to_contain_text("TJS")
 
 
 def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):

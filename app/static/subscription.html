@@ -195,8 +195,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 <main class="app">
   <header class="top">
     <div class="brand">
-      <div class="kicker">HSK AI</div>
-      <h1 id="title">Pro</h1>
+      <div class="kicker" id="kicker" style="display:none">HSK AI</div>
+      <h1 id="title">HSK AI Pro</h1>
     </div>
     <div class="top-actions">
       <button class="help-btn" type="button" id="helpBtn" aria-label="Yordam"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 14v4a2 2 0 0 0 2 2h2v-8H5a2 2 0 0 0-2 2Zm18 0v4a2 2 0 0 1-2 2h-2v-8h2a2 2 0 0 1 2 2Z"/><path d="M17 20c0 2-2 3-5 3h-2"/><rect x="8" y="21" width="3" height="2" rx="1"/></svg></button>
@@ -346,6 +346,21 @@ const REGION_FLAGS={tj:"🇹🇯",uz:"🇺🇿",ru:"🇷🇺",cn:"🇨🇳",othe
    doim Alif (Visa) rekvizitiga to'laydi. Rekvizitlar admin panelda alohida. */
 const CARD_BANKS=["dc_city","alif"];
 const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
+/* Tanlangan region shu qurilmada, Telegram akkaunti bo'yicha eslab qolinadi:
+   keyingi safar obuna to'g'ridan-to'g'ri tarif ekranidan ochiladi. Regionni
+   «Orqaga» orqali o'zgartirish mumkin — yangi tanlov ham shu yerga yoziladi. */
+const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");
+function savedRegion(){
+  try{
+    const region=localStorage.getItem(REGION_STORAGE_KEY)||"";
+    return REGION_ORDER.includes(region)?region:"";
+  }catch(e){return ""}
+}
+function saveRegion(region){
+  try{if(REGION_ORDER.includes(region))localStorage.setItem(REGION_STORAGE_KEY,region)}catch(e){}
+}
+/* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
+const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedRegion();
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
 const CHECKOUT_ATTEMPT_ID=(function(){
   const key="hsk_subscription_attempt_v1",now=Date.now();
@@ -361,7 +376,7 @@ const CHECKOUT_ATTEMPT_ID=(function(){
 const I18N={
   uz:{
     title:"Obuna",
-    modeTitles:{subscription:"Pro",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
+    modeTitles:{subscription:"HSK AI Pro",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
     modeTv:{subscription:"Obuna nima beradi",referral_discount:"Referral chegirma",admin_discount:"Admin maxsus taklifi",feedback_discount:"Siz uchun chegirma"},
     modePlans:{subscription:"Tarif",referral_discount:"Chegirmali tarif",admin_discount:"Maxsus tarif",feedback_discount:"20% chegirmali tarif"},
     adminDiscountTitle:"Maxsus chegirma {percent}%",
@@ -488,7 +503,7 @@ const I18N={
   },
   ru:{
     title:"Подписка",
-    modeTitles:{subscription:"Pro",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
+    modeTitles:{subscription:"HSK AI Pro",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
     modeTv:{subscription:"Что дает подписка",referral_discount:"Реферальная скидка",admin_discount:"Спецпредложение админа",feedback_discount:"Скидка для вас"},
     modePlans:{subscription:"Тариф",referral_discount:"Тариф со скидкой",admin_discount:"Специальный тариф",feedback_discount:"Тариф со скидкой 20%"},
     adminDiscountTitle:"Специальная скидка {percent}%",
@@ -615,7 +630,7 @@ const I18N={
   },
   tj:{
     title:"Обуна",
-    modeTitles:{subscription:"Pro",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
+    modeTitles:{subscription:"HSK AI Pro",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
     modeTv:{subscription:"Обуна чӣ медиҳад",referral_discount:"Тахфифи referral",admin_discount:"Пешниҳоди махсуси admin",feedback_discount:"Тахфиф барои шумо"},
     modePlans:{subscription:"Тариф",referral_discount:"Тарифи тахфифӣ",admin_discount:"Тарифи махсус",feedback_discount:"Тарифи 20% тахфиф"},
     adminDiscountTitle:"Тахфифи махсус {percent}%",
@@ -753,10 +768,10 @@ const state={
   overview:null,
   plan:PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month",
   method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
-  region:CHINA_METHODS.includes(PARAMS.get("method"))?"cn":"",
+  region:CHINA_METHODS.includes(PARAMS.get("method"))?"cn":REMEMBERED_REGION,
   country:"tj",
   bank:"dc_city",
-  step:0,
+  step:REMEMBERED_REGION?1:0,
   quote:null,
   screenshotDataUrl:"",
   screenshotName:"",
@@ -849,6 +864,9 @@ function ensureSelection(){
   const plans=availablePlans(state.method);
   if(!plans.includes(state.plan))state.plan=plans[0]||"1_month";
 }
+/* Ma'lumot hali kelmagan yoki yuklanmagan bo'lsa «taklif tugagan» deyish
+   noto'g'ri: ro'yxat bo'sh turadi, yuklash xatosini esa status aytadi. */
+function overviewReady(){return Boolean(state.overview)&&!state.loadError}
 function cardPrices(){
   if(state.overview?.card_prices)return state.overview.card_prices;
   return state.preview?mockOverview().card_prices:{};
@@ -1071,6 +1089,9 @@ function applyOverview(data){
   state.pending=Boolean(data?.pending_payment);
   state.pendingPayment=data?.pending_payment||null;
   ensureSelection();
+  /* Eslab qolingan region bu safar mavjud bo'lmasa (masalan chegirma faqat
+     kartaga) — region qayta so'raladi. */
+  if(!state.region)state.step=0;
   if(state.pending){
     state.done=false;
     state.step=0;
@@ -1162,6 +1183,9 @@ function render(){
   document.body.classList.add(`mode-${state.mode}`);
   document.documentElement.lang=state.lang;
   $("#title").textContent=modeText(text,"modeTitles");
+  /* Obuna sahifasida sarlavha bitta qator — «HSK AI Pro»; chegirma
+     sahifalarida «HSK AI» ustida qoladi. */
+  $("#kicker").style.display=state.mode==="subscription"?"none":"";
   $("#helpBtn").setAttribute("aria-label",text.supportTitle);
   const statusText=state.preview?text.preview:(state.loadError?text.loadError:"");
   $("#status").textContent=statusText;
@@ -1225,7 +1249,7 @@ function renderPlans(text){
         ${note}
       </span>
     </button>`;
-  }).join("") || `<div class="detail-empty">${text.offerExpired}</div>`;
+  }).join("") || (overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
 }
 function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
@@ -1302,7 +1326,7 @@ function renderCountry(text){
       <i class="country-flag">${REGION_FLAGS[region]}</i>
       <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot"></i>
     </button>`;
-  }).join("")||`<div class="detail-empty">${text.offerExpired}</div>`;
+  }).join("")||(overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
 }
 function renderPay(text){
   const quote=state.quote||(state.preview?mockQuote():null);
@@ -1689,6 +1713,7 @@ $("#nextBtn").addEventListener("click",()=>{
   if(screen==="country"&&!state.region)return;
   if(!hasCurrentPrice()){toast(tr().offerExpired);return}
   if(screen==="pay"){submitPayment();return}
+  if(screen==="country")saveRegion(state.region);
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));

@@ -230,6 +230,15 @@ class RegionFlowCopyTests(unittest.TestCase):
         self.assertEqual(SUBSCRIPTION_HTML.count("«DC (по номеру карты)»"), 3)
         self.assertEqual(SUBSCRIPTION_HTML.count("«На карту»"), 3)
 
+    def test_region_is_remembered_per_telegram_account(self):
+        # Bir marta tanlangan region shu qurilmada, akkaunt bo'yicha saqlanadi.
+        self.assertIn(
+            'const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");',
+            SUBSCRIPTION_HTML,
+        )
+        self.assertIn('if(screen==="country")saveRegion(state.region);', SUBSCRIPTION_HTML)
+        self.assertIn("step:REMEMBERED_REGION?1:0,", SUBSCRIPTION_HTML)
+
     def test_admin_panel_edits_both_requisites(self):
         self.assertIn('id="payDetails"', ADMIN_HTML)
         self.assertIn('id="payDetailsAlif"', ADMIN_HTML)
