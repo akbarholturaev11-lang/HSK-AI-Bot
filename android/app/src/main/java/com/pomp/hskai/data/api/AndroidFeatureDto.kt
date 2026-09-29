@@ -94,6 +94,9 @@ data class SubscriptionPriceDto(
     @SerialName("base_amount") val baseAmount: Int = 0,
     @SerialName("final_amount") val finalAmount: Int = 0,
     @SerialName("currency") val currency: String = "",
+    @SerialName("display_base_amount") val displayBaseAmount: String = "",
+    @SerialName("display_final_amount") val displayFinalAmount: String = "",
+    @SerialName("display_currency") val displayCurrency: String = "",
     @SerialName("discount_percent") val discountPercent: Int = 0,
     @SerialName("discount_applied") val discountApplied: Boolean = false,
 )

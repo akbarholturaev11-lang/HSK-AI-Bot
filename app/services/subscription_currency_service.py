@@ -119,46 +119,63 @@ class SubscriptionCurrencyService:
         return True
 
     async def quote_card_amount(self, tjs_amount: int, country: str | None) -> CardCurrencyQuote:
+        return (await self.quote_card_amounts([tjs_amount], country))[0]
+
+    async def quote_card_amounts(
+        self,
+        tjs_amounts: list[int],
+        country: str | None,
+    ) -> list[CardCurrencyQuote]:
+        """Convert several TJS prices with one rate lookup.
+
+        Checkout overview renders multiple plans at once. Fetching the live
+        exchange-rate feed once keeps those cards internally consistent and
+        avoids one outbound request per plan.
+        """
+
         normalized_country = country if country in CARD_COUNTRY_CURRENCY else "tj"
         target_currency = CARD_COUNTRY_CURRENCY[normalized_country]
         if target_currency == "tjs":
-            return CardCurrencyQuote(
-                country=normalized_country,
-                amount=str(int(tjs_amount)),
-                currency="TJS",
-                exchange_rate="1 TJS = 1 TJS",
-                source="base",
-            )
+            return [
+                CardCurrencyQuote(
+                    country=normalized_country,
+                    amount=str(int(tjs_amount)),
+                    currency="TJS",
+                    exchange_rate="1 TJS = 1 TJS",
+                    source="base",
+                )
+                for tjs_amount in tjs_amounts
+            ]
 
         rates, source = await self.effective_rates()
-        usd_amount = Decimal(tjs_amount) / rates["tjs"]
-        if target_currency == "usd":
-            local_amount = self._format_amount(usd_amount, 2)
-            exchange_rate = self._direct_tjs_rate_label(
-                Decimal("1") / rates["tjs"],
-                target_currency,
+        quotes: list[CardCurrencyQuote] = []
+        for tjs_amount in tjs_amounts:
+            usd_amount = Decimal(tjs_amount) / rates["tjs"]
+            if target_currency == "usd":
+                local_amount = self._format_amount(usd_amount, 2)
+                exchange_rate = self._direct_tjs_rate_label(
+                    Decimal("1") / rates["tjs"],
+                    target_currency,
+                )
+            else:
+                local_amount = self._format_amount(
+                    usd_amount * rates[target_currency],
+                    0 if target_currency == "uzs" else 2,
+                )
+                exchange_rate = self._direct_tjs_rate_label(
+                    rates[target_currency] / rates["tjs"],
+                    target_currency,
+                )
+            quotes.append(
+                CardCurrencyQuote(
+                    country=normalized_country,
+                    amount=local_amount,
+                    currency=self.rate_label(target_currency),
+                    exchange_rate=exchange_rate,
+                    source=source,
+                )
             )
-            return CardCurrencyQuote(
-                country=normalized_country,
-                amount=local_amount,
-                currency="USD",
-                exchange_rate=exchange_rate,
-                source=source,
-            )
-
-        local_amount = usd_amount * rates[target_currency]
-        decimals = 0 if target_currency == "uzs" else 2
-        exchange_rate = self._direct_tjs_rate_label(
-            rates[target_currency] / rates["tjs"],
-            target_currency,
-        )
-        return CardCurrencyQuote(
-            country=normalized_country,
-            amount=self._format_amount(local_amount, decimals),
-            currency=self.rate_label(target_currency),
-            exchange_rate=exchange_rate,
-            source=source,
-        )
+        return quotes
 
     async def format_local_equivalents(self, usd_amount: int) -> str:
         rates = await self.all_rates()

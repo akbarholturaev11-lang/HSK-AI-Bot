@@ -23,10 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -371,11 +368,6 @@ private fun AppRoot(
             var dictionaryOpen by remember { mutableStateOf(false) }
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
             var screenCenterAdAsked by rememberSaveable { mutableStateOf(false) }
-            // Shown once, right after onboarding, and only to someone who has
-            // just been through it — `launch` is set by the completion call
-            // and stays null for an account that was already onboarded.
-            var planChoiceSeen by rememberSaveable { mutableStateOf(false) }
-            var planChoiceOpen by remember { mutableStateOf(false) }
             var widgetSetupOpen by remember { mutableStateOf(false) }
             var widgetPlacedNotice by remember { mutableStateOf(false) }
             var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
@@ -405,9 +397,9 @@ private fun AppRoot(
                 onDispose { widgetLifecycle.removeObserver(observer) }
             }
 
-            // Onboarding uses the same full-screen prompt as the daily reminder.
-            // Keep the plan-choice gate closed until this prompt is dismissed,
-            // so the two full-screen experiences never stack or swap order.
+            // Onboarding uses the same full-screen widget prompt as the daily reminder.
+            // The widget offer stays in this position; only the old Pro/trial
+            // interruption after onboarding was removed.
             LaunchedEffect(onboardingState.launch) {
                 if (onboardingState.launch != null && !widgetOfferHandled && !widgetSetupOpen) {
                     val today = LocalDate.now().toString()
@@ -470,11 +462,10 @@ private fun AppRoot(
                 onboardingState.launch,
                 widgetOfferHandled,
                 widgetSetupOpen,
-                planChoiceOpen,
                 studySetupState.visible,
                 widgetSession.lastInstallPromptDay,
             ) {
-                if (!onboardingState.completed || widgetSetupOpen || planChoiceOpen || studySetupState.visible) {
+                if (!onboardingState.completed || widgetSetupOpen || studySetupState.visible) {
                     return@LaunchedEffect
                 }
                 if (onboardingState.launch != null && !widgetOfferHandled) {
@@ -495,22 +486,6 @@ private fun AppRoot(
                     widgetSetupOpen = true
                     app.widgetStore.enqueue(AndroidWidgetEvent("android_widget_daily_prompt_viewed"))
                     app.applicationScope.launch { app.widgetCoordinator.flushEvents() }
-                }
-            }
-
-            // The Mini App's plan choice after onboarding, in the same place
-            // and with the same two ways out. Whether the free week is on
-            // offer at all is the server's answer, so this waits for it
-            // rather than assuming a new account is eligible.
-            LaunchedEffect(onboardingState.launch, profileState.trial?.eligible, widgetSetupOpen, widgetOfferHandled) {
-                if (
-                    !planChoiceSeen &&
-                    widgetOfferHandled && !widgetSetupOpen &&
-                    onboardingState.launch != null &&
-                    profileState.trial?.eligible == true
-                ) {
-                    planChoiceSeen = true
-                    planChoiceOpen = true
                 }
             }
 
@@ -1280,28 +1255,6 @@ private fun AppRoot(
                             )
                         }
 
-                        if (planChoiceOpen) {
-                            PlanChoiceSheet(
-                                isStarting = profileState.trialStarting,
-                                onStartTrial = {
-                                    planChoiceOpen = false
-                                    profileViewModel.startTrial()
-                                },
-                                // Left out entirely in the Google Play build,
-                                // which may not send a learner out of the app to
-                                // pay. The gate is what knows that, not this file.
-                                onSubscribe = if (limitGate.state.canSubscribe) {
-                                    {
-                                        planChoiceOpen = false
-                                        limitGate.actions.onUnlock("onboarding_plan")
-                                    }
-                                } else {
-                                    null
-                                },
-                                onDismiss = { planChoiceOpen = false },
-                            )
-                        }
-
                         if (goalPickerOpen) {
                             DailyGoalPicker(
                                 current = dailyGoal,
@@ -1457,93 +1410,6 @@ private fun LessonHost(
  * control anywhere in the app, so a learner could not turn pinyin off the way
  * the Mini App lets them.
  */
-/**
- * The Mini App's plan choice, shown once after onboarding.
- *
- * Two ways forward and one way past: take the free week, subscribe, or carry
- * on free. Nothing here is compulsory — the X and the outside of the sheet
- * both dismiss it, and the learner who dismisses it loses nothing, because
- * the same offer is on the profile and on every paywall.
- *
- * [onSubscribe] is null in the Google Play build, which has no checkout of
- * its own; the button is then not drawn at all rather than drawn dead.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PlanChoiceSheet(
-    isStarting: Boolean,
-    onStartTrial: () -> Unit,
-    onSubscribe: (() -> Unit)?,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.PaperRaised,
-    ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.plan_choice_title),
-                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = stringResource(R.string.plan_choice_body),
-                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
-            )
-            Spacer(Modifier.height(16.dp))
-            Button(
-                onClick = onStartTrial,
-                enabled = !isStarting,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 52.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
-                    disabledContainerColor = PompColors.Locked,
-                    disabledContentColor = PompColors.Paper,
-                ),
-            ) {
-                Text(text = stringResource(R.string.plan_choice_trial))
-            }
-            if (onSubscribe != null) {
-                Spacer(Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = onSubscribe,
-                    enabled = !isStarting,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.plan_choice_pay),
-                        color = PompColors.CinnabarDark,
-                    )
-                }
-            }
-            Spacer(Modifier.height(4.dp))
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 44.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.plan_choice_later),
-                    color = PompColors.InkSecondary,
-                )
-            }
-            Spacer(Modifier.height(12.dp))
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PinyinPicker(
