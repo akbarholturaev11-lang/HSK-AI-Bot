@@ -61,6 +61,10 @@ data class LimitGateState(
  * builds while each channel's block uses only what it is allowed to.
  */
 data class LimitGateActions(
+    /** Reports that a real limit screen entered the composition. */
+    val onPresented: () -> Unit = {},
+    /** Reports that the visible limit screen left the composition. */
+    val onDismissed: () -> Unit = {},
     /** Opens the subscription flow. Only the `direct` channel has one. */
     val onUnlock: (String) -> Unit = {},
     /** Re-reads access and limits from the server. Nothing is unlocked locally. */

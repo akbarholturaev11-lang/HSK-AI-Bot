@@ -144,8 +144,25 @@ class AppSettings(context: Context) : LessonResumeStore {
     val notificationPrimerSeen: Flow<Boolean> = appContext.settingsDataStore.data
         .map { it[NOTIFICATION_PRIMER_SEEN_KEY] ?: false }
 
+    /**
+     * Ads stay completely silent until this account has actually hit a limit
+     * screen once on this device. This is a product-timing gate only: the
+     * server still decides which ad, audience and daily cap apply.
+     */
+    val adsUnlockedAfterLimit: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[ADS_UNLOCKED_AFTER_LIMIT_KEY] ?: false }
+
     suspend fun setNotificationPrimerSeen() {
         appContext.settingsDataStore.edit { it[NOTIFICATION_PRIMER_SEEN_KEY] = true }
+    }
+
+    suspend fun unlockAdsAfterLimit() {
+        appContext.settingsDataStore.edit { it[ADS_UNLOCKED_AFTER_LIMIT_KEY] = true }
+    }
+
+    /** Account-local product timing must not leak to the next login on this phone. */
+    suspend fun clearAdsUnlockedAfterLimit() {
+        appContext.settingsDataStore.edit { it.remove(ADS_UNLOCKED_AFTER_LIMIT_KEY) }
     }
 
     suspend fun setVoiceSubtitles(value: Boolean) {
@@ -266,6 +283,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val VOICE_SUBTITLES_KEY = booleanPreferencesKey("hsk_voice_sub")
         val VOICE_SLOW_SPEECH_KEY = booleanPreferencesKey("hsk_voice_rate_slow")
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
+        val ADS_UNLOCKED_AFTER_LIMIT_KEY = booleanPreferencesKey("ads_unlocked_after_limit:v1")
         val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")
 
         /** A dictionary entry never contains a line break. */
