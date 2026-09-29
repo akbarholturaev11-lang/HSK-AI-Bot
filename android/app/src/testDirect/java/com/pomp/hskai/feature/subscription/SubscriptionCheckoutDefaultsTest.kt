@@ -13,8 +13,8 @@ class SubscriptionCheckoutDefaultsTest {
     }
 
     @Test
-    fun `unknown language falls back to Tajik checkout country`() {
-        assertEquals("tj", defaultCheckoutCountry(""))
-        assertEquals("tj", defaultCheckoutCountry("de"))
+    fun `unknown language follows the Uzbek normalization fallback`() {
+        assertEquals("uz", defaultCheckoutCountry(""))
+        assertEquals("uz", defaultCheckoutCountry("de"))
     }
 }
