@@ -402,9 +402,10 @@ class DesktopCourseService:
         # shuning uchun referral yoki otziv bonusi olgan odam telefonda
         # darsni ochardi, desktopda esa ocholmasdi.
         is_paid = has_full_access(resolve_state(user))
+        # No bot: every client shows the limit on its own screen, so the
+        # learner is not also told in Telegram (owner decision 2026-09-29).
         limit_status = await LessonAccessService(self.session).status(
             user, level=level, lesson_order=lesson_order, completed=completed, consume=True,
-            bot=self.bot if self.CLIENT_NAMESPACE == "android" else None,
         )
         if not limit_status["allowed"]:
             await self.session.commit()
@@ -535,9 +536,10 @@ class DesktopCourseService:
             )
         if lesson_order != completed + 1:
             raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
+        # No bot: every client shows the limit on its own screen, so the
+        # learner is not also told in Telegram (owner decision 2026-09-29).
         limit_status = await LessonAccessService(self.session).status(
             user, level=level, lesson_order=lesson_order, completed=completed, consume=True,
-            bot=self.bot if self.CLIENT_NAMESPACE == "android" else None,
         )
         if not limit_status["allowed"]:
             await self.session.commit()

@@ -1272,13 +1272,12 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         # Qachon qayta ochilishi Mini App'dagidek aytiladi.
         self.assertIn("reset_at", body)
 
-    async def test_a_spent_allowance_reaches_the_learner_in_telegram(self):
-        """The limit is also news, not just a closed door.
+    async def test_a_spent_allowance_is_shown_in_the_app_not_in_telegram(self):
+        """The app shows the closed door itself; Telegram stays quiet.
 
-        The Mini App tells the learner in the bot chat when a free section is
-        spent, so the message is what they find later — Android reaching the
-        same limit silently would leave the two clients telling different
-        stories about the same account.
+        Owner decision (2026-09-29): a limit reached inside the app is already
+        on the learner's screen, so no "daily limit spent" message goes to the
+        bot chat. The Mini App and the desktop app have always worked this way.
         """
 
         await self._seed_practice_ad()
@@ -1287,8 +1286,6 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
             headers=self._headers(),
             json={"feature": "recognition", "ref": "drill-1"},
         )
-        self.assertEqual([], self.bot.messages)
-
         spent = await self.client.post(
             "/api/v3/android/practice/gate",
             headers=self._headers(),
@@ -1296,18 +1293,8 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertEqual(403, spent.status_code)
-        self.assertEqual(1, len(self.bot.messages))
-        chat_id, text = self.bot.messages[0]
-        self.assertEqual(4242, chat_id)
-        self.assertTrue(text.strip())
-
-        # Once told, not told again: the notice is deduped for the learner.
-        await self.client.post(
-            "/api/v3/android/practice/gate",
-            headers=self._headers(),
-            json={"feature": "recognition", "ref": "drill-3"},
-        )
-        self.assertEqual(1, len(self.bot.messages))
+        self.assertEqual("free_feature_limit_reached", spent.json()["error"])
+        self.assertEqual([], self.bot.messages)
 
     async def test_an_empty_ad_catalogue_no_longer_opens_the_section(self):
         """Reklama yo'qligi endi bepul kirish EMAS.

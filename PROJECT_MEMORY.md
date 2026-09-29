@@ -259,9 +259,11 @@ Changed:
   hammasi avvalgidek Telegram.
 - Android 1.7.3 (34): `account_notices_v1` kanali (uz/ru/tg), `AccountNoticeMonitor`.
   Play build'da ham ko'rsatiladi (egasi qarori).
-- «Kunlik limit tugadi» (`LimitNotificationService.daily_limit_spent`)
-  O'ZGARMADI: u faqat Android'da limitga urilganda Telegram'ga ketadi; egasining
-  qarori kutilmoqda.
+- «Kunlik limit tugadi» xabari O'CHIRILDI (egasi qarori): u faqat Android'da
+  limitga urilganda Telegram'ga ketardi, endi Android ham botni bermaydi
+  (`android_features.py` practice/gate, `desktop_course_service.py` dars
+  start/complete). Limit ilova ekranida ko'rsatiladi — Mini App va desktop
+  bilan bir xil. `LimitNotificationService` qoldi, lekin hozir chaqiruvchisi yo'q.
 
 Why:
 - Ilova va Telegram bir-birini bilgan holda yuborishi kerak: ilova bor

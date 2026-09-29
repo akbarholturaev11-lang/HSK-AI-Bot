@@ -129,10 +129,10 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("spent", await self._run(True, bot))
 
     async def test_without_a_bot_nothing_is_written_or_sent(self):
-        # A limit reached inside the Mini App or the desktop app passes no bot,
-        # and those clients show the limit on their own screen. Writing the feed
-        # row anyway would dedupe away the notice the Android app must send when
-        # the same learner hits the limit there.
+        # A limit reached inside any client passes no bot: the Mini App, the
+        # desktop app and (since 2026-09-29) the Android app show the limit on
+        # their own screen. Without a bot nothing is written either, so a
+        # later caller that does pass one is not deduped away.
         self.assertIsNone(await self._run(True, None))
         self.record.assert_not_awaited()
 

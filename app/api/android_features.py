@@ -1163,12 +1163,9 @@ def create_android_features_router(
             _validate_practice_selection(payload)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
-                # Bot berilmagan bo'lsa chaqiruv shakli eskisicha qoladi.
-                practice = (
-                    practice_service_factory(session, bot=bot)
-                    if bot is not None
-                    else practice_service_factory(session)
-                )
+                # Bot berilmaydi: limit ilova ekranida ko'rsatiladi, Telegram'ga
+                # alohida xabar ketmaydi (egasi qarori, 2026-09-29).
+                practice = practice_service_factory(session)
                 result = await practice.start(
                     telegram_id,
                     mode=payload.mode,
@@ -1202,12 +1199,9 @@ def create_android_features_router(
             _validate_practice_selection(payload)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
-                # Bot berilmagan bo'lsa chaqiruv shakli eskisicha qoladi.
-                practice = (
-                    practice_service_factory(session, bot=bot)
-                    if bot is not None
-                    else practice_service_factory(session)
-                )
+                # Bot berilmaydi: limit ilova ekranida ko'rsatiladi, Telegram'ga
+                # alohida xabar ketmaydi (egasi qarori, 2026-09-29).
+                practice = practice_service_factory(session)
                 result = await practice.complete(
                     telegram_id,
                     session_id=payload.session_id,
@@ -1784,7 +1778,6 @@ def create_android_features_router(
                     feature_key=feature,
                     ref=payload.ref.strip() or None,
                     lifetime=True,
-                    notify_bot=bot,
                 )
                 # The central engine answers the same question alongside, and
                 # the difference is recorded. It decides nothing here yet.
