@@ -28,6 +28,12 @@ import kotlinx.coroutines.withContext
 
 enum class CheckoutStep { START, COUNTRY, PAY, DONE }
 
+internal fun defaultCheckoutCountry(language: String): String = when (language) {
+    "ru" -> "ru"
+    "uz" -> "uz"
+    else -> "tj"
+}
+
 data class SubscriptionCheckoutState(
     val loading: Boolean = true,
     val quoting: Boolean = false,
@@ -82,7 +88,7 @@ class SubscriptionCheckoutViewModel(
                             discount = data.discount,
                             method = method,
                             plan = plan,
-                            country = if (countrySelectedByUser) current.country else defaultCountry(language),
+                            country = if (countrySelectedByUser) current.country else defaultCheckoutCountry(language),
                             language = language,
                             errorRes = if (data.ok) null else R.string.sub_unavailable,
                         )
@@ -272,12 +278,6 @@ class SubscriptionCheckoutViewModel(
             "ru" -> "ru"
             "tj", "tg", "tg-cyrl" -> "tj"
             else -> "uz"
-        }
-
-        fun defaultCountry(language: String): String = when (language) {
-            "ru" -> "ru"
-            "uz" -> "uz"
-            else -> "tj"
         }
 
         fun receiptName(context: Context, uri: Uri): String = runCatching {
