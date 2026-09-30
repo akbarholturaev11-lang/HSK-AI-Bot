@@ -24,6 +24,8 @@ on:
       - "app/services/subscription_miniapp_service.py"
       - "app/services/course_v3_vocab.py"
       - "app/services/course_v3_word_index.py"
+      - "app/services/desktop_course_service.py"
+      - "app/services/admin_notify_service.py"
       - "app/services/voice_practice_service.py"
       - "app/static/course-v3.html"
       - "app/static/subscription.html"
@@ -34,6 +36,7 @@ on:
       - "tests/test_hsk30_unlock_checkout.py"
       - "tests/test_hsk30_promo_service.py"
       - "tests/test_hsk30_admin_payment_flow.py"
+      - "tests/test_desktop_course_api.py"
   workflow_dispatch:
 
 permissions:
@@ -204,7 +207,8 @@ jobs:
             tests.test_course_track_service \
             tests.test_hsk30_unlock_checkout \
             tests.test_hsk30_promo_service \
-            tests.test_hsk30_admin_payment_flow
+            tests.test_hsk30_admin_payment_flow \
+            tests.test_desktop_course_api
 
       - name: Check Alembic has exactly one head
         run: |
