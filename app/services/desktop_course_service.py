@@ -13,7 +13,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
-from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_gamification_service import CourseGamificationService\nfrom app.services.course_levels import (\n    legacy_content_levels,\n    next_level as registry_next_level,\n    normalize_legacy_content_level,\n)
 from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialError,
     CourseLessonMistakeMaterialService,
@@ -40,9 +40,9 @@ from app.services.support_contact_service import get_admin_contact_url
 
 logger = logging.getLogger(__name__)
 
-COURSE_V3_LEVELS = frozenset({"hsk1", "hsk2", "hsk3", "hsk4"})
+COURSE_V3_LEVELS = frozenset(legacy_content_levels())
 COURSE_V3_LANGUAGES = frozenset({"uz", "ru", "tj"})
-COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4"}
+COURSE_V3_NEXT_BAND = {\n    level: registry_next_level(level)\n    for level in COURSE_V3_LEVELS\n    if registry_next_level(level)\n}
 COURSE_V3_DATA_ROOT = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
 DESKTOP_PREVIEW_COMPLETION_ERROR = "free_feature_limit_reached"
 
@@ -56,8 +56,7 @@ class DesktopCourseError(RuntimeError):
 
 
 def normalize_course_v3_level(value: str | None) -> str:
-    normalized = str(value or "").strip().lower()
-    return normalized if normalized in COURSE_V3_LEVELS else "hsk1"
+    return normalize_legacy_content_level(value)
 
 
 def course_v3_lesson_card_count(lesson: dict[str, Any]) -> int:
