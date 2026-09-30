@@ -1936,6 +1936,43 @@ def write_parts_manifest(plan: dict | None = None, dry: bool = False):
         print(f"wrote {path}: " + ", ".join(f"{lv}={v['total_parts']}" for lv, v in out.items()))
 
 
+def write_hsk30_runtime_manifests(plan: dict | None = None, dry: bool = False):
+    """Write runtime availability manifests consumed by HSK 3.0 onboarding.
+
+    lesson_count is the FLAT Course V3 part count, because course progress and
+    launch_lesson are stored in flat mini-lesson numbering after the split.
+    source_lesson_count keeps the textbook lesson count separately.
+    """
+    plan = plan or build_split_plan()
+    for level, source_count in LEVELS:
+        if not level.startswith("nhsk"):
+            continue
+        out = BASE / level / "manifest.json"
+        payload = {
+            "schema_version": 1,
+            "version": 2,
+            "track": "hsk30",
+            "level": level,
+            "lesson_count": int(plan[level]["total"]),
+            "source_lesson_count": int(source_count),
+            "first_lesson_order": 1,
+            "content_status": "runtime_ready",
+        }
+        text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+        if dry:
+            print(
+                f"[dry] {out}: parts={payload['lesson_count']} "
+                f"source_lessons={source_count}"
+            )
+        else:
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(text, encoding="utf-8")
+            print(
+                f"wrote {out}: parts={payload['lesson_count']} "
+                f"source_lessons={source_count}"
+            )
+
+
 def write_lesson_gate(plan: dict | None = None, dry: bool = False):
     """so'z/belgi -> [HSK daraja, qism raqami] (birinchi O'RGATILGAN joyi —
     endi flat mini-dars raqami).
@@ -2015,6 +2052,7 @@ def main():
         sync_maps(plan, dry=args.dry)
         write_lesson_gate(plan, dry=args.dry)
         write_parts_manifest(plan, dry=args.dry)
+        write_hsk30_runtime_manifests(plan, dry=args.dry)
         return
 
     known_prior: list[dict] = []  # cumulative vocab across all earlier lessons
@@ -2064,6 +2102,7 @@ def main():
         sync_maps(plan, dry=args.dry)
         write_lesson_gate(plan, dry=args.dry)
         write_parts_manifest(plan, dry=args.dry)
+        write_hsk30_runtime_manifests(plan, dry=args.dry)
 
 
 if __name__ == "__main__":
