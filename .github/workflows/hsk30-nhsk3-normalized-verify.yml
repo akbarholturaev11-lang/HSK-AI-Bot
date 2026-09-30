@@ -1,0 +1,26 @@
+name: HSK30 Verify Normalized NHsk3
+
+on:
+  push:
+    branches: [codex/local-ai]
+    paths:
+      - ".github/workflows/hsk30-nhsk3-normalized-verify.yml"
+      - "scripts/hsk30/verify_nhsk3_normalized.py"
+      - "scripts/hsk30/nhsk3_toc_map.json"
+      - "scripts/hsk30/normalized/nhsk3/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-nhsk3-normalized:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/local-ai
+          fetch-depth: 1
+          lfs: false
+      - run: python scripts/hsk30/verify_nhsk3_normalized.py
