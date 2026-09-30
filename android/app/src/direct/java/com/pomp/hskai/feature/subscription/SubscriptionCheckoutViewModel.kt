@@ -140,9 +140,8 @@ class SubscriptionCheckoutViewModel(
                             plan = planFor(method, current.plan, data.prices),
                             language = normalizeLanguage(data.language),
                             step = when {
+                                data.mode == "hsk30_unlock" -> CheckoutStep.REGION
                                 region.isEmpty() -> CheckoutStep.REGION
-                                data.mode == "hsk30_unlock" && hasMethodStep(region) -> CheckoutStep.METHOD
-                                data.mode == "hsk30_unlock" -> CheckoutStep.PAY
                                 else -> CheckoutStep.PLANS
                             },
                             errorRes = if (data.ok) null else R.string.sub_unavailable,
