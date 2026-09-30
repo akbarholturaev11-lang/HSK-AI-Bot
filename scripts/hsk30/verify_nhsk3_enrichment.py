@@ -11,8 +11,10 @@ from nhsk3_adapter import (
 
 def main() -> int:
     files = sorted(TRANSLATION_DIR.glob("lesson_*.json"))
-    if not files:
-        raise SystemExit("FAIL: no N3 translation sidecars found")
+    if len(files) != 18:
+        raise SystemExit(
+            f"FAIL: expected exactly 18 N3 translation sidecars, found {len(files)}"
+        )
 
     translated = 0
     for path in files:
@@ -27,7 +29,9 @@ def main() -> int:
             f"title={seed['title']} translation_layer=complete"
         )
 
-    print(f"OK: N3 enrichment coverage {translated}/18")
+    if translated != 18:
+        raise SystemExit(f"FAIL: N3 enrichment coverage {translated}/18")
+    print("OK: N3 enrichment coverage 18/18")
     return 0
 
 
