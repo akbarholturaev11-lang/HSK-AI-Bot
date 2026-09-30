@@ -1,0 +1,403 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 16,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165
+    ]
+  },
+  "title": {
+    "hanzi": "我听说有的熊猫出国了",
+    "pinyin": "Wǒ tīngshuō yǒu de xióngmāo chūguó le"
+  },
+  "objectives": [
+    "能听懂并描述动物的特征、习性和生活环境。",
+    "能听懂并表达个人对动物的看法。",
+    "掌握比较句（11）的用法，能表达事物在数量或时间上的差异。",
+    "了解大熊猫的基本情况。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "脏",
+      "pinyin": "zāng",
+      "part_of_speech": "adj.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "可爱",
+      "pinyin": "kě'ài",
+      "part_of_speech": "adj.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "一会儿",
+      "pinyin": "yíhuìr",
+      "part_of_speech": "adv.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "脚",
+      "pinyin": "jiǎo",
+      "part_of_speech": "n.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "照顾",
+      "pinyin": "zhàogù",
+      "part_of_speech": "v.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "好像",
+      "pinyin": "hǎoxiàng",
+      "part_of_speech": "v.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "认得",
+      "pinyin": "rènde",
+      "part_of_speech": "v.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "周末",
+      "pinyin": "zhōumò",
+      "part_of_speech": "n.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "动物园",
+      "pinyin": "dòngwùyuán",
+      "part_of_speech": "n.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "动物",
+      "pinyin": "dòngwù",
+      "part_of_speech": "n.",
+      "source_page": 158
+    },
+    {
+      "hanzi": "大熊猫",
+      "pinyin": "dàxióngmāo",
+      "part_of_speech": "n.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "奇怪",
+      "pinyin": "qíguài",
+      "part_of_speech": "adj.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "其实",
+      "pinyin": "qíshí",
+      "part_of_speech": "adv.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "竹子",
+      "pinyin": "zhúzi",
+      "part_of_speech": "n.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "国宝",
+      "pinyin": "guóbǎo",
+      "part_of_speech": "n.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "全",
+      "pinyin": "quán",
+      "part_of_speech": "adj.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "野生",
+      "pinyin": "yěshēng",
+      "part_of_speech": "adj.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "关于",
+      "pinyin": "guānyú",
+      "part_of_speech": "prep.",
+      "source_page": 159
+    },
+    {
+      "hanzi": "饱",
+      "pinyin": "bǎo",
+      "part_of_speech": "adj.",
+      "source_page": 161
+    },
+    {
+      "hanzi": "张",
+      "pinyin": "zhāng",
+      "part_of_speech": "v.",
+      "source_page": 161
+    },
+    {
+      "hanzi": "嘴",
+      "pinyin": "zuǐ",
+      "part_of_speech": "n.",
+      "source_page": 161
+    },
+    {
+      "hanzi": "身边",
+      "pinyin": "shēnbiān",
+      "part_of_speech": "n.",
+      "source_page": 161
+    },
+    {
+      "hanzi": "半天",
+      "pinyin": "bàntiān",
+      "part_of_speech": "num.-m.",
+      "source_page": 161
+    },
+    {
+      "hanzi": "脸",
+      "pinyin": "liǎn",
+      "part_of_speech": "n.",
+      "source_page": 161
+    },
+    {
+      "hanzi": "大人",
+      "pinyin": "dàren",
+      "part_of_speech": "n.",
+      "source_page": 162
+    },
+    {
+      "hanzi": "喜爱",
+      "pinyin": "xǐ'ài",
+      "part_of_speech": "v.",
+      "source_page": 162
+    }
+  ],
+  "grammar": [
+    {
+      "label": "并列复句“一会儿……，一会儿……”",
+      "source_page": 158,
+      "examples": [
+        {
+          "hanzi": "它一会儿在你脚边睡觉，一会儿在你身上爬。",
+          "pinyin": "Tā yíhuìr zài nǐ jiǎobiān shuìjiào, yíhuìr zài nǐ shēnshang pá."
+        },
+        {
+          "hanzi": "他一会儿进来，一会儿出去，忙得很。",
+          "pinyin": "Tā yíhuìr jìnlái, yíhuìr chūqù, máng de hěn."
+        },
+        {
+          "hanzi": "最近天气变化很快，一会儿冷，一会儿热。",
+          "pinyin": "Zuìjìn tiānqì biànhuà hěn kuài, yíhuìr lěng, yíhuìr rè."
+        }
+      ]
+    },
+    {
+      "label": "介词“关于”",
+      "source_page": 160,
+      "examples": [
+        {
+          "hanzi": "关于这个问题，我得慢慢给你讲。",
+          "pinyin": "Guānyú zhège wèntí, wǒ děi mànmàn gěi nǐ jiǎng."
+        },
+        {
+          "hanzi": "关于他的要求，我们还要开会以后再决定。",
+          "pinyin": "Guānyú tā de yāoqiú, wǒmen hái yào kāihuì yǐhòu zài juédìng."
+        },
+        {
+          "hanzi": "关于比赛的时间，我明天一定告诉大家。",
+          "pinyin": "Guānyú bǐsài de shíjiān, wǒ míngtiān yídìng gàosu dàjiā."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“一般来说”",
+      "source_page": 161,
+      "examples": [
+        {
+          "hanzi": "一般来说，熊猫每天要睡很多次觉。",
+          "pinyin": "Yìbān láishuō, xióngmāo měitiān yào shuì hěn duō cì jiào."
+        },
+        {
+          "hanzi": "一般来说，这种树每年开一次花。",
+          "pinyin": "Yìbān láishuō, zhè zhǒng shù měinián kāi yí cì huā."
+        },
+        {
+          "hanzi": "一般来说，学习外语需要多练习。",
+          "pinyin": "Yìbān láishuō, xuéxí wàiyǔ xūyào duō liànxí."
+        }
+      ]
+    },
+    {
+      "label": "比较句（11）",
+      "source_page": 163,
+      "examples": [
+        {
+          "hanzi": "冬天比夏天早关门一个小时。",
+          "pinyin": "Dōngtiān bǐ xiàtiān zǎo guānmén yí ge xiǎoshí."
+        },
+        {
+          "hanzi": "哥哥比弟弟多吃了三个饺子。",
+          "pinyin": "Gēge bǐ dìdi duō chī le sān ge jiǎozi."
+        },
+        {
+          "hanzi": "我比他晚到了十分钟。",
+          "pinyin": "Wǒ bǐ tā wǎn dào le shí fēnzhōng."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在一家宠物领养店，王一雪和孩子们在看动物。",
+      "source_page": 157,
+      "turns": [
+        {
+          "speaker": "刘小雪",
+          "hanzi": "这只小猫你们养了多久了？",
+          "pinyin": "Zhè zhī xiǎomāo nǐmen yǎng le duō jiǔ le?"
+        },
+        {
+          "speaker": "服务员",
+          "hanzi": "已经一年多了。第一天看见它的时候，它又脏又小。",
+          "pinyin": "Yǐjīng yì nián duō le. Dì yī tiān kànjiàn tā de shíhou, tā yòu zāng yòu xiǎo."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "现在它变得又干净又漂亮了。",
+          "pinyin": "Xiànzài tā biàn de yòu gānjìng yòu piàoliang le."
+        },
+        {
+          "speaker": "服务员",
+          "hanzi": "是啊。它还特别可爱，一会儿在你脚边睡觉，一会儿在你身上爬。",
+          "pinyin": "Shì a. Tā hái tèbié kě'ài, yíhuìr zài nǐ jiǎobiān shuìjiào, yíhuìr zài nǐ shēnshang pá."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "你们把它照顾得真好。",
+          "pinyin": "Nǐmen bǎ tā zhàogù de zhēn hǎo."
+        },
+        {
+          "speaker": "服务员",
+          "hanzi": "它就好像我们的孩子，我们照顾它，它也认得我们了。",
+          "pinyin": "Tā jiù hǎoxiàng wǒmen de háizi, wǒmen zhàogù tā, tā yě rènde wǒmen le."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "妈妈，我们家也养一只小猫吧。",
+          "pinyin": "Māma, wǒmen jiā yě yǎng yì zhī xiǎomāo ba."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "咱们没时间照顾，还是别养了，我周末带你们去北京动物园看动物吧。",
+          "pinyin": "Zánmen méi shíjiān zhàogù, háishi bié yǎng le, wǒ zhōumò dài nǐmen qù Běijīng Dòngwùyuán kàn dòngwù ba."
+        }
+      ]
+    },
+    {
+      "scene": "在动物园，王一雪和孩子们边走边聊。",
+      "source_page": 159,
+      "turns": [
+        {
+          "speaker": "刘小明",
+          "hanzi": "妈妈，大熊猫这个名字很奇怪，它们跟猫有什么关系？",
+          "pinyin": "Māma, dàxióngmāo zhège míngzi hěn qíguài, tāmen gēn māo yǒu shénme guānxì?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "这个问题问得好，它们跟猫没什么关系，其实应该叫大猫熊。",
+          "pinyin": "Zhège wèntí wèn de hǎo, tāmen gēn māo méi shénme guānxì, qíshí yīnggāi jiào dàmāoxióng."
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "大熊猫为什么只吃竹子不吃肉？",
+          "pinyin": "Dàxióngmāo wèishénme zhǐ chī zhúzi bù chī ròu?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "它们跟人一样，也可以吃肉，但是对肉不感兴趣。",
+          "pinyin": "Tāmen gēn rén yíyàng, yě kěyǐ chī ròu, dànshì duì ròu bù gǎn xìngqù."
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "大熊猫为什么是中国的国宝？",
+          "pinyin": "Dàxióngmāo wèishénme shì Zhōngguó de guóbǎo?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "全世界只有中国有野生大熊猫，中国是大熊猫的家。",
+          "pinyin": "Quán shìjiè zhǐ yǒu Zhōngguó yǒu yěshēng dàxióngmāo, Zhōngguó shì dàxióngmāo de jiā."
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "我听说有的熊猫出国了，他们去哪儿了？",
+          "pinyin": "Wǒ tīngshuō yǒu de xióngmāo chūguó le, tāmen qù nǎr le?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "关于这个问题，我得慢慢给你讲。",
+          "pinyin": "Guānyú zhège wèntí, wǒ děi mànmàn gěi nǐ jiǎng."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "弟弟，你真是“十万个为什么”。",
+          "pinyin": "Dìdi, nǐ zhēn shì 'shí wàn ge wèishénme'."
+        }
+      ]
+    },
+    {
+      "scene": "在熊猫馆，王一雪和孩子们在看大熊猫。",
+      "source_page": 161,
+      "turns": [
+        {
+          "speaker": "刘小雪",
+          "hanzi": "这只大熊猫一会儿爬上去，一会儿跳下来，可爱极了！",
+          "pinyin": "Zhè zhī dàxióngmāo yíhuìr pá shàngqu, yíhuìr tiào xiàlái, kě'ài jí le!"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "它好像还没吃饱，站起来张着嘴找吃的呢。",
+          "pinyin": "Tā hǎoxiàng hái méi chī bǎo, zhàn qǐlái zhāngzhe zuǐ zhǎo chī de ne."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "它身边那只熊猫半天没动，是不是在睡觉呢？",
+          "pinyin": "Tā shēnbiān nà zhī xióngmāo bàntiān méi dòng, shì bú shì zài shuìjiào ne?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我看不见它的脸，可能是吧。一般来说，熊猫每天要睡很多次觉。",
+          "pinyin": "Wǒ kàn bu jiàn tā de liǎn, kěnéng shì ba. Yìbān láishuō, xióngmāo měitiān yào shuì hěn duō cì jiào."
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "对，除了睡觉以外，很多时间都在吃东西。",
+          "pinyin": "Duì, chúle shuìjiào yǐwài, hěn duō shíjiān dōu zài chī dōngxi."
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "大熊猫的生活真舒服啊！",
+          "pinyin": "Dàxióngmāo de shēnghuó zhēn shūfu a!"
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "妈妈，您帮我和这两只大熊猫照一张照片吧。",
+          "pinyin": "Māma, nín bāng wǒ hé zhè liǎng zhī dàxióngmāo zhào yì zhāng zhàopiàn ba."
+        }
+      ]
+    }
+  ]
+}
