@@ -1199,7 +1199,12 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
 
     if state == EntitlementState.PRO_ACTIVE:
         approved = next(
-            (item for item in payments if getattr(item, "payment_status", "") == "approved"),
+            (
+                item
+                for item in payments
+                if getattr(item, "payment_status", "") == "approved"
+                and getattr(item, "plan_type", "") != HSK30_UNLOCK_PLAN_TYPE
+            ),
             None,
         )
         approved_at = (
