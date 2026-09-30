@@ -5,40 +5,47 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-SEED = ROOT / "seed_nhsk1_lesson_01.py"
+
+EXPECTED = {
+    1: {"vocab": 12, "dialogues": 3, "lines": 10, "grammar": 0},
+    2: {"vocab": 15, "dialogues": 3, "lines": 10, "grammar": 1},
+}
 
 
-def load_seed():
-    spec = importlib.util.spec_from_file_location("seed_nhsk1_lesson_01", SEED)
+def load_seed(order: int):
+    path = ROOT / f"seed_nhsk1_lesson_{order:02d}.py"
+    spec = importlib.util.spec_from_file_location(path.stem, path)
     if spec is None or spec.loader is None:
-        raise RuntimeError("cannot load seed")
+        raise RuntimeError(f"cannot load {path}")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
 
 
-def main() -> None:
-    mod = load_seed()
+def verify(order: int) -> dict[str, int]:
+    mod = load_seed(order)
     lesson = mod.LESSON
+    exp = EXPECTED[order]
+
     assert lesson["level"] == "nhsk1"
-    assert lesson["lesson_order"] == 1
-    assert lesson["lesson_code"] == "NHSK1-L01"
+    assert lesson["lesson_order"] == order
+    assert lesson["lesson_code"] == f"NHSK1-L{order:02d}"
 
     vocab = json.loads(lesson["vocabulary_json"])
     dialogues = json.loads(lesson["dialogue_json"])
     grammar = json.loads(lesson["grammar_json"])
 
-    assert len(vocab) == 12, f"expected 12 core vocabulary items, got {len(vocab)}"
-    assert len({w["zh"] for w in vocab}) == len(vocab), "duplicate vocabulary"
-    assert grammar == [], "lesson 1 should not invent grammar items"
+    assert len(vocab) == exp["vocab"], (order, "vocab", len(vocab))
+    assert len({w["zh"] for w in vocab}) == len(vocab), f"lesson {order}: duplicate vocab"
+    assert len(dialogues) == exp["dialogues"], (order, "dialogues", len(dialogues))
+    assert len(grammar) == exp["grammar"], (order, "grammar", len(grammar))
 
     required_langs = ("uz", "ru", "tj")
     for word in vocab:
         assert word["zh"] and word["pinyin"] and word["pos"]
         for lang in required_langs:
-            assert word.get(lang), f"missing {lang} for {word['zh']}"
+            assert word.get(lang), f"lesson {order}: missing {lang} for {word['zh']}"
 
-    assert len(dialogues) == 3, f"expected 3 dialogue blocks, got {len(dialogues)}"
     line_count = 0
     for block in dialogues:
         assert block.get("scene_zh")
@@ -48,11 +55,26 @@ def main() -> None:
             line_count += 1
             assert line["speaker"] and line["zh"] and line["pinyin"]
             for lang in required_langs:
-                assert line.get(lang), f"missing {lang} dialogue translation for {line['zh']}"
-    assert line_count == 10, f"expected 10 dialogue lines, got {line_count}"
+                assert line.get(lang), f"lesson {order}: missing {lang} for {line['zh']}"
+    assert line_count == exp["lines"], (order, "lines", line_count)
 
-    print("OK: nhsk1 lesson 01 source")
-    print(f"vocabulary={len(vocab)} dialogues={len(dialogues)} lines={line_count} grammar={len(grammar)}")
+    for g in grammar:
+        assert g["title_zh"]
+        for lang in required_langs:
+            assert g.get(f"title_{lang}") and g.get(f"rule_{lang}")
+        assert g.get("examples")
+        for ex in g["examples"]:
+            assert ex["zh"] and ex["pinyin"]
+            for lang in required_langs:
+                assert ex.get(lang)
+
+    return {"vocab": len(vocab), "dialogues": len(dialogues), "lines": line_count, "grammar": len(grammar)}
+
+
+def main() -> None:
+    for order in sorted(EXPECTED):
+        stats = verify(order)
+        print(f"OK lesson {order:02d}: " + " ".join(f"{k}={v}" for k, v in stats.items()))
 
 
 if __name__ == "__main__":
