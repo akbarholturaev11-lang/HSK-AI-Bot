@@ -114,6 +114,7 @@ ANDROID_PROFILE_AVATARS = {"", "panda_cheer", "panda_streak", "panda_worried"}
 
 ANDROID_CHECKOUT_ORIGIN_SOURCES = {
     "onboarding_plan": "android_onboarding_plan",
+    "hsk30_onboarding": "android_hsk30_onboarding",
     "course_limit": "android_course_limit",
     "course_lesson_limit": "android_course_lesson_limit",
     "practice_limit": "android_practice_limit",
