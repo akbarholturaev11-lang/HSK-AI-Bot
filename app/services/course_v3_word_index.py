@@ -32,27 +32,14 @@ logger = logging.getLogger(__name__)
 
 _GATE_PATH = Path("app/static/course_v3_data/lesson_gate.js")
 _GATE_PATTERN = re.compile(r"window\.HSK_WORD_GATE\s*=\s*(\{.*?\})\s*;", re.S)
-_LEVELS = ("hsk1", "hsk2", "hsk3", "hsk4")
-
-# Kurs oqimidagi bilan bir xil normallashtirish.
-_LEVEL_FALLBACK = {
-    "beginner": "hsk1",
-    "az0": "hsk1",
-    "hsk1": "hsk1",
-    "hsk2": "hsk2",
-    "hsk3": "hsk3",
-    "hsk4": "hsk4",
-    "hsk4a": "hsk4",
-    "hsk4b": "hsk4",
-}
+_LEVELS = legacy_content_levels()
 
 # {zh: (hsk_level, first_part)}
 _cache: dict[str, tuple[int, int]] | None = None
 
 
 def normalize_level(value: str | None) -> str:
-    normalized = str(value or "").strip().lower()
-    return _LEVEL_FALLBACK.get(normalized, "hsk1")
+    return normalize_legacy_content_level(value)
 
 
 def level_number(level: str | None) -> int:
