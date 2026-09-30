@@ -106,8 +106,13 @@ jobs:
           gate = base / "lesson_gate_hsk30.js"
           assert gate.is_file(), "missing lesson_gate_hsk30.js"
           text = gate.read_text(encoding="utf-8")
-          assert "window.HSK_WORD_GATE=" in text
-          assert "window.HSK_CHAR_GATE=" in text
+          assert "window.HSK30_WORD_GATE=" in text
+          assert "window.HSK30_CHAR_GATE=" in text
+
+          words_asset = base / "hsk30-words.js"
+          assert words_asset.is_file(), "missing hsk30-words.js"
+          words_text = words_asset.read_text(encoding="utf-8")
+          assert "window.HSK30_WORDS=" in words_text
 
           print(
               "OK: HSK 3.0 runtime",
@@ -136,6 +141,7 @@ jobs:
             app/static/course_v3_data/nhsk2.json \
             app/static/course_v3_data/nhsk3.json \
             app/static/course_v3_data/lesson_gate_hsk30.js \
+            app/static/course_v3_data/hsk30-words.js \
             app/static/course_v3_data/parts_manifest.json
 
           if git diff --cached --quiet; then
