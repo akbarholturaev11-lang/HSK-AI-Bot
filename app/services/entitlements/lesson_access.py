@@ -46,7 +46,8 @@ class LessonAccessService:
 
         normalized_level = str(level or "").strip().lower()
         if normalized_level.startswith("nhsk"):
-            hsk30_access = await CourseTrackService(self.session).hsk30_access(user)
+            track_service = CourseTrackService(self.session)
+            hsk30_access = await track_service.hsk30_access(user)
             access_payload = hsk30_access.payload()
             if not hsk30_access.allowed:
                 return {
@@ -60,11 +61,29 @@ class LessonAccessService:
                     "window": "none",
                     "reset_at": None,
                 }
+            if not await track_service.hsk30_feature.is_level_live(normalized_level):
+                return {
+                    **payload,
+                    "ok": False,
+                    "allowed": False,
+                    "error": "hsk30_level_not_live",
+                    "hsk30_access": {
+                        **access_payload,
+                        "level_live": False,
+                    },
+                    "limit": None,
+                    "remaining": None,
+                    "window": "none",
+                    "reset_at": None,
+                }
             return {
                 **payload,
                 "ok": True,
                 "allowed": True,
-                "hsk30_access": access_payload,
+                "hsk30_access": {
+                    **access_payload,
+                    "level_live": True,
+                },
                 "limit": None,
                 "remaining": None,
                 "window": "none",
