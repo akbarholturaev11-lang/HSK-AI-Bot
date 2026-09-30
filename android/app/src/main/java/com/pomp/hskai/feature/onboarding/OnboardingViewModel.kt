@@ -51,8 +51,14 @@ class OnboardingViewModel(
                             loading = false,
                             completed = status.ok && status.completed,
                             ui = it.ui.copy(
+                                selectedTrack = if (status.level.lowercase().startsWith("nhsk")) "hsk30" else it.ui.selectedTrack,
                                 selectedLevel = normalizeLevel(status.level),
                                 selectedGoal = status.profile.goal.takeIf(::validGoal) ?: "hsk_exam",
+                                hsk30Enabled = status.hsk30.enabled,
+                                hsk30Allowed = status.hsk30.allowed,
+                                hsk30LiveLevels = status.hsk30.liveLevels.filter { level -> level in HSK30_LEVELS }
+                                    .ifEmpty { listOf("nhsk1") },
+                                hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(1),
                             ),
                             error = if (status.ok) null else ApiError.Unknown,
                         )
@@ -65,8 +71,27 @@ class OnboardingViewModel(
         }
     }
 
+    fun selectTrack(track: String) {
+        val current = _state.value.ui
+        if (current.submitting || track !in TRACKS) return
+        if (track == "hsk30" && !current.hsk30Enabled) return
+        val levels = if (track == "hsk30") current.hsk30LiveLevels else HSK20_LEVELS.toList()
+        val selected = current.selectedLevel.takeIf { it in levels }
+            ?: if (track == "hsk30") levels.firstOrNull().orEmpty().ifBlank { "nhsk1" }
+            else "beginner"
+        _state.update {
+            it.copy(ui = it.ui.copy(
+                selectedTrack = track,
+                selectedLevel = selected,
+                error = false,
+            ))
+        }
+    }
+
     fun selectLevel(level: String) {
-        if (_state.value.ui.submitting || !validLevel(level)) return
+        val current = _state.value.ui
+        val allowed = if (current.selectedTrack == "hsk30") current.hsk30LiveLevels else HSK20_LEVELS
+        if (current.submitting || level !in allowed) return
         _state.update { it.copy(ui = it.ui.copy(selectedLevel = level, error = false)) }
     }
 
@@ -85,6 +110,7 @@ class OnboardingViewModel(
     fun next() {
         val current = _state.value
         if (current.ui.submitting) return
+        if (current.ui.step >= 2 && current.ui.needsHsk30Unlock) return
         if (current.ui.step < 2) {
             _state.update { it.copy(ui = it.ui.copy(step = it.ui.step + 1, error = false)) }
             return
@@ -135,10 +161,9 @@ class OnboardingViewModel(
 
     private fun normalizeLevel(level: String): String {
         val normalized = level.lowercase()
-        return if (validLevel(normalized)) normalized else "beginner"
+        return if (normalized in LEVELS) normalized else "beginner"
     }
 
-    private fun validLevel(level: String) = level in LEVELS
     private fun validGoal(goal: String) = goal in GOALS
 
     class Factory(
@@ -151,7 +176,10 @@ class OnboardingViewModel(
     }
 
     private companion object {
-        val LEVELS = setOf("beginner", "hsk1", "hsk2", "hsk3", "hsk4")
+        val TRACKS = setOf("hsk20", "hsk30")
+        val HSK20_LEVELS = setOf("beginner", "hsk1", "hsk2", "hsk3", "hsk4")
+        val HSK30_LEVELS = setOf("nhsk1", "nhsk2", "nhsk3")
+        val LEVELS = HSK20_LEVELS + HSK30_LEVELS
         val GOALS = setOf("hsk_exam", "study_china", "work_china", "daily_communication", "travel")
     }
 }
