@@ -7,6 +7,7 @@ from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.payment import Payment
 from app.services.subscription_currency_service import format_subscription_price
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.db.models.referral import Referral
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
@@ -245,7 +246,10 @@ async def approved_revenue_text(session) -> str:
     """Keep distinct payment currencies separate in the Telegram report."""
     rows = (await session.execute(
         select(Payment.currency, func.sum(Payment.amount).label("total_sum"))
-        .where(Payment.payment_status == "approved")
+        .where(
+            Payment.payment_status == "approved",
+            Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
+        )
         .group_by(Payment.currency)
         .order_by(Payment.currency)
     )).all()
