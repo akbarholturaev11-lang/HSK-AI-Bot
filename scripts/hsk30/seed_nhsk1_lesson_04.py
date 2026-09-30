@@ -88,7 +88,7 @@ LESSON = {
                     {"speaker": "Wang Yixue", "zh": "我有两个哥哥，你呢？", "pinyin": "Wǒ yǒu liǎng ge gēge, nǐ ne?", "en": "I have two elder brothers. How about you?", "uz": "Mening ikkita akam bor, sen-chi?", "ru": "У меня два старших брата. А у тебя?", "tj": "Ман ду бародари калон дорам, ту чӣ?"},
                     {"speaker": "Yang Tongle", "zh": "我没有哥哥。", "pinyin": "Wǒ méiyǒu gēge.", "en": "I don't have any elder brothers.", "uz": "Mening akam yo‘q.", "ru": "У меня нет старшего брата.", "tj": "Ман бародари калон надорам."},
                     {"speaker": "Wang Yixue", "zh": "你家有几口人？", "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?", "en": "How many people are there in your family?", "uz": "Oilangda nechta odam bor?", "ru": "Сколько человек в твоей семье?", "tj": "Дар оилаи ту чанд нафар ҳаст?"},
-                    {"speaker": "Yang Tongle", "zh": "我家有四口人，爸爸、妈妈、哥哥、妹妹和我。", "pinyin": "Wǒ jiā yǒu sì kǒu rén, bàba, māma, gēge, mèimei hé wǒ.", "en": "There are four people in my family: my dad, my mom, my younger sister, and me.", "uz": "Oilamda to‘rt kishi bor: dadam, onam, akam, singlim va men.", "ru": "В моей семье четыре человека: папа, мама, старший брат, младшая сестра и я.", "tj": "Дар оилаи ман чор нафар ҳаст: падар, модар, бародари калон, хоҳари хурдӣ ва ман."},
+                    {"speaker": "Yang Tongle", "zh": "我家有四口人，爸爸、妈妈、妹妹和我。", "pinyin": "Wǒ jiā yǒu sì kǒu rén, bàba, māma, mèimei hé wǒ.", "en": "There are four people in my family: my dad, my mom, my younger sister, and me.", "uz": "Oilamda to‘rt kishi bor: dadam, onam, singlim va men.", "ru": "В моей семье четыре человека: папа, мама, младшая сестра и я.", "tj": "Дар оилаи ман чор нафар ҳаст: падар, модар, хоҳари хурдӣ ва ман."},
                 ],
             },
             {
