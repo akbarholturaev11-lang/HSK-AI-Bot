@@ -7,6 +7,7 @@ import logging
 from pathlib import Path
 
 from app.repositories.user_repo import UserRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_engine_service import (
     CourseEngineService,
     get_next_course_level,
@@ -75,6 +76,12 @@ from app.bot.utils.course_formatter import (
 from app.services.course_v3_parts import (
     current_part as course_v3_current_part,
     part_meta as course_v3_part_meta,
+)
+from app.services.course_levels import (
+    TRACK_HSK30,
+    content_level,
+    is_hsk30_level,
+    level_spec,
 )
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.services.course_reminder_service import reminder_tz_label
@@ -292,11 +299,20 @@ async def send_course_miniapp_entry(
     entry_lesson = lesson
     if entry_lesson is None:
         try:
-            engine = CourseEngineService(session)
-            resolved_level = _course_level_candidates(getattr(user, "level", None))[0]
-            # get_or_create_progress -> (user, progress, error_key)
-            _u, progress, _err = await engine.get_or_create_progress(telegram_id)
-            completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
+            if user and is_hsk30_level(getattr(user, "level", None)):
+                resolved_level = content_level(getattr(user, "level", None))
+                progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+                completed = (
+                    int(getattr(progress, "completed_lessons_count", 0) or 0)
+                    if progress and content_level(getattr(progress, "level", None)) == resolved_level
+                    else 0
+                )
+            else:
+                engine = CourseEngineService(session)
+                resolved_level = _course_level_candidates(getattr(user, "level", None))[0]
+                # get_or_create_progress -> (user, progress, error_key)
+                _u, progress, _err = await engine.get_or_create_progress(telegram_id)
+                completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
             # Darslar mini-qismlarga bo'lingan: joriy qism = tugatilgan + 1 (FLAT
             # raqamlash), darajadagi jami qismlardan oshmagan holda. Bu Mini App
             # xaritasi (/api/v3/map) bilan bir xil raqamni beradi.
@@ -371,6 +387,16 @@ async def _block_if_course_disabled(callback, session):
 
     if callback.data != "course:back_to_qa":
         user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+        if user and is_hsk30_level(getattr(user, "level", None)):
+            await callback.answer()
+            await send_course_miniapp_entry(
+                session=session,
+                telegram_id=callback.from_user.id,
+                respond=callback.message.answer,
+                source="legacy_hsk30_redirect",
+                level=content_level(getattr(user, "level", None)),
+            )
+            return True
         if user and not await _ensure_active_course_access(
             session=session,
             user=user,
@@ -640,11 +666,11 @@ def _lesson_selection_markup(lessons: list, resolved_level: str, lang: str):
 
 
 def _course_level_label(level: str | None) -> str:
-    normalized = (level or "").strip().lower()
-    if normalized.startswith("hsk") and len(normalized) > 3:
-        return f"HSK {normalized[3:]}"
-    if normalized == "beginner":
-        return "HSK 1"
+    spec = level_spec(level)
+    if spec:
+        if spec.track == TRACK_HSK30:
+            return f"HSK 3.0 · {spec.band}"
+        return f"HSK {spec.band}"
     return (level or "HSK").upper()
 
 
