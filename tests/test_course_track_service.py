@@ -109,6 +109,27 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             "course_track_level_change_use_level_flow",
         )
 
+    async def test_unavailable_nhsk4_cannot_be_selected_directly(self):
+        self.user.status = "active"
+        self.user.payment_status = "approved"
+        self.user.end_date = datetime.now(timezone.utc) + timedelta(days=5)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True)
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=None),
+            list_for_user=AsyncMock(return_value=[]),
+        )
+
+        with self.assertRaises(CourseTrackError) as ctx:
+            await self.service.switch(
+                self.user,
+                target_track=TRACK_HSK30,
+                requested_level="nhsk4",
+            )
+
+        self.assertEqual(ctx.exception.code, "invalid_course_track_level")
+
     async def test_paid_user_can_switch_without_permanent_unlock(self):
         self.user.status = "active"
         self.user.payment_status = "approved"
