@@ -130,6 +130,72 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(ctx.exception.code, "invalid_course_track_level")
 
+    async def test_expired_paid_subscription_locks_hsk30_without_permanent_unlock(self):
+        self.user.status = "active"
+        self.user.payment_status = "approved"
+        self.user.end_date = datetime.now(timezone.utc) - timedelta(minutes=1)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True)
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(
+                return_value=_FakeState(
+                    track=TRACK_HSK30,
+                    level="nhsk1",
+                    completed=8,
+                )
+            ),
+        )
+
+        access = await self.service.hsk30_access(self.user)
+
+        self.assertFalse(access.allowed)
+        self.assertFalse(access.paid_access)
+        self.assertFalse(access.permanently_unlocked)
+        self.assertEqual(access.reason, "hsk30_unlock_required")
+
+    async def test_expired_paid_subscription_keeps_hsk30_with_permanent_unlock(self):
+        self.user.status = "active"
+        self.user.payment_status = "approved"
+        self.user.end_date = datetime.now(timezone.utc) - timedelta(minutes=1)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True)
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(
+                return_value=_FakeState(
+                    track=TRACK_HSK30,
+                    level="nhsk1",
+                    completed=8,
+                    unlocked_at=datetime.now(timezone.utc) - timedelta(days=2),
+                )
+            ),
+        )
+
+        access = await self.service.hsk30_access(self.user)
+
+        self.assertTrue(access.allowed)
+        self.assertFalse(access.paid_access)
+        self.assertTrue(access.permanently_unlocked)
+        self.assertEqual(access.reason, "permanent_unlock")
+
+    async def test_trial_does_not_open_hsk30(self):
+        self.user.status = "active"
+        self.user.payment_status = "none"
+        self.user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True)
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=None),
+        )
+
+        access = await self.service.hsk30_access(self.user)
+
+        self.assertFalse(access.allowed)
+        self.assertFalse(access.paid_access)
+        self.assertEqual(access.reason, "hsk30_unlock_required")
+
     async def test_paid_user_can_switch_without_permanent_unlock(self):
         self.user.status = "active"
         self.user.payment_status = "approved"
