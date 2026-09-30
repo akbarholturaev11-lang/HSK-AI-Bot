@@ -40,7 +40,31 @@ import random
 from pathlib import Path
 
 BASE = Path("app/static/course_v3_data")
-LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
+LEGACY_LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
+HSK30_LEVELS = [("nhsk1", 15), ("nhsk2", 15)]
+TRACK_LEVELS = {
+    "hsk20": LEGACY_LEVELS,
+    "hsk30": HSK30_LEVELS,
+}
+# Default stays legacy so importing this module cannot change the existing course.
+LEVELS = list(LEGACY_LEVELS)
+
+
+def level_band(level: str) -> int:
+    raw = str(level or "").strip().lower()
+    if raw.startswith("nhsk"):
+        raw = raw[4:]
+    elif raw.startswith("hsk"):
+        raw = raw[3:]
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return 1
+
+
+def level_label(level: str) -> str:
+    band = level_band(level)
+    return f"HSK 3.0 · N{band}" if str(level).startswith("nhsk") else f"HSK {band}"
 
 # Har bir HSK darsligi darsi bir nechta QISQA mini-darsga (qismga) bo'linadi:
 # har qismda ko'pi bilan PART_MAX_WORDS yangi so'z o'rgatiladi va shu qism
@@ -355,6 +379,11 @@ def build_exit_ticket(level: str, src: int, checkpoint: bool) -> dict | None:
 # --------------------------------------------------------------------------
 def load_seed_lesson(level: str, order: int) -> dict:
     """Return the canonical (post-materials) lesson dict for a level/order."""
+    if level.startswith("nhsk"):
+        mod = importlib.import_module(
+            f"scripts.hsk30.seed_{level}_lesson_{order:02d}"
+        )
+        return dict(mod.LESSON)
     if level == "hsk4" and order >= 11:
         mod = importlib.import_module("scripts.hsk4_lower_seed_data")
         return mod.build_lesson(order)
@@ -1548,7 +1577,7 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
     if not isinstance(goal, dict):
         goal = {}
 
-    lvl = int(level.replace("hsk", "") or 0)
+    lvl = level_band(level)
     pi = part["part_idx"]
     checkpoint = part["checkpoint"]
     part_count = len(lesson["parts"])
@@ -1771,7 +1800,24 @@ def sync_maps(plan: dict | None = None, dry: bool = False):
     idx = build_word_pinyin_index()
     for level, count in LEVELS:
         path = BASE / f"{level}.json"
-        data = json.loads(path.read_text(encoding="utf-8"))
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            data = {
+                "schema_version": 2,
+                "level": level,
+                "label": level_label(level),
+                "authenticated": False,
+                "progress": {
+                    "streak": 0,
+                    "xp": 0,
+                    "completed": 0,
+                    "league": "Bronze",
+                },
+                "units": [],
+            }
+        data["level"] = level
+        data["label"] = level_label(level)
         units = []
         for les in plan[level]["lessons"]:
             src = les["src"]
@@ -1846,9 +1892,20 @@ def sync_maps(plan: dict | None = None, dry: bool = False):
 
 def write_parts_manifest(plan: dict | None = None, dry: bool = False):
     """parts_manifest.json — HSK dars -> qismlar xaritasi (flat raqamlar).
-    Progress migratsiyasi va tekshiruv skriptlari uchun yagona manba."""
+
+    Track-specific runs merge their levels into the shared manifest so
+    generating HSK 3.0 never deletes the existing HSK 2.0 mappings (or vice
+    versa).
+    """
     plan = plan or build_split_plan()
-    out: dict[str, dict] = {}
+    path = BASE / "parts_manifest.json"
+    if path.exists():
+        try:
+            out: dict[str, dict] = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, TypeError):
+            out = {}
+    else:
+        out = {}
     for level, count in LEVELS:
         lessons = []
         for les in plan[level]["lessons"]:
@@ -1881,7 +1938,7 @@ def write_lesson_gate(plan: dict | None = None, dry: bool = False):
     words: dict[str, list[int]] = {}
     chars: dict[str, list[int]] = {}
     for level, count in LEVELS:
-        lvl = int(level.replace("hsk", "") or 1)
+        lvl = level_band(level)
         for les in plan[level]["lessons"]:
             for part in les["parts"]:
                 for w in part["chunk"]:
@@ -1899,7 +1956,12 @@ def write_lesson_gate(plan: dict | None = None, dry: bool = False):
         "window.HSK_WORD_GATE=" + json.dumps(words, ensure_ascii=False, separators=(",", ":")) + ";\n"
         "window.HSK_CHAR_GATE=" + json.dumps(chars, ensure_ascii=False, separators=(",", ":")) + ";\n"
     )
-    out = BASE / "lesson_gate.js"
+    gate_name = (
+        "lesson_gate_hsk30.js"
+        if LEVELS and all(level.startswith("nhsk") for level, _ in LEVELS)
+        else "lesson_gate.js"
+    )
+    out = BASE / gate_name
     if dry:
         print(f"[dry] {out}: words={len(words)} chars={len(chars)}")
     else:
@@ -1908,13 +1970,35 @@ def write_lesson_gate(plan: dict | None = None, dry: bool = False):
 
 
 def main():
+    global LEVELS
+
     ap = argparse.ArgumentParser()
-    ap.add_argument("--level", help="only this level (hsk1..hsk4)")
+    ap.add_argument(
+        "--track",
+        choices=("hsk20", "hsk30"),
+        default=None,
+        help="course track; defaults to hsk20 unless --level starts with nhsk",
+    )
+    ap.add_argument(
+        "--level",
+        help="only this level (hsk1..hsk4 or nhsk1..nhsk2)",
+    )
     ap.add_argument("--lesson", type=int, help="only this SOURCE lesson (uning hamma qismlari)")
     ap.add_argument("--dry", action="store_true", help="print, do not write")
     ap.add_argument("--maps-only", action="store_true", help="only sync <level>.json maps")
     ap.add_argument("--no-maps", action="store_true", help="skip map sync")
     args = ap.parse_args()
+
+    track = args.track or (
+        "hsk30" if str(args.level or "").startswith("nhsk") else "hsk20"
+    )
+    LEVELS = list(TRACK_LEVELS[track])
+    active_levels = {level for level, _ in LEVELS}
+    if args.level and args.level not in active_levels:
+        ap.error(
+            f"--level {args.level!r} does not belong to --track {track}; "
+            f"expected one of {sorted(active_levels)}"
+        )
 
     plan = build_split_plan()
 
