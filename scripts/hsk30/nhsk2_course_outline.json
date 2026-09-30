@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "track": "hsk30",
+  "level": "nhsk2",
+  "source_book": "新HSK教程2",
+  "source_pdf_path": "HSK 3.0 PDF/新HSK2 教材.pdf",
+  "source_lfs": {
+    "oid_sha256": "12a7ca82d9ede40e7bcdad36b4198e20db311d378d407b1f80dcc9b26b48f003",
+    "size_bytes": 52681582
+  },
+  "source_pdf_pages": {
+    "contents": [
+      13,
+      14,
+      15
+    ],
+    "vocabulary_index_start": 157
+  },
+  "notes": {
+    "lesson_count": 15,
+    "printed_page_to_pdf_page_offset": 16,
+    "extraction_rule": "Textbook Chinese dialogues/lesson texts are preserved verbatim; UZ/RU/TJ are separate translation fields."
+  },
+  "lessons": [
+    {
+      "lesson_order": 1,
+      "title_zh": "她请我们吃了北京烤鸭",
+      "title_en": "She treated us to Peking Duck",
+      "printed_page": 1,
+      "pdf_page_start": 17,
+      "pdf_page_end": 25,
+      "language_points": [
+        "语气助词“吧”（2） / Modal Particle “吧” (2)",
+        "“是……的”句 / “是……的” Sentence",
+        "兼语句 / Pivotal Sentences"
+      ]
+    },
+    {
+      "lesson_order": 2,
+      "title_zh": "还是打车去北大吧",
+      "title_en": "Let’s take a taxi to Peking University instead",
+      "printed_page": 10,
+      "pdf_page_start": 26,
+      "pdf_page_end": 34,
+      "language_points": [
+        "固定格式“还是……吧” / Fixed Pattern “还是……吧”",
+        "用“多”表达概数 / Expressing Approximate Numbers with 多",
+        "动词或动词性短语、主谓短语作定语 / Verbs, Verbal Phrases, and Subject-Predicate Phrases as Attributives"
+      ]
+    },
+    {
+      "lesson_order": 3,
+      "title_zh": "我想去西安旅游",
+      "title_en": "I want to visit Xi’an",
+      "printed_page": 19,
+      "pdf_page_start": 35,
+      "pdf_page_end": 44,
+      "language_points": [
+        "结果补语 / Complement of Result",
+        "动词重叠（1） / Verb Reduplication (1)",
+        "动词重叠（2） / Verb Reduplication (2)"
+      ]
+    },
+    {
+      "lesson_order": 4,
+      "title_zh": "你穿红色的很好看",
+      "title_en": "You look pretty good in red",
+      "printed_page": 29,
+      "pdf_page_start": 45,
+      "pdf_page_end": 52,
+      "language_points": [
+        "动态助词“过” / Aspect Particle 过",
+        "因果复句“因为……，所以……” / Causal Complex Sentence",
+        "“的”字短语 / “的” Phrase"
+      ]
+    },
+    {
+      "lesson_order": 5,
+      "title_zh": "第一次去中国朋友家",
+      "title_en": "Visiting a Chinese friend’s home for the first time",
+      "printed_page": 37,
+      "pdf_page_start": 53,
+      "pdf_page_end": 61,
+      "language_points": [
+        "简单趋向补语（1） / Simple Directional Complement (1)",
+        "简单趋向补语（2） / Simple Directional Complement (2)",
+        "固定格式“都……了” / Fixed Pattern “都……了”"
+      ]
+    },
+    {
+      "lesson_order": 6,
+      "title_zh": "小雪，生日快乐！",
+      "title_en": "Xiaoxue, happy birthday!",
+      "printed_page": 46,
+      "pdf_page_start": 62,
+      "pdf_page_end": 71,
+      "language_points": [
+        "形容词重叠 / Adjective Reduplication",
+        "固定短语“什么的” / Fixed Phrase “什么的”",
+        "结构助词“地” / Structural Particle “地”"
+      ]
+    },
+    {
+      "lesson_order": 7,
+      "title_zh": "他篮球打得很好",
+      "title_en": "He plays basketball very well",
+      "printed_page": 56,
+      "pdf_page_start": 72,
+      "pdf_page_end": 79,
+      "language_points": [
+        "紧缩复句“一……就……” / Condensed Complex Sentence “一……就……”",
+        "状态补语（1） / State Complement (1)",
+        "状态补语（2） / State Complement (2)"
+      ]
+    },
+    {
+      "lesson_order": 8,
+      "title_zh": "虽然你忘了，但是我记得",
+      "title_en": "Although you forgot, I remember",
+      "printed_page": 64,
+      "pdf_page_start": 80,
+      "pdf_page_end": 88,
+      "language_points": [
+        "比较句（1） / Comparative Sentence (1)",
+        "比较句（2） / Comparative Sentence (2)",
+        "转折复句“虽然……，但是……” / Adversative Complex Sentence"
+      ]
+    },
+    {
+      "lesson_order": 9,
+      "title_zh": "我去买杯奶茶",
+      "title_en": "I’m going to buy a cup of milk tea",
+      "printed_page": 73,
+      "pdf_page_start": 89,
+      "pdf_page_end": 99,
+      "language_points": [
+        "比较句（3） / Comparative Sentence (3)",
+        "动词“戴” / Verb “戴”",
+        "时量补语（1） / Duration Complement (1)"
+      ]
+    },
+    {
+      "lesson_order": 10,
+      "title_zh": "就要考试了",
+      "title_en": "The exam is about to start",
+      "printed_page": 84,
+      "pdf_page_start": 100,
+      "pdf_page_end": 108,
+      "language_points": [
+        "主谓谓语句 / Subject-Predicate Predicate Sentence",
+        "选择问句 / Alternative Question",
+        "固定格式“要/快/快要/就要……了” / Fixed Pattern"
+      ]
+    },
+    {
+      "lesson_order": 11,
+      "title_zh": "我最喜欢吃中国菜",
+      "title_en": "I like Chinese food the most",
+      "printed_page": 93,
+      "pdf_page_start": 109,
+      "pdf_page_end": 117,
+      "language_points": [
+        "动态助词“着”（1） / Aspect Particle 着 (1)",
+        "动态助词“着”（2） / Aspect Particle 着 (2)",
+        "程度副词“最” / Degree Adverb “最”"
+      ]
+    },
+    {
+      "lesson_order": 12,
+      "title_zh": "这里比北京冷多了",
+      "title_en": "It is much colder here than in Beijing",
+      "printed_page": 102,
+      "pdf_page_start": 118,
+      "pdf_page_end": 127,
+      "language_points": [
+        "比较句（4） / Comparative Sentence (4)",
+        "比较句（5） / Comparative Sentence (5)",
+        "比较句（6） / Comparative Sentence (6)"
+      ]
+    },
+    {
+      "lesson_order": 13,
+      "title_zh": "我们爱上中文课",
+      "title_en": "We fell in love with Chinese class",
+      "printed_page": 112,
+      "pdf_page_start": 128,
+      "pdf_page_end": 136,
+      "language_points": [
+        "双宾语句（2） / Double-Object Sentence (2)",
+        "比较句（7） / Comparative Sentence (7)",
+        "比较句（8） / Comparative Sentence (8)"
+      ]
+    },
+    {
+      "lesson_order": 14,
+      "title_zh": "一个人过年多没意思啊",
+      "title_en": "Spending Spring Festival alone is so boring",
+      "printed_page": 121,
+      "pdf_page_start": 137,
+      "pdf_page_end": 145,
+      "language_points": [
+        "存现句（2） / Existential Sentence (2)",
+        "程度副词“多” / Degree Adverb “多”",
+        "复合趋向补语 / Compound Directional Complement"
+      ]
+    },
+    {
+      "lesson_order": 15,
+      "title_zh": "我想再去一次中国",
+      "title_en": "I want to visit China again",
+      "printed_page": 130,
+      "pdf_page_start": 146,
+      "pdf_page_end": 156,
+      "language_points": [
+        "动量补语（1） / Frequency Complement (1)",
+        "动量补语（2） / Frequency Complement (2)",
+        "“有”字句（2） / “有” Sentence (2)"
+      ]
+    }
+  ]
+}
