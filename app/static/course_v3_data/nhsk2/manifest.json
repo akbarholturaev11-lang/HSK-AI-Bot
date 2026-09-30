@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "version": 2,
+  "track": "hsk30",
+  "level": "nhsk2",
+  "lesson_count": 73,
+  "source_lesson_count": 15,
+  "first_lesson_order": 1,
+  "content_status": "runtime_ready"
+}
