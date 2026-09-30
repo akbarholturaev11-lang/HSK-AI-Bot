@@ -65,7 +65,7 @@ class AndroidOnboardingRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
+    level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"]
     goal: Literal[
         "hsk_exam",
         "study_china",
