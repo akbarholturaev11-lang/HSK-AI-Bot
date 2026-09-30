@@ -787,6 +787,7 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
             limit=3,
             category="word",
             offset=4,
+            track="hsk20",
         )
 
     async def test_overview_rejects_invalid_filter(self):
