@@ -361,13 +361,15 @@ function setSubmitting(value){
   document.getElementById("stage").setAttribute("aria-busy",String(value));
 }
 function finish(){
-  if(submitting)return;setSubmitting(true);
+  if(submitting)return;
+  if(hsk30NeedsUnlock()){openHsk30Checkout();return}
+  setSubmitting(true);
   var cta=document.getElementById("cta");cta.textContent=L.saving;document.getElementById("error").hidden=true;
   var moved=false;
   function go(result){
     if(moved)return;moved=true;
     var launch=result&&result.ok?result:{};
-    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",String(launch.level||(sel==="beginner"?"hsk1":sel)))}catch(e){}
+    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",String(launch.level||(sel==="beginner"?"hsk1":sel)));localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
     var query=new URLSearchParams(params.toString());
     query.set("lang",LANG);query.set("level",String(launch.level||(sel==="beginner"?"hsk1":sel)));query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
     if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
@@ -387,6 +389,20 @@ function finish(){
     .catch(function(){if(!expired){clearTimeout(timeout);fail()}});
 }
 trackOnboardingEvent("onboarding_started",{dedupe_key:"started:"+ONB_SESSION_ID,event_id:"started:"+ONB_SESSION_ID});
+if(INIT_DATA){
+  fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(d){
+      if(!d||!d.ok)return;
+      HSK30_STATUS=d;
+      if(track==="hsk30"){
+        var choices=levelsForTrack();
+        if(!choices.some(function(l){return l.k===sel}))sel=choices.length?choices[0].k:"nhsk1";
+      }
+      render();
+    })
+    .catch(function(){});
+}
 render();
 </script>
 </body>
