@@ -1,0 +1,1405 @@
+[
+  {
+    "no": 1,
+    "title_zh": "汉语的基本语序",
+    "title_uz": "Xitoy tilidagi asosiy so'z tartibi",
+    "title_ru": "Базовый порядок слов в китайском языке",
+    "title_tj": "Тартиби асосии калимаҳо дар забони чинӣ",
+    "rule_zh": "汉语的基本语序是：主语+谓语+宾语。例如：我（主语）叫（谓语）陈天中（宾语）。",
+    "rule_en": "The basic word order in Chinese is: Subject + Predicate + Object.",
+    "rule_uz": "Xitoy tilidagi asosiy tartib: ega + kesim + to'ldiruvchi.",
+    "rule_ru": "Базовый порядок слов: подлежащее + сказуемое + дополнение.",
+    "rule_tj": "Тартиби асосӣ: мубтадо + хабар + пуркунанда.",
+    "examples": [
+      {
+        "zh": "你叫什么名字？",
+        "pinyin": "Nǐ jiào shénme míngzi?",
+        "uz": "Sening isming nima?",
+        "ru": "Как тебя зовут?",
+        "tj": "Номи ту чист?"
+      },
+      {
+        "zh": "我叫白家月。",
+        "pinyin": "Wǒ jiào Bái Jiāyuè.",
+        "uz": "Mening ismim Bai Jiayue.",
+        "ru": "Меня зовут Бай Цзяюэ.",
+        "tj": "Номи ман Бай Ҷяюэ аст."
+      },
+      {
+        "zh": "我是学生。",
+        "pinyin": "Wǒ shì xuésheng.",
+        "uz": "Men talabaman.",
+        "ru": "Я студент.",
+        "tj": "Ман донишҷӯ ҳастам."
+      }
+    ],
+    "lesson_order": 2,
+    "lesson_code": "NHSK1-L02"
+  },
+  {
+    "no": 1,
+    "title_zh": "“是”字句",
+    "title_uz": "“是” bilan gap",
+    "title_ru": "Предложение с “是”",
+    "title_tj": "Ҷумла бо “是”",
+    "rule_zh": "表示人或事物等同什么或隶属什么，基本结构：A + 是 + B；否定形式是“不 + 是”。",
+    "rule_en": "The “是” sentence is used to indicate what somebody or something equals or belongs to. The negative form is “不是”.",
+    "rule_uz": "“是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+    "rule_ru": "“是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+    "rule_tj": "“是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是.",
+    "examples": [
+      {
+        "zh": "我是法国人。",
+        "pinyin": "Wǒ shì Fǎguó rén.",
+        "uz": "Men fransuzman.",
+        "ru": "Я француз.",
+        "tj": "Ман фаронсавӣ ҳастам."
+      },
+      {
+        "zh": "她是中文老师。",
+        "pinyin": "Tā shì Zhōngwén lǎoshī.",
+        "uz": "U xitoy tili o‘qituvchisi.",
+        "ru": "Она преподаватель китайского языка.",
+        "tj": "Ӯ омӯзгори забони чинӣ аст."
+      },
+      {
+        "zh": "我老师不是法国人。",
+        "pinyin": "Wǒ lǎoshī bú shì Fǎguó rén.",
+        "uz": "Mening o‘qituvchim fransuz emas.",
+        "ru": "Мой преподаватель не француз.",
+        "tj": "Омӯзгори ман фаронсавӣ нест."
+      }
+    ],
+    "lesson_order": 3,
+    "lesson_code": "NHSK1-L03"
+  },
+  {
+    "no": 2,
+    "title_zh": "结构助词“的”",
+    "title_uz": "Strukturaviy “的”",
+    "title_ru": "Структурная частица “的”",
+    "title_tj": "Ҳиссачаи сохтории “的”",
+    "rule_zh": "结构助词“的”在定语和中心语之间，表达领属关系；亲属、所属等关系明确时，有时可省略。",
+    "rule_en": "The structural particle “的” is placed between the attributive and the head noun to express a possessive relationship.",
+    "rule_uz": "“的” aniqlovchi bilan asosiy ot orasida kelib egalik/munosabatni bildiradi.",
+    "rule_ru": "“的” ставится между определением и главным словом и выражает принадлежность.",
+    "rule_tj": "“的” байни муайянкунанда ва исми асосӣ омада, муносибати соҳибиятро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "白家月的中文老师",
+        "pinyin": "Bái Jiāyuè de Zhōngwén lǎoshī",
+        "uz": "Bai Jiayue’ning xitoy tili o‘qituvchisi",
+        "ru": "преподаватель китайского языка Бай Цзяюэ",
+        "tj": "омӯзгори забони чинии Бай Ҷяюэ"
+      },
+      {
+        "zh": "你的名字",
+        "pinyin": "nǐ de míngzi",
+        "uz": "sening isming",
+        "ru": "твоё имя",
+        "tj": "номи ту"
+      }
+    ],
+    "lesson_order": 3,
+    "lesson_code": "NHSK1-L03"
+  },
+  {
+    "no": 3,
+    "title_zh": "用“吗”的是非问句",
+    "title_uz": "“吗” bilan ha/yo‘q savoli",
+    "title_ru": "Вопрос да/нет с “吗”",
+    "title_tj": "Саволи ҳа/не бо “吗”",
+    "rule_zh": "“吗”放在句末，把陈述句变成是非问句，基本结构：……吗？",
+    "rule_en": "The modal particle “吗” is placed at the end of a sentence to indicate a yes-no question.",
+    "rule_uz": "“吗” gap oxiriga qo‘yilib oddiy gapni ha/yo‘q savoliga aylantiradi.",
+    "rule_ru": "“吗” ставится в конце предложения и превращает утверждение в вопрос да/нет.",
+    "rule_tj": "“吗” дар охири ҷумла меояд ва онро ба саволи ҳа/не табдил медиҳад.",
+    "examples": [
+      {
+        "zh": "你是学生吗？",
+        "pinyin": "Nǐ shì xuésheng ma?",
+        "uz": "Sen talabamisan?",
+        "ru": "Ты студент?",
+        "tj": "Ту донишҷӯ ҳастӣ?"
+      },
+      {
+        "zh": "你们也想我们吗？",
+        "pinyin": "Nǐmen yě xiǎng wǒmen ma?",
+        "uz": "Sizlar ham bizni sog‘indingizmi?",
+        "ru": "Вы тоже по нам скучаете?",
+        "tj": "Шумо ҳам моро пазмон шудед?"
+      }
+    ],
+    "lesson_order": 3,
+    "lesson_code": "NHSK1-L03"
+  },
+  {
+    "no": 1,
+    "title_zh": "“有”字句（1）",
+    "title_uz": "“有” bilan gap (1)",
+    "title_ru": "Предложение с “有” (1)",
+    "title_tj": "Ҷумла бо “有” (1)",
+    "rule_zh": "“有”表示领有，否定形式为“没/没有”。",
+    "rule_en": "The word “有” indicates possession. Its negative form is “没/没有”.",
+    "rule_uz": "“有” egalik yoki mavjudlikni bildiradi. Inkor shakli: 没/没有.",
+    "rule_ru": "“有” выражает наличие/обладание. Отрицание: 没/没有.",
+    "rule_tj": "“有” соҳибият ё мавҷудиятро ифода мекунад. Инкор: 没/没有.",
+    "examples": [
+      {
+        "zh": "她有二十个学生。",
+        "pinyin": "Tā yǒu èrshí ge xuésheng.",
+        "uz": "Uning yigirmata talabasi bor.",
+        "ru": "У неё двадцать студентов.",
+        "tj": "Ӯ бист донишҷӯ дорад."
+      },
+      {
+        "zh": "她没有一个姐姐。",
+        "pinyin": "Tā méiyǒu yí ge jiějie.",
+        "uz": "Uning opasi yo‘q.",
+        "ru": "У неё нет старшей сестры.",
+        "tj": "Ӯ хоҳари калон надорад."
+      },
+      {
+        "zh": "我没/没有姐姐。",
+        "pinyin": "Wǒ méi/méiyǒu jiějie.",
+        "uz": "Mening opam yo‘q.",
+        "ru": "У меня нет старшей сестры.",
+        "tj": "Ман хоҳари калон надорам."
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK1-L04"
+  },
+  {
+    "no": 2,
+    "title_zh": "数字的表达",
+    "title_uz": "Sonlarni ifodalash",
+    "title_ru": "Выражение чисел",
+    "title_tj": "Ифодаи рақамҳо",
+    "rule_zh": "汉语中的数字可以用阿拉伯数字和汉字两种写法；“2”在不同结构中可读“二”或“两”。",
+    "rule_en": "Numbers in Chinese can be written with Arabic numerals or Chinese characters; 2 may be pronounced 二 or 两 depending on the structure.",
+    "rule_uz": "Xitoy tilida sonlar arab raqamlari yoki xitoycha belgilar bilan yoziladi; 2 ayrim tuzilmalarda 二, ayrimlarida 两 o‘qiladi.",
+    "rule_ru": "Числа записываются арабскими цифрами или иероглифами; 2 читается 二 или 两 в зависимости от структуры.",
+    "rule_tj": "Рақамҳо бо ададҳои арабӣ ё иероглифҳо навишта мешаванд; 2 вобаста ба сохтор 二 ё 两 хонда мешавад.",
+    "examples": [
+      {
+        "zh": "十二",
+        "pinyin": "shí'èr",
+        "uz": "o‘n ikki",
+        "ru": "двенадцать",
+        "tj": "дувоздаҳ"
+      },
+      {
+        "zh": "两个孩子",
+        "pinyin": "liǎng ge háizi",
+        "uz": "ikki farzand",
+        "ru": "двое детей",
+        "tj": "ду фарзанд"
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK1-L04"
+  },
+  {
+    "no": 3,
+    "title_zh": "语气助词“呢”（1）",
+    "title_uz": "“呢” modal yuklamasi (1)",
+    "title_ru": "Модальная частица “呢” (1)",
+    "title_tj": "Ҳиссачаи модалии “呢” (1)",
+    "rule_zh": "“呢”在句末表示疑问，常用于反问或承接上文追问同类信息，基本结构：A……，B呢？",
+    "rule_en": "The word “呢” is used at the end of a sentence to indicate a question, often asking the same type of information about another person or thing.",
+    "rule_uz": "“呢” gap oxirida savol ma’nosini beradi, ko‘pincha “sen-chi?” kabi oldingi mavzuni davom ettiradi.",
+    "rule_ru": "“呢” в конце предложения задаёт встречный вопрос по уже упомянутой теме: «а ты?».",
+    "rule_tj": "“呢” дар охири ҷумла саволи ҷавобӣ медиҳад, масалан «ту чӣ?».",
+    "examples": [
+      {
+        "zh": "我有两个哥哥，你呢？",
+        "pinyin": "Wǒ yǒu liǎng ge gēge, nǐ ne?",
+        "uz": "Mening ikkita akam bor, sen-chi?",
+        "ru": "У меня два старших брата, а у тебя?",
+        "tj": "Ман ду бародари калон дорам, ту чӣ?"
+      },
+      {
+        "zh": "我叫白家月，你呢？",
+        "pinyin": "Wǒ jiào Bái Jiāyuè, nǐ ne?",
+        "uz": "Mening ismim Bai Jiayue, sen-chi?",
+        "ru": "Меня зовут Бай Цзяюэ, а тебя?",
+        "tj": "Номи ман Бай Ҷяюэ аст, ту чӣ?"
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK1-L04"
+  },
+  {
+    "no": 4,
+    "title_zh": "名量词和名量结构",
+    "title_uz": "O‘lchov so‘zlari va son+o‘lchov tuzilmasi",
+    "title_ru": "Счётные слова и структура число+счётное слово",
+    "title_tj": "Воҳидҳои ҳисоб ва сохтори рақам+воҳиди ҳисоб",
+    "rule_zh": "汉语数量时，名词前通常要用名量词；常见结构：Num + M + (N)。",
+    "rule_en": "When expressing quantity, a measure word is generally used before a noun. Common structure: Num + M + (N).",
+    "rule_uz": "Miqdor ifodalanganda ot oldidan odatda o‘lchov so‘zi ishlatiladi: son + o‘lchov so‘zi + (ot).",
+    "rule_ru": "При выражении количества перед существительным обычно используется счётное слово: число + счётное слово + (существительное).",
+    "rule_tj": "Ҳангоми ифодаи миқдор пеш аз исм одатан воҳиди ҳисоб меояд: рақам + воҳиди ҳисоб + (исм).",
+    "examples": [
+      {
+        "zh": "一个",
+        "pinyin": "yí ge",
+        "uz": "bitta",
+        "ru": "один (счётное слово 个)",
+        "tj": "якто"
+      },
+      {
+        "zh": "四口人",
+        "pinyin": "sì kǒu rén",
+        "uz": "to‘rt kishi (oilada)",
+        "ru": "четыре человека в семье",
+        "tj": "чор нафар дар оила"
+      },
+      {
+        "zh": "两个学生",
+        "pinyin": "liǎng ge xuésheng",
+        "uz": "ikki talaba",
+        "ru": "два студента",
+        "tj": "ду донишҷӯ"
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK1-L04"
+  },
+  {
+    "no": 1,
+    "title_zh": "时间的表达（1）",
+    "title_uz": "Vaqt/sanani ifodalash (1)",
+    "title_ru": "Выражение времени и даты (1)",
+    "title_tj": "Ифодаи вақт ва сана (1)",
+    "rule_zh": "汉语日期常按“年—月—日/号—星期”从大到小表达。",
+    "rule_en": "Chinese dates are generally expressed from larger to smaller units: year, month, day/date, then weekday.",
+    "rule_uz": "Xitoychada sana odatda kattadan kichikka: yil → oy → kun/sana → hafta kuni tartibida aytiladi.",
+    "rule_ru": "Дата по-китайски обычно выражается от крупной единицы к мелкой: год → месяц → число → день недели.",
+    "rule_tj": "Сана ба чинӣ одатан аз калон ба хурд гуфта мешавад: сол → моҳ → рӯз/сана → рӯзи ҳафта.",
+    "examples": [
+      {
+        "zh": "今天9月8号。",
+        "pinyin": "Jīntiān jiǔ yuè bā hào.",
+        "uz": "Bugun 8-sentabr.",
+        "ru": "Сегодня 8 сентября.",
+        "tj": "Имрӯз 8 сентябр аст."
+      },
+      {
+        "zh": "今天星期日。",
+        "pinyin": "Jīntiān Xīngqīrì.",
+        "uz": "Bugun yakshanba.",
+        "ru": "Сегодня воскресенье.",
+        "tj": "Имрӯз якшанбе аст."
+      }
+    ],
+    "lesson_order": 5,
+    "lesson_code": "NHSK1-L05"
+  },
+  {
+    "no": 2,
+    "title_zh": "名词谓语句",
+    "title_uz": "Nominal-predikativ gap",
+    "title_ru": "Предложение с именным сказуемым",
+    "title_tj": "Ҷумла бо хабари номӣ",
+    "rule_zh": "名词谓语句中谓语由名词或名词性成分充当，常用于表达时间、日期、年龄等。",
+    "rule_en": "In a nominal-predicate sentence, the predicate is a noun or nominal phrase, often used for time, date, age, and similar information.",
+    "rule_uz": "Nominal gapda kesim ot yoki ot birikmasidan iborat bo‘lib, ko‘pincha vaqt, sana va yoshni bildiradi.",
+    "rule_ru": "В предложении с именным сказуемым сказуемое выражено существительным или именной группой; часто так говорят о времени, дате и возрасте.",
+    "rule_tj": "Дар ҷумлаи номӣ хабар аз исм ё гурӯҳи исмӣ иборат буда, бештар вақт, сана ва синну солро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "今天星期四。",
+        "pinyin": "Jīntiān Xīngqīsì.",
+        "uz": "Bugun payshanba.",
+        "ru": "Сегодня четверг.",
+        "tj": "Имрӯз панҷшанбе аст."
+      },
+      {
+        "zh": "今天5月8号。",
+        "pinyin": "Jīntiān wǔ yuè bā hào.",
+        "uz": "Bugun 8-may.",
+        "ru": "Сегодня 8 мая.",
+        "tj": "Имрӯз 8 май аст."
+      }
+    ],
+    "lesson_order": 5,
+    "lesson_code": "NHSK1-L05"
+  },
+  {
+    "no": 3,
+    "title_zh": "能愿动词“会”",
+    "title_uz": "Modal fe’l “会”",
+    "title_ru": "Модальный глагол “会”",
+    "title_tj": "Феъли модалии “会”",
+    "rule_zh": "“会”用在动词前，表示通过学习后获得的做某事的能力。",
+    "rule_en": "“会” is placed before a verb and indicates knowledge or ability acquired through learning.",
+    "rule_uz": "“会” fe’l oldidan kelib o‘rganish orqali hosil qilingan qobiliyatni bildiradi.",
+    "rule_ru": "“会” ставится перед глаголом и выражает умение, приобретённое в результате обучения.",
+    "rule_tj": "“会” пеш аз феъл омада, қобилияти тавассути омӯзиш бадастомадаро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "你会做饭吗？",
+        "pinyin": "Nǐ huì zuò fàn ma?",
+        "uz": "Ovqat pishira olasanmi?",
+        "ru": "Ты умеешь готовить?",
+        "tj": "Ту хӯрок пухта метавонӣ?"
+      },
+      {
+        "zh": "我不会做菜。",
+        "pinyin": "Wǒ bú huì zuò cài.",
+        "uz": "Men taom pishira olmayman.",
+        "ru": "Я не умею готовить блюда.",
+        "tj": "Ман таом пухта наметавонам."
+      }
+    ],
+    "lesson_order": 5,
+    "lesson_code": "NHSK1-L05"
+  },
+  {
+    "no": 1,
+    "title_zh": "能愿动词“想”",
+    "title_uz": "Modal fe’l “想”",
+    "title_ru": "Модальный глагол “想”",
+    "title_tj": "Феъли модалии “想”",
+    "rule_zh": "“想”用在动词前，表示愿望、打算。",
+    "rule_en": "“想” is placed before a verb to indicate desire or intention.",
+    "rule_uz": "“想” fe’l oldidan kelib xohish yoki niyatni bildiradi.",
+    "rule_ru": "“想” ставится перед глаголом и выражает желание или намерение.",
+    "rule_tj": "“想” пеш аз феъл омада, хоҳиш ё ниятро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "我想去超市。",
+        "pinyin": "Wǒ xiǎng qù chāoshì.",
+        "uz": "Men supermarketga bormoqchiman.",
+        "ru": "Я хочу пойти в супермаркет.",
+        "tj": "Ман мехоҳам ба супермаркет равам."
+      },
+      {
+        "zh": "我哥哥不想休息。",
+        "pinyin": "Wǒ gēge bù xiǎng xiūxi.",
+        "uz": "Akam dam olishni xohlamaydi.",
+        "ru": "Мой старший брат не хочет отдыхать.",
+        "tj": "Бародари калонам истироҳат кардан намехоҳад."
+      }
+    ],
+    "lesson_order": 6,
+    "lesson_code": "NHSK1-L06"
+  },
+  {
+    "no": 2,
+    "title_zh": "连动句（1）",
+    "title_uz": "Ketma-ket fe’lli gap (1)",
+    "title_ru": "Серийная глагольная конструкция (1)",
+    "title_tj": "Ҷумлаи пайдарпайи феълӣ (1)",
+    "rule_zh": "连动句的谓语由两个或两个以上动词性短语构成，可表示动作目的或动作方式。",
+    "rule_en": "A serial verb sentence contains two or more verbal phrases and may express the purpose or manner of an action.",
+    "rule_uz": "Bunday gapda ikki yoki undan ko‘p fe’l birikmasi ketma-ket kelib, harakatning maqsadi yoki usulini bildiradi.",
+    "rule_ru": "В серийной конструкции два или более глагольных сочетания следуют друг за другом и выражают цель или способ действия.",
+    "rule_tj": "Дар чунин ҷумла ду ё зиёда гурӯҳи феълӣ пайи ҳам омада, мақсад ё тарзи амалро ифода мекунанд.",
+    "examples": [
+      {
+        "zh": "我想去超市买东西。",
+        "pinyin": "Wǒ xiǎng qù chāoshì mǎi dōngxi.",
+        "uz": "Men supermarketga narsa sotib olish uchun bormoqchiman.",
+        "ru": "Я хочу пойти в супермаркет купить вещи.",
+        "tj": "Ман мехоҳам ба супермаркет рафта чиз харам."
+      },
+      {
+        "zh": "她坐出租车去超市。",
+        "pinyin": "Tā zuò chūzūchē qù chāoshì.",
+        "uz": "U supermarketga taksida boradi.",
+        "ru": "Она едет в супермаркет на такси.",
+        "tj": "Ӯ бо таксӣ ба супермаркет меравад."
+      }
+    ],
+    "lesson_order": 6,
+    "lesson_code": "NHSK1-L06"
+  },
+  {
+    "no": 3,
+    "title_zh": "疑问代词“怎么”",
+    "title_uz": "“怎么” so‘roq olmoshi",
+    "title_ru": "Вопросительное местоимение “怎么”",
+    "title_tj": "Ҷонишини саволии “怎么”",
+    "rule_zh": "“怎么”用在动词前，询问动作的方式或方法。",
+    "rule_en": "“怎么” is used before a verb to ask about the manner or method of an action.",
+    "rule_uz": "“怎么” fe’l oldidan kelib harakat qanday usulda bajarilishini so‘raydi.",
+    "rule_ru": "“怎么” ставится перед глаголом и спрашивает о способе или методе действия.",
+    "rule_tj": "“怎么” пеш аз феъл омада, тарз ё усули амалро мепурсад.",
+    "examples": [
+      {
+        "zh": "我们怎么去？",
+        "pinyin": "Wǒmen zěnme qù?",
+        "uz": "Qanday boramiz?",
+        "ru": "Как мы поедем?",
+        "tj": "Чӣ тавр меравем?"
+      },
+      {
+        "zh": "她怎么去超市？",
+        "pinyin": "Tā zěnme qù chāoshì?",
+        "uz": "U supermarketga qanday boradi?",
+        "ru": "Как она едет в супермаркет?",
+        "tj": "Ӯ чӣ тавр ба супермаркет меравад?"
+      }
+    ],
+    "lesson_order": 6,
+    "lesson_code": "NHSK1-L06"
+  },
+  {
+    "no": 1,
+    "title_zh": "时间的表达（2）",
+    "title_uz": "Vaqtni ifodalash (2)",
+    "title_ru": "Выражение времени (2)",
+    "title_tj": "Ифодаи вақт (2)",
+    "rule_zh": "用“点、分”等表达具体钟点；“早上、上午、下午、晚上”等时间名词可表示时间段，并可直接放在时间点前。",
+    "rule_en": "Use 点 and 分 to express specific clock times. Time nouns such as 早上, 上午, 下午 and 晚上 indicate periods of the day and can appear before a specific time.",
+    "rule_uz": "Aniq soatni 点 va 分 bilan aytiladi. 早上、上午、下午、晚上 kabi vaqt otlari kunning vaqt oralig‘ini bildiradi va aniq soat oldidan kelishi mumkin.",
+    "rule_ru": "Точное время выражается с 点 и 分. Слова 早上、上午、下午、晚上 обозначают части дня и могут стоять перед конкретным временем.",
+    "rule_tj": "Вақти дақиқ бо 点 ва 分 ифода мешавад. 早上、上午、下午、晚上 қисми рӯзро нишон медиҳанд ва пеш аз вақти дақиқ омада метавонанд.",
+    "examples": [
+      {
+        "zh": "上午九点半",
+        "pinyin": "shàngwǔ jiǔ diǎn bàn",
+        "uz": "ertalab 9:30",
+        "ru": "9:30 утра",
+        "tj": "субҳ 9:30"
+      },
+      {
+        "zh": "下午两点半",
+        "pinyin": "xiàwǔ liǎng diǎn bàn",
+        "uz": "tushdan keyin 2:30",
+        "ru": "2:30 дня",
+        "tj": "баъди нисфирӯзӣ 2:30"
+      },
+      {
+        "zh": "晚上九点十分",
+        "pinyin": "wǎnshang jiǔ diǎn shí fēn",
+        "uz": "kechqurun 9:10",
+        "ru": "9:10 вечера",
+        "tj": "шом 9:10"
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK1-L07"
+  },
+  {
+    "no": 2,
+    "title_zh": "语气助词“吧”（1）",
+    "title_uz": "Modal yuklama “吧” (1)",
+    "title_ru": "Модальная частица “吧” (1)",
+    "title_tj": "Ҳиссачаи модалии “吧” (1)",
+    "rule_zh": "“吧”读轻声，位于句子末尾，表示建议、商量、劝告、请求。",
+    "rule_en": "The modal particle “吧” is pronounced with a neutral tone at the end of a sentence and is used to express suggestions, consultations, advice, or requests.",
+    "rule_uz": "“吧” yengil ohangda gap oxirida kelib taklif, maslahatlashish, maslahat yoki iltimosni bildiradi.",
+    "rule_ru": "“吧” произносится нейтральным тоном и ставится в конце предложения для предложения, обсуждения, совета или просьбы.",
+    "rule_tj": "“吧” бо оҳанги сабук дар охири ҷумла омада, пешниҳод, маслиҳат, машварат ё хоҳишро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "我们下午两点见吧。",
+        "pinyin": "Wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+        "uz": "Tushdan keyin soat 2 da uchrashaylik.",
+        "ru": "Давай встретимся в 2 часа дня.",
+        "tj": "Биёед баъди нисфирӯзӣ соати 2 вохӯрем."
+      },
+      {
+        "zh": "你去超市买吧。",
+        "pinyin": "Nǐ qù chāoshì mǎi ba.",
+        "uz": "Supermarketga borib ol.",
+        "ru": "Сходи купи в супермаркете.",
+        "tj": "Ба супермаркет рафта бихар."
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK1-L07"
+  },
+  {
+    "no": 3,
+    "title_zh": "副词、时间词语作状语的位置",
+    "title_uz": "Ravish va vaqt so‘zlarining hol sifatidagi o‘rni",
+    "title_ru": "Позиция наречий и выражений времени в роли обстоятельства",
+    "title_tj": "Ҷойи зарфҳо ва ифодаҳои вақт ҳамчун ҳол",
+    "rule_zh": "副词、时间词语作状语时，一般都要在动词或者形容词前。",
+    "rule_en": "In Chinese, when adverbs and time expressions function as adverbials, they are generally placed before verbs or adjectives.",
+    "rule_uz": "Ravish va vaqt so‘zlari hol vazifasida kelganda odatda fe’l yoki sifatdan oldin turadi.",
+    "rule_ru": "Когда наречия и выражения времени выступают обстоятельствами, они обычно стоят перед глаголом или прилагательным.",
+    "rule_tj": "Вақте зарфҳо ва ифодаҳои вақт вазифаи ҳолро иҷро мекунанд, одатан пеш аз феъл ё сифат меоянд.",
+    "examples": [
+      {
+        "zh": "我下午有课。",
+        "pinyin": "Wǒ xiàwǔ yǒu kè.",
+        "uz": "Tushdan keyin darsim bor.",
+        "ru": "Днём у меня занятие.",
+        "tj": "Баъди нисфирӯзӣ дарс дорам."
+      },
+      {
+        "zh": "妹妹很高兴。",
+        "pinyin": "Mèimei hěn gāoxìng.",
+        "uz": "Singlim juda xursand.",
+        "ru": "Младшая сестра очень рада.",
+        "tj": "Хоҳари хурдӣ хеле хурсанд аст."
+      },
+      {
+        "zh": "她上午八点半上课。",
+        "pinyin": "Tā shàngwǔ bā diǎn bàn shàngkè.",
+        "uz": "U ertalab 8:30 da darsga kiradi.",
+        "ru": "У неё занятие в 8:30 утра.",
+        "tj": "Ӯ субҳ соати 8:30 ба дарс медарояд."
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK1-L07"
+  },
+  {
+    "no": 4,
+    "title_zh": "语气助词“呢”（2）",
+    "title_uz": "Modal yuklama “呢” (2)",
+    "title_ru": "Модальная частица “呢” (2)",
+    "title_tj": "Ҳиссачаи модалии “呢” (2)",
+    "rule_zh": "“呢”位于句子末尾，表示确认的事实。基本结构：……呢。",
+    "rule_en": "The modal particle “呢” is placed at the end of a sentence to indicate confirmed facts.",
+    "rule_uz": "“呢” gap oxirida kelib tasdiqlanayotgan faktni bildiradi.",
+    "rule_ru": "“呢” ставится в конце предложения и подчёркивает подтверждаемый факт.",
+    "rule_tj": "“呢” дар охири ҷумла омада, воқеияти тасдиқшавандаро таъкид мекунад.",
+    "examples": [
+      {
+        "zh": "下午两点我还上课呢。",
+        "pinyin": "Xiàwǔ liǎng diǎn wǒ hái shàngkè ne.",
+        "uz": "Tushdan keyin soat 2 da men hali darsda bo‘laman.",
+        "ru": "В 2 часа дня у меня ещё занятие.",
+        "tj": "Баъди нисфирӯзӣ соати 2 ман ҳоло ҳам дарс дорам."
+      },
+      {
+        "zh": "妹妹会做两个菜呢。",
+        "pinyin": "Mèimei huì zuò liǎng ge cài ne.",
+        "uz": "Singlim hatto ikkita taom pishira oladi.",
+        "ru": "Младшая сестра умеет готовить два блюда.",
+        "tj": "Хоҳари хурдӣ ду таом пухта метавонад."
+      },
+      {
+        "zh": "李文晚上还有事呢。",
+        "pinyin": "Lǐ Wén wǎnshang hái yǒu shì ne.",
+        "uz": "Li Wenning kechqurun yana ishi bor.",
+        "ru": "У Ли Вэня вечером ещё есть дела.",
+        "tj": "Ли Вэн шом боз кор дорад."
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK1-L07"
+  },
+  {
+    "no": 1,
+    "title_zh": "方位词",
+    "title_uz": "Joylashuv so‘zlari",
+    "title_ru": "Слова местоположения",
+    "title_tj": "Калимаҳои мавқеъ",
+    "rule_zh": "本册学习的表达方位、位置的方位词有：上、下、里、前、后、外、外边。",
+    "rule_en": "The positional words expressing direction and location in this volume include 上, 下, 里, 前, 后, 外 and 外边.",
+    "rule_uz": "Bu bosqichda joy va yo‘nalishni ifodalovchi 上、下、里、前、后、外、外边 o‘rganiladi.",
+    "rule_ru": "В этом уровне изучаются слова местоположения 上、下、里、前、后、外、外边.",
+    "rule_tj": "Дар ин сатҳ калимаҳои мавқеи 上、下、里、前、后、外、外边 омӯхта мешаванд.",
+    "examples": [
+      {
+        "zh": "房间里有一只小猫。",
+        "pinyin": "Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+        "uz": "Xona ichida kichik mushuk bor.",
+        "ru": "В комнате есть котёнок.",
+        "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+      },
+      {
+        "zh": "我们去书店外吧。",
+        "pinyin": "Wǒmen qù shūdiàn wài ba.",
+        "uz": "Kitob do‘koni tashqarisiga boraylik.",
+        "ru": "Давай пойдём к книжному магазину снаружи.",
+        "tj": "Биёед ба беруни мағозаи китоб равем."
+      },
+      {
+        "zh": "小雪的手机在桌子上呢。",
+        "pinyin": "Xiǎoxuě de shǒujī zài zhuōzi shàng ne.",
+        "uz": "Xiaoxuening telefoni stol ustida.",
+        "ru": "Телефон Сяосюэ на столе.",
+        "tj": "Телефони Сяосюэ рӯйи миз аст."
+      }
+    ],
+    "lesson_order": 8,
+    "lesson_code": "NHSK1-L08"
+  },
+  {
+    "no": 2,
+    "title_zh": "介词“在”",
+    "title_uz": "Predlog “在”",
+    "title_ru": "Предлог “在”",
+    "title_tj": "Пешоянди “在”",
+    "rule_zh": "介词“在”和表示位置、处所的词语组合，在动词前面，表示在什么位置、处所做什么。",
+    "rule_en": "The preposition “在” is used with words or phrases that indicate a location or place and is placed before the verb to show where an action takes place.",
+    "rule_uz": "“在” joyni bildiruvchi so‘z yoki birikma bilan kelib, fe’l oldidan harakat qayerda sodir bo‘lishini ko‘rsatadi.",
+    "rule_ru": "“在” сочетается с обозначением места и ставится перед глаголом, показывая, где происходит действие.",
+    "rule_tj": "“在” бо калима ё ибораи ҷой омада, пеш аз феъл нишон медиҳад, ки амал дар куҷо сурат мегирад.",
+    "examples": [
+      {
+        "zh": "我在学校吃午饭。",
+        "pinyin": "Wǒ zài xuéxiào chī wǔfàn.",
+        "uz": "Men maktabda tushlik qilaman.",
+        "ru": "Я обедаю в школе.",
+        "tj": "Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+      },
+      {
+        "zh": "他爸爸在医院工作。",
+        "pinyin": "Tā bàba zài yīyuàn gōngzuò.",
+        "uz": "Uning otasi kasalxonada ishlaydi.",
+        "ru": "Его отец работает в больнице.",
+        "tj": "Падараш дар беморхона кор мекунад."
+      },
+      {
+        "zh": "你在哪儿买菜？",
+        "pinyin": "Nǐ zài nǎr mǎi cài?",
+        "uz": "Sabzavotni qayerda sotib olasan?",
+        "ru": "Где ты покупаешь овощи?",
+        "tj": "Ту сабзавотро дар куҷо мехарӣ?"
+      }
+    ],
+    "lesson_order": 8,
+    "lesson_code": "NHSK1-L08"
+  },
+  {
+    "no": 3,
+    "title_zh": "能愿动词“能”",
+    "title_uz": "Modal fe’l “能”",
+    "title_ru": "Модальный глагол “能”",
+    "title_tj": "Феъли модалии “能”",
+    "rule_zh": "“能”放在动词前面，表示有能力、有条件或可能做某事。",
+    "rule_en": "The modal verb “能” is placed before a verb to indicate the ability, condition, or possibility of doing something.",
+    "rule_uz": "“能” fe’l oldidan kelib biror ishni qilish qobiliyati, sharoiti yoki imkoniyati borligini bildiradi.",
+    "rule_ru": "“能” ставится перед глаголом и выражает способность, наличие условий или возможность выполнить действие.",
+    "rule_tj": "“能” пеш аз феъл омада, қобилият, шароит ё имкони иҷрои амалро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "下午两点你能到吗？",
+        "pinyin": "Xiàwǔ liǎng diǎn nǐ néng dào ma?",
+        "uz": "Tushdan keyin soat 2 da kela olasanmi?",
+        "ru": "Ты сможешь прийти в 2 часа дня?",
+        "tj": "Баъди нисфирӯзӣ соати 2 расида метавонӣ?"
+      },
+      {
+        "zh": "爸爸能来。",
+        "pinyin": "Bàba néng lái.",
+        "uz": "Otam kela oladi.",
+        "ru": "Папа сможет прийти.",
+        "tj": "Падарам омада метавонад."
+      },
+      {
+        "zh": "我不能去学校吃午饭。",
+        "pinyin": "Wǒ bù néng qù xuéxiào chī wǔfàn.",
+        "uz": "Men maktabga tushlik qilgani bora olmayman.",
+        "ru": "Я не могу пойти в школу пообедать.",
+        "tj": "Ман барои нисфирӯзӣ ба мактаб рафта наметавонам."
+      }
+    ],
+    "lesson_order": 8,
+    "lesson_code": "NHSK1-L08"
+  },
+  {
+    "no": 1,
+    "title_zh": "存现句（1）",
+    "title_uz": "Mavjudlik gapi (1)",
+    "title_ru": "Экзистенциальное предложение (1)",
+    "title_tj": "Ҷумлаи мавҷудият (1)",
+    "rule_zh": "表示某处存在某人或某物的一种句子，一般以“有”或“是”为标记；有否定时，宾语前不能带数量词。",
+    "rule_en": "Existential sentences indicate the existence of someone or something in a specific place or location, generally marked by 有 or 是. When negating a 有-sentence, no numeral-measure word phrase is used before the object.",
+    "rule_uz": "Mavjudlik gapi biror joyda kimdir yoki nimadir borligini bildiradi va odatda “有” yoki “是” bilan tuziladi. “有” inkor qilinganda obyekt oldida son+o‘lchov birikmasi kelmaydi.",
+    "rule_ru": "Экзистенциальное предложение показывает наличие кого-либо или чего-либо в определённом месте и обычно строится с “有” или “是”. При отрицании с “有” перед объектом не ставится числительно-счётная группа.",
+    "rule_tj": "Ҷумлаи мавҷудият будани шахс ё чизро дар ҷойи муайян нишон медиҳад ва одатан бо “有” ё “是” сохта мешавад. Ҳангоми инкори “有” пеш аз объект таркиби рақам+воҳиди ҳисоб намеояд.",
+    "examples": [
+      {
+        "zh": "学校前边有一家电影院。",
+        "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+        "uz": "Maktab oldida bitta kinoteatr bor.",
+        "ru": "Перед школой есть кинотеатр.",
+        "tj": "Пеши мактаб як кинотеатр ҳаст."
+      },
+      {
+        "zh": "电影院前边是一家超市。",
+        "pinyin": "Diànyǐngyuàn qiánbian shì yì jiā chāoshì.",
+        "uz": "Kinoteatr oldida supermarket bor.",
+        "ru": "Перед кинотеатром находится супермаркет.",
+        "tj": "Пеши кинотеатр як супермаркет аст."
+      },
+      {
+        "zh": "桌子上没有小猫。",
+        "pinyin": "Zhuōzi shàng méiyǒu xiǎomāo.",
+        "uz": "Stol ustida mushuk yo‘q.",
+        "ru": "На столе нет котёнка.",
+        "tj": "Рӯйи миз гурба нест."
+      }
+    ],
+    "lesson_order": 9,
+    "lesson_code": "NHSK1-L09"
+  },
+  {
+    "no": 2,
+    "title_zh": "时间词语和处所词语同时作状语的顺序",
+    "title_uz": "Vaqt va joy ifodalari birga hol bo‘lgandagi tartib",
+    "title_ru": "Порядок выражений времени и места при совместной роли обстоятельства",
+    "title_tj": "Тартиби ифодаҳои вақт ва ҷой ҳангоми ҳамзамон ҳол будан",
+    "rule_zh": "时间词语和处所词语同时作状语时，时间词语要在处所词语前面。",
+    "rule_en": "When time and location expressions function as adverbials simultaneously, the time expression should precede the location expression.",
+    "rule_uz": "Vaqt va joy birikmalari bir vaqtda hol bo‘lsa, vaqt ifodasi joy ifodasidan oldin keladi.",
+    "rule_ru": "Когда время и место одновременно выступают обстоятельствами, выражение времени ставится перед выражением места.",
+    "rule_tj": "Вақте вақт ва ҷой ҳамзамон вазифаи ҳолро доранд, ифодаи вақт пеш аз ифодаи ҷой меояд.",
+    "examples": [
+      {
+        "zh": "我们七点在电影院外边见。",
+        "pinyin": "Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn.",
+        "uz": "Biz soat 7 da kinoteatr tashqarisida uchrashamiz.",
+        "ru": "Мы встретимся в 7 часов у кинотеатра.",
+        "tj": "Мо соати 7 беруни кинотеатр вомехӯрем."
+      },
+      {
+        "zh": "你明天下午在家里做什么？",
+        "pinyin": "Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+        "uz": "Sen ertaga tushdan keyin uyda nima qilasan?",
+        "ru": "Что ты будешь делать дома завтра днём?",
+        "tj": "Фардо баъди нисфирӯзӣ дар хона чӣ кор мекунӣ?"
+      },
+      {
+        "zh": "陈天中明天中午在学校吃午饭。",
+        "pinyin": "Chén Tiānzhōng míngtiān zhōngwǔ zài xuéxiào chī wǔfàn.",
+        "uz": "Chen Tianzhong ertaga tushda maktabda tushlik qiladi.",
+        "ru": "Чэнь Тяньчжун завтра в полдень пообедает в школе.",
+        "tj": "Чэн Тянҷун фардо нисфирӯзӣ дар мактаб хӯрок мехӯрад."
+      }
+    ],
+    "lesson_order": 9,
+    "lesson_code": "NHSK1-L09"
+  },
+  {
+    "no": 3,
+    "title_zh": "表示序数的“第”",
+    "title_uz": "Tartib sonini bildiruvchi “第”",
+    "title_ru": "“第” для порядковых числительных",
+    "title_tj": "“第” барои шумораҳои тартибӣ",
+    "rule_zh": "“第”位于基数词的数词前面，表示序数。基本结构：（1）第+数词；（2）第+数词+量词+（名词）。",
+    "rule_en": "“第” precedes cardinal numbers to indicate ordinal numbers. Basic structures: 第 + numeral; 第 + numeral + measure word + (noun).",
+    "rule_uz": "“第” sanoq soni oldidan kelib tartib sonini hosil qiladi: 第+son; yoki 第+son+o‘lchov so‘zi+(ot).",
+    "rule_ru": "“第” ставится перед количественным числительным и образует порядковое: 第+число; либо 第+число+счётное слово+(существительное).",
+    "rule_tj": "“第” пеш аз шумораи миқдорӣ омада, шумораи тартибиро месозад: 第+рақам; ё 第+рақам+воҳиди ҳисоб+(исм).",
+    "examples": [
+      {
+        "zh": "第一、第二、第三",
+        "pinyin": "dì yī, dì èr, dì sān",
+        "uz": "birinchi, ikkinchi, uchinchi",
+        "ru": "первый, второй, третий",
+        "tj": "якум, дуюм, сеюм"
+      },
+      {
+        "zh": "第一个、第二个、第一本",
+        "pinyin": "dì yí ge, dì èr ge, dì yì běn",
+        "uz": "birinchi dona, ikkinchi dona, birinchi kitob",
+        "ru": "первый, второй, первая книга",
+        "tj": "якум, дуюм, китоби якум"
+      },
+      {
+        "zh": "第一个学生、第一本书",
+        "pinyin": "dì yí ge xuésheng, dì yì běn shū",
+        "uz": "birinchi talaba; birinchi kitob",
+        "ru": "первый студент; первая книга",
+        "tj": "донишҷӯи якум; китоби якум"
+      }
+    ],
+    "lesson_order": 9,
+    "lesson_code": "NHSK1-L09"
+  },
+  {
+    "no": 1,
+    "title_zh": "钱数的表达",
+    "title_uz": "Pul miqdorini ifodalash",
+    "title_ru": "Выражение денежной суммы",
+    "title_tj": "Ифодаи маблағи пул",
+    "rule_zh": "人民币的单位由大到小是“元、角、分”，口语中也分别说“块、毛、分”。",
+    "rule_en": "The units of RMB from larger to smaller are yuan, jiao and fen; colloquially 元/角 are often called 块/毛.",
+    "rule_uz": "RMB birliklari kattadan kichikka 元、角、分; og‘zaki nutqda 元 ko‘pincha 块, 角 esa 毛 deyiladi.",
+    "rule_ru": "Единицы RMB от крупной к мелкой: 元、角、分; в разговорной речи 元 часто называют 块, а 角 — 毛.",
+    "rule_tj": "Воҳидҳои RMB аз калон ба хурд 元、角、分 мебошанд; дар гуфтор 元-ро 块 ва 角-ро 毛 мегӯянд.",
+    "examples": [
+      {
+        "zh": "三块二",
+        "pinyin": "sān kuài èr",
+        "uz": "3 yuan 2 mao",
+        "ru": "3 юаня 2 мао",
+        "tj": "3 юан 2 мао"
+      },
+      {
+        "zh": "六块零两分",
+        "pinyin": "liù kuài líng liǎng fēn",
+        "uz": "6 yuan 2 fen",
+        "ru": "6 юаней 2 фэня",
+        "tj": "6 юан 2 фэн"
+      },
+      {
+        "zh": "二百零二块两毛",
+        "pinyin": "èrbǎi líng èr kuài liǎng máo",
+        "uz": "202 yuan 2 mao",
+        "ru": "202 юаня 2 мао",
+        "tj": "202 юан 2 мао"
+      }
+    ],
+    "lesson_order": 10,
+    "lesson_code": "NHSK1-L10"
+  },
+  {
+    "no": 2,
+    "title_zh": "形容词谓语句",
+    "title_uz": "Sifat-kesimli gap",
+    "title_ru": "Предложение с прилагательным-сказуемым",
+    "title_tj": "Ҷумла бо хабари сифатӣ",
+    "rule_zh": "形容词可以直接作谓语，前面可用程度副词或否定副词。",
+    "rule_en": "Adjectives can be used directly as predicates, with adverbs of degree or negative adverbs optionally placed before them.",
+    "rule_uz": "Sifat to‘g‘ridan-to‘g‘ri kesim bo‘la oladi; oldidan daraja ravishi yoki inkor ravishi kelishi mumkin.",
+    "rule_ru": "Прилагательное может непосредственно выступать сказуемым; перед ним могут стоять наречие степени или отрицание.",
+    "rule_tj": "Сифат метавонад бевосита хабар шавад; пеш аз он зарфи дараҷа ё инкор омада метавонад.",
+    "examples": [
+      {
+        "zh": "这儿的水果真不少！",
+        "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+        "uz": "Bu yerda meva juda ko‘p!",
+        "ru": "Здесь очень много фруктов!",
+        "tj": "Ин ҷо мева хеле бисёр!"
+      },
+      {
+        "zh": "我的房间不大。",
+        "pinyin": "Wǒ de fángjiān bú dà.",
+        "uz": "Mening xonam katta emas.",
+        "ru": "Моя комната небольшая.",
+        "tj": "Ҳуҷраи ман калон нест."
+      },
+      {
+        "zh": "那个苹果好吃。",
+        "pinyin": "Nàge píngguǒ hǎochī.",
+        "uz": "O‘sha olma mazali.",
+        "ru": "То яблоко вкусное.",
+        "tj": "Он себ болаззат аст."
+      }
+    ],
+    "lesson_order": 10,
+    "lesson_code": "NHSK1-L10"
+  },
+  {
+    "no": 3,
+    "title_zh": "疑问代词“怎么样”",
+    "title_uz": "“怎么样” so‘roq olmoshi",
+    "title_ru": "Вопросительное местоимение “怎么样”",
+    "title_tj": "Ҷонишини саволии “怎么样”",
+    "rule_zh": "“怎么样”用来询问看法或某事物的性质、情况等。基本结构：……怎么样？",
+    "rule_en": "“怎么样” is used to ask for opinions or inquire about the nature, condition, or situation of something.",
+    "rule_uz": "“怎么样” fikrni yoki biror narsaning xususiyati/holatini so‘rash uchun ishlatiladi.",
+    "rule_ru": "“怎么样” используется для запроса мнения или выяснения свойства/состояния чего-либо.",
+    "rule_tj": "“怎么样” барои пурсидани фикр ё ҳолат/хусусияти чизе истифода мешавад.",
+    "examples": [
+      {
+        "zh": "这个杯子怎么样？",
+        "pinyin": "Zhège bēizi zěnmeyàng?",
+        "uz": "Bu piyola qanday?",
+        "ru": "Как эта чашка?",
+        "tj": "Ин пиёла чӣ хел?"
+      },
+      {
+        "zh": "这本书怎么样？",
+        "pinyin": "Zhè běn shū zěnmeyàng?",
+        "uz": "Bu kitob qanday?",
+        "ru": "Как эта книга?",
+        "tj": "Ин китоб чӣ хел?"
+      },
+      {
+        "zh": "这个菜怎么样？",
+        "pinyin": "Zhège cài zěnmeyàng?",
+        "uz": "Bu taom qanday?",
+        "ru": "Как это блюдо?",
+        "tj": "Ин таом чӣ хел?"
+      }
+    ],
+    "lesson_order": 10,
+    "lesson_code": "NHSK1-L10"
+  },
+  {
+    "no": 1,
+    "title_zh": "正反问",
+    "title_uz": "Tasdiq-inkor savoli",
+    "title_ru": "Утвердительно-отрицательный вопрос",
+    "title_tj": "Саволи тасдиқӣ-инкорӣ",
+    "rule_zh": "正反问用“肯定形式+否定形式”构成。动词常用“V+不/没+V”，形容词常用“Adj+不+Adj”。",
+    "rule_en": "Affirmative-negative questions use an affirmative form followed by its negative form, such as V+不/没+V or Adj+不+Adj.",
+    "rule_uz": "正反问 tasdiq va inkor shaklini ketma-ket qo‘yadi: V+不/没+V yoki sifat+不+sifat.",
+    "rule_ru": "Утвердительно-отрицательный вопрос строится сочетанием утвердительной и отрицательной формы: V+不/没+V или Adj+不+Adj.",
+    "rule_tj": "Саволи тасдиқӣ-инкорӣ аз шакли тасдиқӣ ва инкорӣ сохта мешавад: V+不/没+V ё сифат+不+сифат.",
+    "examples": [
+      {
+        "zh": "它是不是在超市后边？",
+        "pinyin": "Tā shì bu shì zài chāoshì hòubian?",
+        "uz": "U supermarket orqasidami yo‘qmi?",
+        "ru": "Он за супермаркетом или нет?",
+        "tj": "Он паси супермаркет аст ё не?"
+      },
+      {
+        "zh": "你去没去学校？",
+        "pinyin": "Nǐ qù méi qù xuéxiào?",
+        "uz": "Maktabga bordingmi yo‘qmi?",
+        "ru": "Ты ходил в школу или нет?",
+        "tj": "Ба мактаб рафтӣ ё не?"
+      },
+      {
+        "zh": "这种衣服好看不好看？",
+        "pinyin": "Zhè zhǒng yīfu hǎokàn bù hǎokàn?",
+        "uz": "Bu turdagi kiyim chiroylimi yo‘qmi?",
+        "ru": "Такая одежда красивая или нет?",
+        "tj": "Ин навъи либос зебост ё не?"
+      }
+    ],
+    "lesson_order": 11,
+    "lesson_code": "NHSK1-L11"
+  },
+  {
+    "no": 2,
+    "title_zh": "时间副词“在/正在”",
+    "title_uz": "Vaqt ravishlari “在/正在”",
+    "title_ru": "Временные наречия “在/正在”",
+    "title_tj": "Зарфҳои вақт “在/正在”",
+    "rule_zh": "“在/正在”位于动词前，表示动作正在进行或情况在继续。可用“在/正在+动词”“在/正在+动词+呢”或“动词+呢”；否定回答用“没（有）”。",
+    "rule_en": "“在/正在” are placed before verbs to indicate that an action is ongoing or a situation is continuing. Forms include 在/正在+Verb, 在/正在+Verb+呢, and Verb+呢; negative responses use 没（有）.",
+    "rule_uz": "“在/正在” fe’l oldidan kelib harakat davom etayotganini bildiradi. Shakllar: 在/正在+fe’l, 在/正在+fe’l+呢, fe’l+呢; inkorda 没（有） ishlatiladi.",
+    "rule_ru": "“在/正在” ставятся перед глаголом и показывают продолжающееся действие. Формы: 在/正在+глагол, 在/正在+глагол+呢, глагол+呢; отрицание — 没（有）.",
+    "rule_tj": "“在/正在” пеш аз феъл омада, идома доштани амалро нишон медиҳанд. Шаклҳо: 在/正在+феъл, 在/正在+феъл+呢, феъл+呢; инкор бо 没（有）.",
+    "examples": [
+      {
+        "zh": "你还在读大学吗？",
+        "pinyin": "Nǐ hái zài dú dàxué ma?",
+        "uz": "Hali ham universitetda o‘qiyapsanmi?",
+        "ru": "Ты всё ещё учишься в университете?",
+        "tj": "Ҳоло ҳам дар донишгоҳ мехонӣ?"
+      },
+      {
+        "zh": "学生们在/正在上课呢。",
+        "pinyin": "Xuéshengmen zài/zhèngzài shàngkè ne.",
+        "uz": "Talabalar hozir darsda.",
+        "ru": "Студенты сейчас на занятии.",
+        "tj": "Донишҷӯён ҳоло дар дарсанд."
+      },
+      {
+        "zh": "他们读书呢。",
+        "pinyin": "Tāmen dú shū ne.",
+        "uz": "Ular hozir kitob o‘qishyapti.",
+        "ru": "Они сейчас читают.",
+        "tj": "Онҳо ҳоло китоб мехонанд."
+      }
+    ],
+    "lesson_order": 11,
+    "lesson_code": "NHSK1-L11"
+  },
+  {
+    "no": 3,
+    "title_zh": "能愿动词“要”",
+    "title_uz": "Modal fe’l “要”",
+    "title_ru": "Модальный глагол “要”",
+    "title_tj": "Феъли модалии “要”",
+    "rule_zh": "“要”在动词前，表示愿望、打算做某事。",
+    "rule_en": "In front of a verb, the modal verb “要” indicates the desire or intention to do something.",
+    "rule_uz": "“要” fe’l oldidan kelib biror ishni qilish istagi yoki niyatini bildiradi.",
+    "rule_ru": "“要” перед глаголом выражает желание или намерение что-то сделать.",
+    "rule_tj": "“要” пеш аз феъл омада, хоҳиш ё нияти иҷрои амалро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "他今天要和小朋友玩。",
+        "pinyin": "Tā jīntiān yào hé xiǎopéngyou wán.",
+        "uz": "U bugun bolalar bilan o‘ynamoqchi.",
+        "ru": "Сегодня он хочет играть с детьми.",
+        "tj": "Ӯ имрӯз мехоҳад бо кӯдакон бозӣ кунад."
+      },
+      {
+        "zh": "妈妈要去超市。",
+        "pinyin": "Māma yào qù chāoshì.",
+        "uz": "Onam supermarketga bormoqchi.",
+        "ru": "Мама собирается в супермаркет.",
+        "tj": "Модарам ба супермаркет рафтан мехоҳад."
+      },
+      {
+        "zh": "白家月要在家里学中文。",
+        "pinyin": "Bái Jiāyuè yào zài jiālǐ xué Zhōngwén.",
+        "uz": "Bai Jiayue uyda xitoy tilini o‘rganmoqchi.",
+        "ru": "Бай Цзяюэ хочет изучать китайский дома.",
+        "tj": "Бай Ҷяюэ мехоҳад дар хона забони чинӣ омӯзад."
+      }
+    ],
+    "lesson_order": 11,
+    "lesson_code": "NHSK1-L11"
+  },
+  {
+    "no": 1,
+    "title_zh": "非主谓句",
+    "title_uz": "Ega-kesimi ajralmagan gap",
+    "title_ru": "Нерасчленённое предложение",
+    "title_tj": "Ҷумлаи бе мубтадо-хабар",
+    "rule_zh": "非主谓句是由词或短语构成、不分主语和谓语的句子，口语中常用。",
+    "rule_en": "Non-subject-predicate sentences are composed of words or phrases without distinct subjects or predicates and are commonly used in colloquial speech.",
+    "rule_uz": "Bunday gap so‘z yoki iboradan tuziladi, ega va kesimga ajratilmaydi va og‘zaki nutqda ko‘p ishlatiladi.",
+    "rule_ru": "Такие предложения состоят из слова или словосочетания без чёткого подлежащего и сказуемого и часто употребляются в разговорной речи.",
+    "rule_tj": "Ин гуна ҷумла аз калима ё ибора сохта шуда, мубтадо ва хабар ба таври равшан ҷудо намешаванд ва дар гуфтор бисёр истифода мешаванд.",
+    "examples": [
+      {
+        "zh": "下雨了。",
+        "pinyin": "Xià yǔ le.",
+        "uz": "Yomg‘ir yog‘di.",
+        "ru": "Пошёл дождь.",
+        "tj": "Борон борид."
+      },
+      {
+        "zh": "下雪了。",
+        "pinyin": "Xià xuě le.",
+        "uz": "Qor yog‘di.",
+        "ru": "Пошёл снег.",
+        "tj": "Барф борид."
+      },
+      {
+        "zh": "真漂亮！",
+        "pinyin": "Zhēn piàoliang!",
+        "uz": "Juda chiroyli!",
+        "ru": "Очень красиво!",
+        "tj": "Хеле зебо!"
+      }
+    ],
+    "lesson_order": 12,
+    "lesson_code": "NHSK1-L12"
+  },
+  {
+    "no": 2,
+    "title_zh": "语气助词“了（1）”",
+    "title_uz": "Modal yuklama “了（1）”",
+    "title_ru": "Модальная частица “了（1）”",
+    "title_tj": "Ҳиссачаи модалии “了（1）”",
+    "rule_zh": "“了（1）”位于句子末尾或句中停顿处，表示有变化或出现新情况。否定回答时用“没”，句末不用“了”。",
+    "rule_en": "The modal particle “了（1）” is placed at the end of a sentence or at a pause within it to indicate a change or a new situation. Negative responses use “没” and omit “了” at the end.",
+    "rule_uz": "“了（1）” gap oxirida yoki pauza joyida kelib holat o‘zgargani yoki yangi vaziyat paydo bo‘lganini bildiradi. Inkor javobida 没 ishlatiladi va oxirida 了 bo‘lmaydi.",
+    "rule_ru": "“了（1）” ставится в конце предложения или перед паузой и показывает изменение/новую ситуацию. В отрицательном ответе используется 没, а 了 в конце не ставится.",
+    "rule_tj": "“了（1）” дар охири ҷумла ё ҷойи таваққуф омада, тағйир ё вазъияти навро нишон медиҳад. Дар ҷавоби инкорӣ 没 истифода мешавад ва 了 дар охир намеояд.",
+    "examples": [
+      {
+        "zh": "下雨了。",
+        "pinyin": "Xià yǔ le.",
+        "uz": "Yomg‘ir yog‘di.",
+        "ru": "Пошёл дождь.",
+        "tj": "Борон борид."
+      },
+      {
+        "zh": "十二点了，吃午饭吧。",
+        "pinyin": "Shí'èr diǎn le, chī wǔfàn ba.",
+        "uz": "Soat 12 bo‘ldi, tushlik qilaylik.",
+        "ru": "Уже 12 часов, давай пообедаем.",
+        "tj": "Соат 12 шуд, биёед нисфирӯзӣ хӯрем."
+      },
+      {
+        "zh": "弟弟起床了吗？没起床呢。",
+        "pinyin": "Dìdi qǐchuáng le ma? Méi qǐchuáng ne.",
+        "uz": "Uka turdimi? Yo‘q, hali turmadi.",
+        "ru": "Младший брат встал? Нет, ещё не встал.",
+        "tj": "Бародари хурдӣ хест? Не, ҳоло нахестааст."
+      }
+    ],
+    "lesson_order": 12,
+    "lesson_code": "NHSK1-L12"
+  },
+  {
+    "no": 3,
+    "title_zh": "“太……了”格式",
+    "title_uz": "“太……了” qolipi",
+    "title_ru": "Конструкция “太……了”",
+    "title_tj": "Қолаби “太……了”",
+    "rule_zh": "“太……了”用在感叹程度很高或很深。",
+    "rule_en": "The “太……了” pattern expresses a very high or intense degree of exclamation.",
+    "rule_uz": "“太……了” juda yuqori darajani hissiy tarzda ta’kidlash uchun ishlatiladi.",
+    "rule_ru": "“太……了” выражает очень высокую или сильную степень восклицания.",
+    "rule_tj": "“太……了” дараҷаи хеле баланд ё пурзӯрро бо оҳанги таъкидӣ ифода мекунад.",
+    "examples": [
+      {
+        "zh": "太冷了！",
+        "pinyin": "Tài lěng le!",
+        "uz": "Juda sovuq!",
+        "ru": "Очень холодно!",
+        "tj": "Хеле сард!"
+      },
+      {
+        "zh": "这个杯子太小了。",
+        "pinyin": "Zhège bēizi tài xiǎo le.",
+        "uz": "Bu piyola juda kichik.",
+        "ru": "Эта чашка слишком маленькая.",
+        "tj": "Ин пиёла хеле хурд аст."
+      },
+      {
+        "zh": "我们今天太高兴了！",
+        "pinyin": "Wǒmen jīntiān tài gāoxìng le!",
+        "uz": "Bugun juda xursandmiz!",
+        "ru": "Мы сегодня очень рады!",
+        "tj": "Мо имрӯз хеле хурсандем!"
+      }
+    ],
+    "lesson_order": 12,
+    "lesson_code": "NHSK1-L12"
+  },
+  {
+    "no": 1,
+    "title_zh": "能愿动词“可以”",
+    "title_uz": "Modal fe’l “可以”",
+    "title_ru": "Модальный глагол “可以”",
+    "title_tj": "Феъли модалии “可以”",
+    "rule_zh": "能愿动词“可以”位于动词前，表示可能、能够或许可。",
+    "rule_en": "The modal verb “可以” is placed before a verb to indicate possibility, capability, or permission.",
+    "rule_uz": "“可以” fe’l oldidan kelib mumkinlik, qobiliyat yoki ruxsatni bildiradi.",
+    "rule_ru": "“可以” ставится перед глаголом и выражает возможность, способность или разрешение.",
+    "rule_tj": "“可以” пеш аз феъл омада, имкон, қобилият ё иҷозатро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "我可以再问您一个问题吗？",
+        "pinyin": "Wǒ kěyǐ zài wèn nín yí ge wèntí ma?",
+        "uz": "Sizdan yana bir savol so‘rasam bo‘ladimi?",
+        "ru": "Можно задать вам ещё один вопрос?",
+        "tj": "Метавонам боз як савол пурсам?"
+      },
+      {
+        "zh": "你们可以看这本书。",
+        "pinyin": "Nǐmen kěyǐ kàn zhè běn shū.",
+        "uz": "Sizlar bu kitobni o‘qishingiz mumkin.",
+        "ru": "Вы можете прочитать эту книгу.",
+        "tj": "Шумо метавонед ин китобро хонед."
+      },
+      {
+        "zh": "我可以坐吗？可以，请坐！",
+        "pinyin": "Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!",
+        "uz": "O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!",
+        "ru": "Можно сесть? Можно, присаживайтесь!",
+        "tj": "Нишастан мумкин? Мумкин, марҳамат нишинед!"
+      }
+    ],
+    "lesson_order": 13,
+    "lesson_code": "NHSK1-L13"
+  },
+  {
+    "no": 2,
+    "title_zh": "“动词+一下”结构",
+    "title_uz": "“Fe’l+一下” tuzilmasi",
+    "title_ru": "Конструкция “глагол+一下”",
+    "title_tj": "Сохтори “феъл+一下”",
+    "rule_zh": "“动词+一下”表示动作时间短或动作的尝试。",
+    "rule_en": "The “Verb+一下” structure indicates that an action is performed as a quick attempt or is brief.",
+    "rule_uz": "“Fe’l+一下” harakatning qisqa davom etishini yoki sinab ko‘rish tarzida bajarilishini bildiradi.",
+    "rule_ru": "“Глагол+一下” показывает краткое действие или попытку выполнить действие.",
+    "rule_tj": "“Феъл+一下” кӯтоҳ будани амал ё иҷрои онро ҳамчун кӯшиш нишон медиҳад.",
+    "examples": [
+      {
+        "zh": "你可以打电话问一下。",
+        "pinyin": "Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+        "uz": "Telefon qilib so‘rab ko‘rishing mumkin.",
+        "ru": "Можешь позвонить и спросить.",
+        "tj": "Метавонӣ занг зада як бор пурсӣ."
+      },
+      {
+        "zh": "请休息一下。",
+        "pinyin": "Qǐng xiūxi yíxià.",
+        "uz": "Iltimos, biroz dam oling.",
+        "ru": "Пожалуйста, немного отдохните.",
+        "tj": "Лутфан, каме истироҳат кунед."
+      },
+      {
+        "zh": "你看一下吧。",
+        "pinyin": "Nǐ kàn yíxià ba.",
+        "uz": "Bir ko‘rib qo‘y.",
+        "ru": "Посмотри немного.",
+        "tj": "Як нигоҳ кун."
+      }
+    ],
+    "lesson_order": 13,
+    "lesson_code": "NHSK1-L13"
+  },
+  {
+    "no": 3,
+    "title_zh": "双宾语句（1）",
+    "title_uz": "Ikki obyektli gap (1)",
+    "title_ru": "Предложение с двумя дополнениями (1)",
+    "title_tj": "Ҷумлаи ду-объектӣ (1)",
+    "rule_zh": "双宾语句是一个动词带两个宾语的句子。本册重点学习“给、问”构成的双宾语句。",
+    "rule_en": "A double-object sentence is one where a verb takes two objects. This volume focuses on double-object sentences formed by 给 and 问.",
+    "rule_uz": "Ikki obyektli gapda bitta fe’l ikkita obyekt oladi. Bu bosqichda asosan 给 va 问 bilan tuzilgan shakllar o‘rganiladi.",
+    "rule_ru": "В предложении с двумя дополнениями один глагол принимает два объекта. Здесь основное внимание уделяется конструкциям с 给 и 问.",
+    "rule_tj": "Дар ҷумлаи ду-объектӣ як феъл ду объект мегирад. Дар ин сатҳ асосан сохторҳои бо 给 ва 问 омӯхта мешаванд.",
+    "examples": [
+      {
+        "zh": "请给我一杯牛奶。",
+        "pinyin": "Qǐng gěi wǒ yì bēi niúnǎi.",
+        "uz": "Iltimos, menga bir stakan sut bering.",
+        "ru": "Пожалуйста, дайте мне стакан молока.",
+        "tj": "Лутфан, ба ман як пиёла шир диҳед."
+      },
+      {
+        "zh": "白家月给安妮一个苹果。",
+        "pinyin": "Bái Jiāyuè gěi Ānnī yí ge píngguǒ.",
+        "uz": "Bai Jiayue Anniega bitta olma berdi.",
+        "ru": "Бай Цзяюэ дала Энни яблоко.",
+        "tj": "Бай Ҷяюэ ба Энни як себ дод."
+      },
+      {
+        "zh": "我问老师两个问题。",
+        "pinyin": "Wǒ wèn lǎoshī liǎng ge wèntí.",
+        "uz": "Men o‘qituvchidan ikkita savol so‘radim.",
+        "ru": "Я задал преподавателю два вопроса.",
+        "tj": "Ман аз устод ду савол пурсидам."
+      }
+    ],
+    "lesson_order": 13,
+    "lesson_code": "NHSK1-L13"
+  },
+  {
+    "no": 1,
+    "title_zh": "动态助词“了（2）”",
+    "title_uz": "Aspekt yuklamasi “了（2）”",
+    "title_ru": "Аспектуальная частица “了（2）”",
+    "title_tj": "Ҳиссачаи намудии “了（2）”",
+    "rule_zh": "“了（2）”放在动词后，表示动作行为已经发生或完成。否定时用“没”，不用“了”。",
+    "rule_en": "The aspect particle “了（2）” is placed after a verb to indicate that an action has occurred or been completed. When negating, 没 is used and 了 is omitted.",
+    "rule_uz": "“了（2）” fe’ldan keyin kelib harakat sodir bo‘lganini yoki tugallanganini bildiradi. Inkorda 没 ishlatiladi va 了 tushiriladi.",
+    "rule_ru": "“了（2）” ставится после глагола и показывает, что действие произошло или завершилось. В отрицании используется 没, а 了 опускается.",
+    "rule_tj": "“了（2）” пас аз феъл омада, рух додан ё анҷом ёфтани амалро нишон медиҳад. Дар инкор 没 истифода шуда, 了 намеояд.",
+    "examples": [
+      {
+        "zh": "我看了一个电影。",
+        "pinyin": "Wǒ kànle yí ge diànyǐng.",
+        "uz": "Men bitta film ko‘rdim.",
+        "ru": "Я посмотрел фильм.",
+        "tj": "Ман як филм тамошо кардам."
+      },
+      {
+        "zh": "我买了一个新电脑。",
+        "pinyin": "Wǒ mǎile yí ge xīn diànnǎo.",
+        "uz": "Men yangi kompyuter sotib oldim.",
+        "ru": "Я купил новый компьютер.",
+        "tj": "Ман компютери нав харидам."
+      },
+      {
+        "zh": "我昨天没去商店买东西。",
+        "pinyin": "Wǒ zuótiān méi qù shāngdiàn mǎi dōngxi.",
+        "uz": "Men kecha do‘konga narsa sotib olishga bormadim.",
+        "ru": "Я вчера не ходил в магазин за покупками.",
+        "tj": "Ман дирӯз барои харид ба мағоза нарафтам."
+      }
+    ],
+    "lesson_order": 14,
+    "lesson_code": "NHSK1-L14"
+  },
+  {
+    "no": 2,
+    "title_zh": "离合词（1）",
+    "title_uz": "Ajraluvchi so‘zlar (1)",
+    "title_ru": "Разделяемые слова (1)",
+    "title_tj": "Калимаҳои ҷудошаванда (1)",
+    "rule_zh": "“上课、下课、上班、下班、说话、读书、睡觉”等由动词和宾语组成，插入成分时要拆开。",
+    "rule_en": "Words such as 上课, 下课, 上班, 下班, 说话, 读书 and 睡觉 consist of a verb and object; when inserting another element, the two parts are separated.",
+    "rule_uz": "上课、下课、上班、下班、说话、读书、睡觉 kabi so‘zlar fe’l+obyektdan tuzilgan; orasiga boshqa unsur kirsa, qismlari ajraladi.",
+    "rule_ru": "Слова 上课、下课、上班、下班、说话、读书、睡觉 состоят из глагола и объекта; при вставке другого элемента они разделяются.",
+    "rule_tj": "Калимаҳои 上课、下课、上班、下班、说话、读书、睡觉 аз феъл+объект сохта шудаанд; ҳангоми ворид кардани унсур қисмҳо ҷудо мешаванд.",
+    "examples": [
+      {
+        "zh": "睡了觉；睡了一觉",
+        "pinyin": "shuìle jiào; shuìle yí jiào",
+        "uz": "uxladi; bir uxlab oldi",
+        "ru": "поспал; поспал один раз",
+        "tj": "хобид; як бор хобид"
+      },
+      {
+        "zh": "上了课；上了一次课",
+        "pinyin": "shàngle kè; shàngle yí cì kè",
+        "uz": "darsga qatnashdi; bir marta darsga qatnashdi",
+        "ru": "был на занятии; сходил на одно занятие",
+        "tj": "ба дарс рафт; як бор ба дарс рафт"
+      },
+      {
+        "zh": "说了话；说了很多话",
+        "pinyin": "shuōle huà; shuōle hěn duō huà",
+        "uz": "gapirdi; juda ko‘p gapirdi",
+        "ru": "говорил; много говорил",
+        "tj": "гап зад; бисёр гап зад"
+      }
+    ],
+    "lesson_order": 14,
+    "lesson_code": "NHSK1-L14"
+  },
+  {
+    "no": 3,
+    "title_zh": "范围副词“都”",
+    "title_uz": "Qamrov ravishi “都”",
+    "title_ru": "Наречие охвата “都”",
+    "title_tj": "Зарфи фарогирии “都”",
+    "rule_zh": "“都”表示“全部、概括”，被概括的对象一般放在“都”前面。否定时，否定词在“都”后。",
+    "rule_en": "The scope adverb “都” means “all” or “in general”. The item being generalized is placed before 都; when negating, the negative word is placed after 都.",
+    "rule_uz": "“都” “hammasi/barchasi” ma’nosini beradi; umumlashtirilayotgan unsur 都 dan oldin keladi. Inkorda inkor so‘zi 都 dan keyin turadi.",
+    "rule_ru": "“都” означает «все/в целом»; обобщаемый объект ставится перед 都. В отрицании отрицательное слово ставится после 都.",
+    "rule_tj": "“都” маънои «ҳама/умуман»-ро медиҳад; объекти умумисозиш пеш аз 都 меояд. Дар инкор калимаи инкор пас аз 都 меояд.",
+    "examples": [
+      {
+        "zh": "我们都会写了。",
+        "pinyin": "Wǒmen dōu huì xiě le.",
+        "uz": "Hammamiz yoza olamiz.",
+        "ru": "Мы все умеем писать.",
+        "tj": "Ҳамаамон навишта метавонем."
+      },
+      {
+        "zh": "我和我的朋友们都去。",
+        "pinyin": "Wǒ hé wǒ de péngyoumen dōu qù.",
+        "uz": "Men va do‘stlarimning hammasi boramiz.",
+        "ru": "Я и мои друзья все пойдём.",
+        "tj": "Ман ва дӯстонам ҳама меравем."
+      },
+      {
+        "zh": "同学们都没听见。",
+        "pinyin": "Tóngxuémen dōu méi tīngjiàn.",
+        "uz": "Talabalarning hech biri eshitmadi.",
+        "ru": "Студенты все не услышали.",
+        "tj": "Ҳеҷ кадом аз донишҷӯён нашуниданд."
+      }
+    ],
+    "lesson_order": 14,
+    "lesson_code": "NHSK1-L14"
+  },
+  {
+    "no": 1,
+    "title_zh": "并列复句“……，还/也……”",
+    "title_uz": "“……，还/也……” teng bog‘langan qo‘shma gap",
+    "title_ru": "Сочинённое предложение “……，还/也……”",
+    "title_tj": "Ҷумлаи ҳампайванди “……，还/也……”",
+    "rule_zh": "并列复句由两个或两个以上逻辑关系平等的分句构成，本册学习并列复句“……，还/也……”。",
+    "rule_en": "A coordinate compound sentence consists of two or more clauses that are logically related and structurally parallel. This volume focuses on “……，还/也……”.",
+    "rule_uz": "Teng bog‘langan qo‘shma gap ikki yoki undan ko‘p mantiqan teng qismlardan tuziladi. Bu bosqichda “……，还/也……” o‘rganiladi.",
+    "rule_ru": "Сочинённое предложение состоит из двух или более логически равноправных частей. Здесь изучается модель “……，还/也……”.",
+    "rule_tj": "Ҷумлаи ҳампайванд аз ду ё зиёда қисми аз ҷиҳати мантиқӣ баробар сохта мешавад. Дар ин сатҳ қолаби “……，还/也……” омӯхта мешавад.",
+    "examples": [
+      {
+        "zh": "我喜欢这个，也喜欢那个。",
+        "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+        "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+        "ru": "Мне нравится это, и то тоже нравится.",
+        "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+      },
+      {
+        "zh": "王老师是北京人，李文也是北京人。",
+        "pinyin": "Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén.",
+        "uz": "Ustoz Wang Pekinlik, Li Wen ham Pekinlik.",
+        "ru": "Преподаватель Ван из Пекина, и Ли Вэнь тоже из Пекина.",
+        "tj": "Устод Ван аз Пекин аст, Ли Вэн ҳам аз Пекин аст."
+      },
+      {
+        "zh": "我喜欢喝中国茶，还喜欢吃中国菜。",
+        "pinyin": "Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài.",
+        "uz": "Xitoy choyini ichishni yoqtiraman, xitoy taomlarini yeyishni ham yoqtiraman.",
+        "ru": "Мне нравится пить китайский чай, а ещё я люблю китайскую еду.",
+        "tj": "Нӯшидани чойи чиниро дӯст медорам ва хӯрдани таоми чиниро ҳам дӯст медорам."
+      }
+    ],
+    "lesson_order": 15,
+    "lesson_code": "NHSK1-L15"
+  }
+]
