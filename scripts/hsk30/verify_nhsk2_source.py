@@ -70,11 +70,63 @@ def verify(order: int) -> dict[str, int]:
     }
 
 
-def main() -> None:
-    for order in sorted(EXPECTED):
-        stats = verify(order)
-        print(f"OK lesson {order:02d}: " + " ".join(f"{k}={v}" for k, v in stats.items()))
+def verify_index() -> dict[str, int]:
+    index = json.loads(INDEX.read_text(encoding="utf-8"))
+    source_rows = index["common_index_rows"]
+    source_words = {row["zh"] for row in source_rows}
+    beyond = set(index["beyond_syllabus"])
+    proper = {row["zh"] for row in index["proper_nouns"]}
 
+    actual_occurrences: dict[str, set[int]] = {}
+    proper_seen: set[str] = set()
+
+    for order in range(1, 16):
+        lesson = load_seed(order).LESSON
+        for item in json.loads(lesson["vocabulary_json"]):
+            actual_occurrences.setdefault(item["zh"], set()).add(order)
+        for item in json.loads(lesson.get("proper_nouns_json", "[]")):
+            proper_seen.add(item["zh"])
+
+    actual_words = set(actual_occurrences)
+    assert actual_words == source_words, (
+        f"index coverage mismatch missing={sorted(source_words-actual_words)} "
+        f"extras={sorted(actual_words-source_words)}"
+    )
+    assert proper <= proper_seen, f"missing proper nouns: {sorted(proper-proper_seen)}"
+
+    for row in source_rows:
+        if row["zh"] == "过":
+            continue
+        assert sorted(actual_occurrences[row["zh"]]) == row["lessons"], (
+            row["zh"], sorted(actual_occurrences[row["zh"]]), row["lessons"]
+        )
+
+    counts = index["source_counts"]
+    assert len(source_rows) == counts["common_index_rows"] == 207
+    assert len(source_words) == counts["unique_common_spellings"] == 206
+    assert len(beyond) == counts["common_rows_marked_beyond_syllabus"] == 10
+    assert sum(not row["beyond_syllabus"] for row in source_rows) == 197
+    assert len(index["proper_nouns"]) == 3
+    assert 197 + 3 == counts["syllabus_rows_including_proper_nouns"] == 200
+
+    guo_rows = [row for row in source_rows if row["zh"] == "过"]
+    assert [(row["pinyin"], row["lessons"]) for row in guo_rows] == [
+        ("guò", [6]),
+        ("guo", [4]),
+    ]
+
+    return {
+        "lesson_vocab_rows": sum(EXPECTED[i]["vocab"] for i in EXPECTED),
+        "index_rows": len(source_rows),
+        "unique_spellings": len(source_words),
+        "beyond_syllabus": len(beyond),
+        "proper_nouns": len(index["proper_nouns"]),
+        "syllabus_rows": counts["syllabus_rows_including_proper_nouns"],
+    }
+
+
+def main() -> None:
+    for order in sorted(EXPECTED):\n        stats = verify(order)\n        print(f"OK lesson {order:02d}: " + " ".join(f"{k}={v}" for k, v in stats.items()))\n    audit = verify_index()\n    print("OK N2 index: " + " ".join(f"{k}={v}" for k, v in audit.items()))\n
 
 if __name__ == "__main__":
     main()
