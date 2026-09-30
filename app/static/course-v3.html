@@ -1247,8 +1247,14 @@ var I18N={
   tj:{trialOn:"HSK AI Pro ба 7 рӯз кушода шуд",trialFail:"Ҳозир нашуд",trialTitle:"HSK AI Pro — 7 рӯз ройгон",trialBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",trialCta:"7 рӯз ройгон санҷидан",trialActive:"HSK AI Pro фаъол",trialLeft:"{n} рӯз монд",trialLeftHours:"Имрӯз тамом мешавад · {n} соат монд",trialLeftSoon:"Имрӯз тамом мешавад · камтар аз 1 соат",trialUsed:"Шумо аллакай санҷишро истифода бурдед",planPay:"HSK AI Pro гирифтан",planFree:"Ройгон оғоз кардан",planTitle:"Нақшаи шахсии шумо тайёр",planBody:"Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.",nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Гуфтугӯ",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"HSK AI Pro ⭐️",learner:"донишҷӯ",premium:"HSK AI Pro",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Pro",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",lockedLesson:"Ин дарс дар HSK AI Pro аст"}
 };
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
-var LEVELS=["hsk1","hsk2","hsk3","hsk4"];
+var LEGACY_LEVELS=["hsk1","hsk2","hsk3","hsk4"];
+var HSK30_LEVELS=["nhsk1","nhsk2","nhsk3"];
+var LEVELS=LEGACY_LEVELS.concat(HSK30_LEVELS);
 function normalizeLevel(v){v=String(v||"").toLowerCase();return LEVELS.indexOf(v)>=0?v:"hsk1"}
+function isHsk30Level(v){return /^nhsk[1-3]$/.test(normalizeLevel(v))}
+function levelBand(v){var m=normalizeLevel(v).match(/(\d+)$/);return m?parseInt(m[1],10):1}
+function trackLevels(v){return isHsk30Level(v)?HSK30_LEVELS:LEGACY_LEVELS}
+function lessonGateUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/lesson_gate_hsk30.js?v=20260930":"/course_v3_data/lesson_gate.js?v=20260719"}
 function getStoredLevel(){try{return normalizeLevel(localStorage.getItem("hsk_v3_level"))}catch(e){return"hsk1"}}
 function getSelectedLevel(){var p=new URLSearchParams(location.search);return normalizeLevel(p.get("level")||getStoredLevel())}
 function setSelectedLevel(lv){
@@ -1984,15 +1990,18 @@ var App={
   pickStudyFocus:function(k){App.closeSheet();
     savePreferences({preferred_focus:k}).then(function(){renderAll()})},
   levelPicker:function(){
-    var names={hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"]};
+    var names={
+      hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"],
+      nhsk1:["你好","HSK 3.0 · N1"],nhsk2:["谢谢","HSK 3.0 · N2"],nhsk3:["明白","HSK 3.0 · N3"]
+    };
     var sub={
-      ru:{hsk1:"С нуля",hsk2:"Базовое общение",hsk3:"Повседневное общение",hsk4:"Свободное общение",title:"Выберите уровень"},
-      uz:{hsk1:"Noldan",hsk2:"Asosiy suhbat",hsk3:"Kundalik muloqot",hsk4:"Erkin muloqot",title:"Darajani tanlang"},
-      tj:{hsk1:"Аз сифр",hsk2:"Муоширати асосӣ",hsk3:"Муоширати ҳаррӯза",hsk4:"Муоширати озод",title:"Сатҳро интихоб кунед"}
+      ru:{hsk1:"С нуля",hsk2:"Базовое общение",hsk3:"Повседневное общение",hsk4:"Свободное общение",nhsk1:"Новый стандарт · N1",nhsk2:"Новый стандарт · N2",nhsk3:"Новый стандарт · N3",title:"Выберите уровень"},
+      uz:{hsk1:"Noldan",hsk2:"Asosiy suhbat",hsk3:"Kundalik muloqot",hsk4:"Erkin muloqot",nhsk1:"Yangi standart · N1",nhsk2:"Yangi standart · N2",nhsk3:"Yangi standart · N3",title:"Darajani tanlang"},
+      tj:{hsk1:"Аз сифр",hsk2:"Муоширати асосӣ",hsk3:"Муоширати ҳаррӯза",hsk4:"Муоширати озод",nhsk1:"Стандарти нав · N1",nhsk2:"Стандарти нав · N2",nhsk3:"Стандарти нав · N3",title:"Сатҳро интихоб кунед"}
     }[LANG];
-    var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel());
+    var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel()),choices=trackLevels(cur);
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+sub.title+'</div></div>'
-      +LEVELS.map(function(lv){var n=names[lv];return '<button class="opt-row'+(cur===lv?' on':'')+'" onclick="App.pickLevel(\''+lv+'\')"><span class="han" style="font-size:22px;width:34px;text-align:center">'+n[0]+'</span><span style="flex:1"><b style="display:block">'+n[1]+'</b><small style="color:var(--ink2)">'+sub[lv]+'</small></span>'+(cur===lv?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
+      +choices.map(function(lv){var n=names[lv];return '<button class="opt-row'+(cur===lv?' on':'')+'" onclick="App.pickLevel(\''+lv+'\')"><span class="han" style="font-size:22px;width:34px;text-align:center">'+n[0]+'</span><span style="flex:1"><b style="display:block">'+n[1]+'</b><small style="color:var(--ink2)">'+sub[lv]+'</small></span>'+(cur===lv?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
   },
   pickLevel:function(lv){App.closeSheet();loadLevel(lv)},
   goCurrentLesson:function(){var idx=-1;allLessons().forEach(function(l,i){if(l.status==="current")idx=i});App.show("course");if(idx>=0)setTimeout(function(){openLessonSheet(idx)},60)},
@@ -2046,7 +2055,7 @@ function prefetchPracticeAssets(){
        HAQIQATAN yuklanadi (nafaqat keshga tushadi), shuning uchun bo'lim
        bosilganda darhol ochiladi. */
     loadJsOnce("hsk-words.js?v=20260720").catch(function(){});
-    loadJsOnce("/course_v3_data/lesson_gate.js?v=20260719").catch(function(){});
+    loadJsOnce(lessonGateUrl()).catch(function(){});
     /* memo.js alohida memorize sahifasining o'z defer scripti; bu yerda
        oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
   });
@@ -4319,7 +4328,7 @@ function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
   }
   placeSpot();
 }
-var _NEXT_LEVEL={hsk1:"hsk2",hsk2:"hsk3",hsk3:"hsk4"};
+var _NEXT_LEVEL={hsk1:"hsk2",hsk2:"hsk3",hsk3:"hsk4",nhsk1:"nhsk2",nhsk2:"nhsk3"};
 function adoptServerLang(d){
   /* Til yagona manbadan (botdagi user.language) keladi — server tilini qabul qilamiz. */
   if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language;
@@ -4782,7 +4791,7 @@ function ratingCountdownText(){
 }
 	function courseLevelLabel(lv){
 	  lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
-	  return lv.toUpperCase().replace("HSK","HSK ");
+	  return isHsk30Level(lv)?("HSK 3.0 · N"+levelBand(lv)):lv.toUpperCase().replace("HSK","HSK ");
 	}
 	/* Haqiqiy Telegram avatarlari: harf zaxira bo'lib qoladi, rasm ustidan yopadi.
 	   Rasm topilmasa (404) img o'chadi va harf ko'rinaveradi. */
@@ -5704,7 +5713,7 @@ var RECOG=(function(){
   /* Daraja va o'rganilgan darslar soni ASOSIY ILOVA holatidan olinadi —
      ilgari shu ma'lumot uchun alohida `/api/voice-practice/me` chaqirilardi,
      endi u so'rov umuman kerak emas. */
-  function lvNum(){return parseInt(String((MAP&&MAP.level)||"hsk1").slice(3),10)||1}
+  function lvNum(){return levelBand((MAP&&MAP.level)||"hsk1")}
   function curLesson(){return Math.max(1,Number((MAP&&MAP.progress&&MAP.progress.completed)||0)+1)}
   function gate(h){return (window.HSK_WORD_GATE||{})[h]}
   function wLv(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
@@ -5713,7 +5722,7 @@ var RECOG=(function(){
   /* So'z bazasi va dars-gate faqat shu bo'lim uchun kerak — ilova ochilishida
      emas, birinchi marta kirilganda yuklanadi (fonda allaqachon boshlangan). */
   function ensureData(){
-    if(!DATA)DATA=Promise.all([loadJsOnce("hsk-words.js?v=20260720"),loadJsOnce("/course_v3_data/lesson_gate.js?v=20260719")]);
+    if(!DATA)DATA=Promise.all([loadJsOnce("hsk-words.js?v=20260720"),loadJsOnce(lessonGateUrl())]);
     return DATA;
   }
 
