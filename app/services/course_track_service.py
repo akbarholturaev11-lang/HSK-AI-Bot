@@ -118,6 +118,7 @@ class CourseTrackService:
             for row in await self.state_repo.list_for_user(int(user.id))
         }
         access = await self.hsk30_access(user)
+        live_levels = await self.hsk30_feature.live_levels()
 
         def state_payload(track: str) -> dict:
             row = states.get(track)
@@ -145,6 +146,7 @@ class CourseTrackService:
                 TRACK_HSK30: {
                     **state_payload(TRACK_HSK30),
                     "access": access.payload(),
+                    "live_levels": list(live_levels),
                 },
             },
         }
@@ -184,18 +186,37 @@ class CourseTrackService:
             raise CourseTrackError("invalid_course_track", status_code=422)
 
         current_track = self.track_for_level(getattr(user, "level", None))
+        live_levels: tuple[str, ...] = ()
         if target_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
             if not access.allowed:
                 raise CourseTrackError(access.reason, status_code=403)
+            live_levels = await self.hsk30_feature.live_levels()
+            if not live_levels:
+                raise CourseTrackError("hsk30_no_live_levels", status_code=403)
 
         validated_requested_level = (
             self._validate_level_for_track(requested_level, target_track)
             if requested_level
             else None
         )
+        if (
+            target_track == TRACK_HSK30
+            and validated_requested_level
+            and validated_requested_level not in live_levels
+        ):
+            raise CourseTrackError("hsk30_level_not_live", status_code=403)
 
         if target_track == current_track:
+            if (
+                target_track == TRACK_HSK30
+                and self._validate_level_for_track(
+                    getattr(user, "level", None),
+                    TRACK_HSK30,
+                )
+                not in live_levels
+            ):
+                raise CourseTrackError("hsk30_level_not_live", status_code=403)
             current_level = self._validate_level_for_track(
                 getattr(user, "level", None),
                 current_track,
@@ -231,7 +252,10 @@ class CourseTrackService:
             for_update=True,
         )
         if target_state is None:
-            target_level = validated_requested_level or self.default_level(target_track)
+            target_level = (
+                validated_requested_level
+                or (live_levels[0] if target_track == TRACK_HSK30 else self.default_level(target_track))
+            )
             target_state = await self.state_repo.create(
                 user_id=int(user.id),
                 track=target_track,
@@ -243,6 +267,8 @@ class CourseTrackService:
                 target_state.level,
                 target_track,
             )
+            if target_track == TRACK_HSK30 and target_level not in live_levels:
+                raise CourseTrackError("hsk30_level_not_live", status_code=403)
 
         user.level = target_level
         progress.level = content_level(target_level)
