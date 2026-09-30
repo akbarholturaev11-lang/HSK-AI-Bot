@@ -39,7 +39,7 @@ _LEVEL_SPECS = (
     CourseLevelSpec(key="nhsk1", track=TRACK_HSK30, band=1, content_level="nhsk1"),
     CourseLevelSpec(key="nhsk2", track=TRACK_HSK30, band=2, content_level="nhsk2"),
     CourseLevelSpec(key="nhsk3", track=TRACK_HSK30, band=3, content_level="nhsk3"),
-    CourseLevelSpec(key="nhsk4", track=TRACK_HSK30, band=4, content_level="nhsk4"),
+    CourseLevelSpec(key="nhsk4", track=TRACK_HSK30, band=4, content_level="nhsk4", selectable=False),
 )
 
 COURSE_LEVEL_SPECS = {spec.key: spec for spec in _LEVEL_SPECS}
@@ -121,4 +121,7 @@ def next_level(value: str | None) -> str | None:
     if not spec or spec.entry_alias or spec.band >= 4:
         return None
     prefix = "nhsk" if spec.track == TRACK_HSK30 else "hsk"
-    return f"{prefix}{spec.band + 1}"
+    candidate = level_spec(f"{prefix}{spec.band + 1}")
+    if not candidate or not candidate.selectable:
+        return None
+    return candidate.key
