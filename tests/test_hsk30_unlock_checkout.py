@@ -180,21 +180,22 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, {"ok": False, "error": "hsk30_already_unlocked"})
 
     async def test_submit_preserves_subscription_selection_and_writes_special_product(self):
-        async with self.sessions() as session, patch.object(
-            AdminNotifyService,
-            "notify_payment_review",
-            return_value="HSK30_RECEIPT",
-        ):
-            result = await SubscriptionMiniAppService(session).submit(
-                telegram_id=5001,
-                plan_type=HSK30_UNLOCK_PLAN_TYPE,
-                payment_method="visa",
-                card_country="tj",
-                card_bank="dc_city",
-                screenshot_data_url=PNG_1X1_DATA_URL,
-                bot=self.bot,
-                mode="subscription",
-            )
+        async with self.sessions() as session:
+            with patch.object(
+                AdminNotifyService,
+                "notify_payment_review",
+                return_value="HSK30_RECEIPT",
+            ):
+                result = await SubscriptionMiniAppService(session).submit(
+                    telegram_id=5001,
+                    plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method="visa",
+                    card_country="tj",
+                    card_bank="dc_city",
+                    screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=self.bot,
+                    mode="subscription",
+                )
 
         self.assertTrue(result["ok"], result)
         async with self.sessions() as session:
