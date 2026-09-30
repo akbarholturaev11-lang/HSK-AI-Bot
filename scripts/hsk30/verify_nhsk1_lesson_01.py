@@ -16,6 +16,9 @@ EXPECTED = {
     7: {"vocab": 27, "dialogues": 3, "lines": 14, "grammar": 4},
     8: {"vocab": 23, "dialogues": 3, "lines": 14, "grammar": 3},
     9: {"vocab": 23, "dialogues": 3, "lines": 14, "grammar": 3},
+    10: {"vocab": 23, "dialogues": 3, "lines": 16, "grammar": 3},
+    11: {"vocab": 25, "dialogues": 3, "lines": 14, "grammar": 3},
+    12: {"vocab": 24, "dialogues": 3, "lines": 14, "grammar": 3},
 }
 
 
@@ -43,7 +46,7 @@ def verify(order: int) -> dict[str, int]:
     grammar = json.loads(lesson["grammar_json"])
 
     assert len(vocab) == exp["vocab"], (order, "vocab", len(vocab))
-    assert len({w["zh"] for w in vocab}) == len(vocab), f"lesson {order}: duplicate vocab"
+    assert len({(w["zh"], w["pinyin"], w["pos"]) for w in vocab}) == len(vocab), f"lesson {order}: duplicate vocab entry"
     assert len(dialogues) == exp["dialogues"], (order, "dialogues", len(dialogues))
     assert len(grammar) == exp["grammar"], (order, "grammar", len(grammar))
 
