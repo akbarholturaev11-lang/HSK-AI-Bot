@@ -26,6 +26,7 @@ from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.services.subscription_currency_service import (
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
     DEFAULT_USD_CNY_RATE,
     DEFAULT_VISA_LOCAL_RATES,
 )
@@ -167,7 +168,10 @@ class AdminFinanceStatsService:
                     Payment.reviewed_at,
                     Payment.submitted_at,
                     Payment.source,
-                ).where(Payment.payment_status == "approved")
+                ).where(
+                    Payment.payment_status == "approved",
+                    Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
+                )
             )
         ).all()
 
@@ -251,7 +255,10 @@ class AdminFinanceStatsService:
         """≥2 marta tasdiqlangan to'lov qilgan (kamida 1 marta yangilagan) foydalanuvchilar."""
         sub = (
             select(Payment.user_telegram_id)
-            .where(Payment.payment_status == "approved")
+            .where(
+                Payment.payment_status == "approved",
+                Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
+            )
             .group_by(Payment.user_telegram_id)
             .having(func.count() >= 2)
         ).subquery()
