@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "lesson": 11,
+  "source_title_hanzi": "看来我没办法解决这个问题",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Ish jarayoni, yig‘ilish va ishdagi muammolar haqida gaplashish; kasb va ish tanlovi bo‘yicha fikr bildirish; “看来” bilan kuzatuv asosida xulosa chiqarish.",
+    "ru": "Говорить о работе, совещаниях и рабочих проблемах; обсуждать выбор профессии и отношение к работе; использовать “看来” для вывода на основе наблюдений.",
+    "tj": "Дар бораи кори рӯзмарра, ҷаласа ва мушкилоти корӣ суҳбат кардан; интихоби касб ва муносибат ба корро муҳокима кардан; бо “看来” аз рӯйи мушоҳида хулоса баровардан."
+  },
+  "intro_text": {
+    "uz": "Dars yig‘ilishga tayyorgarlik, texnik muammo va ish yuklamasi haqidagi suhbatlar orqali “还是/或者”, “看来”, “把”ning uchinchi turi va “对……来说” tuzilishini o‘rgatadi.",
+    "ru": "Урок через подготовку к совещанию, техническую проблему и рабочую нагрузку вводит “还是/或者”, “看来”, третий тип предложений с “把” и конструкцию “对……来说”.",
+    "tj": "Дарс тавассути омодагӣ ба ҷаласа, мушкили техникӣ ва сарбории корӣ “还是/或者”, “看来”, навъи сеюми ҷумлаҳои “把” ва сохтори “对……来说”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "会议",
+      "pinyin": "huìyì",
+      "uz": "yig‘ilish; majlis",
+      "ru": "совещание; собрание",
+      "tj": "ҷаласа; маҷлис"
+    },
+    {
+      "hanzi": "经理",
+      "pinyin": "jīnglǐ",
+      "uz": "menejer; rahbar",
+      "ru": "менеджер; руководитель",
+      "tj": "мудир; роҳбар"
+    },
+    {
+      "hanzi": "开会",
+      "pinyin": "kāihuì",
+      "uz": "yig‘ilish o‘tkazmoq",
+      "ru": "проводить совещание",
+      "tj": "ҷаласа гузарондан"
+    },
+    {
+      "hanzi": "后天",
+      "pinyin": "hòutiān",
+      "uz": "indinga",
+      "ru": "послезавтра",
+      "tj": "пасфардо"
+    },
+    {
+      "hanzi": "地点",
+      "pinyin": "dìdiǎn",
+      "uz": "joy; manzil",
+      "ru": "место; адрес",
+      "tj": "ҷой; макон"
+    },
+    {
+      "hanzi": "室",
+      "pinyin": "shì",
+      "uz": "xona; bo‘lim",
+      "ru": "помещение; кабинет",
+      "tj": "ҳуҷра; утоқ"
+    },
+    {
+      "hanzi": "发",
+      "pinyin": "fā",
+      "uz": "yubormoq; jo‘natmoq",
+      "ru": "отправлять; посылать",
+      "tj": "фиристодан"
+    },
+    {
+      "hanzi": "笔记本（电脑）",
+      "pinyin": "bǐjìběn (diànnǎo)",
+      "uz": "noutbuk",
+      "ru": "ноутбук",
+      "tj": "ноутбук"
+    },
+    {
+      "hanzi": "或者",
+      "pinyin": "huòzhě",
+      "uz": "yoki (darak gapda)",
+      "ru": "или (в утвердительном предложении)",
+      "tj": "ё (дар ҷумлаи хабарӣ)"
+    },
+    {
+      "hanzi": "声音",
+      "pinyin": "shēngyīn",
+      "uz": "ovoz; tovush",
+      "ru": "звук; голос",
+      "tj": "садо; овоз"
+    },
+    {
+      "hanzi": "看来",
+      "pinyin": "kànlái",
+      "uz": "ko‘rinishidan; chamasi",
+      "ru": "похоже; судя по всему",
+      "tj": "ба назар; зоҳиран"
+    },
+    {
+      "hanzi": "办法",
+      "pinyin": "bànfǎ",
+      "uz": "yo‘l; usul; chora",
+      "ru": "способ; решение",
+      "tj": "усул; чора"
+    },
+    {
+      "hanzi": "解决",
+      "pinyin": "jiějué",
+      "uz": "hal qilmoq",
+      "ru": "решать; устранять",
+      "tj": "ҳал кардан"
+    },
+    {
+      "hanzi": "只能",
+      "pinyin": "zhǐ néng",
+      "uz": "faqat ... mumkin; majbur",
+      "ru": "можно только; остаётся лишь",
+      "tj": "танҳо ... мумкин; маҷбур"
+    },
+    {
+      "hanzi": "别人",
+      "pinyin": "biérén",
+      "uz": "boshqalar; boshqa odam",
+      "ru": "другие люди",
+      "tj": "дигарон"
+    },
+    {
+      "hanzi": "请假",
+      "pinyin": "qǐngjià",
+      "uz": "ruxsat so‘ramoq; ta’til/bo‘sh kun olmoq",
+      "ru": "просить отпуск/отгул",
+      "tj": "рухсат пурсидан; рухсатӣ гирифтан"
+    },
+    {
+      "hanzi": "同事",
+      "pinyin": "tóngshì",
+      "uz": "hamkasb",
+      "ru": "коллега",
+      "tj": "ҳамкор"
+    },
+    {
+      "hanzi": "休假",
+      "pinyin": "xiūjià",
+      "uz": "ta’til qilmoq",
+      "ru": "быть в отпуске",
+      "tj": "рухсатӣ кардан"
+    },
+    {
+      "hanzi": "怕",
+      "pinyin": "pà",
+      "uz": "qo‘rqmoq; xavotirlanmoq",
+      "ru": "бояться; опасаться",
+      "tj": "тарсидан; хавотир шудан"
+    },
+    {
+      "hanzi": "邮箱",
+      "pinyin": "yóuxiāng",
+      "uz": "elektron pochta qutisi",
+      "ru": "электронная почта; почтовый ящик",
+      "tj": "почтаи электронӣ"
+    },
+    {
+      "hanzi": "愿意",
+      "pinyin": "yuànyì",
+      "uz": "rozi bo‘lmoq; istamoq",
+      "ru": "быть готовым; хотеть",
+      "tj": "розӣ будан; хостан"
+    },
+    {
+      "hanzi": "城市",
+      "pinyin": "chéngshì",
+      "uz": "shahar",
+      "ru": "город",
+      "tj": "шаҳр"
+    },
+    {
+      "hanzi": "离开",
+      "pinyin": "líkāi",
+      "uz": "tark etmoq; ketmoq",
+      "ru": "покидать; уходить",
+      "tj": "тарк кардан; рафтан"
+    },
+    {
+      "hanzi": "机会",
+      "pinyin": "jīhuì",
+      "uz": "imkoniyat",
+      "ru": "возможность; шанс",
+      "tj": "имконият"
+    },
+    {
+      "hanzi": "生活",
+      "pinyin": "shēnghuó",
+      "uz": "hayot; yashamoq",
+      "ru": "жизнь; жить",
+      "tj": "зиндагӣ; зиндагӣ кардан"
+    },
+    {
+      "hanzi": "为",
+      "pinyin": "wèi",
+      "uz": "uchun; deb",
+      "ru": "для; ради",
+      "tj": "барои; ба хотири"
+    },
+    {
+      "hanzi": "或",
+      "pinyin": "huò",
+      "uz": "yoki",
+      "ru": "или",
+      "tj": "ё"
+    },
+    {
+      "hanzi": "老张",
+      "pinyin": "Lǎo Zhāng",
+      "uz": "Lao Zhang",
+      "ru": "Лао Чжан",
+      "tj": "Лао Чжан"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "“还是”和“或者”",
+      "title_uz": "“还是” va “或者”",
+      "title_ru": "“还是” и “或者”",
+      "title_tj": "“还是” ва “或者”",
+      "rule_uz": "“还是” odatda tanlov so‘rog‘ida variantlarni bog‘laydi; “或者” esa darak gapda “yoki” ma’nosini beradi. Bir nechta variant orasidan tanlashda ularning funksiyasi farq qiladi.",
+      "rule_ru": "“还是” обычно связывает варианты в альтернативном вопросе, а “或者” используется в повествовательном предложении со значением «или».",
+      "rule_tj": "“还是” одатан вариантҳоро дар саволи интихобӣ мепайвандад, “或者” бошад дар ҷумлаи хабарӣ маънои «ё»-ро медиҳад.",
+      "examples": [
+        {
+          "hanzi": "我们用会议室的电脑还是自己的笔记本电脑？",
+          "uz": "Yig‘ilish xonasidagi kompyuterni ishlatamizmi yoki o‘z noutbukimizni?",
+          "ru": "Используем компьютер в переговорной или свой ноутбук?",
+          "tj": "Компютери утоқи ҷаласаро истифода мебарем ё ноутбуки худро?"
+        },
+        {
+          "hanzi": "我们今天去、明天去还是后天去？",
+          "uz": "Bugun boramizmi, ertagami yoki indingami?",
+          "ru": "Пойдём сегодня, завтра или послезавтра?",
+          "tj": "Имрӯз меравем, фардо ё пасфардо?"
+        },
+        {
+          "hanzi": "会议室的电脑或者自己的电脑都可以。",
+          "uz": "Yig‘ilish xonasidagi kompyuter ham, o‘z kompyutering ham bo‘ladi.",
+          "ru": "Подойдёт либо компьютер в переговорной, либо свой.",
+          "tj": "Компютери утоқи ҷаласа ё компютери худӣ — ҳарду мешавад."
+        },
+        {
+          "hanzi": "你可以坐地铁或者打车去学校。",
+          "uz": "Maktabga metroda yoki taksida borishing mumkin.",
+          "ru": "В школу можно ехать на метро или на такси.",
+          "tj": "Ба мактаб бо метро ё таксӣ рафтан мумкин."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“看来”",
+      "title_uz": "“看来” — vaziyatdan xulosa chiqarish",
+      "title_ru": "“看来” — вывод по ситуации",
+      "title_tj": "“看来” — хулоса аз рӯйи вазъ",
+      "rule_uz": "“看来” mavjud belgilar, vaziyat yoki kuzatuv asosida taxminiy xulosa chiqarishda ishlatiladi: “ko‘rinishidan / chamasi”.",
+      "rule_ru": "“看来” используется, когда говорящий делает вывод или предположение на основе наблюдаемой ситуации: «похоже / судя по всему».",
+      "rule_tj": "“看来” вақте истифода мешавад, ки гӯянда аз рӯйи аломатҳо ё вазъ хулоса мебарорад: «ба назар / зоҳиран».",
+      "examples": [
+        {
+          "hanzi": "看来我没办法解决这个问题。",
+          "uz": "Ko‘rinishidan, bu muammoni hal qila olmayman.",
+          "ru": "Похоже, я не могу решить эту проблему.",
+          "tj": "Ба назар, ман ин мушкилро ҳал карда наметавонам."
+        },
+        {
+          "hanzi": "这么晚了，看来他今天不会来了。",
+          "uz": "Juda kech bo‘ldi, chamasi u bugun kelmaydi.",
+          "ru": "Уже так поздно — похоже, сегодня он не придёт.",
+          "tj": "Ин қадар дер шуд, ба назар имрӯз намеояд."
+        },
+        {
+          "hanzi": "电梯坏了，看来咱们只能走下去了。",
+          "uz": "Lift buzilibdi, ko‘rinishidan piyoda tushishga to‘g‘ri keladi.",
+          "ru": "Лифт сломан, похоже, придётся спускаться пешком.",
+          "tj": "Лифт вайрон шудааст, ба назар танҳо пиёда поён рафтан мемонад."
+        }
+      ]
+    },
+    {
+      "label": "“把”字句（3）",
+      "title_uz": "“把” gapi (3): natijani ta’kidlash",
+      "title_ru": "Предложение с “把” (3): результат действия",
+      "title_tj": "Ҷумлаи “把” (3): таъкиди натиҷа",
+      "rule_uz": "“把” gapida fe’ldan keyin natija to‘ldiruvchisi kelib, obyekt ustidagi amal to‘liq yakunlanganini yoki uning natijasini ko‘rsatadi: 做完, 洗干净, 接好 kabi.",
+      "rule_ru": "В предложении с “把” после глагола может стоять результативное дополнение, показывающее завершённый результат воздействия на объект: 做完, 洗干净, 接好.",
+      "rule_tj": "Дар ҷумлаи “把” пас аз феъл пуркунандаи натиҷа омада, натиҷаи анҷомёфтаи амалро нисбат ба объект нишон медиҳад: 做完, 洗干净, 接好.",
+      "examples": [
+        {
+          "hanzi": "我跟您一起把这些工作做完。",
+          "uz": "Bu ishlarning hammasini siz bilan birga tugataman.",
+          "ru": "Я вместе с вами закончу всю эту работу.",
+          "tj": "Ман бо шумо якҷо ҳамаи ин корҳоро анҷом медиҳам."
+        },
+        {
+          "hanzi": "妈妈把衣服洗干净了。",
+          "uz": "Onam kiyimlarni toza qilib yuvdi.",
+          "ru": "Мама выстирала одежду дочиста.",
+          "tj": "Модарам либосҳоро тоза шуст."
+        },
+        {
+          "hanzi": "他还没把笔记本电脑接好呢。",
+          "uz": "U hali noutbukni to‘g‘ri ulab bo‘lmadi.",
+          "ru": "Он ещё не подключил ноутбук как следует.",
+          "tj": "Ӯ ҳоло ноутбукро дуруст пайваст накардааст."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“对……来说”",
+      "title_uz": "“对……来说” — kimning nuqtai nazaridan",
+      "title_ru": "“对……来说” — с точки зрения кого-либо",
+      "title_tj": "“对……来说” — аз нуқтаи назари касе",
+      "rule_uz": "“对 + shaxs/narsa + 来说” gapdagi baho yoki fikr kimga nisbatan ekanini ko‘rsatadi: “men uchun”, “u uchun”, “bolalar uchun”.",
+      "rule_ru": "“对 + человек/объект + 来说” указывает, для кого справедлива оценка или точка зрения: «для меня», «для неё», «для детей».",
+      "rule_tj": "“对 + шахс/ашё + 来说” нишон медиҳад, ки баҳо ё фикр нисбат ба кӣ гуфта мешавад: «барои ман», «барои ӯ», «барои кӯдакон».",
+      "examples": [
+        {
+          "hanzi": "对我来说，生活也很重要，我不愿意为工作或学习离开家人。",
+          "uz": "Men uchun hayot ham juda muhim, ish yoki o‘qish deb oilamdan uzoqlashishni istamayman.",
+          "ru": "Для меня жизнь тоже очень важна, я не хочу ради работы или учёбы уезжать от семьи.",
+          "tj": "Барои ман зиндагӣ ҳам хеле муҳим аст, барои кор ё таҳсил аз оила дур шудан намехоҳам."
+        },
+        {
+          "hanzi": "对她来说，学习汉语很有意思。",
+          "uz": "U uchun xitoy tilini o‘rganish juda qiziq.",
+          "ru": "Для неё изучать китайский очень интересно.",
+          "tj": "Барои ӯ омӯхтани забони чинӣ хеле ҷолиб аст."
+        },
+        {
+          "hanzi": "对孩子来说，玩也是一种学习。",
+          "uz": "Bolalar uchun o‘yin ham o‘rganishning bir turi.",
+          "ru": "Для ребёнка игра — тоже вид обучения.",
+          "tj": "Барои кӯдак бозӣ ҳам як навъи омӯзиш аст."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在办公室里，王一雪跟杨同乐在讨论工作。",
+      "scene_uz": "Ofisda Wang Yixue va Yang Tongle ishni muhokama qilmoqda.",
+      "scene_ru": "В офисе Ван Исюэ и Ян Тунлэ обсуждают работу.",
+      "scene_tj": "Дар идора Ван Исюэ ва Ян Тунлэ корро муҳокима мекунанд.",
+      "turns": [
+        {
+          "hanzi": "会议下午几点开始？",
+          "uz": "Yig‘ilish tushdan keyin soat nechada boshlanadi?",
+          "ru": "Во сколько начинается совещание днём?",
+          "tj": "Ҷаласа баъд аз нисфирӯзӣ соати чанд сар мешавад?"
+        },
+        {
+          "hanzi": "今天下午经理不在，不开会了。",
+          "uz": "Bugun tushdan keyin menejer yo‘q, yig‘ilish bo‘lmaydi.",
+          "ru": "Сегодня днём менеджера не будет, совещание отменяется.",
+          "tj": "Имрӯз баъд аз нисфирӯзӣ мудир нест, ҷаласа намешавад."
+        },
+        {
+          "hanzi": "那什么时候开会？",
+          "uz": "Unda yig‘ilish qachon bo‘ladi?",
+          "ru": "Тогда когда будет совещание?",
+          "tj": "Пас ҷаласа кай мешавад?"
+        },
+        {
+          "hanzi": "后天上午十点，会议地点换到第一会议室。我正要给大家发邮件。",
+          "uz": "Indinga ertalab soat o‘nda, joyi birinchi yig‘ilish xonasiga ko‘chirildi. Hozir hammaga email yubormoqchiman.",
+          "ru": "Послезавтра в десять утра, место перенесли в первую переговорную. Я как раз собираюсь разослать всем письмо.",
+          "tj": "Пасфардо соати даҳи саҳар, ҷой ба утоқи якуми ҷаласа иваз шуд. Ҳозир ба ҳама email мефиристам."
+        },
+        {
+          "hanzi": "开会的时候，我们用会议室的电脑还是自己的笔记本电脑？",
+          "uz": "Yig‘ilish paytida xonadagi kompyuterni ishlatamizmi yoki o‘z noutbukimizni?",
+          "ru": "На совещании используем компьютер в переговорной или свои ноутбуки?",
+          "tj": "Ҳангоми ҷаласа компютери утоқро истифода мебарем ё ноутбуки худро?"
+        },
+        {
+          "hanzi": "会议室的电脑或者自己的电脑都可以。",
+          "uz": "Yig‘ilish xonasidagi kompyuter ham, o‘z kompyuteringiz ham bo‘ladi.",
+          "ru": "Подойдёт и компьютер в переговорной, и свой.",
+          "tj": "Компютери утоқи ҷаласа ё компютери худӣ — ҳарду мешавад."
+        },
+        {
+          "hanzi": "那到时候咱们早点儿过去，你帮我把电脑接好吧。",
+          "uz": "Unda o‘sha kuni ertaroq boraylik, kompyuterni ulab ber.",
+          "ru": "Тогда придём пораньше, помоги мне подключить компьютер.",
+          "tj": "Пас он вақт барвақттар меравем, ба ман компютерро пайваст карда деҳ."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在会议室，王一雪跟杨同乐在做会前准备。",
+      "scene_uz": "Yig‘ilish xonasida Wang Yixue va Yang Tongle majlis oldidan tayyorlanmoqda.",
+      "scene_ru": "В переговорной Ван Исюэ и Ян Тунлэ готовятся к совещанию.",
+      "scene_tj": "Дар утоқи ҷаласа Ван Исюэ ва Ян Тунлэ ба ҷаласа омодагӣ мебинанд.",
+      "turns": [
+        {
+          "hanzi": "电脑接好了吗？",
+          "uz": "Kompyuter ulandimi?",
+          "ru": "Компьютер подключён?",
+          "tj": "Компютер пайваст шуд?"
+        },
+        {
+          "hanzi": "已经接好了，您开机看看有没有问题。",
+          "uz": "Ha, ulandi. Yoqib ko‘ring, muammo bormi yo‘qmi.",
+          "ru": "Да, уже подключён. Включите и проверьте, всё ли работает.",
+          "tj": "Ҳа, пайваст шуд. Фурӯзон карда бинед, мушкил ҳаст ё не."
+        },
+        {
+          "hanzi": "现在什么都看不见。",
+          "uz": "Hozir hech narsa ko‘rinmayapti.",
+          "ru": "Сейчас ничего не видно.",
+          "tj": "Ҳоло ҳеҷ чиз дида намешавад."
+        },
+        {
+          "hanzi": "我检查一下哪里出问题了……您再试一下。",
+          "uz": "Qayerda muammo bo‘lganini tekshiraman... Yana bir marta sinab ko‘ring.",
+          "ru": "Проверю, где проблема... Попробуйте ещё раз.",
+          "tj": "Мебинам мушкил дар куҷост... Боз як бор санҷед."
+        },
+        {
+          "hanzi": "看见了，但是听不见声音。",
+          "uz": "Ko‘rinyapti, lekin ovoz eshitilmayapti.",
+          "ru": "Изображение есть, но звука не слышно.",
+          "tj": "Тасвир ҳаст, аммо садо шунида намешавад."
+        },
+        {
+          "hanzi": "现在呢？",
+          "uz": "Hozir-chi?",
+          "ru": "А сейчас?",
+          "tj": "Ҳозир чӣ?"
+        },
+        {
+          "hanzi": "听得见声音，但是声音有点儿小，听不清楚。",
+          "uz": "Ovoz eshitilyapti, lekin juda past, aniq eshitilmayapti.",
+          "ru": "Звук слышно, но он слишком тихий, разобрать трудно.",
+          "tj": "Садо шунида мешавад, аммо паст аст, равшан шунида намешавад."
+        },
+        {
+          "hanzi": "看来我没办法解决这个问题，只能找别人来帮帮忙了。",
+          "uz": "Ko‘rinishidan, bu muammoni o‘zim hal qila olmayman, boshqa birovdan yordam so‘rashga to‘g‘ri keladi.",
+          "ru": "Похоже, я не могу решить эту проблему — придётся позвать кого-то на помощь.",
+          "tj": "Ба назар, ин мушкилро худам ҳал карда наметавонам, бояд аз каси дигар кӯмак пурсам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在办公室里，王一雪跟杨同乐在聊天儿。",
+      "scene_uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+      "scene_ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+      "scene_tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "同乐，你看见老张了吗？",
+          "uz": "Tongle, Lao Zhangni ko‘rdingmi?",
+          "ru": "Тунлэ, ты видел Лао Чжана?",
+          "tj": "Тунлэ, Лао Чжанро дидӣ?"
+        },
+        {
+          "hanzi": "老张没来。他说家里有点儿事，所以请假了。",
+          "uz": "Lao Zhang kelmadi. Uyida ishi bor ekan, shuning uchun ruxsat oldi.",
+          "ru": "Лао Чжан не пришёл. Сказал, что дома дела, поэтому взял отгул.",
+          "tj": "Лао Чжан наомад. Гуфт дар хона кор дорад, барои ҳамин рухсат гирифт."
+        },
+        {
+          "hanzi": "好几个同事都休假了，开会前这么多工作我怕干不完。",
+          "uz": "Bir nechta hamkasb ta’tilda, yig‘ilishgacha buncha ishni tugata olmay qolishdan xavotirdaman.",
+          "ru": "Несколько коллег в отпуске, боюсь, до совещания не успею закончить столько работы.",
+          "tj": "Чанд ҳамкор рухсатӣ аст, метарсам то ҷаласа ин қадар корро тамом карда натавонам."
+        },
+        {
+          "hanzi": "十二点多了，咱们先去吃饭吧。吃完饭，我跟您一起把这些工作做完。",
+          "uz": "Soat o‘n ikkidan o‘tdi, avval ovqatlanaylik. Ovqatdan keyin bu ishlarni siz bilan birga tugataman.",
+          "ru": "Уже после двенадцати, давайте сначала поедим. После еды я помогу вам закончить всю эту работу.",
+          "tj": "Соат аз дувоздаҳ гузашт, аввал хӯрок хӯрем. Баъди хӯрок ин корҳоро бо шумо якҷо анҷом медиҳам."
+        },
+        {
+          "hanzi": "你先去吃，我想再干一会儿。明天开会前要发到公司的邮箱里。",
+          "uz": "Sen avval ovqatlan, men yana biroz ishlayman. Ertaga yig‘ilishdan oldin kompaniya pochtasiga yuborish kerak.",
+          "ru": "Ты иди поешь, а я ещё немного поработаю. До завтрашнего совещания нужно отправить всё на почту компании.",
+          "tj": "Ту аввал хӯрок хӯр, ман боз каме кор мекунам. Пеш аз ҷаласаи фардо бояд ба почтаи ширкат фиристода шавад."
+        },
+        {
+          "hanzi": "您没看到邮件吗？经理还没回来呢，下周才能开会。",
+          "uz": "Emailni ko‘rmadingizmi? Menejer hali qaytmadi, yig‘ilish faqat keyingi hafta bo‘ladi.",
+          "ru": "Вы не видели письмо? Менеджер ещё не вернулся, совещание будет только на следующей неделе.",
+          "tj": "Email-ро надидед? Мудир ҳоло барнагаштааст, ҷаласа танҳо ҳафтаи оянда мешавад."
+        },
+        {
+          "hanzi": "那不着急了。走，吃饭去。",
+          "uz": "Unda shoshilmasak ham bo‘ladi. Yuring, ovqatlanamiz.",
+          "ru": "Тогда спешить некуда. Пойдём есть.",
+          "tj": "Пас шитоб лозим нест. Равем хӯрок хӯрем."
+        }
+      ]
+    }
+  ]
+}
