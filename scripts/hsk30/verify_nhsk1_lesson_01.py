@@ -13,6 +13,9 @@ EXPECTED = {
     4: {"vocab": 21, "dialogues": 3, "lines": 14, "grammar": 4},
     5: {"vocab": 22, "dialogues": 3, "lines": 14, "grammar": 3},
     6: {"vocab": 22, "dialogues": 3, "lines": 14, "grammar": 3},
+    7: {"vocab": 27, "dialogues": 3, "lines": 14, "grammar": 4},
+    8: {"vocab": 23, "dialogues": 3, "lines": 14, "grammar": 3},
+    9: {"vocab": 23, "dialogues": 3, "lines": 14, "grammar": 3},
 }
 
 
