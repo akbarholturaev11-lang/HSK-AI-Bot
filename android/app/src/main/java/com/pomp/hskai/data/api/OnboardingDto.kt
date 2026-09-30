@@ -13,11 +13,22 @@ data class AndroidOnboardingProfileDto(
 )
 
 @Serializable
+data class AndroidHsk30OnboardingDto(
+    @SerialName("enabled") val enabled: Boolean = false,
+    @SerialName("allowed") val allowed: Boolean = false,
+    @SerialName("paid_access") val paidAccess: Boolean = false,
+    @SerialName("permanently_unlocked") val permanentlyUnlocked: Boolean = false,
+    @SerialName("live_levels") val liveLevels: List<String> = listOf("nhsk1"),
+    @SerialName("price_tjs") val priceTjs: Int = 10,
+)
+
+@Serializable
 data class AndroidOnboardingStatusDto(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("completed") val completed: Boolean = false,
     @SerialName("level") val level: String = "",
     @SerialName("profile") val profile: AndroidOnboardingProfileDto = AndroidOnboardingProfileDto(),
+    @SerialName("hsk30") val hsk30: AndroidHsk30OnboardingDto = AndroidHsk30OnboardingDto(),
 )
 
 @Serializable
