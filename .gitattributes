@@ -1,0 +1,1 @@
+HSK[[:space:]]3.0[[:space:]]PDF/*.pdf filter=lfs diff=lfs merge=lfs -text
