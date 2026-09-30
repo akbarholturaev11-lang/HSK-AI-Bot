@@ -1,0 +1,389 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 7,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78
+    ]
+  },
+  "title": {
+    "hanzi": "那条裙子比短裤更好看",
+    "pinyin": "Nà tiáo qúnzi bǐ duǎnkù gèng hǎokàn"
+  },
+  "objectives": [
+    "能听懂并介绍购物的经历。",
+    "能听懂并评价商品的特点。",
+    "掌握比较句（10）的用法，能对商品进行比较。",
+    "了解中国人的购物方式。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "辆",
+      "pinyin": "liàng",
+      "part_of_speech": "m.",
+      "source_page": 70
+    },
+    {
+      "hanzi": "自行车",
+      "pinyin": "zìxíngchē",
+      "part_of_speech": "n.",
+      "source_page": 70
+    },
+    {
+      "hanzi": "旧",
+      "pinyin": "jiù",
+      "part_of_speech": "adj.",
+      "source_page": 70
+    },
+    {
+      "hanzi": "矮",
+      "pinyin": "ǎi",
+      "part_of_speech": "adj.",
+      "source_page": 70
+    },
+    {
+      "hanzi": "试",
+      "pinyin": "shì",
+      "part_of_speech": "v.",
+      "source_page": 70
+    },
+    {
+      "hanzi": "黄色",
+      "pinyin": "huángsè",
+      "part_of_speech": "n.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "短裤",
+      "pinyin": "duǎnkù",
+      "part_of_speech": "n.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "大小",
+      "pinyin": "dàxiǎo",
+      "part_of_speech": "n.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "合适",
+      "pinyin": "héshì",
+      "part_of_speech": "adj.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "裙子",
+      "pinyin": "qúnzi",
+      "part_of_speech": "n.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "更",
+      "pinyin": "gèng",
+      "part_of_speech": "adv.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "决定",
+      "pinyin": "juédìng",
+      "part_of_speech": "v./n.",
+      "source_page": 72
+    },
+    {
+      "hanzi": "西瓜",
+      "pinyin": "xīguā",
+      "part_of_speech": "n.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "新鲜",
+      "pinyin": "xīnxiān",
+      "part_of_speech": "adj.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "甜",
+      "pinyin": "tián",
+      "part_of_speech": "adj.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "公斤",
+      "pinyin": "gōngjīn",
+      "part_of_speech": "m.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "冰",
+      "pinyin": "bīng",
+      "part_of_speech": "v./n.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "极",
+      "pinyin": "jí",
+      "part_of_speech": "adv.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "斤",
+      "pinyin": "jīn",
+      "part_of_speech": "m.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "part_of_speech": "n.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "一共",
+      "pinyin": "yígòng",
+      "part_of_speech": "adv.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "毛",
+      "pinyin": "máo",
+      "part_of_speech": "m.",
+      "source_page": 74
+    },
+    {
+      "hanzi": "结婚",
+      "pinyin": "jiéhūn",
+      "part_of_speech": "v.",
+      "source_page": 75
+    },
+    {
+      "hanzi": "不但",
+      "pinyin": "bùdàn",
+      "part_of_speech": "conj.",
+      "source_page": 75
+    },
+    {
+      "hanzi": "而且",
+      "pinyin": "érqiě",
+      "part_of_speech": "conj.",
+      "source_page": 75
+    },
+    {
+      "hanzi": "声",
+      "pinyin": "shēng",
+      "part_of_speech": "m./n.",
+      "source_page": 75
+    },
+    {
+      "hanzi": "开机",
+      "pinyin": "kāijī",
+      "part_of_speech": "v.",
+      "source_page": 75
+    }
+  ],
+  "grammar": [
+    {
+      "label": "连动句（2）",
+      "source_page": 71,
+      "examples": [
+        {
+          "hanzi": "咱们可以走着去。",
+          "pinyin": "Zánmen kěyǐ zǒuzhe qù."
+        },
+        {
+          "hanzi": "弟弟吃着苹果写作业。",
+          "pinyin": "Dìdi chīzhe píngguǒ xiě zuòyè."
+        },
+        {
+          "hanzi": "他们坐着看电视。",
+          "pinyin": "Tāmen zuòzhe kàn diànshì."
+        }
+      ]
+    },
+    {
+      "label": "比较句（10）",
+      "source_page": 73,
+      "examples": [
+        {
+          "hanzi": "裙子不比短裤贵多少。",
+          "pinyin": "Qúnzi bù bǐ duǎnkù guì duōshao."
+        },
+        {
+          "hanzi": "他的中文不比你好。",
+          "pinyin": "Tā de Zhōngwén bù bǐ nǐ hǎo."
+        },
+        {
+          "hanzi": "他跑得不比我快多少。",
+          "pinyin": "Tā pǎo de bù bǐ wǒ kuài duōshao."
+        }
+      ]
+    },
+    {
+      "label": "程度补语（3）",
+      "source_page": 75,
+      "examples": [
+        {
+          "hanzi": "这块冰西瓜甜极了。",
+          "pinyin": "Zhè kuài bīng xīguā tián jí le."
+        },
+        {
+          "hanzi": "今年夏天热极了。",
+          "pinyin": "Jīnnián xiàtiān rè jí le."
+        },
+        {
+          "hanzi": "这本书我喜欢极了。",
+          "pinyin": "Zhè běn shū wǒ xǐhuan jí le."
+        }
+      ]
+    },
+    {
+      "label": "递进复句“不但……，而且……”",
+      "source_page": 76,
+      "examples": [
+        {
+          "hanzi": "现在的电视不但便宜，而且用着非常方便。",
+          "pinyin": "Xiànzài de diànshì bùdàn piányi, érqiě yòngzhe fēicháng fāngbiàn."
+        },
+        {
+          "hanzi": "家月不但喜欢唱歌，而且唱得很好听。",
+          "pinyin": "Jiāyuè bùdàn xǐhuan chànggē, érqiě chàng de hěn hǎotīng."
+        },
+        {
+          "hanzi": "不但家月会说汉语，而且天中也会说汉语。",
+          "pinyin": "Bùdàn Jiāyuè huì shuō Hànyǔ, érqiě Tiānzhōng yě huì shuō Hànyǔ."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在家里，王一雪和刘明商量去买东西。",
+      "source_page": 70,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "这辆自行车是小雪八岁的时候买的，看起来有点儿旧了。",
+          "pinyin": "Zhè liàng zìxíngchē shì Xiǎoxuě bā suì de shíhou mǎi de, kàn qǐlái yǒudiǎnr jiù le."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "是啊，她现在长高了，这辆车已经太矮了。",
+          "pinyin": "Shì a, tā xiànzài zhǎng gāo le, zhè liàng chē yǐjīng tài ǎi le."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "商场里开了一家自行车店，咱们给她买辆新的吧。",
+          "pinyin": "Shāngchǎng lǐ kāi le yì jiā zìxíngchē diàn, zánmen gěi tā mǎi liàng xīn de ba."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "好，咱们带小雪一起去，让她试一下。",
+          "pinyin": "Hǎo, zánmen dài Xiǎoxuě yìqǐ qù, ràng tā shì yíxià."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那今天就去吧！我也想再看看衣服。咱们怎么去？",
+          "pinyin": "Nà jīntiān jiù qù ba! Wǒ yě xiǎng zài kànkan yīfu. Zánmen zěnme qù?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "商场不远，咱们可以走着去。",
+          "pinyin": "Shāngchǎng bù yuǎn, zánmen kěyǐ zǒuzhe qù."
+        }
+      ]
+    },
+    {
+      "scene": "在商场，刘明和王一雪买完自行车，又来挑选衣服。",
+      "source_page": 72,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "你看我穿这条黄色的短裤好看吗？",
+          "pinyin": "Nǐ kàn wǒ chuān zhè tiáo huángsè de duǎnkù hǎokàn ma?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "大小合适，但我觉得那条裙子比短裤更好看。",
+          "pinyin": "Dàxiǎo héshì, dàn wǒ juéde nà tiáo qúnzi bǐ duǎnkù gèng hǎokàn."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "裙子比短裤贵一点儿。",
+          "pinyin": "Qúnzi bǐ duǎnkù guì yìdiǎnr."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "贵多少？",
+          "pinyin": "Guì duōshao?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "裙子480，短裤400。",
+          "pinyin": "Qúnzi sìbǎi bāshí, duǎnkù sìbǎi."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "裙子不比短裤贵多少，还是买裙子吧，你穿裙子更好看。",
+          "pinyin": "Qúnzi bù bǐ duǎnkù guì duōshao, háishi mǎi qúnzi ba, nǐ chuān qúnzi gèng hǎokàn."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我多看看再决定。你看，那边有买二送一！",
+          "pinyin": "Wǒ duō kànkan zài juédìng. Nǐ kàn, nàbiān yǒu mǎi èr sòng yī!"
+        }
+      ]
+    },
+    {
+      "scene": "在商店，王一雪在买东西。",
+      "source_page": 74,
+      "turns": [
+        {
+          "speaker": "店员",
+          "hanzi": "西瓜又大又新鲜，不甜不要钱！",
+          "pinyin": "Xīguā yòu dà yòu xīnxiān, bù tián bú yào qián!"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "西瓜看起来不错，怎么卖？",
+          "pinyin": "Xīguā kàn qǐlái búcuò, zěnme mài?"
+        },
+        {
+          "speaker": "店员",
+          "hanzi": "五块钱一公斤。来，您先尝尝这块冰西瓜，甜极了！",
+          "pinyin": "Wǔ kuài qián yì gōngjīn. Lái, nín xiān chángchang zhè kuài bīng xīguā, tián jí le!"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "是挺甜的！帮我选个大点儿的，再来两斤香蕉。",
+          "pinyin": "Shì tǐng tián de! Bāng wǒ xuǎn ge dà diǎnr de, zài lái liǎng jīn xiāngjiāo."
+        },
+        {
+          "speaker": "店员",
+          "hanzi": "一共五十八块五毛。",
+          "pinyin": "Yígòng wǔshíbā kuài wǔ máo."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我买了这么多，便宜点儿吧。",
+          "pinyin": "Wǒ mǎi le zhème duō, piányi diǎnr ba."
+        },
+        {
+          "speaker": "店员",
+          "hanzi": "您给我五十五吧，不能再便宜了。",
+          "pinyin": "Nín gěi wǒ wǔshíwǔ ba, bù néng zài piányi le."
+        }
+      ]
+    }
+  ]
+}
