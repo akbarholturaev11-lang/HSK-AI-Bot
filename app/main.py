@@ -1996,6 +1996,7 @@ async def course_v3_data_file(filename: str):
         "desktop-download.js": "application/javascript",
         "lesson_gate.js": "application/javascript",
         "lesson_gate_hsk30.js": "application/javascript",
+        "hsk30-words.js": "application/javascript",
     }
     if filename in public_assets:
         return static_asset_response(
