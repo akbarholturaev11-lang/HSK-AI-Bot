@@ -29,6 +29,13 @@ _LEVEL_SPECS = (
     CourseLevelSpec(key="hsk2", track=TRACK_HSK20, band=2, content_level="hsk2"),
     CourseLevelSpec(key="hsk3", track=TRACK_HSK20, band=3, content_level="hsk3"),
     CourseLevelSpec(key="hsk4", track=TRACK_HSK20, band=4, content_level="hsk4"),
+    CourseLevelSpec(
+        key="nbeginner",
+        track=TRACK_HSK30,
+        band=1,
+        content_level="nhsk1",
+        entry_alias=True,
+    ),
     CourseLevelSpec(key="nhsk1", track=TRACK_HSK30, band=1, content_level="nhsk1"),
     CourseLevelSpec(key="nhsk2", track=TRACK_HSK30, band=2, content_level="nhsk2"),
     CourseLevelSpec(key="nhsk3", track=TRACK_HSK30, band=3, content_level="nhsk3"),
@@ -78,7 +85,7 @@ def hsk30_content_levels() -> tuple[str, ...]:
     return tuple(
         spec.content_level
         for spec in _LEVEL_SPECS
-        if spec.track == TRACK_HSK30
+        if spec.track == TRACK_HSK30 and not spec.entry_alias
     )
 
 
