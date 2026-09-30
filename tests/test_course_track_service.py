@@ -66,6 +66,49 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             )
         self.assertEqual(ctx.exception.code, "hsk30_unlock_required")
 
+    async def test_same_track_switch_is_a_noop(self):
+        state = _FakeState(track=TRACK_HSK20, level="hsk2", completed=11)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=False)
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=None),
+            list_for_user=AsyncMock(return_value=[state]),
+        )
+        self.service.progress_repo = SimpleNamespace(
+            get_by_user_id=AsyncMock(),
+        )
+
+        result = await self.service.switch(
+            self.user,
+            target_track=TRACK_HSK20,
+        )
+
+        self.assertEqual(result["active_track"], TRACK_HSK20)
+        self.assertEqual(self.user.level, "hsk2")
+        self.service.progress_repo.get_by_user_id.assert_not_awaited()
+
+    async def test_same_track_band_change_uses_existing_level_flow(self):
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=False)
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=None),
+            list_for_user=AsyncMock(return_value=[]),
+        )
+
+        with self.assertRaises(CourseTrackError) as ctx:
+            await self.service.switch(
+                self.user,
+                target_track=TRACK_HSK20,
+                requested_level="hsk3",
+            )
+
+        self.assertEqual(
+            ctx.exception.code,
+            "course_track_level_change_use_level_flow",
+        )
+
     async def test_paid_user_can_switch_without_permanent_unlock(self):
         self.user.status = "active"
         self.user.payment_status = "approved"
