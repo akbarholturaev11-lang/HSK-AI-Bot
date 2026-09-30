@@ -3,7 +3,7 @@ name: Android CI
 # Additive only: this does not touch the existing desktop-release workflow.
 on:
   push:
-    branches: [main, "feat/android-**"]
+    branches: [main, "feat/android-**", "codex/local-ai"]
     paths:
       - "android/**"
       - "app/api/android_*.py"
