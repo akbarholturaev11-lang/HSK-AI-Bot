@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "track": "hsk30",
+  "level": "nhsk1",
+  "lesson_count": 15,
+  "first_lesson_order": 1,
+  "source_book": "新HSK教程1",
+  "source_bundle": "scripts/hsk30/generated/nhsk1",
+  "content_status": "source_extracted_runtime_lessons_pending"
+}
