@@ -87,7 +87,7 @@ class CourseTrackService:
         if not normalized:
             return CourseTrackService.default_level(track)
         spec = level_spec(normalized)
-        if not spec or spec.track != track:
+        if not spec or spec.track != track or not spec.selectable:
             raise CourseTrackError("invalid_course_track_level", status_code=422)
         return normalized
 
