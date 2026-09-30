@@ -1504,7 +1504,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -1855,6 +1855,50 @@
           <input type="file" accept="image/*" data-qrfile hidden></div>
         <div class="ncnote" data-qrinfo>Asosiy QR uchun ${esc(mainPrice)}, 20% chegirma QR uchun ${esc(discountPrice)} rasm yuklang.</div></div>`;
     }
+    function renderHsk30(d){
+      const h=d.hsk30||{};
+      const paymentOn=h.unlock_payment_enabled!==false;
+      const courseOn=h.enabled===true;
+      const price=Math.max(1,Number(h.unlock_price_tjs||0)||1);
+      const live=Array.isArray(h.live_levels)?h.live_levels:[];
+      const qr=h.qr||{};
+      openDrawer("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
+        <div class="mcard">
+          <h3>HSK 3.0 курс</h3>
+          <p>Бу глобал kill switch. Ўчирилса HSK 3.0 барча user учун ёпилади.</p>
+          <label class="ncsw"><input type="checkbox" id="hsk30Enabled" ${courseOn?"checked":""}> HSK 3.0 курс ёқилган</label>
+          <div class="tags" style="margin-top:10px">${tag(courseOn?"курс фаол":"курс ўчиқ",courseOn?"green":"red")}${live.map(x=>tag(String(x).toUpperCase(),"blue")).join("")}</div>
+        </div>
+        <div class="mcard">
+          <h3>Бир марталик HSK 3.0 тўлови</h3>
+          <p>Бу калит фақат доимий unlock тўловини бошқаради. HSK AI Pro обунаси алоҳида ишлашда давом этади.</p>
+          <label class="ncsw"><input type="checkbox" id="hsk30PaymentEnabled" ${paymentOn?"checked":""}> Бир марталик тўлов ёқилган</label>
+          <div class="frow" style="margin-top:12px"><label>Нарх (TJS)</label><input id="hsk30Price" class="input" type="number" min="1" max="10000" step="1" value="${price}"></div>
+          <div class="ncnote">Нарх кодда 10 TJS га қотирилмайди. Шу ерда сақланган сервер нархи Mini App, Android ва native checkout'ларга берилади.</div>
+          <button class="btn" type="button" data-hsk30save style="margin-top:12px">HSK 3.0 созламаларини сақлаш</button>
+        </div>
+        <div class="mcard" data-prow data-method="alipay" data-plan="hsk30_unlock">
+          <h3>Alipay · HSK 3.0</h3>
+          <p>${qr.alipay?"Жорий нарх учун QR бор ✅":"Жорий нарх учун QR йўқ"}</p>
+          <div data-qrbox data-main-price="${price} TJS" data-discount-price="">
+            <button class="btn sec" type="button" data-qrbtn data-scope="main">Alipay QR юклаш</button>
+            <input type="file" accept="image/*" data-qrfile hidden>
+            <div class="ncnote" data-qrinfo style="margin-top:8px">QR айнан ${price} TJS жорий нарх учун сақланади.</div>
+          </div>
+        </div>
+        <div class="mcard" data-prow data-method="wechat" data-plan="hsk30_unlock">
+          <h3>WeChat Pay · HSK 3.0</h3>
+          <p>${qr.wechat?"Жорий нарх учун QR бор ✅":"Жорий нарх учун QR йўқ"}</p>
+          <div data-qrbox data-main-price="${price} TJS" data-discount-price="">
+            <button class="btn sec" type="button" data-qrbtn data-scope="main">WeChat QR юклаш</button>
+            <input type="file" accept="image/*" data-qrfile hidden>
+            <div class="ncnote" data-qrinfo style="margin-top:8px">QR айнан ${price} TJS жорий нарх учун сақланади.</div>
+          </div>
+        </div>
+      </div>`);
+      bindPriceQr();
+    }
+
     function renderPrices(d){
       openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
         ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
@@ -2504,6 +2548,16 @@
       }
       if((el=T("[data-uaccess]"))){ el.disabled=true; return grantAccess(el.dataset.uaccess,$("qaDays").value,{name:el.dataset.uname,currentEnd:el.dataset.currentEnd,refreshUser:true}).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-user]"))) return openUser(el.dataset.user);
+      if((el=T("[data-hsk30save]"))){
+        const price=Number(($("hsk30Price")&&$("hsk30Price").value)||0);
+        if(!Number.isSafeInteger(price)||price<1||price>10000){ toast("HSK 3.0 нархи 1–10000 TJS оралиғида бутун сон бўлиши керак"); return; }
+        el.disabled=true;
+        return apiPost("/api/admin-miniapp/hsk30/settings",{
+          enabled:!!($("hsk30Enabled")&&$("hsk30Enabled").checked),
+          unlock_payment_enabled:!!($("hsk30PaymentEnabled")&&$("hsk30PaymentEnabled").checked),
+          unlock_price_tjs:price
+        }).then(()=>afterModule("HSK 3.0 созламалари сақланди")).catch(x=>{toast(apiErr(x,"HSK 3.0 созламалари сақланмади"));el.disabled=false;});
+      }
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ const bank=el.dataset.bank||""; el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$(bank==="alif"?"payDetailsAlif":"payDetails").value,bank}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
