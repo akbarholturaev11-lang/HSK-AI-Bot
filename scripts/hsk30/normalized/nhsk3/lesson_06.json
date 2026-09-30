@@ -1,0 +1,381 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 6,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68
+    ]
+  },
+  "title": {
+    "hanzi": "高铁上还可以点外卖",
+    "pinyin": "Gāotiě shàng hái kěyǐ diǎn wàimài"
+  },
+  "objectives": [
+    "能听懂并介绍交通方式的特点和出行体验。",
+    "能听懂并使用“如果”表达假设的情况和结果。",
+    "掌握“越来越”短语，能描述事物的变化趋势。",
+    "了解中国的现代交通方式——高铁。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "该",
+      "pinyin": "gāi",
+      "part_of_speech": "mod.",
+      "source_page": 60
+    },
+    {
+      "hanzi": "打算",
+      "pinyin": "dǎsuàn",
+      "part_of_speech": "v./n.",
+      "source_page": 60
+    },
+    {
+      "hanzi": "高铁",
+      "pinyin": "gāotiě",
+      "part_of_speech": "n.",
+      "source_page": 60
+    },
+    {
+      "hanzi": "行",
+      "pinyin": "xíng",
+      "part_of_speech": "v./adj.",
+      "source_page": 60
+    },
+    {
+      "hanzi": "路口",
+      "pinyin": "lùkǒu",
+      "part_of_speech": "n.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "小心",
+      "pinyin": "xiǎoxīn",
+      "part_of_speech": "v./adj.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "迟到",
+      "pinyin": "chídào",
+      "part_of_speech": "v.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "红绿灯",
+      "pinyin": "hóng-lǜdēng",
+      "part_of_speech": "n.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "后来",
+      "pinyin": "hòulái",
+      "part_of_speech": "n.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "急",
+      "pinyin": "jí",
+      "part_of_speech": "adj./v.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "如果",
+      "pinyin": "rúguǒ",
+      "part_of_speech": "conj.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "以前",
+      "pinyin": "yǐqián",
+      "part_of_speech": "n.",
+      "source_page": 62
+    },
+    {
+      "hanzi": "耳机",
+      "pinyin": "ěrjī",
+      "part_of_speech": "n.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "充电宝",
+      "pinyin": "chōngdiànbǎo",
+      "part_of_speech": "n.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "常用",
+      "pinyin": "chángyòng",
+      "part_of_speech": "adj.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "越",
+      "pinyin": "yuè",
+      "part_of_speech": "adv.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "分开",
+      "pinyin": "fēnkāi",
+      "part_of_speech": "v.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "检查",
+      "pinyin": "jiǎnchá",
+      "part_of_speech": "v.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "刷",
+      "pinyin": "shuā",
+      "part_of_speech": "v.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "检票",
+      "pinyin": "jiǎnpiào",
+      "part_of_speech": "v.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "电梯",
+      "pinyin": "diàntī",
+      "part_of_speech": "n.",
+      "source_page": 63
+    },
+    {
+      "hanzi": "放假",
+      "pinyin": "fàngjià",
+      "part_of_speech": "v.",
+      "source_page": 65
+    },
+    {
+      "hanzi": "沙发",
+      "pinyin": "shāfā",
+      "part_of_speech": "n.",
+      "source_page": 65
+    },
+    {
+      "hanzi": "安静",
+      "pinyin": "ānjìng",
+      "part_of_speech": "adj.",
+      "source_page": 65
+    },
+    {
+      "hanzi": "选择",
+      "pinyin": "xuǎnzé",
+      "part_of_speech": "v.",
+      "source_page": 65
+    },
+    {
+      "hanzi": "必须",
+      "pinyin": "bìxū",
+      "part_of_speech": "adv.",
+      "source_page": 65
+    },
+    {
+      "hanzi": "北京南站",
+      "pinyin": "Běijīng Nán Zhàn",
+      "part_of_speech": "proper noun",
+      "source_page": 65
+    }
+  ],
+  "grammar": [
+    {
+      "label": "固定格式“该……了”",
+      "source_page": 61,
+      "examples": [
+        {
+          "hanzi": "咱们该买去上海的票了。",
+          "pinyin": "Zánmen gāi mǎi qù Shànghǎi de piào le."
+        },
+        {
+          "hanzi": "八点了，该上课了。",
+          "pinyin": "Bā diǎn le, gāi shàngkè le."
+        },
+        {
+          "hanzi": "已经很晚了，我该睡觉了。",
+          "pinyin": "Yǐjīng hěn wǎn le, wǒ gāi shuìjiào le."
+        }
+      ]
+    },
+    {
+      "label": "假设复句“如果……，就……”",
+      "source_page": 62,
+      "examples": [
+        {
+          "hanzi": "如果没走错，二十分钟以前就到了。",
+          "pinyin": "Rúguǒ méi zǒu cuò, èrshí fēnzhōng yǐqián jiù dào le."
+        },
+        {
+          "hanzi": "如果你需要帮忙，就给我打电话。",
+          "pinyin": "Rúguǒ nǐ xūyào bāngmáng, jiù gěi wǒ dǎ diànhuà."
+        },
+        {
+          "hanzi": "如果有时间，我就去上海玩几天。",
+          "pinyin": "Rúguǒ yǒu shíjiān, wǒ jiù qù Shànghǎi wán jǐ tiān."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“越来越”",
+      "source_page": 64,
+      "examples": [
+        {
+          "hanzi": "前面的人越来越多。",
+          "pinyin": "Qiánmian de rén yuèláiyuè duō."
+        },
+        {
+          "hanzi": "我越来越喜欢这里的生活了。",
+          "pinyin": "Wǒ yuèláiyuè xǐhuan zhèlǐ de shēnghuó le."
+        },
+        {
+          "hanzi": "她越来越高，也越来越漂亮了。",
+          "pinyin": "Tā yuèláiyuè gāo, yě yuèláiyuè piàoliang le."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在咖啡厅里，李文和白家月在聊天儿。",
+      "source_page": 60,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "家月，咱们该买去上海的票了。你打算怎么去上海？",
+          "pinyin": "Jiāyuè, zánmen gāi mǎi qù Shànghǎi de piào le. Nǐ dǎsuàn zěnme qù Shànghǎi?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我还没坐过高铁，咱们坐高铁去，怎么样？",
+          "pinyin": "Wǒ hái méi zuò guo gāotiě, zánmen zuò gāotiě qù, zěnmeyàng?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "没问题，从北京到上海的高铁很多，非常方便。",
+          "pinyin": "Méi wèntí, cóng Běijīng dào Shànghǎi de gāotiě hěn duō, fēicháng fāngbiàn."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "行！怎么买高铁票？",
+          "pinyin": "Xíng! Zěnme mǎi gāotiě piào?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "用手机App就能买。给我你的护照，我帮你买。",
+          "pinyin": "Yòng shǒujī App jiù néng mǎi. Gěi wǒ nǐ de hùzhào, wǒ bāng nǐ mǎi."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "早就听说过高铁，终于可以坐上了。",
+          "pinyin": "Zǎo jiù tīngshuō guo gāotiě, zhōngyú kěyǐ zuò shàng le."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "高铁又快又舒服，你一定会喜欢的。",
+          "pinyin": "Gāotiě yòu kuài yòu shūfu, nǐ yídìng huì xǐhuan de."
+        }
+      ]
+    },
+    {
+      "scene": "在车上，刘明开车送白家月和李文去高铁站。",
+      "source_page": 62,
+      "turns": [
+        {
+          "speaker": "刘明",
+          "hanzi": "过了前面的路口就到高铁站了。",
+          "pinyin": "Guò le qiánmian de lùkǒu jiù dào gāotiězhàn le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我看见了。马上就到了，这条路车很多，您小心点儿。",
+          "pinyin": "Wǒ kànjiàn le. Mǎshàng jiù dào le, zhè tiáo lù chē hěn duō, nín xiǎoxīn diǎnr."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "好，你们还有一个小时，应该不会迟到的。",
+          "pinyin": "Hǎo, nǐmen hái yǒu yí ge xiǎoshí, yīnggāi bú huì chídào de."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我发现这条路车多，红绿灯也多。",
+          "pinyin": "Wǒ fāxiàn zhè tiáo lù chē duō, hónglǜdēng yě duō."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "是啊，这条路我走过一次，后来再也不走了。",
+          "pinyin": "Shì a, zhè tiáo lù wǒ zǒu guo yí cì, hòulái zài yě bù zǒu le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "那您今天为什么走了这条路？",
+          "pinyin": "Nà nín jīntiān wèishénme zǒu le zhè tiáo lù?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "我一急就走错了。如果没走错，二十分钟以前就到了。",
+          "pinyin": "Wǒ yì jí jiù zǒu cuò le. Rúguǒ méi zǒu cuò, èrshí fēnzhōng yǐqián jiù dào le."
+        }
+      ]
+    },
+    {
+      "scene": "在高铁站，李文和白家月排队安检、检票。",
+      "source_page": 63,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "李文，我的耳机没电了，你有充电宝吗？",
+          "pinyin": "Lǐ Wén, wǒ de ěrjī méi diàn le, nǐ yǒu chōngdiànbǎo ma?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "有，这些常用的东西我都放在包里了，我给你拿。",
+          "pinyin": "Yǒu, zhèxiē chángyòng de dōngxi wǒ dōu fàng zài bāo lǐ le, wǒ gěi nǐ ná."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "前面的人越来越多。",
+          "pinyin": "Qiánmian de rén yuèláiyuè duō."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "对，马上就进高铁站了。咱们一起走，别分开。",
+          "pinyin": "Duì, mǎshàng jiù jìn gāotiězhàn le. Zánmen yìqǐ zǒu, bié fēnkāi."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "好，你检查一下，高铁票都拿好了吗？",
+          "pinyin": "Hǎo, nǐ jiǎnchá yíxià, gāotiě piào dōu ná hǎo le ma?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "不用拿票，刷护照就能检票进站。",
+          "pinyin": "Búyòng ná piào, shuā hùzhào jiù néng jiǎnpiào jìnzhàn."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "去哪里检票？",
+          "pinyin": "Qù nǎlǐ jiǎnpiào?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "检票口在二层，我们一会儿坐电梯上去。",
+          "pinyin": "Jiǎnpiàokǒu zài èr céng, wǒmen yíhuìr zuò diàntī shàngqu."
+        }
+      ]
+    }
+  ]
+}
