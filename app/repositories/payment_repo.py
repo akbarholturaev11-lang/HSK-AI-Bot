@@ -131,6 +131,21 @@ class PaymentRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_latest_pending_by_user_and_plan(
+        self,
+        user_telegram_id: int,
+        plan_type: str,
+    ) -> Optional[Payment]:
+        result = await self.session.execute(
+            select(Payment)
+            .where(Payment.user_telegram_id == user_telegram_id)
+            .where(Payment.payment_status == "pending")
+            .where(Payment.plan_type == plan_type)
+            .order_by(Payment.submitted_at.desc())
+            .limit(1)
+        )
+        return result.scalar_one_or_none()
+
     async def has_pending_by_user(
         self,
         user_telegram_id: int,
