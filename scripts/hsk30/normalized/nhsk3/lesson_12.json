@@ -1,0 +1,404 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 12,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126
+    ]
+  },
+  "title": {
+    "hanzi": "这个季节天气变化很快",
+    "pinyin": "Zhège jìjié tiānqì biànhuà hěn kuài"
+  },
+  "objectives": [
+    "能听懂并谈论天气变化。",
+    "能听懂并介绍某地的气候情况及自己对季节的喜好。",
+    "掌握“就”的用法，能强调数量少或例外情况。",
+    "了解北京的四季特点。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "街",
+      "pinyin": "jiē",
+      "part_of_speech": "n.",
+      "source_page": 117
+    },
+    {
+      "hanzi": "开花",
+      "pinyin": "kāihuā",
+      "part_of_speech": "v.",
+      "source_page": 117
+    },
+    {
+      "hanzi": "公园",
+      "pinyin": "gōngyuán",
+      "part_of_speech": "n.",
+      "source_page": 117
+    },
+    {
+      "hanzi": "船",
+      "pinyin": "chuán",
+      "part_of_speech": "n.",
+      "source_page": 117
+    },
+    {
+      "hanzi": "工作日",
+      "pinyin": "gōngzuòrì",
+      "part_of_speech": "n.",
+      "source_page": 117
+    },
+    {
+      "hanzi": "地方",
+      "pinyin": "dìfang",
+      "part_of_speech": "n.",
+      "source_page": 117
+    },
+    {
+      "hanzi": "刚才",
+      "pinyin": "gāngcái",
+      "part_of_speech": "n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "刮",
+      "pinyin": "guā",
+      "part_of_speech": "v.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "风",
+      "pinyin": "fēng",
+      "part_of_speech": "n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "新闻",
+      "pinyin": "xīnwén",
+      "part_of_speech": "n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "伞",
+      "pinyin": "sǎn",
+      "part_of_speech": "n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "借",
+      "pinyin": "jiè",
+      "part_of_speech": "v.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "把",
+      "pinyin": "bǎ",
+      "part_of_speech": "m.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "雨衣",
+      "pinyin": "yǔyī",
+      "part_of_speech": "n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "变",
+      "pinyin": "biàn",
+      "part_of_speech": "v.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "季节",
+      "pinyin": "jìjié",
+      "part_of_speech": "n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "变化",
+      "pinyin": "biànhuà",
+      "part_of_speech": "v./n.",
+      "source_page": 119
+    },
+    {
+      "hanzi": "冬天",
+      "pinyin": "dōngtiān",
+      "part_of_speech": "n.",
+      "source_page": 120
+    },
+    {
+      "hanzi": "常常",
+      "pinyin": "chángcháng",
+      "part_of_speech": "adv.",
+      "source_page": 120
+    },
+    {
+      "hanzi": "关注",
+      "pinyin": "guānzhù",
+      "part_of_speech": "v.",
+      "source_page": 120
+    },
+    {
+      "hanzi": "四季",
+      "pinyin": "sìjì",
+      "part_of_speech": "n.",
+      "source_page": 122
+    },
+    {
+      "hanzi": "春天",
+      "pinyin": "chūntiān",
+      "part_of_speech": "n.",
+      "source_page": 122
+    },
+    {
+      "hanzi": "夏天",
+      "pinyin": "xiàtiān",
+      "part_of_speech": "n.",
+      "source_page": 122
+    },
+    {
+      "hanzi": "凉快",
+      "pinyin": "liángkuai",
+      "part_of_speech": "adj.",
+      "source_page": 122
+    },
+    {
+      "hanzi": "秋天",
+      "pinyin": "qiūtiān",
+      "part_of_speech": "n.",
+      "source_page": 122
+    },
+    {
+      "hanzi": "叶子",
+      "pinyin": "yèzi",
+      "part_of_speech": "n.",
+      "source_page": 122
+    },
+    {
+      "hanzi": "变成",
+      "pinyin": "biànchéng",
+      "part_of_speech": "v.",
+      "source_page": 122
+    }
+  ],
+  "grammar": [
+    {
+      "label": "选择复句“或者……，或者……”",
+      "source_page": 118,
+      "examples": [
+        {
+          "hanzi": "或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà."
+        },
+        {
+          "hanzi": "我们或者今天去电影院看电影，或者明天在家看电影。",
+          "pinyin": "Wǒmen huòzhě jīntiān qù diànyǐngyuàn kàn diànyǐng, huòzhě míngtiān zài jiā kàn diànyǐng."
+        },
+        {
+          "hanzi": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。",
+          "pinyin": "Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài."
+        }
+      ]
+    },
+    {
+      "label": "趋向补语的引申用法（2）",
+      "source_page": 120,
+      "examples": [
+        {
+          "hanzi": "雨已经下起来了。",
+          "pinyin": "Yǔ yǐjīng xià qǐlái le."
+        },
+        {
+          "hanzi": "最近天气热起来了。",
+          "pinyin": "Zuìjìn tiānqì rè qǐlái le."
+        },
+        {
+          "hanzi": "怎么突然刮起风来了？",
+          "pinyin": "Zěnme tūrán guā qǐ fēng lái le?"
+        }
+      ]
+    },
+    {
+      "label": "范围副词“就”",
+      "source_page": 121,
+      "examples": [
+        {
+          "hanzi": "北京常常下雪，但听说今年就下了一次。",
+          "pinyin": "Běijīng chángcháng xiàxuě, dàn tīngshuō jīnnián jiù xià le yí cì."
+        },
+        {
+          "hanzi": "他昨天就看了十分钟书。",
+          "pinyin": "Tā zuótiān jiù kàn le shí fēnzhōng shū."
+        },
+        {
+          "hanzi": "我每天书包里都放着雨伞，就今天没带。",
+          "pinyin": "Wǒ měitiān shūbāo lǐ dōu fàngzhe yǔsǎn, jiù jīntiān méi dài."
+        },
+        {
+          "hanzi": "你们点的菜都挺好吃的，就我点的这个菜不太好吃。",
+          "pinyin": "Nǐmen diǎn de cài dōu tǐng hǎochī de, jiù wǒ diǎn de zhège cài bú tài hǎochī."
+        }
+      ]
+    },
+    {
+      "label": "趋向补语的引申用法（3）",
+      "source_page": 122,
+      "examples": [
+        {
+          "hanzi": "这一年多住下来，我还是更喜欢北京的四季。",
+          "pinyin": "Zhè yì nián duō zhù xiàlái, wǒ háishi gèng xǐhuan Běijīng de sìjì."
+        },
+        {
+          "hanzi": "这半年练下来，他画画的水平提高了不少。",
+          "pinyin": "Zhè bànnián liàn xiàlái, tā huàhuà de shuǐpíng tígāo le bù shǎo."
+        },
+        {
+          "hanzi": "5000米的长跑比赛，没想到我跑下来了。",
+          "pinyin": "Wǔqiān mǐ de chángpǎo bǐsài, méi xiǎngdào wǒ pǎo xiàlái le."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在街上，王一飞和白家月边走边聊。",
+      "source_page": 117,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "王老师，您看，这条街上的树都开花了。",
+          "pinyin": "Wáng lǎoshī, nín kàn, zhè tiáo jiē shàng de shù dōu kāihuā le."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "上周我去公园坐船了，公园里的花也开了。",
+          "pinyin": "Shàng zhōu wǒ qù gōngyuán zuò chuán le, gōngyuán lǐ de huā yě kāi le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "天气这么好，下午我也想去公园坐船。",
+          "pinyin": "Tiānqì zhème hǎo, xiàwǔ wǒ yě xiǎng qù gōngyuán zuò chuán."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "去吧！今天是工作日，人应该不多。",
+          "pinyin": "Qù ba! Jīntiān shì gōngzuòrì, rén yīnggāi bù duō."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "您有时间吗？我想跟您一起去。",
+          "pinyin": "Nín yǒu shíjiān ma? Wǒ xiǎng gēn nín yìqǐ qù."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "我今天下午有课，不能去太远的地方。",
+          "pinyin": "Wǒ jīntiān xiàwǔ yǒu kè, bù néng qù tài yuǎn de dìfang."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "那咱们换一天去？",
+          "pinyin": "Nà zánmen huàn yì tiān qù?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "行。或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Xíng. Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà."
+        }
+      ]
+    },
+    {
+      "scene": "在街上，王一飞和白家月一起散步。",
+      "source_page": 119,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "刚才还是大晴天呢，怎么突然就刮起风来了？",
+          "pinyin": "Gāngcái háishi dà qíngtiān ne, zěnme tūrán jiù guā qǐ fēng lái le?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "好像新闻里说今天有雨。",
+          "pinyin": "Hǎoxiàng xīnwén lǐ shuō jīntiān yǒu yǔ."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "啊？我每天书包里都放着雨伞，就今天没带。",
+          "pinyin": "A? Wǒ měitiān shūbāo lǐ dōu fàngzhe yǔsǎn, jiù jīntiān méi dài."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "我可以借给你，我车里有一把伞和一件雨衣。",
+          "pinyin": "Wǒ kěyǐ jiè gěi nǐ, wǒ chē lǐ yǒu yì bǎ sǎn hé yí jiàn yǔyī."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "谢谢，希望下午天气能变好。",
+          "pinyin": "Xièxie, xīwàng xiàwǔ tiānqì néng biàn hǎo."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "这个季节天气变化很快。",
+          "pinyin": "Zhège jìjié tiānqì biànhuà hěn kuài."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "雨已经下起来了，咱们快点儿走吧。",
+          "pinyin": "Yǔ yǐjīng xià qǐlái le, zánmen kuài diǎnr zǒu ba."
+        }
+      ]
+    },
+    {
+      "scene": "在教室里，王一飞和白家月躲雨。",
+      "source_page": 120,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "您来这里已经一年多了，习惯了吧？",
+          "pinyin": "Nín lái zhèlǐ yǐjīng yì nián duō le, xíguàn le ba?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "别的早就习惯了，就是天气我还不太习惯。",
+          "pinyin": "Biéde zǎo jiù xíguàn le, jiùshì tiānqì wǒ hái bú tài xíguàn."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "为什么？您不喜欢这里的天气吗？",
+          "pinyin": "Wèishénme? Nín bù xǐhuan zhèlǐ de tiānqì ma?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "我觉得冬天太冷了。",
+          "pinyin": "Wǒ juéde dōngtiān tài lěng le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "冬天虽然冷，但是下雪的时候特别漂亮。",
+          "pinyin": "Dōngtiān suīrán lěng, dànshì xiàxuě de shíhou tèbié piàoliang."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "我也喜欢雪。北京常常下雪，但听说今年就下了一次。",
+          "pinyin": "Wǒ yě xǐhuan xuě. Běijīng chángcháng xiàxuě, dàn tīngshuō jīnnián jiù xià le yí cì."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我没关注过北京的天气，但是新闻里说过，今年冬天很多地方雪下得都少了。",
+          "pinyin": "Wǒ méi guānzhù guo Běijīng de tiānqì, dànshì xīnwén lǐ shuō guo, jīnnián dōngtiān hěn duō dìfang xuě xià de dōu shǎo le."
+        }
+      ]
+    }
+  ]
+}
