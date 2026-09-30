@@ -37,7 +37,7 @@ CARD_COUNTRIES = {"tj", "uz", "ru", "other"}
 # Tarif ekranida narx shu davlatlar valyutasida ko'rsatiladi (tj — TJS o'zi).
 FOREIGN_CARD_COUNTRIES = ("uz", "ru", "other")
 MINIAPP_METHODS = {"visa", "alipay", "wechat"}
-MINIAPP_MODES = {"subscription", "referral_discount", "admin_discount", "feedback_discount"}
+MINIAPP_MODES = {"subscription", "referral_discount", "admin_discount", "feedback_discount", "hsk30_unlock"}
 # Karta rekvizitlari bank bo'yicha: eski yagona kalit — Dushanbe City.
 PAYMENT_DETAILS_KEY = "subscription_payment_details"
 PAYMENT_DETAILS_ALIF_KEY = "subscription_payment_details_alif"
@@ -128,6 +128,44 @@ class SubscriptionMiniAppService:
                 "card_countries": ["tj", "uz", "ru", "other"],
                 "payment_details": "",
                 "payment_details_configured": False,
+            }
+
+        if mode == "hsk30_unlock":
+            eligibility = await Hsk30UnlockService(self.session).payment_eligibility(user)
+            if not eligibility["allowed"]:
+                return {"ok": False, "error": eligibility["reason"]}
+
+            prices: dict[str, dict[str, Any]] = {}
+            for payment_method in ("visa", "alipay", "wechat"):
+                checkout = await self._checkout_info(
+                    user,
+                    HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method,
+                    mode=mode,
+                )
+                if checkout:
+                    prices[payment_method] = {
+                        HSK30_UNLOCK_PLAN_TYPE: checkout,
+                    }
+
+            payment_details = await self.payment_details()
+            return {
+                "ok": True,
+                "language": getattr(user, "language", None) or "uz",
+                "mode": mode,
+                "support_url": await get_admin_contact_url(self.session),
+                "pending_payment": None,
+                "offer": None,
+                "offer_expired": False,
+                "discount": None,
+                "prices": prices,
+                "card_prices": await self._card_prices_payload(
+                    prices.get("visa") or {}
+                ),
+                "card_countries": ["tj", "uz", "ru", "other"],
+                "payment_details": payment_details,
+                "payment_details_configured": bool(payment_details),
+                "hsk30_unlock": eligibility,
             }
 
         await self.user_repo.ensure_referral_code(user)
