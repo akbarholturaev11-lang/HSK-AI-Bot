@@ -41,7 +41,7 @@ from pathlib import Path
 
 BASE = Path("app/static/course_v3_data")
 LEGACY_LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
-HSK30_LEVELS = [("nhsk1", 15), ("nhsk2", 15)]
+HSK30_LEVELS = [("nhsk1", 15), ("nhsk2", 15), ("nhsk3", 18)]
 TRACK_LEVELS = {
     "hsk20": LEGACY_LEVELS,
     "hsk30": HSK30_LEVELS,
@@ -379,6 +379,10 @@ def build_exit_ticket(level: str, src: int, checkpoint: bool) -> dict | None:
 # --------------------------------------------------------------------------
 def load_seed_lesson(level: str, order: int) -> dict:
     """Return the canonical (post-materials) lesson dict for a level/order."""
+    if level == "nhsk3":
+        from scripts.hsk30.nhsk3_adapter import load_seed_lesson as load_nhsk3_seed
+
+        return dict(load_nhsk3_seed(order))
     if level.startswith("nhsk"):
         mod = importlib.import_module(
             f"scripts.hsk30.seed_{level}_lesson_{order:02d}"
@@ -1981,7 +1985,7 @@ def main():
     )
     ap.add_argument(
         "--level",
-        help="only this level (hsk1..hsk4 or nhsk1..nhsk2)",
+        help="only this level (hsk1..hsk4 or nhsk1..nhsk3)",
     )
     ap.add_argument("--lesson", type=int, help="only this SOURCE lesson (uning hamma qismlari)")
     ap.add_argument("--dry", action="store_true", help="print, do not write")
