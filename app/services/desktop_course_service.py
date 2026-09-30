@@ -15,9 +15,11 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_levels import (
+    content_level,
+    hsk30_content_levels,
     legacy_content_levels,
+    level_spec,
     next_level as registry_next_level,
-    normalize_legacy_content_level,
 )
 from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialError,
@@ -45,7 +47,16 @@ from app.services.support_contact_service import get_admin_contact_url
 
 logger = logging.getLogger(__name__)
 
-COURSE_V3_LEVELS = frozenset(legacy_content_levels())
+COURSE_V3_LEVELS = frozenset(
+    (
+        *legacy_content_levels(),
+        *(
+            level
+            for level in hsk30_content_levels()
+            if (level_spec(level) and level_spec(level).selectable)
+        ),
+    )
+)
 COURSE_V3_LANGUAGES = frozenset({"uz", "ru", "tj"})
 COURSE_V3_NEXT_BAND = {
     level: registry_next_level(level)
@@ -65,7 +76,8 @@ class DesktopCourseError(RuntimeError):
 
 
 def normalize_course_v3_level(value: str | None) -> str:
-    return normalize_legacy_content_level(value)
+    normalized = content_level(value)
+    return normalized if normalized in COURSE_V3_LEVELS else "hsk1"
 
 
 def course_v3_lesson_card_count(lesson: dict[str, Any]) -> int:
