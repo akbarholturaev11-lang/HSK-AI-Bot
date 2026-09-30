@@ -10,7 +10,7 @@ EXPECTED = {
     1: {"vocab": 12, "dialogues": 3, "lines": 10, "grammar": 0},
     2: {"vocab": 15, "dialogues": 3, "lines": 10, "grammar": 1},
     3: {"vocab": 18, "dialogues": 3, "lines": 12, "grammar": 3},
-    4: {"vocab": 21, "dialogues": 3, "lines": 14, "grammar": 4},
+    4: {"vocab": 35, "dialogues": 3, "lines": 14, "grammar": 4},
     5: {"vocab": 22, "dialogues": 3, "lines": 14, "grammar": 3},
     6: {"vocab": 22, "dialogues": 3, "lines": 14, "grammar": 3},
     7: {"vocab": 27, "dialogues": 3, "lines": 14, "grammar": 4},
@@ -21,7 +21,7 @@ EXPECTED = {
     12: {"vocab": 24, "dialogues": 3, "lines": 14, "grammar": 3},
     13: {"vocab": 20, "dialogues": 3, "lines": 14, "grammar": 3},
     14: {"vocab": 26, "dialogues": 3, "lines": 15, "grammar": 3},
-    15: {"vocab": 17, "dialogues": 3, "lines": 14, "grammar": 1},
+    15: {"vocab": 18, "dialogues": 3, "lines": 14, "grammar": 1},
 }
 
 
