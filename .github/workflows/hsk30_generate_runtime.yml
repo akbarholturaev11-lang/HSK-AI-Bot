@@ -40,6 +40,9 @@ jobs:
       - name: Validate N3 enrichment
         run: python scripts/hsk30/verify_nhsk3_enrichment.py
 
+      - name: Generate N1 Course V3 runtime
+        run: python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk1
+
       - name: Generate N2 Course V3 runtime
         run: python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk2
 
@@ -84,7 +87,7 @@ jobs:
               assert int(runtime_manifest["source_lesson_count"]) == expected_units
               assert runtime_manifest["content_status"] == "runtime_ready"
 
-              if level in {"nhsk2", "nhsk3"}:
+              if level in {"nhsk1", "nhsk2", "nhsk3"}:
                   lesson_files = sorted((base / level).glob("lesson_*.json"))
                   assert len(lesson_files) == total_parts, (
                       level, len(lesson_files), total_parts
