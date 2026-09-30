@@ -8,6 +8,9 @@ on:
       - "scripts/hsk30/verify_nhsk3_normalized.py"
       - "scripts/hsk30/nhsk3_toc_map.json"
       - "scripts/hsk30/normalized/nhsk3/**"
+      - "scripts/hsk30/nhsk3_adapter.py"
+      - "scripts/hsk30/translations/nhsk3/**"
+      - "scripts/hsk30/verify_nhsk3_enrichment.py"
   workflow_dispatch:
 
 permissions:
@@ -24,3 +27,4 @@ jobs:
           fetch-depth: 1
           lfs: false
       - run: python scripts/hsk30/verify_nhsk3_normalized.py
+      - run: python scripts/hsk30/verify_nhsk3_enrichment.py
