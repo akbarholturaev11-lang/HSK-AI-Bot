@@ -46,7 +46,11 @@ class CourseLevelRegistryTests(unittest.TestCase):
             self.assertEqual(spec.track, TRACK_HSK30)
             self.assertTrue(is_hsk30_level(key))
             self.assertNotIn(key, onboarding_levels())
-            self.assertIn(key, onboarding_levels(hsk30_enabled=True))
+            if band < 4:
+                self.assertIn(key, onboarding_levels(hsk30_enabled=True))
+            else:
+                self.assertFalse(spec.selectable)
+                self.assertNotIn(key, onboarding_levels(hsk30_enabled=True))
 
     def test_track_and_next_level_are_stable(self):
         self.assertEqual(level_spec("hsk1").track, TRACK_HSK20)
@@ -54,7 +58,7 @@ class CourseLevelRegistryTests(unittest.TestCase):
         self.assertEqual(next_level("hsk3"), "hsk4")
         self.assertIsNone(next_level("hsk4"))
         self.assertEqual(next_level("nhsk1"), "nhsk2")
-        self.assertEqual(next_level("nhsk3"), "nhsk4")
+        self.assertIsNone(next_level("nhsk3"))
         self.assertIsNone(next_level("nhsk4"))
 
     def test_unknown_legacy_level_fails_back_exactly_as_before(self):
