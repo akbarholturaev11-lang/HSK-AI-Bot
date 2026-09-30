@@ -179,7 +179,7 @@ fun SubscriptionCheckoutHost(
                 .padding(horizontal = 15.dp).padding(top = 16.dp, bottom = 22.dp),
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(copy.getString(R.string.sub_heading), color = C.text, fontSize = 27.sp,
+                Text(copy.getString(if (state.isHsk30Unlock) R.string.sub_hsk30_heading else R.string.sub_heading), color = C.text, fontSize = 27.sp,
                     lineHeight = 30.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f))
                 Box(Modifier.size(38.dp).border(1.dp, C.line, CircleShape)
                     .background(C.surface, CircleShape).clickable { supportOpen = true },
@@ -712,6 +712,7 @@ private fun regionBodyId(region: String): Int = when (region) {
 }
 
 private fun planLabelId(plan: String): Int = when (plan) {
+    "hsk30_unlock" -> R.string.sub_plan_hsk30
     "10_days" -> R.string.sub_plan_10
     "3_months" -> R.string.sub_plan_3
     else -> R.string.sub_plan_1
