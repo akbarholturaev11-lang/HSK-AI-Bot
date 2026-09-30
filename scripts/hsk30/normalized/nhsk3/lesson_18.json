@@ -1,0 +1,416 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 18,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185
+    ]
+  },
+  "title": {
+    "hanzi": "我学会了包饺子",
+    "pinyin": "Wǒ xuéhuì le bāo jiǎozi"
+  },
+  "objectives": [
+    "能听懂并描述生活中的变化和成长经历。",
+    "能听懂并使用概数表达不确定的数量。",
+    "掌握“只要”的用法，能表达充分条件和结果。",
+    "了解中国传统节日“春节”的习俗。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "怎样",
+      "pinyin": "zěnyàng",
+      "part_of_speech": "pron.",
+      "source_page": 176
+    },
+    {
+      "hanzi": "过节",
+      "pinyin": "guòjié",
+      "part_of_speech": "v.",
+      "source_page": 176
+    },
+    {
+      "hanzi": "节",
+      "pinyin": "jié",
+      "part_of_speech": "n.",
+      "source_page": 176
+    },
+    {
+      "hanzi": "节日",
+      "pinyin": "jiérì",
+      "part_of_speech": "n.",
+      "source_page": 176
+    },
+    {
+      "hanzi": "联欢",
+      "pinyin": "liánhuān",
+      "part_of_speech": "v.",
+      "source_page": 176
+    },
+    {
+      "hanzi": "大概",
+      "pinyin": "dàgài",
+      "part_of_speech": "adv./adj.",
+      "source_page": 176
+    },
+    {
+      "hanzi": "阿姨",
+      "pinyin": "āyí",
+      "part_of_speech": "n.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "叔叔",
+      "pinyin": "shūshu",
+      "part_of_speech": "n.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "收",
+      "pinyin": "shōu",
+      "part_of_speech": "v.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "总",
+      "pinyin": "zǒng",
+      "part_of_speech": "adv.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "起",
+      "pinyin": "qǐ",
+      "part_of_speech": "v.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "见面",
+      "pinyin": "jiànmiàn",
+      "part_of_speech": "v.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "矿泉水",
+      "pinyin": "kuàngquánshuǐ",
+      "part_of_speech": "n.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "刚刚",
+      "pinyin": "gānggāng",
+      "part_of_speech": "adv.",
+      "source_page": 178
+    },
+    {
+      "hanzi": "出发",
+      "pinyin": "chūfā",
+      "part_of_speech": "v.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "不久",
+      "pinyin": "bùjiǔ",
+      "part_of_speech": "adj.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "发生",
+      "pinyin": "fāshēng",
+      "part_of_speech": "v.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "刚",
+      "pinyin": "gāng",
+      "part_of_speech": "adv.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "只要",
+      "pinyin": "zhǐyào",
+      "part_of_speech": "conj.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "学期",
+      "pinyin": "xuéqī",
+      "part_of_speech": "n.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "毕业",
+      "pinyin": "bìyè",
+      "part_of_speech": "v.",
+      "source_page": 180
+    },
+    {
+      "hanzi": "出生",
+      "pinyin": "chūshēng",
+      "part_of_speech": "v.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "过去",
+      "pinyin": "guòqù",
+      "part_of_speech": "n.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "懂得",
+      "pinyin": "dǒngde",
+      "part_of_speech": "v.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "坚持",
+      "pinyin": "jiānchí",
+      "part_of_speech": "v.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "完成",
+      "pinyin": "wánchéng",
+      "part_of_speech": "v.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "目标",
+      "pinyin": "mùbiāo",
+      "part_of_speech": "n.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "发展",
+      "pinyin": "fāzhǎn",
+      "part_of_speech": "v.",
+      "source_page": 182
+    },
+    {
+      "hanzi": "春节",
+      "pinyin": "Chūnjié",
+      "part_of_speech": "proper noun",
+      "source_page": 176
+    }
+  ],
+  "grammar": [
+    {
+      "label": "概数表达法",
+      "source_page": 177,
+      "examples": [
+        {
+          "hanzi": "春节大概放七八天假。",
+          "pinyin": "Chūnjié dàgài fàng qī bā tiān jià."
+        },
+        {
+          "hanzi": "教室里来了五六个学生。",
+          "pinyin": "Jiàoshì lǐ lái le wǔ liù ge xuéshēng."
+        },
+        {
+          "hanzi": "这些照片是三四年前照的吧？",
+          "pinyin": "Zhèxiē zhàopiàn shì sān sì nián qián zhào de ba?"
+        }
+      ]
+    },
+    {
+      "label": "“刚才”和“刚刚”",
+      "source_page": 178,
+      "examples": [
+        {
+          "hanzi": "刚才的电话是我妈妈打来的。",
+          "pinyin": "Gāngcái de diànhuà shì wǒ māma dǎ lái de."
+        },
+        {
+          "hanzi": "我刚才看过一遍，不想再看了。",
+          "pinyin": "Wǒ gāngcái kàn guo yí biàn, bù xiǎng zài kàn le."
+        },
+        {
+          "hanzi": "我刚刚看视频学会了包饺子。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi."
+        },
+        {
+          "hanzi": "他刚刚来北京两个月。",
+          "pinyin": "Tā gānggāng lái Běijīng liǎng ge yuè."
+        }
+      ]
+    },
+    {
+      "label": "条件复句“只要……，就……”",
+      "source_page": 180,
+      "examples": [
+        {
+          "hanzi": "我只要几天不跟他视频，就很想他。",
+          "pinyin": "Wǒ zhǐyào jǐ tiān bù gēn tā shìpín, jiù hěn xiǎng tā."
+        },
+        {
+          "hanzi": "只要你同意，我们就这么决定了。",
+          "pinyin": "Zhǐyào nǐ tóngyì, wǒmen jiù zhème juédìng le."
+        },
+        {
+          "hanzi": "只要你坚持每天早睡，身体就一定会好起来。",
+          "pinyin": "Zhǐyào nǐ jiānchí měitiān zǎo shuì, shēntǐ jiù yídìng huì hǎo qǐlái."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“从……起”",
+      "source_page": 182,
+      "examples": [
+        {
+          "hanzi": "他从那时起就努力学习。",
+          "pinyin": "Tā cóng nà shí qǐ jiù nǔlì xuéxí."
+        },
+        {
+          "hanzi": "从那天起，我们就变成了好朋友。",
+          "pinyin": "Cóng nà tiān qǐ, wǒmen jiù biànchéng le hǎo péngyou."
+        },
+        {
+          "hanzi": "从那次旅游起，我对中国文化更有兴趣了。",
+          "pinyin": "Cóng nà cì lǚyóu qǐ, wǒ duì Zhōngguó wénhuà gèng yǒu xìngqù le."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在飞机上，白家月和李文在聊天儿。",
+      "source_page": 176,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "我要在中国过年，真开心。",
+          "pinyin": "Wǒ yào zài Zhōngguó guònián, zhēn kāixīn."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "第一次请外国朋友来家里过春节，我也很高兴。",
+          "pinyin": "Dì yí cì qǐng wàiguó péngyou lái jiālǐ guò Chūnjié, wǒ yě hěn gāoxìng."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "春节是中国最重要的节日，我们一般会回家，跟家人一起过。",
+          "pinyin": "Chūnjié shì Zhōngguó zuì zhòngyào de jiérì, wǒmen yìbān huì huí jiā, gēn jiārén yìqǐ guò."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我们家会一边包饺子，一边看春节联欢晚会，一直到十二点以后才睡觉。",
+          "pinyin": "Wǒmen jiā huì yìbiān bāo jiǎozi, yìbiān kàn Chūnjié Liánhuān Wǎnhuì, yìzhí dào shí'èr diǎn yǐhòu cái shuìjiào."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "听起来很有意思。春节放几天假？",
+          "pinyin": "Tīng qǐlái hěn yǒuyìsi. Chūnjié fàng jǐ tiān jià?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "大概七八天。",
+          "pinyin": "Dàgài qī bā tiān."
+        }
+      ]
+    },
+    {
+      "scene": "在李文家，白家月给李文的父母拜年。",
+      "source_page": 178,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "张阿姨，李叔叔。过年好！这是我准备的礼物，请收下。",
+          "pinyin": "Zhāng āyí, Lǐ shūshu. Guònián hǎo! Zhè shì wǒ zhǔnbèi de lǐwù, qǐng shōuxia."
+        },
+        {
+          "speaker": "李叔叔",
+          "hanzi": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!"
+        },
+        {
+          "speaker": "张阿姨",
+          "hanzi": "总听小文说起你，今天终于有机会见面了。",
+          "pinyin": "Zǒng tīng Xiǎowén shuō qǐ nǐ, jīntiān zhōngyú yǒu jīhuì jiànmiàn le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "谢谢您和叔叔请我来家里做客。",
+          "pinyin": "Xièxie nín hé shūshu qǐng wǒ lái jiālǐ zuòkè."
+        },
+        {
+          "speaker": "李叔叔",
+          "hanzi": "桌子上有饮料，还有矿泉水，你想喝什么就自己拿。",
+          "pinyin": "Zhuōzi shàng yǒu yǐnliào, hái yǒu kuàngquánshuǐ, nǐ xiǎng hē shénme jiù zìjǐ ná."
+        },
+        {
+          "speaker": "张阿姨",
+          "hanzi": "你先坐着看会儿电视，饺子很快就包好了。",
+          "pinyin": "Nǐ xiān zuòzhe kàn huìr diànshì, jiǎozi hěn kuài jiù bāo hǎo le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我刚刚看视频学会了包饺子，我跟你们一起包吧。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi, wǒ gēn nǐmen yìqǐ bāo ba."
+        }
+      ]
+    },
+    {
+      "scene": "在李文家，李文妈妈和白家月在聊天儿。",
+      "source_page": 180,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "这张照片是李文出国前照的吗？",
+          "pinyin": "Zhè zhāng zhàopiàn shì Lǐ Wén chūguó qián zhào de ma?"
+        },
+        {
+          "speaker": "张阿姨",
+          "hanzi": "对，这是他从北京出发时，我们全家在机场照的。",
+          "pinyin": "Duì, zhè shì tā cóng Běijīng chūfā shí, wǒmen quán jiā zài jīchǎng zhào de."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?"
+        },
+        {
+          "speaker": "张阿姨",
+          "hanzi": "是啊，时间过得真快，好像是不久前发生的一样。",
+          "pinyin": "Shì a, shíjiān guò de zhēn kuài, hǎoxiàng shì bùjiǔ qián fāshēng de yíyàng."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "您一定特别想李文吧？",
+          "pinyin": "Nín yídìng tèbié xiǎng Lǐ Wén ba?"
+        },
+        {
+          "speaker": "张阿姨",
+          "hanzi": "他刚离开家时，我很不习惯，只要几天不跟他视频，就很想他。",
+          "pinyin": "Tā gāng líkāi jiā shí, wǒ hěn bù xíguàn, zhǐyào jǐ tiān bù gēn tā shìpín, jiù hěn xiǎng tā."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "还有最后一个学期就要毕业了，他很快就会回来了。",
+          "pinyin": "Hái yǒu zuìhòu yí ge xuéqī jiù yào bìyè le, tā hěn kuài jiù huì huílái le."
+        }
+      ]
+    }
+  ]
+}
