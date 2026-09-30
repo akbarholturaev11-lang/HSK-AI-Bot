@@ -66,7 +66,7 @@ class AdminNotifyService:
         source: str = "telegram_bot",
         card_bank: str = None,
     ) -> str:
-        plan_label = {"10_days": "10 kunlik", "1_month": "1 oylik", "3_months": "3 oylik"}.get(plan_type, plan_type)
+        plan_label = {\n            "10_days": "10 kunlik",\n            "1_month": "1 oylik",\n            "3_months": "3 oylik",\n            "hsk30_unlock": "HSK 3.0 ochish",\n        }.get(plan_type, plan_type)
         origin = {
             "android": "Android ilova",
             "miniapp": "Telegram Mini App",
