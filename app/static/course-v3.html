@@ -1680,16 +1680,20 @@ var App={
     var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
       uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",cpH:"{n}-dars to'liq yakunlandi!",cpP:"Butun dars sizniki: so'zlar, dialog va grammatika. Endi ularni gapda ishlata olasiz.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
       tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
-    var curLv=(MAP&&MAP.level)||"hsk1",nextLv=(_NEXT_LEVEL&&_NEXT_LEVEL[curLv])||"",curLabel=courseLevelLabel(curLv),nextLabel=nextLv?courseLevelLabel(nextLv):"";
+    var curLv=(MAP&&MAP.level)||"hsk1";
+    var releaseAware=type==="level"&&data&&("next_level" in data||"next_level_pending" in data);
+    var nextLv=releaseAware?(data.next_level||""):((_NEXT_LEVEL&&_NEXT_LEVEL[curLv])||"");
+    var pendingLv=releaseAware?(data.next_level_pending||""):"";
+    var curLabel=courseLevelLabel(curLv),nextLabel=nextLv?courseLevelLabel(nextLv):"",pendingLabel=pendingLv?courseLevelLabel(pendingLv):"";
     var levelCopy={
-      ru:{h:curLabel+" пройден!",p:nextLabel?"Поздравляем! Открыт "+nextLabel+".":"Поздравляем! Этот уровень завершён."},
-      uz:{h:curLabel+" tugadi!",p:nextLabel?"Tabriklaymiz! "+nextLabel+" ochildi.":"Tabriklaymiz! Bu daraja tugadi."},
-      tj:{h:curLabel+" тамом!",p:nextLabel?"Табрик! "+nextLabel+" кушода шуд.":"Табрик! Ин сатҳ анҷом ёфт."}
+      ru:{h:curLabel+" пройден!",p:pendingLabel?pendingLabel+" — скоро.":(nextLabel?"Поздравляем! Открыт "+nextLabel+".":"Поздравляем! Этот уровень завершён."),soon:"скоро"},
+      uz:{h:curLabel+" tugadi!",p:pendingLabel?pendingLabel+" · tez orada.":(nextLabel?"Tabriklaymiz! "+nextLabel+" ochildi.":"Tabriklaymiz! Bu daraja tugadi."),soon:"tez orada"},
+      tj:{h:curLabel+" тамом!",p:pendingLabel?pendingLabel+" · ба зудӣ.":(nextLabel?"Табрик! "+nextLabel+" кушода шуд.":"Табрик! Ин сатҳ анҷом ёфт."),soon:"ба зудӣ"}
     }[LANG]||{};
     var g=(data&&data.gamification)||data||{};
     var awardedXp=Math.max(0,Number(g.awarded_xp||0));
     var xpRows=awardedXp>0?[["+"+awardedXp,"XP"]]:[];
-    var levelRows=[[nextLabel||curLabel,lu.opened]].concat(xpRows);
+    var levelRows=[[pendingLabel||nextLabel||curLabel,pendingLabel?(levelCopy.soon||"soon"):lu.opened]].concat(xpRows);
     var cpSrc=(extra&&extra.src)||"";
     var firstCp=(type==="checkpoint"&&normalizeLevel(curLv)==="hsk1"&&Number(cpSrc)===1);
     if(firstCp){
@@ -4505,8 +4509,11 @@ function applyLessonDone(cur,d){
   renderAll();
   if(d&&d.ok)refreshCourseProgress(true);
   if(al.every(function(l){return l.status==="done"})){
-    var nxt=_NEXT_LEVEL[MAP.level||"hsk1"];
+    var hasReleaseFields=!!(d&&("next_level" in d||"next_level_pending" in d));
+    var nxt=hasReleaseFields?(d.next_level||""):_NEXT_LEVEL[MAP.level||"hsk1"];
+    var pending=hasReleaseFields?(d.next_level_pending||""):"";
     if(nxt){App.showLevelUp("level",d);setTimeout(function(){loadLevel(nxt)},2200);return;}
+    if(pending){App.showLevelUp("level",d);return;}
   }
   /* Checkpoint (HSK darsining yakuniy qismi) — kattaroq bayram varianti. */
   App.showLevelUp(cur&&cur.checkpoint?"checkpoint":"lesson",d,{src:cur&&cur.src});
