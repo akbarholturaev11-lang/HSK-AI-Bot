@@ -183,10 +183,28 @@ class CourseTrackService:
         if target_track not in {TRACK_HSK20, TRACK_HSK30}:
             raise CourseTrackError("invalid_course_track", status_code=422)
 
+        current_track = self.track_for_level(getattr(user, "level", None))
         if target_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
             if not access.allowed:
                 raise CourseTrackError(access.reason, status_code=403)
+
+        if target_track == current_track:
+            current_level = self._validate_level_for_track(
+                getattr(user, "level", None),
+                current_track,
+            )
+            if requested_level:
+                requested = self._validate_level_for_track(
+                    requested_level,
+                    current_track,
+                )
+                if requested != current_level:
+                    raise CourseTrackError(
+                        "course_track_level_change_use_level_flow",
+                        status_code=409,
+                    )
+            return await self.status(user)
 
         progress = await self.progress_repo.get_by_user_id(
             int(user.id),
