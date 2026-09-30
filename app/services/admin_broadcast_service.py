@@ -27,7 +27,7 @@ from app.services.support_contact_service import get_admin_contact_url
 # Mini App filtri TG panelidagi segmentlar bilan bir xil bo'lsin.
 BROADCAST_FILTER_OPTIONS = {
     "status": ["free", "trial", "active", "expired", "blocked"],
-    "level": ["beginner", "hsk1", "hsk2", "hsk3", "hsk4"],
+    "level": ["beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"],
     "mode": ["qa", "course"],
     "payment_status": ["none", "pending", "approved", "rejected"],
     "payment_method": ["visa", "alipay", "wechat"],
