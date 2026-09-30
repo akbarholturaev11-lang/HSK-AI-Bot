@@ -47,12 +47,13 @@ internal fun availableRegions(prices: Map<String, Map<String, SubscriptionPriceD
 /** Only Tajikistan (the bank) and China (the wallet) ask for a payment type. */
 internal fun hasMethodStep(region: String): Boolean = region == "tj" || region == "cn"
 
-internal fun checkoutFlow(region: String): List<CheckoutStep> =
-    if (hasMethodStep(region)) {
-        listOf(CheckoutStep.REGION, CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
-    } else {
-        listOf(CheckoutStep.REGION, CheckoutStep.PLANS, CheckoutStep.PAY)
-    }
+internal fun checkoutFlow(region: String, includePlans: Boolean = true): List<CheckoutStep> {
+    val flow = mutableListOf(CheckoutStep.REGION)
+    if (includePlans) flow += CheckoutStep.PLANS
+    if (hasMethodStep(region)) flow += CheckoutStep.METHOD
+    flow += CheckoutStep.PAY
+    return flow
+}
 
 /** A card from outside Tajikistan always pays to Alif (Visa); the server applies the same rule. */
 internal fun cardBankFor(country: String, bank: String): String = if (country == "tj") bank else "alif"
@@ -93,7 +94,8 @@ data class SubscriptionCheckoutState(
     val alreadyPending: Boolean = false,
     val errorRes: Int? = null,
 ) {
-    val flow: List<CheckoutStep> get() = checkoutFlow(region)
+    val isHsk30Unlock: Boolean get() = overview?.mode == "hsk30_unlock"
+    val flow: List<CheckoutStep> get() = checkoutFlow(region, includePlans = !isHsk30Unlock)
 
     /** `dc_city` or `alif` for a card payment, null for the QR wallets. */
     val cardBank: String? get() = if (method == "visa") cardBankFor(country, bank) else null
@@ -137,7 +139,12 @@ class SubscriptionCheckoutViewModel(
                             country = if (method == "visa" && region.isNotEmpty()) region else current.country,
                             plan = planFor(method, current.plan, data.prices),
                             language = normalizeLanguage(data.language),
-                            step = if (region.isEmpty()) CheckoutStep.REGION else CheckoutStep.PLANS,
+                            step = when {
+                                region.isEmpty() -> CheckoutStep.REGION
+                                data.mode == "hsk30_unlock" && hasMethodStep(region) -> CheckoutStep.METHOD
+                                data.mode == "hsk30_unlock" -> CheckoutStep.PAY
+                                else -> CheckoutStep.PLANS
+                            },
                             errorRes = if (data.ok) null else R.string.sub_unavailable,
                         )
                     }
@@ -198,7 +205,12 @@ class SubscriptionCheckoutViewModel(
             CheckoutStep.REGION -> {
                 val region = current.region.takeIf { it.isNotEmpty() } ?: return
                 viewModelScope.launch { runCatching { saveRegion(region) } }
-                _state.update { it.copy(step = CheckoutStep.PLANS) }
+                if (current.isHsk30Unlock) {
+                    if (hasMethodStep(region)) _state.update { it.copy(step = CheckoutStep.METHOD) }
+                    else loadQuote()
+                } else {
+                    _state.update { it.copy(step = CheckoutStep.PLANS) }
+                }
             }
             CheckoutStep.PLANS -> {
                 if (overview.prices[current.method]?.get(current.plan) == null) return
@@ -341,7 +353,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     private companion object {
-        val PLANS = listOf("1_month", "10_days", "3_months")
+        val PLANS = listOf("hsk30_unlock", "1_month", "10_days", "3_months")
         const val MAX_RECEIPT_BYTES = 8 * 1024 * 1024
         const val MAX_SOURCE_BYTES = 24 * 1024 * 1024
         const val TARGET_BASE64_CHARS = 300 * 1024
