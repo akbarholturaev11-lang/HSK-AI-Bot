@@ -1255,6 +1255,9 @@ function isHsk30Level(v){return /^nhsk[1-3]$/.test(normalizeLevel(v))}
 function levelBand(v){var m=normalizeLevel(v).match(/(\d+)$/);return m?parseInt(m[1],10):1}
 function trackLevels(v){return isHsk30Level(v)?HSK30_LEVELS:LEGACY_LEVELS}
 function lessonGateUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/lesson_gate_hsk30.js?v=20260930":"/course_v3_data/lesson_gate.js?v=20260719"}
+function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/hsk30-words.js?v=20260930":"hsk-words.js?v=20260720"}
+function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
+function practiceWordGate(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{})}
 function getStoredLevel(){try{return normalizeLevel(localStorage.getItem("hsk_v3_level"))}catch(e){return"hsk1"}}
 function getSelectedLevel(){var p=new URLSearchParams(location.search);return normalizeLevel(p.get("level")||getStoredLevel())}
 function setSelectedLevel(lv){
@@ -2054,7 +2057,7 @@ function prefetchPracticeAssets(){
     /* "Ieroglif tanish" endi ilova ichida — uning ma'lumot fayllari fonda
        HAQIQATAN yuklanadi (nafaqat keshga tushadi), shuning uchun bo'lim
        bosilganda darhol ochiladi. */
-    loadJsOnce("hsk-words.js?v=20260720").catch(function(){});
+    loadJsOnce(practiceWordsUrl()).catch(function(){});
     loadJsOnce(lessonGateUrl()).catch(function(){});
     /* memo.js alohida memorize sahifasining o'z defer scripti; bu yerda
        oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
@@ -5715,14 +5718,14 @@ var RECOG=(function(){
      endi u so'rov umuman kerak emas. */
   function lvNum(){return levelBand((MAP&&MAP.level)||"hsk1")}
   function curLesson(){return Math.max(1,Number((MAP&&MAP.progress&&MAP.progress.completed)||0)+1)}
-  function gate(h){return (window.HSK_WORD_GATE||{})[h]}
+  function gate(h){return practiceWordGate()[h]}
   function wLv(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
   function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
   /* So'z bazasi va dars-gate faqat shu bo'lim uchun kerak — ilova ochilishida
      emas, birinchi marta kirilganda yuklanadi (fonda allaqachon boshlangan). */
   function ensureData(){
-    if(!DATA)DATA=Promise.all([loadJsOnce("hsk-words.js?v=20260720"),loadJsOnce(lessonGateUrl())]);
+    if(!DATA)DATA=Promise.all([loadJsOnce(practiceWordsUrl()),loadJsOnce(lessonGateUrl())]);
     return DATA;
   }
 
@@ -5758,9 +5761,9 @@ var RECOG=(function(){
 
 
   function buildPool(){
-    var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length===1});
+    var all=practiceWords().filter(function(w){return Array.from(String(w.h)).length===1});
     var n=lvNum(),CUR=curLesson();
-    if(window.HSK_WORD_GATE){
+    if(Object.keys(practiceWordGate()).length){
       var cur=all.filter(function(w){var g=gate(w.h);return g&&g[0]===n&&g[1]<=CUR});
       if(cur.length<12){
         var lower=all.filter(function(w){var g=gate(w.h);return g&&g[0]<n});
@@ -5773,7 +5776,7 @@ var RECOG=(function(){
     pool=all.filter(function(w){return wLv(w)===n});
     if(pool.length<8)pool=all.filter(function(w){var l=wLv(w);return l&&l<=n});
     if(pool.length<8)pool=all;
-    if(pool.length<8)pool=(typeof WORDS!=="undefined"?WORDS:[]);
+    if(pool.length<8)pool=practiceWords();
   }
   function makeQuiz(){
     quiz=[];var used={},tries=0;
