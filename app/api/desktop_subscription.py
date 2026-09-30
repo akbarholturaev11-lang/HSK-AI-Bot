@@ -31,7 +31,7 @@ MAX_DESKTOP_SUBSCRIPTION_SUBMIT_BODY_BYTES = (
 )
 PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 
-DesktopPlan = Literal["10_days", "1_month", "3_months"]
+DesktopPlan = Literal["10_days", "1_month", "3_months", "hsk30_unlock"]
 DesktopPaymentMethod = Literal["visa", "alipay", "wechat"]
 DesktopCardCountry = Literal["tj", "uz", "ru", "other"]
 # Karta rekviziti qaysi bankniki: Tojikistonda tanlanadi, boshqa davlat
