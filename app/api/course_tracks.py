@@ -11,6 +11,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.course_track_service import CourseTrackError, CourseTrackService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.hsk30_unlock_service import Hsk30UnlockService
+from app.services.hsk30_promo_service import Hsk30PromoService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 
 
@@ -84,6 +85,7 @@ async def _status_payload(session, user) -> dict:
         "ok": True,
         **status,
         "hsk30_unlock": eligibility,
+        "hsk30_promo": await Hsk30PromoService(session).state(user),
     }
 
 
@@ -156,6 +158,28 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                 CourseTrackRequestError("course_track_unavailable", status_code=503)
             )
 
+    @router.post("/api/v3/course-tracks/promo-shown")
+    async def miniapp_track_promo_shown(request: Request):
+        try:
+            telegram_id = miniapp_telegram_id(request)
+            async with session_factory() as session:
+                user = await UserRepository(session).get_by_telegram_id(telegram_id)
+                if not user:
+                    raise CourseTrackRequestError("access_start_first", status_code=403)
+                promo = await Hsk30PromoService(session).mark_shown(user)
+                await session.commit()
+            return JSONResponse(
+                content={"ok": True, "hsk30_promo": promo},
+                headers={"Cache-Control": "no-store"},
+            )
+        except CourseTrackRequestError as exc:
+            return _error(exc)
+        except Exception:
+            logger.exception("Mini App HSK 3.0 promo record failed")
+            return _error(
+                CourseTrackRequestError("course_track_unavailable", status_code=503)
+            )
+
     @router.get("/api/v3/native/course-tracks")
     async def native_track_status(request: Request):
         try:
@@ -201,6 +225,30 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
             return _error(exc)
         except Exception:
             logger.exception("Native course track switch failed")
+            return _error(
+                CourseTrackRequestError("course_track_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/native/course-tracks/promo-shown")
+    async def native_track_promo_shown(request: Request):
+        try:
+            async with session_factory() as session:
+                context = await DesktopAuthService(
+                    session,
+                    settings_obj,
+                ).authenticate(_bearer_token(request))
+                promo = await Hsk30PromoService(session).mark_shown(
+                    context.user
+                )
+                await session.commit()
+            return JSONResponse(
+                content={"ok": True, "hsk30_promo": promo},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, CourseTrackError) as exc:
+            return _error(exc)
+        except Exception:
+            logger.exception("Native HSK 3.0 promo record failed")
             return _error(
                 CourseTrackRequestError("course_track_unavailable", status_code=503)
             )
