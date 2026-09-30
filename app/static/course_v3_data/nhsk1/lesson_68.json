@@ -1,0 +1,1024 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 68,
+  "source_lesson": 10,
+  "part_no": 7,
+  "part_count": 7,
+  "checkpoint": true,
+  "title": "这儿的苹果真便宜！",
+  "subtitle": {
+    "uz": "Mahsulot narxini tushunish va aytish; pul miqdorini xitoycha ifodalash; sifat-kesimli gaplardan foydalanish; “怎么样” bilan fikr yoki holatni so‘rash.",
+    "ru": "Понимать и называть цены товаров; выражать денежные суммы; использовать предложения с прилагательным-сказуемым; спрашивать мнение или состояние с “怎么样”.",
+    "tj": "Нархи молро фаҳмидан ва гуфтан; маблағи пулро ба чинӣ ифода кардан; ҷумлаҳои сифатӣ-хабариро истифода бурдан; бо “怎么样” фикр ё ҳолатро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "杯子",
+      "pinyin": "bēizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "piyola; stakan",
+        "ru": "чашка; стакан",
+        "tj": "пиёла; стакан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "售货员",
+      "pinyin": "shòuhuòyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sotuvchi",
+        "ru": "продавец",
+        "tj": "фурӯшанда"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "这边",
+      "pinyin": "zhèbiān",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu yer; bu tomon",
+        "ru": "здесь; эта сторона",
+        "tj": "ин ҷо; ин тараф"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "钱",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pul",
+        "ru": "деньги",
+        "tj": "пул"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "这些",
+      "pinyin": "zhèxiē",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bular",
+        "ru": "эти",
+        "tj": "инҳо"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "块",
+      "pinyin": "kuài",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yuan uchun og‘zaki hisob birligi",
+        "ru": "разг. счётная единица юаня",
+        "tj": "воҳиди гуфтугӯии юан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "那些",
+      "pinyin": "nàxiē",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "anavilar; o‘shalar",
+        "ru": "те",
+        "tj": "онҳо; ҳамонҳо"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "这儿",
+      "pinyin": "zhèr",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu yer",
+        "ru": "здесь",
+        "tj": "ин ҷо"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "水果",
+      "pinyin": "shuǐguǒ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "meva",
+        "ru": "фрукты",
+        "tj": "мева"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "少",
+      "pinyin": "shǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kam",
+        "ru": "мало; немного",
+        "tj": "кам"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "斤",
+      "pinyin": "jīn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "jin (500 g)",
+        "ru": "цзинь (500 г)",
+        "tj": "ҷин (500 г)"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "苹果",
+      "pinyin": "píngguǒ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "olma",
+        "ru": "яблоко",
+        "tj": "себ"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "便宜",
+      "pinyin": "piányi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "arzon",
+        "ru": "дешёвый",
+        "tj": "арзон"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "商店",
+      "pinyin": "shāngdiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "do‘kon",
+        "ru": "магазин",
+        "tj": "мағоза"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "衣服",
+      "pinyin": "yīfu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kiyim",
+        "ru": "одежда",
+        "tj": "либос"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "件",
+      "pinyin": "jiàn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kiyim uchun o‘lchov so‘zi",
+        "ru": "счётное слово для одежды",
+        "tj": "воҳиди ҳисоб барои либос"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "元",
+      "pinyin": "yuán",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yuan",
+        "ru": "юань",
+        "tj": "юан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "怎么样",
+      "pinyin": "zěnmeyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday; qanday deb o‘ylaysan",
+        "ru": "как; как насчёт",
+        "tj": "чӣ хел; чӣ гуна"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "贵",
+      "pinyin": "guì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qimmat",
+        "ru": "дорогой",
+        "tj": "гарон"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "穿",
+      "pinyin": "chuān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kiymoq",
+        "ru": "носить; надевать",
+        "tj": "пӯшидан"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "女",
+      "pinyin": "nǚ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ayol; qiz bolaga oid",
+        "ru": "женский; женщина",
+        "tj": "занона; зан"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "男",
+      "pinyin": "nán",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "erkak; o‘g‘il bolaga oid",
+        "ru": "мужской; мужчина",
+        "tj": "мардона; мард"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "那儿",
+      "pinyin": "nàr",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u yer",
+        "ru": "там",
+        "tj": "он ҷо"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Pul miqdorini ifodalash",
+        "ru": "Выражение денежной суммы",
+        "tj": "Ифодаи маблағи пул"
+      },
+      "title_zh": "钱数的表达",
+      "rule": {
+        "uz": "RMB birliklari kattadan kichikka 元、角、分; og‘zaki nutqda 元 ko‘pincha 块, 角 esa 毛 deyiladi.",
+        "ru": "Единицы RMB от крупной к мелкой: 元、角、分; в разговорной речи 元 часто называют 块, а 角 — 毛.",
+        "tj": "Воҳидҳои RMB аз калон ба хурд 元、角、分 мебошанд; дар гуфтор 元-ро 块 ва 角-ро 毛 мегӯянд."
+      },
+      "examples": [
+        {
+          "zh": "三块二",
+          "pinyin": "sān kuài èr",
+          "translation": {
+            "uz": "3 yuan 2 mao",
+            "ru": "3 юаня 2 мао",
+            "tj": "3 юан 2 мао"
+          }
+        },
+        {
+          "zh": "六块零两分",
+          "pinyin": "liù kuài líng liǎng fēn",
+          "translation": {
+            "uz": "6 yuan 2 fen",
+            "ru": "6 юаней 2 фэня",
+            "tj": "6 юан 2 фэн"
+          }
+        },
+        {
+          "zh": "二百零二块两毛",
+          "pinyin": "èrbǎi líng èr kuài liǎng máo",
+          "translation": {
+            "uz": "202 yuan 2 mao",
+            "ru": "202 юаня 2 мао",
+            "tj": "202 юан 2 мао"
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Sifat-kesimli gap",
+        "ru": "Предложение с прилагательным-сказуемым",
+        "tj": "Ҷумла бо хабари сифатӣ"
+      },
+      "title_zh": "形容词谓语句",
+      "rule": {
+        "uz": "Sifat to‘g‘ridan-to‘g‘ri kesim bo‘la oladi; oldidan daraja ravishi yoki inkor ravishi kelishi mumkin.",
+        "ru": "Прилагательное может непосредственно выступать сказуемым; перед ним могут стоять наречие степени или отрицание.",
+        "tj": "Сифат метавонад бевосита хабар шавад; пеш аз он зарфи дараҷа ё инкор омада метавонад."
+      },
+      "examples": [
+        {
+          "zh": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "translation": {
+            "uz": "Bu yerda meva juda ko‘p!",
+            "ru": "Здесь очень много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр!"
+          }
+        },
+        {
+          "zh": "我的房间不大。",
+          "pinyin": "Wǒ de fángjiān bú dà.",
+          "translation": {
+            "uz": "Mening xonam katta emas.",
+            "ru": "Моя комната небольшая.",
+            "tj": "Ҳуҷраи ман калон нест."
+          }
+        },
+        {
+          "zh": "那个苹果好吃。",
+          "pinyin": "Nàge píngguǒ hǎochī.",
+          "translation": {
+            "uz": "O‘sha olma mazali.",
+            "ru": "То яблоко вкусное.",
+            "tj": "Он себ болаззат аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "“怎么样” so‘roq olmoshi",
+        "ru": "Вопросительное местоимение “怎么样”",
+        "tj": "Ҷонишини саволии “怎么样”"
+      },
+      "title_zh": "疑问代词“怎么样”",
+      "rule": {
+        "uz": "“怎么样” fikrni yoki biror narsaning xususiyati/holatini so‘rash uchun ishlatiladi.",
+        "ru": "“怎么样” используется для запроса мнения или выяснения свойства/состояния чего-либо.",
+        "tj": "“怎么样” барои пурсидани фикр ё ҳолат/хусусияти чизе истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "这个杯子怎么样？",
+          "pinyin": "Zhège bēizi zěnmeyàng?",
+          "translation": {
+            "uz": "Bu piyola qanday?",
+            "ru": "Как эта чашка?",
+            "tj": "Ин пиёла чӣ хел?"
+          }
+        },
+        {
+          "zh": "这本书怎么样？",
+          "pinyin": "Zhè běn shū zěnmeyàng?",
+          "translation": {
+            "uz": "Bu kitob qanday?",
+            "ru": "Как эта книга?",
+            "tj": "Ин китоб чӣ хел?"
+          }
+        },
+        {
+          "zh": "这个菜怎么样？",
+          "pinyin": "Zhège cài zěnmeyàng?",
+          "translation": {
+            "uz": "Bu taom qanday?",
+            "ru": "Как это блюдо?",
+            "tj": "Ин таом чӣ хел?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kichik do‘konda Wang Yixue piyola sotib olmoqda.",
+        "ru": "В маленьком магазине Ван Исюэ покупает чашку.",
+        "tj": "Дар як мағозаи хурд Ван Исюэ пиёла мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "请问，有杯子吗？",
+          "pinyin": "Qǐngwèn, yǒu bēizi ma?",
+          "text": {
+            "uz": "Kechirasiz, piyola bormi?",
+            "ru": "Извините, у вас есть чашки?",
+            "tj": "Мебахшед, пиёла доред?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "有，杯子在这边。",
+          "pinyin": "Yǒu, bēizi zài zhèbiān.",
+          "text": {
+            "uz": "Ha, piyolalar bu yerda.",
+            "ru": "Да, чашки здесь.",
+            "tj": "Ҳа, пиёлаҳо ин ҷоанд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "多少钱一个？",
+          "pinyin": "Duōshao qián yí ge?",
+          "text": {
+            "uz": "Bittasi qancha turadi?",
+            "ru": "Сколько стоит одна?",
+            "tj": "Яктоаш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "这些五块钱一个，那些十块钱一个。",
+          "pinyin": "Zhèxiē wǔ kuài qián yí ge, nàxiē shí kuài qián yí ge.",
+          "text": {
+            "uz": "Bularning bittasi 5 yuan, anavilarning bittasi 10 yuan.",
+            "ru": "Эти по 5 юаней, а те по 10 юаней.",
+            "tj": "Инҳо яктоӣ 5 юан, онҳо яктоӣ 10 юан."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我买这个吧。",
+          "pinyin": "Wǒ mǎi zhège ba.",
+          "text": {
+            "uz": "Men mana bunisini olaman.",
+            "ru": "Я возьму эту.",
+            "tj": "Ман ҳаминро мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bozorda Wang Yixue meva sotib olmoqda.",
+        "ru": "На рынке Ван Исюэ покупает фрукты.",
+        "tj": "Дар бозор Ван Исюэ мева мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "text": {
+            "uz": "Bu yerda meva juda ko‘p ekan!",
+            "ru": "Здесь так много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "您想买什么？",
+          "pinyin": "Nín xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我想买两斤苹果。",
+          "pinyin": "Wǒ xiǎng mǎi liǎng jīn píngguǒ.",
+          "text": {
+            "uz": "Ikki jin olma olmoqchiman.",
+            "ru": "Я хочу купить два цзиня яблок.",
+            "tj": "Ман мехоҳам ду ҷин себ харам."
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "苹果三块五一斤。这些七块二，七块钱吧。",
+          "pinyin": "Píngguǒ sān kuài wǔ yì jīn. Zhèxiē qī kuài èr, qī kuài qián ba.",
+          "text": {
+            "uz": "Olma bir jiniga 3,5 yuan. Bular 7,2 yuan bo‘ladi, 7 yuan bo‘lsin.",
+            "ru": "Яблоки по 3,5 юаня за цзинь. Всего 7,2 юаня — пусть будет 7.",
+            "tj": "Себ як ҷин 3,5 юан. Ҳамагӣ 7,2 юан мешавад, 7 юан диҳед."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的，这儿的苹果真便宜！",
+          "pinyin": "Hǎo de, zhèr de píngguǒ zhēn piányi!",
+          "text": {
+            "uz": "Xo‘p, bu yerdagi olmalar juda arzon ekan!",
+            "ru": "Хорошо, яблоки здесь действительно дешёвые!",
+            "tj": "Хуб, себҳои ин ҷо воқеан арзонанд!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue bolalariga kiyim sotib olmoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ покупают одежду детям.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ барои фарзандонашон либос мехаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这家商店衣服真多！这件一百元，怎么样？",
+          "pinyin": "Zhè jiā shāngdiàn yīfu zhēn duō! Zhè jiàn yìbǎi yuán, zěnmeyàng?",
+          "text": {
+            "uz": "Bu do‘konda kiyim juda ko‘p! Bu bittasi 100 yuan, qanday?",
+            "ru": "В этом магазине так много одежды! Эта вещь стоит 100 юаней. Как тебе?",
+            "tj": "Дар ин мағоза либос хеле бисёр! Ин дона 100 юан аст, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好看，也不贵。",
+          "pinyin": "Hǎokàn, yě bú guì.",
+          "text": {
+            "uz": "Chiroyli, qimmat ham emas.",
+            "ru": "Красиво и недорого.",
+            "tj": "Зебо, гарон ҳам нест."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "小雪能穿，买一件吧。",
+          "pinyin": "Xiǎoxuě néng chuān, mǎi yí jiàn ba.",
+          "text": {
+            "uz": "Xiaoxuega mos keladi, bittasini olaylik.",
+            "ru": "Сяосюэ сможет носить. Давай купим одну.",
+            "tj": "Сяосюэ пӯшида метавонад, якто бихарем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。小明能穿吗？",
+          "pinyin": "Hǎo de. Xiǎomíng néng chuān ma?",
+          "text": {
+            "uz": "Xo‘p. Xiaoming ham kiya oladimi?",
+            "ru": "Хорошо. Сяомин тоже сможет носить?",
+            "tj": "Хуб. Сяомин ҳам пӯшида метавонад?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "不能。这些是女孩子穿的衣服，男孩子的衣服在那儿。",
+          "pinyin": "Bù néng. Zhèxiē shì nǚ háizi chuān de yīfu, nán háizi de yīfu zài nàr.",
+          "text": {
+            "uz": "Yo‘q. Bular qizlar kiyadigan kiyimlar, o‘g‘il bolalar kiyimi u yerda.",
+            "ru": "Нет. Это одежда для девочек, одежда для мальчиков там.",
+            "tj": "Не. Инҳо либоси духтаронаанд, либоси писарона он ҷост."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "这些",
+              {
+                "uz": "bular",
+                "ru": "эти",
+                "tj": "инҳо"
+              }
+            ],
+            [
+              "块",
+              {
+                "uz": "yuan uchun og‘zaki hisob birligi",
+                "ru": "разг. счётная единица юаня",
+                "tj": "воҳиди гуфтугӯии юан"
+              }
+            ],
+            [
+              "那些",
+              {
+                "uz": "anavilar; o‘shalar",
+                "ru": "те",
+                "tj": "онҳо; ҳамонҳо"
+              }
+            ],
+            [
+              "这儿",
+              {
+                "uz": "bu yer",
+                "ru": "здесь",
+                "tj": "ин ҷо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«6 yuan 2 fen» — xitoychada qaysi biri?",
+            "ru": "«6 юаней 2 фэня» — какое предложение по-китайски?",
+            "tj": "«6 юан 2 фэн» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这儿的水果真不少！",
+            "六块零两分",
+            "这个杯子怎么样？",
+            "三块二"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "六块零两分 — liù kuài líng liǎng fēn",
+            "ru": "六块零两分 — liù kuài líng liǎng fēn",
+            "tj": "六块零两分 — liù kuài líng liǎng fēn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "杯子",
+              {
+                "uz": "piyola; stakan",
+                "ru": "чашка; стакан",
+                "tj": "пиёла; стакан"
+              }
+            ],
+            [
+              "售货员",
+              {
+                "uz": "sotuvchi",
+                "ru": "продавец",
+                "tj": "фурӯшанда"
+              }
+            ],
+            [
+              "这边",
+              {
+                "uz": "bu yer; bu tomon",
+                "ru": "здесь; эта сторона",
+                "tj": "ин ҷо; ин тараф"
+              }
+            ],
+            [
+              "钱",
+              {
+                "uz": "pul",
+                "ru": "деньги",
+                "tj": "пул"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "六块零两分",
+          "pinyin": "liù kuài líng liǎng fēn",
+          "translation": {
+            "uz": "6 yuan 2 fen",
+            "ru": "6 юаней 2 фэня",
+            "tj": "6 юан 2 фэн"
+          },
+          "tokens": {
+            "uz": [
+              "fen",
+              "yuan",
+              "Kechirasiz",
+              "piyola",
+              "6",
+              "2"
+            ],
+            "ru": [
+              "фэня",
+              "2",
+              "6",
+              "юаней",
+              "Извините",
+              "у"
+            ],
+            "tj": [
+              "юан",
+              "2",
+              "фэн",
+              "пиёла",
+              "Мебахшед",
+              "6"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "6",
+              "yuan",
+              "2",
+              "fen"
+            ],
+            "ru": [
+              "6",
+              "юаней",
+              "2",
+              "фэня"
+            ],
+            "tj": [
+              "6",
+              "юан",
+              "2",
+              "фэн"
+            ]
+          },
+          "explanation": {
+            "uz": "六块零两分 — 6 yuan 2 fen",
+            "ru": "六块零两分 — 6 юаней 2 фэня",
+            "tj": "六块零两分 — 6 юан 2 фэн"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "杯子",
+          "pinyin": "bēizi",
+          "options": [
+            "钱",
+            "售货员",
+            "杯子",
+            "这边"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "杯子 — piyola; stakan (bēizi)",
+            "ru": "杯子 — чашка; стакан (bēizi)",
+            "tj": "杯子 — пиёла; стакан (bēizi)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nán?",
+            "tj": "nán кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "男",
+            "杯子",
+            "这边",
+            "售货员"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "男 = erkak; o‘g‘il bolaga oid (nán)",
+            "ru": "男 = мужской; мужчина (nán)",
+            "tj": "男 = мардона; мард (nán)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "这边 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 这边:",
+            "tj": "Маънои калимаи 这边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "pul",
+              "ru": "деньги",
+              "tj": "пул"
+            },
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "这边 = bu yer; bu tomon (zhèbiān)",
+            "ru": "这边 = здесь; эта сторона (zhèbiān)",
+            "tj": "这边 = ин ҷо; ин тараф (zhèbiān)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "请问，有杯子吗？",
+          "pinyin": "Qǐngwèn, yǒu bēizi ma?",
+          "options": [
+            "请问，有杯子吗？",
+            "多少钱一个？",
+            "有，杯子在这边。",
+            "这些五块钱一个，那些十块钱一个。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "请问，有杯子吗？ — Kechirasiz, piyola bormi?",
+            "ru": "请问，有杯子吗？ — Извините, у вас есть чашки?",
+            "tj": "请问，有杯子吗？ — Мебахшед, пиёла доред?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Wang Yixue avval nima deydi?",
+            "ru": "Что Wang Yixue говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Wang Yixue аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这些五块钱一个，那些十块钱一个。",
+            "请问，有杯子吗？",
+            "多少钱一个？",
+            "有，杯子在这边。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 请问，有杯子吗？",
+            "ru": "Правильный ответ: 请问，有杯子吗？",
+            "tj": "Ҷавоби дуруст: 请问，有杯子吗？"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Wang Yixue",
+              "zh": "请问，有杯子吗？",
+              "blank": false
+            },
+            {
+              "speaker": "Shop assistant",
+              "zh": "有，杯子在这边。",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yixue",
+              "zh": "多少钱一个？",
+              "blank": false
+            },
+            {
+              "speaker": "Shop assistant",
+              "zh": "这些五块钱一个，那些十块钱一个。",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yixue",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "有，杯子在这边。",
+            "多少钱一个？",
+            "请问，有杯子吗？",
+            "我买这个吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 我买这个吧。",
+            "ru": "Правильный ответ: 我买这个吧。",
+            "tj": "Ҷавоби дуруст: 我买这个吧。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Wang Yixue nima deydi?",
+            "ru": "Что Wang Yixue говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Wang Yixue чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我买这个吧。",
+            "有，杯子在这边。",
+            "多少钱一个？",
+            "请问，有杯子吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 我买这个吧。",
+            "ru": "Правильный ответ: 我买这个吧。",
+            "tj": "Ҷавоби дуруст: 我买这个吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____问，有杯子吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "请",
+            "三",
+            "七",
+            "一"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 请 — 请问，有杯子吗？ (Kechirasiz, piyola bormi?)",
+            "ru": "Верно: 请 — 请问，有杯子吗？ (Извините, у вас есть чашки?)",
+            "tj": "Дуруст: 请 — 请问，有杯子吗？ (Мебахшед, пиёла доред?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "translation": {
+            "uz": "Bu yerda meva juda ko‘p ekan!",
+            "ru": "Здесь так много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр будааст!"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,855 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 103,
+  "source_lesson": 15,
+  "part_no": 6,
+  "part_count": 6,
+  "checkpoint": true,
+  "title": "大兴机场见！",
+  "subtitle": {
+    "uz": "Safar niyati va rejasini ifodalovchi so‘zlarni tushunish va ishlatish; “……，还/也……” bilan mantiqan teng bog‘langan gaplarni tuzish; xitoycha mehmondo‘stlik va ovqatlanish odobining asosiy jihatlarini tushunish.",
+    "ru": "Понимать и использовать лексику намерений и планов поездки; строить сочинённые предложения с “……，还/也……” ; понимать базовые нормы китайского застолья и гостеприимства.",
+    "tj": "Луғати ният ва нақшаи сафарро фаҳмидан ва истифода бурдан; бо “……，还/也……” ҷумлаҳои ҳампайванд сохтан; асосҳои одоби меҳмондорӣ ва хӯрокхӯрии чиниро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "爱",
+      "pinyin": "ài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sevmoq; juda yoqtirmoq",
+        "ru": "любить; очень нравиться",
+        "tj": "дӯст доштан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "哪个",
+      "pinyin": "nǎge",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qaysi biri",
+        "ru": "который; какой",
+        "tj": "кадомаш"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "去年",
+      "pinyin": "qùnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘tgan yil",
+        "ru": "прошлый год",
+        "tj": "соли гузашта"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "男朋友",
+      "pinyin": "nánpéngyou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yigit; sevgili",
+        "ru": "парень; бойфренд",
+        "tj": "дӯстписар"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "几",
+      "pinyin": "jǐ",
+      "pos": "num.",
+      "meaning": {
+        "uz": "bir necha",
+        "ru": "несколько",
+        "tj": "чанд"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "非常",
+      "pinyin": "fēicháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda; nihoyatda",
+        "ru": "очень",
+        "tj": "хеле"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "好玩儿",
+      "pinyin": "hǎowánr",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qiziqarli; maroqli",
+        "ru": "интересный; весёлый",
+        "tj": "шавқовар; ҷолиб"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "飞机",
+      "pinyin": "fēijī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "samolyot",
+        "ru": "самолёт",
+        "tj": "ҳавопаймо"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "要",
+      "pinyin": "yào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kerak bo‘lmoq; vaqt olmoq",
+        "ru": "требоваться; занимать времени",
+        "tj": "лозим шудан; вақт гирифтан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "小时",
+      "pinyin": "xiǎoshí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "soat (davomiylik)",
+        "ru": "час",
+        "tj": "соат"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "家人",
+      "pinyin": "jiārén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oila a’zosi; oila",
+        "ru": "член семьи; семья",
+        "tj": "аъзои оила; оила"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "时间",
+      "pinyin": "shíjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "vaqt; vaqt davomiyligi",
+        "ru": "время; продолжительность",
+        "tj": "вақт; давомнокӣ"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "机场",
+      "pinyin": "jīchǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aeroport",
+        "ru": "аэропорт",
+        "tj": "фурудгоҳ"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutib olmoq",
+        "ru": "встречать",
+        "tj": "пешвоз гирифтан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "住",
+      "pinyin": "zhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yashamoq; turmoq",
+        "ru": "жить; останавливаться",
+        "tj": "зиндагӣ кардан; мондан"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "早",
+      "pinyin": "zǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "erta",
+        "ru": "ранний; рано",
+        "tj": "барвақт"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "那",
+      "pinyin": "nà",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "unda; shunda",
+        "ru": "тогда",
+        "tj": "пас; он гоҳ"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "年",
+      "pinyin": "nián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yil",
+        "ru": "год",
+        "tj": "сол"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“……，还/也……” teng bog‘langan qo‘shma gap",
+        "ru": "Сочинённое предложение “……，还/也……”",
+        "tj": "Ҷумлаи ҳампайванди “……，还/也……”"
+      },
+      "title_zh": "并列复句“……，还/也……”",
+      "rule": {
+        "uz": "Teng bog‘langan qo‘shma gap ikki yoki undan ko‘p mantiqan teng qismlardan tuziladi. Bu bosqichda “……，还/也……” o‘rganiladi.",
+        "ru": "Сочинённое предложение состоит из двух или более логически равноправных частей. Здесь изучается модель “……，还/也……”.",
+        "tj": "Ҷумлаи ҳампайванд аз ду ё зиёда қисми аз ҷиҳати мантиқӣ баробар сохта мешавад. Дар ин сатҳ қолаби “……，还/也……” омӯхта мешавад."
+      },
+      "examples": [
+        {
+          "zh": "我喜欢这个，也喜欢那个。",
+          "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+          "translation": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          }
+        },
+        {
+          "zh": "王老师是北京人，李文也是北京人。",
+          "pinyin": "Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén.",
+          "translation": {
+            "uz": "Ustoz Wang Pekinlik, Li Wen ham Pekinlik.",
+            "ru": "Преподаватель Ван из Пекина, и Ли Вэнь тоже из Пекина.",
+            "tj": "Устод Ван аз Пекин аст, Ли Вэн ҳам аз Пекин аст."
+          }
+        },
+        {
+          "zh": "我喜欢喝中国茶，还喜欢吃中国菜。",
+          "pinyin": "Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài.",
+          "translation": {
+            "uz": "Xitoy choyini ichishni yoqtiraman, xitoy taomlarini yeyishni ham yoqtiraman.",
+            "ru": "Мне нравится пить китайский чай, а ещё я люблю китайскую еду.",
+            "tj": "Нӯшидани чойи чиниро дӯст медорам ва хӯрдани таоми чиниро ҳам дӯст медорам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Li Wenning uyida u Chen Tianzhong, Bai Jiayue va boshqa do‘stlarini xitoy taomlarini tatib ko‘rishga taklif qilgan.",
+        "ru": "Дома у Ли Вэня он угощает китайской едой Чэнь Тяньчжуна, Бай Цзяюэ и других друзей.",
+        "tj": "Дар хонаи Ли Вэн ӯ Чэн Тянҷун, Бай Ҷяюэ ва дигар дӯстонашро бо таоми чинӣ меҳмондорӣ мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们爱吃哪个菜？",
+          "pinyin": "Nǐmen ài chī nǎge cài?",
+          "text": {
+            "uz": "Qaysi taomni yoqtirasizlar?",
+            "ru": "Какое блюдо вам нравится?",
+            "tj": "Кадом таомро дӯст медоред?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我喜欢这个，也喜欢那个。",
+          "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+          "text": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这些菜都好吃，还很好看。",
+          "pinyin": "Zhèxiē cài dōu hǎochī, hái hěn hǎokàn.",
+          "text": {
+            "uz": "Bu taomlarning hammasi mazali, ko‘rinishi ham juda chiroyli.",
+            "ru": "Все эти блюда вкусные и ещё очень красиво выглядят.",
+            "tj": "Ҳамаи ин таомҳо болаззатанд ва хеле зебо ҳам менамоянд."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我爱吃中国菜，也喜欢做。大家多吃点儿。",
+          "pinyin": "Wǒ ài chī Zhōngguó cài, yě xǐhuan zuò. Dàjiā duō chī diǎnr.",
+          "text": {
+            "uz": "Men xitoy taomlarini yeyishni ham, pishirishni ham yoqtiraman. Hamma ko‘proq yesin.",
+            "ru": "Я люблю есть китайскую еду и люблю её готовить. Ешьте побольше.",
+            "tj": "Ман хӯрдани таоми чинӣ ва пухтани онро дӯст медорам. Ҳама бештар хӯред."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida hamma ovqatlanib turib ta’til rejalarini muhokama qilmoqda.",
+        "ru": "Дома у Ли Вэня все за едой обсуждают планы на каникулы.",
+        "tj": "Дар хонаи Ли Вэн ҳама ҳангоми хӯрок нақшаҳои таътилро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们都想去哪儿？",
+          "pinyin": "Nǐmen dōu xiǎng qù nǎr?",
+          "text": {
+            "uz": "Hammangiz qayerga bormoqchisiz?",
+            "ru": "Куда вы все хотите поехать?",
+            "tj": "Ҳамаатон ба куҷо рафтан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "去年我和男朋友去了西安，今年我想去北京。",
+          "pinyin": "Qùnián wǒ hé nánpéngyou qùle Xī'ān, qiánnián wǒ māma qù Shānxī.",
+          "text": {
+            "uz": "O‘tgan yili men yigitim bilan Xi’anga bordim, bu yil Pekinga bormoqchiman.",
+            "ru": "В прошлом году мы с моим парнем ездили в Сиань, а в этом году я хочу поехать в Пекин.",
+            "tj": "Соли гузашта ман бо дӯстписарам ба Сиан рафтам, имсол мехоҳам ба Пекин равам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "前几年我去了西安，非常好玩儿。今年我也想去北京。",
+          "pinyin": "Qián jǐ nián wǒ qùle Xī'ān, fēicháng hǎowánr. Jīnnián wǒ yě xiǎng qù Běijīng.",
+          "text": {
+            "uz": "Bir necha yil oldin Xi’anga bordim, juda maroqli edi. Bu yil Pekinga ham bormoqchiman.",
+            "ru": "Несколько лет назад я была в Сиане, там было очень интересно. В этом году тоже хочу поехать в Пекин.",
+            "tj": "Чанд сол пеш ба Сиан рафтам, хеле шавқовар буд. Имсол ҳам мехоҳам ба Пекин равам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我和王老师都是北京人，北京非常漂亮。",
+          "pinyin": "Wǒ hé Wáng lǎoshī dōu shì Běijīng rén, Běijīng fēicháng piàoliang.",
+          "text": {
+            "uz": "Men va ustoz Wang ikkalamiz ham Pekinlikmiz. Pekin juda chiroyli.",
+            "ru": "Мы с преподавателем Ван оба из Пекина. Пекин очень красивый.",
+            "tj": "Ман ва устод Ван ҳар ду аз Пекин ҳастем. Пекин хеле зебост."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinf tashqarisida Bai Jiayue, Annie va ustoz Wang Pekinga sayohat haqida gaplashmoqda.",
+        "ru": "У аудитории Бай Цзяюэ, Энни и преподаватель Ван обсуждают поездку в Пекин.",
+        "tj": "Берун аз синф Бай Ҷяюэ, Энни ва устод Ван дар бораи сафар ба Пекин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们的飞机到北京要几个小时？",
+          "pinyin": "Nǐmen de fēijī dào Běijīng yào jǐ ge xiǎoshí?",
+          "text": {
+            "uz": "Samolyotingiz Pekinga necha soatda yetib boradi?",
+            "ru": "Сколько часов займёт ваш полёт до Пекина?",
+            "tj": "Ҳавопаймои шумо то Пекин чанд соат вақт мегирад?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "九个小时。",
+          "pinyin": "Jiǔ ge xiǎoshí.",
+          "text": {
+            "uz": "To‘qqiz soat.",
+            "ru": "Девять часов.",
+            "tj": "Нӯҳ соат."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我家人都在北京，星期天我姐姐也有时间，她可以去机场接你们，你们也可以住我家。",
+          "pinyin": "Wǒ jiārén dōu zài Běijīng, Xīngqītiān wǒ jiějie yě yǒu shíjiān, tā kěyǐ qù jīchǎng jiē nǐmen, nǐmen yě kěyǐ zhù wǒ jiā.",
+          "text": {
+            "uz": "Oilamning hammasi Pekinda. Yakshanba kuni opamning ham vaqti bor, u sizlarni aeroportdan kutib olishi mumkin, sizlar biznikida ham turishingiz mumkin.",
+            "ru": "Вся моя семья в Пекине. В воскресенье моя старшая сестра свободна, она может встретить вас в аэропорту, а вы можете остановиться у меня.",
+            "tj": "Ҳамаи оилаи ман дар Пекинанд. Рӯзи якшанбе апаам вақт дорад, метавонад шуморо аз фурудгоҳ пешвоз гирад ва шумо метавонед дар хонаи ман монед."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我们星期日早上八点到大兴机场，早不早？",
+          "pinyin": "Wǒmen Xīngqīrì zǎoshang bā diǎn dào Dàxīng Jīchǎng, zǎo bu zǎo?",
+          "text": {
+            "uz": "Yakshanba ertalab soat 8 da Daxing aeroportiga yetib kelamiz, juda ertami?",
+            "ru": "Мы прилетим в аэропорт Дасин в 8 утра в воскресенье. Это рано?",
+            "tj": "Якшанбе субҳ соати 8 ба Фурудгоҳи Дасин мерасем, барвақт аст ё не?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "不早。",
+          "pinyin": "Bù zǎo.",
+          "text": {
+            "uz": "Erta emas.",
+            "ru": "Нет, не рано.",
+            "tj": "Не, барвақт нест."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "谢谢老师！那我们和您姐姐在大兴机场见！",
+          "pinyin": "Xièxie lǎoshī! Nà wǒmen hé nín jiějie zài Dàxīng Jīchǎng jiàn!",
+          "text": {
+            "uz": "Rahmat, ustoz! Unda opangiz bilan Daxing aeroportida uchrashamiz!",
+            "ru": "Спасибо, преподаватель! Тогда встретимся с вашей сестрой в аэропорту Дасин!",
+            "tj": "Раҳмат, устод! Пас бо апаатон дар Фурудгоҳи Дасин вомехӯрем!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "几",
+              {
+                "uz": "bir necha",
+                "ru": "несколько",
+                "tj": "чанд"
+              }
+            ],
+            [
+              "非常",
+              {
+                "uz": "juda; nihoyatda",
+                "ru": "очень",
+                "tj": "хеле"
+              }
+            ],
+            [
+              "好玩儿",
+              {
+                "uz": "qiziqarli; maroqli",
+                "ru": "интересный; весёлый",
+                "tj": "шавқовар; ҷолиб"
+              }
+            ],
+            [
+              "飞机",
+              {
+                "uz": "samolyot",
+                "ru": "самолёт",
+                "tj": "ҳавопаймо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīchǎng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīchǎng?",
+            "tj": "jīchǎng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "机场",
+            "去年",
+            "爱",
+            "哪个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "机场 = aeroport (jīchǎng)",
+            "ru": "机场 = аэропорт (jīchǎng)",
+            "tj": "机场 = фурудгоҳ (jīchǎng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "住",
+          "pinyin": "zhù",
+          "options": [
+            "哪个",
+            "去年",
+            "住",
+            "爱"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "住 — yashamoq; turmoq (zhù)",
+            "ru": "住 — жить; останавливаться (zhù)",
+            "tj": "住 — зиндагӣ кардан; мондан (zhù)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你们爱吃哪个菜？",
+          "pinyin": "Nǐmen ài chī nǎge cài?",
+          "translation": {
+            "uz": "Qaysi taomni yoqtirasizlar?",
+            "ru": "Какое блюдо вам нравится?",
+            "tj": "Кадом таомро дӯст медоред?"
+          },
+          "tokens": {
+            "uz": [
+              "Buni",
+              "Qaysi",
+              "yoqtirasizlar",
+              "taomni",
+              "yoqtiraman"
+            ],
+            "ru": [
+              "блюдо",
+              "Какое",
+              "вам",
+              "нравится",
+              "Мне",
+              "это"
+            ],
+            "tj": [
+              "Кадом",
+              "дӯст",
+              "таомро",
+              "медоред",
+              "медорам",
+              "Инро"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Qaysi",
+              "taomni",
+              "yoqtirasizlar"
+            ],
+            "ru": [
+              "Какое",
+              "блюдо",
+              "вам",
+              "нравится"
+            ],
+            "tj": [
+              "Кадом",
+              "таомро",
+              "дӯст",
+              "медоред"
+            ]
+          },
+          "explanation": {
+            "uz": "你们爱吃哪个菜？ — Qaysi taomni yoqtirasizlar?",
+            "ru": "你们爱吃哪个菜？ — Какое блюдо вам нравится?",
+            "tj": "你们爱吃哪个菜？ — Кадом таомро дӯст медоред?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Xitoy choyini ichishni yoqtiraman, xitoy taomlarini yeyishni ham yoqtiraman.» — xitoychada qaysi biri?",
+            "ru": "«Мне нравится пить китайский чай, а ещё я люблю китайскую еду.» — какое предложение по-китайски?",
+            "tj": "«Нӯшидани чойи чиниро дӯст медорам ва хӯрдани таоми чиниро ҳам дӯст медорам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "王老师是北京人，李文也是北京人。",
+            "我喜欢这个，也喜欢那个。",
+            "我喜欢喝中国茶，还喜欢吃中国菜。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我喜欢喝中国茶，还喜欢吃中国菜。 — Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài.",
+            "ru": "我喜欢喝中国茶，还喜欢吃中国菜。 — Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài.",
+            "tj": "我喜欢喝中国茶，还喜欢吃中国菜。 — Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "爱",
+              {
+                "uz": "sevmoq; juda yoqtirmoq",
+                "ru": "любить; очень нравиться",
+                "tj": "дӯст доштан"
+              }
+            ],
+            [
+              "哪个",
+              {
+                "uz": "qaysi biri",
+                "ru": "который; какой",
+                "tj": "кадомаш"
+              }
+            ],
+            [
+              "去年",
+              {
+                "uz": "o‘tgan yil",
+                "ru": "прошлый год",
+                "tj": "соли гузашта"
+              }
+            ],
+            [
+              "男朋友",
+              {
+                "uz": "yigit; sevgili",
+                "ru": "парень; бойфренд",
+                "tj": "дӯстписар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "那 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 那:",
+            "tj": "Маънои калимаи 那-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "unda; shunda",
+              "ru": "тогда",
+              "tj": "пас; он гоҳ"
+            },
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            },
+            {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            },
+            {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "那 = unda; shunda (nà)",
+            "ru": "那 = тогда (nà)",
+            "tj": "那 = пас; он гоҳ (nà)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "你们爱吃哪个菜？",
+          "pinyin": "Nǐmen ài chī nǎge cài?",
+          "options": [
+            "我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "这些菜都好吃，还很好看。",
+            "我喜欢这个，也喜欢那个。",
+            "你们爱吃哪个菜？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你们爱吃哪个菜？ — Qaysi taomni yoqtirasizlar?",
+            "ru": "你们爱吃哪个菜？ — Какое блюдо вам нравится?",
+            "tj": "你们爱吃哪个菜？ — Кадом таомро дӯст медоред?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____们爱吃哪个菜？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "一",
+            "三",
+            "你",
+            "七"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你们爱吃哪个菜？ (Qaysi taomni yoqtirasizlar?)",
+            "ru": "Верно: 你 — 你们爱吃哪个菜？ (Какое блюдо вам нравится?)",
+            "tj": "Дуруст: 你 — 你们爱吃哪个菜？ (Кадом таомро дӯст медоред?)"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Li Wen",
+              "zh": "你们爱吃哪个菜？",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "我喜欢这个，也喜欢那个。",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "这些菜都好吃，还很好看。",
+              "blank": false
+            },
+            {
+              "speaker": "Li Wen",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "这些菜都好吃，还很好看。",
+            "你们爱吃哪个菜？",
+            "我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "我喜欢这个，也喜欢那个。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "ru": "Правильный ответ: 我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "tj": "Ҷавоби дуруст: 我爱吃中国菜，也喜欢做。大家多吃点儿。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Li Wen nima deydi?",
+            "ru": "Что Li Wen говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Li Wen чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你们爱吃哪个菜？",
+            "我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "这些菜都好吃，还很好看。",
+            "我喜欢这个，也喜欢那个。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "ru": "Правильный ответ: 我爱吃中国菜，也喜欢做。大家多吃点儿。",
+            "tj": "Ҷавоби дуруст: 我爱吃中国菜，也喜欢做。大家多吃点儿。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Li Wen avval nima deydi?",
+            "ru": "Что Li Wen говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Li Wen аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这些菜都好吃，还很好看。",
+            "你们爱吃哪个菜？",
+            "我喜欢这个，也喜欢那个。",
+            "我爱吃中国菜，也喜欢做。大家多吃点儿。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 你们爱吃哪个菜？",
+            "ru": "Правильный ответ: 你们爱吃哪个菜？",
+            "tj": "Ҷавоби дуруст: 你们爱吃哪个菜？"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "不早。",
+          "pinyin": "Bù zǎo.",
+          "translation": {
+            "uz": "Erta emas.",
+            "ru": "Нет, не рано.",
+            "tj": "Не, барвақт нест."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,751 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 42,
+  "source_lesson": 7,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我晚上六点半下班",
+  "subtitle": {
+    "uz": "Voqealar vaqtini tushunish va aytish; “吧” bilan taklif, maslahat, buyruq yoki iltimosni ifodalash; “呢” bilan tasdiqlanayotgan faktni bildirish; vaqt so‘zlari va ravishlarning gapdagi o‘rnini to‘g‘ri qo‘llash.",
+    "ru": "Понимать и называть время событий; использовать “吧” для предложения, совета, побуждения или просьбы; использовать “呢” для подтверждаемого факта; правильно располагать наречия и выражения времени.",
+    "tj": "Вақти рӯйдодҳоро фаҳмидан ва гуфтан; бо “吧” пешниҳод, маслиҳат, амр ё хоҳишро ифода кардан; бо “呢” воқеияти тасдиқшавандаро нишон додан; ҷойи дурусти зарфҳо ва ифодаҳои вақтро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "吧",
+      "pinyin": "ba",
+      "pos": "part.",
+      "meaning": {
+        "uz": "taklif/maslahat/iltimos yuklamasi",
+        "ru": "частица предложения/совета/просьбы",
+        "tj": "ҳиссачаи пешниҳод/маслиҳат/хоҳиш"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "电影院",
+      "pinyin": "diànyǐngyuàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kinoteatr",
+        "ru": "кинотеатр",
+        "tj": "кинотеатр"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "看",
+      "pinyin": "kàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq",
+        "ru": "смотреть; видеть; читать",
+        "tj": "дидан; тамошо кардан; хондан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "电影",
+      "pinyin": "diànyǐng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "film; kino",
+        "ru": "фильм; кино",
+        "tj": "филм; кино"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Modal yuklama “吧” (1)",
+        "ru": "Модальная частица “吧” (1)",
+        "tj": "Ҳиссачаи модалии “吧” (1)"
+      },
+      "title_zh": "语气助词“吧”（1）",
+      "rule": {
+        "uz": "“吧” yengil ohangda gap oxirida kelib taklif, maslahatlashish, maslahat yoki iltimosni bildiradi.",
+        "ru": "“吧” произносится нейтральным тоном и ставится в конце предложения для предложения, обсуждения, совета или просьбы.",
+        "tj": "“吧” бо оҳанги сабук дар охири ҷумла омада, пешниҳод, маслиҳат, машварат ё хоҳишро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我们下午两点见吧。",
+          "pinyin": "Wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+          "translation": {
+            "uz": "Tushdan keyin soat 2 da uchrashaylik.",
+            "ru": "Давай встретимся в 2 часа дня.",
+            "tj": "Биёед баъди нисфирӯзӣ соати 2 вохӯрем."
+          }
+        },
+        {
+          "zh": "你去超市买吧。",
+          "pinyin": "Nǐ qù chāoshì mǎi ba.",
+          "translation": {
+            "uz": "Supermarketga borib ol.",
+            "ru": "Сходи купи в супермаркете.",
+            "tj": "Ба супермаркет рафта бихар."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bai Jiayue va Annie telefonda gaplashmoqda.",
+        "ru": "Бай Цзяюэ и Энни разговаривают по телефону.",
+        "tj": "Бай Ҷяюэ ва Энни бо телефон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
+          "text": {
+            "uz": "Hozir soat necha?",
+            "ru": "Который сейчас час?",
+            "tj": "Ҳозир соат чанд?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "早上八点四十分。",
+          "pinyin": "Zǎoshang bā diǎn sìshí fēn.",
+          "text": {
+            "uz": "Ertalab soat 8:40.",
+            "ru": "Сейчас 8:40 утра.",
+            "tj": "Субҳ соати 8:40."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我上午十点十分有课。",
+          "pinyin": "Wǒ shàngwǔ shí diǎn shí fēn yǒu kè.",
+          "text": {
+            "uz": "Ertalab soat 10:10 da darsim bor.",
+            "ru": "У меня занятие в 10:10 утра.",
+            "tj": "Субҳ соати 10:10 дарс дорам."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好的，我们下午两点见吧。",
+          "pinyin": "Hǎo de, wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+          "text": {
+            "uz": "Xo‘p, tushdan keyin soat 2 da uchrashamiz.",
+            "ru": "Хорошо, давай встретимся в 2 часа дня.",
+            "tj": "Хуб, баъди нисфирӯзӣ соати 2 вомехӯрем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuega duch keladi.",
+        "ru": "В кампусе Ли Вэнь встречает Бай Цзяюэ.",
+        "tj": "Дар кампус Ли Вэн бо Бай Ҷяюэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "下午我想去电影院看电影，你去吗？",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù diànyǐngyuàn kàn diànyǐng, nǐ qù ma?",
+          "text": {
+            "uz": "Bugun tushdan keyin kinoteatrga film ko‘rgani bormoqchiman. Sen ham borasanmi?",
+            "ru": "Сегодня днём я хочу пойти в кино. Ты пойдёшь?",
+            "tj": "Имрӯз баъди нисфирӯзӣ мехоҳам ба кино равам. Ту ҳам меравӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好的。明天呢？",
+          "pinyin": "Hǎo de. Míngtiān ne?",
+          "text": {
+            "uz": "Xo‘p. Ertaga-chi?",
+            "ru": "Хорошо. А завтра?",
+            "tj": "Хуб. Фардо чӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "吧",
+            "pinyin": "ba",
+            "pos": "part.",
+            "meaning": {
+              "uz": "taklif/maslahat/iltimos yuklamasi",
+              "ru": "частица предложения/совета/просьбы",
+              "tj": "ҳиссачаи пешниҳод/маслиҳат/хоҳиш"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ba qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ba?",
+            "tj": "ba кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "早上",
+            "点",
+            "现在",
+            "吧"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "吧 = taklif/maslahat/iltimos yuklamasi (ba)",
+            "ru": "吧 = частица предложения/совета/просьбы (ba)",
+            "tj": "吧 = ҳиссачаи пешниҳод/маслиҳат/хоҳиш (ba)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "电影院",
+            "pinyin": "diànyǐngyuàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kinoteatr",
+              "ru": "кинотеатр",
+              "tj": "кинотеатр"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "电影院",
+          "pinyin": "diànyǐngyuàn",
+          "translation": {
+            "uz": "kinoteatr",
+            "ru": "кинотеатр",
+            "tj": "кинотеатр"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "电影院 talaffuzini tanlang:",
+            "ru": "Выберите произношение 电影院:",
+            "tj": "Талаффузи 电影院-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiànzài",
+            "zǎoshang",
+            "diǎn",
+            "diànyǐngyuàn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "电影院 — diànyǐngyuàn",
+            "ru": "电影院 — diànyǐngyuàn",
+            "tj": "电影院 — diànyǐngyuàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "看",
+            "pinyin": "kàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq",
+              "ru": "смотреть; видеть; читать",
+              "tj": "дидан; тамошо кардан; хондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘rmoq; tomosha qilmoq; o‘qimoq' xitoycha qaysi?",
+            "ru": "'смотреть; видеть; читать' по-китайски?",
+            "tj": "'дидан; тамошо кардан; хондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "点",
+            "现在",
+            "早上",
+            "看"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq = 看 (kàn)",
+            "ru": "смотреть; видеть; читать = 看 (kàn)",
+            "tj": "дидан; тамошо кардан; хондан = 看 (kàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "电影",
+            "pinyin": "diànyǐng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "film; kino",
+              "ru": "фильм; кино",
+              "tj": "филм; кино"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "电影",
+          "pinyin": "diànyǐng",
+          "options": [
+            "早上",
+            "现在",
+            "点",
+            "电影"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "电影 — film; kino (diànyǐng)",
+            "ru": "电影 — фильм; кино (diànyǐng)",
+            "tj": "电影 — филм; кино (diànyǐng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "吧 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 吧:",
+            "tj": "Маънои калимаи 吧-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "taklif/maslahat/iltimos yuklamasi",
+              "ru": "частица предложения/совета/просьбы",
+              "tj": "ҳиссачаи пешниҳод/маслиҳат/хоҳиш"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "吧 = taklif/maslahat/iltimos yuklamasi (ba)",
+            "ru": "吧 = частица предложения/совета/просьбы (ba)",
+            "tj": "吧 = ҳиссачаи пешниҳод/маслиҳат/хоҳиш (ba)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "吧",
+              {
+                "uz": "taklif/maslahat/iltimos yuklamasi",
+                "ru": "частица предложения/совета/просьбы",
+                "tj": "ҳиссачаи пешниҳод/маслиҳат/хоҳиш"
+              }
+            ],
+            [
+              "电影院",
+              {
+                "uz": "kinoteatr",
+                "ru": "кинотеатр",
+                "tj": "кинотеатр"
+              }
+            ],
+            [
+              "看",
+              {
+                "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq",
+                "ru": "смотреть; видеть; читать",
+                "tj": "дидан; тамошо кардан; хондан"
+              }
+            ],
+            [
+              "电影",
+              {
+                "uz": "film; kino",
+                "ru": "фильм; кино",
+                "tj": "филм; кино"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Modal yuklama “吧” (1)",
+              "ru": "Модальная частица “吧” (1)",
+              "tj": "Ҳиссачаи модалии “吧” (1)"
+            },
+            "title_zh": "语气助词“吧”（1）",
+            "rule": {
+              "uz": "“吧” yengil ohangda gap oxirida kelib taklif, maslahatlashish, maslahat yoki iltimosni bildiradi.",
+              "ru": "“吧” произносится нейтральным тоном и ставится в конце предложения для предложения, обсуждения, совета или просьбы.",
+              "tj": "“吧” бо оҳанги сабук дар охири ҷумла омада, пешниҳод, маслиҳат, машварат ё хоҳишро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "我们下午两点见吧。",
+                "pinyin": "Wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+                "translation": {
+                  "uz": "Tushdan keyin soat 2 da uchrashaylik.",
+                  "ru": "Давай встретимся в 2 часа дня.",
+                  "tj": "Биёед баъди нисфирӯзӣ соати 2 вохӯрем."
+                }
+              },
+              {
+                "zh": "你去超市买吧。",
+                "pinyin": "Nǐ qù chāoshì mǎi ba.",
+                "translation": {
+                  "uz": "Supermarketga borib ol.",
+                  "ru": "Сходи купи в супермаркете.",
+                  "tj": "Ба супермаркет рафта бихар."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Tushdan keyin soat 2 da uchrashaylik.",
+            "ru": "Давай встретимся в 2 часа дня.",
+            "tj": "Биёед баъди нисфирӯзӣ соати 2 вохӯрем."
+          },
+          "tokens": [
+            "现在",
+            "下午",
+            "我们",
+            "点",
+            "早上",
+            "吧",
+            "见",
+            "两"
+          ],
+          "answer_tokens": [
+            "我们",
+            "下午",
+            "两",
+            "点",
+            "见",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "我们下午两点见吧。 — Wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+            "ru": "我们下午两点见吧。 — Wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+            "tj": "我们下午两点见吧。 — Wǒmen xiàwǔ liǎng diǎn jiàn ba."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "我们下午两点见吧。",
+          "pinyin": "Wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+          "translation": {
+            "uz": "Tushdan keyin soat 2 da uchrashaylik.",
+            "ru": "Давай встретимся в 2 часа дня.",
+            "tj": "Биёед баъди нисфирӯзӣ соати 2 вохӯрем."
+          },
+          "tokens": {
+            "uz": [
+              "keyin",
+              "tushdan",
+              "da",
+              "Tushdan",
+              "uchrashaylik",
+              "soat",
+              "2",
+              "Xo‘p"
+            ],
+            "ru": [
+              "Давай",
+              "часа",
+              "2",
+              "Хорошо",
+              "в",
+              "дня",
+              "давай",
+              "встретимся"
+            ],
+            "tj": [
+              "Биёед",
+              "Хуб",
+              "вохӯрем",
+              "вомехӯрем",
+              "соати",
+              "2",
+              "нисфирӯзӣ",
+              "баъди"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Tushdan",
+              "keyin",
+              "soat",
+              "2",
+              "da",
+              "uchrashaylik"
+            ],
+            "ru": [
+              "Давай",
+              "встретимся",
+              "в",
+              "2",
+              "часа",
+              "дня"
+            ],
+            "tj": [
+              "Биёед",
+              "баъди",
+              "нисфирӯзӣ",
+              "соати",
+              "2",
+              "вохӯрем"
+            ]
+          },
+          "explanation": {
+            "uz": "我们下午两点见吧。 — Tushdan keyin soat 2 da uchrashaylik.",
+            "ru": "我们下午两点见吧。 — Давай встретимся в 2 часа дня.",
+            "tj": "我们下午两点见吧。 — Биёед баъди нисфирӯзӣ соати 2 вохӯрем."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "看 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看:",
+            "tj": "Маънои калимаи 看-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq",
+              "ru": "смотреть; видеть; читать",
+              "tj": "дидан; тамошо кардан; хондан"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "看 = ko‘rmoq; tomosha qilmoq; o‘qimoq (kàn)",
+            "ru": "看 = смотреть; видеть; читать (kàn)",
+            "tj": "看 = дидан; тамошо кардан; хондан (kàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "电影院",
+          "pinyin": "diànyǐngyuàn",
+          "translation": {
+            "uz": "kinoteatr",
+            "ru": "кинотеатр",
+            "tj": "кинотеатр"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "课 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 课:",
+            "tj": "Маънои калимаи 课-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "dars",
+              "ru": "урок; занятие",
+              "tj": "дарс"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "课 = dars (kè)",
+            "ru": "课 = урок; занятие (kè)",
+            "tj": "课 = дарс (kè)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "课",
+            "pinyin": "kè",
+            "meaning": {
+              "uz": "dars",
+              "ru": "урок; занятие",
+              "tj": "дарс"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kinoteatr' xitoycha qaysi?",
+            "ru": "'кинотеатр' по-китайски?",
+            "tj": "'кинотеатр' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电影院",
+            "早上",
+            "点",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kinoteatr = 电影院 (diànyǐngyuàn)",
+            "ru": "кинотеатр = 电影院 (diànyǐngyuàn)",
+            "tj": "кинотеатр = 电影院 (diànyǐngyuàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "电影院",
+            "pinyin": "diànyǐngyuàn",
+            "meaning": {
+              "uz": "kinoteatr",
+              "ru": "кинотеатр",
+              "tj": "кинотеатр"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,748 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 24,
+  "source_lesson": 4,
+  "part_no": 9,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "我有两个孩子",
+  "subtitle": {
+    "uz": "“有” orqali egalik va mavjudlikni ifodalash; sonlarni, “呢” savol yuklamasini va son+o‘lchov so‘zi tuzilmasini ishlatish; yosh va oila a’zolari haqida so‘rash va javob berish.",
+    "ru": "Выражать наличие и обладание с “有”; использовать числа, вопросительную частицу “呢” и структуру число+счётное слово; спрашивать и отвечать о возрасте и семье.",
+    "tj": "Бо “有” соҳибият ва мавҷудиятро ифода кардан; рақамҳо, ҳиссачаи саволии “呢” ва сохтори рақам+воҳиди ҳисобро истифода бурдан; дар бораи синну сол ва оила саволу ҷавоб кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "百",
+      "pinyin": "bǎi",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yuz",
+        "ru": "сто",
+        "tj": "сад"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "千",
+      "pinyin": "qiān",
+      "pos": "num.",
+      "meaning": {
+        "uz": "ming",
+        "ru": "тысяча",
+        "tj": "ҳазор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "零",
+      "pinyin": "líng",
+      "pos": "num.",
+      "meaning": {
+        "uz": "nol",
+        "ru": "ноль",
+        "tj": "сифр"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "O‘lchov so‘zlari va son+o‘lchov tuzilmasi",
+        "ru": "Счётные слова и структура число+счётное слово",
+        "tj": "Воҳидҳои ҳисоб ва сохтори рақам+воҳиди ҳисоб"
+      },
+      "title_zh": "名量词和名量结构",
+      "rule": {
+        "uz": "Miqdor ifodalanganda ot oldidan odatda o‘lchov so‘zi ishlatiladi: son + o‘lchov so‘zi + (ot).",
+        "ru": "При выражении количества перед существительным обычно используется счётное слово: число + счётное слово + (существительное).",
+        "tj": "Ҳангоми ифодаи миқдор пеш аз исм одатан воҳиди ҳисоб меояд: рақам + воҳиди ҳисоб + (исм)."
+      },
+      "examples": [
+        {
+          "zh": "一个",
+          "pinyin": "yí ge",
+          "translation": {
+            "uz": "bitta",
+            "ru": "один (счётное слово 个)",
+            "tj": "якто"
+          }
+        },
+        {
+          "zh": "四口人",
+          "pinyin": "sì kǒu rén",
+          "translation": {
+            "uz": "to‘rt kishi (oilada)",
+            "ru": "четыре человека в семье",
+            "tj": "чор нафар дар оила"
+          }
+        },
+        {
+          "zh": "两个学生",
+          "pinyin": "liǎng ge xuésheng",
+          "translation": {
+            "uz": "ikki talaba",
+            "ru": "два студента",
+            "tj": "ду донишҷӯ"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她很忙。",
+          "pinyin": "Tā hěn máng.",
+          "text": {
+            "uz": "U juda band.",
+            "ru": "Она очень занята.",
+            "tj": "Ӯ хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "text": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她有二十个学生。",
+          "pinyin": "Tā yǒu èrshí ge xuésheng.",
+          "text": {
+            "uz": "Uning yigirmata talabasi bor.",
+            "ru": "У неё двадцать студентов.",
+            "tj": "Ӯ бист донишҷӯ дорад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffus payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我有两个哥哥，你呢？",
+          "pinyin": "Wǒ yǒu liǎng ge gēge, nǐ ne?",
+          "text": {
+            "uz": "Mening ikkita akam bor, sen-chi?",
+            "ru": "У меня два старших брата. А у тебя?",
+            "tj": "Ман ду бародари калон дорам, ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我没有哥哥。",
+          "pinyin": "Wǒ méiyǒu gēge.",
+          "text": {
+            "uz": "Mening akam yo‘q.",
+            "ru": "У меня нет старшего брата.",
+            "tj": "Ман бародари калон надорам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "text": {
+            "uz": "Oilangda nechta odam bor?",
+            "ru": "Сколько человек в твоей семье?",
+            "tj": "Дар оилаи ту чанд нафар ҳаст?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我家有四口人，爸爸、妈妈、妹妹和我。",
+          "pinyin": "Wǒ jiā yǒu sì kǒu rén, bàba, māma, mèimei hé wǒ.",
+          "text": {
+            "uz": "Oilamda to‘rt kishi bor: dadam, onam, singlim va men.",
+            "ru": "В моей семье четыре человека: папа, мама, младшая сестра и я.",
+            "tj": "Дар оилаи ман чор нафар ҳаст: падар, модар, хоҳари хурдӣ ва ман."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yixue o‘g‘li bilan ketayotib Yang Tonglega duch keladi.",
+        "ru": "На улице Ван Исюэ встречает Ян Тунлэ, гуляя с сыном.",
+        "tj": "Дар кӯча Ван Исюэ бо писараш рафта истода, бо Ян Тунлэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "这是您儿子吗？",
+          "pinyin": "Zhè shì nín érzi ma?",
+          "text": {
+            "uz": "Bu sizning o‘g‘lingizmi?",
+            "ru": "Это ваш сын?",
+            "tj": "Ин писари шумост?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "是的。我有两个孩子，一个女儿，一个儿子。",
+          "pinyin": "Shì de. Wǒ yǒu liǎng ge háizi, yí ge nǚ'ér, yí ge érzi.",
+          "text": {
+            "uz": "Ha. Mening ikki farzandim bor: bir qiz va bir o‘g‘il.",
+            "ru": "Да. У меня двое детей: дочь и сын.",
+            "tj": "Ҳа. Ман ду фарзанд дорам: як духтар ва як писар."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "您儿子几岁？",
+          "pinyin": "Nín érzi jǐ suì?",
+          "text": {
+            "uz": "O‘g‘lingiz necha yoshda?",
+            "ru": "Сколько лет вашему сыну?",
+            "tj": "Писари шумо чандсола аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "他今年五岁。",
+          "pinyin": "Tā jīnnián wǔ suì.",
+          "text": {
+            "uz": "U bu yil besh yoshda.",
+            "ru": "Ему в этом году пять лет.",
+            "tj": "Ӯ имсол панҷсола аст."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "您女儿多大？",
+          "pinyin": "Nín nǚ'ér duō dà?",
+          "text": {
+            "uz": "Qizingiz necha yoshda?",
+            "ru": "Сколько лет вашей дочери?",
+            "tj": "Духтари шумо чандсола аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她今年十二。",
+          "pinyin": "Tā jīnnián shí'èr.",
+          "text": {
+            "uz": "U bu yil o‘n ikki yoshda.",
+            "ru": "Ей двенадцать.",
+            "tj": "Ӯ имсол дувоздаҳсола аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "百",
+            "pinyin": "bǎi",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yuz",
+              "ru": "сто",
+              "tj": "сад"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yuz' xitoycha qaysi?",
+            "ru": "'сто' по-китайски?",
+            "tj": "'сад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "百",
+            "个",
+            "有",
+            "多少"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yuz = 百 (bǎi)",
+            "ru": "сто = 百 (bǎi)",
+            "tj": "сад = 百 (bǎi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "千",
+            "pinyin": "qiān",
+            "pos": "num.",
+            "meaning": {
+              "uz": "ming",
+              "ru": "тысяча",
+              "tj": "ҳазор"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "千",
+          "pinyin": "qiān",
+          "options": [
+            "千",
+            "个",
+            "多少",
+            "有"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "千 — ming (qiān)",
+            "ru": "千 — тысяча (qiān)",
+            "tj": "千 — ҳазор (qiān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "零",
+            "pinyin": "líng",
+            "pos": "num.",
+            "meaning": {
+              "uz": "nol",
+              "ru": "ноль",
+              "tj": "сифр"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "零",
+          "pinyin": "líng",
+          "translation": {
+            "uz": "nol",
+            "ru": "ноль",
+            "tj": "сифр"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "零 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 零:",
+            "tj": "Маънои калимаи 零-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "nol",
+              "ru": "ноль",
+              "tj": "сифр"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "零 = nol (líng)",
+            "ru": "零 = ноль (líng)",
+            "tj": "零 = сифр (líng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bǎi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bǎi?",
+            "tj": "bǎi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "个",
+            "多少",
+            "有",
+            "百"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "百 = yuz (bǎi)",
+            "ru": "百 = сто (bǎi)",
+            "tj": "百 = сад (bǎi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "百",
+              {
+                "uz": "yuz",
+                "ru": "сто",
+                "tj": "сад"
+              }
+            ],
+            [
+              "千",
+              {
+                "uz": "ming",
+                "ru": "тысяча",
+                "tj": "ҳазор"
+              }
+            ],
+            [
+              "零",
+              {
+                "uz": "nol",
+                "ru": "ноль",
+                "tj": "сифр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "O‘lchov so‘zlari va son+o‘lchov tuzilmasi",
+              "ru": "Счётные слова и структура число+счётное слово",
+              "tj": "Воҳидҳои ҳисоб ва сохтори рақам+воҳиди ҳисоб"
+            },
+            "title_zh": "名量词和名量结构",
+            "rule": {
+              "uz": "Miqdor ifodalanganda ot oldidan odatda o‘lchov so‘zi ishlatiladi: son + o‘lchov so‘zi + (ot).",
+              "ru": "При выражении количества перед существительным обычно используется счётное слово: число + счётное слово + (существительное).",
+              "tj": "Ҳангоми ифодаи миқдор пеш аз исм одатан воҳиди ҳисоб меояд: рақам + воҳиди ҳисоб + (исм)."
+            },
+            "examples": [
+              {
+                "zh": "一个",
+                "pinyin": "yí ge",
+                "translation": {
+                  "uz": "bitta",
+                  "ru": "один (счётное слово 个)",
+                  "tj": "якто"
+                }
+              },
+              {
+                "zh": "四口人",
+                "pinyin": "sì kǒu rén",
+                "translation": {
+                  "uz": "to‘rt kishi (oilada)",
+                  "ru": "четыре человека в семье",
+                  "tj": "чор нафар дар оила"
+                }
+              },
+              {
+                "zh": "两个学生",
+                "pinyin": "liǎng ge xuésheng",
+                "translation": {
+                  "uz": "ikki talaba",
+                  "ru": "два студента",
+                  "tj": "ду донишҷӯ"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "bitta",
+            "ru": "один (счётное слово 个)",
+            "tj": "якто"
+          },
+          "tokens": [
+            "多少",
+            "个",
+            "有",
+            "一"
+          ],
+          "answer_tokens": [
+            "一",
+            "个"
+          ],
+          "explanation": {
+            "uz": "一个 — yí ge",
+            "ru": "一个 — yí ge",
+            "tj": "一个 — yí ge"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«to‘rt kishi (oilada)» — xitoychada qaysi biri?",
+            "ru": "«четыре человека в семье» — какое предложение по-китайски?",
+            "tj": "«чор нафар дар оила» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "两个学生",
+            "一个",
+            "四口人"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "四口人 — sì kǒu rén",
+            "ru": "四口人 — sì kǒu rén",
+            "tj": "四口人 — sì kǒu rén"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "零",
+          "pinyin": "líng",
+          "options": [
+            "多少",
+            "个",
+            "有",
+            "零"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "零 — nol (líng)",
+            "ru": "零 — ноль (líng)",
+            "tj": "零 — сифр (líng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "百",
+              {
+                "uz": "yuz",
+                "ru": "сто",
+                "tj": "сад"
+              }
+            ],
+            [
+              "千",
+              {
+                "uz": "ming",
+                "ru": "тысяча",
+                "tj": "ҳазор"
+              }
+            ],
+            [
+              "零",
+              {
+                "uz": "nol",
+                "ru": "ноль",
+                "tj": "сифр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "零",
+          "pinyin": "líng",
+          "translation": {
+            "uz": "nol",
+            "ru": "ноль",
+            "tj": "сифр"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "十 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 十:",
+            "tj": "Маънои калимаи 十-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "o‘n",
+              "ru": "десять",
+              "tj": "даҳ"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "十 = o‘n (shí)",
+            "ru": "十 = десять (shí)",
+            "tj": "十 = даҳ (shí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "十",
+            "pinyin": "shí",
+            "meaning": {
+              "uz": "o‘n",
+              "ru": "десять",
+              "tj": "даҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nol' xitoycha qaysi?",
+            "ru": "'ноль' по-китайски?",
+            "tj": "'сифр' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "零",
+            "多少",
+            "有",
+            "个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "nol = 零 (líng)",
+            "ru": "ноль = 零 (líng)",
+            "tj": "сифр = 零 (líng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "零",
+            "pinyin": "líng",
+            "meaning": {
+              "uz": "nol",
+              "ru": "ноль",
+              "tj": "сифр"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

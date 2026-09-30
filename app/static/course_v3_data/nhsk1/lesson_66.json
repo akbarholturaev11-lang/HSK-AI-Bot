@@ -1,0 +1,796 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 66,
+  "source_lesson": 10,
+  "part_no": 5,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "这儿的苹果真便宜！",
+  "subtitle": {
+    "uz": "Mahsulot narxini tushunish va aytish; pul miqdorini xitoycha ifodalash; sifat-kesimli gaplardan foydalanish; “怎么样” bilan fikr yoki holatni so‘rash.",
+    "ru": "Понимать и называть цены товаров; выражать денежные суммы; использовать предложения с прилагательным-сказуемым; спрашивать мнение или состояние с “怎么样”.",
+    "tj": "Нархи молро фаҳмидан ва гуфтан; маблағи пулро ба чинӣ ифода кардан; ҷумлаҳои сифатӣ-хабариро истифода бурдан; бо “怎么样” фикр ё ҳолатро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "元",
+      "pinyin": "yuán",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yuan",
+        "ru": "юань",
+        "tj": "юан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "怎么样",
+      "pinyin": "zěnmeyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday; qanday deb o‘ylaysan",
+        "ru": "как; как насчёт",
+        "tj": "чӣ хел; чӣ гуна"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "贵",
+      "pinyin": "guì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qimmat",
+        "ru": "дорогой",
+        "tj": "гарон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "穿",
+      "pinyin": "chuān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kiymoq",
+        "ru": "носить; надевать",
+        "tj": "пӯшидан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“怎么样” so‘roq olmoshi",
+        "ru": "Вопросительное местоимение “怎么样”",
+        "tj": "Ҷонишини саволии “怎么样”"
+      },
+      "title_zh": "疑问代词“怎么样”",
+      "rule": {
+        "uz": "“怎么样” fikrni yoki biror narsaning xususiyati/holatini so‘rash uchun ishlatiladi.",
+        "ru": "“怎么样” используется для запроса мнения или выяснения свойства/состояния чего-либо.",
+        "tj": "“怎么样” барои пурсидани фикр ё ҳолат/хусусияти чизе истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "这个杯子怎么样？",
+          "pinyin": "Zhège bēizi zěnmeyàng?",
+          "translation": {
+            "uz": "Bu piyola qanday?",
+            "ru": "Как эта чашка?",
+            "tj": "Ин пиёла чӣ хел?"
+          }
+        },
+        {
+          "zh": "这本书怎么样？",
+          "pinyin": "Zhè běn shū zěnmeyàng?",
+          "translation": {
+            "uz": "Bu kitob qanday?",
+            "ru": "Как эта книга?",
+            "tj": "Ин китоб чӣ хел?"
+          }
+        },
+        {
+          "zh": "这个菜怎么样？",
+          "pinyin": "Zhège cài zěnmeyàng?",
+          "translation": {
+            "uz": "Bu taom qanday?",
+            "ru": "Как это блюдо?",
+            "tj": "Ин таом чӣ хел?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kichik do‘konda Wang Yixue piyola sotib olmoqda.",
+        "ru": "В маленьком магазине Ван Исюэ покупает чашку.",
+        "tj": "Дар як мағозаи хурд Ван Исюэ пиёла мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "请问，有杯子吗？",
+          "pinyin": "Qǐngwèn, yǒu bēizi ma?",
+          "text": {
+            "uz": "Kechirasiz, piyola bormi?",
+            "ru": "Извините, у вас есть чашки?",
+            "tj": "Мебахшед, пиёла доред?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "有，杯子在这边。",
+          "pinyin": "Yǒu, bēizi zài zhèbiān.",
+          "text": {
+            "uz": "Ha, piyolalar bu yerda.",
+            "ru": "Да, чашки здесь.",
+            "tj": "Ҳа, пиёлаҳо ин ҷоанд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "多少钱一个？",
+          "pinyin": "Duōshao qián yí ge?",
+          "text": {
+            "uz": "Bittasi qancha turadi?",
+            "ru": "Сколько стоит одна?",
+            "tj": "Яктоаш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "这些五块钱一个，那些十块钱一个。",
+          "pinyin": "Zhèxiē wǔ kuài qián yí ge, nàxiē shí kuài qián yí ge.",
+          "text": {
+            "uz": "Bularning bittasi 5 yuan, anavilarning bittasi 10 yuan.",
+            "ru": "Эти по 5 юаней, а те по 10 юаней.",
+            "tj": "Инҳо яктоӣ 5 юан, онҳо яктоӣ 10 юан."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我买这个吧。",
+          "pinyin": "Wǒ mǎi zhège ba.",
+          "text": {
+            "uz": "Men mana bunisini olaman.",
+            "ru": "Я возьму эту.",
+            "tj": "Ман ҳаминро мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bozorda Wang Yixue meva sotib olmoqda.",
+        "ru": "На рынке Ван Исюэ покупает фрукты.",
+        "tj": "Дар бозор Ван Исюэ мева мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "text": {
+            "uz": "Bu yerda meva juda ko‘p ekan!",
+            "ru": "Здесь так много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "您想买什么？",
+          "pinyin": "Nín xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我想买两斤苹果。",
+          "pinyin": "Wǒ xiǎng mǎi liǎng jīn píngguǒ.",
+          "text": {
+            "uz": "Ikki jin olma olmoqchiman.",
+            "ru": "Я хочу купить два цзиня яблок.",
+            "tj": "Ман мехоҳам ду ҷин себ харам."
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "苹果三块五一斤。这些七块二，七块钱吧。",
+          "pinyin": "Píngguǒ sān kuài wǔ yì jīn. Zhèxiē qī kuài èr, qī kuài qián ba.",
+          "text": {
+            "uz": "Olma bir jiniga 3,5 yuan. Bular 7,2 yuan bo‘ladi, 7 yuan bo‘lsin.",
+            "ru": "Яблоки по 3,5 юаня за цзинь. Всего 7,2 юаня — пусть будет 7.",
+            "tj": "Себ як ҷин 3,5 юан. Ҳамагӣ 7,2 юан мешавад, 7 юан диҳед."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的，这儿的苹果真便宜！",
+          "pinyin": "Hǎo de, zhèr de píngguǒ zhēn piányi!",
+          "text": {
+            "uz": "Xo‘p, bu yerdagi olmalar juda arzon ekan!",
+            "ru": "Хорошо, яблоки здесь действительно дешёвые!",
+            "tj": "Хуб, себҳои ин ҷо воқеан арзонанд!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue bolalariga kiyim sotib olmoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ покупают одежду детям.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ барои фарзандонашон либос мехаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这家商店衣服真多！这件一百元，怎么样？",
+          "pinyin": "Zhè jiā shāngdiàn yīfu zhēn duō! Zhè jiàn yìbǎi yuán, zěnmeyàng?",
+          "text": {
+            "uz": "Bu do‘konda kiyim juda ko‘p! Bu bittasi 100 yuan, qanday?",
+            "ru": "В этом магазине так много одежды! Эта вещь стоит 100 юаней. Как тебе?",
+            "tj": "Дар ин мағоза либос хеле бисёр! Ин дона 100 юан аст, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好看，也不贵。",
+          "pinyin": "Hǎokàn, yě bú guì.",
+          "text": {
+            "uz": "Chiroyli, qimmat ham emas.",
+            "ru": "Красиво и недорого.",
+            "tj": "Зебо, гарон ҳам нест."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "元",
+            "pinyin": "yuán",
+            "pos": "m.",
+            "meaning": {
+              "uz": "yuan",
+              "ru": "юань",
+              "tj": "юан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "元 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 元:",
+            "tj": "Маънои калимаи 元-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "yuan",
+              "ru": "юань",
+              "tj": "юан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "元 = yuan (yuán)",
+            "ru": "元 = юань (yuán)",
+            "tj": "元 = юан (yuán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "怎么样",
+            "pinyin": "zěnmeyàng",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday; qanday deb o‘ylaysan",
+              "ru": "как; как насчёт",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "怎么样",
+          "pinyin": "zěnmeyàng",
+          "translation": {
+            "uz": "qanday; qanday deb o‘ylaysan",
+            "ru": "как; как насчёт",
+            "tj": "чӣ хел; чӣ гуна"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zěnmeyàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zěnmeyàng?",
+            "tj": "zěnmeyàng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "售货员",
+            "怎么样",
+            "杯子",
+            "这边"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "怎么样 = qanday; qanday deb o‘ylaysan (zěnmeyàng)",
+            "ru": "怎么样 = как; как насчёт (zěnmeyàng)",
+            "tj": "怎么样 = чӣ хел; чӣ гуна (zěnmeyàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "贵",
+            "pinyin": "guì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qimmat",
+              "ru": "дорогой",
+              "tj": "гарон"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "贵 talaffuzini tanlang:",
+            "ru": "Выберите произношение 贵:",
+            "tj": "Талаффузи 贵-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bēizi",
+            "shòuhuòyuán",
+            "zhèbiān",
+            "guì"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "贵 — guì",
+            "ru": "贵 — guì",
+            "tj": "贵 — guì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "穿",
+            "pinyin": "chuān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kiymoq",
+              "ru": "носить; надевать",
+              "tj": "пӯшидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kiymoq' xitoycha qaysi?",
+            "ru": "'носить; надевать' по-китайски?",
+            "tj": "'пӯшидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "售货员",
+            "杯子",
+            "这边",
+            "穿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kiymoq = 穿 (chuān)",
+            "ru": "носить; надевать = 穿 (chuān)",
+            "tj": "пӯшидан = 穿 (chuān)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "元",
+          "pinyin": "yuán",
+          "options": [
+            "杯子",
+            "元",
+            "售货员",
+            "这边"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "元 — yuan (yuán)",
+            "ru": "元 — юань (yuán)",
+            "tj": "元 — юан (yuán)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "元",
+              {
+                "uz": "yuan",
+                "ru": "юань",
+                "tj": "юан"
+              }
+            ],
+            [
+              "怎么样",
+              {
+                "uz": "qanday; qanday deb o‘ylaysan",
+                "ru": "как; как насчёт",
+                "tj": "чӣ хел; чӣ гуна"
+              }
+            ],
+            [
+              "贵",
+              {
+                "uz": "qimmat",
+                "ru": "дорогой",
+                "tj": "гарон"
+              }
+            ],
+            [
+              "穿",
+              {
+                "uz": "kiymoq",
+                "ru": "носить; надевать",
+                "tj": "пӯшидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“怎么样” so‘roq olmoshi",
+              "ru": "Вопросительное местоимение “怎么样”",
+              "tj": "Ҷонишини саволии “怎么样”"
+            },
+            "title_zh": "疑问代词“怎么样”",
+            "rule": {
+              "uz": "“怎么样” fikrni yoki biror narsaning xususiyati/holatini so‘rash uchun ishlatiladi.",
+              "ru": "“怎么样” используется для запроса мнения или выяснения свойства/состояния чего-либо.",
+              "tj": "“怎么样” барои пурсидани фикр ё ҳолат/хусусияти чизе истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "这个杯子怎么样？",
+                "pinyin": "Zhège bēizi zěnmeyàng?",
+                "translation": {
+                  "uz": "Bu piyola qanday?",
+                  "ru": "Как эта чашка?",
+                  "tj": "Ин пиёла чӣ хел?"
+                }
+              },
+              {
+                "zh": "这本书怎么样？",
+                "pinyin": "Zhè běn shū zěnmeyàng?",
+                "translation": {
+                  "uz": "Bu kitob qanday?",
+                  "ru": "Как эта книга?",
+                  "tj": "Ин китоб чӣ хел?"
+                }
+              },
+              {
+                "zh": "这个菜怎么样？",
+                "pinyin": "Zhège cài zěnmeyàng?",
+                "translation": {
+                  "uz": "Bu taom qanday?",
+                  "ru": "Как это блюдо?",
+                  "tj": "Ин таом чӣ хел?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu piyola qanday?",
+            "ru": "Как эта чашка?",
+            "tj": "Ин пиёла чӣ хел?"
+          },
+          "tokens": [
+            "怎么样",
+            "杯子",
+            "售货员",
+            "这",
+            "这边",
+            "个"
+          ],
+          "answer_tokens": [
+            "这",
+            "个",
+            "杯子",
+            "怎么样"
+          ],
+          "explanation": {
+            "uz": "这个杯子怎么样？ — Zhège bēizi zěnmeyàng?",
+            "ru": "这个杯子怎么样？ — Zhège bēizi zěnmeyàng?",
+            "tj": "这个杯子怎么样？ — Zhège bēizi zěnmeyàng?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu kitob qanday?» — xitoychada qaysi biri?",
+            "ru": "«Как эта книга?» — какое предложение по-китайски?",
+            "tj": "«Ин китоб чӣ хел?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这个菜怎么样？",
+            "这个杯子怎么样？",
+            "这本书怎么样？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "这本书怎么样？ — Zhè běn shū zěnmeyàng?",
+            "ru": "这本书怎么样？ — Zhè běn shū zěnmeyàng?",
+            "tj": "这本书怎么样？ — Zhè běn shū zěnmeyàng?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "元",
+              {
+                "uz": "yuan",
+                "ru": "юань",
+                "tj": "юан"
+              }
+            ],
+            [
+              "怎么样",
+              {
+                "uz": "qanday; qanday deb o‘ylaysan",
+                "ru": "как; как насчёт",
+                "tj": "чӣ хел; чӣ гуна"
+              }
+            ],
+            [
+              "贵",
+              {
+                "uz": "qimmat",
+                "ru": "дорогой",
+                "tj": "гарон"
+              }
+            ],
+            [
+              "穿",
+              {
+                "uz": "kiymoq",
+                "ru": "носить; надевать",
+                "tj": "пӯшидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "怎么样",
+          "pinyin": "zěnmeyàng",
+          "translation": {
+            "uz": "qanday; qanday deb o‘ylaysan",
+            "ru": "как; как насчёт",
+            "tj": "чӣ хел; чӣ гуна"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "商店 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 商店:",
+            "tj": "Маънои калимаи 商店-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            },
+            {
+              "uz": "do‘kon",
+              "ru": "магазин",
+              "tj": "мағоза"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "商店 = do‘kon (shāngdiàn)",
+            "ru": "商店 = магазин (shāngdiàn)",
+            "tj": "商店 = мағоза (shāngdiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "商店",
+            "pinyin": "shāngdiàn",
+            "meaning": {
+              "uz": "do‘kon",
+              "ru": "магазин",
+              "tj": "мағоза"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qanday; qanday deb o‘ylaysan' xitoycha qaysi?",
+            "ru": "'как; как насчёт' по-китайски?",
+            "tj": "'чӣ хел; чӣ гуна' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这边",
+            "杯子",
+            "售货员",
+            "怎么样"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qanday; qanday deb o‘ylaysan = 怎么样 (zěnmeyàng)",
+            "ru": "как; как насчёт = 怎么样 (zěnmeyàng)",
+            "tj": "чӣ хел; чӣ гуна = 怎么样 (zěnmeyàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "怎么样",
+            "pinyin": "zěnmeyàng",
+            "meaning": {
+              "uz": "qanday; qanday deb o‘ylaysan",
+              "ru": "как; как насчёт",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

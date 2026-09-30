@@ -1,0 +1,720 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 64,
+  "source_lesson": 10,
+  "part_no": 3,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "这儿的苹果真便宜！",
+  "subtitle": {
+    "uz": "Mahsulot narxini tushunish va aytish; pul miqdorini xitoycha ifodalash; sifat-kesimli gaplardan foydalanish; “怎么样” bilan fikr yoki holatni so‘rash.",
+    "ru": "Понимать и называть цены товаров; выражать денежные суммы; использовать предложения с прилагательным-сказуемым; спрашивать мнение или состояние с “怎么样”.",
+    "tj": "Нархи молро фаҳмидан ва гуфтан; маблағи пулро ба чинӣ ифода кардан; ҷумлаҳои сифатӣ-хабариро истифода бурдан; бо “怎么样” фикр ё ҳолатро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "水果",
+      "pinyin": "shuǐguǒ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "meva",
+        "ru": "фрукты",
+        "tj": "мева"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "少",
+      "pinyin": "shǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kam",
+        "ru": "мало; немного",
+        "tj": "кам"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "斤",
+      "pinyin": "jīn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "jin (500 g)",
+        "ru": "цзинь (500 г)",
+        "tj": "ҷин (500 г)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "苹果",
+      "pinyin": "píngguǒ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "olma",
+        "ru": "яблоко",
+        "tj": "себ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kichik do‘konda Wang Yixue piyola sotib olmoqda.",
+        "ru": "В маленьком магазине Ван Исюэ покупает чашку.",
+        "tj": "Дар як мағозаи хурд Ван Исюэ пиёла мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "请问，有杯子吗？",
+          "pinyin": "Qǐngwèn, yǒu bēizi ma?",
+          "text": {
+            "uz": "Kechirasiz, piyola bormi?",
+            "ru": "Извините, у вас есть чашки?",
+            "tj": "Мебахшед, пиёла доред?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "有，杯子在这边。",
+          "pinyin": "Yǒu, bēizi zài zhèbiān.",
+          "text": {
+            "uz": "Ha, piyolalar bu yerda.",
+            "ru": "Да, чашки здесь.",
+            "tj": "Ҳа, пиёлаҳо ин ҷоанд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "多少钱一个？",
+          "pinyin": "Duōshao qián yí ge?",
+          "text": {
+            "uz": "Bittasi qancha turadi?",
+            "ru": "Сколько стоит одна?",
+            "tj": "Яктоаш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "这些五块钱一个，那些十块钱一个。",
+          "pinyin": "Zhèxiē wǔ kuài qián yí ge, nàxiē shí kuài qián yí ge.",
+          "text": {
+            "uz": "Bularning bittasi 5 yuan, anavilarning bittasi 10 yuan.",
+            "ru": "Эти по 5 юаней, а те по 10 юаней.",
+            "tj": "Инҳо яктоӣ 5 юан, онҳо яктоӣ 10 юан."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我买这个吧。",
+          "pinyin": "Wǒ mǎi zhège ba.",
+          "text": {
+            "uz": "Men mana bunisini olaman.",
+            "ru": "Я возьму эту.",
+            "tj": "Ман ҳаминро мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bozorda Wang Yixue meva sotib olmoqda.",
+        "ru": "На рынке Ван Исюэ покупает фрукты.",
+        "tj": "Дар бозор Ван Исюэ мева мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "text": {
+            "uz": "Bu yerda meva juda ko‘p ekan!",
+            "ru": "Здесь так много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "您想买什么？",
+          "pinyin": "Nín xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我想买两斤苹果。",
+          "pinyin": "Wǒ xiǎng mǎi liǎng jīn píngguǒ.",
+          "text": {
+            "uz": "Ikki jin olma olmoqchiman.",
+            "ru": "Я хочу купить два цзиня яблок.",
+            "tj": "Ман мехоҳам ду ҷин себ харам."
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "苹果三块五一斤。这些七块二，七块钱吧。",
+          "pinyin": "Píngguǒ sān kuài wǔ yì jīn. Zhèxiē qī kuài èr, qī kuài qián ba.",
+          "text": {
+            "uz": "Olma bir jiniga 3,5 yuan. Bular 7,2 yuan bo‘ladi, 7 yuan bo‘lsin.",
+            "ru": "Яблоки по 3,5 юаня за цзинь. Всего 7,2 юаня — пусть будет 7.",
+            "tj": "Себ як ҷин 3,5 юан. Ҳамагӣ 7,2 юан мешавад, 7 юан диҳед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue bolalariga kiyim sotib olmoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ покупают одежду детям.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ барои фарзандонашон либос мехаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "水果",
+            "pinyin": "shuǐguǒ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "meva",
+              "ru": "фрукты",
+              "tj": "мева"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'meva' xitoycha qaysi?",
+            "ru": "'фрукты' по-китайски?",
+            "tj": "'мева' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "杯子",
+            "水果",
+            "这边",
+            "售货员"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "meva = 水果 (shuǐguǒ)",
+            "ru": "фрукты = 水果 (shuǐguǒ)",
+            "tj": "мева = 水果 (shuǐguǒ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "少",
+            "pinyin": "shǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "kam",
+              "ru": "мало; немного",
+              "tj": "кам"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "少",
+          "pinyin": "shǎo",
+          "options": [
+            "售货员",
+            "杯子",
+            "少",
+            "这边"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "少 — kam (shǎo)",
+            "ru": "少 — мало; немного (shǎo)",
+            "tj": "少 — кам (shǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "斤",
+            "pinyin": "jīn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "jin (500 g)",
+              "ru": "цзинь (500 г)",
+              "tj": "ҷин (500 г)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "斤 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 斤:",
+            "tj": "Маънои калимаи 斤-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            },
+            {
+              "uz": "jin (500 g)",
+              "ru": "цзинь (500 г)",
+              "tj": "ҷин (500 г)"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "斤 = jin (500 g) (jīn)",
+            "ru": "斤 = цзинь (500 г) (jīn)",
+            "tj": "斤 = ҷин (500 г) (jīn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "苹果",
+            "pinyin": "píngguǒ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "苹果",
+          "pinyin": "píngguǒ",
+          "translation": {
+            "uz": "olma",
+            "ru": "яблоко",
+            "tj": "себ"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "píngguǒ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается píngguǒ?",
+            "tj": "píngguǒ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "杯子",
+            "售货员",
+            "这边",
+            "苹果"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "苹果 = olma (píngguǒ)",
+            "ru": "苹果 = яблоко (píngguǒ)",
+            "tj": "苹果 = себ (píngguǒ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "水果 talaffuzini tanlang:",
+            "ru": "Выберите произношение 水果:",
+            "tj": "Талаффузи 水果-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shuǐguǒ",
+            "bēizi",
+            "zhèbiān",
+            "shòuhuòyuán"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "水果 — shuǐguǒ",
+            "ru": "水果 — shuǐguǒ",
+            "tj": "水果 — shuǐguǒ"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "水果",
+              {
+                "uz": "meva",
+                "ru": "фрукты",
+                "tj": "мева"
+              }
+            ],
+            [
+              "少",
+              {
+                "uz": "kam",
+                "ru": "мало; немного",
+                "tj": "кам"
+              }
+            ],
+            [
+              "斤",
+              {
+                "uz": "jin (500 g)",
+                "ru": "цзинь (500 г)",
+                "tj": "ҷин (500 г)"
+              }
+            ],
+            [
+              "苹果",
+              {
+                "uz": "olma",
+                "ru": "яблоко",
+                "tj": "себ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "translation": {
+            "uz": "Bu yerda meva juda ko‘p!",
+            "ru": "Здесь очень много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр!"
+          },
+          "tokens": {
+            "uz": [
+              "meva",
+              "ekan",
+              "juda",
+              "yerda",
+              "ko‘p",
+              "Ikki",
+              "Bu"
+            ],
+            "ru": [
+              "Я",
+              "Здесь",
+              "много",
+              "фруктов",
+              "так",
+              "очень"
+            ],
+            "tj": [
+              "Ман",
+              "мева",
+              "бисёр",
+              "хеле",
+              "Ин",
+              "будааст",
+              "ҷо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bu",
+              "yerda",
+              "meva",
+              "juda",
+              "ko‘p"
+            ],
+            "ru": [
+              "Здесь",
+              "очень",
+              "много",
+              "фруктов"
+            ],
+            "tj": [
+              "Ин",
+              "ҷо",
+              "мева",
+              "хеле",
+              "бисёр"
+            ]
+          },
+          "explanation": {
+            "uz": "这儿的水果真不少！ — Bu yerda meva juda ko‘p!",
+            "ru": "这儿的水果真不少！ — Здесь очень много фруктов!",
+            "tj": "这儿的水果真不少！ — Ин ҷо мева хеле бисёр!"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu yerda meva juda ko‘p!",
+            "ru": "Здесь очень много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр!"
+          },
+          "tokens": [
+            "售货员",
+            "真",
+            "杯子",
+            "不",
+            "的",
+            "水果",
+            "少",
+            "这儿"
+          ],
+          "answer_tokens": [
+            "这儿",
+            "的",
+            "水果",
+            "真",
+            "不",
+            "少"
+          ],
+          "explanation": {
+            "uz": "这儿的水果真不少！ — Zhèr de shuǐguǒ zhēn bù shǎo!",
+            "ru": "这儿的水果真不少！ — Zhèr de shuǐguǒ zhēn bù shǎo!",
+            "tj": "这儿的水果真不少！ — Zhèr de shuǐguǒ zhēn bù shǎo!"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu yerda meva juda ko‘p ekan!",
+            "ru": "Здесь так много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр будааст!"
+          },
+          "tokens": [
+            "真",
+            "不",
+            "的",
+            "少",
+            "水果",
+            "售货员",
+            "杯子",
+            "这儿"
+          ],
+          "answer_tokens": [
+            "这儿",
+            "的",
+            "水果",
+            "真",
+            "不",
+            "少"
+          ],
+          "explanation": {
+            "uz": "这儿的水果真不少！ — Zhèr de shuǐguǒ zhēn bù shǎo!",
+            "ru": "这儿的水果真不少！ — Zhèr de shuǐguǒ zhēn bù shǎo!",
+            "tj": "这儿的水果真不少！ — Zhèr de shuǐguǒ zhēn bù shǎo!"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我想买两斤苹果。",
+          "pinyin": "Wǒ xiǎng mǎi liǎng jīn píngguǒ.",
+          "options": [
+            "这儿的水果真不少！",
+            "苹果三块五一斤。这些七块二，七块钱吧。",
+            "我想买两斤苹果。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我想买两斤苹果。 — Ikki jin olma olmoqchiman.",
+            "ru": "我想买两斤苹果。 — Я хочу купить два цзиня яблок.",
+            "tj": "我想买两斤苹果。 — Ман мехоҳам ду ҷин себ харам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "苹果",
+          "pinyin": "píngguǒ",
+          "translation": {
+            "uz": "olma",
+            "ru": "яблоко",
+            "tj": "себ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "这儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 这儿:",
+            "tj": "Маънои калимаи 这儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            },
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这儿 = bu yer (zhèr)",
+            "ru": "这儿 = здесь (zhèr)",
+            "tj": "这儿 = ин ҷо (zhèr)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "这儿",
+            "pinyin": "zhèr",
+            "meaning": {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'olma' xitoycha qaysi?",
+            "ru": "'яблоко' по-китайски?",
+            "tj": "'себ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这边",
+            "售货员",
+            "苹果",
+            "杯子"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "olma = 苹果 (píngguǒ)",
+            "ru": "яблоко = 苹果 (píngguǒ)",
+            "tj": "себ = 苹果 (píngguǒ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "苹果",
+            "pinyin": "píngguǒ",
+            "meaning": {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,584 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 102,
+  "source_lesson": 15,
+  "part_no": 5,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "大兴机场见！",
+  "subtitle": {
+    "uz": "Safar niyati va rejasini ifodalovchi so‘zlarni tushunish va ishlatish; “……，还/也……” bilan mantiqan teng bog‘langan gaplarni tuzish; xitoycha mehmondo‘stlik va ovqatlanish odobining asosiy jihatlarini tushunish.",
+    "ru": "Понимать и использовать лексику намерений и планов поездки; строить сочинённые предложения с “……，还/也……” ; понимать базовые нормы китайского застолья и гостеприимства.",
+    "tj": "Луғати ният ва нақшаи сафарро фаҳмидан ва истифода бурдан; бо “……，还/也……” ҷумлаҳои ҳампайванд сохтан; асосҳои одоби меҳмондорӣ ва хӯрокхӯрии чиниро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "早",
+      "pinyin": "zǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "erta",
+        "ru": "ранний; рано",
+        "tj": "барвақт"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "那",
+      "pinyin": "nà",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "unda; shunda",
+        "ru": "тогда",
+        "tj": "пас; он гоҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "年",
+      "pinyin": "nián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yil",
+        "ru": "год",
+        "tj": "сол"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Li Wenning uyida u Chen Tianzhong, Bai Jiayue va boshqa do‘stlarini xitoy taomlarini tatib ko‘rishga taklif qilgan.",
+        "ru": "Дома у Ли Вэня он угощает китайской едой Чэнь Тяньчжуна, Бай Цзяюэ и других друзей.",
+        "tj": "Дар хонаи Ли Вэн ӯ Чэн Тянҷун, Бай Ҷяюэ ва дигар дӯстонашро бо таоми чинӣ меҳмондорӣ мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们爱吃哪个菜？",
+          "pinyin": "Nǐmen ài chī nǎge cài?",
+          "text": {
+            "uz": "Qaysi taomni yoqtirasizlar?",
+            "ru": "Какое блюдо вам нравится?",
+            "tj": "Кадом таомро дӯст медоред?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我喜欢这个，也喜欢那个。",
+          "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+          "text": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这些菜都好吃，还很好看。",
+          "pinyin": "Zhèxiē cài dōu hǎochī, hái hěn hǎokàn.",
+          "text": {
+            "uz": "Bu taomlarning hammasi mazali, ko‘rinishi ham juda chiroyli.",
+            "ru": "Все эти блюда вкусные и ещё очень красиво выглядят.",
+            "tj": "Ҳамаи ин таомҳо болаззатанд ва хеле зебо ҳам менамоянд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida hamma ovqatlanib turib ta’til rejalarini muhokama qilmoqda.",
+        "ru": "Дома у Ли Вэня все за едой обсуждают планы на каникулы.",
+        "tj": "Дар хонаи Ли Вэн ҳама ҳангоми хӯрок нақшаҳои таътилро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们都想去哪儿？",
+          "pinyin": "Nǐmen dōu xiǎng qù nǎr?",
+          "text": {
+            "uz": "Hammangiz qayerga bormoqchisiz?",
+            "ru": "Куда вы все хотите поехать?",
+            "tj": "Ҳамаатон ба куҷо рафтан мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinf tashqarisida Bai Jiayue, Annie va ustoz Wang Pekinga sayohat haqida gaplashmoqda.",
+        "ru": "У аудитории Бай Цзяюэ, Энни и преподаватель Ван обсуждают поездку в Пекин.",
+        "tj": "Берун аз синф Бай Ҷяюэ, Энни ва устод Ван дар бораи сафар ба Пекин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "九个小时。",
+          "pinyin": "Jiǔ ge xiǎoshí.",
+          "text": {
+            "uz": "To‘qqiz soat.",
+            "ru": "Девять часов.",
+            "tj": "Нӯҳ соат."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "不早。",
+          "pinyin": "Bù zǎo.",
+          "text": {
+            "uz": "Erta emas.",
+            "ru": "Нет, не рано.",
+            "tj": "Не, барвақт нест."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "早",
+            "pinyin": "zǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "erta",
+              "ru": "ранний; рано",
+              "tj": "барвақт"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zǎo?",
+            "tj": "zǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "哪个",
+            "去年",
+            "早",
+            "爱"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "早 = erta (zǎo)",
+            "ru": "早 = ранний; рано (zǎo)",
+            "tj": "早 = барвақт (zǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "那",
+            "pinyin": "nà",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "unda; shunda",
+              "ru": "тогда",
+              "tj": "пас; он гоҳ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "那 talaffuzini tanlang:",
+            "ru": "Выберите произношение 那:",
+            "tj": "Талаффузи 那-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǎge",
+            "qùnián",
+            "nà",
+            "ài"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "那 — nà",
+            "ru": "那 — nà",
+            "tj": "那 — nà"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "年",
+            "pinyin": "nián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "年",
+          "pinyin": "nián",
+          "translation": {
+            "uz": "yil",
+            "ru": "год",
+            "tj": "сол"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yil' xitoycha qaysi?",
+            "ru": "'год' по-китайски?",
+            "tj": "'сол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "去年",
+            "爱",
+            "哪个",
+            "年"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yil = 年 (nián)",
+            "ru": "год = 年 (nián)",
+            "tj": "сол = 年 (nián)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "早",
+          "pinyin": "zǎo",
+          "options": [
+            "早",
+            "爱",
+            "去年",
+            "哪个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "早 — erta (zǎo)",
+            "ru": "早 — ранний; рано (zǎo)",
+            "tj": "早 — барвақт (zǎo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "早",
+              {
+                "uz": "erta",
+                "ru": "ранний; рано",
+                "tj": "барвақт"
+              }
+            ],
+            [
+              "那",
+              {
+                "uz": "unda; shunda",
+                "ru": "тогда",
+                "tj": "пас; он гоҳ"
+              }
+            ],
+            [
+              "年",
+              {
+                "uz": "yil",
+                "ru": "год",
+                "tj": "сол"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "不早。",
+          "pinyin": "Bù zǎo.",
+          "translation": {
+            "uz": "Erta emas.",
+            "ru": "Нет, не рано.",
+            "tj": "Не, барвақт нест."
+          },
+          "tokens": {
+            "uz": [
+              "Erta",
+              "emas"
+            ],
+            "ru": [
+              "Нет",
+              "не",
+              "рано"
+            ],
+            "tj": [
+              "нест",
+              "барвақт",
+              "Не"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Erta",
+              "emas"
+            ],
+            "ru": [
+              "Нет",
+              "не",
+              "рано"
+            ],
+            "tj": [
+              "Не",
+              "барвақт",
+              "нест"
+            ]
+          },
+          "explanation": {
+            "uz": "不早。 — Erta emas.",
+            "ru": "不早。 — Нет, не рано.",
+            "tj": "不早。 — Не, барвақт нест."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "早",
+              {
+                "uz": "erta",
+                "ru": "ранний; рано",
+                "tj": "барвақт"
+              }
+            ],
+            [
+              "那",
+              {
+                "uz": "unda; shunda",
+                "ru": "тогда",
+                "tj": "пас; он гоҳ"
+              }
+            ],
+            [
+              "年",
+              {
+                "uz": "yil",
+                "ru": "год",
+                "tj": "сол"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Erta emas.",
+            "ru": "Нет, не рано.",
+            "tj": "Не, барвақт нест."
+          },
+          "tokens": [
+            "不",
+            "爱",
+            "哪个",
+            "早"
+          ],
+          "answer_tokens": [
+            "不",
+            "早"
+          ],
+          "explanation": {
+            "uz": "不早。 — Bù zǎo.",
+            "ru": "不早。 — Bù zǎo.",
+            "tj": "不早。 — Bù zǎo."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "年",
+          "pinyin": "nián",
+          "options": [
+            "去年",
+            "年",
+            "哪个",
+            "爱"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "年 — yil (nián)",
+            "ru": "年 — год (nián)",
+            "tj": "年 — сол (nián)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "年",
+          "pinyin": "nián",
+          "translation": {
+            "uz": "yil",
+            "ru": "год",
+            "tj": "сол"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "住 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 住:",
+            "tj": "Маънои калимаи 住-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            },
+            {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            },
+            {
+              "uz": "yashamoq; turmoq",
+              "ru": "жить; останавливаться",
+              "tj": "зиндагӣ кардан; мондан"
+            },
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "住 = yashamoq; turmoq (zhù)",
+            "ru": "住 = жить; останавливаться (zhù)",
+            "tj": "住 = зиндагӣ кардан; мондан (zhù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "住",
+            "pinyin": "zhù",
+            "meaning": {
+              "uz": "yashamoq; turmoq",
+              "ru": "жить; останавливаться",
+              "tj": "зиндагӣ кардан; мондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yil' xitoycha qaysi?",
+            "ru": "'год' по-китайски?",
+            "tj": "'сол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "爱",
+            "年",
+            "去年",
+            "哪个"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yil = 年 (nián)",
+            "ru": "год = 年 (nián)",
+            "tj": "сол = 年 (nián)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "年",
+            "pinyin": "nián",
+            "meaning": {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

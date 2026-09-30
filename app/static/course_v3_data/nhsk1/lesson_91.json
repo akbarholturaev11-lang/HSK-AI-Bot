@@ -1,0 +1,639 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 91,
+  "source_lesson": 14,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "有些",
+      "pinyin": "yǒuxiē",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ba’zilar; ayrim",
+        "ru": "некоторые",
+        "tj": "баъзе"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "有的",
+      "pinyin": "yǒude",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ba’zilar",
+        "ru": "некоторые",
+        "tj": "баъзе"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "了",
+      "pinyin": "le",
+      "pos": "part.",
+      "meaning": {
+        "uz": "tugallangan harakat aspekt yuklamasi",
+        "ru": "аспектуальная частица завершённости",
+        "tj": "ҳиссачаи намуди амали анҷомёфта"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "写",
+      "pinyin": "xiě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yozmoq",
+        "ru": "писать",
+        "tj": "навиштан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还有了一个小学生。",
+          "pinyin": "Hái yǒule yí ge xiǎoxuéshēng.",
+          "text": {
+            "uz": "Yana bitta boshlang‘ich maktab o‘quvchisi ham bo‘ladi.",
+            "ru": "И ещё ученик начальной школы.",
+            "tj": "Боз як хонандаи мактаби ибтидоӣ ҳам мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "有些",
+            "pinyin": "yǒuxiē",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "ba’zilar; ayrim",
+              "ru": "некоторые",
+              "tj": "баъзе"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有些 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有些:",
+            "tj": "Маънои калимаи 有些-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "ba’zilar; ayrim",
+              "ru": "некоторые",
+              "tj": "баъзе"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "有些 = ba’zilar; ayrim (yǒuxiē)",
+            "ru": "有些 = некоторые (yǒuxiē)",
+            "tj": "有些 = баъзе (yǒuxiē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "有的",
+            "pinyin": "yǒude",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "ba’zilar",
+              "ru": "некоторые",
+              "tj": "баъзе"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yǒude qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yǒude?",
+            "tj": "yǒude кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "火车",
+            "中午",
+            "有的",
+            "上"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有的 = ba’zilar (yǒude)",
+            "ru": "有的 = некоторые (yǒude)",
+            "tj": "有的 = баъзе (yǒude)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "了",
+            "pinyin": "le",
+            "pos": "part.",
+            "meaning": {
+              "uz": "tugallangan harakat aspekt yuklamasi",
+              "ru": "аспектуальная частица завершённости",
+              "tj": "ҳиссачаи намуди амали анҷомёфта"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "了",
+          "pinyin": "le",
+          "translation": {
+            "uz": "tugallangan harakat aspekt yuklamasi",
+            "ru": "аспектуальная частица завершённости",
+            "tj": "ҳиссачаи намуди амали анҷомёфта"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "了 talaffuzini tanlang:",
+            "ru": "Выберите произношение 了:",
+            "tj": "Талаффузи 了-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhōngwǔ",
+            "le",
+            "shàng",
+            "huǒchē"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "了 — le",
+            "ru": "了 — le",
+            "tj": "了 — le"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "写",
+            "pinyin": "xiě",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yozmoq",
+              "ru": "писать",
+              "tj": "навиштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yozmoq' xitoycha qaysi?",
+            "ru": "'писать' по-китайски?",
+            "tj": "'навиштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "中午",
+            "写",
+            "火车",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yozmoq = 写 (xiě)",
+            "ru": "писать = 写 (xiě)",
+            "tj": "навиштан = 写 (xiě)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "有些",
+          "pinyin": "yǒuxiē",
+          "options": [
+            "上",
+            "火车",
+            "有些",
+            "中午"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有些 — ba’zilar; ayrim (yǒuxiē)",
+            "ru": "有些 — некоторые (yǒuxiē)",
+            "tj": "有些 — баъзе (yǒuxiē)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有些",
+              {
+                "uz": "ba’zilar; ayrim",
+                "ru": "некоторые",
+                "tj": "баъзе"
+              }
+            ],
+            [
+              "有的",
+              {
+                "uz": "ba’zilar",
+                "ru": "некоторые",
+                "tj": "баъзе"
+              }
+            ],
+            [
+              "了",
+              {
+                "uz": "tugallangan harakat aspekt yuklamasi",
+                "ru": "аспектуальная частица завершённости",
+                "tj": "ҳиссачаи намуди амали анҷомёфта"
+              }
+            ],
+            [
+              "写",
+              {
+                "uz": "yozmoq",
+                "ru": "писать",
+                "tj": "навиштан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "写",
+          "pinyin": "xiě",
+          "options": [
+            "写",
+            "中午",
+            "上",
+            "火车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "写 — yozmoq (xiě)",
+            "ru": "写 — писать (xiě)",
+            "tj": "写 — навиштан (xiě)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "translation": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          },
+          "tokens": {
+            "uz": [
+              "O‘g‘limiz",
+              "bitta",
+              "ko‘rdim",
+              "Ha",
+              "Men",
+              "film"
+            ],
+            "ru": [
+              "Сын",
+              "фильм",
+              "Я",
+              "Да",
+              "посмотрел"
+            ],
+            "tj": [
+              "Ман",
+              "як",
+              "тамошо",
+              "филм",
+              "кардам",
+              "Ҳа",
+              "Писарамон"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "bitta",
+              "film",
+              "ko‘rdim"
+            ],
+            "ru": [
+              "Я",
+              "посмотрел",
+              "фильм"
+            ],
+            "tj": [
+              "Ман",
+              "як",
+              "филм",
+              "тамошо",
+              "кардам"
+            ]
+          },
+          "explanation": {
+            "uz": "我看了一个电影。 — Men bitta film ko‘rdim.",
+            "ru": "我看了一个电影。 — Я посмотрел фильм.",
+            "tj": "我看了一个电影。 — Ман як филм тамошо кардам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          },
+          "tokens": [
+            "了",
+            "看",
+            "火车",
+            "一",
+            "我",
+            "上",
+            "电影",
+            "个"
+          ],
+          "answer_tokens": [
+            "我",
+            "看",
+            "了",
+            "一",
+            "个",
+            "电影"
+          ],
+          "explanation": {
+            "uz": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng.",
+            "ru": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng.",
+            "tj": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "有的",
+          "pinyin": "yǒude",
+          "options": [
+            "上",
+            "中午",
+            "有的",
+            "火车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有的 — ba’zilar (yǒude)",
+            "ru": "有的 — некоторые (yǒude)",
+            "tj": "有的 — баъзе (yǒude)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "了",
+          "pinyin": "le",
+          "translation": {
+            "uz": "tugallangan harakat aspekt yuklamasi",
+            "ru": "аспектуальная частица завершённости",
+            "tj": "ҳиссачаи намуди амали анҷомёфта"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "中午 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 中午:",
+            "tj": "Маънои калимаи 中午-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jo‘namoq (transport)",
+              "ru": "отправляться о транспорте",
+              "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "中午 = tush payti (zhōngwǔ)",
+            "ru": "中午 = полдень (zhōngwǔ)",
+            "tj": "中午 = нисфирӯзӣ (zhōngwǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "中午",
+            "pinyin": "zhōngwǔ",
+            "meaning": {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tugallangan harakat aspekt yuklamasi' xitoycha qaysi?",
+            "ru": "'аспектуальная частица завершённости' по-китайски?",
+            "tj": "'ҳиссачаи намуди амали анҷомёфта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "火车",
+            "了",
+            "中午",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tugallangan harakat aspekt yuklamasi = 了 (le)",
+            "ru": "аспектуальная частица завершённости = 了 (le)",
+            "tj": "ҳиссачаи намуди амали анҷомёфта = 了 (le)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "了",
+            "pinyin": "le",
+            "meaning": {
+              "uz": "tugallangan harakat aspekt yuklamasi",
+              "ru": "аспектуальная частица завершённости",
+              "tj": "ҳиссачаи намуди амали анҷомёфта"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

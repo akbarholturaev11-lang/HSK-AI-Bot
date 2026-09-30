@@ -1,0 +1,899 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 15,
+  "source_lesson": 3,
+  "part_no": 6,
+  "part_count": 6,
+  "checkpoint": true,
+  "title": "我是中国人",
+  "subtitle": {
+    "uz": "“是” gaplari orqali shaxs yoki narsaning kim/nima ekanini aytish; “的” yordamida egalik va aniqlovchi munosabatini ifodalash; “吗” bilan ha/yo‘q savollarini tuzish.",
+    "ru": "Использовать предложения с “是” для обозначения принадлежности или идентификации; выражать определительные и притяжательные отношения с “的”; строить вопросы да/нет с “吗”.",
+    "tj": "Бо ҷумлаҳои “是” шахс ё чизро муаррифӣ кардан; бо “的” муносибати муайянкунанда ва соҳибиятро ифода кардан; бо “吗” саволҳои ҳа/не сохтан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "人",
+      "pinyin": "rén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "odam; kishi",
+        "ru": "человек",
+        "tj": "одам; шахс"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "的",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "aniqlovchi/egalik yuklamasi",
+        "ru": "структурная частица",
+        "tj": "ҳиссачаи сохторӣ/соҳибият"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "这",
+      "pinyin": "zhè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu",
+        "ru": "это; этот",
+        "tj": "ин"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "谁",
+      "pinyin": "shéi/shuí",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "kim",
+        "ru": "кто",
+        "tj": "кӣ"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "女朋友",
+      "pinyin": "nǚpéngyou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz do‘st; sevgili qiz",
+        "ru": "девушка; подруга",
+        "tj": "дӯстдухтар"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "哪",
+      "pinyin": "nǎ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qaysi",
+        "ru": "какой; который",
+        "tj": "кадом"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "国",
+      "pinyin": "guó",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mamlakat",
+        "ru": "страна",
+        "tj": "кишвар"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "她",
+      "pinyin": "tā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u (ayol)",
+        "ru": "она; её",
+        "tj": "ӯ (зан)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "喂",
+      "pinyin": "wèi",
+      "pos": "int.",
+      "meaning": {
+        "uz": "allo; hey",
+        "ru": "алло; эй",
+        "tj": "алло; эй"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "姐姐",
+      "pinyin": "jiějie",
+      "pos": "n.",
+      "meaning": {
+        "uz": "opa",
+        "ru": "старшая сестра",
+        "tj": "апа; хоҳари калонӣ"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "ish; ishlamoq",
+        "ru": "работа; работать",
+        "tj": "кор; кор кардан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "还",
+      "pinyin": "hái",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hali ham",
+        "ru": "ещё; всё ещё",
+        "tj": "ҳанӯз"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "忙",
+      "pinyin": "máng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "band",
+        "ru": "занятый",
+        "tj": "банд"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "吗",
+      "pinyin": "ma",
+      "pos": "part.",
+      "meaning": {
+        "uz": "ha/yo‘q savol yuklamasi",
+        "ru": "вопросительная частица",
+        "tj": "ҳиссачаи саволи ҳа/не"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "对",
+      "pinyin": "duì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "to‘g‘ri; ha",
+        "ru": "правильно; да",
+        "tj": "дуруст; ҳа"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "太",
+      "pinyin": "tài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda; haddan tashqari",
+        "ru": "слишком; очень",
+        "tj": "хеле; аз ҳад"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "我们",
+      "pinyin": "wǒmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "biz",
+        "ru": "мы",
+        "tj": "мо"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "想",
+      "pinyin": "xiǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sog‘inmoq; o‘ylamoq/xohlamoq",
+        "ru": "скучать; думать/хотеть",
+        "tj": "пазмон шудан; фикр/хостан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“是” bilan gap",
+        "ru": "Предложение с “是”",
+        "tj": "Ҷумла бо “是”"
+      },
+      "title_zh": "“是”字句",
+      "rule": {
+        "uz": "“是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+        "ru": "“是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+        "tj": "“是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是."
+      },
+      "examples": [
+        {
+          "zh": "我是法国人。",
+          "pinyin": "Wǒ shì Fǎguó rén.",
+          "translation": {
+            "uz": "Men fransuzman.",
+            "ru": "Я француз.",
+            "tj": "Ман фаронсавӣ ҳастам."
+          }
+        },
+        {
+          "zh": "她是中文老师。",
+          "pinyin": "Tā shì Zhōngwén lǎoshī.",
+          "translation": {
+            "uz": "U xitoy tili o‘qituvchisi.",
+            "ru": "Она преподаватель китайского языка.",
+            "tj": "Ӯ омӯзгори забони чинӣ аст."
+          }
+        },
+        {
+          "zh": "我老师不是法国人。",
+          "pinyin": "Wǒ lǎoshī bú shì Fǎguó rén.",
+          "translation": {
+            "uz": "Mening o‘qituvchim fransuz emas.",
+            "ru": "Мой преподаватель не француз.",
+            "tj": "Омӯзгори ман фаронсавӣ нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Strukturaviy “的”",
+        "ru": "Структурная частица “的”",
+        "tj": "Ҳиссачаи сохтории “的”"
+      },
+      "title_zh": "结构助词“的”",
+      "rule": {
+        "uz": "“的” aniqlovchi bilan asosiy ot orasida kelib egalik/munosabatni bildiradi.",
+        "ru": "“的” ставится между определением и главным словом и выражает принадлежность.",
+        "tj": "“的” байни муайянкунанда ва исми асосӣ омада, муносибати соҳибиятро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "白家月的中文老师",
+          "pinyin": "Bái Jiāyuè de Zhōngwén lǎoshī",
+          "translation": {
+            "uz": "Bai Jiayue’ning xitoy tili o‘qituvchisi",
+            "ru": "преподаватель китайского языка Бай Цзяюэ",
+            "tj": "омӯзгори забони чинии Бай Ҷяюэ"
+          }
+        },
+        {
+          "zh": "你的名字",
+          "pinyin": "nǐ de míngzi",
+          "translation": {
+            "uz": "sening isming",
+            "ru": "твоё имя",
+            "tj": "номи ту"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "“吗” bilan ha/yo‘q savoli",
+        "ru": "Вопрос да/нет с “吗”",
+        "tj": "Саволи ҳа/не бо “吗”"
+      },
+      "title_zh": "用“吗”的是非问句",
+      "rule": {
+        "uz": "“吗” gap oxiriga qo‘yilib oddiy gapni ha/yo‘q savoliga aylantiradi.",
+        "ru": "“吗” ставится в конце предложения и превращает утверждение в вопрос да/нет.",
+        "tj": "“吗” дар охири ҷумла меояд ва онро ба саволи ҳа/не табдил медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你是学生吗？",
+          "pinyin": "Nǐ shì xuésheng ma?",
+          "translation": {
+            "uz": "Sen talabamisan?",
+            "ru": "Ты студент?",
+            "tj": "Ту донишҷӯ ҳастӣ?"
+          }
+        },
+        {
+          "zh": "你们也想我们吗？",
+          "pinyin": "Nǐmen yě xiǎng wǒmen ma?",
+          "translation": {
+            "uz": "Sizlar ham bizni sog‘indingizmi?",
+            "ru": "Вы тоже по нам скучаете?",
+            "tj": "Шумо ҳам моро пазмон шудед?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue birinchi marta uchrashib, suhbatni davom ettiradilar.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ впервые встречаются и продолжают разговор.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ бори аввал вохӯрда, суҳбатро идома медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "我是中国人。",
+          "pinyin": "Wǒ shì Zhōngguó rén.",
+          "text": {
+            "uz": "Men xitoylikman.",
+            "ru": "Я китаец.",
+            "tj": "Ман чинӣ ҳастам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我是法国人。我的中文老师也是中国人。",
+          "pinyin": "Wǒ shì Fǎguó rén. Wǒ de Zhōngwén lǎoshī yě shì Zhōngguó rén.",
+          "text": {
+            "uz": "Men fransuzman. Mening xitoy tili o‘qituvchim ham xitoylik.",
+            "ru": "Я француженка. Мой преподаватель китайского языка тоже китаец.",
+            "tj": "Ман фаронсавӣ ҳастам. Омӯзгори забони чинии ман ҳам чинӣ аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Annie Chen Tianzhong telefonidagi suratlarni ko‘rmoqda.",
+        "ru": "После занятия в аудитории Энни смотрит фотографии в телефоне Чэнь Тяньчжуна.",
+        "tj": "Пас аз дарс дар синф Энни аксҳои телефони Чэн Тянҷунро тамошо мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "这是谁？",
+          "pinyin": "Zhè shì shéi?",
+          "text": {
+            "uz": "Bu kim?",
+            "ru": "Кто это?",
+            "tj": "Ин кӣ аст?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这是我女朋友。",
+          "pinyin": "Zhè shì wǒ nǚpéngyou.",
+          "text": {
+            "uz": "Bu mening qiz do‘stim.",
+            "ru": "Это моя девушка.",
+            "tj": "Ин дӯстдухтари ман аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你女朋友是哪国人？",
+          "pinyin": "Nǐ nǚpéngyou shì nǎ guó rén?",
+          "text": {
+            "uz": "Qiz do‘sting qaysi davlatdan?",
+            "ru": "Какой национальности твоя девушка?",
+            "tj": "Дӯстдухтари ту аз кадом кишвар аст?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "她也是泰国人。",
+          "pinyin": "Tā yě shì Tàiguó rén.",
+          "text": {
+            "uz": "U ham tailandlik.",
+            "ru": "Она тоже тайка.",
+            "tj": "Ӯ ҳам таиландӣ аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue opasi Wang Yifei bilan videoqo‘ng‘iroq qilmoqda.",
+        "ru": "Дома Ван Исюэ разговаривает по видеосвязи со старшей сестрой Ван Ифэй.",
+        "tj": "Дар хона Ван Исюэ бо хоҳари калониаш Ван Ифэй видеозанг мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "喂，一飞！",
+          "pinyin": "Wèi, Yīfēi!",
+          "text": {
+            "uz": "Allo, Yifei!",
+            "ru": "Привет, Ифэй!",
+            "tj": "Алло, Ифэй!"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "姐姐！",
+          "pinyin": "Jiějie!",
+          "text": {
+            "uz": "Opa!",
+            "ru": "Сестра!",
+            "tj": "Апа!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你工作还忙吗？",
+          "pinyin": "Nǐ gōngzuò hái máng ma?",
+          "text": {
+            "uz": "Ishing hali ham bandmi?",
+            "ru": "Ты всё ещё очень занята на работе?",
+            "tj": "Корат ҳоло ҳам сермашғул аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "对，还很忙。你也很忙吗？",
+          "pinyin": "Duì, hái hěn máng. Nǐ yě hěn máng ma?",
+          "text": {
+            "uz": "Ha, hali ham juda bandman. Sen ham bandmisan?",
+            "ru": "Да, я всё ещё очень занята. А ты тоже занята?",
+            "tj": "Ҳа, ҳоло ҳам хеле банд ҳастам. Ту ҳам бандӣ?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我不太忙。我们很想你。",
+          "pinyin": "Wǒ bú tài máng. Wǒmen hěn xiǎng nǐ.",
+          "text": {
+            "uz": "Men unchalik band emasman. Biz seni juda sog‘indik.",
+            "ru": "Я не очень занята. Мы очень скучаем по тебе.",
+            "tj": "Ман он қадар банд нестам. Мо туро хеле пазмон шудем."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我也想你们。",
+          "pinyin": "Wǒ yě xiǎng nǐmen.",
+          "text": {
+            "uz": "Men ham sizlarni sog‘indim.",
+            "ru": "Я тоже по вам скучаю.",
+            "tj": "Ман ҳам шуморо пазмон шудам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'odam; kishi' xitoycha qaysi?",
+            "ru": "'человек' по-китайски?",
+            "tj": "'одам; шахс' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这",
+            "谁",
+            "的",
+            "人"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "odam; kishi = 人 (rén)",
+            "ru": "человек = 人 (rén)",
+            "tj": "одам; шахс = 人 (rén)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bai Jiayue’ning xitoy tili o‘qituvchisi» — xitoychada qaysi biri?",
+            "ru": "«преподаватель китайского языка Бай Цзяюэ» — какое предложение по-китайски?",
+            "tj": "«омӯзгори забони чинии Бай Ҷяюэ» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我老师不是法国人。",
+            "我是法国人。",
+            "白家月的中文老师",
+            "你的名字"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "白家月的中文老师 — Bái Jiāyuè de Zhōngwén lǎoshī",
+            "ru": "白家月的中文老师 — Bái Jiāyuè de Zhōngwén lǎoshī",
+            "tj": "白家月的中文老师 — Bái Jiāyuè de Zhōngwén lǎoshī"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "人",
+              {
+                "uz": "odam; kishi",
+                "ru": "человек",
+                "tj": "одам; шахс"
+              }
+            ],
+            [
+              "的",
+              {
+                "uz": "aniqlovchi/egalik yuklamasi",
+                "ru": "структурная частица",
+                "tj": "ҳиссачаи сохторӣ/соҳибият"
+              }
+            ],
+            [
+              "这",
+              {
+                "uz": "bu",
+                "ru": "это; этот",
+                "tj": "ин"
+              }
+            ],
+            [
+              "谁",
+              {
+                "uz": "kim",
+                "ru": "кто",
+                "tj": "кӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "对 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 对:",
+            "tj": "Маънои калимаи 对-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            },
+            {
+              "uz": "to‘g‘ri; ha",
+              "ru": "правильно; да",
+              "tj": "дуруст; ҳа"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "对 = to‘g‘ri; ha (duì)",
+            "ru": "对 = правильно; да (duì)",
+            "tj": "对 = дуруст; ҳа (duì)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我老师不是法国人。",
+          "pinyin": "Wǒ lǎoshī bú shì Fǎguó rén.",
+          "translation": {
+            "uz": "Mening o‘qituvchim fransuz emas.",
+            "ru": "Мой преподаватель не француз.",
+            "tj": "Омӯзгори ман фаронсавӣ нест."
+          },
+          "tokens": {
+            "uz": [
+              "fransuz",
+              "Men",
+              "emas",
+              "o‘qituvchim",
+              "Mening",
+              "xitoylikman"
+            ],
+            "ru": [
+              "преподаватель",
+              "Мой",
+              "китаец",
+              "француз",
+              "Я",
+              "не"
+            ],
+            "tj": [
+              "ман",
+              "нест",
+              "фаронсавӣ",
+              "чинӣ",
+              "Омӯзгори",
+              "Ман"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Mening",
+              "o‘qituvchim",
+              "fransuz",
+              "emas"
+            ],
+            "ru": [
+              "Мой",
+              "преподаватель",
+              "не",
+              "француз"
+            ],
+            "tj": [
+              "Омӯзгори",
+              "ман",
+              "фаронсавӣ",
+              "нест"
+            ]
+          },
+          "explanation": {
+            "uz": "我老师不是法国人。 — Mening o‘qituvchim fransuz emas.",
+            "ru": "我老师不是法国人。 — Мой преподаватель не француз.",
+            "tj": "我老师不是法国人。 — Омӯзгори ман фаронсавӣ нест."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "我们 talaffuzini tanlang:",
+            "ru": "Выберите произношение 我们:",
+            "tj": "Талаффузи 我们-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wǒmen",
+            "de",
+            "rén",
+            "zhè"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我们 — wǒmen",
+            "ru": "我们 — wǒmen",
+            "tj": "我们 — wǒmen"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "女朋友",
+              {
+                "uz": "qiz do‘st; sevgili qiz",
+                "ru": "девушка; подруга",
+                "tj": "дӯстдухтар"
+              }
+            ],
+            [
+              "哪",
+              {
+                "uz": "qaysi",
+                "ru": "какой; который",
+                "tj": "кадом"
+              }
+            ],
+            [
+              "国",
+              {
+                "uz": "mamlakat",
+                "ru": "страна",
+                "tj": "кишвар"
+              }
+            ],
+            [
+              "她",
+              {
+                "uz": "u (ayol)",
+                "ru": "она; её",
+                "tj": "ӯ (зан)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "我是中国人。",
+          "pinyin": "Wǒ shì Zhōngguó rén.",
+          "options": [
+            "这是谁？",
+            "我是中国人。",
+            "这是我女朋友。",
+            "我是法国人。我的中文老师也是中国人。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我是中国人。 — Men xitoylikman.",
+            "ru": "我是中国人。 — Я китаец.",
+            "tj": "我是中国人。 — Ман чинӣ ҳастам."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Bai Jiayue nima deydi?",
+            "ru": "Что Bai Jiayue говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Bai Jiayue чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这是我女朋友。",
+            "我是法国人。我的中文老师也是中国人。",
+            "我是中国人。",
+            "这是谁？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我是法国人。我的中文老师也是中国人。",
+            "ru": "Правильный ответ: 我是法国人。我的中文老师也是中国人。",
+            "tj": "Ҷавоби дуруст: 我是法国人。我的中文老师也是中国人。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____是中国人。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "不",
+            "么",
+            "也",
+            "我"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我是中国人。 (Men xitoylikman.)",
+            "ru": "Верно: 我 — 我是中国人。 (Я китаец.)",
+            "tj": "Дуруст: 我 — 我是中国人。 (Ман чинӣ ҳастам.)"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Li Wen",
+              "zh": "我是中国人。",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "这是我女朋友。",
+            "我是法国人。我的中文老师也是中国人。",
+            "这是谁？",
+            "我是中国人。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我是法国人。我的中文老师也是中国人。",
+            "ru": "Правильный ответ: 我是法国人。我的中文老师也是中国人。",
+            "tj": "Ҷавоби дуруст: 我是法国人。我的中文老师也是中国人。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Li Wen avval nima deydi?",
+            "ru": "Что Li Wen говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Li Wen аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我是中国人。",
+            "这是我女朋友。",
+            "我是法国人。我的中文老师也是中国人。",
+            "这是谁？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 我是中国人。",
+            "ru": "Правильный ответ: 我是中国人。",
+            "tj": "Ҷавоби дуруст: 我是中国人。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "这是我女朋友。",
+          "pinyin": "Zhè shì wǒ nǚpéngyou.",
+          "translation": {
+            "uz": "Bu mening qiz do‘stim.",
+            "ru": "Это моя девушка.",
+            "tj": "Ин дӯстдухтари ман аст."
+          }
+        }
+      ]
+    }
+  ]
+}

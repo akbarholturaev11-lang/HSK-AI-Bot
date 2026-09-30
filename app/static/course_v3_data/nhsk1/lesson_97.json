@@ -1,0 +1,1046 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 97,
+  "source_lesson": 14,
+  "part_no": 8,
+  "part_count": 8,
+  "checkpoint": true,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "上",
+      "pinyin": "shàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "chiqmoq; transportga minmoq",
+        "ru": "подниматься; садиться в транспорт",
+        "tj": "баромадан; ба нақлиёт савор шудан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "火车",
+      "pinyin": "huǒchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "poyezd",
+        "ru": "поезд",
+        "tj": "қатор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "中午",
+      "pinyin": "zhōngwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tush payti",
+        "ru": "полдень",
+        "tj": "нисфирӯзӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "开",
+      "pinyin": "kāi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "jo‘namoq (transport)",
+        "ru": "отправляться о транспорте",
+        "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "有些",
+      "pinyin": "yǒuxiē",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ba’zilar; ayrim",
+        "ru": "некоторые",
+        "tj": "баъзе"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "有的",
+      "pinyin": "yǒude",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ba’zilar",
+        "ru": "некоторые",
+        "tj": "баъзе"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "了",
+      "pinyin": "le",
+      "pos": "part.",
+      "meaning": {
+        "uz": "tugallangan harakat aspekt yuklamasi",
+        "ru": "аспектуальная частица завершённости",
+        "tj": "ҳиссачаи намуди амали анҷомёфта"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "写",
+      "pinyin": "xiě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yozmoq",
+        "ru": "писать",
+        "tj": "навиштан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "都",
+      "pinyin": "dōu",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hammasi; barchasi",
+        "ru": "все; оба",
+        "tj": "ҳама; ҳар ду"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "听见",
+      "pinyin": "tīngjiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eshitmoq",
+        "ru": "услышать",
+        "tj": "шунидан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "不要",
+      "pinyin": "búyào",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "qilmang; kerak emas",
+        "ru": "не надо; не делайте",
+        "tj": "накунед; лозим нест"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "说话",
+      "pinyin": "shuōhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gapirmoq",
+        "ru": "говорить; разговаривать",
+        "tj": "гап задан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "听",
+      "pinyin": "tīng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tinglamoq; eshitmoq",
+        "ru": "слушать; слышать",
+        "tj": "гӯш кардан; шунидан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "哪些",
+      "pinyin": "nǎxiē",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qaysilar",
+        "ru": "какие; которые",
+        "tj": "кадомҳо"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "字",
+      "pinyin": "zì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ieroglif; belgi; so‘z",
+        "ru": "иероглиф; знак; слово",
+        "tj": "иероглиф; аломат; калима"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "明年",
+      "pinyin": "míngnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kelasi yil",
+        "ru": "следующий год",
+        "tj": "соли оянда"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "上",
+      "pinyin": "shàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "belgilangan vaqtda boshlamoq/qatnashmoq",
+        "ru": "начинать/посещать в установленное время",
+        "tj": "дар вақти муайян оғоз/иштирок кардан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "中学",
+      "pinyin": "zhōngxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘rta maktab",
+        "ru": "средняя школа",
+        "tj": "мактаби миёна"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "小学",
+      "pinyin": "xiǎoxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "boshlang‘ich maktab",
+        "ru": "начальная школа",
+        "tj": "мактаби ибтидоӣ"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "中学生",
+      "pinyin": "zhōngxuéshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘rta maktab o‘quvchisi",
+        "ru": "ученик средней школы",
+        "tj": "хонандаи мактаби миёна"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "小学生",
+      "pinyin": "xiǎoxuéshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "boshlang‘ich maktab o‘quvchisi",
+        "ru": "ученик начальной школы",
+        "tj": "хонандаи мактаби ибтидоӣ"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "上学",
+      "pinyin": "shàngxué",
+      "pos": "v.",
+      "meaning": {
+        "uz": "maktabga bormoq; o‘qishni boshlamoq",
+        "ru": "идти в школу; начать учиться",
+        "tj": "ба мактаб рафтан; таҳсилро оғоз кардан"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "他们",
+      "pinyin": "tāmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ular",
+        "ru": "они; их",
+        "tj": "онҳо"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "她们",
+      "pinyin": "tāmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ular (ayollar)",
+        "ru": "они о женщинах; их",
+        "tj": "онҳо (занон)"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "它们",
+      "pinyin": "tāmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ular (narsalar/hayvonlar)",
+        "ru": "они о предметах/животных; их",
+        "tj": "онҳо (чизҳо/ҳайвонот)"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "晚",
+      "pinyin": "wǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kech",
+        "ru": "поздний; поздно",
+        "tj": "дер"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Aspekt yuklamasi “了（2）”",
+        "ru": "Аспектуальная частица “了（2）”",
+        "tj": "Ҳиссачаи намудии “了（2）”"
+      },
+      "title_zh": "动态助词“了（2）”",
+      "rule": {
+        "uz": "“了（2）” fe’ldan keyin kelib harakat sodir bo‘lganini yoki tugallanganini bildiradi. Inkorda 没 ishlatiladi va 了 tushiriladi.",
+        "ru": "“了（2）” ставится после глагола и показывает, что действие произошло или завершилось. В отрицании используется 没, а 了 опускается.",
+        "tj": "“了（2）” пас аз феъл омада, рух додан ё анҷом ёфтани амалро нишон медиҳад. Дар инкор 没 истифода шуда, 了 намеояд."
+      },
+      "examples": [
+        {
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "translation": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        },
+        {
+          "zh": "我买了一个新电脑。",
+          "pinyin": "Wǒ mǎile yí ge xīn diànnǎo.",
+          "translation": {
+            "uz": "Men yangi kompyuter sotib oldim.",
+            "ru": "Я купил новый компьютер.",
+            "tj": "Ман компютери нав харидам."
+          }
+        },
+        {
+          "zh": "我昨天没去商店买东西。",
+          "pinyin": "Wǒ zuótiān méi qù shāngdiàn mǎi dōngxi.",
+          "translation": {
+            "uz": "Men kecha do‘konga narsa sotib olishga bormadim.",
+            "ru": "Я вчера не ходил в магазин за покупками.",
+            "tj": "Ман дирӯз барои харид ба мағоза нарафтам."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Ajraluvchi so‘zlar (1)",
+        "ru": "Разделяемые слова (1)",
+        "tj": "Калимаҳои ҷудошаванда (1)"
+      },
+      "title_zh": "离合词（1）",
+      "rule": {
+        "uz": "上课、下课、上班、下班、说话、读书、睡觉 kabi so‘zlar fe’l+obyektdan tuzilgan; orasiga boshqa unsur kirsa, qismlari ajraladi.",
+        "ru": "Слова 上课、下课、上班、下班、说话、读书、睡觉 состоят из глагола и объекта; при вставке другого элемента они разделяются.",
+        "tj": "Калимаҳои 上课、下课、上班、下班、说话、读书、睡觉 аз феъл+объект сохта шудаанд; ҳангоми ворид кардани унсур қисмҳо ҷудо мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "睡了觉；睡了一觉",
+          "pinyin": "shuìle jiào; shuìle yí jiào",
+          "translation": {
+            "uz": "uxladi; bir uxlab oldi",
+            "ru": "поспал; поспал один раз",
+            "tj": "хобид; як бор хобид"
+          }
+        },
+        {
+          "zh": "上了课；上了一次课",
+          "pinyin": "shàngle kè; shàngle yí cì kè",
+          "translation": {
+            "uz": "darsga qatnashdi; bir marta darsga qatnashdi",
+            "ru": "был на занятии; сходил на одно занятие",
+            "tj": "ба дарс рафт; як бор ба дарс рафт"
+          }
+        },
+        {
+          "zh": "说了话；说了很多话",
+          "pinyin": "shuōle huà; shuōle hěn duō huà",
+          "translation": {
+            "uz": "gapirdi; juda ko‘p gapirdi",
+            "ru": "говорил; много говорил",
+            "tj": "гап зад; бисёр гап зад"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Qamrov ravishi “都”",
+        "ru": "Наречие охвата “都”",
+        "tj": "Зарфи фарогирии “都”"
+      },
+      "title_zh": "范围副词“都”",
+      "rule": {
+        "uz": "“都” “hammasi/barchasi” ma’nosini beradi; umumlashtirilayotgan unsur 都 dan oldin keladi. Inkorda inkor so‘zi 都 dan keyin turadi.",
+        "ru": "“都” означает «все/в целом»; обобщаемый объект ставится перед 都. В отрицании отрицательное слово ставится после 都.",
+        "tj": "“都” маънои «ҳама/умуман»-ро медиҳад; объекти умумисозиш пеш аз 都 меояд. Дар инкор калимаи инкор пас аз 都 меояд."
+      },
+      "examples": [
+        {
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "translation": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        },
+        {
+          "zh": "我和我的朋友们都去。",
+          "pinyin": "Wǒ hé wǒ de péngyoumen dōu qù.",
+          "translation": {
+            "uz": "Men va do‘stlarimning hammasi boramiz.",
+            "ru": "Я и мои друзья все пойдём.",
+            "tj": "Ман ва дӯстонам ҳама меравем."
+          }
+        },
+        {
+          "zh": "同学们都没听见。",
+          "pinyin": "Tóngxuémen dōu méi tīngjiàn.",
+          "translation": {
+            "uz": "Talabalarning hech biri eshitmadi.",
+            "ru": "Студенты все не услышали.",
+            "tj": "Ҳеҷ кадом аз донишҷӯён нашуниданд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你们上火车后看见王老师了吗？",
+          "pinyin": "Nǐmen shàng huǒchē hòu kànjiàn Wáng lǎoshī le ma?",
+          "text": {
+            "uz": "Poyezdga chiqqaningizdan keyin ustoz Wangni ko‘rdingizmi?",
+            "ru": "После посадки в поезд вы видели преподавателя Ван?",
+            "tj": "Баъди савор шудан ба қатор устод Ванро дидед?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "没看见。中午车开以后，有些人睡觉，有些人看书，有些人听歌。",
+          "pinyin": "Méi kànjiàn. Zhōngwǔ chē kāi yǐhòu, yǒuxiē rén shuìjiào, yǒuxiē rén kàn shū, yǒuxiē rén tīng gē.",
+          "text": {
+            "uz": "Yo‘q. Tushda poyezd jo‘nagach, ba’zilar uxladilar, ba’zilar kitob o‘qidilar, ba’zilar musiqa tingladilar.",
+            "ru": "Нет. После отправления поезда в полдень одни спали, другие читали, третьи слушали песни.",
+            "tj": "Не. Баъди нисфирӯзӣ қатор рафт, баъзеҳо хобиданд, баъзеҳо китоб хонданд, баъзеҳо суруд гӯш карданд."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsda Wang Yifei talabalarining o‘qish holatini so‘ramoqda.",
+        "ru": "На занятии Ван Ифэй спрашивает студентов об их успехах в учёбе.",
+        "tj": "Дар дарс Ван Ифэй аз донишҷӯён дар бораи пешрафти таҳсил мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们会说汉语了，也会写汉字了吗？",
+          "pinyin": "Nǐmen huì shuō Hànyǔ le, yě huì xiě Hànzì le ma?",
+          "text": {
+            "uz": "Endi xitoycha gapira olasizlar, xitoy ierogliflarini ham yoza olasizlarmi?",
+            "ru": "Теперь вы умеете говорить по-китайски. А писать иероглифы тоже умеете?",
+            "tj": "Ҳоло бо чинӣ гап зада метавонед, иероглифҳои чиниро ҳам навишта метавонед?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "text": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все уже умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我听不见。",
+          "pinyin": "Lǎoshī, wǒ tīng bu jiàn.",
+          "text": {
+            "uz": "Ustoz, eshitmayapman.",
+            "ru": "Преподаватель, я не слышу.",
+            "tj": "Устод, ман намешунавам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "请大家不要说话！请听老师的问题：你们都会写哪些汉字了？",
+          "pinyin": "Qǐng dàjiā búyào shuōhuà! Qǐng tīng lǎoshī de wèntí: nǐmen dōu huì xiě nǎxiē Hànzì le?",
+          "text": {
+            "uz": "Hamma gapirmasin! Ustozning savolini tinglang: qaysi xitoy ierogliflarini yoza olasizlar?",
+            "ru": "Пожалуйста, не разговаривайте! Слушайте вопрос преподавателя: какие иероглифы вы уже умеете писать?",
+            "tj": "Лутфан, гап назанед! Саволи устодро гӯш кунед: кадом иероглифҳои чиниро навишта метавонед?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我会写这些字了，您看！",
+          "pinyin": "Wǒ huì xiě zhèxiē zì le, nín kàn!",
+          "text": {
+            "uz": "Men mana bu ierogliflarni yoza olaman, qarang!",
+            "ru": "Я уже умею писать эти иероглифы, посмотрите!",
+            "tj": "Ман ин иероглифҳоро навишта метавонам, бинед!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "明年女儿上中学。",
+          "pinyin": "Míngnián nǚ'ér shàng zhōngxué.",
+          "text": {
+            "uz": "Kelasi yil qizimiz o‘rta maktabga boradi.",
+            "ru": "В следующем году дочь пойдёт в среднюю школу.",
+            "tj": "Соли оянда духтарамон ба мактаби миёна меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们家有了一个中学生。",
+          "pinyin": "Wǒmen jiā yǒule yí ge zhōngxuéshēng.",
+          "text": {
+            "uz": "Oilamizda bitta o‘rta maktab o‘quvchisi bo‘ladi.",
+            "ru": "В нашей семье будет ученик средней школы.",
+            "tj": "Дар оилаи мо як хонандаи мактаби миёна мешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还有了一个小学生。",
+          "pinyin": "Hái yǒule yí ge xiǎoxuéshēng.",
+          "text": {
+            "uz": "Yana bitta boshlang‘ich maktab o‘quvchisi ham bo‘ladi.",
+            "ru": "И ещё ученик начальной школы.",
+            "tj": "Боз як хонандаи мактаби ибтидоӣ ҳам мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "上学后，他们都忙了。",
+          "pinyin": "Shàngxué hòu, tāmen dōu máng le.",
+          "text": {
+            "uz": "Maktab boshlangach, ikkalasi ham band bo‘ladi.",
+            "ru": "Когда начнётся школа, оба будут заняты.",
+            "tj": "Баъди мактаб сар кардан, ҳар ду банд мешаванд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "是的。太晚了，睡觉吧。",
+          "pinyin": "Shì de. Tài wǎn le, shuìjiào ba.",
+          "text": {
+            "uz": "Ha. Juda kech bo‘ldi, uxlaylik.",
+            "ru": "Да. Уже очень поздно, давай спать.",
+            "tj": "Ҳа. Хеле дер шуд, биё хоб равем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiǎoxuéshēng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiǎoxuéshēng?",
+            "tj": "xiǎoxuéshēng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "上",
+            "小学生",
+            "火车",
+            "中午"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "小学生 = boshlang‘ich maktab o‘quvchisi (xiǎoxuéshēng)",
+            "ru": "小学生 = ученик начальной школы (xiǎoxuéshēng)",
+            "tj": "小学生 = хонандаи мактаби ибтидоӣ (xiǎoxuéshēng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有些",
+              {
+                "uz": "ba’zilar; ayrim",
+                "ru": "некоторые",
+                "tj": "баъзе"
+              }
+            ],
+            [
+              "有的",
+              {
+                "uz": "ba’zilar",
+                "ru": "некоторые",
+                "tj": "баъзе"
+              }
+            ],
+            [
+              "了",
+              {
+                "uz": "tugallangan harakat aspekt yuklamasi",
+                "ru": "аспектуальная частица завершённости",
+                "tj": "ҳиссачаи намуди амали анҷомёфта"
+              }
+            ],
+            [
+              "写",
+              {
+                "uz": "yozmoq",
+                "ru": "писать",
+                "tj": "навиштан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'boshlang‘ich maktab' xitoycha qaysi?",
+            "ru": "'начальная школа' по-китайски?",
+            "tj": "'мактаби ибтидоӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "中午",
+            "小学",
+            "火车",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "boshlang‘ich maktab = 小学 (xiǎoxué)",
+            "ru": "начальная школа = 小学 (xiǎoxué)",
+            "tj": "мактаби ибтидоӣ = 小学 (xiǎoxué)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你们上火车后看见王老师了吗？",
+          "pinyin": "Nǐmen shàng huǒchē hòu kànjiàn Wáng lǎoshī le ma?",
+          "translation": {
+            "uz": "Poyezdga chiqqaningizdan keyin ustoz Wangni ko‘rdingizmi?",
+            "ru": "После посадки в поезд вы видели преподавателя Ван?",
+            "tj": "Баъди савор шудан ба қатор устод Ванро дидед?"
+          },
+          "tokens": {
+            "uz": [
+              "ustoz",
+              "ko‘rdingizmi",
+              "Yo‘q",
+              "Wangni",
+              "keyin",
+              "Tushda",
+              "Poyezdga",
+              "chiqqaningizdan"
+            ],
+            "ru": [
+              "преподавателя",
+              "посадки",
+              "видели",
+              "вы",
+              "в",
+              "Нет",
+              "Ван",
+              "отправления",
+              "После",
+              "поезд"
+            ],
+            "tj": [
+              "шудан",
+              "нисфирӯзӣ",
+              "қатор",
+              "дидед",
+              "устод",
+              "ба",
+              "Баъди",
+              "Ванро",
+              "Не",
+              "савор"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Poyezdga",
+              "chiqqaningizdan",
+              "keyin",
+              "ustoz",
+              "Wangni",
+              "ko‘rdingizmi"
+            ],
+            "ru": [
+              "После",
+              "посадки",
+              "в",
+              "поезд",
+              "вы",
+              "видели",
+              "преподавателя",
+              "Ван"
+            ],
+            "tj": [
+              "Баъди",
+              "савор",
+              "шудан",
+              "ба",
+              "қатор",
+              "устод",
+              "Ванро",
+              "дидед"
+            ]
+          },
+          "explanation": {
+            "uz": "你们上火车后看见王老师了吗？ — Poyezdga chiqqaningizdan keyin ustoz Wangni ko‘rdingizmi?",
+            "ru": "你们上火车后看见王老师了吗？ — После посадки в поезд вы видели преподавателя Ван?",
+            "tj": "你们上火车后看见王老师了吗？ — Баъди савор шудан ба қатор устод Ванро дидед?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«uxladi; bir uxlab oldi» — xitoychada qaysi biri?",
+            "ru": "«поспал; поспал один раз» — какое предложение по-китайски?",
+            "tj": "«хобид; як бор хобид» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我们都会写了。",
+            "睡了觉；睡了一觉",
+            "我昨天没去商店买东西。",
+            "我买了一个新电脑。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "睡了觉；睡了一觉 — shuìle jiào; shuìle yí jiào",
+            "ru": "睡了觉；睡了一觉 — shuìle jiào; shuìle yí jiào",
+            "tj": "睡了觉；睡了一觉 — shuìle jiào; shuìle yí jiào"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "他们",
+          "pinyin": "tāmen",
+          "options": [
+            "火车",
+            "上",
+            "他们",
+            "中午"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他们 — ular (tāmen)",
+            "ru": "他们 — они; их (tāmen)",
+            "tj": "他们 — онҳо (tāmen)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "上",
+              {
+                "uz": "chiqmoq; transportga minmoq",
+                "ru": "подниматься; садиться в транспорт",
+                "tj": "баромадан; ба нақлиёт савор шудан"
+              }
+            ],
+            [
+              "火车",
+              {
+                "uz": "poyezd",
+                "ru": "поезд",
+                "tj": "қатор"
+              }
+            ],
+            [
+              "中午",
+              {
+                "uz": "tush payti",
+                "ru": "полдень",
+                "tj": "нисфирӯзӣ"
+              }
+            ],
+            [
+              "开",
+              {
+                "uz": "jo‘namoq (transport)",
+                "ru": "отправляться о транспорте",
+                "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "你们上火车后看见王老师了吗？",
+          "pinyin": "Nǐmen shàng huǒchē hòu kànjiàn Wáng lǎoshī le ma?",
+          "options": [
+            "没看见。中午车开以后，有些人睡觉，有些人看书，有些人听歌。",
+            "你们上火车后看见王老师了吗？",
+            "你呢？",
+            "我看了一个电影。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你们上火车后看见王老师了吗？ — Poyezdga chiqqaningizdan keyin ustoz Wangni ko‘rdingizmi?",
+            "ru": "你们上火车后看见王老师了吗？ — После посадки в поезд вы видели преподавателя Ван?",
+            "tj": "你们上火车后看见王老师了吗？ — Баъди савор шудан ба қатор устод Ванро дидед?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Chen Tianzhong nima deydi?",
+            "ru": "Что Chen Tianzhong говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Chen Tianzhong чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "没看见。中午车开以后，有些人睡觉，有些人看书，有些人听歌。",
+            "你呢？",
+            "你们上火车后看见王老师了吗？",
+            "我看了一个电影。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 我看了一个电影。",
+            "ru": "Правильный ответ: 我看了一个电影。",
+            "tj": "Ҷавоби дуруст: 我看了一个电影。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____们上火车后看见王老师了吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "三",
+            "七",
+            "一",
+            "你"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你们上火车后看见王老师了吗？ (Poyezdga chiqqaningizdan keyin ustoz Wangni ko‘rdingizmi?)",
+            "ru": "Верно: 你 — 你们上火车后看见王老师了吗？ (После посадки в поезд вы видели преподавателя Ван?)",
+            "tj": "Дуруст: 你 — 你们上火车后看见王老师了吗？ (Баъди савор шудан ба қатор устод Ванро дидед?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Bai Jiayue avval nima deydi?",
+            "ru": "Что Bai Jiayue говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Bai Jiayue аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你们上火车后看见王老师了吗？",
+            "没看见。中午车开以后，有些人睡觉，有些人看书，有些人听歌。",
+            "我看了一个电影。",
+            "你呢？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 你们上火车后看见王老师了吗？",
+            "ru": "Правильный ответ: 你们上火车后看见王老师了吗？",
+            "tj": "Ҷавоби дуруст: 你们上火车后看见王老师了吗？"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "你们上火车后看见王老师了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "没看见。中午车开以后，有些人睡觉，有些人看书，有些人听歌。",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "你呢？",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "你们上火车后看见王老师了吗？",
+            "我看了一个电影。",
+            "没看见。中午车开以后，有些人睡觉，有些人看书，有些人听歌。",
+            "你呢？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我看了一个电影。",
+            "ru": "Правильный ответ: 我看了一个电影。",
+            "tj": "Ҷавоби дуруст: 我看了一个电影。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "老师，我听不见。",
+          "pinyin": "Lǎoshī, wǒ tīng bu jiàn.",
+          "translation": {
+            "uz": "Ustoz, eshitmayapman.",
+            "ru": "Преподаватель, я не слышу.",
+            "tj": "Устод, ман намешунавам."
+          }
+        }
+      ]
+    }
+  ]
+}

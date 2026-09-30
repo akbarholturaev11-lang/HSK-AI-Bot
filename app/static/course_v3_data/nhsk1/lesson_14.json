@@ -1,0 +1,633 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 14,
+  "source_lesson": 3,
+  "part_no": 5,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "我是中国人",
+  "subtitle": {
+    "uz": "“是” gaplari orqali shaxs yoki narsaning kim/nima ekanini aytish; “的” yordamida egalik va aniqlovchi munosabatini ifodalash; “吗” bilan ha/yo‘q savollarini tuzish.",
+    "ru": "Использовать предложения с “是” для обозначения принадлежности или идентификации; выражать определительные и притяжательные отношения с “的”; строить вопросы да/нет с “吗”.",
+    "tj": "Бо ҷумлаҳои “是” шахс ё чизро муаррифӣ кардан; бо “的” муносибати муайянкунанда ва соҳибиятро ифода кардан; бо “吗” саволҳои ҳа/не сохтан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "太",
+      "pinyin": "tài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda; haddan tashqari",
+        "ru": "слишком; очень",
+        "tj": "хеле; аз ҳад"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "我们",
+      "pinyin": "wǒmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "biz",
+        "ru": "мы",
+        "tj": "мо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "想",
+      "pinyin": "xiǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sog‘inmoq; o‘ylamoq/xohlamoq",
+        "ru": "скучать; думать/хотеть",
+        "tj": "пазмон шудан; фикр/хостан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Annie Chen Tianzhong telefonidagi suratlarni ko‘rmoqda.",
+        "ru": "После занятия в аудитории Энни смотрит фотографии в телефоне Чэнь Тяньчжуна.",
+        "tj": "Пас аз дарс дар синф Энни аксҳои телефони Чэн Тянҷунро тамошо мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "这是谁？",
+          "pinyin": "Zhè shì shéi?",
+          "text": {
+            "uz": "Bu kim?",
+            "ru": "Кто это?",
+            "tj": "Ин кӣ аст?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这是我女朋友。",
+          "pinyin": "Zhè shì wǒ nǚpéngyou.",
+          "text": {
+            "uz": "Bu mening qiz do‘stim.",
+            "ru": "Это моя девушка.",
+            "tj": "Ин дӯстдухтари ман аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你女朋友是哪国人？",
+          "pinyin": "Nǐ nǚpéngyou shì nǎ guó rén?",
+          "text": {
+            "uz": "Qiz do‘sting qaysi davlatdan?",
+            "ru": "Какой национальности твоя девушка?",
+            "tj": "Дӯстдухтари ту аз кадом кишвар аст?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue opasi Wang Yifei bilan videoqo‘ng‘iroq qilmoqda.",
+        "ru": "Дома Ван Исюэ разговаривает по видеосвязи со старшей сестрой Ван Ифэй.",
+        "tj": "Дар хона Ван Исюэ бо хоҳари калониаш Ван Ифэй видеозанг мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "姐姐！",
+          "pinyin": "Jiějie!",
+          "text": {
+            "uz": "Opa!",
+            "ru": "Сестра!",
+            "tj": "Апа!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你工作还忙吗？",
+          "pinyin": "Nǐ gōngzuò hái máng ma?",
+          "text": {
+            "uz": "Ishing hali ham bandmi?",
+            "ru": "Ты всё ещё очень занята на работе?",
+            "tj": "Корат ҳоло ҳам сермашғул аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "对，还很忙。你也很忙吗？",
+          "pinyin": "Duì, hái hěn máng. Nǐ yě hěn máng ma?",
+          "text": {
+            "uz": "Ha, hali ham juda bandman. Sen ham bandmisan?",
+            "ru": "Да, я всё ещё очень занята. А ты тоже занята?",
+            "tj": "Ҳа, ҳоло ҳам хеле банд ҳастам. Ту ҳам бандӣ?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我不太忙。我们很想你。",
+          "pinyin": "Wǒ bú tài máng. Wǒmen hěn xiǎng nǐ.",
+          "text": {
+            "uz": "Men unchalik band emasman. Biz seni juda sog‘indik.",
+            "ru": "Я не очень занята. Мы очень скучаем по тебе.",
+            "tj": "Ман он қадар банд нестам. Мо туро хеле пазмон шудем."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我也想你们。",
+          "pinyin": "Wǒ yě xiǎng nǐmen.",
+          "text": {
+            "uz": "Men ham sizlarni sog‘indim.",
+            "ru": "Я тоже по вам скучаю.",
+            "tj": "Ман ҳам шуморо пазмон шудам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "太",
+            "pinyin": "tài",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "juda; haddan tashqari",
+              "ru": "слишком; очень",
+              "tj": "хеле; аз ҳад"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'juda; haddan tashqari' xitoycha qaysi?",
+            "ru": "'слишком; очень' по-китайски?",
+            "tj": "'хеле; аз ҳад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这",
+            "的",
+            "太",
+            "人"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "juda; haddan tashqari = 太 (tài)",
+            "ru": "слишком; очень = 太 (tài)",
+            "tj": "хеле; аз ҳад = 太 (tài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "我们",
+            "pinyin": "wǒmen",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "biz",
+              "ru": "мы",
+              "tj": "мо"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我们",
+          "pinyin": "wǒmen",
+          "translation": {
+            "uz": "biz",
+            "ru": "мы",
+            "tj": "мо"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "我们",
+          "pinyin": "wǒmen",
+          "options": [
+            "这",
+            "的",
+            "人",
+            "我们"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我们 — biz (wǒmen)",
+            "ru": "我们 — мы (wǒmen)",
+            "tj": "我们 — мо (wǒmen)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "想",
+            "pinyin": "xiǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sog‘inmoq; o‘ylamoq/xohlamoq",
+              "ru": "скучать; думать/хотеть",
+              "tj": "пазмон шудан; фикр/хостан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "想 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 想:",
+            "tj": "Маънои калимаи 想-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "sog‘inmoq; o‘ylamoq/xohlamoq",
+              "ru": "скучать; думать/хотеть",
+              "tj": "пазмон шудан; фикр/хостан"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "想 = sog‘inmoq; o‘ylamoq/xohlamoq (xiǎng)",
+            "ru": "想 = скучать; думать/хотеть (xiǎng)",
+            "tj": "想 = пазмон шудан; фикр/хостан (xiǎng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tài?",
+            "tj": "tài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "这",
+            "人",
+            "的",
+            "太"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "太 = juda; haddan tashqari (tài)",
+            "ru": "太 = слишком; очень (tài)",
+            "tj": "太 = хеле; аз ҳад (tài)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "太",
+              {
+                "uz": "juda; haddan tashqari",
+                "ru": "слишком; очень",
+                "tj": "хеле; аз ҳад"
+              }
+            ],
+            [
+              "我们",
+              {
+                "uz": "biz",
+                "ru": "мы",
+                "tj": "мо"
+              }
+            ],
+            [
+              "想",
+              {
+                "uz": "sog‘inmoq; o‘ylamoq/xohlamoq",
+                "ru": "скучать; думать/хотеть",
+                "tj": "пазмон шудан; фикр/хостан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "我们",
+          "pinyin": "wǒmen",
+          "options": [
+            "这",
+            "我们",
+            "人",
+            "的"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我们 — biz (wǒmen)",
+            "ru": "我们 — мы (wǒmen)",
+            "tj": "我们 — мо (wǒmen)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "太",
+              {
+                "uz": "juda; haddan tashqari",
+                "ru": "слишком; очень",
+                "tj": "хеле; аз ҳад"
+              }
+            ],
+            [
+              "我们",
+              {
+                "uz": "biz",
+                "ru": "мы",
+                "tj": "мо"
+              }
+            ],
+            [
+              "想",
+              {
+                "uz": "sog‘inmoq; o‘ylamoq/xohlamoq",
+                "ru": "скучать; думать/хотеть",
+                "tj": "пазмон шудан; фикр/хостан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我也想你们。",
+          "pinyin": "Wǒ yě xiǎng nǐmen.",
+          "translation": {
+            "uz": "Men ham sizlarni sog‘indim.",
+            "ru": "Я тоже по вам скучаю.",
+            "tj": "Ман ҳам шуморо пазмон шудам."
+          },
+          "tokens": {
+            "uz": [
+              "ham",
+              "band",
+              "Men",
+              "sog‘indim",
+              "unchalik",
+              "sizlarni"
+            ],
+            "ru": [
+              "Я",
+              "очень",
+              "скучаю",
+              "вам",
+              "тоже",
+              "не",
+              "по"
+            ],
+            "tj": [
+              "қадар",
+              "пазмон",
+              "Ман",
+              "ҳам",
+              "шудам",
+              "он",
+              "шуморо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "ham",
+              "sizlarni",
+              "sog‘indim"
+            ],
+            "ru": [
+              "Я",
+              "тоже",
+              "по",
+              "вам",
+              "скучаю"
+            ],
+            "tj": [
+              "Ман",
+              "ҳам",
+              "шуморо",
+              "пазмон",
+              "шудам"
+            ]
+          },
+          "explanation": {
+            "uz": "我也想你们。 — Men ham sizlarni sog‘indim.",
+            "ru": "我也想你们。 — Я тоже по вам скучаю.",
+            "tj": "我也想你们。 — Ман ҳам шуморо пазмон шудам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men ham sizlarni sog‘indim.",
+            "ru": "Я тоже по вам скучаю.",
+            "tj": "Ман ҳам шуморо пазмон шудам."
+          },
+          "tokens": [
+            "想",
+            "的",
+            "也",
+            "我",
+            "人",
+            "你们"
+          ],
+          "answer_tokens": [
+            "我",
+            "也",
+            "想",
+            "你们"
+          ],
+          "explanation": {
+            "uz": "我也想你们。 — Wǒ yě xiǎng nǐmen.",
+            "ru": "我也想你们。 — Wǒ yě xiǎng nǐmen.",
+            "tj": "我也想你们。 — Wǒ yě xiǎng nǐmen."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我们",
+          "pinyin": "wǒmen",
+          "translation": {
+            "uz": "biz",
+            "ru": "мы",
+            "tj": "мо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "吗 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 吗:",
+            "tj": "Маънои калимаи 吗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            },
+            {
+              "uz": "ha/yo‘q savol yuklamasi",
+              "ru": "вопросительная частица",
+              "tj": "ҳиссачаи саволи ҳа/не"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "吗 = ha/yo‘q savol yuklamasi (ma)",
+            "ru": "吗 = вопросительная частица (ma)",
+            "tj": "吗 = ҳиссачаи саволи ҳа/не (ma)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "吗",
+            "pinyin": "ma",
+            "meaning": {
+              "uz": "ha/yo‘q savol yuklamasi",
+              "ru": "вопросительная частица",
+              "tj": "ҳиссачаи саволи ҳа/не"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'biz' xitoycha qaysi?",
+            "ru": "'мы' по-китайски?",
+            "tj": "'мо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "我们",
+            "人",
+            "的",
+            "这"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "biz = 我们 (wǒmen)",
+            "ru": "мы = 我们 (wǒmen)",
+            "tj": "мо = 我们 (wǒmen)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "我们",
+            "pinyin": "wǒmen",
+            "meaning": {
+              "uz": "biz",
+              "ru": "мы",
+              "tj": "мо"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

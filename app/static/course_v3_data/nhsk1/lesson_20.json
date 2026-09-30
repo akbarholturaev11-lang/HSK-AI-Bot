@@ -1,0 +1,676 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 20,
+  "source_lesson": 4,
+  "part_no": 5,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "我有两个孩子",
+  "subtitle": {
+    "uz": "“有” orqali egalik va mavjudlikni ifodalash; sonlarni, “呢” savol yuklamasini va son+o‘lchov so‘zi tuzilmasini ishlatish; yosh va oila a’zolari haqida so‘rash va javob berish.",
+    "ru": "Выражать наличие и обладание с “有”; использовать числа, вопросительную частицу “呢” и структуру число+счётное слово; спрашивать и отвечать о возрасте и семье.",
+    "tj": "Бо “有” соҳибият ва мавҷудиятро ифода кардан; рақамҳо, ҳиссачаи саволии “呢” ва сохтори рақам+воҳиди ҳисобро истифода бурдан; дар бораи синну сол ва оила саволу ҷавоб кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "岁",
+      "pinyin": "suì",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yosh (yil)",
+        "ru": "лет (возраст)",
+        "tj": "сола (синну сол)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "他",
+      "pinyin": "tā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u (erkak)",
+        "ru": "он; его",
+        "tj": "ӯ (мард)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "今年",
+      "pinyin": "jīnnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bu yil",
+        "ru": "этот год",
+        "tj": "имсол"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "多",
+      "pinyin": "duō",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanchalik; necha",
+        "ru": "насколько; сколько",
+        "tj": "чӣ қадар; чанд"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她很忙。",
+          "pinyin": "Tā hěn máng.",
+          "text": {
+            "uz": "U juda band.",
+            "ru": "Она очень занята.",
+            "tj": "Ӯ хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "text": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffus payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我没有哥哥。",
+          "pinyin": "Wǒ méiyǒu gēge.",
+          "text": {
+            "uz": "Mening akam yo‘q.",
+            "ru": "У меня нет старшего брата.",
+            "tj": "Ман бародари калон надорам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "text": {
+            "uz": "Oilangda nechta odam bor?",
+            "ru": "Сколько человек в твоей семье?",
+            "tj": "Дар оилаи ту чанд нафар ҳаст?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yixue o‘g‘li bilan ketayotib Yang Tonglega duch keladi.",
+        "ru": "На улице Ван Исюэ встречает Ян Тунлэ, гуляя с сыном.",
+        "tj": "Дар кӯча Ван Исюэ бо писараш рафта истода, бо Ян Тунлэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "这是您儿子吗？",
+          "pinyin": "Zhè shì nín érzi ma?",
+          "text": {
+            "uz": "Bu sizning o‘g‘lingizmi?",
+            "ru": "Это ваш сын?",
+            "tj": "Ин писари шумост?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "您儿子几岁？",
+          "pinyin": "Nín érzi jǐ suì?",
+          "text": {
+            "uz": "O‘g‘lingiz necha yoshda?",
+            "ru": "Сколько лет вашему сыну?",
+            "tj": "Писари шумо чандсола аст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "岁",
+            "pinyin": "suì",
+            "pos": "m.",
+            "meaning": {
+              "uz": "yosh (yil)",
+              "ru": "лет (возраст)",
+              "tj": "сола (синну сол)"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "岁",
+          "pinyin": "suì",
+          "options": [
+            "有",
+            "个",
+            "多少",
+            "岁"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "岁 — yosh (yil) (suì)",
+            "ru": "岁 — лет (возраст) (suì)",
+            "tj": "岁 — сола (синну сол) (suì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "他",
+            "pinyin": "tā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u (erkak)",
+              "ru": "он; его",
+              "tj": "ӯ (мард)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "他 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 他:",
+            "tj": "Маънои калимаи 他-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "u (erkak)",
+              "ru": "он; его",
+              "tj": "ӯ (мард)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "他 = u (erkak) (tā)",
+            "ru": "他 = он; его (tā)",
+            "tj": "他 = ӯ (мард) (tā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "今年",
+            "pinyin": "jīnnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bu yil",
+              "ru": "этот год",
+              "tj": "имсол"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīnnián qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīnnián?",
+            "tj": "jīnnián кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "今年",
+            "多少",
+            "有",
+            "个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今年 = bu yil (jīnnián)",
+            "ru": "今年 = этот год (jīnnián)",
+            "tj": "今年 = имсол (jīnnián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "多",
+            "pinyin": "duō",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanchalik; necha",
+              "ru": "насколько; сколько",
+              "tj": "чӣ қадар; чанд"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "多",
+          "pinyin": "duō",
+          "translation": {
+            "uz": "qanchalik; necha",
+            "ru": "насколько; сколько",
+            "tj": "чӣ қадар; чанд"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "多 talaffuzini tanlang:",
+            "ru": "Выберите произношение 多:",
+            "tj": "Талаффузи 多-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gè",
+            "duōshao",
+            "duō",
+            "yǒu"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "多 — duō",
+            "ru": "多 — duō",
+            "tj": "多 — duō"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yosh (yil)' xitoycha qaysi?",
+            "ru": "'лет (возраст)' по-китайски?",
+            "tj": "'сола (синну сол)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "有",
+            "个",
+            "岁"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yosh (yil) = 岁 (suì)",
+            "ru": "лет (возраст) = 岁 (suì)",
+            "tj": "сола (синну сол) = 岁 (suì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "岁",
+              {
+                "uz": "yosh (yil)",
+                "ru": "лет (возраст)",
+                "tj": "сола (синну сол)"
+              }
+            ],
+            [
+              "他",
+              {
+                "uz": "u (erkak)",
+                "ru": "он; его",
+                "tj": "ӯ (мард)"
+              }
+            ],
+            [
+              "今年",
+              {
+                "uz": "bu yil",
+                "ru": "этот год",
+                "tj": "имсол"
+              }
+            ],
+            [
+              "多",
+              {
+                "uz": "qanchalik; necha",
+                "ru": "насколько; сколько",
+                "tj": "чӣ қадар; чанд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "O‘g‘lingiz necha yoshda?",
+            "ru": "Сколько лет вашему сыну?",
+            "tj": "Писари шумо чандсола аст?"
+          },
+          "tokens": [
+            "儿子",
+            "几",
+            "您",
+            "岁",
+            "有",
+            "多少"
+          ],
+          "answer_tokens": [
+            "您",
+            "儿子",
+            "几",
+            "岁"
+          ],
+          "explanation": {
+            "uz": "您儿子几岁？ — Nín érzi jǐ suì?",
+            "ru": "您儿子几岁？ — Nín érzi jǐ suì?",
+            "tj": "您儿子几岁？ — Nín érzi jǐ suì?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "您儿子几岁？",
+          "pinyin": "Nín érzi jǐ suì?",
+          "translation": {
+            "uz": "O‘g‘lingiz necha yoshda?",
+            "ru": "Сколько лет вашему сыну?",
+            "tj": "Писари шумо чандсола аст?"
+          },
+          "tokens": {
+            "uz": [
+              "yoshda",
+              "necha",
+              "O‘g‘lingiz"
+            ],
+            "ru": [
+              "сыну",
+              "лет",
+              "Сколько",
+              "вашему"
+            ],
+            "tj": [
+              "чандсола",
+              "шумо",
+              "аст",
+              "Писари"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "O‘g‘lingiz",
+              "necha",
+              "yoshda"
+            ],
+            "ru": [
+              "Сколько",
+              "лет",
+              "вашему",
+              "сыну"
+            ],
+            "tj": [
+              "Писари",
+              "шумо",
+              "чандсола",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "您儿子几岁？ — O‘g‘lingiz necha yoshda?",
+            "ru": "您儿子几岁？ — Сколько лет вашему сыну?",
+            "tj": "您儿子几岁？ — Писари шумо чандсола аст?"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "岁",
+              {
+                "uz": "yosh (yil)",
+                "ru": "лет (возраст)",
+                "tj": "сола (синну сол)"
+              }
+            ],
+            [
+              "他",
+              {
+                "uz": "u (erkak)",
+                "ru": "он; его",
+                "tj": "ӯ (мард)"
+              }
+            ],
+            [
+              "今年",
+              {
+                "uz": "bu yil",
+                "ru": "этот год",
+                "tj": "имсол"
+              }
+            ],
+            [
+              "多",
+              {
+                "uz": "qanchalik; necha",
+                "ru": "насколько; сколько",
+                "tj": "чӣ қадар; чанд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "多",
+          "pinyin": "duō",
+          "options": [
+            "个",
+            "多少",
+            "多",
+            "有"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "多 — qanchalik; necha (duō)",
+            "ru": "多 — насколько; сколько (duō)",
+            "tj": "多 — чӣ қадар; чанд (duō)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "多",
+          "pinyin": "duō",
+          "translation": {
+            "uz": "qanchalik; necha",
+            "ru": "насколько; сколько",
+            "tj": "чӣ қадар; чанд"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "女儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 女儿:",
+            "tj": "Маънои калимаи 女儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "女儿 = qiz farzand (nǚ'ér)",
+            "ru": "女儿 = дочь (nǚ'ér)",
+            "tj": "女儿 = духтар (nǚ'ér)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "女儿",
+            "pinyin": "nǚ'ér",
+            "meaning": {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qanchalik; necha' xitoycha qaysi?",
+            "ru": "'насколько; сколько' по-китайски?",
+            "tj": "'чӣ қадар; чанд' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "有",
+            "个",
+            "多"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qanchalik; necha = 多 (duō)",
+            "ru": "насколько; сколько = 多 (duō)",
+            "tj": "чӣ қадар; чанд = 多 (duō)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "多",
+            "pinyin": "duō",
+            "meaning": {
+              "uz": "qanchalik; necha",
+              "ru": "насколько; сколько",
+              "tj": "чӣ қадар; чанд"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

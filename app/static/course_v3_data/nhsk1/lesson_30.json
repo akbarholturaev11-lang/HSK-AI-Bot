@@ -1,0 +1,682 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 30,
+  "source_lesson": 5,
+  "part_no": 5,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "今天我休息",
+  "subtitle": {
+    "uz": "Sana va hafta kunlarini xitoycha tartibda aytish; “会” bilan o‘rganilgan qobiliyatni ifodalash; nominal-predikativ gaplarni tushunish va ishlatish.",
+    "ru": "Называть даты и дни недели по-китайски; выражать приобретённое умение с “会”; понимать и использовать именные сказуемые.",
+    "tj": "Сана ва рӯзҳои ҳафтаро бо тартиби чинӣ гуфтан; бо “会” қобилияти омӯхташударо ифода кардан; ҷумлаҳои номӣ-хабариро фаҳмидан ва истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "新",
+      "pinyin": "xīn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yangi",
+        "ru": "новый",
+        "tj": "нав"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "电脑",
+      "pinyin": "diànnǎo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kompyuter",
+        "ru": "компьютер",
+        "tj": "компютер"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "真",
+      "pinyin": "zhēn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "haqiqatan; juda",
+        "ru": "действительно; очень",
+        "tj": "воқеан; хеле"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "text": {
+            "uz": "Bugun nechanchi sana?",
+            "ru": "Какое сегодня число?",
+            "tj": "Имрӯз чандум аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "text": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期几？",
+          "pinyin": "Xīngqī jǐ?",
+          "text": {
+            "uz": "Bugun haftaning qaysi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "星期日。今天我休息。",
+          "pinyin": "Xīngqīrì. Jīntiān wǒ xiūxi.",
+          "text": {
+            "uz": "Yakshanba. Bugun men dam olaman.",
+            "ru": "Воскресенье. Сегодня я отдыхаю.",
+            "tj": "Якшанбе. Имрӯз ман истироҳат мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffusda suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "text": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做。",
+          "pinyin": "Wǒ huì zuò.",
+          "text": {
+            "uz": "Ha, pishira olaman.",
+            "ru": "Да, умею.",
+            "tj": "Ҳа, метавонам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做什么？",
+          "pinyin": "Nǐ huì zuò shénme?",
+          "text": {
+            "uz": "Nima pishira olasan?",
+            "ru": "Что ты умеешь готовить?",
+            "tj": "Чӣ пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做面条儿、饺子，也会做一些菜。星期天我也做饭。",
+          "pinyin": "Wǒ huì zuò miàntiáor, jiǎozi, yě huì zuò yìxiē cài. Xīngqītiān wǒ yě zuò fàn.",
+          "text": {
+            "uz": "Men ugra, jiaozi va ba’zi taomlarni pishira olaman. Yakshanba kuni ham ovqat pishiraman.",
+            "ru": "Я умею готовить лапшу, цзяоцзы и некоторые другие блюда. По воскресеньям я тоже готовлю.",
+            "tj": "Ман угро, ҷяозы ва баъзе таомҳоро пухта метавонам. Рӯзи якшанбе ҳам хӯрок мепазам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle ishdan chiqish payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают после работы.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ баъди кор суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "下班。",
+          "pinyin": "Xiàbān.",
+          "text": {
+            "uz": "Ha, chiqdim.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这是你的新电脑吗？",
+          "pinyin": "Zhè shì nǐ de xīn diànnǎo ma?",
+          "text": {
+            "uz": "Bu sening yangi kompyuteringmi?",
+            "ru": "Это твой новый компьютер?",
+            "tj": "Ин компютери нави туст?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "是的，是我的新电脑。",
+          "pinyin": "Shì de, shì wǒ de xīn diànnǎo.",
+          "text": {
+            "uz": "Ha, bu mening yangi kompyuterim.",
+            "ru": "Да, это мой новый компьютер.",
+            "tj": "Ҳа, ин компютери нави ман аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "新",
+            "pinyin": "xīn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "yangi",
+              "ru": "новый",
+              "tj": "нав"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "新",
+          "pinyin": "xīn",
+          "options": [
+            "今天",
+            "号",
+            "新",
+            "月"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "新 — yangi (xīn)",
+            "ru": "新 — новый (xīn)",
+            "tj": "新 — нав (xīn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "电脑",
+            "pinyin": "diànnǎo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "电脑 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 电脑:",
+            "tj": "Маънои калимаи 电脑-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "电脑 = kompyuter (diànnǎo)",
+            "ru": "电脑 = компьютер (diànnǎo)",
+            "tj": "电脑 = компютер (diànnǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "真",
+            "pinyin": "zhēn",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "haqiqatan; juda",
+              "ru": "действительно; очень",
+              "tj": "воқеан; хеле"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "真",
+          "pinyin": "zhēn",
+          "translation": {
+            "uz": "haqiqatan; juda",
+            "ru": "действительно; очень",
+            "tj": "воқеан; хеле"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhēn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhēn?",
+            "tj": "zhēn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "真",
+            "今天",
+            "月",
+            "号"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "真 = haqiqatan; juda (zhēn)",
+            "ru": "真 = действительно; очень (zhēn)",
+            "tj": "真 = воқеан; хеле (zhēn)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "新 talaffuzini tanlang:",
+            "ru": "Выберите произношение 新:",
+            "tj": "Талаффузи 新-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xīn",
+            "hào",
+            "yuè",
+            "jīntiān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "新 — xīn",
+            "ru": "新 — xīn",
+            "tj": "新 — xīn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "新",
+              {
+                "uz": "yangi",
+                "ru": "новый",
+                "tj": "нав"
+              }
+            ],
+            [
+              "电脑",
+              {
+                "uz": "kompyuter",
+                "ru": "компьютер",
+                "tj": "компютер"
+              }
+            ],
+            [
+              "真",
+              {
+                "uz": "haqiqatan; juda",
+                "ru": "действительно; очень",
+                "tj": "воқеан; хеле"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "新",
+              {
+                "uz": "yangi",
+                "ru": "новый",
+                "tj": "нав"
+              }
+            ],
+            [
+              "电脑",
+              {
+                "uz": "kompyuter",
+                "ru": "компьютер",
+                "tj": "компютер"
+              }
+            ],
+            [
+              "真",
+              {
+                "uz": "haqiqatan; juda",
+                "ru": "действительно; очень",
+                "tj": "воқеан; хеле"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "真",
+          "pinyin": "zhēn",
+          "options": [
+            "月",
+            "今天",
+            "真",
+            "号"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "真 — haqiqatan; juda (zhēn)",
+            "ru": "真 — действительно; очень (zhēn)",
+            "tj": "真 — воқеан; хеле (zhēn)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ha, bu mening yangi kompyuterim.",
+            "ru": "Да, это мой новый компьютер.",
+            "tj": "Ҳа, ин компютери нави ман аст."
+          },
+          "tokens": [
+            "的",
+            "的",
+            "新",
+            "是",
+            "是",
+            "我",
+            "今天",
+            "电脑",
+            "号"
+          ],
+          "answer_tokens": [
+            "是",
+            "的",
+            "是",
+            "我",
+            "的",
+            "新",
+            "电脑"
+          ],
+          "explanation": {
+            "uz": "是的，是我的新电脑。 — Shì de, shì wǒ de xīn diànnǎo.",
+            "ru": "是的，是我的新电脑。 — Shì de, shì wǒ de xīn diànnǎo.",
+            "tj": "是的，是我的新电脑。 — Shì de, shì wǒ de xīn diànnǎo."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "是的，是我的新电脑。",
+          "pinyin": "Shì de, shì wǒ de xīn diànnǎo.",
+          "translation": {
+            "uz": "Ha, bu mening yangi kompyuterim.",
+            "ru": "Да, это мой новый компьютер.",
+            "tj": "Ҳа, ин компютери нави ман аст."
+          },
+          "tokens": {
+            "uz": [
+              "kompyuterim",
+              "mening",
+              "yangi",
+              "sening",
+              "Ha",
+              "bu",
+              "Bu"
+            ],
+            "ru": [
+              "твой",
+              "Это",
+              "Да",
+              "это",
+              "компьютер",
+              "новый",
+              "мой"
+            ],
+            "tj": [
+              "ман",
+              "нави",
+              "туст",
+              "ин",
+              "компютери",
+              "Ин",
+              "аст",
+              "Ҳа"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "bu",
+              "mening",
+              "yangi",
+              "kompyuterim"
+            ],
+            "ru": [
+              "Да",
+              "это",
+              "мой",
+              "новый",
+              "компьютер"
+            ],
+            "tj": [
+              "Ҳа",
+              "ин",
+              "компютери",
+              "нави",
+              "ман",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "是的，是我的新电脑。 — Ha, bu mening yangi kompyuterim.",
+            "ru": "是的，是我的新电脑。 — Да, это мой новый компьютер.",
+            "tj": "是的，是我的新电脑。 — Ҳа, ин компютери нави ман аст."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "真",
+          "pinyin": "zhēn",
+          "translation": {
+            "uz": "haqiqatan; juda",
+            "ru": "действительно; очень",
+            "tj": "воқеан; хеле"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一些 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一些:",
+            "tj": "Маънои калимаи 一些-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "bir oz; ba’zi",
+              "ru": "немного; некоторые",
+              "tj": "каме; баъзе"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "一些 = bir oz; ba’zi (yìxiē)",
+            "ru": "一些 = немного; некоторые (yìxiē)",
+            "tj": "一些 = каме; баъзе (yìxiē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一些",
+            "pinyin": "yìxiē",
+            "meaning": {
+              "uz": "bir oz; ba’zi",
+              "ru": "немного; некоторые",
+              "tj": "каме; баъзе"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'haqiqatan; juda' xitoycha qaysi?",
+            "ru": "'действительно; очень' по-китайски?",
+            "tj": "'воқеан; хеле' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "今天",
+            "月",
+            "号",
+            "真"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "haqiqatan; juda = 真 (zhēn)",
+            "ru": "действительно; очень = 真 (zhēn)",
+            "tj": "воқеан; хеле = 真 (zhēn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "真",
+            "pinyin": "zhēn",
+            "meaning": {
+              "uz": "haqiqatan; juda",
+              "ru": "действительно; очень",
+              "tj": "воқеан; хеле"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

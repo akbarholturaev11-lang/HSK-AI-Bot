@@ -1,0 +1,721 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 28,
+  "source_lesson": 5,
+  "part_no": 3,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "今天我休息",
+  "subtitle": {
+    "uz": "Sana va hafta kunlarini xitoycha tartibda aytish; “会” bilan o‘rganilgan qobiliyatni ifodalash; nominal-predikativ gaplarni tushunish va ishlatish.",
+    "ru": "Называть даты и дни недели по-китайски; выражать приобретённое умение с “会”; понимать и использовать именные сказуемые.",
+    "tj": "Сана ва рӯзҳои ҳафтаро бо тартиби чинӣ гуфтан; бо “会” қобилияти омӯхташударо ифода кардан; ҷумлаҳои номӣ-хабариро фаҳмидан ва истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "会",
+      "pinyin": "huì",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "qila olmoq; bilmoq",
+        "ru": "уметь; мочь",
+        "tj": "тавонистан; уҳда кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "做饭",
+      "pinyin": "zuò fàn",
+      "pos": "comp.",
+      "meaning": {
+        "uz": "ovqat pishirmoq",
+        "ru": "готовить еду",
+        "tj": "хӯрок пухтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "做",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq; tayyorlamoq",
+        "ru": "делать; готовить",
+        "tj": "кардан; тайёр кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "面条儿",
+      "pinyin": "miàntiáor",
+      "pos": "n.",
+      "meaning": {
+        "uz": "lag‘mon; lapsha",
+        "ru": "лапша",
+        "tj": "угро"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Modal fe’l “会”",
+        "ru": "Модальный глагол “会”",
+        "tj": "Феъли модалии “会”"
+      },
+      "title_zh": "能愿动词“会”",
+      "rule": {
+        "uz": "“会” fe’l oldidan kelib o‘rganish orqali hosil qilingan qobiliyatni bildiradi.",
+        "ru": "“会” ставится перед глаголом и выражает умение, приобретённое в результате обучения.",
+        "tj": "“会” пеш аз феъл омада, қобилияти тавассути омӯзиш бадастомадаро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "translation": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "zh": "我不会做菜。",
+          "pinyin": "Wǒ bú huì zuò cài.",
+          "translation": {
+            "uz": "Men taom pishira olmayman.",
+            "ru": "Я не умею готовить блюда.",
+            "tj": "Ман таом пухта наметавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "text": {
+            "uz": "Bugun nechanchi sana?",
+            "ru": "Какое сегодня число?",
+            "tj": "Имрӯз чандум аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "text": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期几？",
+          "pinyin": "Xīngqī jǐ?",
+          "text": {
+            "uz": "Bugun haftaning qaysi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "星期日。今天我休息。",
+          "pinyin": "Xīngqīrì. Jīntiān wǒ xiūxi.",
+          "text": {
+            "uz": "Yakshanba. Bugun men dam olaman.",
+            "ru": "Воскресенье. Сегодня я отдыхаю.",
+            "tj": "Якшанбе. Имрӯз ман истироҳат мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffusda suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "text": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做。",
+          "pinyin": "Wǒ huì zuò.",
+          "text": {
+            "uz": "Ha, pishira olaman.",
+            "ru": "Да, умею.",
+            "tj": "Ҳа, метавонам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做什么？",
+          "pinyin": "Nǐ huì zuò shénme?",
+          "text": {
+            "uz": "Nima pishira olasan?",
+            "ru": "Что ты умеешь готовить?",
+            "tj": "Чӣ пухта метавонӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "会",
+            "pinyin": "huì",
+            "pos": "mod.",
+            "meaning": {
+              "uz": "qila olmoq; bilmoq",
+              "ru": "уметь; мочь",
+              "tj": "тавонистан; уҳда кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "会 talaffuzini tanlang:",
+            "ru": "Выберите произношение 会:",
+            "tj": "Талаффузи 会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīntiān",
+            "huì",
+            "hào",
+            "yuè"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "会 — huì",
+            "ru": "会 — huì",
+            "tj": "会 — huì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "做饭",
+            "pinyin": "zuò fàn",
+            "pos": "comp.",
+            "meaning": {
+              "uz": "ovqat pishirmoq",
+              "ru": "готовить еду",
+              "tj": "хӯрок пухтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ovqat pishirmoq' xitoycha qaysi?",
+            "ru": "'готовить еду' по-китайски?",
+            "tj": "'хӯрок пухтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "今天",
+            "月",
+            "号",
+            "做饭"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ovqat pishirmoq = 做饭 (zuò fàn)",
+            "ru": "готовить еду = 做饭 (zuò fàn)",
+            "tj": "хӯрок пухтан = 做饭 (zuò fàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "做",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qilmoq; tayyorlamoq",
+              "ru": "делать; готовить",
+              "tj": "кардан; тайёр кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "做",
+          "pinyin": "zuò",
+          "options": [
+            "做",
+            "月",
+            "号",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "做 — qilmoq; tayyorlamoq (zuò)",
+            "ru": "做 — делать; готовить (zuò)",
+            "tj": "做 — кардан; тайёр кардан (zuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "面条儿",
+            "pinyin": "miàntiáor",
+            "pos": "n.",
+            "meaning": {
+              "uz": "lag‘mon; lapsha",
+              "ru": "лапша",
+              "tj": "угро"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "面条儿",
+          "pinyin": "miàntiáor",
+          "translation": {
+            "uz": "lag‘mon; lapsha",
+            "ru": "лапша",
+            "tj": "угро"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "面条儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 面条儿:",
+            "tj": "Маънои калимаи 面条儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            },
+            {
+              "uz": "lag‘mon; lapsha",
+              "ru": "лапша",
+              "tj": "угро"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "面条儿 = lag‘mon; lapsha (miàntiáor)",
+            "ru": "面条儿 = лапша (miàntiáor)",
+            "tj": "面条儿 = угро (miàntiáor)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "huì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается huì?",
+            "tj": "huì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "会",
+            "月",
+            "今天",
+            "号"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会 = qila olmoq; bilmoq (huì)",
+            "ru": "会 = уметь; мочь (huì)",
+            "tj": "会 = тавонистан; уҳда кардан (huì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "会",
+              {
+                "uz": "qila olmoq; bilmoq",
+                "ru": "уметь; мочь",
+                "tj": "тавонистан; уҳда кардан"
+              }
+            ],
+            [
+              "做饭",
+              {
+                "uz": "ovqat pishirmoq",
+                "ru": "готовить еду",
+                "tj": "хӯрок пухтан"
+              }
+            ],
+            [
+              "做",
+              {
+                "uz": "qilmoq; tayyorlamoq",
+                "ru": "делать; готовить",
+                "tj": "кардан; тайёр кардан"
+              }
+            ],
+            [
+              "面条儿",
+              {
+                "uz": "lag‘mon; lapsha",
+                "ru": "лапша",
+                "tj": "угро"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Modal fe’l “会”",
+              "ru": "Модальный глагол “会”",
+              "tj": "Феъли модалии “会”"
+            },
+            "title_zh": "能愿动词“会”",
+            "rule": {
+              "uz": "“会” fe’l oldidan kelib o‘rganish orqali hosil qilingan qobiliyatni bildiradi.",
+              "ru": "“会” ставится перед глаголом и выражает умение, приобретённое в результате обучения.",
+              "tj": "“会” пеш аз феъл омада, қобилияти тавассути омӯзиш бадастомадаро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "你会做饭吗？",
+                "pinyin": "Nǐ huì zuò fàn ma?",
+                "translation": {
+                  "uz": "Ovqat pishira olasanmi?",
+                  "ru": "Ты умеешь готовить?",
+                  "tj": "Ту хӯрок пухта метавонӣ?"
+                }
+              },
+              {
+                "zh": "我不会做菜。",
+                "pinyin": "Wǒ bú huì zuò cài.",
+                "translation": {
+                  "uz": "Men taom pishira olmayman.",
+                  "ru": "Я не умею готовить блюда.",
+                  "tj": "Ман таом пухта наметавонам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          },
+          "tokens": [
+            "你",
+            "今天",
+            "做饭",
+            "会",
+            "吗",
+            "号"
+          ],
+          "answer_tokens": [
+            "你",
+            "会",
+            "做饭",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你会做饭吗？ — Nǐ huì zuò fàn ma?",
+            "ru": "你会做饭吗？ — Nǐ huì zuò fàn ma?",
+            "tj": "你会做饭吗？ — Nǐ huì zuò fàn ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我会做。",
+          "pinyin": "Wǒ huì zuò.",
+          "options": [
+            "你会做饭吗？",
+            "我会做。",
+            "你会做什么？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我会做。 — Ha, pishira olaman.",
+            "ru": "我会做。 — Да, умею.",
+            "tj": "我会做。 — Ҳа, метавонам."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "translation": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "olaman",
+              "pishira",
+              "Ha",
+              "olasanmi",
+              "Ovqat"
+            ],
+            "ru": [
+              "готовить",
+              "умею",
+              "Да",
+              "Ты",
+              "умеешь"
+            ],
+            "tj": [
+              "Ҳа",
+              "пухта",
+              "метавонам",
+              "хӯрок",
+              "Ту",
+              "метавонӣ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ovqat",
+              "pishira",
+              "olasanmi"
+            ],
+            "ru": [
+              "Ты",
+              "умеешь",
+              "готовить"
+            ],
+            "tj": [
+              "Ту",
+              "хӯрок",
+              "пухта",
+              "метавонӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "你会做饭吗？ — Ovqat pishira olasanmi?",
+            "ru": "你会做饭吗？ — Ты умеешь готовить?",
+            "tj": "你会做饭吗？ — Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "面条儿",
+          "pinyin": "miàntiáor",
+          "translation": {
+            "uz": "lag‘mon; lapsha",
+            "ru": "лапша",
+            "tj": "угро"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "休息 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 休息:",
+            "tj": "Маънои калимаи 休息-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "dam olmoq",
+              "ru": "отдыхать",
+              "tj": "истироҳат кардан"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "休息 = dam olmoq (xiūxi)",
+            "ru": "休息 = отдыхать (xiūxi)",
+            "tj": "休息 = истироҳат кардан (xiūxi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "休息",
+            "pinyin": "xiūxi",
+            "meaning": {
+              "uz": "dam olmoq",
+              "ru": "отдыхать",
+              "tj": "истироҳат кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'lag‘mon; lapsha' xitoycha qaysi?",
+            "ru": "'лапша' по-китайски?",
+            "tj": "'угро' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "面条儿",
+            "号",
+            "今天",
+            "月"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "lag‘mon; lapsha = 面条儿 (miàntiáor)",
+            "ru": "лапша = 面条儿 (miàntiáor)",
+            "tj": "угро = 面条儿 (miàntiáor)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "面条儿",
+            "pinyin": "miàntiáor",
+            "meaning": {
+              "uz": "lag‘mon; lapsha",
+              "ru": "лапша",
+              "tj": "угро"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

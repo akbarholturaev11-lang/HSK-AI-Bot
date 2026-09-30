@@ -1,0 +1,637 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 33,
+  "source_lesson": 6,
+  "part_no": 1,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "你的手机号是多少？",
+  "subtitle": {
+    "uz": "Telefon raqamini tushunish va aytish; “想” bilan xohish/niyatni ifodalash; ketma-ket fe’lli gaplarda maqsad va usulni ifodalash; “怎么” bilan harakat usulini so‘rash.",
+    "ru": "Понимать и называть номера телефонов; выражать желание и намерение с “想”; использовать последовательности глаголов для цели и способа действия; спрашивать о способе действия с “怎么”.",
+    "tj": "Рақами телефонро фаҳмидан ва гуфтан; бо “想” хоҳишу ниятро ифода кардан; ҷумлаҳои пайдарпайи феълӣ барои мақсад ва тарзи амал; бо “怎么” тарзи амалро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "手机",
+      "pinyin": "shǒujī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mobil telefon",
+        "ru": "мобильный телефон",
+        "tj": "телефони мобилӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "电话",
+      "pinyin": "diànhuà",
+      "pos": "n.",
+      "meaning": {
+        "uz": "telefon; qo‘ng‘iroq",
+        "ru": "телефон; звонок",
+        "tj": "телефон; занг"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "号",
+      "pinyin": "hào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "raqam",
+        "ru": "номер",
+        "tj": "рақам"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "明天",
+      "pinyin": "míngtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ertaga",
+        "ru": "завтра",
+        "tj": "фардо"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Modal fe’l “想”",
+        "ru": "Модальный глагол “想”",
+        "tj": "Феъли модалии “想”"
+      },
+      "title_zh": "能愿动词“想”",
+      "rule": {
+        "uz": "“想” fe’l oldidan kelib xohish yoki niyatni bildiradi.",
+        "ru": "“想” ставится перед глаголом и выражает желание или намерение.",
+        "tj": "“想” пеш аз феъл омада, хоҳиш ё ниятро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我想去超市。",
+          "pinyin": "Wǒ xiǎng qù chāoshì.",
+          "translation": {
+            "uz": "Men supermarketga bormoqchiman.",
+            "ru": "Я хочу пойти в супермаркет.",
+            "tj": "Ман мехоҳам ба супермаркет равам."
+          }
+        },
+        {
+          "zh": "我哥哥不想休息。",
+          "pinyin": "Wǒ gēge bù xiǎng xiūxi.",
+          "translation": {
+            "uz": "Akam dam olishni xohlamaydi.",
+            "ru": "Мой старший брат не хочет отдыхать.",
+            "tj": "Бародари калонам истироҳат кардан намехоҳад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuedan telefon raqamini so‘ramoqda.",
+        "ru": "В кампусе Ли Вэнь спрашивает у Бай Цзяюэ номер мобильного телефона.",
+        "tj": "Дар кампус Ли Вэн аз Бай Ҷяюэ рақами телефонашро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "家月，你的手机号是多少？",
+          "pinyin": "Jiāyuè, nǐ de shǒujīhào shì duōshao?",
+          "text": {
+            "uz": "Jiayue, mobil raqaming nechchi?",
+            "ru": "Цзяюэ, какой у тебя номер мобильного?",
+            "tj": "Ҷяюэ, рақами мобилиат чанд аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我的手机号是+33 601493190。",
+          "pinyin": "Wǒ de shǒujīhào shì +33 601493190.",
+          "text": {
+            "uz": "Mening mobil raqamim +33 601493190.",
+            "ru": "Мой номер мобильного +33 601493190.",
+            "tj": "Рақами мобилии ман +33 601493190 аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我的手机号是+86 13552721160。",
+          "pinyin": "Wǒ de shǒujīhào shì +86 13552721160.",
+          "text": {
+            "uz": "Mening mobil raqamim +86 13552721160.",
+            "ru": "Мой номер мобильного +86 13552721160.",
+            "tj": "Рақами мобилии ман +86 13552721160 аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "手机",
+            "pinyin": "shǒujī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "手机",
+          "pinyin": "shǒujī",
+          "translation": {
+            "uz": "mobil telefon",
+            "ru": "мобильный телефон",
+            "tj": "телефони мобилӣ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "手机 talaffuzini tanlang:",
+            "ru": "Выберите произношение 手机:",
+            "tj": "Талаффузи 手机-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "míngtiān",
+            "diànhuà",
+            "hào",
+            "shǒujī"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "手机 — shǒujī",
+            "ru": "手机 — shǒujī",
+            "tj": "手机 — shǒujī"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "电话",
+            "pinyin": "diànhuà",
+            "pos": "n.",
+            "meaning": {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'telefon; qo‘ng‘iroq' xitoycha qaysi?",
+            "ru": "'телефон; звонок' по-китайски?",
+            "tj": "'телефон; занг' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "号",
+            "电话",
+            "明天",
+            "手机"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "telefon; qo‘ng‘iroq = 电话 (diànhuà)",
+            "ru": "телефон; звонок = 电话 (diànhuà)",
+            "tj": "телефон; занг = 电话 (diànhuà)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "号",
+            "pinyin": "hào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "号",
+          "pinyin": "hào",
+          "options": [
+            "电话",
+            "号",
+            "手机",
+            "明天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "号 — raqam (hào)",
+            "ru": "号 — номер (hào)",
+            "tj": "号 — рақам (hào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "明天",
+            "pinyin": "míngtiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "明天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 明天:",
+            "tj": "Маънои калимаи 明天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "明天 = ertaga (míngtiān)",
+            "ru": "明天 = завтра (míngtiān)",
+            "tj": "明天 = фардо (míngtiān)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shǒujī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shǒujī?",
+            "tj": "shǒujī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "电话",
+            "手机",
+            "明天",
+            "号"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "手机 = mobil telefon (shǒujī)",
+            "ru": "手机 = мобильный телефон (shǒujī)",
+            "tj": "手机 = телефони мобилӣ (shǒujī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "手机",
+              {
+                "uz": "mobil telefon",
+                "ru": "мобильный телефон",
+                "tj": "телефони мобилӣ"
+              }
+            ],
+            [
+              "电话",
+              {
+                "uz": "telefon; qo‘ng‘iroq",
+                "ru": "телефон; звонок",
+                "tj": "телефон; занг"
+              }
+            ],
+            [
+              "号",
+              {
+                "uz": "raqam",
+                "ru": "номер",
+                "tj": "рақам"
+              }
+            ],
+            [
+              "明天",
+              {
+                "uz": "ertaga",
+                "ru": "завтра",
+                "tj": "фардо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Modal fe’l “想”",
+              "ru": "Модальный глагол “想”",
+              "tj": "Феъли модалии “想”"
+            },
+            "title_zh": "能愿动词“想”",
+            "rule": {
+              "uz": "“想” fe’l oldidan kelib xohish yoki niyatni bildiradi.",
+              "ru": "“想” ставится перед глаголом и выражает желание или намерение.",
+              "tj": "“想” пеш аз феъл омада, хоҳиш ё ниятро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "我想去超市。",
+                "pinyin": "Wǒ xiǎng qù chāoshì.",
+                "translation": {
+                  "uz": "Men supermarketga bormoqchiman.",
+                  "ru": "Я хочу пойти в супермаркет.",
+                  "tj": "Ман мехоҳам ба супермаркет равам."
+                }
+              },
+              {
+                "zh": "我哥哥不想休息。",
+                "pinyin": "Wǒ gēge bù xiǎng xiūxi.",
+                "translation": {
+                  "uz": "Akam dam olishni xohlamaydi.",
+                  "ru": "Мой старший брат не хочет отдыхать.",
+                  "tj": "Бародари калонам истироҳат кардан намехоҳад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Akam dam olishni xohlamaydi.",
+            "ru": "Мой старший брат не хочет отдыхать.",
+            "tj": "Бародари калонам истироҳат кардан намехоҳад."
+          },
+          "tokens": [
+            "我",
+            "电话",
+            "手机",
+            "哥哥",
+            "不",
+            "想",
+            "休息"
+          ],
+          "answer_tokens": [
+            "我",
+            "哥哥",
+            "不",
+            "想",
+            "休息"
+          ],
+          "explanation": {
+            "uz": "我哥哥不想休息。 — Wǒ gēge bù xiǎng xiūxi.",
+            "ru": "我哥哥不想休息。 — Wǒ gēge bù xiǎng xiūxi.",
+            "tj": "我哥哥不想休息。 — Wǒ gēge bù xiǎng xiūxi."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "电话",
+          "pinyin": "diànhuà",
+          "translation": {
+            "uz": "telefon; qo‘ng‘iroq",
+            "ru": "телефон; звонок",
+            "tj": "телефон; занг"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "家月，你的手机号是多少？",
+          "pinyin": "Jiāyuè, nǐ de shǒujīhào shì duōshao?",
+          "options": [
+            "我的手机号是+86 13552721160。",
+            "我的手机号是+33 601493190。",
+            "家月，你的手机号是多少？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "家月，你的手机号是多少？ — Jiayue, mobil raqaming nechchi?",
+            "ru": "家月，你的手机号是多少？ — Цзяюэ, какой у тебя номер мобильного?",
+            "tj": "家月，你的手机号是多少？ — Ҷяюэ, рақами мобилиат чанд аст?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "手机",
+          "pinyin": "shǒujī",
+          "translation": {
+            "uz": "mobil telefon",
+            "ru": "мобильный телефон",
+            "tj": "телефони мобилӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 日:",
+            "tj": "Маънои калимаи 日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            },
+            {
+              "uz": "kun; sana",
+              "ru": "день; дата",
+              "tj": "рӯз; сана"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "日 = kun; sana (rì)",
+            "ru": "日 = день; дата (rì)",
+            "tj": "日 = рӯз; сана (rì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "日",
+            "pinyin": "rì",
+            "meaning": {
+              "uz": "kun; sana",
+              "ru": "день; дата",
+              "tj": "рӯз; сана"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mobil telefon' xitoycha qaysi?",
+            "ru": "'мобильный телефон' по-китайски?",
+            "tj": "'телефони мобилӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "号",
+            "手机",
+            "电话",
+            "明天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "mobil telefon = 手机 (shǒujī)",
+            "ru": "мобильный телефон = 手机 (shǒujī)",
+            "tj": "телефони мобилӣ = 手机 (shǒujī)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "手机",
+            "pinyin": "shǒujī",
+            "meaning": {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

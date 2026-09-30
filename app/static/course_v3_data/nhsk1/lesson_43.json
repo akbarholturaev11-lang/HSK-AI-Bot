@@ -1,0 +1,707 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 43,
+  "source_lesson": 7,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我晚上六点半下班",
+  "subtitle": {
+    "uz": "Voqealar vaqtini tushunish va aytish; “吧” bilan taklif, maslahat, buyruq yoki iltimosni ifodalash; “呢” bilan tasdiqlanayotgan faktni bildirish; vaqt so‘zlari va ravishlarning gapdagi o‘rnini to‘g‘ri qo‘llash.",
+    "ru": "Понимать и называть время событий; использовать “吧” для предложения, совета, побуждения или просьбы; использовать “呢” для подтверждаемого факта; правильно располагать наречия и выражения времени.",
+    "tj": "Вақти рӯйдодҳоро фаҳмидан ва гуфтан; бо “吧” пешниҳод, маслиҳат, амр ё хоҳишро ифода кардан; бо “呢” воқеияти тасдиқшавандаро нишон додан; ҷойи дурусти зарфҳо ва ифодаҳои вақтро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "事",
+      "pinyin": "shì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ish; masala",
+        "ru": "дело; событие",
+        "tj": "кор; масъала"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "上课",
+      "pinyin": "shàngkè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "darsga qatnashmoq; dars boshlamoq",
+        "ru": "быть на занятии; проводить занятие",
+        "tj": "ба дарс рафтан; дарс гузарондан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "呢",
+      "pinyin": "ne",
+      "pos": "part.",
+      "meaning": {
+        "uz": "modal yuklama",
+        "ru": "модальная частица",
+        "tj": "ҳиссачаи модалӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "半",
+      "pinyin": "bàn",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yarim",
+        "ru": "половина",
+        "tj": "ним"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Vaqtni ifodalash (2)",
+        "ru": "Выражение времени (2)",
+        "tj": "Ифодаи вақт (2)"
+      },
+      "title_zh": "时间的表达（2）",
+      "rule": {
+        "uz": "Aniq soatni 点 va 分 bilan aytiladi. 早上、上午、下午、晚上 kabi vaqt otlari kunning vaqt oralig‘ini bildiradi va aniq soat oldidan kelishi mumkin.",
+        "ru": "Точное время выражается с 点 и 分. Слова 早上、上午、下午、晚上 обозначают части дня и могут стоять перед конкретным временем.",
+        "tj": "Вақти дақиқ бо 点 ва 分 ифода мешавад. 早上、上午、下午、晚上 қисми рӯзро нишон медиҳанд ва пеш аз вақти дақиқ омада метавонанд."
+      },
+      "examples": [
+        {
+          "zh": "上午九点半",
+          "pinyin": "shàngwǔ jiǔ diǎn bàn",
+          "translation": {
+            "uz": "ertalab 9:30",
+            "ru": "9:30 утра",
+            "tj": "субҳ 9:30"
+          }
+        },
+        {
+          "zh": "下午两点半",
+          "pinyin": "xiàwǔ liǎng diǎn bàn",
+          "translation": {
+            "uz": "tushdan keyin 2:30",
+            "ru": "2:30 дня",
+            "tj": "баъди нисфирӯзӣ 2:30"
+          }
+        },
+        {
+          "zh": "晚上九点十分",
+          "pinyin": "wǎnshang jiǔ diǎn shí fēn",
+          "translation": {
+            "uz": "kechqurun 9:10",
+            "ru": "9:10 вечера",
+            "tj": "шом 9:10"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bai Jiayue va Annie telefonda gaplashmoqda.",
+        "ru": "Бай Цзяюэ и Энни разговаривают по телефону.",
+        "tj": "Бай Ҷяюэ ва Энни бо телефон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
+          "text": {
+            "uz": "Hozir soat necha?",
+            "ru": "Который сейчас час?",
+            "tj": "Ҳозир соат чанд?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "早上八点四十分。",
+          "pinyin": "Zǎoshang bā diǎn sìshí fēn.",
+          "text": {
+            "uz": "Ertalab soat 8:40.",
+            "ru": "Сейчас 8:40 утра.",
+            "tj": "Субҳ соати 8:40."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我上午十点十分有课。",
+          "pinyin": "Wǒ shàngwǔ shí diǎn shí fēn yǒu kè.",
+          "text": {
+            "uz": "Ertalab soat 10:10 da darsim bor.",
+            "ru": "У меня занятие в 10:10 утра.",
+            "tj": "Субҳ соати 10:10 дарс дорам."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好的，我们下午两点见吧。",
+          "pinyin": "Hǎo de, wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+          "text": {
+            "uz": "Xo‘p, tushdan keyin soat 2 da uchrashamiz.",
+            "ru": "Хорошо, давай встретимся в 2 часа дня.",
+            "tj": "Хуб, баъди нисфирӯзӣ соати 2 вомехӯрем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuega duch keladi.",
+        "ru": "В кампусе Ли Вэнь встречает Бай Цзяюэ.",
+        "tj": "Дар кампус Ли Вэн бо Бай Ҷяюэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "下午我想去电影院看电影，你去吗？",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù diànyǐngyuàn kàn diànyǐng, nǐ qù ma?",
+          "text": {
+            "uz": "Bugun tushdan keyin kinoteatrga film ko‘rgani bormoqchiman. Sen ham borasanmi?",
+            "ru": "Сегодня днём я хочу пойти в кино. Ты пойдёшь?",
+            "tj": "Имрӯз баъди нисфирӯзӣ мехоҳам ба кино равам. Ту ҳам меравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我不想去，下午还有事。",
+          "pinyin": "Wǒ bù xiǎng qù, xiàwǔ hái yǒu shì.",
+          "text": {
+            "uz": "Borgim kelmaydi, tushdan keyin yana ishim bor.",
+            "ru": "Я не хочу идти, днём у меня ещё есть дела.",
+            "tj": "Рафтан намехоҳам, баъди нисфирӯзӣ боз кор дорам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好的。明天呢？",
+          "pinyin": "Hǎo de. Míngtiān ne?",
+          "text": {
+            "uz": "Xo‘p. Ertaga-chi?",
+            "ru": "Хорошо. А завтра?",
+            "tj": "Хуб. Фардо чӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "事",
+            "pinyin": "shì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ish; masala",
+              "ru": "дело; событие",
+              "tj": "кор; масъала"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "事 talaffuzini tanlang:",
+            "ru": "Выберите произношение 事:",
+            "tj": "Талаффузи 事-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shì",
+            "diǎn",
+            "zǎoshang",
+            "xiànzài"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "事 — shì",
+            "ru": "事 — shì",
+            "tj": "事 — shì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "上课",
+            "pinyin": "shàngkè",
+            "pos": "v.",
+            "meaning": {
+              "uz": "darsga qatnashmoq; dars boshlamoq",
+              "ru": "быть на занятии; проводить занятие",
+              "tj": "ба дарс рафтан; дарс гузарондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'darsga qatnashmoq; dars boshlamoq' xitoycha qaysi?",
+            "ru": "'быть на занятии; проводить занятие' по-китайски?",
+            "tj": "'ба дарс рафтан; дарс гузарондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "现在",
+            "点",
+            "早上",
+            "上课"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "darsga qatnashmoq; dars boshlamoq = 上课 (shàngkè)",
+            "ru": "быть на занятии; проводить занятие = 上课 (shàngkè)",
+            "tj": "ба дарс рафтан; дарс гузарондан = 上课 (shàngkè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "呢",
+            "pinyin": "ne",
+            "pos": "part.",
+            "meaning": {
+              "uz": "modal yuklama",
+              "ru": "модальная частица",
+              "tj": "ҳиссачаи модалӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "呢",
+          "pinyin": "ne",
+          "translation": {
+            "uz": "modal yuklama",
+            "ru": "модальная частица",
+            "tj": "ҳиссачаи модалӣ"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "呢",
+          "pinyin": "ne",
+          "options": [
+            "呢",
+            "点",
+            "早上",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "呢 — modal yuklama (ne)",
+            "ru": "呢 — модальная частица (ne)",
+            "tj": "呢 — ҳиссачаи модалӣ (ne)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "半",
+            "pinyin": "bàn",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "半 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 半:",
+            "tj": "Маънои калимаи 半-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "半 = yarim (bàn)",
+            "ru": "半 = половина (bàn)",
+            "tj": "半 = ним (bàn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shì?",
+            "tj": "shì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "现在",
+            "事",
+            "早上",
+            "点"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "事 = ish; masala (shì)",
+            "ru": "事 = дело; событие (shì)",
+            "tj": "事 = кор; масъала (shì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "事",
+              {
+                "uz": "ish; masala",
+                "ru": "дело; событие",
+                "tj": "кор; масъала"
+              }
+            ],
+            [
+              "上课",
+              {
+                "uz": "darsga qatnashmoq; dars boshlamoq",
+                "ru": "быть на занятии; проводить занятие",
+                "tj": "ба дарс рафтан; дарс гузарондан"
+              }
+            ],
+            [
+              "呢",
+              {
+                "uz": "modal yuklama",
+                "ru": "модальная частица",
+                "tj": "ҳиссачаи модалӣ"
+              }
+            ],
+            [
+              "半",
+              {
+                "uz": "yarim",
+                "ru": "половина",
+                "tj": "ним"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Vaqtni ifodalash (2)",
+              "ru": "Выражение времени (2)",
+              "tj": "Ифодаи вақт (2)"
+            },
+            "title_zh": "时间的表达（2）",
+            "rule": {
+              "uz": "Aniq soatni 点 va 分 bilan aytiladi. 早上、上午、下午、晚上 kabi vaqt otlari kunning vaqt oralig‘ini bildiradi va aniq soat oldidan kelishi mumkin.",
+              "ru": "Точное время выражается с 点 и 分. Слова 早上、上午、下午、晚上 обозначают части дня и могут стоять перед конкретным временем.",
+              "tj": "Вақти дақиқ бо 点 ва 分 ифода мешавад. 早上、上午、下午、晚上 қисми рӯзро нишон медиҳанд ва пеш аз вақти дақиқ омада метавонанд."
+            },
+            "examples": [
+              {
+                "zh": "上午九点半",
+                "pinyin": "shàngwǔ jiǔ diǎn bàn",
+                "translation": {
+                  "uz": "ertalab 9:30",
+                  "ru": "9:30 утра",
+                  "tj": "субҳ 9:30"
+                }
+              },
+              {
+                "zh": "下午两点半",
+                "pinyin": "xiàwǔ liǎng diǎn bàn",
+                "translation": {
+                  "uz": "tushdan keyin 2:30",
+                  "ru": "2:30 дня",
+                  "tj": "баъди нисфирӯзӣ 2:30"
+                }
+              },
+              {
+                "zh": "晚上九点十分",
+                "pinyin": "wǎnshang jiǔ diǎn shí fēn",
+                "translation": {
+                  "uz": "kechqurun 9:10",
+                  "ru": "9:10 вечера",
+                  "tj": "шом 9:10"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "ertalab 9:30",
+            "ru": "9:30 утра",
+            "tj": "субҳ 9:30"
+          },
+          "tokens": [
+            "早上",
+            "半",
+            "九",
+            "上午",
+            "现在",
+            "点"
+          ],
+          "answer_tokens": [
+            "上午",
+            "九",
+            "点",
+            "半"
+          ],
+          "explanation": {
+            "uz": "上午九点半 — shàngwǔ jiǔ diǎn bàn",
+            "ru": "上午九点半 — shàngwǔ jiǔ diǎn bàn",
+            "tj": "上午九点半 — shàngwǔ jiǔ diǎn bàn"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«tushdan keyin 2:30» — xitoychada qaysi biri?",
+            "ru": "«2:30 дня» — какое предложение по-китайски?",
+            "tj": "«баъди нисфирӯзӣ 2:30» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "晚上九点十分",
+            "下午两点半",
+            "上午九点半"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下午两点半 — xiàwǔ liǎng diǎn bàn",
+            "ru": "下午两点半 — xiàwǔ liǎng diǎn bàn",
+            "tj": "下午两点半 — xiàwǔ liǎng diǎn bàn"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "上课",
+          "pinyin": "shàngkè",
+          "options": [
+            "上课",
+            "早上",
+            "点",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "上课 — darsga qatnashmoq; dars boshlamoq (shàngkè)",
+            "ru": "上课 — быть на занятии; проводить занятие (shàngkè)",
+            "tj": "上课 — ба дарс рафтан; дарс гузарондан (shàngkè)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "呢",
+          "pinyin": "ne",
+          "translation": {
+            "uz": "modal yuklama",
+            "ru": "модальная частица",
+            "tj": "ҳиссачаи модалӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "看 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看:",
+            "tj": "Маънои калимаи 看-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq",
+              "ru": "смотреть; видеть; читать",
+              "tj": "дидан; тамошо кардан; хондан"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "看 = ko‘rmoq; tomosha qilmoq; o‘qimoq (kàn)",
+            "ru": "看 = смотреть; видеть; читать (kàn)",
+            "tj": "看 = дидан; тамошо кардан; хондан (kàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "看",
+            "pinyin": "kàn",
+            "meaning": {
+              "uz": "ko‘rmoq; tomosha qilmoq; o‘qimoq",
+              "ru": "смотреть; видеть; читать",
+              "tj": "дидан; тамошо кардан; хондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'modal yuklama' xitoycha qaysi?",
+            "ru": "'модальная частица' по-китайски?",
+            "tj": "'ҳиссачаи модалӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "呢",
+            "早上",
+            "点",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "modal yuklama = 呢 (ne)",
+            "ru": "модальная частица = 呢 (ne)",
+            "tj": "ҳиссачаи модалӣ = 呢 (ne)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "呢",
+            "pinyin": "ne",
+            "meaning": {
+              "uz": "modal yuklama",
+              "ru": "модальная частица",
+              "tj": "ҳиссачаи модалӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

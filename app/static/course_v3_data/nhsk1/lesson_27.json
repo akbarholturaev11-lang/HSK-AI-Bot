@@ -1,0 +1,675 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 27,
+  "source_lesson": 5,
+  "part_no": 2,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "今天我休息",
+  "subtitle": {
+    "uz": "Sana va hafta kunlarini xitoycha tartibda aytish; “会” bilan o‘rganilgan qobiliyatni ifodalash; nominal-predikativ gaplarni tushunish va ishlatish.",
+    "ru": "Называть даты и дни недели по-китайски; выражать приобретённое умение с “会”; понимать и использовать именные сказуемые.",
+    "tj": "Сана ва рӯзҳои ҳафтаро бо тартиби чинӣ гуфтан; бо “会” қобилияти омӯхташударо ифода кардан; ҷумлаҳои номӣ-хабариро фаҳмидан ва истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "星期",
+      "pinyin": "xīngqī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hafta",
+        "ru": "неделя",
+        "tj": "ҳафта"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "星期日",
+      "pinyin": "Xīngqīrì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yakshanba",
+        "ru": "воскресенье",
+        "tj": "якшанбе"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "星期天",
+      "pinyin": "Xīngqītiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yakshanba",
+        "ru": "воскресенье",
+        "tj": "якшанбе"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "休息",
+      "pinyin": "xiūxi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "dam olmoq",
+        "ru": "отдыхать",
+        "tj": "истироҳат кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Nominal-predikativ gap",
+        "ru": "Предложение с именным сказуемым",
+        "tj": "Ҷумла бо хабари номӣ"
+      },
+      "title_zh": "名词谓语句",
+      "rule": {
+        "uz": "Nominal gapda kesim ot yoki ot birikmasidan iborat bo‘lib, ko‘pincha vaqt, sana va yoshni bildiradi.",
+        "ru": "В предложении с именным сказуемым сказуемое выражено существительным или именной группой; часто так говорят о времени, дате и возрасте.",
+        "tj": "Дар ҷумлаи номӣ хабар аз исм ё гурӯҳи исмӣ иборат буда, бештар вақт, сана ва синну солро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "今天星期四。",
+          "pinyin": "Jīntiān Xīngqīsì.",
+          "translation": {
+            "uz": "Bugun payshanba.",
+            "ru": "Сегодня четверг.",
+            "tj": "Имрӯз панҷшанбе аст."
+          }
+        },
+        {
+          "zh": "今天5月8号。",
+          "pinyin": "Jīntiān wǔ yuè bā hào.",
+          "translation": {
+            "uz": "Bugun 8-may.",
+            "ru": "Сегодня 8 мая.",
+            "tj": "Имрӯз 8 май аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "text": {
+            "uz": "Bugun nechanchi sana?",
+            "ru": "Какое сегодня число?",
+            "tj": "Имрӯз чандум аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "text": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期几？",
+          "pinyin": "Xīngqī jǐ?",
+          "text": {
+            "uz": "Bugun haftaning qaysi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "星期日。今天我休息。",
+          "pinyin": "Xīngqīrì. Jīntiān wǒ xiūxi.",
+          "text": {
+            "uz": "Yakshanba. Bugun men dam olaman.",
+            "ru": "Воскресенье. Сегодня я отдыхаю.",
+            "tj": "Якшанбе. Имрӯз ман истироҳат мекунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "星期",
+            "pinyin": "xīngqī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hafta",
+              "ru": "неделя",
+              "tj": "ҳафта"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xīngqī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xīngqī?",
+            "tj": "xīngqī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "今天",
+            "号",
+            "星期",
+            "月"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "星期 = hafta (xīngqī)",
+            "ru": "星期 = неделя (xīngqī)",
+            "tj": "星期 = ҳафта (xīngqī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "星期日",
+            "pinyin": "Xīngqīrì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "星期日 talaffuzini tanlang:",
+            "ru": "Выберите произношение 星期日:",
+            "tj": "Талаффузи 星期日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīntiān",
+            "Xīngqīrì",
+            "yuè",
+            "hào"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "星期日 — Xīngqīrì",
+            "ru": "星期日 — Xīngqīrì",
+            "tj": "星期日 — Xīngqīrì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "星期天",
+            "pinyin": "Xīngqītiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "星期天",
+          "pinyin": "Xīngqītiān",
+          "translation": {
+            "uz": "yakshanba",
+            "ru": "воскресенье",
+            "tj": "якшанбе"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yakshanba' xitoycha qaysi?",
+            "ru": "'воскресенье' по-китайски?",
+            "tj": "'якшанбе' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "月",
+            "星期天",
+            "号",
+            "今天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yakshanba = 星期天 (Xīngqītiān)",
+            "ru": "воскресенье = 星期天 (Xīngqītiān)",
+            "tj": "якшанбе = 星期天 (Xīngqītiān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "休息",
+            "pinyin": "xiūxi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "dam olmoq",
+              "ru": "отдыхать",
+              "tj": "истироҳат кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "休息",
+          "pinyin": "xiūxi",
+          "options": [
+            "休息",
+            "今天",
+            "号",
+            "月"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "休息 — dam olmoq (xiūxi)",
+            "ru": "休息 — отдыхать (xiūxi)",
+            "tj": "休息 — истироҳат кардан (xiūxi)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "星期 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 星期:",
+            "tj": "Маънои калимаи 星期-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            },
+            {
+              "uz": "hafta",
+              "ru": "неделя",
+              "tj": "ҳафта"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "星期 = hafta (xīngqī)",
+            "ru": "星期 = неделя (xīngqī)",
+            "tj": "星期 = ҳафта (xīngqī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "星期",
+              {
+                "uz": "hafta",
+                "ru": "неделя",
+                "tj": "ҳафта"
+              }
+            ],
+            [
+              "星期日",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ],
+            [
+              "星期天",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ],
+            [
+              "休息",
+              {
+                "uz": "dam olmoq",
+                "ru": "отдыхать",
+                "tj": "истироҳат кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Nominal-predikativ gap",
+              "ru": "Предложение с именным сказуемым",
+              "tj": "Ҷумла бо хабари номӣ"
+            },
+            "title_zh": "名词谓语句",
+            "rule": {
+              "uz": "Nominal gapda kesim ot yoki ot birikmasidan iborat bo‘lib, ko‘pincha vaqt, sana va yoshni bildiradi.",
+              "ru": "В предложении с именным сказуемым сказуемое выражено существительным или именной группой; часто так говорят о времени, дате и возрасте.",
+              "tj": "Дар ҷумлаи номӣ хабар аз исм ё гурӯҳи исмӣ иборат буда, бештар вақт, сана ва синну солро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "今天星期四。",
+                "pinyin": "Jīntiān Xīngqīsì.",
+                "translation": {
+                  "uz": "Bugun payshanba.",
+                  "ru": "Сегодня четверг.",
+                  "tj": "Имрӯз панҷшанбе аст."
+                }
+              },
+              {
+                "zh": "今天5月8号。",
+                "pinyin": "Jīntiān wǔ yuè bā hào.",
+                "translation": {
+                  "uz": "Bugun 8-may.",
+                  "ru": "Сегодня 8 мая.",
+                  "tj": "Имрӯз 8 май аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bugun payshanba.",
+            "ru": "Сегодня четверг.",
+            "tj": "Имрӯз панҷшанбе аст."
+          },
+          "tokens": [
+            "星期",
+            "月",
+            "四",
+            "今天",
+            "号"
+          ],
+          "answer_tokens": [
+            "今天",
+            "星期",
+            "四"
+          ],
+          "explanation": {
+            "uz": "今天星期四。 — Jīntiān Xīngqīsì.",
+            "ru": "今天星期四。 — Jīntiān Xīngqīsì.",
+            "tj": "今天星期四。 — Jīntiān Xīngqīsì."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "今天星期日。",
+          "pinyin": "Jīntiān Xīngqīrì.",
+          "translation": {
+            "uz": "Bugun yakshanba.",
+            "ru": "Сегодня воскресенье.",
+            "tj": "Имрӯз якшанбе аст."
+          },
+          "tokens": {
+            "uz": [
+              "Bugun",
+              "haftaning",
+              "qaysi",
+              "yakshanba"
+            ],
+            "ru": [
+              "Сегодня",
+              "сегодня",
+              "воскресенье",
+              "Какой"
+            ],
+            "tj": [
+              "Имрӯз",
+              "кадом",
+              "аст",
+              "якшанбе",
+              "рӯзи"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bugun",
+              "yakshanba"
+            ],
+            "ru": [
+              "Сегодня",
+              "воскресенье"
+            ],
+            "tj": [
+              "Имрӯз",
+              "якшанбе",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "今天星期日。 — Bugun yakshanba.",
+            "ru": "今天星期日。 — Сегодня воскресенье.",
+            "tj": "今天星期日。 — Имрӯз якшанбе аст."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "休息",
+          "pinyin": "xiūxi",
+          "options": [
+            "休息",
+            "月",
+            "号",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "休息 — dam olmoq (xiūxi)",
+            "ru": "休息 — отдыхать (xiūxi)",
+            "tj": "休息 — истироҳат кардан (xiūxi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "星期天",
+          "pinyin": "Xīngqītiān",
+          "translation": {
+            "uz": "yakshanba",
+            "ru": "воскресенье",
+            "tj": "якшанбе"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "月 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 月:",
+            "tj": "Маънои калимаи 月-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "kun; sana",
+              "ru": "день; дата",
+              "tj": "рӯз; сана"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "月 = oy (yuè)",
+            "ru": "月 = месяц (yuè)",
+            "tj": "月 = моҳ (yuè)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "月",
+            "pinyin": "yuè",
+            "meaning": {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yakshanba' xitoycha qaysi?",
+            "ru": "'воскресенье' по-китайски?",
+            "tj": "'якшанбе' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "今天",
+            "星期天",
+            "号",
+            "月"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yakshanba = 星期天 (Xīngqītiān)",
+            "ru": "воскресенье = 星期天 (Xīngqītiān)",
+            "tj": "якшанбе = 星期天 (Xīngqītiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "星期天",
+            "pinyin": "Xīngqītiān",
+            "meaning": {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

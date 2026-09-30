@@ -1,0 +1,683 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 96,
+  "source_lesson": 14,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "她们",
+      "pinyin": "tāmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ular (ayollar)",
+        "ru": "они о женщинах; их",
+        "tj": "онҳо (занон)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "它们",
+      "pinyin": "tāmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ular (narsalar/hayvonlar)",
+        "ru": "они о предметах/животных; их",
+        "tj": "онҳо (чизҳо/ҳайвонот)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "晚",
+      "pinyin": "wǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kech",
+        "ru": "поздний; поздно",
+        "tj": "дер"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsda Wang Yifei talabalarining o‘qish holatini so‘ramoqda.",
+        "ru": "На занятии Ван Ифэй спрашивает студентов об их успехах в учёбе.",
+        "tj": "Дар дарс Ван Ифэй аз донишҷӯён дар бораи пешрафти таҳсил мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "text": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все уже умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我听不见。",
+          "pinyin": "Lǎoshī, wǒ tīng bu jiàn.",
+          "text": {
+            "uz": "Ustoz, eshitmayapman.",
+            "ru": "Преподаватель, я не слышу.",
+            "tj": "Устод, ман намешунавам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我会写这些字了，您看！",
+          "pinyin": "Wǒ huì xiě zhèxiē zì le, nín kàn!",
+          "text": {
+            "uz": "Men mana bu ierogliflarni yoza olaman, qarang!",
+            "ru": "Я уже умею писать эти иероглифы, посмотрите!",
+            "tj": "Ман ин иероглифҳоро навишта метавонам, бинед!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "明年女儿上中学。",
+          "pinyin": "Míngnián nǚ'ér shàng zhōngxué.",
+          "text": {
+            "uz": "Kelasi yil qizimiz o‘rta maktabga boradi.",
+            "ru": "В следующем году дочь пойдёт в среднюю школу.",
+            "tj": "Соли оянда духтарамон ба мактаби миёна меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们家有了一个中学生。",
+          "pinyin": "Wǒmen jiā yǒule yí ge zhōngxuéshēng.",
+          "text": {
+            "uz": "Oilamizda bitta o‘rta maktab o‘quvchisi bo‘ladi.",
+            "ru": "В нашей семье будет ученик средней школы.",
+            "tj": "Дар оилаи мо як хонандаи мактаби миёна мешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还有了一个小学生。",
+          "pinyin": "Hái yǒule yí ge xiǎoxuéshēng.",
+          "text": {
+            "uz": "Yana bitta boshlang‘ich maktab o‘quvchisi ham bo‘ladi.",
+            "ru": "И ещё ученик начальной школы.",
+            "tj": "Боз як хонандаи мактаби ибтидоӣ ҳам мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "上学后，他们都忙了。",
+          "pinyin": "Shàngxué hòu, tāmen dōu máng le.",
+          "text": {
+            "uz": "Maktab boshlangach, ikkalasi ham band bo‘ladi.",
+            "ru": "Когда начнётся школа, оба будут заняты.",
+            "tj": "Баъди мактаб сар кардан, ҳар ду банд мешаванд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "是的。太晚了，睡觉吧。",
+          "pinyin": "Shì de. Tài wǎn le, shuìjiào ba.",
+          "text": {
+            "uz": "Ha. Juda kech bo‘ldi, uxlaylik.",
+            "ru": "Да. Уже очень поздно, давай спать.",
+            "tj": "Ҳа. Хеле дер шуд, биё хоб равем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "她们",
+            "pinyin": "tāmen",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "ular (ayollar)",
+              "ru": "они о женщинах; их",
+              "tj": "онҳо (занон)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "她们 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 她们:",
+            "tj": "Маънои калимаи 她们-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "ular (ayollar)",
+              "ru": "они о женщинах; их",
+              "tj": "онҳо (занон)"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "她们 = ular (ayollar) (tāmen)",
+            "ru": "她们 = они о женщинах; их (tāmen)",
+            "tj": "她们 = онҳо (занон) (tāmen)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "它们",
+            "pinyin": "tāmen",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "ular (narsalar/hayvonlar)",
+              "ru": "они о предметах/животных; их",
+              "tj": "онҳо (чизҳо/ҳайвонот)"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tāmen qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tāmen?",
+            "tj": "tāmen кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "中午",
+            "它们",
+            "上",
+            "火车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "它们 = ular (narsalar/hayvonlar) (tāmen)",
+            "ru": "它们 = они о предметах/животных; их (tāmen)",
+            "tj": "它们 = онҳо (чизҳо/ҳайвонот) (tāmen)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "晚",
+            "pinyin": "wǎn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "kech",
+              "ru": "поздний; поздно",
+              "tj": "дер"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "晚",
+          "pinyin": "wǎn",
+          "translation": {
+            "uz": "kech",
+            "ru": "поздний; поздно",
+            "tj": "дер"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "晚 talaffuzini tanlang:",
+            "ru": "Выберите произношение 晚:",
+            "tj": "Талаффузи 晚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shàng",
+            "wǎn",
+            "zhōngwǔ",
+            "huǒchē"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "晚 — wǎn",
+            "ru": "晚 — wǎn",
+            "tj": "晚 — wǎn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ular (ayollar)' xitoycha qaysi?",
+            "ru": "'они о женщинах; их' по-китайски?",
+            "tj": "'онҳо (занон)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "她们",
+            "中午",
+            "上",
+            "火车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ular (ayollar) = 她们 (tāmen)",
+            "ru": "они о женщинах; их = 她们 (tāmen)",
+            "tj": "онҳо (занон) = 她们 (tāmen)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "她们",
+              {
+                "uz": "ular (ayollar)",
+                "ru": "они о женщинах; их",
+                "tj": "онҳо (занон)"
+              }
+            ],
+            [
+              "它们",
+              {
+                "uz": "ular (narsalar/hayvonlar)",
+                "ru": "они о предметах/животных; их",
+                "tj": "онҳо (чизҳо/ҳайвонот)"
+              }
+            ],
+            [
+              "晚",
+              {
+                "uz": "kech",
+                "ru": "поздний; поздно",
+                "tj": "дер"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ha. Juda kech bo‘ldi, uxlaylik.",
+            "ru": "Да. Уже очень поздно, давай спать.",
+            "tj": "Ҳа. Хеле дер шуд, биё хоб равем."
+          },
+          "tokens": [
+            "睡觉",
+            "太",
+            "了",
+            "的",
+            "晚",
+            "上",
+            "吧",
+            "是",
+            "火车"
+          ],
+          "answer_tokens": [
+            "是",
+            "的",
+            "太",
+            "晚",
+            "了",
+            "睡觉",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "是的。太晚了，睡觉吧。 — Shì de. Tài wǎn le, shuìjiào ba.",
+            "ru": "是的。太晚了，睡觉吧。 — Shì de. Tài wǎn le, shuìjiào ba.",
+            "tj": "是的。太晚了，睡觉吧。 — Shì de. Tài wǎn le, shuìjiào ba."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "晚",
+          "pinyin": "wǎn",
+          "options": [
+            "上",
+            "火车",
+            "中午",
+            "晚"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "晚 — kech (wǎn)",
+            "ru": "晚 — поздний; поздно (wǎn)",
+            "tj": "晚 — дер (wǎn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "她们",
+              {
+                "uz": "ular (ayollar)",
+                "ru": "они о женщинах; их",
+                "tj": "онҳо (занон)"
+              }
+            ],
+            [
+              "它们",
+              {
+                "uz": "ular (narsalar/hayvonlar)",
+                "ru": "они о предметах/животных; их",
+                "tj": "онҳо (чизҳо/ҳайвонот)"
+              }
+            ],
+            [
+              "晚",
+              {
+                "uz": "kech",
+                "ru": "поздний; поздно",
+                "tj": "дер"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "是的。太晚了，睡觉吧。",
+          "pinyin": "Shì de. Tài wǎn le, shuìjiào ba.",
+          "translation": {
+            "uz": "Ha. Juda kech bo‘ldi, uxlaylik.",
+            "ru": "Да. Уже очень поздно, давай спать.",
+            "tj": "Ҳа. Хеле дер шуд, биё хоб равем."
+          },
+          "tokens": {
+            "uz": [
+              "uxlaylik",
+              "kech",
+              "bo‘ldi",
+              "Juda",
+              "Ha"
+            ],
+            "ru": [
+              "Да",
+              "давай",
+              "спать",
+              "Уже",
+              "поздно",
+              "очень"
+            ],
+            "tj": [
+              "Ҳа",
+              "шуд",
+              "биё",
+              "дер",
+              "Хеле",
+              "равем",
+              "хоб"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "Juda",
+              "kech",
+              "bo‘ldi",
+              "uxlaylik"
+            ],
+            "ru": [
+              "Да",
+              "Уже",
+              "очень",
+              "поздно",
+              "давай",
+              "спать"
+            ],
+            "tj": [
+              "Ҳа",
+              "Хеле",
+              "дер",
+              "шуд",
+              "биё",
+              "хоб",
+              "равем"
+            ]
+          },
+          "explanation": {
+            "uz": "是的。太晚了，睡觉吧。 — Ha. Juda kech bo‘ldi, uxlaylik.",
+            "ru": "是的。太晚了，睡觉吧。 — Да. Уже очень поздно, давай спать.",
+            "tj": "是的。太晚了，睡觉吧。 — Ҳа. Хеле дер шуд, биё хоб равем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "晚",
+          "pinyin": "wǎn",
+          "translation": {
+            "uz": "kech",
+            "ru": "поздний; поздно",
+            "tj": "дер"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "他们 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 他们:",
+            "tj": "Маънои калимаи 他们-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "ular",
+              "ru": "они; их",
+              "tj": "онҳо"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "他们 = ular (tāmen)",
+            "ru": "他们 = они; их (tāmen)",
+            "tj": "他们 = онҳо (tāmen)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "他们",
+            "pinyin": "tāmen",
+            "meaning": {
+              "uz": "ular",
+              "ru": "они; их",
+              "tj": "онҳо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kech' xitoycha qaysi?",
+            "ru": "'поздний; поздно' по-китайски?",
+            "tj": "'дер' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "上",
+            "火车",
+            "晚",
+            "中午"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kech = 晚 (wǎn)",
+            "ru": "поздний; поздно = 晚 (wǎn)",
+            "tj": "дер = 晚 (wǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "晚",
+            "pinyin": "wǎn",
+            "meaning": {
+              "uz": "kech",
+              "ru": "поздний; поздно",
+              "tj": "дер"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

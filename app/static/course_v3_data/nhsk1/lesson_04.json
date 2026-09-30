@@ -1,0 +1,663 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 4,
+  "source_lesson": 1,
+  "part_no": 4,
+  "part_count": 4,
+  "checkpoint": true,
+  "title": "AI小语，你好！",
+  "subtitle": {
+    "uz": "Salomlashish, minnatdorchilik va xayrlashish uchun odobli iboralarni tushunish va ishlatish; xitoycha muloqot odobi hamda hurmat shakli 您 ni tushunish va qo'llash.",
+    "ru": "Понимать и использовать вежливые выражения для приветствия, благодарности и прощания; понимать нормы китайского общения и употреблять уважительную форму 您.",
+    "tj": "Ибораҳои хушмуомиларо барои салом, изҳори сипос ва хайрбод фаҳмидан ва истифода бурдан; одоби муоширати чинӣ ва шакли эҳтиромии 您-ро фаҳмидан ва ба кор бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "你好",
+      "pinyin": "nǐ hǎo",
+      "pos": "phrase",
+      "meaning": {
+        "uz": "salom",
+        "ru": "привет; здравствуйте",
+        "tj": "салом"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "大家",
+      "pinyin": "dàjiā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "hamma; barchangiz",
+        "ru": "все; все вы",
+        "tj": "ҳама; ҳамаи шумо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "好",
+      "pinyin": "hǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yaxshi; yaxshi bo'lmoq",
+        "ru": "хороший; хорошо",
+        "tj": "хуб; хуб будан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "学生",
+      "pinyin": "xuésheng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'quvchi; talaba",
+        "ru": "ученик; студент",
+        "tj": "хонанда; донишҷӯ"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "们",
+      "pinyin": "men",
+      "pos": "suf.",
+      "meaning": {
+        "uz": "ko'plik qo'shimchasi",
+        "ru": "суффикс множественного числа",
+        "tj": "пасванди ҷамъ"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "老师",
+      "pinyin": "lǎoshī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'qituvchi; ustoz",
+        "ru": "учитель; преподаватель",
+        "tj": "омӯзгор; устод"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "您",
+      "pinyin": "nín",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "Siz (hurmat shakli)",
+        "ru": "Вы (уважительная форма)",
+        "tj": "Шумо (шакли эҳтиромӣ)"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "你们",
+      "pinyin": "nǐmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "sizlar",
+        "ru": "вы (мн. ч.)",
+        "tj": "шумо (ҷамъ)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "谢谢",
+      "pinyin": "xièxie",
+      "pos": "v.",
+      "meaning": {
+        "uz": "rahmat aytmoq; rahmat",
+        "ru": "благодарить; спасибо",
+        "tj": "ташаккур гуфтан; раҳмат"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "不客气",
+      "pinyin": "bú kèqi",
+      "pos": "phrase",
+      "meaning": {
+        "uz": "arzimaydi",
+        "ru": "не за что; пожалуйста",
+        "tj": "марҳамат; ҳеҷ гап не"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "同学",
+      "pinyin": "tóngxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sinfdosh; kursdosh",
+        "ru": "одноклассник; одногруппник",
+        "tj": "ҳамсинф; ҳамкурс"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "再见",
+      "pinyin": "zàijiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xayr; ko'rishguncha",
+        "ru": "до свидания",
+        "tj": "хайр; то боздид"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O'qishning birinchi kuni ofisda Wang Yifei AI yordamchi Xiaoyu bilan salomlashadi.",
+        "ru": "В первый учебный день в офисе Ван Ифэй здоровается с AI-помощником Сяоюй.",
+        "tj": "Дар рӯзи аввали таҳсил, дар идора Ван Ифэй бо ёвари AI Сяоюй салом мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "AI小语，你好！",
+          "pinyin": "AI Xiǎoyǔ, nǐ hǎo!",
+          "text": {
+            "uz": "AI Xiaoyu, salom!",
+            "ru": "AI Сяоюй, здравствуй!",
+            "tj": "AI Сяоюй, салом!"
+          }
+        },
+        {
+          "speaker": "Xiaoyu",
+          "zh": "王老师，你好！",
+          "pinyin": "Wáng lǎoshī, nǐ hǎo!",
+          "text": {
+            "uz": "Ustoz Wang, salom!",
+            "ru": "Здравствуйте, госпожа Ван!",
+            "tj": "Устод Ван, салом!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'qishning birinchi kuni darsda talabalar salomlashish iboralarini o'rganadilar.",
+        "ru": "В первый учебный день на занятии студенты изучают выражения для приветствия.",
+        "tj": "Дар рӯзи аввали таҳсил, дар дарс донишҷӯён ибораҳои саломро меомӯзанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "大家好！",
+          "pinyin": "Dàjiā hǎo!",
+          "text": {
+            "uz": "Hammaga salom!",
+            "ru": "Здравствуйте, все!",
+            "tj": "Салом ба ҳама!"
+          }
+        },
+        {
+          "speaker": "Students",
+          "zh": "老师，您好！",
+          "pinyin": "Lǎoshī, nín hǎo!",
+          "text": {
+            "uz": "Ustoz, assalomu alaykum!",
+            "ru": "Здравствуйте, преподаватель!",
+            "tj": "Устод, салом!"
+          }
+        },
+        {
+          "speaker": "Xiaoyu",
+          "zh": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "text": {
+            "uz": "Sizlarga salom!",
+            "ru": "Здравствуйте!",
+            "tj": "Ба шумо салом!"
+          }
+        },
+        {
+          "speaker": "Students",
+          "zh": "你好，小语！",
+          "pinyin": "Nǐ hǎo, Xiǎoyǔ!",
+          "text": {
+            "uz": "Salom, Xiaoyu!",
+            "ru": "Привет, Сяоюй!",
+            "tj": "Салом, Сяоюй!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'qishning birinchi kuni darsda talabalar minnatdorchilik va xayrlashish iboralarini o'rganadilar.",
+        "ru": "В первый учебный день на занятии студенты изучают выражения благодарности и прощания.",
+        "tj": "Дар рӯзи аввали таҳсил, дар дарс донишҷӯён ибораҳои сипос ва хайрбодро меомӯзанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Students",
+          "zh": "谢谢！",
+          "pinyin": "Xièxie!",
+          "text": {
+            "uz": "Rahmat!",
+            "ru": "Спасибо!",
+            "tj": "Раҳмат!"
+          }
+        },
+        {
+          "speaker": "Xiaoyu",
+          "zh": "不客气！",
+          "pinyin": "Bú kèqi!",
+          "text": {
+            "uz": "Arzimaydi!",
+            "ru": "Не за что!",
+            "tj": "Марҳамат!"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同学们，再见！",
+          "pinyin": "Tóngxuémen, zàijiàn!",
+          "text": {
+            "uz": "Talabalar, xayr!",
+            "ru": "Студенты, до свидания!",
+            "tj": "Донишҷӯён, хайр!"
+          }
+        },
+        {
+          "speaker": "Students",
+          "zh": "老师，再见！",
+          "pinyin": "Lǎoshī, zàijiàn!",
+          "text": {
+            "uz": "Ustoz, xayr!",
+            "ru": "До свидания, преподаватель!",
+            "tj": "Устод, хайр!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "你们 talaffuzini tanlang:",
+            "ru": "Выберите произношение 你们:",
+            "tj": "Талаффузи 你们-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǐmen",
+            "hǎo",
+            "nǐ hǎo",
+            "dàjiā"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你们 — nǐmen",
+            "ru": "你们 — nǐmen",
+            "tj": "你们 — nǐmen"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "们",
+              {
+                "uz": "ko'plik qo'shimchasi",
+                "ru": "суффикс множественного числа",
+                "tj": "пасванди ҷамъ"
+              }
+            ],
+            [
+              "老师",
+              {
+                "uz": "o'qituvchi; ustoz",
+                "ru": "учитель; преподаватель",
+                "tj": "омӯзгор; устод"
+              }
+            ],
+            [
+              "您",
+              {
+                "uz": "Siz (hurmat shakli)",
+                "ru": "Вы (уважительная форма)",
+                "tj": "Шумо (шакли эҳтиромӣ)"
+              }
+            ],
+            [
+              "你们",
+              {
+                "uz": "sizlar",
+                "ru": "вы (мн. ч.)",
+                "tj": "шумо (ҷамъ)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "你好",
+              {
+                "uz": "salom",
+                "ru": "привет; здравствуйте",
+                "tj": "салом"
+              }
+            ],
+            [
+              "大家",
+              {
+                "uz": "hamma; barchangiz",
+                "ru": "все; все вы",
+                "tj": "ҳама; ҳамаи шумо"
+              }
+            ],
+            [
+              "好",
+              {
+                "uz": "yaxshi; yaxshi bo'lmoq",
+                "ru": "хороший; хорошо",
+                "tj": "хуб; хуб будан"
+              }
+            ],
+            [
+              "学生",
+              {
+                "uz": "o'quvchi; talaba",
+                "ru": "ученик; студент",
+                "tj": "хонанда; донишҷӯ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "老师 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 老师:",
+            "tj": "Маънои калимаи 老师-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            },
+            {
+              "uz": "o'qituvchi; ustoz",
+              "ru": "учитель; преподаватель",
+              "tj": "омӯзгор; устод"
+            },
+            {
+              "uz": "yaxshi; yaxshi bo'lmoq",
+              "ru": "хороший; хорошо",
+              "tj": "хуб; хуб будан"
+            },
+            {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "老师 = o'qituvchi; ustoz (lǎoshī)",
+            "ru": "老师 = учитель; преподаватель (lǎoshī)",
+            "tj": "老师 = омӯзгор; устод (lǎoshī)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "老师，您好！",
+          "pinyin": "Lǎoshī, nín hǎo!",
+          "translation": {
+            "uz": "Ustoz, assalomu alaykum!",
+            "ru": "Здравствуйте, преподаватель!",
+            "tj": "Устод, салом!"
+          },
+          "tokens": {
+            "uz": [
+              "assalomu",
+              "AI",
+              "Ustoz",
+              "alaykum",
+              "Xiaoyu"
+            ],
+            "ru": [
+              "AI",
+              "Здравствуйте",
+              "Сяоюй",
+              "преподаватель"
+            ],
+            "tj": [
+              "Сяоюй",
+              "AI",
+              "салом",
+              "Устод"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ustoz",
+              "assalomu",
+              "alaykum"
+            ],
+            "ru": [
+              "Здравствуйте",
+              "преподаватель"
+            ],
+            "tj": [
+              "Устод",
+              "салом"
+            ]
+          },
+          "explanation": {
+            "uz": "老师，您好！ — Ustoz, assalomu alaykum!",
+            "ru": "老师，您好！ — Здравствуйте, преподаватель!",
+            "tj": "老师，您好！ — Устод, салом!"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "学生",
+          "pinyin": "xuésheng",
+          "options": [
+            "好",
+            "你好",
+            "学生",
+            "大家"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "学生 — o'quvchi; talaba (xuésheng)",
+            "ru": "学生 — ученик; студент (xuésheng)",
+            "tj": "学生 — хонанда; донишҷӯ (xuésheng)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "AI小语，你好！",
+          "pinyin": "AI Xiǎoyǔ, nǐ hǎo!",
+          "options": [
+            "AI小语，你好！",
+            "大家好！",
+            "王老师，你好！",
+            "老师，您好！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "AI小语，你好！ — AI Xiaoyu, salom!",
+            "ru": "AI小语，你好！ — AI Сяоюй, здравствуй!",
+            "tj": "AI小语，你好！ — AI Сяоюй, салом!"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Xiaoyu nima deydi?",
+            "ru": "Что Xiaoyu говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Xiaoyu чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "大家好！",
+            "老师，您好！",
+            "王老师，你好！",
+            "AI小语，你好！"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 王老师，你好！",
+            "ru": "Правильный ответ: 王老师，你好！",
+            "tj": "Ҷавоби дуруст: 王老师，你好！"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Wang Yifei",
+              "zh": "AI小语，你好！",
+              "blank": false
+            },
+            {
+              "speaker": "Xiaoyu",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "王老师，你好！",
+            "大家好！",
+            "AI小语，你好！",
+            "老师，您好！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 王老师，你好！",
+            "ru": "Правильный ответ: 王老师，你好！",
+            "tj": "Ҷавоби дуруст: 王老师，你好！"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "AI____语，你好！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "们",
+            "不",
+            "小",
+            "你"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 小 — AI小语，你好！ (AI Xiaoyu, salom!)",
+            "ru": "Верно: 小 — AI小语，你好！ (AI Сяоюй, здравствуй!)",
+            "tj": "Дуруст: 小 — AI小语，你好！ (AI Сяоюй, салом!)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Wang Yifei avval nima deydi?",
+            "ru": "Что Wang Yifei говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Wang Yifei аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "AI小语，你好！",
+            "王老师，你好！",
+            "大家好！",
+            "老师，您好！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: AI小语，你好！",
+            "ru": "Правильный ответ: AI小语，你好！",
+            "tj": "Ҷавоби дуруст: AI小语，你好！"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "老师，再见！",
+          "pinyin": "Lǎoshī, zàijiàn!",
+          "translation": {
+            "uz": "Ustoz, xayr!",
+            "ru": "До свидания, преподаватель!",
+            "tj": "Устод, хайр!"
+          }
+        }
+      ]
+    }
+  ]
+}

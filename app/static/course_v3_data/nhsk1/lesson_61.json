@@ -1,0 +1,990 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 61,
+  "source_lesson": 9,
+  "part_no": 7,
+  "part_count": 7,
+  "checkpoint": true,
+  "title": "我明天上午在学校学习",
+  "subtitle": {
+    "uz": "“有/是” bilan mavjudlikni ifodalovchi gaplarni ishlatish; vaqt va joy birga hol bo‘lganda ularning tartibini to‘g‘ri qo‘llash; “第” bilan tartib sonlarini yasash; zamonaviy xitoyliklarning bo‘sh vaqt mashg‘ulotlari haqida tushunish.",
+    "ru": "Использовать предложения существования с “有/是”; правильно располагать время и место, когда оба являются обстоятельствами; образовывать порядковые числительные с “第”; понимать лексику повседневного досуга.",
+    "tj": "Ҷумлаҳои мавҷудиятро бо “有/是” истифода бурдан; ҳангоми ҳамзамон ҳол будани вақт ва ҷой тартиби онҳоро дуруст гузоштан; бо “第” шумораҳои тартибиро сохтан; луғати фароғати рӯзмарраро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "前边",
+      "pinyin": "qiánbian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "old tomoni; oldida",
+        "ru": "передняя сторона; впереди",
+        "tj": "пеш; тарафи пеш"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "边",
+      "pinyin": "biān/bian",
+      "pos": "suf./n.",
+      "meaning": {
+        "uz": "tomon; chet",
+        "ru": "сторона; край",
+        "tj": "тараф; канор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "家",
+      "pinyin": "jiā",
+      "pos": "m.",
+      "meaning": {
+        "uz": "tashkilot/korxona uchun o‘lchov so‘zi",
+        "ru": "счётное слово для семей/предприятий",
+        "tj": "воҳиди ҳисоб барои оила/корхона"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "那个",
+      "pinyin": "nàge",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "ana u; o‘sha",
+        "ru": "тот",
+        "tj": "он; ҳамон"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "外边",
+      "pinyin": "wàibian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tashqarida; tashqi tomon",
+        "ru": "снаружи; внешняя сторона",
+        "tj": "берун; тарафи берун"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "椅子",
+      "pinyin": "yǐzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stul",
+        "ru": "стул",
+        "tj": "курсӣ"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "上",
+      "pinyin": "shàng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ust; yuqori tomon",
+        "ru": "верх; на",
+        "tj": "боло; рӯйи"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "本",
+      "pinyin": "běn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kitoblar uchun o‘lchov so‘zi",
+        "ru": "счётное слово для книг",
+        "tj": "воҳиди ҳисоб барои китоб"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "书",
+      "pinyin": "shū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kitob",
+        "ru": "книга",
+        "tj": "китоб"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "那",
+      "pinyin": "nà",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u; o‘sha",
+        "ru": "тот; та",
+        "tj": "он; ҳамон"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "第",
+      "pinyin": "dì",
+      "pos": "pref.",
+      "meaning": {
+        "uz": "tartib son belgisi",
+        "ru": "показатель порядкового числа",
+        "tj": "нишондиҳандаи шумораи тартибӣ"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "学习",
+      "pinyin": "xuéxí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qimoq; o‘rganmoq",
+        "ru": "учиться; изучать",
+        "tj": "хондан; омӯхтан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "做",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq; shug‘ullanmoq",
+        "ru": "делать; заниматься",
+        "tj": "кардан; машғул шудан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "白天",
+      "pinyin": "báitiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kunduz",
+        "ru": "днём; дневное время",
+        "tj": "рӯзона"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "读书",
+      "pinyin": "dúshū",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kitob o‘qimoq",
+        "ru": "читать; учиться",
+        "tj": "китоб хондан"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "和",
+      "pinyin": "hé",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "bilan",
+        "ru": "с",
+        "tj": "бо"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "朋友",
+      "pinyin": "péngyou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "do‘st",
+        "ru": "друг",
+        "tj": "дӯст"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "唱",
+      "pinyin": "chàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kuylamoq; qo‘shiq aytmoq",
+        "ru": "петь",
+        "tj": "суруд хондан"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "歌",
+      "pinyin": "gē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qo‘shiq",
+        "ru": "песня",
+        "tj": "суруд"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "好听",
+      "pinyin": "hǎotīng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yoqimli eshitiladigan",
+        "ru": "приятный на слух",
+        "tj": "хушсадо"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "电视",
+      "pinyin": "diànshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "televizor; televideniye",
+        "ru": "телевизор; телевидение",
+        "tj": "телевизор; телевизион"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "狗",
+      "pinyin": "gǒu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "it",
+        "ru": "собака",
+        "tj": "саг"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "玩",
+      "pinyin": "wán",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘ynamoq; hordiq chiqarmoq",
+        "ru": "играть; развлекаться",
+        "tj": "бозӣ кардан; вақтхушӣ кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Mavjudlik gapi (1)",
+        "ru": "Экзистенциальное предложение (1)",
+        "tj": "Ҷумлаи мавҷудият (1)"
+      },
+      "title_zh": "存现句（1）",
+      "rule": {
+        "uz": "Mavjudlik gapi biror joyda kimdir yoki nimadir borligini bildiradi va odatda “有” yoki “是” bilan tuziladi. “有” inkor qilinganda obyekt oldida son+o‘lchov birikmasi kelmaydi.",
+        "ru": "Экзистенциальное предложение показывает наличие кого-либо или чего-либо в определённом месте и обычно строится с “有” или “是”. При отрицании с “有” перед объектом не ставится числительно-счётная группа.",
+        "tj": "Ҷумлаи мавҷудият будани шахс ё чизро дар ҷойи муайян нишон медиҳад ва одатан бо “有” ё “是” сохта мешавад. Ҳангоми инкори “有” пеш аз объект таркиби рақам+воҳиди ҳисоб намеояд."
+      },
+      "examples": [
+        {
+          "zh": "学校前边有一家电影院。",
+          "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+          "translation": {
+            "uz": "Maktab oldida bitta kinoteatr bor.",
+            "ru": "Перед школой есть кинотеатр.",
+            "tj": "Пеши мактаб як кинотеатр ҳаст."
+          }
+        },
+        {
+          "zh": "电影院前边是一家超市。",
+          "pinyin": "Diànyǐngyuàn qiánbian shì yì jiā chāoshì.",
+          "translation": {
+            "uz": "Kinoteatr oldida supermarket bor.",
+            "ru": "Перед кинотеатром находится супермаркет.",
+            "tj": "Пеши кинотеатр як супермаркет аст."
+          }
+        },
+        {
+          "zh": "桌子上没有小猫。",
+          "pinyin": "Zhuōzi shàng méiyǒu xiǎomāo.",
+          "translation": {
+            "uz": "Stol ustida mushuk yo‘q.",
+            "ru": "На столе нет котёнка.",
+            "tj": "Рӯйи миз гурба нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Vaqt va joy ifodalari birga hol bo‘lgandagi tartib",
+        "ru": "Порядок выражений времени и места при совместной роли обстоятельства",
+        "tj": "Тартиби ифодаҳои вақт ва ҷой ҳангоми ҳамзамон ҳол будан"
+      },
+      "title_zh": "时间词语和处所词语同时作状语的顺序",
+      "rule": {
+        "uz": "Vaqt va joy birikmalari bir vaqtda hol bo‘lsa, vaqt ifodasi joy ifodasidan oldin keladi.",
+        "ru": "Когда время и место одновременно выступают обстоятельствами, выражение времени ставится перед выражением места.",
+        "tj": "Вақте вақт ва ҷой ҳамзамон вазифаи ҳолро доранд, ифодаи вақт пеш аз ифодаи ҷой меояд."
+      },
+      "examples": [
+        {
+          "zh": "我们七点在电影院外边见。",
+          "pinyin": "Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn.",
+          "translation": {
+            "uz": "Biz soat 7 da kinoteatr tashqarisida uchrashamiz.",
+            "ru": "Мы встретимся в 7 часов у кинотеатра.",
+            "tj": "Мо соати 7 беруни кинотеатр вомехӯрем."
+          }
+        },
+        {
+          "zh": "你明天下午在家里做什么？",
+          "pinyin": "Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+          "translation": {
+            "uz": "Sen ertaga tushdan keyin uyda nima qilasan?",
+            "ru": "Что ты будешь делать дома завтра днём?",
+            "tj": "Фардо баъди нисфирӯзӣ дар хона чӣ кор мекунӣ?"
+          }
+        },
+        {
+          "zh": "陈天中明天中午在学校吃午饭。",
+          "pinyin": "Chén Tiānzhōng míngtiān zhōngwǔ zài xuéxiào chī wǔfàn.",
+          "translation": {
+            "uz": "Chen Tianzhong ertaga tushda maktabda tushlik qiladi.",
+            "ru": "Чэнь Тяньчжун завтра в полдень пообедает в школе.",
+            "tj": "Чэн Тянҷун фардо нисфирӯзӣ дар мактаб хӯрок мехӯрад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Tartib sonini bildiruvchi “第”",
+        "ru": "“第” для порядковых числительных",
+        "tj": "“第” барои шумораҳои тартибӣ"
+      },
+      "title_zh": "表示序数的“第”",
+      "rule": {
+        "uz": "“第” sanoq soni oldidan kelib tartib sonini hosil qiladi: 第+son; yoki 第+son+o‘lchov so‘zi+(ot).",
+        "ru": "“第” ставится перед количественным числительным и образует порядковое: 第+число; либо 第+число+счётное слово+(существительное).",
+        "tj": "“第” пеш аз шумораи миқдорӣ омада, шумораи тартибиро месозад: 第+рақам; ё 第+рақам+воҳиди ҳисоб+(исм)."
+      },
+      "examples": [
+        {
+          "zh": "第一、第二、第三",
+          "pinyin": "dì yī, dì èr, dì sān",
+          "translation": {
+            "uz": "birinchi, ikkinchi, uchinchi",
+            "ru": "первый, второй, третий",
+            "tj": "якум, дуюм, сеюм"
+          }
+        },
+        {
+          "zh": "第一个、第二个、第一本",
+          "pinyin": "dì yí ge, dì èr ge, dì yì běn",
+          "translation": {
+            "uz": "birinchi dona, ikkinchi dona, birinchi kitob",
+            "ru": "первый, второй, первая книга",
+            "tj": "якум, дуюм, китоби якум"
+          }
+        },
+        {
+          "zh": "第一个学生、第一本书",
+          "pinyin": "dì yí ge xuésheng, dì yì běn shū",
+          "translation": {
+            "uz": "birinchi talaba; birinchi kitob",
+            "ru": "первый студент; первая книга",
+            "tj": "донишҷӯи якум; китоби якум"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "学校前边有一家电影院。",
+          "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+          "text": {
+            "uz": "Maktab oldida bitta kinoteatr bor.",
+            "ru": "Перед школой есть кинотеатр.",
+            "tj": "Пеши мактаб як кинотеатр ҳаст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "对。我们晚上去那个电影院看电影吧。",
+          "pinyin": "Duì. Wǒmen wǎnshang qù nàge diànyǐngyuàn kàn diànyǐng ba.",
+          "text": {
+            "uz": "Ha. Bugun kechqurun o‘sha kinoteatrga film ko‘rgani boraylik.",
+            "ru": "Да. Давай вечером пойдём в тот кинотеатр посмотреть фильм.",
+            "tj": "Ҳа. Биёед шом ба ҳамон кинотеатр барои тамошои филм равем."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好！我们七点在电影院外边见，好吗？",
+          "pinyin": "Hǎo! Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn, hǎo ma?",
+          "text": {
+            "uz": "Yaxshi! Soat 7 da kinoteatr tashqarisida uchrashamiz, maylimi?",
+            "ru": "Хорошо! Встретимся в 7 часов у кинотеатра, ладно?",
+            "tj": "Хуб! Соати 7 беруни кинотеатр вомехӯрем, майлаш?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的，晚上七点见！",
+          "pinyin": "Hǎo de, wǎnshang qī diǎn jiàn!",
+          "text": {
+            "uz": "Xo‘p, kechqurun soat 7 da ko‘rishamiz!",
+            "ru": "Хорошо, увидимся в 7 вечера!",
+            "tj": "Хуб, шом соати 7 мебинем!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "После занятия Бай Цзяюэ и Чэнь Тяньчжун разговаривают в аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун дар синф суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "椅子上有一本中文书，那是谁的书？",
+          "pinyin": "Yǐzi shàng yǒu yì běn Zhōngwén shū, nà shì shéi de shū?",
+          "text": {
+            "uz": "Stul ustida bitta xitoycha kitob bor. U kimning kitobi?",
+            "ru": "На стуле лежит книга на китайском. Чья это книга?",
+            "tj": "Рӯйи курсӣ як китоби чинӣ ҳаст. Он китоби кист?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "是我的书，谢谢。这是我的第二本中文书。",
+          "pinyin": "Shì wǒ de shū, xièxie. Zhè shì wǒ de dì èr běn Zhōngwén shū.",
+          "text": {
+            "uz": "Bu mening kitobim, rahmat. Bu mening ikkinchi xitoycha kitobim.",
+            "ru": "Это моя книга, спасибо. Это моя вторая книга на китайском.",
+            "tj": "Ин китоби ман аст, раҳмат. Ин китоби дуюми чинии ман аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "不客气。你明天上午在哪儿？",
+          "pinyin": "Bú kèqi. Nǐ míngtiān shàngwǔ zài nǎr?",
+          "text": {
+            "uz": "Arzimaydi. Ertaga ertalab qayerda bo‘lasan?",
+            "ru": "Не за что. Где ты будешь завтра утром?",
+            "tj": "Марҳамат. Фардо субҳ дар куҷо мешавӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我明天上午在学校学习。",
+          "pinyin": "Wǒ míngtiān shàngwǔ zài xuéxiào xuéxí.",
+          "text": {
+            "uz": "Men ertaga ertalab maktabda o‘qiyman.",
+            "ru": "Завтра утром я буду заниматься в школе.",
+            "tj": "Ман фардо субҳ дар мактаб таҳсил мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda tanaffus payti Wang Yixue va Yang Tongle dam olish kunlari haqida suhbatlashmoqda.",
+        "ru": "В офисе во время перерыва Ван Исюэ и Ян Тунлэ обсуждают выходные.",
+        "tj": "Дар идора ҳангоми танаффус Ван Исюэ ва Ян Тунлэ дар бораи рӯзҳои истироҳат суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "明天星期六，你做什么？",
+          "pinyin": "Míngtiān Xīngqīliù, nǐ zuò shénme?",
+          "text": {
+            "uz": "Ertaga shanba. Nima qilasan?",
+            "ru": "Завтра суббота. Что будешь делать?",
+            "tj": "Фардо шанбе. Чӣ кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我白天在家里读书，晚上和朋友们一起看电影。",
+          "pinyin": "Wǒ báitiān zài jiālǐ dú shū, wǎnshang hé péngyoumen yìqǐ kàn diànyǐng.",
+          "text": {
+            "uz": "Kunduz uyda kitob o‘qiyman, kechqurun do‘stlarim bilan birga film ko‘raman.",
+            "ru": "Днём я буду читать дома, а вечером смотреть фильм с друзьями.",
+            "tj": "Рӯзона дар хона китоб мехонам, шом бо дӯстонам якҷо филм тамошо мекунам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你唱歌很好听。",
+          "pinyin": "Nǐ chànggē hěn hǎotīng.",
+          "text": {
+            "uz": "Sen juda chiroyli kuylaysan.",
+            "ru": "Ты очень хорошо поёшь.",
+            "tj": "Ту хеле хуш месароӣ."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "谢谢！您星期六做什么？",
+          "pinyin": "Xièxie! Nín Xīngqīliù zuò shénme?",
+          "text": {
+            "uz": "Rahmat! Siz shanba kuni nima qilasiz?",
+            "ru": "Спасибо! Что вы будете делать в субботу?",
+            "tj": "Раҳмат! Шумо рӯзи шанбе чӣ кор мекунед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我在家里做饭、看电视，和孩子们、小狗玩。",
+          "pinyin": "Wǒ zài jiālǐ zuò fàn, kàn diànshì, hé háizimen, xiǎogǒu wán.",
+          "text": {
+            "uz": "Uyda ovqat pishiraman, televizor ko‘raman, bolalarim va kichik itim bilan o‘ynayman.",
+            "ru": "Дома я буду готовить, смотреть телевизор и играть с детьми и маленькой собакой.",
+            "tj": "Дар хона хӯрок мепазам, телевизор тамошо мекунам ва бо фарзандонам ва сагчаам бозӣ мекунам."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我也有一只小狗。",
+          "pinyin": "Wǒ yě yǒu yì zhī xiǎogǒu.",
+          "text": {
+            "uz": "Menda ham bitta kichik it bor.",
+            "ru": "У меня тоже есть маленькая собака.",
+            "tj": "Ман ҳам як сагча дорам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gē?",
+            "tj": "gē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "家",
+            "歌",
+            "边",
+            "前边"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "歌 = qo‘shiq (gē)",
+            "ru": "歌 = песня (gē)",
+            "tj": "歌 = суруд (gē)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Sen ertaga tushdan keyin uyda nima qilasan?» — xitoychada qaysi biri?",
+            "ru": "«Что ты будешь делать дома завтра днём?» — какое предложение по-китайски?",
+            "tj": "«Фардо баъди нисфирӯзӣ дар хона чӣ кор мекунӣ?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我们七点在电影院外边见。",
+            "电影院前边是一家超市。",
+            "你明天下午在家里做什么？",
+            "陈天中明天中午在学校吃午饭。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你明天下午在家里做什么？ — Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+            "ru": "你明天下午在家里做什么？ — Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+            "tj": "你明天下午在家里做什么？ — Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "学校前边有一家电影院。",
+          "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+          "translation": {
+            "uz": "Maktab oldida bitta kinoteatr bor.",
+            "ru": "Перед школой есть кинотеатр.",
+            "tj": "Пеши мактаб як кинотеатр ҳаст."
+          },
+          "tokens": {
+            "uz": [
+              "Ha",
+              "Bugun",
+              "kinoteatr",
+              "Maktab",
+              "bitta",
+              "oldida",
+              "bor"
+            ],
+            "ru": [
+              "Давай",
+              "Да",
+              "кинотеатр",
+              "школой",
+              "есть",
+              "Перед"
+            ],
+            "tj": [
+              "Ҳа",
+              "Пеши",
+              "мактаб",
+              "як",
+              "ҳаст",
+              "кинотеатр",
+              "Биёед"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Maktab",
+              "oldida",
+              "bitta",
+              "kinoteatr",
+              "bor"
+            ],
+            "ru": [
+              "Перед",
+              "школой",
+              "есть",
+              "кинотеатр"
+            ],
+            "tj": [
+              "Пеши",
+              "мактаб",
+              "як",
+              "кинотеатр",
+              "ҳаст"
+            ]
+          },
+          "explanation": {
+            "uz": "学校前边有一家电影院。 — Maktab oldida bitta kinoteatr bor.",
+            "ru": "学校前边有一家电影院。 — Перед школой есть кинотеатр.",
+            "tj": "学校前边有一家电影院。 — Пеши мактаб як кинотеатр ҳаст."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "前边",
+              {
+                "uz": "old tomoni; oldida",
+                "ru": "передняя сторона; впереди",
+                "tj": "пеш; тарафи пеш"
+              }
+            ],
+            [
+              "边",
+              {
+                "uz": "tomon; chet",
+                "ru": "сторона; край",
+                "tj": "тараф; канор"
+              }
+            ],
+            [
+              "家",
+              {
+                "uz": "tashkilot/korxona uchun o‘lchov so‘zi",
+                "ru": "счётное слово для семей/предприятий",
+                "tj": "воҳиди ҳисоб барои оила/корхона"
+              }
+            ],
+            [
+              "那个",
+              {
+                "uz": "ana u; o‘sha",
+                "ru": "тот",
+                "tj": "он; ҳамон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'do‘st' xitoycha qaysi?",
+            "ru": "'друг' по-китайски?",
+            "tj": "'дӯст' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "前边",
+            "家",
+            "朋友",
+            "边"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "do‘st = 朋友 (péngyou)",
+            "ru": "друг = 朋友 (péngyou)",
+            "tj": "дӯст = 朋友 (péngyou)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "读书 talaffuzini tanlang:",
+            "ru": "Выберите произношение 读书:",
+            "tj": "Талаффузи 读书-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "biān/bian",
+            "jiā",
+            "dúshū",
+            "qiánbian"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "读书 — dúshū",
+            "ru": "读书 — dúshū",
+            "tj": "读书 — dúshū"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "外边",
+              {
+                "uz": "tashqarida; tashqi tomon",
+                "ru": "снаружи; внешняя сторона",
+                "tj": "берун; тарафи берун"
+              }
+            ],
+            [
+              "椅子",
+              {
+                "uz": "stul",
+                "ru": "стул",
+                "tj": "курсӣ"
+              }
+            ],
+            [
+              "上",
+              {
+                "uz": "ust; yuqori tomon",
+                "ru": "верх; на",
+                "tj": "боло; рӯйи"
+              }
+            ],
+            [
+              "本",
+              {
+                "uz": "kitoblar uchun o‘lchov so‘zi",
+                "ru": "счётное слово для книг",
+                "tj": "воҳиди ҳисоб барои китоб"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "学校前边有一家电影院。",
+          "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+          "options": [
+            "好！我们七点在电影院外边见，好吗？",
+            "对。我们晚上去那个电影院看电影吧。",
+            "学校前边有一家电影院。",
+            "好的，晚上七点见！"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "学校前边有一家电影院。 — Maktab oldida bitta kinoteatr bor.",
+            "ru": "学校前边有一家电影院。 — Перед школой есть кинотеатр.",
+            "tj": "学校前边有一家电影院。 — Пеши мактаб як кинотеатр ҳаст."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____校前边有一家电影院。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "三",
+            "学",
+            "一",
+            "七"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 学 — 学校前边有一家电影院。 (Maktab oldida bitta kinoteatr bor.)",
+            "ru": "Верно: 学 — 学校前边有一家电影院。 (Перед школой есть кинотеатр.)",
+            "tj": "Дуруст: 学 — 学校前边有一家电影院。 (Пеши мактаб як кинотеатр ҳаст.)"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Li Wen",
+              "zh": "学校前边有一家电影院。",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "对。我们晚上去那个电影院看电影吧。",
+              "blank": false
+            },
+            {
+              "speaker": "Li Wen",
+              "zh": "好！我们七点在电影院外边见，好吗？",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "好！我们七点在电影院外边见，好吗？",
+            "学校前边有一家电影院。",
+            "好的，晚上七点见！",
+            "对。我们晚上去那个电影院看电影吧。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的，晚上七点见！",
+            "ru": "Правильный ответ: 好的，晚上七点见！",
+            "tj": "Ҷавоби дуруст: 好的，晚上七点见！"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Li Wen avval nima deydi?",
+            "ru": "Что Li Wen говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Li Wen аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "学校前边有一家电影院。",
+            "好！我们七点在电影院外边见，好吗？",
+            "好的，晚上七点见！",
+            "对。我们晚上去那个电影院看电影吧。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 学校前边有一家电影院。",
+            "ru": "Правильный ответ: 学校前边有一家电影院。",
+            "tj": "Ҷавоби дуруст: 学校前边有一家电影院。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Bai Jiayue nima deydi?",
+            "ru": "Что Bai Jiayue говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Bai Jiayue чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "好的，晚上七点见！",
+            "对。我们晚上去那个电影院看电影吧。",
+            "好！我们七点在电影院外边见，好吗？",
+            "学校前边有一家电影院。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的，晚上七点见！",
+            "ru": "Правильный ответ: 好的，晚上七点见！",
+            "tj": "Ҷавоби дуруст: 好的，晚上七点见！"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我也有一只小狗。",
+          "pinyin": "Wǒ yě yǒu yì zhī xiǎogǒu.",
+          "translation": {
+            "uz": "Menda ham bitta kichik it bor.",
+            "ru": "У меня тоже есть маленькая собака.",
+            "tj": "Ман ҳам як сагча дорам."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,770 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 86,
+  "source_lesson": 13,
+  "part_no": 3,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "请给我一杯茶",
+  "subtitle": {
+    "uz": "“可以” bilan ruxsat yoki imkoniyatni ifodalash; “动词+一下” bilan qisqa yoki sinab ko‘rish xarakteridagi harakatni aytish; ikki obyektli gaplardan foydalanish; ovqat buyurtma qilishdagi asosiy iboralarni tushunish.",
+    "ru": "Выражать разрешение и возможность с “可以”; использовать “глагол+一下” для краткого или пробного действия; строить предложения с двумя дополнениями; понимать базовые фразы для заказа еды.",
+    "tj": "Бо “可以” иҷозат ё имкониятро ифода кардан; бо “феъл+一下” амали кӯтоҳ ё озмоиширо гуфтан; ҷумлаҳои ду-объектиро истифода бурдан; ибораҳои асосии фармоиши хӯрокро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "请",
+      "pinyin": "qǐng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "iltimos; marhamat",
+        "ru": "пожалуйста; просить",
+        "tj": "лутфан; марҳамат"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "坐",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘tirmoq",
+        "ru": "сидеть; садиться",
+        "tj": "нишастан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "给",
+      "pinyin": "gěi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bermoq",
+        "ru": "давать",
+        "tj": "додан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "杯",
+      "pinyin": "bēi",
+      "pos": "m.",
+      "meaning": {
+        "uz": "piyola/stakan uchun o‘lchov so‘zi",
+        "ru": "счётное слово для чашек/стаканов",
+        "tj": "воҳиди ҳисоб барои пиёла/стакан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Ikki obyektli gap (1)",
+        "ru": "Предложение с двумя дополнениями (1)",
+        "tj": "Ҷумлаи ду-объектӣ (1)"
+      },
+      "title_zh": "双宾语句（1）",
+      "rule": {
+        "uz": "Ikki obyektli gapda bitta fe’l ikkita obyekt oladi. Bu bosqichda asosan 给 va 问 bilan tuzilgan shakllar o‘rganiladi.",
+        "ru": "В предложении с двумя дополнениями один глагол принимает два объекта. Здесь основное внимание уделяется конструкциям с 给 и 问.",
+        "tj": "Дар ҷумлаи ду-объектӣ як феъл ду объект мегирад. Дар ин сатҳ асосан сохторҳои бо 给 ва 问 омӯхта мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "请给我一杯牛奶。",
+          "pinyin": "Qǐng gěi wǒ yì bēi niúnǎi.",
+          "translation": {
+            "uz": "Iltimos, menga bir stakan sut bering.",
+            "ru": "Пожалуйста, дайте мне стакан молока.",
+            "tj": "Лутфан, ба ман як пиёла шир диҳед."
+          }
+        },
+        {
+          "zh": "白家月给安妮一个苹果。",
+          "pinyin": "Bái Jiāyuè gěi Ānnī yí ge píngguǒ.",
+          "translation": {
+            "uz": "Bai Jiayue Anniega bitta olma berdi.",
+            "ru": "Бай Цзяюэ дала Энни яблоко.",
+            "tj": "Бай Ҷяюэ ба Энни як себ дод."
+          }
+        },
+        {
+          "zh": "我问老师两个问题。",
+          "pinyin": "Wǒ wèn lǎoshī liǎng ge wèntí.",
+          "translation": {
+            "uz": "Men o‘qituvchidan ikkita savol so‘radim.",
+            "ru": "Я задал преподавателю два вопроса.",
+            "tj": "Ман аз устод ду савол пурсидам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue ustoz Wangdan savol so‘raydi.",
+        "ru": "В аудитории после занятия Бай Цзяюэ задаёт вопрос преподавателю Ван.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ аз устод Ван савол мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "可以。你有什么问题？",
+          "pinyin": "Kěyǐ. Nǐ yǒu shénme wèntí?",
+          "text": {
+            "uz": "Mumkin. Qanday savoling bor?",
+            "ru": "Можно. Какой у тебя вопрос?",
+            "tj": "Мумкин. Чӣ савол дорӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "那个小店卖不卖手机？",
+          "pinyin": "Nàge xiǎodiàn mài bu mài shǒujī?",
+          "text": {
+            "uz": "O‘sha kichik do‘kon telefon sotadimi yo‘qmi?",
+            "ru": "В том маленьком магазине продают телефоны?",
+            "tj": "Он мағозаи хурд телефон мефурӯшад ё не?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我不知道。你可以打电话问一下。",
+          "pinyin": "Wǒ bù zhīdào. Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+          "text": {
+            "uz": "Bilmayman. Telefon qilib so‘rab ko‘rishing mumkin.",
+            "ru": "Не знаю. Можешь позвонить и спросить.",
+            "tj": "Намедонам. Метавонӣ занг зада як бор пурсӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kafeda Wang Yixue nonushta qilmoqchi.",
+        "ru": "В кафе Ван Исюэ хочет позавтракать.",
+        "tj": "Дар қаҳвахона Ван Исюэ мехоҳад наҳорӣ кунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Waitress",
+          "zh": "女士，请坐！您喝什么？",
+          "pinyin": "Nǚshì, qǐng zuò! Nín hē shénme?",
+          "text": {
+            "uz": "Xonim, marhamat o‘tiring! Nima ichasiz?",
+            "ru": "Госпожа, присаживайтесь! Что будете пить?",
+            "tj": "Хонум, марҳамат нишинед! Чӣ менӯшед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我看一下。请给我一杯牛奶。",
+          "pinyin": "Wǒ kàn yíxià. Qǐng gěi wǒ yì bēi niúnǎi.",
+          "text": {
+            "uz": "Bir ko‘rib olay. Iltimos, menga bir stakan sut bering.",
+            "ru": "Дайте посмотреть. Пожалуйста, дайте мне стакан молока.",
+            "tj": "Бигзор як нигоҳ кунам. Лутфан, ба ман як пиёла шир диҳед."
+          }
+        },
+        {
+          "speaker": "Waitress",
+          "zh": "好的。您还要什么？",
+          "pinyin": "Hǎo de. Nín hái yào shénme?",
+          "text": {
+            "uz": "Xo‘p. Yana nima olasiz?",
+            "ru": "Хорошо. Что-нибудь ещё?",
+            "tj": "Хуб. Боз чӣ мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Liu Ming ovqat buyurtma qilmoqda.",
+        "ru": "В ресторане Лю Мин делает заказ.",
+        "tj": "Дар тарабхона Лю Мин хӯрок фармоиш медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我要一斤饺子。",
+          "pinyin": "Wǒ yào yì jīn jiǎozi.",
+          "text": {
+            "uz": "Menga bir jin jiaozi bering.",
+            "ru": "Я возьму один цзинь цзяоцзы.",
+            "tj": "Ман як ҷин ҷяозы мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "好的。一斤饺子40个。",
+          "pinyin": "Hǎo de. Yì jīn jiǎozi sìshí ge.",
+          "text": {
+            "uz": "Xo‘p. Bir jin jiaozi 40 dona bo‘ladi.",
+            "ru": "Хорошо. В одном цзине цзяоцзы 40 штук.",
+            "tj": "Хуб. Як ҷин ҷяозы 40 дона мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "40个太多了，我要一半吧。",
+          "pinyin": "Sìshí ge tài duō le, wǒ yào yíbàn ba.",
+          "text": {
+            "uz": "40 dona juda ko‘p, yarmini olaman.",
+            "ru": "40 штук слишком много, возьму половину.",
+            "tj": "40 дона хеле зиёд, нисфашро мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "半斤20个。您想喝什么？",
+          "pinyin": "Bàn jīn èrshí ge. Nín xiǎng hē shénme?",
+          "text": {
+            "uz": "Yarim jin 20 dona. Nima ichasiz?",
+            "ru": "Полцзиня — 20 штук. Что будете пить?",
+            "tj": "Ним ҷин 20 дона. Чӣ менӯшед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "请",
+            "pinyin": "qǐng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "iltimos; marhamat",
+              "ru": "пожалуйста; просить",
+              "tj": "лутфан; марҳамат"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "请 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 请:",
+            "tj": "Маънои калимаи 请-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iltimos; marhamat",
+              "ru": "пожалуйста; просить",
+              "tj": "лутфан; марҳамат"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "请 = iltimos; marhamat (qǐng)",
+            "ru": "请 = пожалуйста; просить (qǐng)",
+            "tj": "请 = лутфан; марҳамат (qǐng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "坐",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘tirmoq",
+              "ru": "сидеть; садиться",
+              "tj": "нишастан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "坐",
+          "pinyin": "zuò",
+          "translation": {
+            "uz": "o‘tirmoq",
+            "ru": "сидеть; садиться",
+            "tj": "нишастан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zuò qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuò?",
+            "tj": "zuò кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "问题",
+            "再",
+            "坐",
+            "可以"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "坐 = o‘tirmoq (zuò)",
+            "ru": "坐 = сидеть; садиться (zuò)",
+            "tj": "坐 = нишастан (zuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "给",
+            "pinyin": "gěi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bermoq",
+              "ru": "давать",
+              "tj": "додан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "给 talaffuzini tanlang:",
+            "ru": "Выберите произношение 给:",
+            "tj": "Талаффузи 给-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wèntí",
+            "gěi",
+            "kěyǐ",
+            "zài"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "给 — gěi",
+            "ru": "给 — gěi",
+            "tj": "给 — gěi"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "杯",
+            "pinyin": "bēi",
+            "pos": "m.",
+            "meaning": {
+              "uz": "piyola/stakan uchun o‘lchov so‘zi",
+              "ru": "счётное слово для чашек/стаканов",
+              "tj": "воҳиди ҳисоб барои пиёла/стакан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'piyola/stakan uchun o‘lchov so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для чашек/стаканов' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои пиёла/стакан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可以",
+            "问题",
+            "杯",
+            "再"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "piyola/stakan uchun o‘lchov so‘zi = 杯 (bēi)",
+            "ru": "счётное слово для чашек/стаканов = 杯 (bēi)",
+            "tj": "воҳиди ҳисоб барои пиёла/стакан = 杯 (bēi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "请",
+          "pinyin": "qǐng",
+          "options": [
+            "可以",
+            "再",
+            "问题",
+            "请"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "请 — iltimos; marhamat (qǐng)",
+            "ru": "请 — пожалуйста; просить (qǐng)",
+            "tj": "请 — лутфан; марҳамат (qǐng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "请",
+              {
+                "uz": "iltimos; marhamat",
+                "ru": "пожалуйста; просить",
+                "tj": "лутфан; марҳамат"
+              }
+            ],
+            [
+              "坐",
+              {
+                "uz": "o‘tirmoq",
+                "ru": "сидеть; садиться",
+                "tj": "нишастан"
+              }
+            ],
+            [
+              "给",
+              {
+                "uz": "bermoq",
+                "ru": "давать",
+                "tj": "додан"
+              }
+            ],
+            [
+              "杯",
+              {
+                "uz": "piyola/stakan uchun o‘lchov so‘zi",
+                "ru": "счётное слово для чашек/стаканов",
+                "tj": "воҳиди ҳисоб барои пиёла/стакан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Ikki obyektli gap (1)",
+              "ru": "Предложение с двумя дополнениями (1)",
+              "tj": "Ҷумлаи ду-объектӣ (1)"
+            },
+            "title_zh": "双宾语句（1）",
+            "rule": {
+              "uz": "Ikki obyektli gapda bitta fe’l ikkita obyekt oladi. Bu bosqichda asosan 给 va 问 bilan tuzilgan shakllar o‘rganiladi.",
+              "ru": "В предложении с двумя дополнениями один глагол принимает два объекта. Здесь основное внимание уделяется конструкциям с 给 и 问.",
+              "tj": "Дар ҷумлаи ду-объектӣ як феъл ду объект мегирад. Дар ин сатҳ асосан сохторҳои бо 给 ва 问 омӯхта мешаванд."
+            },
+            "examples": [
+              {
+                "zh": "请给我一杯牛奶。",
+                "pinyin": "Qǐng gěi wǒ yì bēi niúnǎi.",
+                "translation": {
+                  "uz": "Iltimos, menga bir stakan sut bering.",
+                  "ru": "Пожалуйста, дайте мне стакан молока.",
+                  "tj": "Лутфан, ба ман як пиёла шир диҳед."
+                }
+              },
+              {
+                "zh": "白家月给安妮一个苹果。",
+                "pinyin": "Bái Jiāyuè gěi Ānnī yí ge píngguǒ.",
+                "translation": {
+                  "uz": "Bai Jiayue Anniega bitta olma berdi.",
+                  "ru": "Бай Цзяюэ дала Энни яблоко.",
+                  "tj": "Бай Ҷяюэ ба Энни як себ дод."
+                }
+              },
+              {
+                "zh": "我问老师两个问题。",
+                "pinyin": "Wǒ wèn lǎoshī liǎng ge wèntí.",
+                "translation": {
+                  "uz": "Men o‘qituvchidan ikkita savol so‘radim.",
+                  "ru": "Я задал преподавателю два вопроса.",
+                  "tj": "Ман аз устод ду савол пурсидам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Iltimos, menga bir stakan sut bering.",
+            "ru": "Пожалуйста, дайте мне стакан молока.",
+            "tj": "Лутфан, ба ман як пиёла шир диҳед."
+          },
+          "tokens": [
+            "可以",
+            "牛奶",
+            "我",
+            "请",
+            "给",
+            "一",
+            "再",
+            "杯"
+          ],
+          "answer_tokens": [
+            "请",
+            "给",
+            "我",
+            "一",
+            "杯",
+            "牛奶"
+          ],
+          "explanation": {
+            "uz": "请给我一杯牛奶。 — Qǐng gěi wǒ yì bēi niúnǎi.",
+            "ru": "请给我一杯牛奶。 — Qǐng gěi wǒ yì bēi niúnǎi.",
+            "tj": "请给我一杯牛奶。 — Qǐng gěi wǒ yì bēi niúnǎi."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Iltimos, menga bir stakan sut bering.» — xitoychada qaysi biri?",
+            "ru": "«Пожалуйста, дайте мне стакан молока.» — какое предложение по-китайски?",
+            "tj": "«Лутфан, ба ман як пиёла шир диҳед.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "请给我一杯牛奶。",
+            "白家月给安妮一个苹果。",
+            "我问老师两个问题。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "请给我一杯牛奶。 — Qǐng gěi wǒ yì bēi niúnǎi.",
+            "ru": "请给我一杯牛奶。 — Qǐng gěi wǒ yì bēi niúnǎi.",
+            "tj": "请给我一杯牛奶。 — Qǐng gěi wǒ yì bēi niúnǎi."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "请",
+              {
+                "uz": "iltimos; marhamat",
+                "ru": "пожалуйста; просить",
+                "tj": "лутфан; марҳамат"
+              }
+            ],
+            [
+              "坐",
+              {
+                "uz": "o‘tirmoq",
+                "ru": "сидеть; садиться",
+                "tj": "нишастан"
+              }
+            ],
+            [
+              "给",
+              {
+                "uz": "bermoq",
+                "ru": "давать",
+                "tj": "додан"
+              }
+            ],
+            [
+              "杯",
+              {
+                "uz": "piyola/stakan uchun o‘lchov so‘zi",
+                "ru": "счётное слово для чашек/стаканов",
+                "tj": "воҳиди ҳисоб барои пиёла/стакан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "坐",
+          "pinyin": "zuò",
+          "translation": {
+            "uz": "o‘tirmoq",
+            "ru": "сидеть; садиться",
+            "tj": "нишастан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一下 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一下:",
+            "tj": "Маънои калимаи 一下-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            },
+            {
+              "uz": "bir marta; qisqacha",
+              "ru": "разок; немного",
+              "tj": "як бор; каме"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "一下 = bir marta; qisqacha (yíxià)",
+            "ru": "一下 = разок; немного (yíxià)",
+            "tj": "一下 = як бор; каме (yíxià)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一下",
+            "pinyin": "yíxià",
+            "meaning": {
+              "uz": "bir marta; qisqacha",
+              "ru": "разок; немного",
+              "tj": "як бор; каме"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘tirmoq' xitoycha qaysi?",
+            "ru": "'сидеть; садиться' по-китайски?",
+            "tj": "'нишастан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "坐",
+            "再",
+            "问题",
+            "可以"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "o‘tirmoq = 坐 (zuò)",
+            "ru": "сидеть; садиться = 坐 (zuò)",
+            "tj": "нишастан = 坐 (zuò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "坐",
+            "pinyin": "zuò",
+            "meaning": {
+              "uz": "o‘tirmoq",
+              "ru": "сидеть; садиться",
+              "tj": "нишастан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

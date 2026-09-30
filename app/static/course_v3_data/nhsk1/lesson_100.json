@@ -1,0 +1,654 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 100,
+  "source_lesson": 15,
+  "part_no": 3,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "大兴机场见！",
+  "subtitle": {
+    "uz": "Safar niyati va rejasini ifodalovchi so‘zlarni tushunish va ishlatish; “……，还/也……” bilan mantiqan teng bog‘langan gaplarni tuzish; xitoycha mehmondo‘stlik va ovqatlanish odobining asosiy jihatlarini tushunish.",
+    "ru": "Понимать и использовать лексику намерений и планов поездки; строить сочинённые предложения с “……，还/也……” ; понимать базовые нормы китайского застолья и гостеприимства.",
+    "tj": "Луғати ният ва нақшаи сафарро фаҳмидан ва истифода бурдан; бо “……，还/也……” ҷумлаҳои ҳампайванд сохтан; асосҳои одоби меҳмондорӣ ва хӯрокхӯрии чиниро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "要",
+      "pinyin": "yào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kerak bo‘lmoq; vaqt olmoq",
+        "ru": "требоваться; занимать времени",
+        "tj": "лозим шудан; вақт гирифтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "小时",
+      "pinyin": "xiǎoshí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "soat (davomiylik)",
+        "ru": "час",
+        "tj": "соат"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "家人",
+      "pinyin": "jiārén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oila a’zosi; oila",
+        "ru": "член семьи; семья",
+        "tj": "аъзои оила; оила"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "时间",
+      "pinyin": "shíjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "vaqt; vaqt davomiyligi",
+        "ru": "время; продолжительность",
+        "tj": "вақт; давомнокӣ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Li Wenning uyida u Chen Tianzhong, Bai Jiayue va boshqa do‘stlarini xitoy taomlarini tatib ko‘rishga taklif qilgan.",
+        "ru": "Дома у Ли Вэня он угощает китайской едой Чэнь Тяньчжуна, Бай Цзяюэ и других друзей.",
+        "tj": "Дар хонаи Ли Вэн ӯ Чэн Тянҷун, Бай Ҷяюэ ва дигар дӯстонашро бо таоми чинӣ меҳмондорӣ мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们爱吃哪个菜？",
+          "pinyin": "Nǐmen ài chī nǎge cài?",
+          "text": {
+            "uz": "Qaysi taomni yoqtirasizlar?",
+            "ru": "Какое блюдо вам нравится?",
+            "tj": "Кадом таомро дӯст медоред?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我喜欢这个，也喜欢那个。",
+          "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+          "text": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这些菜都好吃，还很好看。",
+          "pinyin": "Zhèxiē cài dōu hǎochī, hái hěn hǎokàn.",
+          "text": {
+            "uz": "Bu taomlarning hammasi mazali, ko‘rinishi ham juda chiroyli.",
+            "ru": "Все эти блюда вкусные и ещё очень красиво выглядят.",
+            "tj": "Ҳамаи ин таомҳо болаззатанд ва хеле зебо ҳам менамоянд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida hamma ovqatlanib turib ta’til rejalarini muhokama qilmoqda.",
+        "ru": "Дома у Ли Вэня все за едой обсуждают планы на каникулы.",
+        "tj": "Дар хонаи Ли Вэн ҳама ҳангоми хӯрок нақшаҳои таътилро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们都想去哪儿？",
+          "pinyin": "Nǐmen dōu xiǎng qù nǎr?",
+          "text": {
+            "uz": "Hammangiz qayerga bormoqchisiz?",
+            "ru": "Куда вы все хотите поехать?",
+            "tj": "Ҳамаатон ба куҷо рафтан мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinf tashqarisida Bai Jiayue, Annie va ustoz Wang Pekinga sayohat haqida gaplashmoqda.",
+        "ru": "У аудитории Бай Цзяюэ, Энни и преподаватель Ван обсуждают поездку в Пекин.",
+        "tj": "Берун аз синф Бай Ҷяюэ, Энни ва устод Ван дар бораи сафар ба Пекин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "九个小时。",
+          "pinyin": "Jiǔ ge xiǎoshí.",
+          "text": {
+            "uz": "To‘qqiz soat.",
+            "ru": "Девять часов.",
+            "tj": "Нӯҳ соат."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "要",
+            "pinyin": "yào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kerak bo‘lmoq; vaqt olmoq",
+              "ru": "требоваться; занимать времени",
+              "tj": "лозим шудан; вақт гирифтан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "要",
+          "pinyin": "yào",
+          "options": [
+            "爱",
+            "哪个",
+            "去年",
+            "要"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "要 — kerak bo‘lmoq; vaqt olmoq (yào)",
+            "ru": "要 — требоваться; занимать времени (yào)",
+            "tj": "要 — лозим шудан; вақт гирифтан (yào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "小时",
+            "pinyin": "xiǎoshí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "soat (davomiylik)",
+              "ru": "час",
+              "tj": "соат"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "小时 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小时:",
+            "tj": "Маънои калимаи 小时-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            },
+            {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            },
+            {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            },
+            {
+              "uz": "soat (davomiylik)",
+              "ru": "час",
+              "tj": "соат"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "小时 = soat (davomiylik) (xiǎoshí)",
+            "ru": "小时 = час (xiǎoshí)",
+            "tj": "小时 = соат (xiǎoshí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "家人",
+            "pinyin": "jiārén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oila a’zosi; oila",
+              "ru": "член семьи; семья",
+              "tj": "аъзои оила; оила"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiārén qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiārén?",
+            "tj": "jiārén кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "家人",
+            "哪个",
+            "爱",
+            "去年"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "家人 = oila a’zosi; oila (jiārén)",
+            "ru": "家人 = член семьи; семья (jiārén)",
+            "tj": "家人 = аъзои оила; оила (jiārén)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "时间",
+            "pinyin": "shíjiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "vaqt; vaqt davomiyligi",
+              "ru": "время; продолжительность",
+              "tj": "вақт; давомнокӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "时间",
+          "pinyin": "shíjiān",
+          "translation": {
+            "uz": "vaqt; vaqt davomiyligi",
+            "ru": "время; продолжительность",
+            "tj": "вақт; давомнокӣ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "时间 talaffuzini tanlang:",
+            "ru": "Выберите произношение 时间:",
+            "tj": "Талаффузи 时间-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǎge",
+            "shíjiān",
+            "qùnián",
+            "ài"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "时间 — shíjiān",
+            "ru": "时间 — shíjiān",
+            "tj": "时间 — shíjiān"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kerak bo‘lmoq; vaqt olmoq' xitoycha qaysi?",
+            "ru": "'требоваться; занимать времени' по-китайски?",
+            "tj": "'лозим шудан; вақт гирифтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "去年",
+            "爱",
+            "哪个",
+            "要"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kerak bo‘lmoq; vaqt olmoq = 要 (yào)",
+            "ru": "требоваться; занимать времени = 要 (yào)",
+            "tj": "лозим шудан; вақт гирифтан = 要 (yào)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "要",
+              {
+                "uz": "kerak bo‘lmoq; vaqt olmoq",
+                "ru": "требоваться; занимать времени",
+                "tj": "лозим шудан; вақт гирифтан"
+              }
+            ],
+            [
+              "小时",
+              {
+                "uz": "soat (davomiylik)",
+                "ru": "час",
+                "tj": "соат"
+              }
+            ],
+            [
+              "家人",
+              {
+                "uz": "oila a’zosi; oila",
+                "ru": "член семьи; семья",
+                "tj": "аъзои оила; оила"
+              }
+            ],
+            [
+              "时间",
+              {
+                "uz": "vaqt; vaqt davomiyligi",
+                "ru": "время; продолжительность",
+                "tj": "вақт; давомнокӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "To‘qqiz soat.",
+            "ru": "Девять часов.",
+            "tj": "Нӯҳ соат."
+          },
+          "tokens": [
+            "小时",
+            "个",
+            "爱",
+            "九",
+            "哪个"
+          ],
+          "answer_tokens": [
+            "九",
+            "个",
+            "小时"
+          ],
+          "explanation": {
+            "uz": "九个小时。 — Jiǔ ge xiǎoshí.",
+            "ru": "九个小时。 — Jiǔ ge xiǎoshí.",
+            "tj": "九个小时。 — Jiǔ ge xiǎoshí."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "时间",
+          "pinyin": "shíjiān",
+          "options": [
+            "哪个",
+            "时间",
+            "爱",
+            "去年"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "时间 — vaqt; vaqt davomiyligi (shíjiān)",
+            "ru": "时间 — время; продолжительность (shíjiān)",
+            "tj": "时间 — вақт; давомнокӣ (shíjiān)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "九个小时。",
+          "pinyin": "Jiǔ ge xiǎoshí.",
+          "translation": {
+            "uz": "To‘qqiz soat.",
+            "ru": "Девять часов.",
+            "tj": "Нӯҳ соат."
+          },
+          "tokens": {
+            "uz": [
+              "soat",
+              "To‘qqiz"
+            ],
+            "ru": [
+              "часов",
+              "Девять"
+            ],
+            "tj": [
+              "Нӯҳ",
+              "соат"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "To‘qqiz",
+              "soat"
+            ],
+            "ru": [
+              "Девять",
+              "часов"
+            ],
+            "tj": [
+              "Нӯҳ",
+              "соат"
+            ]
+          },
+          "explanation": {
+            "uz": "九个小时。 — To‘qqiz soat.",
+            "ru": "九个小时。 — Девять часов.",
+            "tj": "九个小时。 — Нӯҳ соат."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "要",
+              {
+                "uz": "kerak bo‘lmoq; vaqt olmoq",
+                "ru": "требоваться; занимать времени",
+                "tj": "лозим шудан; вақт гирифтан"
+              }
+            ],
+            [
+              "小时",
+              {
+                "uz": "soat (davomiylik)",
+                "ru": "час",
+                "tj": "соат"
+              }
+            ],
+            [
+              "家人",
+              {
+                "uz": "oila a’zosi; oila",
+                "ru": "член семьи; семья",
+                "tj": "аъзои оила; оила"
+              }
+            ],
+            [
+              "时间",
+              {
+                "uz": "vaqt; vaqt davomiyligi",
+                "ru": "время; продолжительность",
+                "tj": "вақт; давомнокӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "时间",
+          "pinyin": "shíjiān",
+          "translation": {
+            "uz": "vaqt; vaqt davomiyligi",
+            "ru": "время; продолжительность",
+            "tj": "вақт; давомнокӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "飞机 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 飞机:",
+            "tj": "Маънои калимаи 飞机-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "samolyot",
+              "ru": "самолёт",
+              "tj": "ҳавопаймо"
+            },
+            {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            },
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            },
+            {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "飞机 = samolyot (fēijī)",
+            "ru": "飞机 = самолёт (fēijī)",
+            "tj": "飞机 = ҳавопаймо (fēijī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "飞机",
+            "pinyin": "fēijī",
+            "meaning": {
+              "uz": "samolyot",
+              "ru": "самолёт",
+              "tj": "ҳавопаймо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'vaqt; vaqt davomiyligi' xitoycha qaysi?",
+            "ru": "'время; продолжительность' по-китайски?",
+            "tj": "'вақт; давомнокӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "时间",
+            "哪个",
+            "爱",
+            "去年"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "vaqt; vaqt davomiyligi = 时间 (shíjiān)",
+            "ru": "время; продолжительность = 时间 (shíjiān)",
+            "tj": "вақт; давомнокӣ = 时间 (shíjiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "时间",
+            "pinyin": "shíjiān",
+            "meaning": {
+              "uz": "vaqt; vaqt davomiyligi",
+              "ru": "время; продолжительность",
+              "tj": "вақт; давомнокӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,591 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 73,
+  "source_lesson": 11,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我读大学呢",
+  "subtitle": {
+    "uz": "正反问 shaklidagi savollarni tushunish va tuzish; “在/正在” bilan davom etayotgan harakatni ifodalash; “要” bilan xohish yoki niyatni bildirish.",
+    "ru": "Понимать и строить утвердительно-отрицательные вопросы; выражать продолжающееся действие с “在/正在”; выражать желание или намерение с “要”.",
+    "tj": "Саволҳои тасдиқӣ-инкориро фаҳмидан ва сохтан; бо “在/正在” амали давомдорро ифода кардан; бо “要” хоҳиш ё ниятро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "睡",
+      "pinyin": "shuì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uxlamoq",
+        "ru": "спать",
+        "tj": "хобидан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "那里",
+      "pinyin": "nàli",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u yer",
+        "ru": "там",
+        "tj": "он ҷо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "哪里",
+      "pinyin": "nǎli",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qayer",
+        "ru": "где; куда",
+        "tj": "куҷо"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yo‘lda Li Wen restoran qidirayotganida Wang Yifei unga telefon qiladi.",
+        "ru": "По дороге, пока Ли Вэнь искал ресторан, Ван Ифэй позвонила ему.",
+        "tj": "Дар роҳ, вақте Ли Вэн тарабхонаро меҷуст, Ван Ифэй ба ӯ занг зад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "还不知道，正在找呢。它是不是在超市后边？",
+          "pinyin": "Hái bù zhīdào, zhèngzài zhǎo ne. Tā shì bu shì zài chāoshì hòubian?",
+          "text": {
+            "uz": "Hali bilmayman, hozir qidiryapman. U supermarket orqasidami?",
+            "ru": "Пока не знаю, сейчас ищу. Он за супермаркетом?",
+            "tj": "Ҳоло намедонам, ҷустуҷӯ карда истодаам. Он паси супермаркет аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是的。你开车没开车？",
+          "pinyin": "Shì de. Nǐ kāichē méi kāichē?",
+          "text": {
+            "uz": "Ha. Mashina haydayapsanmi yo‘qmi?",
+            "ru": "Да. Ты за рулём или нет?",
+            "tj": "Ҳа. Мошин меронӣ ё не?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我没开车，坐车呢。",
+          "pinyin": "Wǒ méi kāichē, zuò chē ne.",
+          "text": {
+            "uz": "Mashina haydamayapman, transportda ketyapman.",
+            "ru": "Нет, я не за рулём, еду на машине.",
+            "tj": "Не, мошин намеронам, бо нақлиёт меравам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda uchrashgach Wang Yifei va Li Wen suhbatlashmoqda.",
+        "ru": "После встречи в ресторане Ван Ифэй и Ли Вэнь разговаривают.",
+        "tj": "Пас аз вохӯрӣ дар тарабхона Ван Ифэй ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你还在读大学吗？",
+          "pinyin": "Nǐ hái zài dú dàxué ma?",
+          "text": {
+            "uz": "Hali ham universitetda o‘qiyapsanmi?",
+            "ru": "Ты всё ещё учишься в университете?",
+            "tj": "Ҳоло ҳам дар донишгоҳ мехонӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "对，我读大学呢，还是大学生。",
+          "pinyin": "Duì, wǒ dú dàxué ne, hái shì dàxuéshēng.",
+          "text": {
+            "uz": "Ha, universitetda o‘qiyman, hali talabaman.",
+            "ru": "Да, я учусь в университете, я ещё студент.",
+            "tj": "Ҳа, дар донишгоҳ мехонам, ҳоло ҳам донишҷӯ ҳастам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们学习忙不忙？",
+          "pinyin": "Nǐmen xuéxí máng bu máng?",
+          "text": {
+            "uz": "O‘qishingiz bandmi yo‘qmi?",
+            "ru": "У вас учёба напряжённая?",
+            "tj": "Таҳсилатон сермашғул аст ё не?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "非常忙，我学医，我们的课很多。",
+          "pinyin": "Fēicháng máng, wǒ xué yī, wǒmen de kè hěn duō.",
+          "text": {
+            "uz": "Juda band. Men tibbiyot o‘qiyman, darslarimiz juda ko‘p.",
+            "ru": "Очень заняты. Я изучаю медицину, у нас много занятий.",
+            "tj": "Хеле банд. Ман тиб мехонам, дарсҳоямон бисёранд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shanba ertalab Liu Ming kasalxonaga qo‘shimcha ishga ketishidan oldin qizi Xiaoxue bilan gaplashadi.",
+        "ru": "В субботу утром Лю Мин собирается на сверхурочную работу в больницу и перед выходом разговаривает с дочерью Сяосюэ.",
+        "tj": "Субҳи шанбе Лю Мин барои кори иловагӣ ба беморхона меравад ва пеш аз баромадан бо духтараш Сяосюэ суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "弟弟起床没起床呢？",
+          "pinyin": "Dìdi qǐchuáng méi qǐchuáng ne?",
+          "text": {
+            "uz": "Ukang turdimi yo‘qmi?",
+            "ru": "Младший брат уже встал или нет?",
+            "tj": "Бародари хурдиат аз хоб хест ё не?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "没起床呢，还在睡觉。",
+          "pinyin": "Méi qǐchuáng ne, hái zài shuìjiào.",
+          "text": {
+            "uz": "Yo‘q, hali turmadi, hanuz uxlayapti.",
+            "ru": "Нет, ещё не встал, всё ещё спит.",
+            "tj": "Не, ҳоло нахестааст, ҳанӯз хоб аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "还睡呢？他今天去不去那里？",
+          "pinyin": "Hái shuì ne? Tā jīntiān qù bu qù nàli?",
+          "text": {
+            "uz": "Hali uxlayaptimi? U bugun u yerga boradimi yo‘qmi?",
+            "ru": "Всё ещё спит? Он сегодня пойдёт туда или нет?",
+            "tj": "Ҳанӯз хоб аст? Ӯ имрӯз ба он ҷо меравад ё не?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "去哪里？",
+          "pinyin": "Qù nǎli?",
+          "text": {
+            "uz": "Qayerga?",
+            "ru": "Куда?",
+            "tj": "Ба куҷо?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "去超市。",
+          "pinyin": "Qù chāoshì.",
+          "text": {
+            "uz": "Supermarketga.",
+            "ru": "В супермаркет.",
+            "tj": "Ба супермаркет."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "睡",
+            "pinyin": "shuì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "uxlamoq",
+              "ru": "спать",
+              "tj": "хобидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "睡",
+          "pinyin": "shuì",
+          "translation": {
+            "uz": "uxlamoq",
+            "ru": "спать",
+            "tj": "хобидан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "睡 talaffuzini tanlang:",
+            "ru": "Выберите произношение 睡:",
+            "tj": "Талаффузи 睡-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shuì",
+            "shíhou",
+            "fàndiàn",
+            "zhīdào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "睡 — shuì",
+            "ru": "睡 — shuì",
+            "tj": "睡 — shuì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "那里",
+            "pinyin": "nàli",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u yer",
+              "ru": "там",
+              "tj": "он ҷо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'u yer' xitoycha qaysi?",
+            "ru": "'там' по-китайски?",
+            "tj": "'он ҷо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "知道",
+            "时候",
+            "饭店",
+            "那里"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "u yer = 那里 (nàli)",
+            "ru": "там = 那里 (nàli)",
+            "tj": "он ҷо = 那里 (nàli)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "哪里",
+            "pinyin": "nǎli",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qayer",
+              "ru": "где; куда",
+              "tj": "куҷо"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "哪里",
+          "pinyin": "nǎli",
+          "options": [
+            "时候",
+            "哪里",
+            "知道",
+            "饭店"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "哪里 — qayer (nǎli)",
+            "ru": "哪里 — где; куда (nǎli)",
+            "tj": "哪里 — куҷо (nǎli)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "睡 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 睡:",
+            "tj": "Маънои калимаи 睡-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            },
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "uxlamoq",
+              "ru": "спать",
+              "tj": "хобидан"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "睡 = uxlamoq (shuì)",
+            "ru": "睡 = спать (shuì)",
+            "tj": "睡 = хобидан (shuì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "睡",
+              {
+                "uz": "uxlamoq",
+                "ru": "спать",
+                "tj": "хобидан"
+              }
+            ],
+            [
+              "那里",
+              {
+                "uz": "u yer",
+                "ru": "там",
+                "tj": "он ҷо"
+              }
+            ],
+            [
+              "哪里",
+              {
+                "uz": "qayer",
+                "ru": "где; куда",
+                "tj": "куҷо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "那里",
+          "pinyin": "nàli",
+          "translation": {
+            "uz": "u yer",
+            "ru": "там",
+            "tj": "он ҷо"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "睡",
+          "pinyin": "shuì",
+          "options": [
+            "知道",
+            "时候",
+            "睡",
+            "饭店"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "睡 — uxlamoq (shuì)",
+            "ru": "睡 — спать (shuì)",
+            "tj": "睡 — хобидан (shuì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nǎli qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǎli?",
+            "tj": "nǎli кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "知道",
+            "时候",
+            "饭店",
+            "哪里"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "哪里 = qayer (nǎli)",
+            "ru": "哪里 = где; куда (nǎli)",
+            "tj": "哪里 = куҷо (nǎli)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "睡",
+          "pinyin": "shuì",
+          "translation": {
+            "uz": "uxlamoq",
+            "ru": "спать",
+            "tj": "хобидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "医 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 医:",
+            "tj": "Маънои калимаи 医-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "tibbiyot",
+              "ru": "медицина",
+              "tj": "тиб"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "医 = tibbiyot (yī)",
+            "ru": "医 = медицина (yī)",
+            "tj": "医 = тиб (yī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "医",
+            "pinyin": "yī",
+            "meaning": {
+              "uz": "tibbiyot",
+              "ru": "медицина",
+              "tj": "тиб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uxlamoq' xitoycha qaysi?",
+            "ru": "'спать' по-китайски?",
+            "tj": "'хобидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饭店",
+            "睡",
+            "时候",
+            "知道"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uxlamoq = 睡 (shuì)",
+            "ru": "спать = 睡 (shuì)",
+            "tj": "хобидан = 睡 (shuì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "睡",
+            "pinyin": "shuì",
+            "meaning": {
+              "uz": "uxlamoq",
+              "ru": "спать",
+              "tj": "хобидан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

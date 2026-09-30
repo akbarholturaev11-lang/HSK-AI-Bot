@@ -1,0 +1,748 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 93,
+  "source_lesson": 14,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "听",
+      "pinyin": "tīng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tinglamoq; eshitmoq",
+        "ru": "слушать; слышать",
+        "tj": "гӯш кардан; шунидан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "哪些",
+      "pinyin": "nǎxiē",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qaysilar",
+        "ru": "какие; которые",
+        "tj": "кадомҳо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "字",
+      "pinyin": "zì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ieroglif; belgi; so‘z",
+        "ru": "иероглиф; знак; слово",
+        "tj": "иероглиф; аломат; калима"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "明年",
+      "pinyin": "míngnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kelasi yil",
+        "ru": "следующий год",
+        "tj": "соли оянда"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Qamrov ravishi “都”",
+        "ru": "Наречие охвата “都”",
+        "tj": "Зарфи фарогирии “都”"
+      },
+      "title_zh": "范围副词“都”",
+      "rule": {
+        "uz": "“都” “hammasi/barchasi” ma’nosini beradi; umumlashtirilayotgan unsur 都 dan oldin keladi. Inkorda inkor so‘zi 都 dan keyin turadi.",
+        "ru": "“都” означает «все/в целом»; обобщаемый объект ставится перед 都. В отрицании отрицательное слово ставится после 都.",
+        "tj": "“都” маънои «ҳама/умуман»-ро медиҳад; объекти умумисозиш пеш аз 都 меояд. Дар инкор калимаи инкор пас аз 都 меояд."
+      },
+      "examples": [
+        {
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "translation": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        },
+        {
+          "zh": "我和我的朋友们都去。",
+          "pinyin": "Wǒ hé wǒ de péngyoumen dōu qù.",
+          "translation": {
+            "uz": "Men va do‘stlarimning hammasi boramiz.",
+            "ru": "Я и мои друзья все пойдём.",
+            "tj": "Ман ва дӯстонам ҳама меравем."
+          }
+        },
+        {
+          "zh": "同学们都没听见。",
+          "pinyin": "Tóngxuémen dōu méi tīngjiàn.",
+          "translation": {
+            "uz": "Talabalarning hech biri eshitmadi.",
+            "ru": "Студенты все не услышали.",
+            "tj": "Ҳеҷ кадом аз донишҷӯён нашуниданд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsda Wang Yifei talabalarining o‘qish holatini so‘ramoqda.",
+        "ru": "На занятии Ван Ифэй спрашивает студентов об их успехах в учёбе.",
+        "tj": "Дар дарс Ван Ифэй аз донишҷӯён дар бораи пешрафти таҳсил мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "text": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все уже умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我听不见。",
+          "pinyin": "Lǎoshī, wǒ tīng bu jiàn.",
+          "text": {
+            "uz": "Ustoz, eshitmayapman.",
+            "ru": "Преподаватель, я не слышу.",
+            "tj": "Устод, ман намешунавам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我会写这些字了，您看！",
+          "pinyin": "Wǒ huì xiě zhèxiē zì le, nín kàn!",
+          "text": {
+            "uz": "Men mana bu ierogliflarni yoza olaman, qarang!",
+            "ru": "Я уже умею писать эти иероглифы, посмотрите!",
+            "tj": "Ман ин иероглифҳоро навишта метавонам, бинед!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还有了一个小学生。",
+          "pinyin": "Hái yǒule yí ge xiǎoxuéshēng.",
+          "text": {
+            "uz": "Yana bitta boshlang‘ich maktab o‘quvchisi ham bo‘ladi.",
+            "ru": "И ещё ученик начальной школы.",
+            "tj": "Боз як хонандаи мактаби ибтидоӣ ҳам мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "上学后，他们都忙了。",
+          "pinyin": "Shàngxué hòu, tāmen dōu máng le.",
+          "text": {
+            "uz": "Maktab boshlangach, ikkalasi ham band bo‘ladi.",
+            "ru": "Когда начнётся школа, оба будут заняты.",
+            "tj": "Баъди мактаб сар кардан, ҳар ду банд мешаванд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "听",
+            "pinyin": "tīng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tinglamoq; eshitmoq",
+              "ru": "слушать; слышать",
+              "tj": "гӯш кардан; шунидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "听",
+          "pinyin": "tīng",
+          "translation": {
+            "uz": "tinglamoq; eshitmoq",
+            "ru": "слушать; слышать",
+            "tj": "гӯш кардан; шунидан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "听 talaffuzini tanlang:",
+            "ru": "Выберите произношение 听:",
+            "tj": "Талаффузи 听-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huǒchē",
+            "zhōngwǔ",
+            "shàng",
+            "tīng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "听 — tīng",
+            "ru": "听 — tīng",
+            "tj": "听 — tīng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "哪些",
+            "pinyin": "nǎxiē",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qaysilar",
+              "ru": "какие; которые",
+              "tj": "кадомҳо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qaysilar' xitoycha qaysi?",
+            "ru": "'какие; которые' по-китайски?",
+            "tj": "'кадомҳо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "中午",
+            "哪些",
+            "火车",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "qaysilar = 哪些 (nǎxiē)",
+            "ru": "какие; которые = 哪些 (nǎxiē)",
+            "tj": "кадомҳо = 哪些 (nǎxiē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "字",
+            "pinyin": "zì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ieroglif; belgi; so‘z",
+              "ru": "иероглиф; знак; слово",
+              "tj": "иероглиф; аломат; калима"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "字",
+          "pinyin": "zì",
+          "options": [
+            "中午",
+            "火车",
+            "字",
+            "上"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "字 — ieroglif; belgi; so‘z (zì)",
+            "ru": "字 — иероглиф; знак; слово (zì)",
+            "tj": "字 — иероглиф; аломат; калима (zì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "明年",
+            "pinyin": "míngnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kelasi yil",
+              "ru": "следующий год",
+              "tj": "соли оянда"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "明年 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 明年:",
+            "tj": "Маънои калимаи 明年-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kelasi yil",
+              "ru": "следующий год",
+              "tj": "соли оянда"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "明年 = kelasi yil (míngnián)",
+            "ru": "明年 = следующий год (míngnián)",
+            "tj": "明年 = соли оянда (míngnián)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tīng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tīng?",
+            "tj": "tīng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "火车",
+            "中午",
+            "上",
+            "听"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "听 = tinglamoq; eshitmoq (tīng)",
+            "ru": "听 = слушать; слышать (tīng)",
+            "tj": "听 = гӯш кардан; шунидан (tīng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "听",
+              {
+                "uz": "tinglamoq; eshitmoq",
+                "ru": "слушать; слышать",
+                "tj": "гӯш кардан; шунидан"
+              }
+            ],
+            [
+              "哪些",
+              {
+                "uz": "qaysilar",
+                "ru": "какие; которые",
+                "tj": "кадомҳо"
+              }
+            ],
+            [
+              "字",
+              {
+                "uz": "ieroglif; belgi; so‘z",
+                "ru": "иероглиф; знак; слово",
+                "tj": "иероглиф; аломат; калима"
+              }
+            ],
+            [
+              "明年",
+              {
+                "uz": "kelasi yil",
+                "ru": "следующий год",
+                "tj": "соли оянда"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Qamrov ravishi “都”",
+              "ru": "Наречие охвата “都”",
+              "tj": "Зарфи фарогирии “都”"
+            },
+            "title_zh": "范围副词“都”",
+            "rule": {
+              "uz": "“都” “hammasi/barchasi” ma’nosini beradi; umumlashtirilayotgan unsur 都 dan oldin keladi. Inkorda inkor so‘zi 都 dan keyin turadi.",
+              "ru": "“都” означает «все/в целом»; обобщаемый объект ставится перед 都. В отрицании отрицательное слово ставится после 都.",
+              "tj": "“都” маънои «ҳама/умуман»-ро медиҳад; объекти умумисозиш пеш аз 都 меояд. Дар инкор калимаи инкор пас аз 都 меояд."
+            },
+            "examples": [
+              {
+                "zh": "我们都会写了。",
+                "pinyin": "Wǒmen dōu huì xiě le.",
+                "translation": {
+                  "uz": "Hammamiz yoza olamiz.",
+                  "ru": "Мы все умеем писать.",
+                  "tj": "Ҳамаамон навишта метавонем."
+                }
+              },
+              {
+                "zh": "我和我的朋友们都去。",
+                "pinyin": "Wǒ hé wǒ de péngyoumen dōu qù.",
+                "translation": {
+                  "uz": "Men va do‘stlarimning hammasi boramiz.",
+                  "ru": "Я и мои друзья все пойдём.",
+                  "tj": "Ман ва дӯстонам ҳама меравем."
+                }
+              },
+              {
+                "zh": "同学们都没听见。",
+                "pinyin": "Tóngxuémen dōu méi tīngjiàn.",
+                "translation": {
+                  "uz": "Talabalarning hech biri eshitmadi.",
+                  "ru": "Студенты все не услышали.",
+                  "tj": "Ҳеҷ кадом аз донишҷӯён нашуниданд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          },
+          "tokens": [
+            "火车",
+            "我们",
+            "写",
+            "会",
+            "了",
+            "上",
+            "都"
+          ],
+          "answer_tokens": [
+            "我们",
+            "都",
+            "会",
+            "写",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我们都会写了。 — Wǒmen dōu huì xiě le.",
+            "ru": "我们都会写了。 — Wǒmen dōu huì xiě le.",
+            "tj": "我们都会写了。 — Wǒmen dōu huì xiě le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Men va do‘stlarimning hammasi boramiz.» — xitoychada qaysi biri?",
+            "ru": "«Я и мои друзья все пойдём.» — какое предложение по-китайски?",
+            "tj": "«Ман ва дӯстонам ҳама меравем.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我们都会写了。",
+            "我和我的朋友们都去。",
+            "同学们都没听见。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我和我的朋友们都去。 — Wǒ hé wǒ de péngyoumen dōu qù.",
+            "ru": "我和我的朋友们都去。 — Wǒ hé wǒ de péngyoumen dōu qù.",
+            "tj": "我和我的朋友们都去。 — Wǒ hé wǒ de péngyoumen dōu qù."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nǎxiē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǎxiē?",
+            "tj": "nǎxiē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "中午",
+            "哪些",
+            "火车",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "哪些 = qaysilar (nǎxiē)",
+            "ru": "哪些 = какие; которые (nǎxiē)",
+            "tj": "哪些 = кадомҳо (nǎxiē)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "字 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 字:",
+            "tj": "Маънои калимаи 字-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "ieroglif; belgi; so‘z",
+              "ru": "иероглиф; знак; слово",
+              "tj": "иероглиф; аломат; калима"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "字 = ieroglif; belgi; so‘z (zì)",
+            "ru": "字 = иероглиф; знак; слово (zì)",
+            "tj": "字 = иероглиф; аломат; калима (zì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "明年",
+          "pinyin": "míngnián",
+          "options": [
+            "火车",
+            "明年",
+            "中午",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "明年 — kelasi yil (míngnián)",
+            "ru": "明年 — следующий год (míngnián)",
+            "tj": "明年 — соли оянда (míngnián)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "都 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 都:",
+            "tj": "Маънои калимаи 都-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hammasi; barchasi",
+              "ru": "все; оба",
+              "tj": "ҳама; ҳар ду"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "都 = hammasi; barchasi (dōu)",
+            "ru": "都 = все; оба (dōu)",
+            "tj": "都 = ҳама; ҳар ду (dōu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "都",
+            "pinyin": "dōu",
+            "meaning": {
+              "uz": "hammasi; barchasi",
+              "ru": "все; оба",
+              "tj": "ҳама; ҳар ду"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

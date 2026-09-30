@@ -1,0 +1,714 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 78,
+  "source_lesson": 12,
+  "part_no": 2,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "昨天下雪了",
+  "subtitle": {
+    "uz": "Ob-havo holatini tushunish va aytish; tibbiy holatni qisqa tasvirlash; no-subject-predicate gaplarni, holat o‘zgarishini bildiruvchi “了（1）” ni va “太……了” qolipini ishlatish.",
+    "ru": "Понимать и описывать погоду; кратко описывать состояние здоровья; использовать безличные/нерасчленённые предложения, “了（1）” для изменения ситуации и модель “太……了”.",
+    "tj": "Ҳолати обу ҳаворо фаҳмидан ва гуфтан; ҳолати саломатиро кӯтоҳ тасвир кардан; ҷумлаҳои бемуайян, “了（1）” барои тағйири ҳолат ва қолаби “太……了”-ро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "了",
+      "pinyin": "le",
+      "pos": "part.",
+      "meaning": {
+        "uz": "holat o‘zgarishi yuklamasi",
+        "ru": "частица изменения состояния",
+        "tj": "ҳиссачаи тағйири ҳолат"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "雨",
+      "pinyin": "yǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yomg‘ir",
+        "ru": "дождь",
+        "tj": "борон"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "有点儿",
+      "pinyin": "yǒudiǎnr",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "biroz; sal",
+        "ru": "немного; довольно",
+        "tj": "каме"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "觉得",
+      "pinyin": "juéde",
+      "pos": "v.",
+      "meaning": {
+        "uz": "his qilmoq; deb o‘ylamoq",
+        "ru": "чувствовать; считать",
+        "tj": "ҳис кардан; фикр кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Modal yuklama “了（1）”",
+        "ru": "Модальная частица “了（1）”",
+        "tj": "Ҳиссачаи модалии “了（1）”"
+      },
+      "title_zh": "语气助词“了（1）”",
+      "rule": {
+        "uz": "“了（1）” gap oxirida yoki pauza joyida kelib holat o‘zgargani yoki yangi vaziyat paydo bo‘lganini bildiradi. Inkor javobida 没 ishlatiladi va oxirida 了 bo‘lmaydi.",
+        "ru": "“了（1）” ставится в конце предложения или перед паузой и показывает изменение/новую ситуацию. В отрицательном ответе используется 没, а 了 в конце не ставится.",
+        "tj": "“了（1）” дар охири ҷумла ё ҷойи таваққуф омада, тағйир ё вазъияти навро нишон медиҳад. Дар ҷавоби инкорӣ 没 истифода мешавад ва 了 дар охир намеояд."
+      },
+      "examples": [
+        {
+          "zh": "下雨了。",
+          "pinyin": "Xià yǔ le.",
+          "translation": {
+            "uz": "Yomg‘ir yog‘di.",
+            "ru": "Пошёл дождь.",
+            "tj": "Борон борид."
+          }
+        },
+        {
+          "zh": "十二点了，吃午饭吧。",
+          "pinyin": "Shí'èr diǎn le, chī wǔfàn ba.",
+          "translation": {
+            "uz": "Soat 12 bo‘ldi, tushlik qilaylik.",
+            "ru": "Уже 12 часов, давай пообедаем.",
+            "tj": "Соат 12 шуд, биёед нисфирӯзӣ хӯрем."
+          }
+        },
+        {
+          "zh": "弟弟起床了吗？没起床呢。",
+          "pinyin": "Dìdi qǐchuáng le ma? Méi qǐchuáng ne.",
+          "translation": {
+            "uz": "Uka turdimi? Yo‘q, hali turmadi.",
+            "ru": "Младший брат встал? Нет, ещё не встал.",
+            "tj": "Бародари хурдӣ хест? Не, ҳоло нахестааст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yixue Wang Yifeiga telefon qilib, u tomondagi vaziyatni so‘ramoqda.",
+        "ru": "Ван Исюэ звонит Ван Ифэй и спрашивает, как там обстановка.",
+        "tj": "Ван Исюэ ба Ван Ифэй занг зада, вазъияти он ҷоро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天天气怎么样？",
+          "pinyin": "Jīntiān tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Bugun ob-havo qanday?",
+            "ru": "Какая сегодня погода?",
+            "tj": "Имрӯз обу ҳаво чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "这里的天不太好，下雨了。",
+          "pinyin": "Zhèlǐ de tiān bú tài hǎo, xià yǔ le.",
+          "text": {
+            "uz": "Bu yerda ob-havo unchalik yaxshi emas, yomg‘ir yog‘yapti.",
+            "ru": "Здесь погода не очень, идёт дождь.",
+            "tj": "Ин ҷо ҳаво он қадар хуб нест, борон меборад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "雨大吗？",
+          "pinyin": "Yǔ dà ma?",
+          "text": {
+            "uz": "Yomg‘ir kuchlimi?",
+            "ru": "Дождь сильный?",
+            "tj": "Борон сахт аст?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kecha kasalxonada shifokor Yang Tongleni ko‘rikdan o‘tkazdi.",
+        "ru": "Вчера в больнице врач осматривал Ян Тунлэ.",
+        "tj": "Дирӯз дар беморхона духтур Ян Тунлэро муоина кард."
+      },
+      "dialogue": [
+        {
+          "speaker": "Dr. Hu",
+          "zh": "我看看。你觉得怎么样？",
+          "pinyin": "Wǒ kànkan. Nǐ juéde zěnmeyàng?",
+          "text": {
+            "uz": "Ko‘rib qo‘yay. O‘zingni qanday his qilyapsan?",
+            "ru": "Давайте посмотрю. Как вы себя чувствуете?",
+            "tj": "Бигзор бинам. Худатонро чӣ хел ҳис мекунед?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "了",
+            "pinyin": "le",
+            "pos": "part.",
+            "meaning": {
+              "uz": "holat o‘zgarishi yuklamasi",
+              "ru": "частица изменения состояния",
+              "tj": "ҳиссачаи тағйири ҳолат"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "了 talaffuzini tanlang:",
+            "ru": "Выберите произношение 了:",
+            "tj": "Талаффузи 了-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "le",
+            "zhèlǐ",
+            "tiānqì",
+            "tiān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "了 — le",
+            "ru": "了 — le",
+            "tj": "了 — le"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "雨",
+            "pinyin": "yǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yomg‘ir",
+              "ru": "дождь",
+              "tj": "борон"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "雨",
+          "pinyin": "yǔ",
+          "translation": {
+            "uz": "yomg‘ir",
+            "ru": "дождь",
+            "tj": "борон"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yomg‘ir' xitoycha qaysi?",
+            "ru": "'дождь' по-китайски?",
+            "tj": "'борон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "天",
+            "这里",
+            "雨",
+            "天气"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "yomg‘ir = 雨 (yǔ)",
+            "ru": "дождь = 雨 (yǔ)",
+            "tj": "борон = 雨 (yǔ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "有点儿",
+            "pinyin": "yǒudiǎnr",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "biroz; sal",
+              "ru": "немного; довольно",
+              "tj": "каме"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "有点儿",
+          "pinyin": "yǒudiǎnr",
+          "options": [
+            "天气",
+            "这里",
+            "有点儿",
+            "天"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有点儿 — biroz; sal (yǒudiǎnr)",
+            "ru": "有点儿 — немного; довольно (yǒudiǎnr)",
+            "tj": "有点儿 — каме (yǒudiǎnr)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "觉得",
+            "pinyin": "juéde",
+            "pos": "v.",
+            "meaning": {
+              "uz": "his qilmoq; deb o‘ylamoq",
+              "ru": "чувствовать; считать",
+              "tj": "ҳис кардан; фикр кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "觉得 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 觉得:",
+            "tj": "Маънои калимаи 觉得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ob-havo; osmon",
+              "ru": "погода; небо",
+              "tj": "обу ҳаво; осмон"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "his qilmoq; deb o‘ylamoq",
+              "ru": "чувствовать; считать",
+              "tj": "ҳис кардан; фикр кардан"
+            },
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "觉得 = his qilmoq; deb o‘ylamoq (juéde)",
+            "ru": "觉得 = чувствовать; считать (juéde)",
+            "tj": "觉得 = ҳис кардан; фикр кардан (juéde)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "le qaysi ieroglif?",
+            "ru": "Какой иероглиф читается le?",
+            "tj": "le кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "天",
+            "了",
+            "天气",
+            "这里"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "了 = holat o‘zgarishi yuklamasi (le)",
+            "ru": "了 = частица изменения состояния (le)",
+            "tj": "了 = ҳиссачаи тағйири ҳолат (le)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "了",
+              {
+                "uz": "holat o‘zgarishi yuklamasi",
+                "ru": "частица изменения состояния",
+                "tj": "ҳиссачаи тағйири ҳолат"
+              }
+            ],
+            [
+              "雨",
+              {
+                "uz": "yomg‘ir",
+                "ru": "дождь",
+                "tj": "борон"
+              }
+            ],
+            [
+              "有点儿",
+              {
+                "uz": "biroz; sal",
+                "ru": "немного; довольно",
+                "tj": "каме"
+              }
+            ],
+            [
+              "觉得",
+              {
+                "uz": "his qilmoq; deb o‘ylamoq",
+                "ru": "чувствовать; считать",
+                "tj": "ҳис кардан; фикр кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Modal yuklama “了（1）”",
+              "ru": "Модальная частица “了（1）”",
+              "tj": "Ҳиссачаи модалии “了（1）”"
+            },
+            "title_zh": "语气助词“了（1）”",
+            "rule": {
+              "uz": "“了（1）” gap oxirida yoki pauza joyida kelib holat o‘zgargani yoki yangi vaziyat paydo bo‘lganini bildiradi. Inkor javobida 没 ishlatiladi va oxirida 了 bo‘lmaydi.",
+              "ru": "“了（1）” ставится в конце предложения или перед паузой и показывает изменение/новую ситуацию. В отрицательном ответе используется 没, а 了 в конце не ставится.",
+              "tj": "“了（1）” дар охири ҷумла ё ҷойи таваққуф омада, тағйир ё вазъияти навро нишон медиҳад. Дар ҷавоби инкорӣ 没 истифода мешавад ва 了 дар охир намеояд."
+            },
+            "examples": [
+              {
+                "zh": "下雨了。",
+                "pinyin": "Xià yǔ le.",
+                "translation": {
+                  "uz": "Yomg‘ir yog‘di.",
+                  "ru": "Пошёл дождь.",
+                  "tj": "Борон борид."
+                }
+              },
+              {
+                "zh": "十二点了，吃午饭吧。",
+                "pinyin": "Shí'èr diǎn le, chī wǔfàn ba.",
+                "translation": {
+                  "uz": "Soat 12 bo‘ldi, tushlik qilaylik.",
+                  "ru": "Уже 12 часов, давай пообедаем.",
+                  "tj": "Соат 12 шуд, биёед нисфирӯзӣ хӯрем."
+                }
+              },
+              {
+                "zh": "弟弟起床了吗？没起床呢。",
+                "pinyin": "Dìdi qǐchuáng le ma? Méi qǐchuáng ne.",
+                "translation": {
+                  "uz": "Uka turdimi? Yo‘q, hali turmadi.",
+                  "ru": "Младший брат встал? Нет, ещё не встал.",
+                  "tj": "Бародари хурдӣ хест? Не, ҳоло нахестааст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yomg‘ir yog‘di.",
+            "ru": "Пошёл дождь.",
+            "tj": "Борон борид."
+          },
+          "tokens": [
+            "这里",
+            "下雨",
+            "天气",
+            "了"
+          ],
+          "answer_tokens": [
+            "下雨",
+            "了"
+          ],
+          "explanation": {
+            "uz": "下雨了。 — Xià yǔ le.",
+            "ru": "下雨了。 — Xià yǔ le.",
+            "tj": "下雨了。 — Xià yǔ le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Uka turdimi? Yo‘q, hali turmadi.» — xitoychada qaysi biri?",
+            "ru": "«Младший брат встал? Нет, ещё не встал.» — какое предложение по-китайски?",
+            "tj": "«Бародари хурдӣ хест? Не, ҳоло нахестааст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "下雨了。",
+            "弟弟起床了吗？没起床呢。",
+            "十二点了，吃午饭吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "弟弟起床了吗？没起床呢。 — Dìdi qǐchuáng le ma? Méi qǐchuáng ne.",
+            "ru": "弟弟起床了吗？没起床呢。 — Dìdi qǐchuáng le ma? Méi qǐchuáng ne.",
+            "tj": "弟弟起床了吗？没起床呢。 — Dìdi qǐchuáng le ma? Méi qǐchuáng ne."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有点儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有点儿:",
+            "tj": "Маънои калимаи 有点儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "ob-havo; osmon",
+              "ru": "погода; небо",
+              "tj": "обу ҳаво; осмон"
+            },
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            },
+            {
+              "uz": "biroz; sal",
+              "ru": "немного; довольно",
+              "tj": "каме"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "有点儿 = biroz; sal (yǒudiǎnr)",
+            "ru": "有点儿 = немного; довольно (yǒudiǎnr)",
+            "tj": "有点儿 = каме (yǒudiǎnr)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "觉得",
+          "pinyin": "juéde",
+          "options": [
+            "天气",
+            "天",
+            "觉得",
+            "这里"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "觉得 — his qilmoq; deb o‘ylamoq (juéde)",
+            "ru": "觉得 — чувствовать; считать (juéde)",
+            "tj": "觉得 — ҳис кардан; фикр кардан (juéde)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "这里 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 这里:",
+            "tj": "Маънои калимаи 这里-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "ob-havo; osmon",
+              "ru": "погода; небо",
+              "tj": "обу ҳаво; осмон"
+            },
+            {
+              "uz": "yomg‘ir yog‘moq",
+              "ru": "идти о дожде",
+              "tj": "борон боридан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "这里 = bu yer (zhèlǐ)",
+            "ru": "这里 = здесь (zhèlǐ)",
+            "tj": "这里 = ин ҷо (zhèlǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "这里",
+            "pinyin": "zhèlǐ",
+            "meaning": {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yomg‘ir' xitoycha qaysi?",
+            "ru": "'дождь' по-китайски?",
+            "tj": "'борон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这里",
+            "天",
+            "天气",
+            "雨"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yomg‘ir = 雨 (yǔ)",
+            "ru": "дождь = 雨 (yǔ)",
+            "tj": "борон = 雨 (yǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "雨",
+            "pinyin": "yǔ",
+            "meaning": {
+              "uz": "yomg‘ir",
+              "ru": "дождь",
+              "tj": "борон"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,685 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 53,
+  "source_lesson": 8,
+  "part_no": 6,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "我爸爸也在医院工作",
+  "subtitle": {
+    "uz": "Joy, yo‘nalish va nisbiy o‘rinni tushunish va tasvirlash; joyni ko‘rsatish uchun “在” predlogini ishlatish; “能” bilan imkoniyat, sharoit yoki mumkinlikni ifodalash.",
+    "ru": "Понимать и описывать местоположение, направление и относительное положение; использовать предлог “在” для обозначения места; выражать способность, условие или возможность с “能”.",
+    "tj": "Ҷой, самт ва мавқеи нисбиро фаҳмидан ва тасвир кардан; барои нишон додани ҷой пешоянди “在”-ро истифода бурдан; бо “能” қобилият, шароит ё имконро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "多",
+      "pinyin": "duō",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘p",
+        "ru": "много",
+        "tj": "бисёр"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "医生",
+      "pinyin": "yīshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shifokor",
+        "ru": "врач",
+        "tj": "духтур"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishlamoq",
+        "ru": "работать",
+        "tj": "кор кардан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Bai Jiayue va Chen Tianzhong mehmonga kelgan.",
+        "ru": "Бай Цзяюэ и Чэнь Тяньчжун пришли в гости к Ван Ифэй.",
+        "tj": "Бай Ҷяюэ ва Чэн Тянҷун ба хонаи Ван Ифэй меҳмон шудаанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "房间外有一只小猫。",
+          "pinyin": "Fángjiān wài yǒu yì zhī xiǎomāo.",
+          "text": {
+            "uz": "Xona tashqarisida bitta kichik mushuk bor.",
+            "ru": "Снаружи комнаты есть маленький котёнок.",
+            "tj": "Берун аз ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我没看见，它在哪儿呢？",
+          "pinyin": "Wǒ méi kànjiàn, tā zài nǎr ne?",
+          "text": {
+            "uz": "Men uni ko‘rmadim, u qayerda?",
+            "ru": "Я его не вижу. Где он?",
+            "tj": "Ман онро надидам, он куҷост?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "它在桌子下呢。",
+          "pinyin": "Tā zài zhuōzi xià ne.",
+          "text": {
+            "uz": "U stol ostida.",
+            "ru": "Он под столом.",
+            "tj": "Он зери миз аст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这只小猫真漂亮！",
+          "pinyin": "Zhè zhī xiǎomāo zhēn piàoliang!",
+          "text": {
+            "uz": "Bu kichik mushuk juda chiroyli!",
+            "ru": "Этот котёнок очень красивый!",
+            "tj": "Ин гурбачаи хурд хеле зебост!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue Li Wenga telefon qilmoqda.",
+        "ru": "После занятия Бай Цзяюэ звонит Ли Вэню из аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ аз синф ба Ли Вэн занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们在哪儿见呢？",
+          "pinyin": "Wǒmen zài nǎr jiàn ne?",
+          "text": {
+            "uz": "Qayerda uchrashamiz?",
+            "ru": "Где мы встретимся?",
+            "tj": "Дар куҷо вомехӯрем?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。下午两点你能到吗？",
+          "pinyin": "Hǎo de. Xiàwǔ liǎng diǎn nǐ néng dào ma?",
+          "text": {
+            "uz": "Xo‘p. Tushdan keyin soat 2 da yetib kela olasanmi?",
+            "ru": "Хорошо. Ты сможешь прийти в 2 часа дня?",
+            "tj": "Хуб. Баъди нисфирӯзӣ соати 2 расида метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我能到。我在学校吃午饭。",
+          "pinyin": "Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+          "text": {
+            "uz": "Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "Да, смогу. Я пообедаю в школе.",
+            "tj": "Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada Liu Ming doktor Hu bilan suhbatlashmoqda.",
+        "ru": "В больнице Лю Мин разговаривает с доктором Ху.",
+        "tj": "Дар беморхона Лю Мин бо духтур Ҳу суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Dr. Hu",
+          "zh": "没吃呢。",
+          "pinyin": "Méi chī ne.",
+          "text": {
+            "uz": "Yo‘q, yemadim.",
+            "ru": "Нет, ещё не ел.",
+            "tj": "Не, ҳоло нахӯрдаам."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "大医院病人多，医生非常忙。",
+          "pinyin": "Dà yīyuàn bìngrén duō, yīshēng fēicháng máng.",
+          "text": {
+            "uz": "Katta kasalxonalarda bemorlar ko‘p, shifokorlar juda band.",
+            "ru": "В больших больницах много пациентов, и врачи очень заняты.",
+            "tj": "Дар беморхонаҳои калон беморон бисёранд ва духтурон хеле банданд."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "是的。我爸爸也在医院工作，他也非常忙。",
+          "pinyin": "Shì de. Wǒ bàba yě zài yīyuàn gōngzuò, tā yě fēicháng máng.",
+          "text": {
+            "uz": "Ha. Otam ham kasalxonada ishlaydi, u ham juda band.",
+            "ru": "Да. Мой отец тоже работает в больнице и тоже очень занят.",
+            "tj": "Ҳа. Падарам ҳам дар беморхона кор мекунад ва ӯ ҳам хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你家有两个医生？",
+          "pinyin": "Nǐ jiā yǒu liǎng ge yīshēng?",
+          "text": {
+            "uz": "Demak, oilangda ikkita shifokor bor?",
+            "ru": "Значит, в вашей семье два врача?",
+            "tj": "Пас, дар оилаи шумо ду духтур ҳаст?"
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "对。",
+          "pinyin": "Duì.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "多",
+            "pinyin": "duō",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ko‘p",
+              "ru": "много",
+              "tj": "бисёр"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "多 talaffuzini tanlang:",
+            "ru": "Выберите произношение 多:",
+            "tj": "Талаффузи 多-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhī",
+            "fángjiān",
+            "wài",
+            "duō"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "多 — duō",
+            "ru": "多 — duō",
+            "tj": "多 — duō"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "医生",
+            "pinyin": "yīshēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shifokor",
+              "ru": "врач",
+              "tj": "духтур"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "医生",
+          "pinyin": "yīshēng",
+          "translation": {
+            "uz": "shifokor",
+            "ru": "врач",
+            "tj": "духтур"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shifokor' xitoycha qaysi?",
+            "ru": "'врач' по-китайски?",
+            "tj": "'духтур' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "只",
+            "外",
+            "医生",
+            "房间"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "shifokor = 医生 (yīshēng)",
+            "ru": "врач = 医生 (yīshēng)",
+            "tj": "духтур = 医生 (yīshēng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "工作",
+            "pinyin": "gōngzuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishlamoq",
+              "ru": "работать",
+              "tj": "кор кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "工作",
+          "pinyin": "gōngzuò",
+          "options": [
+            "房间",
+            "工作",
+            "只",
+            "外"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "工作 — ishlamoq (gōngzuò)",
+            "ru": "工作 — работать (gōngzuò)",
+            "tj": "工作 — кор кардан (gōngzuò)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "多 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 多:",
+            "tj": "Маънои калимаи 多-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            },
+            {
+              "uz": "ko‘p",
+              "ru": "много",
+              "tj": "бисёр"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "多 = ko‘p (duō)",
+            "ru": "多 = много (duō)",
+            "tj": "多 = бисёр (duō)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "多",
+              {
+                "uz": "ko‘p",
+                "ru": "много",
+                "tj": "бисёр"
+              }
+            ],
+            [
+              "医生",
+              {
+                "uz": "shifokor",
+                "ru": "врач",
+                "tj": "духтур"
+              }
+            ],
+            [
+              "工作",
+              {
+                "uz": "ishlamoq",
+                "ru": "работать",
+                "tj": "кор кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Katta kasalxonalarda bemorlar ko‘p, shifokorlar juda band.",
+            "ru": "В больших больницах много пациентов, и врачи очень заняты.",
+            "tj": "Дар беморхонаҳои калон беморон бисёранд ва духтурон хеле банданд."
+          },
+          "tokens": [
+            "多",
+            "病人",
+            "忙",
+            "房间",
+            "医生",
+            "医院",
+            "外",
+            "大",
+            "非常"
+          ],
+          "answer_tokens": [
+            "大",
+            "医院",
+            "病人",
+            "多",
+            "医生",
+            "非常",
+            "忙"
+          ],
+          "explanation": {
+            "uz": "大医院病人多，医生非常忙。 — Dà yīyuàn bìngrén duō, yīshēng fēicháng máng.",
+            "ru": "大医院病人多，医生非常忙。 — Dà yīyuàn bìngrén duō, yīshēng fēicháng máng.",
+            "tj": "大医院病人多，医生非常忙。 — Dà yīyuàn bìngrén duō, yīshēng fēicháng máng."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "大医院病人多，医生非常忙。",
+          "pinyin": "Dà yīyuàn bìngrén duō, yīshēng fēicháng máng.",
+          "translation": {
+            "uz": "Katta kasalxonalarda bemorlar ko‘p, shifokorlar juda band.",
+            "ru": "В больших больницах много пациентов, и врачи очень заняты.",
+            "tj": "Дар беморхонаҳои калон беморон бисёранд ва духтурон хеле банданд."
+          },
+          "tokens": {
+            "uz": [
+              "Katta",
+              "juda",
+              "kasalxonalarda",
+              "band",
+              "ko‘p",
+              "Otam",
+              "Ha",
+              "bemorlar",
+              "shifokorlar"
+            ],
+            "ru": [
+              "Да",
+              "много",
+              "заняты",
+              "пациентов",
+              "и",
+              "В",
+              "врачи",
+              "больницах",
+              "очень",
+              "больших",
+              "Мой"
+            ],
+            "tj": [
+              "банданд",
+              "бисёранд",
+              "хеле",
+              "беморхонаҳои",
+              "духтурон",
+              "Падарам",
+              "Ҳа",
+              "калон",
+              "Дар",
+              "беморон",
+              "ва"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Katta",
+              "kasalxonalarda",
+              "bemorlar",
+              "ko‘p",
+              "shifokorlar",
+              "juda",
+              "band"
+            ],
+            "ru": [
+              "В",
+              "больших",
+              "больницах",
+              "много",
+              "пациентов",
+              "и",
+              "врачи",
+              "очень",
+              "заняты"
+            ],
+            "tj": [
+              "Дар",
+              "беморхонаҳои",
+              "калон",
+              "беморон",
+              "бисёранд",
+              "ва",
+              "духтурон",
+              "хеле",
+              "банданд"
+            ]
+          },
+          "explanation": {
+            "uz": "大医院病人多，医生非常忙。 — Katta kasalxonalarda bemorlar ko‘p, shifokorlar juda band.",
+            "ru": "大医院病人多，医生非常忙。 — В больших больницах много пациентов, и врачи очень заняты.",
+            "tj": "大医院病人多，医生非常忙。 — Дар беморхонаҳои калон беморон бисёранд ва духтурон хеле банданд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你家有两个医生？",
+          "pinyin": "Nǐ jiā yǒu liǎng ge yīshēng?",
+          "options": [
+            "是的。我爸爸也在医院工作，他也非常忙。",
+            "你家有两个医生？",
+            "大医院病人多，医生非常忙。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你家有两个医生？ — Demak, oilangda ikkita shifokor bor?",
+            "ru": "你家有两个医生？ — Значит, в вашей семье два врача?",
+            "tj": "你家有两个医生？ — Пас, дар оилаи шумо ду духтур ҳаст?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "工作",
+          "pinyin": "gōngzuò",
+          "translation": {
+            "uz": "ishlamoq",
+            "ru": "работать",
+            "tj": "кор кардан"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "医生",
+          "pinyin": "yīshēng",
+          "translation": {
+            "uz": "shifokor",
+            "ru": "врач",
+            "tj": "духтур"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "午饭 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 午饭:",
+            "tj": "Маънои калимаи 午饭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            },
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "tushlik",
+              "ru": "обед",
+              "tj": "хӯроки нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "午饭 = tushlik (wǔfàn)",
+            "ru": "午饭 = обед (wǔfàn)",
+            "tj": "午饭 = хӯроки нисфирӯзӣ (wǔfàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "午饭",
+            "pinyin": "wǔfàn",
+            "meaning": {
+              "uz": "tushlik",
+              "ru": "обед",
+              "tj": "хӯроки нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shifokor' xitoycha qaysi?",
+            "ru": "'врач' по-китайски?",
+            "tj": "'духтур' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "房间",
+            "医生",
+            "只",
+            "外"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "shifokor = 医生 (yīshēng)",
+            "ru": "врач = 医生 (yīshēng)",
+            "tj": "духтур = 医生 (yīshēng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "医生",
+            "pinyin": "yīshēng",
+            "meaning": {
+              "uz": "shifokor",
+              "ru": "врач",
+              "tj": "духтур"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

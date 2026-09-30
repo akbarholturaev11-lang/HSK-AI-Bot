@@ -1,0 +1,619 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 8,
+  "source_lesson": 2,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我叫李文",
+  "subtitle": {
+    "uz": "Boshqalarning o'zini tanishtirishini tushunish va xitoycha ism bilan o'zini tanishtirish; 对不起 va 没关系 orqali uzr so'rash va javob berish; xitoy tilidagi asosiy so'z tartibini tushunish.",
+    "ru": "Понимать самопрезентацию собеседника и представляться с китайским именем; извиняться с 对不起 и отвечать 没关系; освоить базовый порядок слов в китайском языке.",
+    "tj": "Худмуаррифии дигаронро фаҳмидан ва бо номи чинӣ худро муаррифӣ кардан; бо 对不起 узр пурсидан ва бо 没关系 ҷавоб додан; тартиби асосии калимаҳои забони чиниро аз худ кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "高兴",
+      "pinyin": "gāoxìng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xursand",
+        "ru": "рад; счастлив",
+        "tj": "хурсанд"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "认识",
+      "pinyin": "rènshi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanimoq; tanishmoq",
+        "ru": "знать; знакомиться",
+        "tj": "шинохтан; шинос шудан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "也",
+      "pinyin": "yě",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ham",
+        "ru": "тоже; также",
+        "tj": "ҳам"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei talabalar bilan tanishmoqda.",
+        "ru": "В аудитории Ван Ифэй знакомится со студентами.",
+        "tj": "Дар синф Ван Ифэй бо донишҷӯён шинос мешавад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "请问，你叫什么名字？",
+          "pinyin": "Qǐngwèn, nǐ jiào shénme míngzi?",
+          "text": {
+            "uz": "Kechirasiz, ismingiz nima?",
+            "ru": "Разрешите спросить, как вас зовут?",
+            "tj": "Мебахшед, номи шумо чист?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Chen Tianzhong Bai Jiayue bilan salomlashayotib uni boshqa odam deb o'ylab qoladi.",
+        "ru": "В кампусе Чэнь Тяньчжун здоровается с Бай Цзяюэ, но принимает её за другого человека.",
+        "tj": "Дар кампус Чэн Тянҷун бо Бай Ҷяюэ салом мекунад, вале ӯро бо шахси дигар иштибоҳ мегирад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "对不起！",
+          "pinyin": "Duìbuqǐ!",
+          "text": {
+            "uz": "Kechirasiz!",
+            "ru": "Извините!",
+            "tj": "Мебахшед!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "没关系！",
+          "pinyin": "Méi guānxi!",
+          "text": {
+            "uz": "Hechqisi yo'q!",
+            "ru": "Ничего страшного!",
+            "tj": "Ҳеҷ гап не!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue birinchi marta uchrashadilar.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ впервые встречаются.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ бори аввал вомехӯранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "很高兴认识你。",
+          "pinyin": "Hěn gāoxìng rènshi nǐ.",
+          "text": {
+            "uz": "Siz bilan tanishganimdan xursandman.",
+            "ru": "Рад познакомиться с вами.",
+            "tj": "Аз шиносоӣ бо шумо хурсанд ҳастам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "认识你我也很高兴。",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng.",
+          "text": {
+            "uz": "Men ham siz bilan tanishganimdan xursandman.",
+            "ru": "Я тоже рада знакомству.",
+            "tj": "Ман ҳам аз шиносоӣ бо шумо хурсанд ҳастам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "高兴",
+            "pinyin": "gāoxìng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "xursand",
+              "ru": "рад; счастлив",
+              "tj": "хурсанд"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "高兴 talaffuzini tanlang:",
+            "ru": "Выберите произношение 高兴:",
+            "tj": "Талаффузи 高兴-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiào",
+            "gāoxìng",
+            "qǐngwèn",
+            "nǐ"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "高兴 — gāoxìng",
+            "ru": "高兴 — gāoxìng",
+            "tj": "高兴 — gāoxìng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "认识",
+            "pinyin": "rènshi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tanimoq; tanishmoq",
+              "ru": "знать; знакомиться",
+              "tj": "шинохтан; шинос шудан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "认识",
+          "pinyin": "rènshi",
+          "translation": {
+            "uz": "tanimoq; tanishmoq",
+            "ru": "знать; знакомиться",
+            "tj": "шинохтан; шинос шудан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tanimoq; tanishmoq' xitoycha qaysi?",
+            "ru": "'знать; знакомиться' по-китайски?",
+            "tj": "'шинохтан; шинос шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "认识",
+            "你",
+            "叫",
+            "请问"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "tanimoq; tanishmoq = 认识 (rènshi)",
+            "ru": "знать; знакомиться = 认识 (rènshi)",
+            "tj": "шинохтан; шинос шудан = 认识 (rènshi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "也",
+            "pinyin": "yě",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "ham",
+              "ru": "тоже; также",
+              "tj": "ҳам"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "也",
+          "pinyin": "yě",
+          "options": [
+            "也",
+            "请问",
+            "叫",
+            "你"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "也 — ham (yě)",
+            "ru": "也 — тоже; также (yě)",
+            "tj": "也 — ҳам (yě)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "高兴 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 高兴:",
+            "tj": "Маънои калимаи 高兴-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "xursand",
+              "ru": "рад; счастлив",
+              "tj": "хурсанд"
+            },
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            },
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "高兴 = xursand (gāoxìng)",
+            "ru": "高兴 = рад; счастлив (gāoxìng)",
+            "tj": "高兴 = хурсанд (gāoxìng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "高兴",
+              {
+                "uz": "xursand",
+                "ru": "рад; счастлив",
+                "tj": "хурсанд"
+              }
+            ],
+            [
+              "认识",
+              {
+                "uz": "tanimoq; tanishmoq",
+                "ru": "знать; знакомиться",
+                "tj": "шинохтан; шинос шудан"
+              }
+            ],
+            [
+              "也",
+              {
+                "uz": "ham",
+                "ru": "тоже; также",
+                "tj": "ҳам"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men ham siz bilan tanishganimdan xursandman.",
+            "ru": "Я тоже рада знакомству.",
+            "tj": "Ман ҳам аз шиносоӣ бо шумо хурсанд ҳастам."
+          },
+          "tokens": [
+            "你",
+            "认识",
+            "也",
+            "请问",
+            "叫",
+            "高兴",
+            "我",
+            "很"
+          ],
+          "answer_tokens": [
+            "认识",
+            "你",
+            "我",
+            "也",
+            "很",
+            "高兴"
+          ],
+          "explanation": {
+            "uz": "认识你我也很高兴。 — Rènshi nǐ wǒ yě hěn gāoxìng.",
+            "ru": "认识你我也很高兴。 — Rènshi nǐ wǒ yě hěn gāoxìng.",
+            "tj": "认识你我也很高兴。 — Rènshi nǐ wǒ yě hěn gāoxìng."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "认识",
+          "pinyin": "rènshi",
+          "options": [
+            "请问",
+            "你",
+            "认识",
+            "叫"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "认识 — tanimoq; tanishmoq (rènshi)",
+            "ru": "认识 — знать; знакомиться (rènshi)",
+            "tj": "认识 — шинохтан; шинос шудан (rènshi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men ham siz bilan tanishganimdan xursandman.",
+            "ru": "Я тоже рада знакомству.",
+            "tj": "Ман ҳам аз шиносоӣ бо шумо хурсанд ҳастам."
+          },
+          "tokens": [
+            "请问",
+            "认识",
+            "我",
+            "叫",
+            "很",
+            "高兴",
+            "你",
+            "也"
+          ],
+          "answer_tokens": [
+            "认识",
+            "你",
+            "我",
+            "也",
+            "很",
+            "高兴"
+          ],
+          "explanation": {
+            "uz": "认识你我也很高兴。 — Rènshi nǐ wǒ yě hěn gāoxìng.",
+            "ru": "认识你我也很高兴。 — Rènshi nǐ wǒ yě hěn gāoxìng.",
+            "tj": "认识你我也很高兴。 — Rènshi nǐ wǒ yě hěn gāoxìng."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "认识你我也很高兴。",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng.",
+          "translation": {
+            "uz": "Men ham siz bilan tanishganimdan xursandman.",
+            "ru": "Я тоже рада знакомству.",
+            "tj": "Ман ҳам аз шиносоӣ бо шумо хурсанд ҳастам."
+          },
+          "tokens": {
+            "uz": [
+              "Men",
+              "bilan",
+              "tanishganimdan",
+              "ham",
+              "Siz",
+              "xursandman",
+              "siz"
+            ],
+            "ru": [
+              "рада",
+              "Я",
+              "знакомству",
+              "Рад",
+              "тоже",
+              "познакомиться"
+            ],
+            "tj": [
+              "шумо",
+              "хурсанд",
+              "Ман",
+              "Аз",
+              "ҳам",
+              "ҳастам",
+              "аз",
+              "шиносоӣ",
+              "бо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "ham",
+              "siz",
+              "bilan",
+              "tanishganimdan",
+              "xursandman"
+            ],
+            "ru": [
+              "Я",
+              "тоже",
+              "рада",
+              "знакомству"
+            ],
+            "tj": [
+              "Ман",
+              "ҳам",
+              "аз",
+              "шиносоӣ",
+              "бо",
+              "шумо",
+              "хурсанд",
+              "ҳастам"
+            ]
+          },
+          "explanation": {
+            "uz": "认识你我也很高兴。 — Men ham siz bilan tanishganimdan xursandman.",
+            "ru": "认识你我也很高兴。 — Я тоже рада знакомству.",
+            "tj": "认识你我也很高兴。 — Ман ҳам аз шиносоӣ бо шумо хурсанд ҳастам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "认识",
+          "pinyin": "rènshi",
+          "translation": {
+            "uz": "tanimoq; tanishmoq",
+            "ru": "знать; знакомиться",
+            "tj": "шинохтан; шинос шудан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "很 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 很:",
+            "tj": "Маънои калимаи 很-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            },
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            },
+            {
+              "uz": "juda",
+              "ru": "очень",
+              "tj": "хеле"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "很 = juda (hěn)",
+            "ru": "很 = очень (hěn)",
+            "tj": "很 = хеле (hěn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "很",
+            "pinyin": "hěn",
+            "meaning": {
+              "uz": "juda",
+              "ru": "очень",
+              "tj": "хеле"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tanimoq; tanishmoq' xitoycha qaysi?",
+            "ru": "'знать; знакомиться' по-китайски?",
+            "tj": "'шинохтан; шинос шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "你",
+            "认识",
+            "请问",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tanimoq; tanishmoq = 认识 (rènshi)",
+            "ru": "знать; знакомиться = 认识 (rènshi)",
+            "tj": "шинохтан; шинос шудан = 认识 (rènshi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "认识",
+            "pinyin": "rènshi",
+            "meaning": {
+              "uz": "tanimoq; tanishmoq",
+              "ru": "знать; знакомиться",
+              "tj": "шинохтан; шинос шудан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

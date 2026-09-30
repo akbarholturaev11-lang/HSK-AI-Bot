@@ -1,0 +1,1028 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 83,
+  "source_lesson": 12,
+  "part_no": 7,
+  "part_count": 7,
+  "checkpoint": true,
+  "title": "昨天下雪了",
+  "subtitle": {
+    "uz": "Ob-havo holatini tushunish va aytish; tibbiy holatni qisqa tasvirlash; no-subject-predicate gaplarni, holat o‘zgarishini bildiruvchi “了（1）” ni va “太……了” qolipini ishlatish.",
+    "ru": "Понимать и описывать погоду; кратко описывать состояние здоровья; использовать безличные/нерасчленённые предложения, “了（1）” для изменения ситуации и модель “太……了”.",
+    "tj": "Ҳолати обу ҳаворо фаҳмидан ва гуфтан; ҳолати саломатиро кӯтоҳ тасвир кардан; ҷумлаҳои бемуайян, “了（1）” барои тағйири ҳолат ва қолаби “太……了”-ро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "天气",
+      "pinyin": "tiānqì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ob-havo",
+        "ru": "погода",
+        "tj": "обу ҳаво"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "这里",
+      "pinyin": "zhèlǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu yer",
+        "ru": "здесь",
+        "tj": "ин ҷо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "天",
+      "pinyin": "tiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ob-havo; osmon",
+        "ru": "погода; небо",
+        "tj": "обу ҳаво; осмон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "下雨",
+      "pinyin": "xiàyǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yomg‘ir yog‘moq",
+        "ru": "идти о дожде",
+        "tj": "борон боридан"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "了",
+      "pinyin": "le",
+      "pos": "part.",
+      "meaning": {
+        "uz": "holat o‘zgarishi yuklamasi",
+        "ru": "частица изменения состояния",
+        "tj": "ҳиссачаи тағйири ҳолат"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "雨",
+      "pinyin": "yǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yomg‘ir",
+        "ru": "дождь",
+        "tj": "борон"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "有点儿",
+      "pinyin": "yǒudiǎnr",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "biroz; sal",
+        "ru": "немного; довольно",
+        "tj": "каме"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "觉得",
+      "pinyin": "juéde",
+      "pos": "v.",
+      "meaning": {
+        "uz": "his qilmoq; deb o‘ylamoq",
+        "ru": "чувствовать; считать",
+        "tj": "ҳис кардан; фикр кардан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "冷",
+      "pinyin": "lěng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sovuq",
+        "ru": "холодный",
+        "tj": "сард"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "下",
+      "pinyin": "xià",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yog‘moq (qor/yomg‘ir)",
+        "ru": "идти; выпадать осадкам",
+        "tj": "боридан; фуромадан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "雪",
+      "pinyin": "xuě",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qor",
+        "ru": "снег",
+        "tj": "барф"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "来",
+      "pinyin": "lái",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kelmoq",
+        "ru": "приходить",
+        "tj": "омадан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "公司",
+      "pinyin": "gōngsī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kompaniya",
+        "ru": "компания",
+        "tj": "ширкат"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "生病",
+      "pinyin": "shēngbìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kasal bo‘lmoq",
+        "ru": "заболеть",
+        "tj": "бемор шудан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "看病",
+      "pinyin": "kànbìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "shifokorga ko‘rinmoq",
+        "ru": "обращаться к врачу",
+        "tj": "ба духтур муроҷиат кардан"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "病",
+      "pinyin": "bìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kasal bo‘lmoq",
+        "ru": "болеть",
+        "tj": "бемор будан"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "一点儿",
+      "pinyin": "yìdiǎnr",
+      "pos": "num.-m.",
+      "meaning": {
+        "uz": "biroz",
+        "ru": "немного",
+        "tj": "каме"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "药",
+      "pinyin": "yào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dori",
+        "ru": "лекарство",
+        "tj": "дору"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "天",
+      "pinyin": "tiān",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kun",
+        "ru": "день",
+        "tj": "рӯз"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "回",
+      "pinyin": "huí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qaytmoq",
+        "ru": "возвращаться",
+        "tj": "баргаштан"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "再",
+      "pinyin": "zài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "keyin; shundan so‘ng",
+        "ru": "затем; потом",
+        "tj": "баъд; сипас"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "喝",
+      "pinyin": "hē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ichmoq",
+        "ru": "пить",
+        "tj": "нӯшидан"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "热",
+      "pinyin": "rè",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "issiq; iliq",
+        "ru": "горячий; тёплый",
+        "tj": "гарм"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "水",
+      "pinyin": "shuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "suv",
+        "ru": "вода",
+        "tj": "об"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Ega-kesimi ajralmagan gap",
+        "ru": "Нерасчленённое предложение",
+        "tj": "Ҷумлаи бе мубтадо-хабар"
+      },
+      "title_zh": "非主谓句",
+      "rule": {
+        "uz": "Bunday gap so‘z yoki iboradan tuziladi, ega va kesimga ajratilmaydi va og‘zaki nutqda ko‘p ishlatiladi.",
+        "ru": "Такие предложения состоят из слова или словосочетания без чёткого подлежащего и сказуемого и часто употребляются в разговорной речи.",
+        "tj": "Ин гуна ҷумла аз калима ё ибора сохта шуда, мубтадо ва хабар ба таври равшан ҷудо намешаванд ва дар гуфтор бисёр истифода мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "下雨了。",
+          "pinyin": "Xià yǔ le.",
+          "translation": {
+            "uz": "Yomg‘ir yog‘di.",
+            "ru": "Пошёл дождь.",
+            "tj": "Борон борид."
+          }
+        },
+        {
+          "zh": "下雪了。",
+          "pinyin": "Xià xuě le.",
+          "translation": {
+            "uz": "Qor yog‘di.",
+            "ru": "Пошёл снег.",
+            "tj": "Барф борид."
+          }
+        },
+        {
+          "zh": "真漂亮！",
+          "pinyin": "Zhēn piàoliang!",
+          "translation": {
+            "uz": "Juda chiroyli!",
+            "ru": "Очень красиво!",
+            "tj": "Хеле зебо!"
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Modal yuklama “了（1）”",
+        "ru": "Модальная частица “了（1）”",
+        "tj": "Ҳиссачаи модалии “了（1）”"
+      },
+      "title_zh": "语气助词“了（1）”",
+      "rule": {
+        "uz": "“了（1）” gap oxirida yoki pauza joyida kelib holat o‘zgargani yoki yangi vaziyat paydo bo‘lganini bildiradi. Inkor javobida 没 ishlatiladi va oxirida 了 bo‘lmaydi.",
+        "ru": "“了（1）” ставится в конце предложения или перед паузой и показывает изменение/новую ситуацию. В отрицательном ответе используется 没, а 了 в конце не ставится.",
+        "tj": "“了（1）” дар охири ҷумла ё ҷойи таваққуф омада, тағйир ё вазъияти навро нишон медиҳад. Дар ҷавоби инкорӣ 没 истифода мешавад ва 了 дар охир намеояд."
+      },
+      "examples": [
+        {
+          "zh": "下雨了。",
+          "pinyin": "Xià yǔ le.",
+          "translation": {
+            "uz": "Yomg‘ir yog‘di.",
+            "ru": "Пошёл дождь.",
+            "tj": "Борон борид."
+          }
+        },
+        {
+          "zh": "十二点了，吃午饭吧。",
+          "pinyin": "Shí'èr diǎn le, chī wǔfàn ba.",
+          "translation": {
+            "uz": "Soat 12 bo‘ldi, tushlik qilaylik.",
+            "ru": "Уже 12 часов, давай пообедаем.",
+            "tj": "Соат 12 шуд, биёед нисфирӯзӣ хӯрем."
+          }
+        },
+        {
+          "zh": "弟弟起床了吗？没起床呢。",
+          "pinyin": "Dìdi qǐchuáng le ma? Méi qǐchuáng ne.",
+          "translation": {
+            "uz": "Uka turdimi? Yo‘q, hali turmadi.",
+            "ru": "Младший брат встал? Нет, ещё не встал.",
+            "tj": "Бародари хурдӣ хест? Не, ҳоло нахестааст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "“太……了” qolipi",
+        "ru": "Конструкция “太……了”",
+        "tj": "Қолаби “太……了”"
+      },
+      "title_zh": "“太……了”格式",
+      "rule": {
+        "uz": "“太……了” juda yuqori darajani hissiy tarzda ta’kidlash uchun ishlatiladi.",
+        "ru": "“太……了” выражает очень высокую или сильную степень восклицания.",
+        "tj": "“太……了” дараҷаи хеле баланд ё пурзӯрро бо оҳанги таъкидӣ ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "太冷了！",
+          "pinyin": "Tài lěng le!",
+          "translation": {
+            "uz": "Juda sovuq!",
+            "ru": "Очень холодно!",
+            "tj": "Хеле сард!"
+          }
+        },
+        {
+          "zh": "这个杯子太小了。",
+          "pinyin": "Zhège bēizi tài xiǎo le.",
+          "translation": {
+            "uz": "Bu piyola juda kichik.",
+            "ru": "Эта чашка слишком маленькая.",
+            "tj": "Ин пиёла хеле хурд аст."
+          }
+        },
+        {
+          "zh": "我们今天太高兴了！",
+          "pinyin": "Wǒmen jīntiān tài gāoxìng le!",
+          "translation": {
+            "uz": "Bugun juda xursandmiz!",
+            "ru": "Мы сегодня очень рады!",
+            "tj": "Мо имрӯз хеле хурсандем!"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yixue Wang Yifeiga telefon qilib, u tomondagi vaziyatni so‘ramoqda.",
+        "ru": "Ван Исюэ звонит Ван Ифэй и спрашивает, как там обстановка.",
+        "tj": "Ван Исюэ ба Ван Ифэй занг зада, вазъияти он ҷоро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天天气怎么样？",
+          "pinyin": "Jīntiān tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Bugun ob-havo qanday?",
+            "ru": "Какая сегодня погода?",
+            "tj": "Имрӯз обу ҳаво чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "这里的天不太好，下雨了。",
+          "pinyin": "Zhèlǐ de tiān bú tài hǎo, xià yǔ le.",
+          "text": {
+            "uz": "Bu yerda ob-havo unchalik yaxshi emas, yomg‘ir yog‘yapti.",
+            "ru": "Здесь погода не очень, идёт дождь.",
+            "tj": "Ин ҷо ҳаво он қадар хуб нест, борон меборад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "雨大吗？",
+          "pinyin": "Yǔ dà ma?",
+          "text": {
+            "uz": "Yomg‘ir kuchlimi?",
+            "ru": "Дождь сильный?",
+            "tj": "Борон сахт аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "有点儿大，我觉得很冷。",
+          "pinyin": "Yǒudiǎnr dà, wǒ juéde hěn lěng.",
+          "text": {
+            "uz": "Biroz kuchli, men juda sovqotyapman.",
+            "ru": "Немного сильный, и мне очень холодно.",
+            "tj": "Каме сахт аст, ман хеле сард ҳис мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniya liftida Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В лифте компании Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар лифти ширкат Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "昨天下雪了。",
+          "pinyin": "Zuótiān xià xuě le.",
+          "text": {
+            "uz": "Kecha qor yog‘di.",
+            "ru": "Вчера шёл снег.",
+            "tj": "Дирӯз барф борид."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "是的，太冷了。",
+          "pinyin": "Shì de, tài lěng le.",
+          "text": {
+            "uz": "Ha, juda sovuq edi.",
+            "ru": "Да, было очень холодно.",
+            "tj": "Ҳа, хеле сард буд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你昨天没来公司，生病了？",
+          "pinyin": "Nǐ zuótiān méi lái gōngsī, shēngbìng le?",
+          "text": {
+            "uz": "Kecha kompaniyaga kelmading, kasal bo‘ldingmi?",
+            "ru": "Ты вчера не пришёл на работу, заболел?",
+            "tj": "Дирӯз ба ширкат наомадӣ, бемор шудӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "对，我昨天去医院看病了。",
+          "pinyin": "Duì, wǒ zuótiān qù yīyuàn kànbìng le.",
+          "text": {
+            "uz": "Ha, kecha kasalxonaga shifokorga ko‘ringani bordim.",
+            "ru": "Да, вчера я ходил в больницу к врачу.",
+            "tj": "Ҳа, дирӯз ба беморхона назди духтур рафтам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kecha kasalxonada shifokor Yang Tongleni ko‘rikdan o‘tkazdi.",
+        "ru": "Вчера в больнице врач осматривал Ян Тунлэ.",
+        "tj": "Дирӯз дар беморхона духтур Ян Тунлэро муоина кард."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "医生，我病了。",
+          "pinyin": "Yīshēng, wǒ bìng le.",
+          "text": {
+            "uz": "Doktor, men kasal bo‘ldim.",
+            "ru": "Доктор, я заболел.",
+            "tj": "Духтур, ман бемор шудам."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "我看看。你觉得怎么样？",
+          "pinyin": "Wǒ kànkan. Nǐ juéde zěnmeyàng?",
+          "text": {
+            "uz": "Ko‘rib qo‘yay. O‘zingni qanday his qilyapsan?",
+            "ru": "Давайте посмотрю. Как вы себя чувствуете?",
+            "tj": "Бигзор бинам. Худатонро чӣ хел ҳис мекунед?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我很冷。",
+          "pinyin": "Wǒ hěn lěng.",
+          "text": {
+            "uz": "Juda sovqotyapman.",
+            "ru": "Мне очень холодно.",
+            "tj": "Ман хеле сард ҳис мекунам."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "好的，吃一点儿药，今天休息半天吧。",
+          "pinyin": "Hǎo de, chī yìdiǎnr yào, jīntiān xiūxi bàn tiān ba.",
+          "text": {
+            "uz": "Xo‘p, biroz dori iching, bugun yarim kun dam oling.",
+            "ru": "Хорошо, примите немного лекарства и сегодня отдохните полдня.",
+            "tj": "Хуб, каме дору гиред ва имрӯз ним рӯз истироҳат кунед."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "回家后再喝些热水。",
+          "pinyin": "Huí jiā hòu zài hē xiē rè shuǐ.",
+          "text": {
+            "uz": "Uyga qaytgach, keyin biroz iliq suv iching.",
+            "ru": "После возвращения домой выпейте тёплой воды.",
+            "tj": "Баъди ба хона баргаштан, каме оби гарм нӯшед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xuě qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xuě?",
+            "tj": "xuě кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "天",
+            "这里",
+            "雪",
+            "天气"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "雪 = qor (xuě)",
+            "ru": "雪 = снег (xuě)",
+            "tj": "雪 = барф (xuě)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "公司",
+          "pinyin": "gōngsī",
+          "options": [
+            "天",
+            "公司",
+            "这里",
+            "天气"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "公司 — kompaniya (gōngsī)",
+            "ru": "公司 — компания (gōngsī)",
+            "tj": "公司 — ширкат (gōngsī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "天气",
+              {
+                "uz": "ob-havo",
+                "ru": "погода",
+                "tj": "обу ҳаво"
+              }
+            ],
+            [
+              "这里",
+              {
+                "uz": "bu yer",
+                "ru": "здесь",
+                "tj": "ин ҷо"
+              }
+            ],
+            [
+              "天",
+              {
+                "uz": "ob-havo; osmon",
+                "ru": "погода; небо",
+                "tj": "обу ҳаво; осмон"
+              }
+            ],
+            [
+              "下雨",
+              {
+                "uz": "yomg‘ir yog‘moq",
+                "ru": "идти о дожде",
+                "tj": "борон боридан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "看病 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看病:",
+            "tj": "Маънои калимаи 看病-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shifokorga ko‘rinmoq",
+              "ru": "обращаться к врачу",
+              "tj": "ба духтур муроҷиат кардан"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "ob-havo; osmon",
+              "ru": "погода; небо",
+              "tj": "обу ҳаво; осмон"
+            },
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "看病 = shifokorga ko‘rinmoq (kànbìng)",
+            "ru": "看病 = обращаться к врачу (kànbìng)",
+            "tj": "看病 = ба духтур муроҷиат кардан (kànbìng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "了",
+              {
+                "uz": "holat o‘zgarishi yuklamasi",
+                "ru": "частица изменения состояния",
+                "tj": "ҳиссачаи тағйири ҳолат"
+              }
+            ],
+            [
+              "雨",
+              {
+                "uz": "yomg‘ir",
+                "ru": "дождь",
+                "tj": "борон"
+              }
+            ],
+            [
+              "有点儿",
+              {
+                "uz": "biroz; sal",
+                "ru": "немного; довольно",
+                "tj": "каме"
+              }
+            ],
+            [
+              "觉得",
+              {
+                "uz": "his qilmoq; deb o‘ylamoq",
+                "ru": "чувствовать; считать",
+                "tj": "ҳис кардан; фикр кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bugun juda xursandmiz!» — xitoychada qaysi biri?",
+            "ru": "«Мы сегодня очень рады!» — какое предложение по-китайски?",
+            "tj": "«Мо имрӯз хеле хурсандем!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "太冷了！",
+            "下雪了。",
+            "下雨了。",
+            "我们今天太高兴了！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我们今天太高兴了！ — Wǒmen jīntiān tài gāoxìng le!",
+            "ru": "我们今天太高兴了！ — Wǒmen jīntiān tài gāoxìng le!",
+            "tj": "我们今天太高兴了！ — Wǒmen jīntiān tài gāoxìng le!"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "回家后再喝些热水。",
+          "pinyin": "Huí jiā hòu zài hē xiē rè shuǐ.",
+          "translation": {
+            "uz": "Uyga qaytgach, keyin biroz iliq suv iching.",
+            "ru": "После возвращения домой выпейте тёплой воды.",
+            "tj": "Баъди ба хона баргаштан, каме оби гарм нӯшед."
+          },
+          "tokens": {
+            "uz": [
+              "Bugun",
+              "suv",
+              "qaytgach",
+              "iching",
+              "iliq",
+              "ob-havo",
+              "keyin",
+              "biroz",
+              "Uyga"
+            ],
+            "ru": [
+              "Какая",
+              "возвращения",
+              "выпейте",
+              "домой",
+              "сегодня",
+              "воды",
+              "После",
+              "тёплой"
+            ],
+            "tj": [
+              "баргаштан",
+              "хона",
+              "оби",
+              "Имрӯз",
+              "Баъди",
+              "нӯшед",
+              "обу",
+              "каме",
+              "гарм",
+              "ба"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Uyga",
+              "qaytgach",
+              "keyin",
+              "biroz",
+              "iliq",
+              "suv",
+              "iching"
+            ],
+            "ru": [
+              "После",
+              "возвращения",
+              "домой",
+              "выпейте",
+              "тёплой",
+              "воды"
+            ],
+            "tj": [
+              "Баъди",
+              "ба",
+              "хона",
+              "баргаштан",
+              "каме",
+              "оби",
+              "гарм",
+              "нӯшед"
+            ]
+          },
+          "explanation": {
+            "uz": "回家后再喝些热水。 — Uyga qaytgach, keyin biroz iliq suv iching.",
+            "ru": "回家后再喝些热水。 — После возвращения домой выпейте тёплой воды.",
+            "tj": "回家后再喝些热水。 — Баъди ба хона баргаштан, каме оби гарм нӯшед."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "今天天气怎么样？",
+          "pinyin": "Jīntiān tiānqì zěnmeyàng?",
+          "options": [
+            "有点儿大，我觉得很冷。",
+            "这里的天不太好，下雨了。",
+            "今天天气怎么样？",
+            "雨大吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今天天气怎么样？ — Bugun ob-havo qanday?",
+            "ru": "今天天气怎么样？ — Какая сегодня погода?",
+            "tj": "今天天气怎么样？ — Имрӯз обу ҳаво чӣ хел?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Wang Yifei nima deydi?",
+            "ru": "Что Wang Yifei говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Wang Yifei чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "雨大吗？",
+            "有点儿大，我觉得很冷。",
+            "这里的天不太好，下雨了。",
+            "今天天气怎么样？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 有点儿大，我觉得很冷。",
+            "ru": "Правильный ответ: 有点儿大，我觉得很冷。",
+            "tj": "Ҷавоби дуруст: 有点儿大，我觉得很冷。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Wang Yixue avval nima deydi?",
+            "ru": "Что Wang Yixue говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Wang Yixue аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "今天天气怎么样？",
+            "有点儿大，我觉得很冷。",
+            "这里的天不太好，下雨了。",
+            "雨大吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 今天天气怎么样？",
+            "ru": "Правильный ответ: 今天天气怎么样？",
+            "tj": "Ҷавоби дуруст: 今天天气怎么样？"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Wang Yixue",
+              "zh": "今天天气怎么样？",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yifei",
+              "zh": "这里的天不太好，下雨了。",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yixue",
+              "zh": "雨大吗？",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yifei",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "有点儿大，我觉得很冷。",
+            "这里的天不太好，下雨了。",
+            "雨大吗？",
+            "今天天气怎么样？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 有点儿大，我觉得很冷。",
+            "ru": "Правильный ответ: 有点儿大，我觉得很冷。",
+            "tj": "Ҷавоби дуруст: 有点儿大，我觉得很冷。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____天天气怎么样？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "今",
+            "一",
+            "三",
+            "七"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 今 — 今天天气怎么样？ (Bugun ob-havo qanday?)",
+            "ru": "Верно: 今 — 今天天气怎么样？ (Какая сегодня погода?)",
+            "tj": "Дуруст: 今 — 今天天气怎么样？ (Имрӯз обу ҳаво чӣ хел?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "有点儿大，我觉得很冷。",
+          "pinyin": "Yǒudiǎnr dà, wǒ juéde hěn lěng.",
+          "translation": {
+            "uz": "Biroz kuchli, men juda sovqotyapman.",
+            "ru": "Немного сильный, и мне очень холодно.",
+            "tj": "Каме сахт аст, ман хеле сард ҳис мекунам."
+          }
+        }
+      ]
+    }
+  ]
+}

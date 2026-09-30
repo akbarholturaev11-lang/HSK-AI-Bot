@@ -1,0 +1,644 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 19,
+  "source_lesson": 4,
+  "part_no": 4,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "我有两个孩子",
+  "subtitle": {
+    "uz": "“有” orqali egalik va mavjudlikni ifodalash; sonlarni, “呢” savol yuklamasini va son+o‘lchov so‘zi tuzilmasini ishlatish; yosh va oila a’zolari haqida so‘rash va javob berish.",
+    "ru": "Выражать наличие и обладание с “有”; использовать числа, вопросительную частицу “呢” и структуру число+счётное слово; спрашивать и отвечать о возрасте и семье.",
+    "tj": "Бо “有” соҳибият ва мавҷудиятро ифода кардан; рақамҳо, ҳиссачаи саволии “呢” ва сохтори рақам+воҳиди ҳисобро истифода бурдан; дар бораи синну сол ва оила саволу ҷавоб кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "和",
+      "pinyin": "hé",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "va",
+        "ru": "и",
+        "tj": "ва"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "儿子",
+      "pinyin": "érzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘g‘il",
+        "ru": "сын",
+        "tj": "писар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "孩子",
+      "pinyin": "háizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bola; farzand",
+        "ru": "ребёнок; дети",
+        "tj": "кӯдак; фарзанд"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "女儿",
+      "pinyin": "nǚ'ér",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz farzand",
+        "ru": "дочь",
+        "tj": "духтар"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她很忙。",
+          "pinyin": "Tā hěn máng.",
+          "text": {
+            "uz": "U juda band.",
+            "ru": "Она очень занята.",
+            "tj": "Ӯ хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "text": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffus payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我没有哥哥。",
+          "pinyin": "Wǒ méiyǒu gēge.",
+          "text": {
+            "uz": "Mening akam yo‘q.",
+            "ru": "У меня нет старшего брата.",
+            "tj": "Ман бародари калон надорам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "text": {
+            "uz": "Oilangda nechta odam bor?",
+            "ru": "Сколько человек в твоей семье?",
+            "tj": "Дар оилаи ту чанд нафар ҳаст?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yixue o‘g‘li bilan ketayotib Yang Tonglega duch keladi.",
+        "ru": "На улице Ван Исюэ встречает Ян Тунлэ, гуляя с сыном.",
+        "tj": "Дар кӯча Ван Исюэ бо писараш рафта истода, бо Ян Тунлэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "这是您儿子吗？",
+          "pinyin": "Zhè shì nín érzi ma?",
+          "text": {
+            "uz": "Bu sizning o‘g‘lingizmi?",
+            "ru": "Это ваш сын?",
+            "tj": "Ин писари шумост?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "和",
+            "pinyin": "hé",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "va",
+              "ru": "и",
+              "tj": "ва"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'va' xitoycha qaysi?",
+            "ru": "'и' по-китайски?",
+            "tj": "'ва' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "有",
+            "个",
+            "和"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "va = 和 (hé)",
+            "ru": "и = 和 (hé)",
+            "tj": "ва = 和 (hé)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "儿子",
+            "pinyin": "érzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘g‘il",
+              "ru": "сын",
+              "tj": "писар"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "儿子",
+          "pinyin": "érzi",
+          "options": [
+            "有",
+            "多少",
+            "个",
+            "儿子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "儿子 — o‘g‘il (érzi)",
+            "ru": "儿子 — сын (érzi)",
+            "tj": "儿子 — писар (érzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "孩子",
+            "pinyin": "háizi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bola; farzand",
+              "ru": "ребёнок; дети",
+              "tj": "кӯдак; фарзанд"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "孩子",
+          "pinyin": "háizi",
+          "translation": {
+            "uz": "bola; farzand",
+            "ru": "ребёнок; дети",
+            "tj": "кӯдак; фарзанд"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "孩子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 孩子:",
+            "tj": "Маънои калимаи 孩子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bola; farzand",
+              "ru": "ребёнок; дети",
+              "tj": "кӯдак; фарзанд"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "孩子 = bola; farzand (háizi)",
+            "ru": "孩子 = ребёнок; дети (háizi)",
+            "tj": "孩子 = кӯдак; фарзанд (háizi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "女儿",
+            "pinyin": "nǚ'ér",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nǚ'ér qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǚ'ér?",
+            "tj": "nǚ'ér кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "女儿",
+            "有",
+            "个",
+            "多少"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "女儿 = qiz farzand (nǚ'ér)",
+            "ru": "女儿 = дочь (nǚ'ér)",
+            "tj": "女儿 = духтар (nǚ'ér)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "和 talaffuzini tanlang:",
+            "ru": "Выберите произношение 和:",
+            "tj": "Талаффузи 和-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǒu",
+            "hé",
+            "gè",
+            "duōshao"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "和 — hé",
+            "ru": "和 — hé",
+            "tj": "和 — hé"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "和",
+              {
+                "uz": "va",
+                "ru": "и",
+                "tj": "ва"
+              }
+            ],
+            [
+              "儿子",
+              {
+                "uz": "o‘g‘il",
+                "ru": "сын",
+                "tj": "писар"
+              }
+            ],
+            [
+              "孩子",
+              {
+                "uz": "bola; farzand",
+                "ru": "ребёнок; дети",
+                "tj": "кӯдак; фарзанд"
+              }
+            ],
+            [
+              "女儿",
+              {
+                "uz": "qiz farzand",
+                "ru": "дочь",
+                "tj": "духтар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "孩子",
+          "pinyin": "háizi",
+          "options": [
+            "有",
+            "孩子",
+            "个",
+            "多少"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "孩子 — bola; farzand (háizi)",
+            "ru": "孩子 — ребёнок; дети (háizi)",
+            "tj": "孩子 — кӯдак; фарзанд (háizi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu sizning o‘g‘lingizmi?",
+            "ru": "Это ваш сын?",
+            "tj": "Ин писари шумост?"
+          },
+          "tokens": [
+            "有",
+            "多少",
+            "吗",
+            "您",
+            "是",
+            "儿子",
+            "这"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "您",
+            "儿子",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "这是您儿子吗？ — Zhè shì nín érzi ma?",
+            "ru": "这是您儿子吗？ — Zhè shì nín érzi ma?",
+            "tj": "这是您儿子吗？ — Zhè shì nín érzi ma?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "这是您儿子吗？",
+          "pinyin": "Zhè shì nín érzi ma?",
+          "translation": {
+            "uz": "Bu sizning o‘g‘lingizmi?",
+            "ru": "Это ваш сын?",
+            "tj": "Ин писари шумост?"
+          },
+          "tokens": {
+            "uz": [
+              "Bu",
+              "sizning",
+              "o‘g‘lingizmi"
+            ],
+            "ru": [
+              "сын",
+              "ваш",
+              "Это"
+            ],
+            "tj": [
+              "писари",
+              "Ин",
+              "шумост"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bu",
+              "sizning",
+              "o‘g‘lingizmi"
+            ],
+            "ru": [
+              "Это",
+              "ваш",
+              "сын"
+            ],
+            "tj": [
+              "Ин",
+              "писари",
+              "шумост"
+            ]
+          },
+          "explanation": {
+            "uz": "这是您儿子吗？ — Bu sizning o‘g‘lingizmi?",
+            "ru": "这是您儿子吗？ — Это ваш сын?",
+            "tj": "这是您儿子吗？ — Ин писари шумост?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "女儿",
+          "pinyin": "nǚ'ér",
+          "options": [
+            "有",
+            "多少",
+            "个",
+            "女儿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "女儿 — qiz farzand (nǚ'ér)",
+            "ru": "女儿 — дочь (nǚ'ér)",
+            "tj": "女儿 — духтар (nǚ'ér)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "孩子",
+          "pinyin": "háizi",
+          "translation": {
+            "uz": "bola; farzand",
+            "ru": "ребёнок; дети",
+            "tj": "кӯдак; фарзанд"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "妈妈 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 妈妈:",
+            "tj": "Маънои калимаи 妈妈-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "ona; mama",
+              "ru": "мама",
+              "tj": "модар; оча"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "妈妈 = ona; mama (māma)",
+            "ru": "妈妈 = мама (māma)",
+            "tj": "妈妈 = модар; оча (māma)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "妈妈",
+            "pinyin": "māma",
+            "meaning": {
+              "uz": "ona; mama",
+              "ru": "мама",
+              "tj": "модар; оча"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bola; farzand' xitoycha qaysi?",
+            "ru": "'ребёнок; дети' по-китайски?",
+            "tj": "'кӯдак; фарзанд' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "有",
+            "孩子",
+            "个",
+            "多少"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bola; farzand = 孩子 (háizi)",
+            "ru": "ребёнок; дети = 孩子 (háizi)",
+            "tj": "кӯдак; фарзанд = 孩子 (háizi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "孩子",
+            "pinyin": "háizi",
+            "meaning": {
+              "uz": "bola; farzand",
+              "ru": "ребёнок; дети",
+              "tj": "кӯдак; фарзанд"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

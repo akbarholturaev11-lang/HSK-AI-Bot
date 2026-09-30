@@ -1,0 +1,680 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 10,
+  "source_lesson": 3,
+  "part_no": 1,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "我是中国人",
+  "subtitle": {
+    "uz": "“是” gaplari orqali shaxs yoki narsaning kim/nima ekanini aytish; “的” yordamida egalik va aniqlovchi munosabatini ifodalash; “吗” bilan ha/yo‘q savollarini tuzish.",
+    "ru": "Использовать предложения с “是” для обозначения принадлежности или идентификации; выражать определительные и притяжательные отношения с “的”; строить вопросы да/нет с “吗”.",
+    "tj": "Бо ҷумлаҳои “是” шахс ё чизро муаррифӣ кардан; бо “的” муносибати муайянкунанда ва соҳибиятро ифода кардан; бо “吗” саволҳои ҳа/не сохтан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "人",
+      "pinyin": "rén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "odam; kishi",
+        "ru": "человек",
+        "tj": "одам; шахс"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "的",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "aniqlovchi/egalik yuklamasi",
+        "ru": "структурная частица",
+        "tj": "ҳиссачаи сохторӣ/соҳибият"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "这",
+      "pinyin": "zhè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu",
+        "ru": "это; этот",
+        "tj": "ин"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "谁",
+      "pinyin": "shéi/shuí",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "kim",
+        "ru": "кто",
+        "tj": "кӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“是” bilan gap",
+        "ru": "Предложение с “是”",
+        "tj": "Ҷумла бо “是”"
+      },
+      "title_zh": "“是”字句",
+      "rule": {
+        "uz": "“是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+        "ru": "“是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+        "tj": "“是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是."
+      },
+      "examples": [
+        {
+          "zh": "我是法国人。",
+          "pinyin": "Wǒ shì Fǎguó rén.",
+          "translation": {
+            "uz": "Men fransuzman.",
+            "ru": "Я француз.",
+            "tj": "Ман фаронсавӣ ҳастам."
+          }
+        },
+        {
+          "zh": "她是中文老师。",
+          "pinyin": "Tā shì Zhōngwén lǎoshī.",
+          "translation": {
+            "uz": "U xitoy tili o‘qituvchisi.",
+            "ru": "Она преподаватель китайского языка.",
+            "tj": "Ӯ омӯзгори забони чинӣ аст."
+          }
+        },
+        {
+          "zh": "我老师不是法国人。",
+          "pinyin": "Wǒ lǎoshī bú shì Fǎguó rén.",
+          "translation": {
+            "uz": "Mening o‘qituvchim fransuz emas.",
+            "ru": "Мой преподаватель не француз.",
+            "tj": "Омӯзгори ман фаронсавӣ нест."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Annie Chen Tianzhong telefonidagi suratlarni ko‘rmoqda.",
+        "ru": "После занятия в аудитории Энни смотрит фотографии в телефоне Чэнь Тяньчжуна.",
+        "tj": "Пас аз дарс дар синф Энни аксҳои телефони Чэн Тянҷунро тамошо мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "这是谁？",
+          "pinyin": "Zhè shì shéi?",
+          "text": {
+            "uz": "Bu kim?",
+            "ru": "Кто это?",
+            "tj": "Ин кӣ аст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "人",
+            "pinyin": "rén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "人",
+          "pinyin": "rén",
+          "options": [
+            "的",
+            "谁",
+            "人",
+            "这"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "人 — odam; kishi (rén)",
+            "ru": "人 — человек (rén)",
+            "tj": "人 — одам; шахс (rén)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "的",
+            "pinyin": "de",
+            "pos": "part.",
+            "meaning": {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "的",
+          "pinyin": "de",
+          "translation": {
+            "uz": "aniqlovchi/egalik yuklamasi",
+            "ru": "структурная частица",
+            "tj": "ҳиссачаи сохторӣ/соҳибият"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "的 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 的:",
+            "tj": "Маънои калимаи 的-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "的 = aniqlovchi/egalik yuklamasi (de)",
+            "ru": "的 = структурная частица (de)",
+            "tj": "的 = ҳиссачаи сохторӣ/соҳибият (de)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "这",
+            "pinyin": "zhè",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhè?",
+            "tj": "zhè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "的",
+            "人",
+            "这",
+            "谁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "这 = bu (zhè)",
+            "ru": "这 = это; этот (zhè)",
+            "tj": "这 = ин (zhè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "谁",
+            "pinyin": "shéi/shuí",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "谁 talaffuzini tanlang:",
+            "ru": "Выберите произношение 谁:",
+            "tj": "Талаффузи 谁-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shéi/shuí",
+            "zhè",
+            "rén",
+            "de"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "谁 — shéi/shuí",
+            "ru": "谁 — shéi/shuí",
+            "tj": "谁 — shéi/shuí"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'odam; kishi' xitoycha qaysi?",
+            "ru": "'человек' по-китайски?",
+            "tj": "'одам; шахс' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这",
+            "的",
+            "人",
+            "谁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "odam; kishi = 人 (rén)",
+            "ru": "человек = 人 (rén)",
+            "tj": "одам; шахс = 人 (rén)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "人",
+              {
+                "uz": "odam; kishi",
+                "ru": "человек",
+                "tj": "одам; шахс"
+              }
+            ],
+            [
+              "的",
+              {
+                "uz": "aniqlovchi/egalik yuklamasi",
+                "ru": "структурная частица",
+                "tj": "ҳиссачаи сохторӣ/соҳибият"
+              }
+            ],
+            [
+              "这",
+              {
+                "uz": "bu",
+                "ru": "это; этот",
+                "tj": "ин"
+              }
+            ],
+            [
+              "谁",
+              {
+                "uz": "kim",
+                "ru": "кто",
+                "tj": "кӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“是” bilan gap",
+              "ru": "Предложение с “是”",
+              "tj": "Ҷумла бо “是”"
+            },
+            "title_zh": "“是”字句",
+            "rule": {
+              "uz": "“是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+              "ru": "“是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+              "tj": "“是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是."
+            },
+            "examples": [
+              {
+                "zh": "我是法国人。",
+                "pinyin": "Wǒ shì Fǎguó rén.",
+                "translation": {
+                  "uz": "Men fransuzman.",
+                  "ru": "Я француз.",
+                  "tj": "Ман фаронсавӣ ҳастам."
+                }
+              },
+              {
+                "zh": "她是中文老师。",
+                "pinyin": "Tā shì Zhōngwén lǎoshī.",
+                "translation": {
+                  "uz": "U xitoy tili o‘qituvchisi.",
+                  "ru": "Она преподаватель китайского языка.",
+                  "tj": "Ӯ омӯзгори забони чинӣ аст."
+                }
+              },
+              {
+                "zh": "我老师不是法国人。",
+                "pinyin": "Wǒ lǎoshī bú shì Fǎguó rén.",
+                "translation": {
+                  "uz": "Mening o‘qituvchim fransuz emas.",
+                  "ru": "Мой преподаватель не француз.",
+                  "tj": "Омӯзгори ман фаронсавӣ нест."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Mening o‘qituvchim fransuz emas.» — xitoychada qaysi biri?",
+            "ru": "«Мой преподаватель не француз.» — какое предложение по-китайски?",
+            "tj": "«Омӯзгори ман фаронсавӣ нест.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我是法国人。",
+            "我老师不是法国人。",
+            "她是中文老师。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我老师不是法国人。 — Wǒ lǎoshī bú shì Fǎguó rén.",
+            "ru": "我老师不是法国人。 — Wǒ lǎoshī bú shì Fǎguó rén.",
+            "tj": "我老师不是法国人。 — Wǒ lǎoshī bú shì Fǎguó rén."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "人",
+              {
+                "uz": "odam; kishi",
+                "ru": "человек",
+                "tj": "одам; шахс"
+              }
+            ],
+            [
+              "的",
+              {
+                "uz": "aniqlovchi/egalik yuklamasi",
+                "ru": "структурная частица",
+                "tj": "ҳиссачаи сохторӣ/соҳибият"
+              }
+            ],
+            [
+              "这",
+              {
+                "uz": "bu",
+                "ru": "это; этот",
+                "tj": "ин"
+              }
+            ],
+            [
+              "谁",
+              {
+                "uz": "kim",
+                "ru": "кто",
+                "tj": "кӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你的名字",
+          "pinyin": "nǐ de míngzi",
+          "translation": {
+            "uz": "sening isming",
+            "ru": "твоё имя",
+            "tj": "номи ту"
+          },
+          "tokens": {
+            "uz": [
+              "Bu",
+              "sening",
+              "kim",
+              "isming"
+            ],
+            "ru": [
+              "имя",
+              "твоё",
+              "это",
+              "Кто"
+            ],
+            "tj": [
+              "кӣ",
+              "Ин",
+              "номи",
+              "ту"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "sening",
+              "isming"
+            ],
+            "ru": [
+              "твоё",
+              "имя"
+            ],
+            "tj": [
+              "номи",
+              "ту"
+            ]
+          },
+          "explanation": {
+            "uz": "你的名字 — sening isming",
+            "ru": "你的名字 — твоё имя",
+            "tj": "你的名字 — номи ту"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "的",
+          "pinyin": "de",
+          "translation": {
+            "uz": "aniqlovchi/egalik yuklamasi",
+            "ru": "структурная частица",
+            "tj": "ҳиссачаи сохторӣ/соҳибият"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "你 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 你:",
+            "tj": "Маънои калимаи 你-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            },
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你 = sen (nǐ)",
+            "ru": "你 = ты (nǐ)",
+            "tj": "你 = ту (nǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "你",
+            "pinyin": "nǐ",
+            "meaning": {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aniqlovchi/egalik yuklamasi' xitoycha qaysi?",
+            "ru": "'структурная частица' по-китайски?",
+            "tj": "'ҳиссачаи сохторӣ/соҳибият' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这",
+            "人",
+            "的",
+            "谁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "aniqlovchi/egalik yuklamasi = 的 (de)",
+            "ru": "структурная частица = 的 (de)",
+            "tj": "ҳиссачаи сохторӣ/соҳибият = 的 (de)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "的",
+            "pinyin": "de",
+            "meaning": {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

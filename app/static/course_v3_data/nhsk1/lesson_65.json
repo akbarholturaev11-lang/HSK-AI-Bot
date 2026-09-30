@@ -1,0 +1,725 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 65,
+  "source_lesson": 10,
+  "part_no": 4,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "这儿的苹果真便宜！",
+  "subtitle": {
+    "uz": "Mahsulot narxini tushunish va aytish; pul miqdorini xitoycha ifodalash; sifat-kesimli gaplardan foydalanish; “怎么样” bilan fikr yoki holatni so‘rash.",
+    "ru": "Понимать и называть цены товаров; выражать денежные суммы; использовать предложения с прилагательным-сказуемым; спрашивать мнение или состояние с “怎么样”.",
+    "tj": "Нархи молро фаҳмидан ва гуфтан; маблағи пулро ба чинӣ ифода кардан; ҷумлаҳои сифатӣ-хабариро истифода бурдан; бо “怎么样” фикр ё ҳолатро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "便宜",
+      "pinyin": "piányi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "arzon",
+        "ru": "дешёвый",
+        "tj": "арзон"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "商店",
+      "pinyin": "shāngdiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "do‘kon",
+        "ru": "магазин",
+        "tj": "мағоза"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "衣服",
+      "pinyin": "yīfu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kiyim",
+        "ru": "одежда",
+        "tj": "либос"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "件",
+      "pinyin": "jiàn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kiyim uchun o‘lchov so‘zi",
+        "ru": "счётное слово для одежды",
+        "tj": "воҳиди ҳисоб барои либос"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kichik do‘konda Wang Yixue piyola sotib olmoqda.",
+        "ru": "В маленьком магазине Ван Исюэ покупает чашку.",
+        "tj": "Дар як мағозаи хурд Ван Исюэ пиёла мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "请问，有杯子吗？",
+          "pinyin": "Qǐngwèn, yǒu bēizi ma?",
+          "text": {
+            "uz": "Kechirasiz, piyola bormi?",
+            "ru": "Извините, у вас есть чашки?",
+            "tj": "Мебахшед, пиёла доред?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "有，杯子在这边。",
+          "pinyin": "Yǒu, bēizi zài zhèbiān.",
+          "text": {
+            "uz": "Ha, piyolalar bu yerda.",
+            "ru": "Да, чашки здесь.",
+            "tj": "Ҳа, пиёлаҳо ин ҷоанд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "多少钱一个？",
+          "pinyin": "Duōshao qián yí ge?",
+          "text": {
+            "uz": "Bittasi qancha turadi?",
+            "ru": "Сколько стоит одна?",
+            "tj": "Яктоаш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Shop assistant",
+          "zh": "这些五块钱一个，那些十块钱一个。",
+          "pinyin": "Zhèxiē wǔ kuài qián yí ge, nàxiē shí kuài qián yí ge.",
+          "text": {
+            "uz": "Bularning bittasi 5 yuan, anavilarning bittasi 10 yuan.",
+            "ru": "Эти по 5 юаней, а те по 10 юаней.",
+            "tj": "Инҳо яктоӣ 5 юан, онҳо яктоӣ 10 юан."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我买这个吧。",
+          "pinyin": "Wǒ mǎi zhège ba.",
+          "text": {
+            "uz": "Men mana bunisini olaman.",
+            "ru": "Я возьму эту.",
+            "tj": "Ман ҳаминро мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bozorda Wang Yixue meva sotib olmoqda.",
+        "ru": "На рынке Ван Исюэ покупает фрукты.",
+        "tj": "Дар бозор Ван Исюэ мева мехарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这儿的水果真不少！",
+          "pinyin": "Zhèr de shuǐguǒ zhēn bù shǎo!",
+          "text": {
+            "uz": "Bu yerda meva juda ko‘p ekan!",
+            "ru": "Здесь так много фруктов!",
+            "tj": "Ин ҷо мева хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "您想买什么？",
+          "pinyin": "Nín xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我想买两斤苹果。",
+          "pinyin": "Wǒ xiǎng mǎi liǎng jīn píngguǒ.",
+          "text": {
+            "uz": "Ikki jin olma olmoqchiman.",
+            "ru": "Я хочу купить два цзиня яблок.",
+            "tj": "Ман мехоҳам ду ҷин себ харам."
+          }
+        },
+        {
+          "speaker": "Vendor",
+          "zh": "苹果三块五一斤。这些七块二，七块钱吧。",
+          "pinyin": "Píngguǒ sān kuài wǔ yì jīn. Zhèxiē qī kuài èr, qī kuài qián ba.",
+          "text": {
+            "uz": "Olma bir jiniga 3,5 yuan. Bular 7,2 yuan bo‘ladi, 7 yuan bo‘lsin.",
+            "ru": "Яблоки по 3,5 юаня за цзинь. Всего 7,2 юаня — пусть будет 7.",
+            "tj": "Себ як ҷин 3,5 юан. Ҳамагӣ 7,2 юан мешавад, 7 юан диҳед."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的，这儿的苹果真便宜！",
+          "pinyin": "Hǎo de, zhèr de píngguǒ zhēn piányi!",
+          "text": {
+            "uz": "Xo‘p, bu yerdagi olmalar juda arzon ekan!",
+            "ru": "Хорошо, яблоки здесь действительно дешёвые!",
+            "tj": "Хуб, себҳои ин ҷо воқеан арзонанд!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue bolalariga kiyim sotib olmoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ покупают одежду детям.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ барои фарзандонашон либос мехаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "便宜",
+            "pinyin": "piányi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "arzon",
+              "ru": "дешёвый",
+              "tj": "арзон"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "便宜",
+          "pinyin": "piányi",
+          "translation": {
+            "uz": "arzon",
+            "ru": "дешёвый",
+            "tj": "арзон"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "便宜",
+          "pinyin": "piányi",
+          "options": [
+            "便宜",
+            "售货员",
+            "杯子",
+            "这边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "便宜 — arzon (piányi)",
+            "ru": "便宜 — дешёвый (piányi)",
+            "tj": "便宜 — арзон (piányi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "商店",
+            "pinyin": "shāngdiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "do‘kon",
+              "ru": "магазин",
+              "tj": "мағоза"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "商店 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 商店:",
+            "tj": "Маънои калимаи 商店-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "do‘kon",
+              "ru": "магазин",
+              "tj": "мағоза"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "商店 = do‘kon (shāngdiàn)",
+            "ru": "商店 = магазин (shāngdiàn)",
+            "tj": "商店 = мағоза (shāngdiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "衣服",
+            "pinyin": "yīfu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kiyim",
+              "ru": "одежда",
+              "tj": "либос"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yīfu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yīfu?",
+            "tj": "yīfu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "衣服",
+            "售货员",
+            "杯子",
+            "这边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "衣服 = kiyim (yīfu)",
+            "ru": "衣服 = одежда (yīfu)",
+            "tj": "衣服 = либос (yīfu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "件",
+            "pinyin": "jiàn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "kiyim uchun o‘lchov so‘zi",
+              "ru": "счётное слово для одежды",
+              "tj": "воҳиди ҳисоб барои либос"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "件 talaffuzini tanlang:",
+            "ru": "Выберите произношение 件:",
+            "tj": "Талаффузи 件-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhèbiān",
+            "shòuhuòyuán",
+            "bēizi",
+            "jiàn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "件 — jiàn",
+            "ru": "件 — jiàn",
+            "tj": "件 — jiàn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'arzon' xitoycha qaysi?",
+            "ru": "'дешёвый' по-китайски?",
+            "tj": "'арзон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这边",
+            "便宜",
+            "杯子",
+            "售货员"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "arzon = 便宜 (piányi)",
+            "ru": "дешёвый = 便宜 (piányi)",
+            "tj": "арзон = 便宜 (piányi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "便宜",
+              {
+                "uz": "arzon",
+                "ru": "дешёвый",
+                "tj": "арзон"
+              }
+            ],
+            [
+              "商店",
+              {
+                "uz": "do‘kon",
+                "ru": "магазин",
+                "tj": "мағоза"
+              }
+            ],
+            [
+              "衣服",
+              {
+                "uz": "kiyim",
+                "ru": "одежда",
+                "tj": "либос"
+              }
+            ],
+            [
+              "件",
+              {
+                "uz": "kiyim uchun o‘lchov so‘zi",
+                "ru": "счётное слово для одежды",
+                "tj": "воҳиди ҳисоб барои либос"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "好的，这儿的苹果真便宜！",
+          "pinyin": "Hǎo de, zhèr de píngguǒ zhēn piányi!",
+          "translation": {
+            "uz": "Xo‘p, bu yerdagi olmalar juda arzon ekan!",
+            "ru": "Хорошо, яблоки здесь действительно дешёвые!",
+            "tj": "Хуб, себҳои ин ҷо воқеан арзонанд!"
+          },
+          "tokens": {
+            "uz": [
+              "yerdagi",
+              "Xo‘p",
+              "olmalar",
+              "bu",
+              "ekan",
+              "arzon",
+              "juda"
+            ],
+            "ru": [
+              "действительно",
+              "дешёвые",
+              "яблоки",
+              "здесь",
+              "Хорошо"
+            ],
+            "tj": [
+              "арзонанд",
+              "ин",
+              "Хуб",
+              "воқеан",
+              "себҳои",
+              "ҷо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xo‘p",
+              "bu",
+              "yerdagi",
+              "olmalar",
+              "juda",
+              "arzon",
+              "ekan"
+            ],
+            "ru": [
+              "Хорошо",
+              "яблоки",
+              "здесь",
+              "действительно",
+              "дешёвые"
+            ],
+            "tj": [
+              "Хуб",
+              "себҳои",
+              "ин",
+              "ҷо",
+              "воқеан",
+              "арзонанд"
+            ]
+          },
+          "explanation": {
+            "uz": "好的，这儿的苹果真便宜！ — Xo‘p, bu yerdagi olmalar juda arzon ekan!",
+            "ru": "好的，这儿的苹果真便宜！ — Хорошо, яблоки здесь действительно дешёвые!",
+            "tj": "好的，这儿的苹果真便宜！ — Хуб, себҳои ин ҷо воқеан арзонанд!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "商店",
+          "pinyin": "shāngdiàn",
+          "translation": {
+            "uz": "do‘kon",
+            "ru": "магазин",
+            "tj": "мағоза"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yīfu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yīfu?",
+            "tj": "yīfu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "这边",
+            "售货员",
+            "杯子",
+            "衣服"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "衣服 = kiyim (yīfu)",
+            "ru": "衣服 = одежда (yīfu)",
+            "tj": "衣服 = либос (yīfu)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "件 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 件:",
+            "tj": "Маънои калимаи 件-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "kiyim uchun o‘lchov so‘zi",
+              "ru": "счётное слово для одежды",
+              "tj": "воҳиди ҳисоб барои либос"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "件 = kiyim uchun o‘lchov so‘zi (jiàn)",
+            "ru": "件 = счётное слово для одежды (jiàn)",
+            "tj": "件 = воҳиди ҳисоб барои либос (jiàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "便宜",
+          "pinyin": "piányi",
+          "translation": {
+            "uz": "arzon",
+            "ru": "дешёвый",
+            "tj": "арзон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "水果 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 水果:",
+            "tj": "Маънои калимаи 水果-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "meva",
+              "ru": "фрукты",
+              "tj": "мева"
+            },
+            {
+              "uz": "bu yer; bu tomon",
+              "ru": "здесь; эта сторона",
+              "tj": "ин ҷо; ин тараф"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "水果 = meva (shuǐguǒ)",
+            "ru": "水果 = фрукты (shuǐguǒ)",
+            "tj": "水果 = мева (shuǐguǒ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "水果",
+            "pinyin": "shuǐguǒ",
+            "meaning": {
+              "uz": "meva",
+              "ru": "фрукты",
+              "tj": "мева"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'arzon' xitoycha qaysi?",
+            "ru": "'дешёвый' по-китайски?",
+            "tj": "'арзон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这边",
+            "便宜",
+            "售货员",
+            "杯子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "arzon = 便宜 (piányi)",
+            "ru": "дешёвый = 便宜 (piányi)",
+            "tj": "арзон = 便宜 (piányi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "便宜",
+            "pinyin": "piányi",
+            "meaning": {
+              "uz": "arzon",
+              "ru": "дешёвый",
+              "tj": "арзон"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

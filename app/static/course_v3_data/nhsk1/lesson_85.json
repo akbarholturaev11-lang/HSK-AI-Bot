@@ -1,0 +1,762 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 85,
+  "source_lesson": 13,
+  "part_no": 2,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "请给我一杯茶",
+  "subtitle": {
+    "uz": "“可以” bilan ruxsat yoki imkoniyatni ifodalash; “动词+一下” bilan qisqa yoki sinab ko‘rish xarakteridagi harakatni aytish; ikki obyektli gaplardan foydalanish; ovqat buyurtma qilishdagi asosiy iboralarni tushunish.",
+    "ru": "Выражать разрешение и возможность с “可以”; использовать “глагол+一下” для краткого или пробного действия; строить предложения с двумя дополнениями; понимать базовые фразы для заказа еды.",
+    "tj": "Бо “可以” иҷозат ё имкониятро ифода кардан; бо “феъл+一下” амали кӯтоҳ ё озмоиширо гуфтан; ҷумлаҳои ду-объектиро истифода бурдан; ибораҳои асосии фармоиши хӯрокро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "打电话",
+      "pinyin": "dǎ diànhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "telefon qilmoq",
+        "ru": "звонить по телефону",
+        "tj": "телефон кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "一下",
+      "pinyin": "yíxià",
+      "pos": "num.-m.",
+      "meaning": {
+        "uz": "bir marta; qisqacha",
+        "ru": "разок; немного",
+        "tj": "як бор; каме"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "服务员",
+      "pinyin": "fúwùyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xizmatchi; ofitsiant/ofitsiantka",
+        "ru": "обслуживающий персонал; официант",
+        "tj": "хизматрасон; пешхизмат"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "女士",
+      "pinyin": "nǚshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xonim",
+        "ru": "дама; госпожа",
+        "tj": "хонум"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "“Fe’l+一下” tuzilmasi",
+        "ru": "Конструкция “глагол+一下”",
+        "tj": "Сохтори “феъл+一下”"
+      },
+      "title_zh": "“动词+一下”结构",
+      "rule": {
+        "uz": "“Fe’l+一下” harakatning qisqa davom etishini yoki sinab ko‘rish tarzida bajarilishini bildiradi.",
+        "ru": "“Глагол+一下” показывает краткое действие или попытку выполнить действие.",
+        "tj": "“Феъл+一下” кӯтоҳ будани амал ё иҷрои онро ҳамчун кӯшиш нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你可以打电话问一下。",
+          "pinyin": "Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+          "translation": {
+            "uz": "Telefon qilib so‘rab ko‘rishing mumkin.",
+            "ru": "Можешь позвонить и спросить.",
+            "tj": "Метавонӣ занг зада як бор пурсӣ."
+          }
+        },
+        {
+          "zh": "请休息一下。",
+          "pinyin": "Qǐng xiūxi yíxià.",
+          "translation": {
+            "uz": "Iltimos, biroz dam oling.",
+            "ru": "Пожалуйста, немного отдохните.",
+            "tj": "Лутфан, каме истироҳат кунед."
+          }
+        },
+        {
+          "zh": "你看一下吧。",
+          "pinyin": "Nǐ kàn yíxià ba.",
+          "translation": {
+            "uz": "Bir ko‘rib qo‘y.",
+            "ru": "Посмотри немного.",
+            "tj": "Як нигоҳ кун."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue ustoz Wangdan savol so‘raydi.",
+        "ru": "В аудитории после занятия Бай Цзяюэ задаёт вопрос преподавателю Ван.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ аз устод Ван савол мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "可以。你有什么问题？",
+          "pinyin": "Kěyǐ. Nǐ yǒu shénme wèntí?",
+          "text": {
+            "uz": "Mumkin. Qanday savoling bor?",
+            "ru": "Можно. Какой у тебя вопрос?",
+            "tj": "Мумкин. Чӣ савол дорӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "那个小店卖不卖手机？",
+          "pinyin": "Nàge xiǎodiàn mài bu mài shǒujī?",
+          "text": {
+            "uz": "O‘sha kichik do‘kon telefon sotadimi yo‘qmi?",
+            "ru": "В том маленьком магазине продают телефоны?",
+            "tj": "Он мағозаи хурд телефон мефурӯшад ё не?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我不知道。你可以打电话问一下。",
+          "pinyin": "Wǒ bù zhīdào. Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+          "text": {
+            "uz": "Bilmayman. Telefon qilib so‘rab ko‘rishing mumkin.",
+            "ru": "Не знаю. Можешь позвонить и спросить.",
+            "tj": "Намедонам. Метавонӣ занг зада як бор пурсӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kafeda Wang Yixue nonushta qilmoqchi.",
+        "ru": "В кафе Ван Исюэ хочет позавтракать.",
+        "tj": "Дар қаҳвахона Ван Исюэ мехоҳад наҳорӣ кунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Waitress",
+          "zh": "好的。您还要什么？",
+          "pinyin": "Hǎo de. Nín hái yào shénme?",
+          "text": {
+            "uz": "Xo‘p. Yana nima olasiz?",
+            "ru": "Хорошо. Что-нибудь ещё?",
+            "tj": "Хуб. Боз чӣ мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Liu Ming ovqat buyurtma qilmoqda.",
+        "ru": "В ресторане Лю Мин делает заказ.",
+        "tj": "Дар тарабхона Лю Мин хӯрок фармоиш медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我要一斤饺子。",
+          "pinyin": "Wǒ yào yì jīn jiǎozi.",
+          "text": {
+            "uz": "Menga bir jin jiaozi bering.",
+            "ru": "Я возьму один цзинь цзяоцзы.",
+            "tj": "Ман як ҷин ҷяозы мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "好的。一斤饺子40个。",
+          "pinyin": "Hǎo de. Yì jīn jiǎozi sìshí ge.",
+          "text": {
+            "uz": "Xo‘p. Bir jin jiaozi 40 dona bo‘ladi.",
+            "ru": "Хорошо. В одном цзине цзяоцзы 40 штук.",
+            "tj": "Хуб. Як ҷин ҷяозы 40 дона мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "40个太多了，我要一半吧。",
+          "pinyin": "Sìshí ge tài duō le, wǒ yào yíbàn ba.",
+          "text": {
+            "uz": "40 dona juda ko‘p, yarmini olaman.",
+            "ru": "40 штук слишком много, возьму половину.",
+            "tj": "40 дона хеле зиёд, нисфашро мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "半斤20个。您想喝什么？",
+          "pinyin": "Bàn jīn èrshí ge. Nín xiǎng hē shénme?",
+          "text": {
+            "uz": "Yarim jin 20 dona. Nima ichasiz?",
+            "ru": "Полцзиня — 20 штук. Что будете пить?",
+            "tj": "Ним ҷин 20 дона. Чӣ менӯшед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "打电话",
+            "pinyin": "dǎ diànhuà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "telefon qilmoq",
+              "ru": "звонить по телефону",
+              "tj": "телефон кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "打电话",
+          "pinyin": "dǎ diànhuà",
+          "translation": {
+            "uz": "telefon qilmoq",
+            "ru": "звонить по телефону",
+            "tj": "телефон кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "打电话",
+          "pinyin": "dǎ diànhuà",
+          "options": [
+            "问题",
+            "打电话",
+            "再",
+            "可以"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "打电话 — telefon qilmoq (dǎ diànhuà)",
+            "ru": "打电话 — звонить по телефону (dǎ diànhuà)",
+            "tj": "打电话 — телефон кардан (dǎ diànhuà)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "一下",
+            "pinyin": "yíxià",
+            "pos": "num.-m.",
+            "meaning": {
+              "uz": "bir marta; qisqacha",
+              "ru": "разок; немного",
+              "tj": "як бор; каме"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一下 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一下:",
+            "tj": "Маънои калимаи 一下-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "bir marta; qisqacha",
+              "ru": "разок; немного",
+              "tj": "як бор; каме"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "一下 = bir marta; qisqacha (yíxià)",
+            "ru": "一下 = разок; немного (yíxià)",
+            "tj": "一下 = як бор; каме (yíxià)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "服务员",
+            "pinyin": "fúwùyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xizmatchi; ofitsiant/ofitsiantka",
+              "ru": "обслуживающий персонал; официант",
+              "tj": "хизматрасон; пешхизмат"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fúwùyuán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fúwùyuán?",
+            "tj": "fúwùyuán кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "可以",
+            "再",
+            "服务员",
+            "问题"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "服务员 = xizmatchi; ofitsiant/ofitsiantka (fúwùyuán)",
+            "ru": "服务员 = обслуживающий персонал; официант (fúwùyuán)",
+            "tj": "服务员 = хизматрасон; пешхизмат (fúwùyuán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "女士",
+            "pinyin": "nǚshì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xonim",
+              "ru": "дама; госпожа",
+              "tj": "хонум"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "女士 talaffuzini tanlang:",
+            "ru": "Выберите произношение 女士:",
+            "tj": "Талаффузи 女士-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zài",
+            "kěyǐ",
+            "wèntí",
+            "nǚshì"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "女士 — nǚshì",
+            "ru": "女士 — nǚshì",
+            "tj": "女士 — nǚshì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'telefon qilmoq' xitoycha qaysi?",
+            "ru": "'звонить по телефону' по-китайски?",
+            "tj": "'телефон кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打电话",
+            "问题",
+            "再",
+            "可以"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "telefon qilmoq = 打电话 (dǎ diànhuà)",
+            "ru": "звонить по телефону = 打电话 (dǎ diànhuà)",
+            "tj": "телефон кардан = 打电话 (dǎ diànhuà)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "打电话",
+              {
+                "uz": "telefon qilmoq",
+                "ru": "звонить по телефону",
+                "tj": "телефон кардан"
+              }
+            ],
+            [
+              "一下",
+              {
+                "uz": "bir marta; qisqacha",
+                "ru": "разок; немного",
+                "tj": "як бор; каме"
+              }
+            ],
+            [
+              "服务员",
+              {
+                "uz": "xizmatchi; ofitsiant/ofitsiantka",
+                "ru": "обслуживающий персонал; официант",
+                "tj": "хизматрасон; пешхизмат"
+              }
+            ],
+            [
+              "女士",
+              {
+                "uz": "xonim",
+                "ru": "дама; госпожа",
+                "tj": "хонум"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "“Fe’l+一下” tuzilmasi",
+              "ru": "Конструкция “глагол+一下”",
+              "tj": "Сохтори “феъл+一下”"
+            },
+            "title_zh": "“动词+一下”结构",
+            "rule": {
+              "uz": "“Fe’l+一下” harakatning qisqa davom etishini yoki sinab ko‘rish tarzida bajarilishini bildiradi.",
+              "ru": "“Глагол+一下” показывает краткое действие или попытку выполнить действие.",
+              "tj": "“Феъл+一下” кӯтоҳ будани амал ё иҷрои онро ҳамчун кӯшиш нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "你可以打电话问一下。",
+                "pinyin": "Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+                "translation": {
+                  "uz": "Telefon qilib so‘rab ko‘rishing mumkin.",
+                  "ru": "Можешь позвонить и спросить.",
+                  "tj": "Метавонӣ занг зада як бор пурсӣ."
+                }
+              },
+              {
+                "zh": "请休息一下。",
+                "pinyin": "Qǐng xiūxi yíxià.",
+                "translation": {
+                  "uz": "Iltimos, biroz dam oling.",
+                  "ru": "Пожалуйста, немного отдохните.",
+                  "tj": "Лутфан, каме истироҳат кунед."
+                }
+              },
+              {
+                "zh": "你看一下吧。",
+                "pinyin": "Nǐ kàn yíxià ba.",
+                "translation": {
+                  "uz": "Bir ko‘rib qo‘y.",
+                  "ru": "Посмотри немного.",
+                  "tj": "Як нигоҳ кун."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Telefon qilib so‘rab ko‘rishing mumkin.",
+            "ru": "Можешь позвонить и спросить.",
+            "tj": "Метавонӣ занг зада як бор пурсӣ."
+          },
+          "tokens": [
+            "你",
+            "可以",
+            "一下",
+            "问",
+            "再",
+            "问题",
+            "打电话"
+          ],
+          "answer_tokens": [
+            "你",
+            "可以",
+            "打电话",
+            "问",
+            "一下"
+          ],
+          "explanation": {
+            "uz": "你可以打电话问一下。 — Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+            "ru": "你可以打电话问一下。 — Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+            "tj": "你可以打电话问一下。 — Nǐ kěyǐ dǎ diànhuà wèn yíxià."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Iltimos, biroz dam oling.» — xitoychada qaysi biri?",
+            "ru": "«Пожалуйста, немного отдохните.» — какое предложение по-китайски?",
+            "tj": "«Лутфан, каме истироҳат кунед.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "请休息一下。",
+            "你看一下吧。",
+            "你可以打电话问一下。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "请休息一下。 — Qǐng xiūxi yíxià.",
+            "ru": "请休息一下。 — Qǐng xiūxi yíxià.",
+            "tj": "请休息一下。 — Qǐng xiūxi yíxià."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fúwùyuán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fúwùyuán?",
+            "tj": "fúwùyuán кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "服务员",
+            "问题",
+            "可以",
+            "再"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "服务员 = xizmatchi; ofitsiant/ofitsiantka (fúwùyuán)",
+            "ru": "服务员 = обслуживающий персонал; официант (fúwùyuán)",
+            "tj": "服务员 = хизматрасон; пешхизмат (fúwùyuán)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "女士 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 女士:",
+            "tj": "Маънои калимаи 女士-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "xonim",
+              "ru": "дама; госпожа",
+              "tj": "хонум"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "女士 = xonim (nǚshì)",
+            "ru": "女士 = дама; госпожа (nǚshì)",
+            "tj": "女士 = хонум (nǚshì)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "可以 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 可以:",
+            "tj": "Маънои калимаи 可以-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sotmoq",
+              "ru": "продавать",
+              "tj": "фурӯхтан"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "可以 = mumkin; qila olmoq (kěyǐ)",
+            "ru": "可以 = можно; мочь (kěyǐ)",
+            "tj": "可以 = мумкин; тавонистан (kěyǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "可以",
+            "pinyin": "kěyǐ",
+            "meaning": {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'telefon qilmoq' xitoycha qaysi?",
+            "ru": "'звонить по телефону' по-китайски?",
+            "tj": "'телефон кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "再",
+            "问题",
+            "打电话",
+            "可以"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "telefon qilmoq = 打电话 (dǎ diànhuà)",
+            "ru": "звонить по телефону = 打电话 (dǎ diànhuà)",
+            "tj": "телефон кардан = 打电话 (dǎ diànhuà)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "打电话",
+            "pinyin": "dǎ diànhuà",
+            "meaning": {
+              "uz": "telefon qilmoq",
+              "ru": "звонить по телефону",
+              "tj": "телефон кардан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,806 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 38,
+  "source_lesson": 6,
+  "part_no": 6,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "你的手机号是多少？",
+  "subtitle": {
+    "uz": "Telefon raqamini tushunish va aytish; “想” bilan xohish/niyatni ifodalash; ketma-ket fe’lli gaplarda maqsad va usulni ifodalash; “怎么” bilan harakat usulini so‘rash.",
+    "ru": "Понимать и называть номера телефонов; выражать желание и намерение с “想”; использовать последовательности глаголов для цели и способа действия; спрашивать о способе действия с “怎么”.",
+    "tj": "Рақами телефонро фаҳмидан ва гуфтан; бо “想” хоҳишу ниятро ифода кардан; ҷумлаҳои пайдарпайи феълӣ барои мақсад ва тарзи амал; бо “怎么” тарзи амалро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "怎么",
+      "pinyin": "zěnme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday; qanday qilib",
+        "ru": "как; каким образом",
+        "tj": "чӣ тавр"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "坐",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "transportda bormoq; o‘tirmoq",
+        "ru": "ехать на; сидеть",
+        "tj": "бо нақлиёт рафтан; нишастан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "出租车",
+      "pinyin": "chūzūchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "taksi",
+        "ru": "такси",
+        "tj": "таксӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“怎么” so‘roq olmoshi",
+        "ru": "Вопросительное местоимение “怎么”",
+        "tj": "Ҷонишини саволии “怎么”"
+      },
+      "title_zh": "疑问代词“怎么”",
+      "rule": {
+        "uz": "“怎么” fe’l oldidan kelib harakat qanday usulda bajarilishini so‘raydi.",
+        "ru": "“怎么” ставится перед глаголом и спрашивает о способе или методе действия.",
+        "tj": "“怎么” пеш аз феъл омада, тарз ё усули амалро мепурсад."
+      },
+      "examples": [
+        {
+          "zh": "我们怎么去？",
+          "pinyin": "Wǒmen zěnme qù?",
+          "translation": {
+            "uz": "Qanday boramiz?",
+            "ru": "Как мы поедем?",
+            "tj": "Чӣ тавр меравем?"
+          }
+        },
+        {
+          "zh": "她怎么去超市？",
+          "pinyin": "Tā zěnme qù chāoshì?",
+          "translation": {
+            "uz": "U supermarketga qanday boradi?",
+            "ru": "Как она едет в супермаркет?",
+            "tj": "Ӯ чӣ тавр ба супермаркет меравад?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuedan telefon raqamini so‘ramoqda.",
+        "ru": "В кампусе Ли Вэнь спрашивает у Бай Цзяюэ номер мобильного телефона.",
+        "tj": "Дар кампус Ли Вэн аз Бай Ҷяюэ рақами телефонашро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "家月，你的手机号是多少？",
+          "pinyin": "Jiāyuè, nǐ de shǒujīhào shì duōshao?",
+          "text": {
+            "uz": "Jiayue, mobil raqaming nechchi?",
+            "ru": "Цзяюэ, какой у тебя номер мобильного?",
+            "tj": "Ҷяюэ, рақами мобилиат чанд аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我的手机号是+33 601493190。",
+          "pinyin": "Wǒ de shǒujīhào shì +33 601493190.",
+          "text": {
+            "uz": "Mening mobil raqamim +33 601493190.",
+            "ru": "Мой номер мобильного +33 601493190.",
+            "tj": "Рақами мобилии ман +33 601493190 аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我的手机号是+86 13552721160。",
+          "pinyin": "Wǒ de shǒujīhào shì +86 13552721160.",
+          "text": {
+            "uz": "Mening mobil raqamim +86 13552721160.",
+            "ru": "Мой номер мобильного +86 13552721160.",
+            "tj": "Рақами мобилии ман +86 13552721160 аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "После занятия Бай Цзяюэ и Чэнь Тяньчжун разговаривают в аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун дар синф суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "家月，明天你去哪儿？",
+          "pinyin": "Jiāyuè, míngtiān nǐ qù nǎr?",
+          "text": {
+            "uz": "Jiayue, ertaga qayerga borasan?",
+            "ru": "Цзяюэ, куда ты пойдёшь завтра?",
+            "tj": "Ҷяюэ, фардо ба куҷо меравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我想去超市买东西。",
+          "pinyin": "Wǒ xiǎng qù chāoshì mǎi dōngxi.",
+          "text": {
+            "uz": "Men supermarketga narsa sotib olish uchun bormoqchiman.",
+            "ru": "Я хочу пойти в супермаркет купить продукты.",
+            "tj": "Ман мехоҳам ба супермаркет рафта чиз харам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "你去超市买什么？",
+          "pinyin": "Nǐ qù chāoshì mǎi shénme?",
+          "text": {
+            "uz": "Supermarketga nima sotib olish uchun borasan?",
+            "ru": "Что ты собираешься купить в супермаркете?",
+            "tj": "Дар супермаркет чӣ мехарӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我想买些牛奶。",
+          "pinyin": "Wǒ xiǎng mǎi xiē niúnǎi.",
+          "text": {
+            "uz": "Men biroz sut sotib olmoqchiman.",
+            "ru": "Я хочу купить немного молока.",
+            "tj": "Ман мехоҳам каме шир харам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue oilasi dam olish kunidagi kechki ovqat rejasini muhokama qilmoqda.",
+        "ru": "Дома семья Ван Исюэ обсуждает планы на ужин в выходной.",
+        "tj": "Дар хона оилаи Ван Исюэ нақшаи хӯроки шоми рӯзҳои истироҳатро муҳокима мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期天我们去哪儿吃晚饭？",
+          "pinyin": "Xīngqītiān wǒmen qù nǎr chī wǎnfàn?",
+          "text": {
+            "uz": "Yakshanba kuni kechki ovqatni qayerda yeymiz?",
+            "ru": "Куда мы пойдём ужинать в воскресенье?",
+            "tj": "Рӯзи якшанбе барои шом ба куҷо меравем?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "那边的包子非常好吃，我想吃包子。",
+          "pinyin": "Nàbian de bāozi fēicháng hǎochī, wǒ xiǎng chī bāozi.",
+          "text": {
+            "uz": "U yerdagi baozi juda mazali, men baozi yegim keladi.",
+            "ru": "Баоцзы там очень вкусные, я хочу поесть баоцзы.",
+            "tj": "Баоцзыи он ҷо хеле болаззат аст, ман мехоҳам баоцзы хӯрам."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "妈妈，晚饭吃米饭，不想吃包子。",
+          "pinyin": "Māma, wǎnfàn chī mǐfàn, bù xiǎng chī bāozi.",
+          "text": {
+            "uz": "Oyi, kechki ovqatga guruch yeyman, baozi yegim kelmaydi.",
+            "ru": "Мама, на ужин я хочу рис, не хочу баоцзы.",
+            "tj": "Оча, барои шом биринҷ мехӯрам, баоцзы хӯрдан намехоҳам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的。我们怎么去？",
+          "pinyin": "Hǎo de. Wǒmen zěnme qù?",
+          "text": {
+            "uz": "Xo‘p. Qanday boramiz?",
+            "ru": "Хорошо. Как мы туда поедем?",
+            "tj": "Хуб. Чӣ тавр меравем?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "坐出租车去。",
+          "pinyin": "Zuò chūzūchē qù.",
+          "text": {
+            "uz": "Taksida boramiz.",
+            "ru": "Поедем на такси.",
+            "tj": "Бо таксӣ меравем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "怎么",
+            "pinyin": "zěnme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ тавр"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "怎么 talaffuzini tanlang:",
+            "ru": "Выберите произношение 怎么:",
+            "tj": "Талаффузи 怎么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zěnme",
+            "diànhuà",
+            "hào",
+            "shǒujī"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "怎么 — zěnme",
+            "ru": "怎么 — zěnme",
+            "tj": "怎么 — zěnme"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "坐",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "transportda bormoq; o‘tirmoq",
+              "ru": "ехать на; сидеть",
+              "tj": "бо нақлиёт рафтан; нишастан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "坐",
+          "pinyin": "zuò",
+          "translation": {
+            "uz": "transportda bormoq; o‘tirmoq",
+            "ru": "ехать на; сидеть",
+            "tj": "бо нақлиёт рафтан; нишастан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'transportda bormoq; o‘tirmoq' xitoycha qaysi?",
+            "ru": "'ехать на; сидеть' по-китайски?",
+            "tj": "'бо нақлиёт рафтан; нишастан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "号",
+            "手机",
+            "坐",
+            "电话"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "transportda bormoq; o‘tirmoq = 坐 (zuò)",
+            "ru": "ехать на; сидеть = 坐 (zuò)",
+            "tj": "бо нақлиёт рафтан; нишастан = 坐 (zuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "出租车",
+            "pinyin": "chūzūchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "taksi",
+              "ru": "такси",
+              "tj": "таксӣ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "出租车",
+          "pinyin": "chūzūchē",
+          "options": [
+            "手机",
+            "电话",
+            "出租车",
+            "号"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "出租车 — taksi (chūzūchē)",
+            "ru": "出租车 — такси (chūzūchē)",
+            "tj": "出租车 — таксӣ (chūzūchē)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "怎么 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 怎么:",
+            "tj": "Маънои калимаи 怎么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ тавр"
+            },
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "怎么 = qanday; qanday qilib (zěnme)",
+            "ru": "怎么 = как; каким образом (zěnme)",
+            "tj": "怎么 = чӣ тавр (zěnme)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "怎么",
+              {
+                "uz": "qanday; qanday qilib",
+                "ru": "как; каким образом",
+                "tj": "чӣ тавр"
+              }
+            ],
+            [
+              "坐",
+              {
+                "uz": "transportda bormoq; o‘tirmoq",
+                "ru": "ехать на; сидеть",
+                "tj": "бо нақлиёт рафтан; нишастан"
+              }
+            ],
+            [
+              "出租车",
+              {
+                "uz": "taksi",
+                "ru": "такси",
+                "tj": "таксӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“怎么” so‘roq olmoshi",
+              "ru": "Вопросительное местоимение “怎么”",
+              "tj": "Ҷонишини саволии “怎么”"
+            },
+            "title_zh": "疑问代词“怎么”",
+            "rule": {
+              "uz": "“怎么” fe’l oldidan kelib harakat qanday usulda bajarilishini so‘raydi.",
+              "ru": "“怎么” ставится перед глаголом и спрашивает о способе или методе действия.",
+              "tj": "“怎么” пеш аз феъл омада, тарз ё усули амалро мепурсад."
+            },
+            "examples": [
+              {
+                "zh": "我们怎么去？",
+                "pinyin": "Wǒmen zěnme qù?",
+                "translation": {
+                  "uz": "Qanday boramiz?",
+                  "ru": "Как мы поедем?",
+                  "tj": "Чӣ тавр меравем?"
+                }
+              },
+              {
+                "zh": "她怎么去超市？",
+                "pinyin": "Tā zěnme qù chāoshì?",
+                "translation": {
+                  "uz": "U supermarketga qanday boradi?",
+                  "ru": "Как она едет в супермаркет?",
+                  "tj": "Ӯ чӣ тавр ба супермаркет меравад?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qanday boramiz?",
+            "ru": "Как мы поедем?",
+            "tj": "Чӣ тавр меравем?"
+          },
+          "tokens": [
+            "我们",
+            "手机",
+            "怎么",
+            "去",
+            "电话"
+          ],
+          "answer_tokens": [
+            "我们",
+            "怎么",
+            "去"
+          ],
+          "explanation": {
+            "uz": "我们怎么去？ — Wǒmen zěnme qù?",
+            "ru": "我们怎么去？ — Wǒmen zěnme qù?",
+            "tj": "我们怎么去？ — Wǒmen zěnme qù?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "她坐出租车去超市。",
+          "pinyin": "Tā zuò chūzūchē qù chāoshì.",
+          "translation": {
+            "uz": "U supermarketga taksida boradi.",
+            "ru": "Она едет в супермаркет на такси.",
+            "tj": "Ӯ бо таксӣ ба супермаркет меравад."
+          },
+          "tokens": {
+            "uz": [
+              "Xo‘p",
+              "U",
+              "supermarketga",
+              "Qanday",
+              "boradi",
+              "taksida"
+            ],
+            "ru": [
+              "Как",
+              "едет",
+              "Хорошо",
+              "в",
+              "такси",
+              "Она",
+              "супермаркет",
+              "на"
+            ],
+            "tj": [
+              "меравад",
+              "таксӣ",
+              "ба",
+              "Чӣ",
+              "Хуб",
+              "супермаркет",
+              "Ӯ",
+              "бо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "supermarketga",
+              "taksida",
+              "boradi"
+            ],
+            "ru": [
+              "Она",
+              "едет",
+              "в",
+              "супермаркет",
+              "на",
+              "такси"
+            ],
+            "tj": [
+              "Ӯ",
+              "бо",
+              "таксӣ",
+              "ба",
+              "супермаркет",
+              "меравад"
+            ]
+          },
+          "explanation": {
+            "uz": "她坐出租车去超市。 — U supermarketga taksida boradi.",
+            "ru": "她坐出租车去超市。 — Она едет в супермаркет на такси.",
+            "tj": "她坐出租车去超市。 — Ӯ бо таксӣ ба супермаркет меравад."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "怎么",
+              {
+                "uz": "qanday; qanday qilib",
+                "ru": "как; каким образом",
+                "tj": "чӣ тавр"
+              }
+            ],
+            [
+              "坐",
+              {
+                "uz": "transportda bormoq; o‘tirmoq",
+                "ru": "ехать на; сидеть",
+                "tj": "бо нақлиёт рафтан; нишастан"
+              }
+            ],
+            [
+              "出租车",
+              {
+                "uz": "taksi",
+                "ru": "такси",
+                "tj": "таксӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "坐",
+          "pinyin": "zuò",
+          "options": [
+            "号",
+            "坐",
+            "电话",
+            "手机"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "坐 — transportda bormoq; o‘tirmoq (zuò)",
+            "ru": "坐 — ехать на; сидеть (zuò)",
+            "tj": "坐 — бо нақлиёт рафтан; нишастан (zuò)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U supermarketga taksida boradi.",
+            "ru": "Она едет в супермаркет на такси.",
+            "tj": "Ӯ бо таксӣ ба супермаркет меравад."
+          },
+          "tokens": [
+            "电话",
+            "坐",
+            "超市",
+            "出租车",
+            "去",
+            "手机",
+            "她"
+          ],
+          "answer_tokens": [
+            "她",
+            "坐",
+            "出租车",
+            "去",
+            "超市"
+          ],
+          "explanation": {
+            "uz": "她坐出租车去超市。 — Tā zuò chūzūchē qù chāoshì.",
+            "ru": "她坐出租车去超市。 — Tā zuò chūzūchē qù chāoshì.",
+            "tj": "她坐出租车去超市。 — Tā zuò chūzūchē qù chāoshì."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "坐",
+          "pinyin": "zuò",
+          "translation": {
+            "uz": "transportda bormoq; o‘tirmoq",
+            "ru": "ехать на; сидеть",
+            "tj": "бо нақлиёт рафтан; нишастан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好吃 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好吃:",
+            "tj": "Маънои калимаи 好吃-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "mazali",
+              "ru": "вкусный",
+              "tj": "бомаза"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "好吃 = mazali (hǎochī)",
+            "ru": "好吃 = вкусный (hǎochī)",
+            "tj": "好吃 = бомаза (hǎochī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "好吃",
+            "pinyin": "hǎochī",
+            "meaning": {
+              "uz": "mazali",
+              "ru": "вкусный",
+              "tj": "бомаза"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'transportda bormoq; o‘tirmoq' xitoycha qaysi?",
+            "ru": "'ехать на; сидеть' по-китайски?",
+            "tj": "'бо нақлиёт рафтан; нишастан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电话",
+            "坐",
+            "号",
+            "手机"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "transportda bormoq; o‘tirmoq = 坐 (zuò)",
+            "ru": "ехать на; сидеть = 坐 (zuò)",
+            "tj": "бо нақлиёт рафтан; нишастан = 坐 (zuò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "坐",
+            "pinyin": "zuò",
+            "meaning": {
+              "uz": "transportda bormoq; o‘tirmoq",
+              "ru": "ехать на; сидеть",
+              "tj": "бо нақлиёт рафтан; нишастан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

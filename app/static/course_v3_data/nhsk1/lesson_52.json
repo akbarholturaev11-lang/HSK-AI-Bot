@@ -1,0 +1,733 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 52,
+  "source_lesson": 8,
+  "part_no": 5,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "我爸爸也在医院工作",
+  "subtitle": {
+    "uz": "Joy, yo‘nalish va nisbiy o‘rinni tushunish va tasvirlash; joyni ko‘rsatish uchun “在” predlogini ishlatish; “能” bilan imkoniyat, sharoit yoki mumkinlikni ifodalash.",
+    "ru": "Понимать и описывать местоположение, направление и относительное положение; использовать предлог “在” для обозначения места; выражать способность, условие или возможность с “能”.",
+    "tj": "Ҷой, самт ва мавқеи нисбиро фаҳмидан ва тасвир кардан; барои нишон додани ҷой пешоянди “在”-ро истифода бурдан; бо “能” қобилият, шароит ё имконро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "午饭",
+      "pinyin": "wǔfàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tushlik",
+        "ru": "обед",
+        "tj": "хӯроки нисфирӯзӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "饭",
+      "pinyin": "fàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ovqat",
+        "ru": "еда; приём пищи",
+        "tj": "хӯрок"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "大",
+      "pinyin": "dà",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "katta",
+        "ru": "большой",
+        "tj": "калон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "病人",
+      "pinyin": "bìngrén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bemor",
+        "ru": "пациент; больной",
+        "tj": "бемор"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Bai Jiayue va Chen Tianzhong mehmonga kelgan.",
+        "ru": "Бай Цзяюэ и Чэнь Тяньчжун пришли в гости к Ван Ифэй.",
+        "tj": "Бай Ҷяюэ ва Чэн Тянҷун ба хонаи Ван Ифэй меҳмон шудаанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "房间外有一只小猫。",
+          "pinyin": "Fángjiān wài yǒu yì zhī xiǎomāo.",
+          "text": {
+            "uz": "Xona tashqarisida bitta kichik mushuk bor.",
+            "ru": "Снаружи комнаты есть маленький котёнок.",
+            "tj": "Берун аз ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我没看见，它在哪儿呢？",
+          "pinyin": "Wǒ méi kànjiàn, tā zài nǎr ne?",
+          "text": {
+            "uz": "Men uni ko‘rmadim, u qayerda?",
+            "ru": "Я его не вижу. Где он?",
+            "tj": "Ман онро надидам, он куҷост?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "它在桌子下呢。",
+          "pinyin": "Tā zài zhuōzi xià ne.",
+          "text": {
+            "uz": "U stol ostida.",
+            "ru": "Он под столом.",
+            "tj": "Он зери миз аст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这只小猫真漂亮！",
+          "pinyin": "Zhè zhī xiǎomāo zhēn piàoliang!",
+          "text": {
+            "uz": "Bu kichik mushuk juda chiroyli!",
+            "ru": "Этот котёнок очень красивый!",
+            "tj": "Ин гурбачаи хурд хеле зебост!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue Li Wenga telefon qilmoqda.",
+        "ru": "После занятия Бай Цзяюэ звонит Ли Вэню из аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ аз синф ба Ли Вэн занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们在哪儿见呢？",
+          "pinyin": "Wǒmen zài nǎr jiàn ne?",
+          "text": {
+            "uz": "Qayerda uchrashamiz?",
+            "ru": "Где мы встретимся?",
+            "tj": "Дар куҷо вомехӯрем?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。下午两点你能到吗？",
+          "pinyin": "Hǎo de. Xiàwǔ liǎng diǎn nǐ néng dào ma?",
+          "text": {
+            "uz": "Xo‘p. Tushdan keyin soat 2 da yetib kela olasanmi?",
+            "ru": "Хорошо. Ты сможешь прийти в 2 часа дня?",
+            "tj": "Хуб. Баъди нисфирӯзӣ соати 2 расида метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我能到。我在学校吃午饭。",
+          "pinyin": "Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+          "text": {
+            "uz": "Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "Да, смогу. Я пообедаю в школе.",
+            "tj": "Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada Liu Ming doktor Hu bilan suhbatlashmoqda.",
+        "ru": "В больнице Лю Мин разговаривает с доктором Ху.",
+        "tj": "Дар беморхона Лю Мин бо духтур Ҳу суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Dr. Hu",
+          "zh": "没吃呢。",
+          "pinyin": "Méi chī ne.",
+          "text": {
+            "uz": "Yo‘q, yemadim.",
+            "ru": "Нет, ещё не ел.",
+            "tj": "Не, ҳоло нахӯрдаам."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "是的。我爸爸也在医院工作，他也非常忙。",
+          "pinyin": "Shì de. Wǒ bàba yě zài yīyuàn gōngzuò, tā yě fēicháng máng.",
+          "text": {
+            "uz": "Ha. Otam ham kasalxonada ishlaydi, u ham juda band.",
+            "ru": "Да. Мой отец тоже работает в больнице и тоже очень занят.",
+            "tj": "Ҳа. Падарам ҳам дар беморхона кор мекунад ва ӯ ҳам хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "对。",
+          "pinyin": "Duì.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "午饭",
+            "pinyin": "wǔfàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tushlik",
+              "ru": "обед",
+              "tj": "хӯроки нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǔfàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǔfàn?",
+            "tj": "wǔfàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "房间",
+            "午饭",
+            "外",
+            "只"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "午饭 = tushlik (wǔfàn)",
+            "ru": "午饭 = обед (wǔfàn)",
+            "tj": "午饭 = хӯроки нисфирӯзӣ (wǔfàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "饭",
+            "pinyin": "fàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ovqat",
+              "ru": "еда; приём пищи",
+              "tj": "хӯрок"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "饭 talaffuzini tanlang:",
+            "ru": "Выберите произношение 饭:",
+            "tj": "Талаффузи 饭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fàn",
+            "wài",
+            "zhī",
+            "fángjiān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饭 — fàn",
+            "ru": "饭 — fàn",
+            "tj": "饭 — fàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "大",
+            "pinyin": "dà",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "katta",
+              "ru": "большой",
+              "tj": "калон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'katta' xitoycha qaysi?",
+            "ru": "'большой' по-китайски?",
+            "tj": "'калон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "只",
+            "房间",
+            "大",
+            "外"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "katta = 大 (dà)",
+            "ru": "большой = 大 (dà)",
+            "tj": "калон = 大 (dà)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "病人",
+            "pinyin": "bìngrén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bemor",
+              "ru": "пациент; больной",
+              "tj": "бемор"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "病人",
+          "pinyin": "bìngrén",
+          "translation": {
+            "uz": "bemor",
+            "ru": "пациент; больной",
+            "tj": "бемор"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "病人",
+          "pinyin": "bìngrén",
+          "options": [
+            "只",
+            "病人",
+            "房间",
+            "外"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "病人 — bemor (bìngrén)",
+            "ru": "病人 — пациент; больной (bìngrén)",
+            "tj": "病人 — бемор (bìngrén)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "午饭 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 午饭:",
+            "tj": "Маънои калимаи 午饭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            },
+            {
+              "uz": "tushlik",
+              "ru": "обед",
+              "tj": "хӯроки нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "午饭 = tushlik (wǔfàn)",
+            "ru": "午饭 = обед (wǔfàn)",
+            "tj": "午饭 = хӯроки нисфирӯзӣ (wǔfàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "午饭",
+              {
+                "uz": "tushlik",
+                "ru": "обед",
+                "tj": "хӯроки нисфирӯзӣ"
+              }
+            ],
+            [
+              "饭",
+              {
+                "uz": "ovqat",
+                "ru": "еда; приём пищи",
+                "tj": "хӯрок"
+              }
+            ],
+            [
+              "大",
+              {
+                "uz": "katta",
+                "ru": "большой",
+                "tj": "калон"
+              }
+            ],
+            [
+              "病人",
+              {
+                "uz": "bemor",
+                "ru": "пациент; больной",
+                "tj": "бемор"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "Да, смогу. Я пообедаю в школе.",
+            "tj": "Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          },
+          "tokens": [
+            "我",
+            "房间",
+            "到",
+            "吃",
+            "学校",
+            "午饭",
+            "在",
+            "我",
+            "外",
+            "能"
+          ],
+          "answer_tokens": [
+            "我",
+            "能",
+            "到",
+            "我",
+            "在",
+            "学校",
+            "吃",
+            "午饭"
+          ],
+          "explanation": {
+            "uz": "我能到。我在学校吃午饭。 — Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+            "ru": "我能到。我在学校吃午饭。 — Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+            "tj": "我能到。我在学校吃午饭。 — Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "病人",
+          "pinyin": "bìngrén",
+          "options": [
+            "只",
+            "房间",
+            "病人",
+            "外"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "病人 — bemor (bìngrén)",
+            "ru": "病人 — пациент; больной (bìngrén)",
+            "tj": "病人 — бемор (bìngrén)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我能到。我在学校吃午饭。",
+          "pinyin": "Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+          "translation": {
+            "uz": "Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "Да, смогу. Я пообедаю в школе.",
+            "tj": "Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          },
+          "tokens": {
+            "uz": [
+              "qilgani",
+              "tushlik",
+              "maktabda",
+              "olaman",
+              "Yetib",
+              "kela",
+              "maktabga",
+              "Men",
+              "qilaman"
+            ],
+            "ru": [
+              "смогу",
+              "пообедаю",
+              "не",
+              "Да",
+              "школе",
+              "в",
+              "Я",
+              "обедаю"
+            ],
+            "tj": [
+              "барои",
+              "метавонам",
+              "хӯроки",
+              "ба",
+              "мехӯрам",
+              "мактаб",
+              "Расида",
+              "нисфирӯзӣ",
+              "Ман",
+              "дар"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Yetib",
+              "kela",
+              "olaman",
+              "Men",
+              "maktabda",
+              "tushlik",
+              "qilaman"
+            ],
+            "ru": [
+              "Да",
+              "смогу",
+              "Я",
+              "пообедаю",
+              "в",
+              "школе"
+            ],
+            "tj": [
+              "Расида",
+              "метавонам",
+              "Ман",
+              "дар",
+              "мактаб",
+              "хӯроки",
+              "нисфирӯзӣ",
+              "мехӯрам"
+            ]
+          },
+          "explanation": {
+            "uz": "我能到。我在学校吃午饭。 — Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "我能到。我在学校吃午饭。 — Да, смогу. Я пообедаю в школе.",
+            "tj": "我能到。我在学校吃午饭。 — Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'katta' xitoycha qaysi?",
+            "ru": "'большой' по-китайски?",
+            "tj": "'калон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "只",
+            "外",
+            "大",
+            "房间"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "katta = 大 (dà)",
+            "ru": "большой = 大 (dà)",
+            "tj": "калон = 大 (dà)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "病人",
+          "pinyin": "bìngrén",
+          "translation": {
+            "uz": "bemor",
+            "ru": "пациент; больной",
+            "tj": "бемор"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "到 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 到:",
+            "tj": "Маънои калимаи 到-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yetib bormoq",
+              "ru": "прибывать; достигать",
+              "tj": "расидан"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            },
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "到 = yetib bormoq (dào)",
+            "ru": "到 = прибывать; достигать (dào)",
+            "tj": "到 = расидан (dào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "到",
+            "pinyin": "dào",
+            "meaning": {
+              "uz": "yetib bormoq",
+              "ru": "прибывать; достигать",
+              "tj": "расидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bemor' xitoycha qaysi?",
+            "ru": "'пациент; больной' по-китайски?",
+            "tj": "'бемор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "外",
+            "只",
+            "房间",
+            "病人"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bemor = 病人 (bìngrén)",
+            "ru": "пациент; больной = 病人 (bìngrén)",
+            "tj": "бемор = 病人 (bìngrén)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "病人",
+            "pinyin": "bìngrén",
+            "meaning": {
+              "uz": "bemor",
+              "ru": "пациент; больной",
+              "tj": "бемор"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
