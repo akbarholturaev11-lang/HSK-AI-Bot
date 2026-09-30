@@ -126,7 +126,12 @@ def verify_index() -> dict[str, int]:
 
 
 def main() -> None:
-    for order in sorted(EXPECTED):\n        stats = verify(order)\n        print(f"OK lesson {order:02d}: " + " ".join(f"{k}={v}" for k, v in stats.items()))\n    audit = verify_index()\n    print("OK N2 index: " + " ".join(f"{k}={v}" for k, v in audit.items()))\n
+    for order in sorted(EXPECTED):
+        stats = verify(order)
+        print(f"OK lesson {order:02d}: " + " ".join(f"{k}={v}" for k, v in stats.items()))
+    audit = verify_index()
+    print("OK N2 index: " + " ".join(f"{k}={v}" for k, v in audit.items()))
+
 
 if __name__ == "__main__":
     main()
