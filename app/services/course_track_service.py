@@ -189,6 +189,12 @@ class CourseTrackService:
             if not access.allowed:
                 raise CourseTrackError(access.reason, status_code=403)
 
+        validated_requested_level = (
+            self._validate_level_for_track(requested_level, target_track)
+            if requested_level
+            else None
+        )
+
         if target_track == current_track:
             current_level = self._validate_level_for_track(
                 getattr(user, "level", None),
@@ -225,10 +231,7 @@ class CourseTrackService:
             for_update=True,
         )
         if target_state is None:
-            target_level = self._validate_level_for_track(
-                requested_level,
-                target_track,
-            )
+            target_level = validated_requested_level or self.default_level(target_track)
             target_state = await self.state_repo.create(
                 user_id=int(user.id),
                 track=target_track,
