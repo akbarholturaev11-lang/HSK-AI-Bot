@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parent
 EXPECTED = {
     1: {"vocab": 14, "dialogues": 4, "lines": 19, "grammar": 3},
     2: {"vocab": 16, "dialogues": 4, "lines": 19, "grammar": 3},
+    3: {"vocab": 15, "dialogues": 4, "lines": 17, "grammar": 3},
 }
 
 
