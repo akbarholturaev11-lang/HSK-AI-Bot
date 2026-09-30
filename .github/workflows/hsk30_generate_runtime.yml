@@ -16,6 +16,19 @@ on:
       - "scripts/hsk30/verify_nhsk3_enrichment.py"
       - "scripts/hsk30/normalized/nhsk3/**"
       - "scripts/hsk30/translations/nhsk3/**"
+      - "scripts/hsk30/verify_runtime_integration.py"
+      - "app/main.py"
+      - "app/api/miniapp_entitlements.py"
+      - "app/services/course_levels.py"
+      - "app/services/entitlements/lesson_access.py"
+      - "app/services/subscription_miniapp_service.py"
+      - "app/services/course_v3_vocab.py"
+      - "app/services/course_v3_word_index.py"
+      - "app/services/voice_practice_service.py"
+      - "app/static/course-v3.html"
+      - "app/static/subscription.html"
+      - "app/static/course_v3_recognition.html"
+      - "app/static/course_v3_pronunciation.html"
   workflow_dispatch:
 
 permissions:
@@ -56,6 +69,45 @@ jobs:
 
       - name: Generate HSK 3.0 maps and gates
         run: python scripts/gen_course_v3_from_seed.py --track hsk30 --maps-only
+
+      - name: Validate HSK 3.0 runtime integration
+        run: python scripts/hsk30/verify_runtime_integration.py
+
+      - name: Compile changed Python integration modules
+        run: |
+          python -m py_compile \
+            app/main.py \
+            app/api/miniapp_entitlements.py \
+            app/services/course_levels.py \
+            app/services/entitlements/lesson_access.py \
+            app/services/subscription_miniapp_service.py \
+            app/services/course_v3_vocab.py \
+            app/services/course_v3_word_index.py \
+            app/services/voice_practice_service.py
+
+      - name: Syntax-check Mini App JavaScript
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          files = [
+              "app/static/course-v3.html",
+              "app/static/subscription.html",
+              "app/static/course_v3_recognition.html",
+              "app/static/course_v3_pronunciation.html",
+          ]
+          for filename in files:
+              text = Path(filename).read_text(encoding="utf-8")
+              blocks = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", text, flags=re.I | re.S)
+              target = Path("/tmp") / (Path(filename).stem.replace("-", "_") + ".js")
+              target.write_text("\n".join(blocks), encoding="utf-8")
+              print(target)
+          PY
+          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js; do
+            node --check "$f"
+          done
 
       - name: Validate generated runtime
         shell: bash
