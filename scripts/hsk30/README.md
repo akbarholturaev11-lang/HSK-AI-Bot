@@ -22,3 +22,24 @@ Rules:
 - The proper-noun index contains 12 rows. Four recurring character names used in lesson dialogues are retained separately as allowed extras: 安妮, 白家月, 陈天中, 李文.
 - The book also states that the course is aligned to 300 words. Because that publisher claim does not map transparently to the raw index row counts, the extraction preserves both facts rather than silently forcing the index to 300.
 - `verify_nhsk1_source.py` checks exact common-word coverage, source proper nouns, allowed character-name extras, 15 lessons, 45 dialogue blocks, 203 dialogue lines, and 40 grammar points.
+
+
+## Build normalized N1 bundle
+
+Run:
+
+```bash
+python scripts/hsk30/verify_nhsk1_lesson_01.py
+python scripts/hsk30/verify_nhsk1_source.py
+python scripts/hsk30/build_nhsk1_source_bundle.py
+```
+
+The builder emits:
+
+- `scripts/hsk30/generated/nhsk1/manifest.json`
+- `scripts/hsk30/generated/nhsk1/wordlist.json`
+- `scripts/hsk30/generated/nhsk1/grammar.json`
+- `scripts/hsk30/generated/nhsk1/dialogues.json`
+- `scripts/hsk30/generated/nhsk1/proper_nouns.json`
+
+The generated bundle is derived only from the verified lesson seeds and the book-end vocabulary index audit.
