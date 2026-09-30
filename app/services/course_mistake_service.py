@@ -6,7 +6,7 @@ import re
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from app.db.models.course_mistake import COURSE_MISTAKE_CATEGORIES, CourseMistake
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -18,6 +18,7 @@ from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_levels import is_hsk30_level
 from app.services.course_mistake_target_store import (
     UNRESOLVABLE_TARGET_KEY,
     CourseMistakeTargetStore,
@@ -108,6 +109,19 @@ class CourseMistakeService:
     @staticmethod
     def _text(value, limit: int = 2000) -> str:
         return re.sub(r"\s+", " ", str(value or "")).strip()[:limit]
+
+    @staticmethod
+    def _track_for_level(level: str | None) -> str:
+        return "hsk30" if is_hsk30_level(level) else "hsk20"
+
+    @classmethod
+    def _scope_target_to_track(cls, target: dict, level: str | None) -> dict:
+        scoped = dict(target)
+        scoped["level"] = cls._text(level, 32) or scoped.get("level")
+        if cls._track_for_level(level) == "hsk30":
+            raw = cls._text(scoped.get("key"), 128)
+            scoped["key"] = hashlib.sha256(f"hsk30|{raw}".encode("utf-8")).hexdigest()
+        return scoped
 
     @staticmethod
     def _valid_review_session_id(user_id: int, session_id: str) -> bool:
@@ -284,12 +298,23 @@ class CourseMistakeService:
         return material if version >= 2 else {}
 
     @classmethod
-    def _material_key(cls, category: str, material: dict, prompt: str, correct_answer: str) -> str:
+    def _material_key(
+        cls,
+        category: str,
+        material: dict,
+        prompt: str,
+        correct_answer: str,
+        *,
+        level: str | None = None,
+    ) -> str:
         material_ref = cls._text(material.get("material_ref"), 160)
         if material_ref:
             normalized = f"{category}|material:{material_ref}".casefold()
-            return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
-        return cls._key(category, prompt, correct_answer)
+        else:
+            normalized = f"{category}|{prompt}|{correct_answer}".casefold()
+        if cls._track_for_level(level) == "hsk30":
+            normalized = f"hsk30|{normalized}"
+        return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
     async def record_items(
         self,
@@ -302,6 +327,8 @@ class CourseMistakeService:
         lesson_order: int | None = None,
     ) -> int:
         normalized_source = self._text(source, 32).lower() or "lesson"
+        record_level = self._text(level or getattr(user, "level", None), 32) or None
+        record_track = self._track_for_level(record_level)
         normalized = []
         for raw in items if isinstance(items, list) else []:
             if not isinstance(raw, dict):
@@ -329,7 +356,7 @@ class CourseMistakeService:
                 raw,
                 category=category,
                 source=normalized_source,
-                level=level,
+                level=record_level,
                 lesson_order=lesson_order,
                 prompt=prompt,
                 correct_answer=correct_answer,
@@ -338,8 +365,15 @@ class CourseMistakeService:
             )
             normalized.append(
                 {
-                    "mistake_key": self._material_key(category, material, prompt, correct_answer),
+                    "mistake_key": self._material_key(
+                        category,
+                        material,
+                        prompt,
+                        correct_answer,
+                        level=record_level,
+                    ),
                     "legacy_mistake_key": self._key(category, prompt, correct_answer),
+                    "track": record_track,
                     "category": category,
                     "prompt": prompt,
                     "user_answer": self._text(raw.get("selected_answer") or raw.get("user_answer")) or None,
@@ -363,7 +397,11 @@ class CourseMistakeService:
                 )
             )
             mistake = result.scalar_one_or_none()
-            if not mistake and data["legacy_mistake_key"] != data["mistake_key"]:
+            if (
+                not mistake
+                and data["track"] == "hsk20"
+                and data["legacy_mistake_key"] != data["mistake_key"]
+            ):
                 legacy_result = await self.session.execute(
                     select(CourseMistake).where(
                         CourseMistake.user_id == user.id,
@@ -381,7 +419,7 @@ class CourseMistakeService:
                 mistake.explanation = data["explanation"] or mistake.explanation
                 mistake.material_json = data["material_json"]
                 mistake.source = normalized_source
-                mistake.level = self._text(level, 32) or mistake.level
+                mistake.level = record_level or mistake.level
                 mistake.lesson_id = lesson_id or mistake.lesson_id
                 mistake.lesson_order = lesson_order or mistake.lesson_order
                 mistake.last_seen_at = now
@@ -392,7 +430,7 @@ class CourseMistakeService:
                     mistake_key=data["mistake_key"],
                     category=data["category"],
                     source=normalized_source,
-                    level=self._text(level, 32) or None,
+                    level=record_level,
                     lesson_order=lesson_order,
                     prompt=data["prompt"],
                     user_answer=data["user_answer"],
@@ -444,7 +482,10 @@ class CourseMistakeService:
             logger.exception("Mistake target resolution failed")
             target = None
         if target:
-            return target
+            return cls._scope_target_to_track(
+                target,
+                getattr(row, "level", None),
+            )
         probe = SimpleNamespace(
             id=0,
             category=category,
@@ -471,13 +512,19 @@ class CourseMistakeService:
         if "answer_index" in question:
             stored["answer_index"] = question["answer_index"]
         ref = cls._text(material.get("material_ref"), 160) or cls._text(getattr(row, "mistake_key", None), 64)
-        return {
-            "kind": "question",
-            "zh": cls._text(question.get("prompt"), 300),
-            "key": make_target_key("question", ref or cls._text(getattr(row, "prompt", None))),
-            "level": getattr(row, "level", None),
-            "payload": {"question": stored},
-        }
+        return cls._scope_target_to_track(
+            {
+                "kind": "question",
+                "zh": cls._text(question.get("prompt"), 300),
+                "key": make_target_key(
+                    "question",
+                    ref or cls._text(getattr(row, "prompt", None)),
+                ),
+                "level": getattr(row, "level", None),
+                "payload": {"question": stored},
+            },
+            getattr(row, "level", None),
+        )
 
     async def _link_target(self, user_id: int, row, *, material: dict, source: str, now) -> None:
         """Yangi xatoni nishonga bog'laydi (yangi xato progressni nolga tushiradi)."""
@@ -496,7 +543,8 @@ class CourseMistakeService:
 
     async def _sync_targets(self, user) -> bool:
         """Nishonga bog'lanmagan eski faol xatolarni bog'laydi (lazy backfill)."""
-        rows = await self.targets.unsynced_rows(user.id)
+        track = self._track_for_level(getattr(user, "level", None))
+        rows = await self.targets.unsynced_rows(user.id, track=track)
         if not rows:
             return False
         await self.session.execute(select(User.id).where(User.id == user.id).with_for_update())
@@ -538,6 +586,7 @@ class CourseMistakeService:
         *,
         category: str | None = None,
         offset: int = 0,
+        track: str | None = None,
     ) -> list[CourseMistake]:
         weakness = CourseMistake.wrong_count - CourseMistake.resolved_count
         query = (
@@ -547,6 +596,12 @@ class CourseMistakeService:
         )
         if category in COURSE_MISTAKE_CATEGORIES:
             query = query.where(CourseMistake.category == category)
+        if track == "hsk30":
+            query = query.where(CourseMistake.level.like("nhsk%"))
+        elif track == "hsk20":
+            query = query.where(
+                or_(CourseMistake.level.is_(None), ~CourseMistake.level.like("nhsk%"))
+            )
         result = await self.session.execute(query.offset(max(0, int(offset or 0))).limit(max(1, int(limit or 1))))
         return list(result.scalars().all())
 
@@ -569,7 +624,14 @@ class CourseMistakeService:
         offset: int,
         language: str,
     ) -> tuple[list[dict], bool]:
-        rows = await self.targets.active(user.id, category=category, limit=limit + 1, offset=offset)
+        track = self._track_for_level(getattr(user, "level", None))
+        rows = await self.targets.active(
+            user.id,
+            category=category,
+            limit=limit + 1,
+            offset=offset,
+            track=track,
+        )
         has_more = len(rows) > limit
         rows = rows[:limit]
         last_answers: dict[tuple[str, str], str] = {}
@@ -642,6 +704,7 @@ class CourseMistakeService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+        track = self._track_for_level(getattr(user, "level", None))
         category = self._text(category, 24).lower() or None
         if category and category not in COURSE_MISTAKE_CATEGORIES:
             return {"ok": False, "error": "invalid_mistake_category"}
@@ -658,7 +721,7 @@ class CourseMistakeService:
             except Exception:  # noqa: BLE001 — backfill ro'yxatni yiqitmasin
                 logger.exception("Mistake target sync failed for user %s", user.id)
                 await self.session.rollback()
-            target_counts = await self.targets.counts(user.id)
+            target_counts = await self.targets.counts(user.id, track=track)
             language = self._review_language(user, language)
             targets, has_more = await self._target_overview(
                 user, category=category, limit=limit, offset=offset, language=language
@@ -685,16 +748,25 @@ class CourseMistakeService:
             limit=limit + 1,
             category=category,
             offset=offset,
+            track=track,
         )
         has_more = len(page_items) > limit
         items = page_items[:limit]
-        counts_result = await self.session.execute(
-            select(CourseMistake.category, func.sum(CourseMistake.wrong_count - CourseMistake.resolved_count))
-            .where(
-                CourseMistake.user_id == user.id,
-                CourseMistake.wrong_count > CourseMistake.resolved_count,
+        counts_query = select(
+            CourseMistake.category,
+            func.sum(CourseMistake.wrong_count - CourseMistake.resolved_count),
+        ).where(
+            CourseMistake.user_id == user.id,
+            CourseMistake.wrong_count > CourseMistake.resolved_count,
+        )
+        if track == "hsk30":
+            counts_query = counts_query.where(CourseMistake.level.like("nhsk%"))
+        else:
+            counts_query = counts_query.where(
+                or_(CourseMistake.level.is_(None), ~CourseMistake.level.like("nhsk%"))
             )
-            .group_by(CourseMistake.category)
+        counts_result = await self.session.execute(
+            counts_query.group_by(CourseMistake.category)
         )
         category_counts = {str(category): int(count or 0) for category, count in counts_result.all()}
         overview_items = []
@@ -1152,8 +1224,12 @@ class CourseMistakeService:
 
         # Nomzodlar ko'p olinadi: ba'zi nishon shu klientda savol bera olmasligi
         # mumkin (masalan eski klient builder'ni ko'rsata olmaydi).
+        track = self._track_for_level(getattr(user, "level", None))
         rows = await self.targets.active(
-            user.id, category=category, limit=MISTAKE_REVIEW_TARGET_CANDIDATES
+            user.id,
+            category=category,
+            limit=MISTAKE_REVIEW_TARGET_CANDIDATES,
+            track=track,
         )
         plans = []
         for row in rows:
@@ -1595,7 +1671,14 @@ class CourseMistakeService:
 
         total = len(snapshot)
         percent = round((score / total) * 100) if total else 0
-        remaining = sum((await self.targets.counts(user.id)).values())
+        remaining = sum(
+            (
+                await self.targets.counts(
+                    user.id,
+                    track=self._track_for_level(getattr(user, "level", None)),
+                )
+            ).values()
+        )
         # "Ishonchli" manbadan kelgan nishonda to'g'ri javob bo'lsa — 5 XP
         # (sessiyaga bir marta). Qoida v2 bilan bir xil: mijoz o'zi
         # "yozgan" xatoni tuzatib XP yig'a olmasin.
