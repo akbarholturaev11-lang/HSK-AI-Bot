@@ -321,15 +321,24 @@ function render(){
     document.getElementById("step-count").textContent=step+" / 2";
     var rows,summary="";
     if(step===1){
-      rows=LV.map(function(l,index){return optionRow(l.k,levelTitle(l),l.k==="beginner"?L.beginnerSub:trv(l.s),levelGlyph(index),sel===l.k,"pick")}).join("");
+      var levelChoices=levelsForTrack();
+      var access=hsk30Access();
+      var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
+        +'<button type="button" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
+        +'<button type="button" class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+'</button></div>';
+      var trackNote="";
+      if(track==="hsk30"&&access&&access.feature_enabled===false)trackNote='<p class="track-note">'+L.hsk30Disabled+'</p>';
+      else if(track==="hsk30"&&(!access||!access.allowed))trackNote='<p class="track-note"><b>'+L.hsk30Locked.replace("{price}",hsk30Price())+'</b></p>';
+      rows=switcher+trackNote+levelChoices.map(function(l,index){return optionRow(l.k,levelTitle(l),l.k==="beginner"?L.beginnerSub:trv(l.s),levelGlyph(index),sel===l.k,"pick")}).join("");
     }else{
-      var level=LV.filter(function(l){return l.k===sel})[0];
+      var allLevels=LV20.concat(LV30);
+      var level=allLevels.filter(function(l){return l.k===sel})[0]||levelsForTrack()[0];
       summary='<div class="chosen">'+icon("check")+'<span>'+L.selected+': <b>'+levelTitle(level)+'</b></span></div>';
       rows=GOALS.map(function(o){return optionRow(o.k,trv(o.hd),trv(o.s),'<span class="goal-icon '+o.k+'">'+icon(o.k)+'</span>',goalSel===o.k,"pickGoal")}).join("");
     }
     st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub"><h1 id="question" tabindex="-1">'+(step===1?L.ask:L.askGoal)+'</h1></div></div>'
       +'<div class="body"><p class="helper">'+(step===1?L.levelHint:L.goalHint)+'</p>'+summary+'<div class="choices" role="group" aria-labelledby="question">'+rows+'</div></div>';
-    cta.innerHTML=(step===1?L.cont:L.first)+icon("arrow");
+    cta.innerHTML=(step===2&&hsk30NeedsUnlock()?L.unlockHsk30:(step===1?L.cont:L.first))+icon("arrow");
   }
   st.scrollTop=0;
   st.classList.remove("stage-enter");void st.offsetWidth;st.classList.add("stage-enter");
@@ -341,8 +350,8 @@ function selectChoice(k){
   if(guide){clearTimeout(pandaReactionTimer);guide.classList.remove("is-pleased");void guide.offsetWidth;guide.classList.add("is-pleased");pandaReactionTimer=setTimeout(function(){guide.classList.remove("is-pleased")},800)}
   try{if(tg&&tg.HapticFeedback)tg.HapticFeedback.selectionChanged()}catch(e){}
 }
-function pick(k){if(submitting||!LV.some(function(l){return l.k===k}))return;sel=k;selectChoice(k)}
-function pickGoal(k){if(submitting||!GOALS.some(function(o){return o.k===k}))return;goalSel=k;selectChoice(k)}
+function pick(k){var choices=levelsForTrack();if(submitting||!choices.some(function(l){return l.k===k}))return;sel=k;saveDraft();selectChoice(k)}
+function pickGoal(k){if(submitting||!GOALS.some(function(o){return o.k===k}))return;goalSel=k;saveDraft();selectChoice(k)}
 function focusQuestion(){var question=document.getElementById("question");if(question)question.focus({preventScroll:true})}
 function nextBtn(){if(submitting)return;if(step<2){step++;render();focusQuestion()}else{finish()}}
 function back(){if(submitting)return;if(step>0){step--;render();focusQuestion()}}
