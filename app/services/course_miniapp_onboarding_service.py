@@ -88,6 +88,8 @@ class CourseMiniAppOnboardingService:
         access = await track_service.hsk30_access(user)
         if not access.allowed:
             return {"ok": False, "error": access.reason}
+        if not await track_service.hsk30_feature.is_level_live(requested_content_level):
+            return {"ok": False, "error": "hsk30_level_not_live"}
 
         current_track = track_service.track_for_level(getattr(user, "level", None))
         if current_track != TRACK_HSK30:
