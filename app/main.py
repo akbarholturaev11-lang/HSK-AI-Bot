@@ -161,6 +161,7 @@ from app.services.hsk30_unlock_service import (
     HSK30_UNLOCK_PLAN_TYPE,
     Hsk30UnlockService,
 )
+from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.portfolio_service import PortfolioService
 from app.services.required_channel_service import RequiredChannelService
 from app.services.subscription_service import (
@@ -189,6 +190,7 @@ from app.services.admin_broadcast_service import (
     parse_button_config,
 )
 from app.services.payment_qr_code_service import (
+    HSK30_UNLOCK_QR_SCOPE,
     PaymentQrCodeService,
     SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
     SUBSCRIPTION_QR_SCOPE,
@@ -1030,6 +1032,20 @@ async def _admin_miniapp_management_payload(session) -> dict:
         })
 
     qr_service = PaymentQrCodeService(session)
+    hsk30_unlock_service = Hsk30UnlockService(session)
+    hsk30_unlock_price = await hsk30_unlock_service.price_tjs()
+    hsk30_unlock_qr = {}
+    for method in ("alipay", "wechat"):
+        hsk30_unlock_qr[method] = bool(
+            await qr_service.get_file_id(
+                scope=HSK30_UNLOCK_QR_SCOPE,
+                payment_method=method,
+                plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                amount=hsk30_unlock_price,
+                currency="TJS",
+            )
+        )
+
     price_items = []
     for price in prices:
         is_qr = PaymentQrCodeService.is_qr_method(price.payment_method)
@@ -1060,6 +1076,12 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "prices": price_items,
         "payment_details": (await setting_repo.get(PAYMENT_DETAILS_KEY) or settings.PAYMENT_DETAILS or "").strip(),
         "payment_details_alif": (await setting_repo.get(PAYMENT_DETAILS_ALIF_KEY) or "").strip(),
+        "hsk30": {
+            "enabled": await Hsk30FeatureService(session).is_enabled(),
+            "unlock_price_tjs": hsk30_unlock_price,
+            "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
+            "qr": hsk30_unlock_qr,
+        },
         "gemini": {
             "configured": bool(settings.GEMINI_API_KEY),
             "active_model": await get_active_gemini_model(),
@@ -3740,7 +3762,8 @@ async def admin_miniapp_prices_qr_upload(request: Request):
     method = str(form.get("method") or "").strip()
     plan = str(form.get("plan") or "").strip()
     scope_kind = str(form.get("scope") or "main").strip()
-    if not PaymentQrCodeService.is_qr_method(method) or plan not in PLANS:
+    valid_plan = plan in PLANS or plan == HSK30_UNLOCK_PLAN_TYPE
+    if not PaymentQrCodeService.is_qr_method(method) or not valid_plan:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_qr_target"})
     media = form.get("media")
     if media is None or not hasattr(media, "read"):
@@ -3753,16 +3776,25 @@ async def admin_miniapp_prices_qr_upload(request: Request):
     if len(data) > 25 * 1024 * 1024:
         return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
     async with async_session_maker() as session:
-        price = await SubscriptionPriceService(session).get_price(payment_method=method, plan_type=plan)
-        amount = int(price.amount) if price else 0
-        currency = price.currency if price else "¥"
-        if amount <= 0:
-            return JSONResponse(status_code=400, content={"ok": False, "error": "price_not_set"})
-        if scope_kind == "discount20":
-            scope = SUBSCRIPTION_DISCOUNT_20_QR_SCOPE
-            amount = int(round(amount * 0.8))
+        if plan == HSK30_UNLOCK_PLAN_TYPE:
+            amount = await Hsk30UnlockService(session).price_tjs()
+            currency = "TJS"
+            scope = HSK30_UNLOCK_QR_SCOPE
+            scope_kind = "hsk30_unlock"
         else:
-            scope = SUBSCRIPTION_QR_SCOPE
+            price = await SubscriptionPriceService(session).get_price(
+                payment_method=method,
+                plan_type=plan,
+            )
+            amount = int(price.amount) if price else 0
+            currency = price.currency if price else "¥"
+            if amount <= 0:
+                return JSONResponse(status_code=400, content={"ok": False, "error": "price_not_set"})
+            if scope_kind == "discount20":
+                scope = SUBSCRIPTION_DISCOUNT_20_QR_SCOPE
+                amount = int(round(amount * 0.8))
+            else:
+                scope = SUBSCRIPTION_QR_SCOPE
         try:
             sent = await bot.send_photo(
                 telegram_id,
@@ -3785,6 +3817,64 @@ async def admin_miniapp_prices_qr_upload(request: Request):
         )
         await session.commit()
     return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/hsk30/settings")
+async def admin_miniapp_hsk30_settings(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_settings"},
+        )
+    if not isinstance(payload, dict):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_settings"},
+        )
+    if "enabled" not in payload and "unlock_price_tjs" not in payload:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_settings"},
+        )
+
+    async with async_session_maker() as session:
+        feature = Hsk30FeatureService(session)
+        unlock = Hsk30UnlockService(session)
+        if "enabled" in payload:
+            if not isinstance(payload["enabled"], bool):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_enabled"},
+                )
+            await feature.set_enabled(payload["enabled"])
+        if "unlock_price_tjs" in payload:
+            try:
+                await unlock.set_price_tjs(int(payload["unlock_price_tjs"]))
+            except (TypeError, ValueError):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_unlock_price"},
+                )
+        await session.commit()
+        enabled = await feature.is_enabled()
+        price = await unlock.price_tjs()
+
+    return JSONResponse(
+        content={
+            "ok": True,
+            "hsk30": {
+                "enabled": enabled,
+                "unlock_price_tjs": price,
+                "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
+            },
+        }
+    )
 
 
 @app.post("/api/admin-miniapp/payment-details/save")
