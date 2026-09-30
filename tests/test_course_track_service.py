@@ -52,7 +52,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_unpaid_user_cannot_switch_to_hsk30(self):
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(return_value=None),
@@ -69,7 +70,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_same_track_switch_is_a_noop(self):
         state = _FakeState(track=TRACK_HSK20, level="hsk2", completed=11)
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=False)
+            is_enabled=AsyncMock(return_value=False),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(return_value=None),
@@ -90,7 +92,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_same_track_band_change_uses_existing_level_flow(self):
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=False)
+            is_enabled=AsyncMock(return_value=False),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(return_value=None),
@@ -109,12 +112,35 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             "course_track_level_change_use_level_flow",
         )
 
+    async def test_nhsk2_cannot_be_selected_before_it_is_live(self):
+        self.user.status = "active"
+        self.user.payment_status = "approved"
+        self.user.end_date = datetime.now(timezone.utc) + timedelta(days=5)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True),
+            live_levels=AsyncMock(return_value=("nhsk1",)),
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=None),
+            list_for_user=AsyncMock(return_value=[]),
+        )
+
+        with self.assertRaises(CourseTrackError) as ctx:
+            await self.service.switch(
+                self.user,
+                target_track=TRACK_HSK30,
+                requested_level="nhsk2",
+            )
+
+        self.assertEqual(ctx.exception.code, "hsk30_level_not_live")
+
     async def test_unavailable_nhsk4_cannot_be_selected_directly(self):
         self.user.status = "active"
         self.user.payment_status = "approved"
         self.user.end_date = datetime.now(timezone.utc) + timedelta(days=5)
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(return_value=None),
@@ -135,7 +161,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.user.payment_status = "approved"
         self.user.end_date = datetime.now(timezone.utc) - timedelta(minutes=1)
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(
@@ -159,7 +186,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.user.payment_status = "approved"
         self.user.end_date = datetime.now(timezone.utc) - timedelta(minutes=1)
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(
@@ -184,7 +212,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.user.payment_status = "none"
         self.user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(return_value=None),
@@ -201,7 +230,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.user.payment_status = "approved"
         self.user.end_date = datetime.now(timezone.utc) + timedelta(days=5)
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
 
         states = {
@@ -267,7 +297,8 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             return row
 
         self.service.hsk30_feature = SimpleNamespace(
-            is_enabled=AsyncMock(return_value=True)
+            is_enabled=AsyncMock(return_value=True),
+        live_levels=AsyncMock(return_value=("nhsk1",)),
         )
         self.service.state_repo = SimpleNamespace(
             get=AsyncMock(side_effect=lambda user_id, track, for_update=False: states.get(track)),
