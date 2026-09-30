@@ -1,0 +1,408 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 8,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ]
+  },
+  "title": {
+    "hanzi": "今天我出院了",
+    "pinyin": "Jīntiān wǒ chūyuàn le"
+  },
+  "objectives": [
+    "能听懂并描述看病经历及用药方法。",
+    "能听懂并交流身体状况和健康习惯。",
+    "掌握时量补语（2）的用法，能表达动作结束后延续到现在的时长。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "最近",
+      "pinyin": "zuìjìn",
+      "part_of_speech": "n.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "常",
+      "pinyin": "cháng",
+      "part_of_speech": "adv.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "体育馆",
+      "pinyin": "tǐyùguǎn",
+      "part_of_speech": "n.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "习惯",
+      "pinyin": "xíguàn",
+      "part_of_speech": "n./v.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "胖",
+      "pinyin": "pàng",
+      "part_of_speech": "adj.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "健康",
+      "pinyin": "jiànkāng",
+      "part_of_speech": "adj.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "以后",
+      "pinyin": "yǐhòu",
+      "part_of_speech": "n.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "羽毛球",
+      "pinyin": "yǔmáoqiú",
+      "part_of_speech": "n.",
+      "source_page": 80
+    },
+    {
+      "hanzi": "耳朵",
+      "pinyin": "ěrduo",
+      "part_of_speech": "n.",
+      "source_page": 82
+    },
+    {
+      "hanzi": "感冒",
+      "pinyin": "gǎnmào",
+      "part_of_speech": "v./n.",
+      "source_page": 82
+    },
+    {
+      "hanzi": "发烧",
+      "pinyin": "fāshāo",
+      "part_of_speech": "v.",
+      "source_page": 82
+    },
+    {
+      "hanzi": "低",
+      "pinyin": "dī",
+      "part_of_speech": "adj.",
+      "source_page": 82
+    },
+    {
+      "hanzi": "关心",
+      "pinyin": "guānxīn",
+      "part_of_speech": "v.",
+      "source_page": 82
+    },
+    {
+      "hanzi": "注意",
+      "pinyin": "zhùyì",
+      "part_of_speech": "v.",
+      "source_page": 82
+    },
+    {
+      "hanzi": "突然",
+      "pinyin": "tūrán",
+      "part_of_speech": "adj.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "住院",
+      "pinyin": "zhùyuàn",
+      "part_of_speech": "v.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "担心",
+      "pinyin": "dānxīn",
+      "part_of_speech": "v.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "腿",
+      "pinyin": "tuǐ",
+      "part_of_speech": "n.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "病人",
+      "pinyin": "bìngrén",
+      "part_of_speech": "n.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "差不多",
+      "pinyin": "chàbuduō",
+      "part_of_speech": "adv./adj.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "得",
+      "pinyin": "děi",
+      "part_of_speech": "mod.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "开心",
+      "pinyin": "kāixīn",
+      "part_of_speech": "adj.",
+      "source_page": 83
+    },
+    {
+      "hanzi": "出院",
+      "pinyin": "chūyuàn",
+      "part_of_speech": "v.",
+      "source_page": 85
+    },
+    {
+      "hanzi": "开",
+      "pinyin": "kāi",
+      "part_of_speech": "v.",
+      "source_page": 85
+    },
+    {
+      "hanzi": "种",
+      "pinyin": "zhǒng",
+      "part_of_speech": "m.",
+      "source_page": 85
+    },
+    {
+      "hanzi": "方法",
+      "pinyin": "fāngfǎ",
+      "part_of_speech": "n.",
+      "source_page": 85
+    },
+    {
+      "hanzi": "其他",
+      "pinyin": "qítā",
+      "part_of_speech": "pron.",
+      "source_page": 85
+    },
+    {
+      "hanzi": "心里",
+      "pinyin": "xīnlǐ",
+      "part_of_speech": "n.",
+      "source_page": 85
+    }
+  ],
+  "grammar": [
+    {
+      "label": "趋向补语的引申用法（1）",
+      "source_page": 81,
+      "examples": [
+        {
+          "hanzi": "我今年胖了十多斤，不能再胖下去了。",
+          "pinyin": "Wǒ jīnnián pàng le shí duō jīn, bù néng zài pàng xiàqu le."
+        },
+        {
+          "hanzi": "她读完了第一个问题，后面的你读下去。",
+          "pinyin": "Tā dú wán le dì yí ge wèntí, hòumian de nǐ dú xiàqu."
+        },
+        {
+          "hanzi": "这几天天太热了，如果再热下去就不能出门了。",
+          "pinyin": "Zhè jǐ tiān tiān tài rè le, rúguǒ zài rè xiàqu jiù bù néng chūmén le."
+        }
+      ]
+    },
+    {
+      "label": "离合词（2）",
+      "source_page": 82,
+      "examples": [
+        {
+          "hanzi": "昨天游完泳以后，我的耳朵一直有点儿疼。",
+          "pinyin": "Zuótiān yóu wán yǒng yǐhòu, wǒ de ěrduo yìzhí yǒudiǎnr téng."
+        },
+        {
+          "hanzi": "今年夏天下了两次雨。",
+          "pinyin": "Jīnnián xiàtiān xià le liǎng cì yǔ."
+        },
+        {
+          "hanzi": "小张下个月跟他女朋友结婚。",
+          "pinyin": "Xiǎo Zhāng xià ge yuè gēn tā nǚpéngyou jiéhūn."
+        }
+      ]
+    },
+    {
+      "label": "时量补语（2）",
+      "source_page": 84,
+      "examples": [
+        {
+          "hanzi": "我上次来医院已经过去差不多两年了。",
+          "pinyin": "Wǒ shàng cì lái yīyuàn yǐjīng guòqu chàbuduō liǎng nián le."
+        },
+        {
+          "hanzi": "她回家两个月了。",
+          "pinyin": "Tā huí jiā liǎng ge yuè le."
+        },
+        {
+          "hanzi": "开学已经三个多星期了。",
+          "pinyin": "Kāixué yǐjīng sān ge duō xīngqī le."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“……以前/以后/前/后”",
+      "source_page": 85,
+      "examples": [
+        {
+          "hanzi": "这种药需要每天睡前吃一次。",
+          "pinyin": "Zhè zhǒng yào xūyào měitiān shuì qián chī yí cì."
+        },
+        {
+          "hanzi": "我们决定下班后一起去看个电影。",
+          "pinyin": "Wǒmen juédìng xiàbān hòu yìqǐ qù kàn ge diànyǐng."
+        },
+        {
+          "hanzi": "考完试以后，咱们一起去旅游吧。",
+          "pinyin": "Kǎo wán shì yǐhòu, zánmen yìqǐ qù lǚyóu ba."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在学校的体育馆，李文遇到了陈天中。",
+      "source_page": 80,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "天中，最近常看见你来体育馆。",
+          "pinyin": "Tiānzhōng, zuìjìn cháng kànjiàn nǐ lái tǐyùguǎn."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "我每天下午都来跑一个小时步。",
+          "pinyin": "Wǒ měitiān xiàwǔ dōu lái pǎo yí ge xiǎoshí bù."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "你的运动习惯真不错。",
+          "pinyin": "Nǐ de yùndòng xíguàn zhēn búcuò."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "因为我今年胖了十多斤，不能再胖下去了，有点儿不健康。",
+          "pinyin": "Yīnwèi wǒ jīnnián pàng le shí duō jīn, bù néng zài pàng xiàqu le, yǒudiǎnr bù jiànkāng."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我下课以后常去打羽毛球，你也来玩吧。",
+          "pinyin": "Wǒ xiàkè yǐhòu cháng qù dǎ yǔmáoqiú, nǐ yě lái wán ba."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "我知道，但是你们的水平太高了，我打得不怎么样。",
+          "pinyin": "Wǒ zhīdào, dànshì nǐmen de shuǐpíng tài gāo le, wǒ dǎ de bù zěnmeyàng."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "没关系，我可以教你。",
+          "pinyin": "Méi guānxi, wǒ kěyǐ jiāo nǐ."
+        }
+      ]
+    },
+    {
+      "scene": "在教室，安妮问候陈天中。",
+      "source_page": 82,
+      "turns": [
+        {
+          "speaker": "安妮",
+          "hanzi": "你怎么了？看上去有点儿不舒服。",
+          "pinyin": "Nǐ zěnme le? Kàn shàngqu yǒudiǎnr bù shūfu."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "昨天游完泳以后，耳朵一直有点儿疼。",
+          "pinyin": "Zuótiān yóu wán yǒng yǐhòu, ěrduo yìzhí yǒudiǎnr téng."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "是不是感冒了？发烧吗？",
+          "pinyin": "Shì bú shì gǎnmào le? Fāshāo ma?"
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "好像发低烧了。",
+          "pinyin": "Hǎoxiàng fā dīshāo le."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "我送你去医院，让医生检查一下吧。",
+          "pinyin": "Wǒ sòng nǐ qù yīyuàn, ràng yīshēng jiǎnchá yíxià ba."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "我先回去睡一觉，可能休息休息就好了。",
+          "pinyin": "Wǒ xiān huíqu shuì yí jiào, kěnéng xiūxi xiūxi jiù hǎo le."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "好吧，如果下午还发烧，就一定要去看医生。",
+          "pinyin": "Hǎo ba, rúguǒ xiàwǔ hái fāshāo, jiù yídìng yào qù kàn yīshēng."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "谢谢关心，我会注意的。",
+          "pinyin": "Xièxie guānxīn, wǒ huì zhùyì de."
+        }
+      ]
+    },
+    {
+      "scene": "在医院病房，安妮探望陈天中。",
+      "source_page": 83,
+      "turns": [
+        {
+          "speaker": "安妮",
+          "hanzi": "你怎么突然住院了？大家都很担心你。",
+          "pinyin": "Nǐ zěnme tūrán zhùyuàn le? Dàjiā dōu hěn dānxīn nǐ."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "我的腿疼了几个星期了，医生说需要住院做检查。",
+          "pinyin": "Wǒ de tuǐ téng le jǐ ge xīngqī le, yīshēng shuō xūyào zhùyuàn zuò jiǎnchá."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "你看起来一点儿也不像病人。",
+          "pinyin": "Nǐ kàn qǐlái yìdiǎnr yě bú xiàng bìngrén."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "是啊，我很少生病。我上次来医院已经过去差不多两年了。",
+          "pinyin": "Shì a, wǒ hěn shǎo shēngbìng. Wǒ shàng cì lái yīyuàn yǐjīng guòqu chàbuduō liǎng nián le."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "你每天跑步，有时候还去游泳，是不是运动太多了？",
+          "pinyin": "Nǐ měitiān pǎobù, yǒu shíhou hái qù yóuyǒng, shì bú shì yùndòng tài duō le?"
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "医生也这么说，但是还得做完检查才能知道。",
+          "pinyin": "Yīshēng yě zhème shuō, dànshì hái děi zuò wán jiǎnchá cái néng zhīdào."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "别担心！听医生的话，好好休息，你的腿一定能好。",
+          "pinyin": "Bié dānxīn! Tīng yīshēng de huà, hǎohāo xiūxi, nǐ de tuǐ yídìng néng hǎo."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "谢谢。有人来看我，我就开心多了。",
+          "pinyin": "Xièxie. Yǒu rén lái kàn wǒ, wǒ jiù kāixīn duō le."
+        }
+      ]
+    }
+  ]
+}
