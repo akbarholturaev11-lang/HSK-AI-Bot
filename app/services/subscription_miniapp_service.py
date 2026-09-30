@@ -16,7 +16,15 @@ from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.discount_service import DiscountService
-from app.services.payment_qr_code_service import PaymentQrCodeService, SUBSCRIPTION_DISCOUNT_20_QR_SCOPE
+from app.services.hsk30_unlock_service import (
+    HSK30_UNLOCK_PLAN_TYPE,
+    Hsk30UnlockService,
+)
+from app.services.payment_qr_code_service import (
+    HSK30_UNLOCK_QR_SCOPE,
+    PaymentQrCodeService,
+    SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
+)
 from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.subscription_price_service import PLANS, SubscriptionPriceService
@@ -193,6 +201,11 @@ class SubscriptionMiniAppService:
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
+        if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            eligibility = await Hsk30UnlockService(self.session).payment_eligibility(user)
+            if not eligibility["allowed"]:
+                return {"ok": False, "error": eligibility["reason"]}
+
         checkout_info = await self._checkout_info(
             user,
             plan_type,
@@ -250,8 +263,19 @@ class SubscriptionMiniAppService:
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
+        if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            eligibility = await Hsk30UnlockService(self.session).payment_eligibility(user)
+            if not eligibility["allowed"]:
+                return {"ok": False, "error": eligibility["reason"]}
+
         pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
         if pending_payment:
+            if str(pending_payment.plan_type or "") != str(plan_type or ""):
+                return {
+                    "ok": False,
+                    "error": "payment_pending_other_product",
+                    "pending_payment": self._pending_payment_payload(pending_payment),
+                }
             return {
                 "ok": True,
                 "payment_id": pending_payment.id,
@@ -302,7 +326,8 @@ class SubscriptionMiniAppService:
         )
 
         user.payment_method = payment_method
-        user.selected_plan_type = None
+        if plan_type != HSK30_UNLOCK_PLAN_TYPE:
+            user.selected_plan_type = None
         payment = await self.payment_repo.create(
             user_telegram_id=telegram_id,
             plan_type=plan_type,
@@ -510,7 +535,30 @@ class SubscriptionMiniAppService:
         campaign_id: int | None = None,
         feedback_id: int | None = None,
     ) -> dict[str, Any] | None:
-        if plan_type not in PLANS or payment_method not in MINIAPP_METHODS:
+        if payment_method not in MINIAPP_METHODS:
+            return None
+        if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            amount = await Hsk30UnlockService(self.session).price_tjs()
+            return {
+                "plan_type": HSK30_UNLOCK_PLAN_TYPE,
+                "base_amount": amount,
+                "final_amount": amount,
+                "currency": "TJS",
+                "discount_applied": False,
+                "discount_percent": 0,
+                "discount_source": "none",
+                "discount_campaign_id": None,
+                "discount_title": "",
+                "discount_title_tj": "",
+                "discount_title_ru": "",
+                "discount_title_uz": "",
+                "discount_reason": "",
+                "discount_reason_tj": "",
+                "discount_reason_ru": "",
+                "discount_reason_uz": "",
+                "discount_details": "",
+            }
+        if plan_type not in PLANS:
             return None
         price = await self.price_service.get_price(payment_method, plan_type)
         if not price:
@@ -725,6 +773,15 @@ class SubscriptionMiniAppService:
         plan_type: str,
         checkout_info: dict[str, Any],
     ) -> str | None:
+        if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            return await PaymentQrCodeService(self.session).get_file_id(
+                scope=HSK30_UNLOCK_QR_SCOPE,
+                payment_method=payment_method,
+                plan_type=plan_type,
+                amount=int(checkout_info["final_amount"]),
+                currency=str(checkout_info["currency"]),
+            )
+
         scope = PaymentQrCodeService.checkout_scope(
             discount_source=checkout_info.get("discount_source") or "none",
             discount_percent=int(checkout_info.get("discount_percent") or 0),
