@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "track": "hsk30",
+  "level": "nhsk1",
+  "source_book": "新HSK教程1",
+  "source_pdf_path": "HSK 3.0 PDF/新HSK教程1.pdf",
+  "lesson_count": 15,
+  "source_common_index_rows": 307,
+  "source_beyond_syllabus_rows": 8,
+  "source_proper_noun_rows": 12,
+  "character_name_extras": 4,
+  "lesson_vocabulary_rows": 333,
+  "unique_common_words": 307,
+  "grammar_points": 40,
+  "dialogue_blocks": 45,
+  "dialogue_lines": 203,
+  "derived_hanzi_count": 245,
+  "expected_official_hanzi_count": 246,
+  "publisher_claim_aligned_words": 300,
+  "counting_note": "The source itself shows 307 common vocabulary-index rows, 8 of them marked as beyond the syllabus, plus a separate 12-row proper-noun index. This does not map transparently to the publisher's '300 words' claim, so the raw source counts are preserved instead of forcing a synthetic total."
+}
