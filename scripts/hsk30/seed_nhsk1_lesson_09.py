@@ -52,7 +52,7 @@ LESSON = {
             {"no": 15, "zh": "读书", "pinyin": "dúshū", "pos": "v.", "uz": "kitob o‘qimoq", "ru": "читать; учиться", "tj": "китоб хондан"},
             {"no": 16, "zh": "和", "pinyin": "hé", "pos": "prep.", "uz": "bilan", "ru": "с", "tj": "бо"},
             {"no": 17, "zh": "朋友", "pinyin": "péngyou", "pos": "n.", "uz": "do‘st", "ru": "друг", "tj": "дӯст"},
-            {"no": 18, "zh": "唱歌", "pinyin": "chànggē", "pos": "v.", "uz": "qo‘shiq aytmoq", "ru": "петь", "tj": "суруд хондан"},
+            {"no": 18, "zh": "唱", "pinyin": "chàng", "pos": "v.", "uz": "kuylamoq; qo‘shiq aytmoq", "ru": "петь", "tj": "суруд хондан"},
             {"no": 19, "zh": "歌", "pinyin": "gē", "pos": "n.", "uz": "qo‘shiq", "ru": "песня", "tj": "суруд"},
             {"no": 20, "zh": "好听", "pinyin": "hǎotīng", "pos": "adj.", "uz": "yoqimli eshitiladigan", "ru": "приятный на слух", "tj": "хушсадо"},
             {"no": 21, "zh": "电视", "pinyin": "diànshì", "pos": "n.", "uz": "televizor; televideniye", "ru": "телевизор; телевидение", "tj": "телевизор; телевизион"},
