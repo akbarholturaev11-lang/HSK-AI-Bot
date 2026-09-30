@@ -52,6 +52,7 @@ LESSON = {
             {"no":15,"zh":"住","pinyin":"zhù","pos":"v.","uz":"yashamoq; turmoq","ru":"жить; останавливаться","tj":"зиндагӣ кардан; мондан"},
             {"no":16,"zh":"早","pinyin":"zǎo","pos":"adj.","uz":"erta","ru":"ранний; рано","tj":"барвақт"},
             {"no":17,"zh":"那","pinyin":"nà","pos":"conj.","uz":"unda; shunda","ru":"тогда","tj":"пас; он гоҳ"},
+            {"no":18,"zh":"年","pinyin":"nián","pos":"n.","uz":"yil","ru":"год","tj":"сол"},
         ],
         ensure_ascii=False,
     ),
