@@ -1079,6 +1079,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "payment_details_alif": (await setting_repo.get(PAYMENT_DETAILS_ALIF_KEY) or "").strip(),
         "hsk30": {
             "enabled": await Hsk30FeatureService(session).is_enabled(),
+            "live_levels": list(await Hsk30FeatureService(session).live_levels()),
             "unlock_price_tjs": hsk30_unlock_price,
             "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
             "qr": hsk30_unlock_qr,
@@ -3897,7 +3898,11 @@ async def admin_miniapp_hsk30_settings(request: Request):
             status_code=400,
             content={"ok": False, "error": "invalid_hsk30_settings"},
         )
-    if "enabled" not in payload and "unlock_price_tjs" not in payload:
+    if (
+        "enabled" not in payload
+        and "unlock_price_tjs" not in payload
+        and "live_levels" not in payload
+    ):
         return JSONResponse(
             status_code=400,
             content={"ok": False, "error": "invalid_hsk30_settings"},
@@ -3921,8 +3926,19 @@ async def admin_miniapp_hsk30_settings(request: Request):
                     status_code=400,
                     content={"ok": False, "error": "invalid_hsk30_unlock_price"},
                 )
+        if "live_levels" in payload:
+            live_levels = payload["live_levels"]
+            if not isinstance(live_levels, list) or any(
+                not isinstance(item, str) for item in live_levels
+            ):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_live_levels"},
+                )
+            await feature.set_live_levels(live_levels)
         await session.commit()
         enabled = await feature.is_enabled()
+        live_levels = await feature.live_levels()
         price = await unlock.price_tjs()
 
     return JSONResponse(
@@ -3930,6 +3946,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
             "ok": True,
             "hsk30": {
                 "enabled": enabled,
+                "live_levels": list(live_levels),
                 "unlock_price_tjs": price,
                 "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
             },
