@@ -31,6 +31,13 @@ on:
       - "app/static/subscription.html"
       - "app/static/course_v3_recognition.html"
       - "app/static/course_v3_pronunciation.html"
+      - "app/services/course_track_service.py"
+      - "app/bot/keyboards/admin_broadcast.py"
+      - "app/bot/handlers/admin_broadcast.py"
+      - "app/services/admin_broadcast_service.py"
+      - "app/bot/handlers/course.py"
+      - "app/static/course_v3_test.html"
+      - "app/static/course_v3_memorize.html"
       - "tests/test_course_levels.py"
       - "tests/test_course_track_service.py"
       - "tests/test_hsk30_unlock_checkout.py"
@@ -111,6 +118,8 @@ jobs:
               "app/static/subscription.html",
               "app/static/course_v3_recognition.html",
               "app/static/course_v3_pronunciation.html",
+              "app/static/course_v3_memorize.html",
+              "app/static/course_v3_test.html",
           ]
           for filename in files:
               text = Path(filename).read_text(encoding="utf-8")
@@ -119,7 +128,7 @@ jobs:
               target.write_text("\n".join(blocks), encoding="utf-8")
               print(target)
           PY
-          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js; do
+          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js /tmp/course_v3_memorize.js /tmp/course_v3_test.js; do
             node --check "$f"
           done
 
