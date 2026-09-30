@@ -1258,6 +1258,84 @@ function lessonGateUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel(
 function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/hsk30-words.js?v=20260930":"hsk-words.js?v=20260720"}
 function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function practiceWordGate(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{})}
+var TRACK_UI={
+  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 faol HSK AI Pro obunasi bilan ishlaydi. Yoki 10 TJS ni bir marta to'lab doimiy ochishingiz mumkin.",subscribe:"HSK AI Pro olish",permanent:"{price} TJS · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda. Hozircha eski HSK testlari bu kurs uchun ishlatilmaydi.",close:"Yopish"},
+  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"HSK 3.0 доступен с активной подпиской HSK AI Pro. Либо можно один раз заплатить 10 TJS и открыть его навсегда.",subscribe:"Получить HSK AI Pro",permanent:"{price} TJS · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится. Старые HSK-тесты для этого курса не используются.",close:"Закрыть"},
+  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"HSK 3.0 бо обунаи фаъоли HSK AI Pro дастрас аст. Ё 10 TJS-ро як бор пардохт карда, ҳамеша кушода метавонед.",subscribe:"HSK AI Pro гирифтан",permanent:"{price} TJS · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад. Тестҳои кӯҳнаи HSK барои ин курс истифода намешаванд.",close:"Пӯшидан"}
+};
+function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
+function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
+var COURSE_TRACK_STATE=null,COURSE_TRACK_PROMISE=null;
+function courseTrackStatus(force){
+  if(!INIT_DATA)return Promise.reject(new Error("auth"));
+  if(COURSE_TRACK_STATE&&!force)return Promise.resolve(COURSE_TRACK_STATE);
+  if(COURSE_TRACK_PROMISE&&!force)return COURSE_TRACK_PROMISE;
+  COURSE_TRACK_PROMISE=fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
+    .then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d})})
+    .then(function(d){COURSE_TRACK_STATE=d;COURSE_TRACK_PROMISE=null;return d})
+    .catch(function(e){COURSE_TRACK_PROMISE=null;throw e});
+  return COURSE_TRACK_PROMISE;
+}
+function openHsk30UnlockCheckout(){
+  beginInternalNavigation();
+  var q=new URLSearchParams();
+  q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");q.set("source","hsk30_unlock");q.set("lang",LANG);
+  location.href="/subscription.html?"+q.toString();
+}
+function renderHsk30AccessGate(status){
+  var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+  var unlock=status&&status.hsk30_unlock||{},price=Number(unlock.price_tjs||10)||10;
+  if(access&&access.feature_enabled===false){
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.disabled)+'</div></div><button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.close)+'</button>');
+    return;
+  }
+  var leave=currentCourseTrack()==="hsk30"
+    ?'<button class="sec" style="width:100%;margin-top:8px" onclick="App.pickCourseTrack(\'hsk20\')">'+esc(t.backTo20)+'</button>'
+    :'<button class="sec" style="width:100%;margin-top:8px" onclick="App.closeSheet()">'+esc(t.stay)+'</button>';
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.hsk30Body)+'</div></div>'
+    +'<button class="scta" style="width:100%;margin-bottom:8px" onclick="App.goPay(\'hsk30_subscription\')"><i class="ti ti-star"></i> '+esc(t.subscribe)+'</button>'
+    +'<button class="scta" style="width:100%" onclick="openHsk30UnlockCheckout()"><i class="ti ti-lock-open"></i> '+esc(t.permanent.replace("{price}",price))+'</button>'+leave);
+}
+function showHsk30AccessGate(){
+  courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){
+    var t=trackUi();
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>');
+  });
+}
+function switchCourseTrack(target){
+  target=target==="hsk30"?"hsk30":"hsk20";
+  if(target===currentCourseTrack()){App.closeSheet();return}
+  var t=trackUi();
+  courseTrackStatus(true).then(function(status){
+    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+    if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
+    App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
+    return _apiPost("/api/v3/course-tracks/switch",{target_track:target}).then(function(r){
+      return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d});
+    }).then(function(d){
+      COURSE_TRACK_STATE=d;App.closeSheet();
+      var lv=normalizeLevel(d.active_level||(d.tracks&&d.tracks[target]&&d.tracks[target].level)||(target==="hsk30"?"nhsk1":"hsk1"));
+      loadLevel(lv);
+    });
+  }).catch(function(e){
+    if(target==="hsk30"){showHsk30AccessGate();return}
+    App.closeSheet();
+  });
+}
+function openCourseTrackPicker(){
+  var t=trackUi(),cur=currentCourseTrack();
+  courseTrackStatus(false).catch(function(){return null}).then(function(status){
+    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+    var h30sub=access&&access.feature_enabled===false?t.disabled:(access&&access.allowed?t.current:t.hsk30Title);
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.courseVersion)+'</div></div>'
+      +'<button class="opt-row'+(cur==="hsk20"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk20\')"><span class="han" style="font-size:20px;width:42px">2.0</span><span style="flex:1"><b>'+esc(t.hsk20)+'</b><small>'+esc(cur==="hsk20"?t.current:"")+'</small></span></button>'
+      +'<button class="opt-row'+(cur==="hsk30"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk30\')"><span class="han" style="font-size:20px;width:42px">3.0</span><span style="flex:1"><b>'+esc(t.hsk30)+'</b><small>'+esc(cur==="hsk30"?t.current:h30sub)+'</small></span></button>');
+  });
+}
+function showHsk30TestSoon(){
+  var t=trackUi();
+  App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-certificate"></i></div><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.testSoonTitle)+'</div><div class="tr">'+esc(t.testSoonBody)+'</div></div><button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.close)+'</button>');
+}
 function getStoredLevel(){try{return normalizeLevel(localStorage.getItem("hsk_v3_level"))}catch(e){return"hsk1"}}
 function getSelectedLevel(){var p=new URLSearchParams(location.search);return normalizeLevel(p.get("level")||getStoredLevel())}
 function setSelectedLevel(lv){
@@ -1893,7 +1971,7 @@ var App={
   openDict:function(){beginInternalNavigation();location.href="/hsk-lugat.html?theme=light&lang="+LANG},
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
-  openTest:function(){TEST.open()},
+  openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
   openMistakes:function(){MIST.open()},
   openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
     var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(t.helpBtn)+'</button>'
@@ -2002,10 +2080,14 @@ var App={
       uz:{hsk1:"Noldan",hsk2:"Asosiy suhbat",hsk3:"Kundalik muloqot",hsk4:"Erkin muloqot",nhsk1:"Yangi standart · N1",nhsk2:"Yangi standart · N2",nhsk3:"Yangi standart · N3",title:"Darajani tanlang"},
       tj:{hsk1:"Аз сифр",hsk2:"Муоширати асосӣ",hsk3:"Муоширати ҳаррӯза",hsk4:"Муоширати озод",nhsk1:"Стандарти нав · N1",nhsk2:"Стандарти нав · N2",nhsk3:"Стандарти нав · N3",title:"Сатҳро интихоб кунед"}
     }[LANG];
-    var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel()),choices=trackLevels(cur);
-    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+sub.title+'</div></div>'
+    var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel()),choices=trackLevels(cur),tt=trackUi(),track=currentCourseTrack();
+    var version='<button class="opt-row" style="margin-bottom:10px" onclick="App.courseTrackPicker()"><span class="han" style="font-size:19px;width:34px;text-align:center">'+(track==="hsk30"?"3.0":"2.0")+'</span><span style="flex:1"><b style="display:block">'+esc(tt.courseVersion)+'</b><small style="color:var(--ink2)">'+esc(track==="hsk30"?tt.hsk30:tt.hsk20)+'</small></span><span class="chk"><i class="ti ti-switch-horizontal"></i></span></button>';
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+sub.title+'</div></div>'+version
       +choices.map(function(lv){var n=names[lv];return '<button class="opt-row'+(cur===lv?' on':'')+'" onclick="App.pickLevel(\''+lv+'\')"><span class="han" style="font-size:22px;width:34px;text-align:center">'+n[0]+'</span><span style="flex:1"><b style="display:block">'+n[1]+'</b><small style="color:var(--ink2)">'+sub[lv]+'</small></span>'+(cur===lv?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
   },
+  courseTrackPicker:function(){openCourseTrackPicker()},
+  pickCourseTrack:function(track){switchCourseTrack(track)},
+  openHsk30Gate:function(){showHsk30AccessGate()},
   pickLevel:function(lv){App.closeSheet();loadLevel(lv)},
   goCurrentLesson:function(){var idx=-1;allLessons().forEach(function(l,i){if(l.status==="current")idx=i});App.show("course");if(idx>=0)setTimeout(function(){openLessonSheet(idx)},60)},
   langPicker:function(){var t=T();var names={uz:"O'zbekcha",ru:"Русский",tj:"Тоҷикӣ"};
@@ -4351,6 +4433,7 @@ function loadCourseMap(lv,tries){
   tries=tries||0;
   return _fetchCourseMap(lv).then(function(d){
     if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
+    if(d&&d._status===403&&String(d.error||"").indexOf("hsk30_")===0)return {hsk30Gate:true,error:d.error};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
       if(tries<3)return _retryCourseMap(lv,tries);
@@ -4369,6 +4452,7 @@ function loadLevel(lv){
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(lv).then(function(res){
     if(res&&res.blocked){showBlockedGate(res.support_url);return;}
+    if(res&&res.hsk30Gate){showHsk30AccessGate();return;}
     if(!res.data){showAuthGate();return;}
     var d=res.data;
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
@@ -4464,7 +4548,7 @@ function renderMashq(){
     +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()","m-recog")
     +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")
     +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
-    +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,t.testSub,"App.openTest()","m-test")
+    +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?trackUi().testSoon:t.testSub,"App.openTest()","m-test")
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist");
 }
 function rowCard(cls,ic,title,sub,act,id){return '<button class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span><span class="ar"><i class="ti ti-chevron-right"></i></span></button>'}
