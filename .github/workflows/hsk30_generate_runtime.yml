@@ -38,6 +38,15 @@ on:
       - "app/bot/handlers/course.py"
       - "app/static/course_v3_test.html"
       - "app/static/course_v3_memorize.html"
+      - "tests/test_course_mistake_targets_flow.py"
+      - "tests/test_course_mistake_service.py"
+      - "tests/test_course_v3_dictionary.py"
+      - "app/services/hsk30_feature_service.py"
+      - "app/services/course_mistake_target_store.py"
+      - "app/services/course_mistake_service.py"
+      - "app/services/course_v3_dictionary.py"
+      - "app/static/hsk-lugat.html"
+      - "app/static/course_v3_onboarding.html"
       - "tests/test_course_levels.py"
       - "tests/test_course_track_service.py"
       - "tests/test_hsk30_unlock_checkout.py"
@@ -104,6 +113,10 @@ jobs:
             app/services/subscription_miniapp_service.py \
             app/services/course_v3_vocab.py \
             app/services/course_v3_word_index.py \
+            app/services/course_v3_dictionary.py \
+            app/services/course_mistake_service.py \
+            app/services/course_mistake_target_store.py \
+            app/services/hsk30_feature_service.py \
             app/services/voice_practice_service.py
 
       - name: Syntax-check Mini App JavaScript
@@ -120,6 +133,8 @@ jobs:
               "app/static/course_v3_pronunciation.html",
               "app/static/course_v3_memorize.html",
               "app/static/course_v3_test.html",
+              "app/static/course_v3_onboarding.html",
+              "app/static/hsk-lugat.html",
           ]
           for filename in files:
               text = Path(filename).read_text(encoding="utf-8")
@@ -128,7 +143,7 @@ jobs:
               target.write_text("\n".join(blocks), encoding="utf-8")
               print(target)
           PY
-          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js /tmp/course_v3_memorize.js /tmp/course_v3_test.js; do
+          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js /tmp/course_v3_memorize.js /tmp/course_v3_test.js /tmp/course_v3_onboarding.js /tmp/hsk_lugat.js; do
             node --check "$f"
           done
 
@@ -217,7 +232,10 @@ jobs:
             tests.test_hsk30_unlock_checkout \
             tests.test_hsk30_promo_service \
             tests.test_hsk30_admin_payment_flow \
-            tests.test_desktop_course_api
+            tests.test_desktop_course_api \
+            tests.test_course_v3_dictionary \
+            tests.test_course_mistake_service \
+            tests.test_course_mistake_targets_flow
 
       - name: Check Alembic has exactly one head
         run: |
