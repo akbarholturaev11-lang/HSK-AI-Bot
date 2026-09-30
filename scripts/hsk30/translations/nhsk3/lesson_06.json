@@ -1,0 +1,454 @@
+{
+  "schema_version": 1,
+  "lesson": 6,
+  "source_title_hanzi": "高铁上还可以点外卖",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Transport turlarining xususiyatlari va safar tajribasi haqida gapirish; “如果……就……” bilan shartli vaziyat va natijani ifodalash; “越来越” bilan o‘zgarish tendensiyasini tasvirlash; Xitoyning zamonaviy transporti — tezyurar poyezd bilan tanishish.",
+    "ru": "Говорить об особенностях транспорта и опыте поездки; выражать условие и результат с “如果……就……” ; описывать тенденцию изменения с “越来越”; познакомиться с китайскими скоростными поездами.",
+    "tj": "Дар бораи хусусиятҳои нақлиёт ва таҷрибаи сафар суҳбат кардан; бо “如果……就……” шарт ва натиҷаро ифода кардан; бо “越来越” тамоюли тағйирро тавсиф кардан; бо қатораи баландсуръати Чин шинос шудан."
+  },
+  "intro_text": {
+    "uz": "Dars Pekindan Shanxayga tezyurar poyezdda borish, vokzalga yetib kelish va tekshiruvdan o‘tish haqidagi suhbatlar orqali “该……了”, “如果……就……” va “越来越” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через поездку на скоростном поезде Пекин—Шанхай, дорогу на вокзал и прохождение контроля вводит “该……了”, “如果……就……” и “越来越”.",
+    "tj": "Дарс тавассути сафар бо қатораи баландсуръат аз Пекин ба Шанхай, расидан ба истгоҳ ва гузаштан аз санҷиш сохторҳои “该……了”, “如果……就……” ва “越来越”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "该",
+      "pinyin": "gāi",
+      "uz": "kerak; vaqti keldi",
+      "ru": "следует; пора",
+      "tj": "бояд; вақти он расид"
+    },
+    {
+      "hanzi": "打算",
+      "pinyin": "dǎsuàn",
+      "uz": "rejalashtirmoq; reja",
+      "ru": "планировать; план",
+      "tj": "нақша кардан; нақша"
+    },
+    {
+      "hanzi": "高铁",
+      "pinyin": "gāotiě",
+      "uz": "tezyurar temiryo‘l/poyezd",
+      "ru": "скоростной поезд",
+      "tj": "қатораи баландсуръат"
+    },
+    {
+      "hanzi": "行",
+      "pinyin": "xíng",
+      "uz": "bo‘ladi; yaroqli",
+      "ru": "подходит; можно",
+      "tj": "мешавад; муносиб"
+    },
+    {
+      "hanzi": "路口",
+      "pinyin": "lùkǒu",
+      "uz": "chorraha",
+      "ru": "перекрёсток",
+      "tj": "чорроҳа"
+    },
+    {
+      "hanzi": "小心",
+      "pinyin": "xiǎoxīn",
+      "uz": "ehtiyot bo‘lmoq; ehtiyot",
+      "ru": "быть осторожным; осторожно",
+      "tj": "эҳтиёт кардан; эҳтиёт"
+    },
+    {
+      "hanzi": "迟到",
+      "pinyin": "chídào",
+      "uz": "kechikmoq",
+      "ru": "опаздывать",
+      "tj": "дер кардан"
+    },
+    {
+      "hanzi": "红绿灯",
+      "pinyin": "hóng-lǜdēng",
+      "uz": "svetofor",
+      "ru": "светофор",
+      "tj": "чароғи роҳнамо"
+    },
+    {
+      "hanzi": "后来",
+      "pinyin": "hòulái",
+      "uz": "keyinroq; undan keyin",
+      "ru": "позже; потом",
+      "tj": "баъдтар; сипас"
+    },
+    {
+      "hanzi": "急",
+      "pinyin": "jí",
+      "uz": "shoshilmoq; tashvishlanmoq",
+      "ru": "торопиться; волноваться",
+      "tj": "шитоб кардан; ташвиш кашидан"
+    },
+    {
+      "hanzi": "如果",
+      "pinyin": "rúguǒ",
+      "uz": "agar",
+      "ru": "если",
+      "tj": "агар"
+    },
+    {
+      "hanzi": "以前",
+      "pinyin": "yǐqián",
+      "uz": "oldin; ilgari",
+      "ru": "раньше; до",
+      "tj": "пеш; қаблан"
+    },
+    {
+      "hanzi": "耳机",
+      "pinyin": "ěrjī",
+      "uz": "quloqchin",
+      "ru": "наушники",
+      "tj": "гӯшмонак"
+    },
+    {
+      "hanzi": "充电宝",
+      "pinyin": "chōngdiànbǎo",
+      "uz": "powerbank; tashqi quvvatlagich",
+      "ru": "пауэрбанк; внешний аккумулятор",
+      "tj": "пауэрбанк; батареяи беруна"
+    },
+    {
+      "hanzi": "常用",
+      "pinyin": "chángyòng",
+      "uz": "ko‘p ishlatiladigan",
+      "ru": "часто используемый",
+      "tj": "зуд-зуд истифодашаванда"
+    },
+    {
+      "hanzi": "越",
+      "pinyin": "yuè",
+      "uz": "borgan sari; qanchalik",
+      "ru": "всё более; чем",
+      "tj": "ҳар қадар; торафт"
+    },
+    {
+      "hanzi": "分开",
+      "pinyin": "fēnkāi",
+      "uz": "ajralmoq; alohida bo‘lmoq",
+      "ru": "разделяться; расходиться",
+      "tj": "ҷудо шудан"
+    },
+    {
+      "hanzi": "检查",
+      "pinyin": "jiǎnchá",
+      "uz": "tekshirmoq",
+      "ru": "проверять",
+      "tj": "санҷидан"
+    },
+    {
+      "hanzi": "刷",
+      "pinyin": "shuā",
+      "uz": "skanerlatmoq; kartani/IDni o‘tkazmoq",
+      "ru": "проводить/сканировать карту или документ",
+      "tj": "скан кардан; гузарондан"
+    },
+    {
+      "hanzi": "检票",
+      "pinyin": "jiǎnpiào",
+      "uz": "chipta tekshirmoq",
+      "ru": "проверять билет",
+      "tj": "чиптаро санҷидан"
+    },
+    {
+      "hanzi": "电梯",
+      "pinyin": "diàntī",
+      "uz": "lift",
+      "ru": "лифт",
+      "tj": "лифт"
+    },
+    {
+      "hanzi": "放假",
+      "pinyin": "fàngjià",
+      "uz": "ta’tilga chiqmoq",
+      "ru": "уходить на каникулы/в отпуск",
+      "tj": "ба таътил баромадан"
+    },
+    {
+      "hanzi": "沙发",
+      "pinyin": "shāfā",
+      "uz": "divan",
+      "ru": "диван",
+      "tj": "диван"
+    },
+    {
+      "hanzi": "安静",
+      "pinyin": "ānjìng",
+      "uz": "tinch; sokin",
+      "ru": "тихий; спокойный",
+      "tj": "ором; хомӯш"
+    },
+    {
+      "hanzi": "选择",
+      "pinyin": "xuǎnzé",
+      "uz": "tanlamoq; tanlov",
+      "ru": "выбирать; выбор",
+      "tj": "интихоб кардан; интихоб"
+    },
+    {
+      "hanzi": "必须",
+      "pinyin": "bìxū",
+      "uz": "shart; albatta kerak",
+      "ru": "необходимо; обязательно",
+      "tj": "ҳатман; зарур"
+    },
+    {
+      "hanzi": "北京南站",
+      "pinyin": "Běijīng Nán Zhàn",
+      "uz": "Pekin Janubiy vokzali",
+      "ru": "Южный вокзал Пекина",
+      "tj": "Истгоҳи ҷанубии Пекин"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "固定格式“该……了”",
+      "title_uz": "“该……了” — bir ishning vaqti kelganini aytish",
+      "title_ru": "“该……了” — пора что-либо делать",
+      "title_tj": "“该……了” — вақти иҷрои амал расидааст",
+      "rule_uz": "“该 + fe’l + 了” biror ishni qilish vaqti kelganini yoki endi uni qilish kerakligini bildiradi.",
+      "rule_ru": "“该 + глагол + 了” означает, что пришло время выполнить действие или уже следует его сделать.",
+      "rule_tj": "“该 + феъл + 了” нишон медиҳад, ки вақти иҷрои амал расидааст ё акнун онро бояд анҷом дод.",
+      "examples": [
+        {
+          "hanzi": "咱们该买去上海的票了。",
+          "uz": "Shanxayga chipta olish vaqti keldi.",
+          "ru": "Нам пора покупать билеты в Шанхай.",
+          "tj": "Вақти харидани чипта ба Шанхай расид."
+        },
+        {
+          "hanzi": "八点了，该上课了。",
+          "uz": "Soat sakkiz bo‘ldi, darsni boshlash vaqti keldi.",
+          "ru": "Уже восемь, пора на занятия.",
+          "tj": "Соат ҳашт шуд, вақти дарс расид."
+        },
+        {
+          "hanzi": "已经很晚了，我该睡觉了。",
+          "uz": "Juda kech bo‘ldi, uxlashim kerak.",
+          "ru": "Уже очень поздно, мне пора спать.",
+          "tj": "Хеле дер шуд, вақти хобам расид."
+        }
+      ]
+    },
+    {
+      "label": "假设复句“如果……，就……”",
+      "title_uz": "Shartli qo‘shma gap “如果……，就……”",
+      "title_ru": "Условное предложение “如果……，就……”",
+      "title_tj": "Ҷумлаи шартии “如果……，就……”",
+      "rule_uz": "“如果A，就B” A sharti ro‘y bersa, B natija sodir bo‘lishini bildiradi. “如果” shartni, “就” esa undan keladigan natijani ko‘rsatadi.",
+      "rule_ru": "“如果A，就B” выражает: если выполняется условие A, наступает результат B. “如果” вводит условие, “就” — следствие.",
+      "rule_tj": "“如果A，就B” нишон медиҳад: агар шарти A иҷро шавад, натиҷаи B ба вуҷуд меояд. “如果” шарт ва “就” натиҷаро нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "如果没走错，二十分钟以前就到了。",
+          "uz": "Agar yo‘lni adashtirmaganimizda, yigirma daqiqa oldin yetib kelgan bo‘lardik.",
+          "ru": "Если бы не ошиблись дорогой, приехали бы ещё двадцать минут назад.",
+          "tj": "Агар роҳро хато намекардем, бист дақиқа пеш мерасидем."
+        },
+        {
+          "hanzi": "如果你需要帮忙，就给我打电话。",
+          "uz": "Agar yordam kerak bo‘lsa, menga telefon qil.",
+          "ru": "Если нужна помощь, позвони мне.",
+          "tj": "Агар кӯмак лозим шавад, ба ман занг зан."
+        },
+        {
+          "hanzi": "如果有时间，我就去上海玩几天。",
+          "uz": "Agar vaqtim bo‘lsa, Shanxayga bir necha kun sayrga boraman.",
+          "ru": "Если будет время, съезжу в Шанхай на несколько дней.",
+          "tj": "Агар вақт бошад, ба Шанхай чанд рӯз сайр меравам."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“越来越”",
+      "title_uz": "“越来越” — borgan sari o‘zgarish",
+      "title_ru": "“越来越” — постепенное усиление изменения",
+      "title_tj": "“越来越” — тағйирёбии торафт зиёд",
+      "rule_uz": "“越来越 + sifat/fe’l” vaqt o‘tishi bilan xususiyat yoki holatning borgan sari kuchayib borishini bildiradi.",
+      "rule_ru": "“越来越 + прилагательное/глагол” показывает, что с течением времени признак или состояние постепенно усиливается.",
+      "rule_tj": "“越来越 + сифат/феъл” нишон медиҳад, ки бо гузашти вақт хусусият ё ҳолат торафт бештар мешавад.",
+      "examples": [
+        {
+          "hanzi": "前面的人越来越多。",
+          "uz": "Oldindagi odamlar borgan sari ko‘paymoqda.",
+          "ru": "Впереди людей становится всё больше.",
+          "tj": "Одамони пеш торафт зиёд мешаванд."
+        },
+        {
+          "hanzi": "我越来越喜欢这里的生活了。",
+          "uz": "Bu yerdagi hayot menga borgan sari ko‘proq yoqyapti.",
+          "ru": "Мне всё больше нравится жизнь здесь.",
+          "tj": "Зиндагии ин ҷо ба ман торафт бештар писанд мешавад."
+        },
+        {
+          "hanzi": "她越来越高，也越来越漂亮了。",
+          "uz": "U borgan sari bo‘y cho‘zib, yanada chiroyli bo‘lib boryapti.",
+          "ru": "Она становится всё выше и всё красивее.",
+          "tj": "Ӯ торафт қадбаландтар ва зеботар мешавад."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在咖啡厅里，李文和白家月在聊天儿。",
+      "scene_uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+      "scene_ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+      "scene_tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "家月，咱们该买去上海的票了。你打算怎么去上海？",
+          "uz": "Jiayue, Shanxayga chipta olish vaqti keldi. Shanxayga qanday borishni rejalashtiryapsan?",
+          "ru": "Цзяюэ, нам пора покупать билеты в Шанхай. Как ты планируешь ехать?",
+          "tj": "Ҷяюэ, вақти харидани чипта ба Шанхай расид. Чӣ тавр рафтанӣ ҳастӣ?"
+        },
+        {
+          "hanzi": "我还没坐过高铁，咱们坐高铁去，怎么样？",
+          "uz": "Men hali tezyurar poyezdda yurmaganman, shunda tezyurar poyezdda boramizmi?",
+          "ru": "Я ещё не ездила на скоростном поезде. Давай поедем на нём?",
+          "tj": "Ман ҳоло бо қатораи баландсуръат нарафтаам, бо он равем чӣ хел?"
+        },
+        {
+          "hanzi": "没问题，从北京到上海的高铁很多，非常方便。",
+          "uz": "Muammo yo‘q, Pekindan Shanxayga tezyurar poyezdlar ko‘p, juda qulay.",
+          "ru": "Без проблем. Из Пекина в Шанхай много скоростных поездов, очень удобно.",
+          "tj": "Мушкил нест, аз Пекин ба Шанхай қатораҳои баландсуръат зиёданд, хеле қулай."
+        },
+        {
+          "hanzi": "行！怎么买高铁票？",
+          "uz": "Bo‘ladi! Tezyurar poyezd chiptasini qanday olamiz?",
+          "ru": "Хорошо! Как купить билет на скоростной поезд?",
+          "tj": "Мешавад! Чиптаи қатораи баландсуръатро чӣ тавр мехарем?"
+        },
+        {
+          "hanzi": "用手机App就能买。给我你的护照，我帮你买。",
+          "uz": "Telefon ilovasi orqali olsa bo‘ladi. Pasportingni ber, men olib beraman.",
+          "ru": "Можно купить через приложение. Дай паспорт, я помогу купить.",
+          "tj": "Бо барномаи телефон харидан мумкин. Шиносномаатро деҳ, ман кӯмак мекунам."
+        },
+        {
+          "hanzi": "早就听说过高铁，终于可以坐上了。",
+          "uz": "Tezyurar poyezd haqida anchadan beri eshitganman, nihoyat minib ko‘raman.",
+          "ru": "Я давно слышала о скоростных поездах, наконец-то смогу прокатиться.",
+          "tj": "Дар бораи қатораи баландсуръат кайҳо шунида будам, ниҳоят савор мешавам."
+        },
+        {
+          "hanzi": "高铁又快又舒服，你一定会喜欢的。",
+          "uz": "Tezyurar poyezd ham tez, ham qulay, albatta yoqadi.",
+          "ru": "Скоростной поезд и быстрый, и удобный — тебе точно понравится.",
+          "tj": "Қатораи баландсуръат ҳам тез аст, ҳам роҳат, ҳатман писандат мешавад."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在车上，刘明开车送白家月和李文去高铁站。",
+      "scene_uz": "Mashinada Liu Ming Bai Jiayue va Li Wenni tezyurar poyezd vokzaliga olib bormoqda.",
+      "scene_ru": "В машине Лю Мин везёт Бай Цзяюэ и Ли Вэня на вокзал скоростных поездов.",
+      "scene_tj": "Дар мошин Лю Мин Бай Ҷяюэ ва Ли Вэнро ба истгоҳи қатораи баландсуръат мебарад.",
+      "turns": [
+        {
+          "hanzi": "过了前面的路口就到高铁站了。",
+          "uz": "Oldingi chorrahadan o‘tsak, vokzalga yetamiz.",
+          "ru": "После следующего перекрёстка уже будет вокзал.",
+          "tj": "Аз чорроҳаи пеш гузарем, ба истгоҳ мерасем."
+        },
+        {
+          "hanzi": "我看见了。马上就到了，这条路车很多，您小心点儿。",
+          "uz": "Ko‘rdim. Hozir yetamiz, bu yo‘lda mashina ko‘p, ehtiyot bo‘ling.",
+          "ru": "Я вижу. Уже почти приехали; на этой дороге много машин, осторожнее.",
+          "tj": "Дидам. Ҳозир мерасем, дар ин роҳ мошин зиёд аст, эҳтиёт кунед."
+        },
+        {
+          "hanzi": "好，你们还有一个小时，应该不会迟到的。",
+          "uz": "Xo‘p, sizlarda hali bir soat bor, kechikmasangiz kerak.",
+          "ru": "Хорошо, у вас ещё час, опоздать не должны.",
+          "tj": "Хуб, ҳоло як соат доред, набояд дер кунед."
+        },
+        {
+          "hanzi": "我发现这条路车多，红绿灯也多。",
+          "uz": "Payqadim, bu yo‘lda mashina ham ko‘p, svetofor ham ko‘p.",
+          "ru": "Я заметила, на этой дороге много и машин, и светофоров.",
+          "tj": "Пай бурдам, дар ин роҳ ҳам мошин зиёд аст, ҳам чароғҳои роҳнамо."
+        },
+        {
+          "hanzi": "是啊，这条路我走过一次，后来再也不走了。",
+          "uz": "Ha, bu yo‘ldan bir marta yurganman, keyin boshqa umuman yurmagandim.",
+          "ru": "Да, я ездил этой дорогой один раз, после этого больше не ездил.",
+          "tj": "Ҳа, як бор аз ин роҳ рафта будам, баъд дигар нарафтам."
+        },
+        {
+          "hanzi": "那您今天为什么走了这条路？",
+          "uz": "Unda bugun nega shu yo‘ldan keldingiz?",
+          "ru": "Тогда почему сегодня вы поехали этой дорогой?",
+          "tj": "Пас имрӯз чаро аз ҳамин роҳ омадед?"
+        },
+        {
+          "hanzi": "我一急就走错了。如果没走错，二十分钟以前就到了。",
+          "uz": "Shoshilib, yo‘lni adashtirib yubordim. Adashtirmaganimda, yigirma daqiqa oldin yetib kelardik.",
+          "ru": "Я поторопился и свернул не туда. Если бы не ошибся, приехали бы двадцать минут назад.",
+          "tj": "Шитоб карда роҳро хато кардам. Агар хато намекардам, бист дақиқа пеш мерасидем."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在高铁站，李文和白家月排队安检、检票。",
+      "scene_uz": "Tezyurar poyezd vokzalida Li Wen va Bai Jiayue xavfsizlik tekshiruvi hamda chipta nazorati uchun navbatda turibdi.",
+      "scene_ru": "На вокзале скоростных поездов Ли Вэнь и Бай Цзяюэ стоят в очереди на досмотр и проверку билетов.",
+      "scene_tj": "Дар истгоҳи қатораи баландсуръат Ли Вэн ва Бай Ҷяюэ барои санҷиши амният ва чипта дар навбатанд.",
+      "turns": [
+        {
+          "hanzi": "李文，我的耳机没电了，你有充电宝吗？",
+          "uz": "Li Wen, quloqchinimning quvvati tugadi, powerbanking bormi?",
+          "ru": "Ли Вэнь, мои наушники разрядились. У тебя есть пауэрбанк?",
+          "tj": "Ли Вэн, гӯшмонакам барқ надорад, пауэрбанк дорӣ?"
+        },
+        {
+          "hanzi": "有，这些常用的东西我都放在包里了，我给你拿。",
+          "uz": "Bor, tez-tez kerak bo‘ladigan narsalarning hammasini sumkamga solganman, olib beraman.",
+          "ru": "Есть. Все такие нужные вещи я держу в сумке, сейчас достану.",
+          "tj": "Ҳаст. Ҳамаи ин чизҳои лозимиро дар халта мондаам, ҳозир медиҳам."
+        },
+        {
+          "hanzi": "前面的人越来越多。",
+          "uz": "Oldindagi odamlar borgan sari ko‘payyapti.",
+          "ru": "Впереди людей становится всё больше.",
+          "tj": "Одамони пеш торафт зиёд мешаванд."
+        },
+        {
+          "hanzi": "对，马上就进高铁站了。咱们一起走，别分开。",
+          "uz": "Ha, hozir vokzal ichiga kiramiz. Birga yuraylik, ajralib ketmaylik.",
+          "ru": "Да, скоро войдём на вокзал. Идём вместе, не разделяйся.",
+          "tj": "Ҳа, ҳозир ба истгоҳ медароем. Якҷо равем, ҷудо нашавем."
+        },
+        {
+          "hanzi": "好，你检查一下，高铁票都拿好了吗？",
+          "uz": "Xo‘p, tekshirib ko‘r, chiptalarning hammasi yoningdami?",
+          "ru": "Хорошо, проверь: все билеты при тебе?",
+          "tj": "Хуб, санҷ, ҳама чиптаҳо бо ту ҳастанд?"
+        },
+        {
+          "hanzi": "不用拿票，刷护照就能检票进站。",
+          "uz": "Chipta olib yurish shart emas, pasportni skan qilib nazoratdan o‘tib kirish mumkin.",
+          "ru": "Билет не нужен: достаточно отсканировать паспорт и пройти контроль.",
+          "tj": "Чипта гирифтан шарт нест, шиносномаро скан карда аз назорат мегузарем."
+        },
+        {
+          "hanzi": "去哪里检票？",
+          "uz": "Chipta qayerda tekshiriladi?",
+          "ru": "Где проходить проверку билетов?",
+          "tj": "Чиптаро дар куҷо месанҷанд?"
+        },
+        {
+          "hanzi": "检票口在二层，我们一会儿坐电梯上去。",
+          "uz": "Chipta nazorati ikkinchi qavatda, birozdan keyin lift bilan chiqamiz.",
+          "ru": "Контроль билетов на втором этаже, сейчас поднимемся на лифте.",
+          "tj": "Ҷойи санҷиши чипта дар ошёнаи дуюм аст, каме баъд бо лифт мебароем."
+        }
+      ]
+    }
+  ]
+}
