@@ -5,6 +5,18 @@ from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.android_payment_push_service import AndroidPaymentPushService
 
+HSK30_UNLOCK_APPROVED_TEXT = {
+    "uz": "✅ HSK 3.0 ochildi.\n\nBir martalik doimiy kirish berildi. HSK 3.0 ga istalgan payt o'tishingiz mumkin.",
+    "tj": "✅ HSK 3.0 кушода шуд.\n\nДастрасии доимӣ бо пардохти якдафъаина дода шуд. Шумо ҳар вақт метавонед ба HSK 3.0 гузаред.",
+    "ru": "✅ HSK 3.0 открыт.\n\nПостоянный доступ после разовой оплаты активирован. Вы можете перейти на HSK 3.0 в любое время.",
+}
+
+HSK30_UNLOCK_REJECTED_TEXT = {
+    "uz": "❌ HSK 3.0 ni ochish to'lovi tasdiqlanmadi.",
+    "tj": "❌ Пардохти кушодани HSK 3.0 тасдиқ нашуд.",
+    "ru": "❌ Платёж за открытие HSK 3.0 не подтверждён.",
+}
+
 REASON_TRANSLATIONS = {
     "wrong_amount":       {"uz": "Summa noto'g'ri",    "tj": "Маблағ нодуруст",     "ru": "Неверная сумма"},
     "unclear_screenshot": {"uz": "Screenshot noaniq",  "tj": "Скриншот норавшан",   "ru": "Скриншот нечёткий"},
@@ -60,6 +72,51 @@ class PaymentNotifyService:
                 await self._failure(user, exc, "payment_approved")
         finally:
             await self._android_push(payment, "approved")
+
+    async def notify_hsk30_unlock_approved(self, bot: Bot, user, payment=None) -> None:
+        try:
+            if not user:
+                return
+            lang = user.language if user.language in {"uz", "tj", "ru"} else "ru"
+            if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
+                return
+            try:
+                await bot.send_message(
+                    chat_id=user.telegram_id,
+                    text=HSK30_UNLOCK_APPROVED_TEXT[lang],
+                )
+                await self._success(user, "hsk30_unlock_approved")
+            except Exception as exc:
+                await self._failure(user, exc, "hsk30_unlock_approved")
+        finally:
+            await self._android_push(payment, "approved")
+
+    async def notify_hsk30_unlock_rejected(
+        self,
+        bot: Bot,
+        user,
+        *,
+        reason: str | None = None,
+        payment=None,
+    ) -> None:
+        try:
+            if not user:
+                return
+            lang = user.language if user.language in {"uz", "tj", "ru"} else "ru"
+            message = HSK30_UNLOCK_REJECTED_TEXT[lang]
+            if reason:
+                translated = _translate_reason(reason, lang)
+                prefix = {"uz": "Sabab", "tj": "Сабаб", "ru": "Причина"}.get(lang, "Sabab")
+                message += f"\n\n{prefix}: {translated}"
+            if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
+                return
+            try:
+                await bot.send_message(chat_id=user.telegram_id, text=message)
+                await self._success(user, "hsk30_unlock_rejected")
+            except Exception as exc:
+                await self._failure(user, exc, "hsk30_unlock_rejected")
+        finally:
+            await self._android_push(payment, "rejected")
 
     async def notify_payment_rejected(self, bot: Bot, user, reason: str = None, plan_type: str = None, payment=None) -> None:
         try:
