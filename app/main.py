@@ -804,6 +804,7 @@ ADMIN_MINIAPP_SECTIONS = {
     "user_search": ("🔎 Foydalanuvchi qidirish", "adm:user_search_info"),
     "portfolio": ("💼 Portfel", "adm:portfolio"),
     "prices": ("💳 Obuna narxlari", "adm:prices"),
+    "hsk30": ("🆕 HSK 3.0", "adm:hsk30"),
     "course_access": ("📚 Kurs access", "adm:course_access"),
     "channels": ("📣 Majburiy kanal obunasi", "adm:channels"),
     "delete_user": ("🗑 Foydalanuvchini o'chirish", "adm:deleteuser_info"),
@@ -1080,6 +1081,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "hsk30": {
             "enabled": await Hsk30FeatureService(session).is_enabled(),
             "live_levels": list(await Hsk30FeatureService(session).live_levels()),
+            "unlock_payment_enabled": await hsk30_unlock_service.payment_enabled(),
             "unlock_price_tjs": hsk30_unlock_price,
             "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
             "qr": hsk30_unlock_qr,
@@ -3900,6 +3902,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
         )
     if (
         "enabled" not in payload
+        and "unlock_payment_enabled" not in payload
         and "unlock_price_tjs" not in payload
         and "live_levels" not in payload
     ):
@@ -3918,6 +3921,13 @@ async def admin_miniapp_hsk30_settings(request: Request):
                     content={"ok": False, "error": "invalid_hsk30_enabled"},
                 )
             await feature.set_enabled(payload["enabled"])
+        if "unlock_payment_enabled" in payload:
+            if not isinstance(payload["unlock_payment_enabled"], bool):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_unlock_payment_enabled"},
+                )
+            await unlock.set_payment_enabled(payload["unlock_payment_enabled"])
         if "unlock_price_tjs" in payload:
             try:
                 await unlock.set_price_tjs(int(payload["unlock_price_tjs"]))
@@ -3939,6 +3949,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
         await session.commit()
         enabled = await feature.is_enabled()
         live_levels = await feature.live_levels()
+        unlock_payment_enabled = await unlock.payment_enabled()
         price = await unlock.price_tjs()
 
     return JSONResponse(
@@ -3947,6 +3958,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
             "hsk30": {
                 "enabled": enabled,
                 "live_levels": list(live_levels),
+                "unlock_payment_enabled": unlock_payment_enabled,
                 "unlock_price_tjs": price,
                 "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
             },
