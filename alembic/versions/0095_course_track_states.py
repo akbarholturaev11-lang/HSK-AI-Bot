@@ -109,6 +109,20 @@ def upgrade() -> None:
             )
         )
 
+    unlock_price_existing = bind.execute(
+        sa.select(bot_settings.c.key).where(
+            bot_settings.c.key == "hsk30_unlock_price_tjs"
+        )
+    ).scalar_one_or_none()
+    if unlock_price_existing is None:
+        bind.execute(
+            bot_settings.insert().values(
+                key="hsk30_unlock_price_tjs",
+                value="10",
+                updated_at=datetime.now(timezone.utc),
+            )
+        )
+
 
 def downgrade() -> None:
     bot_settings = sa.table(
@@ -116,7 +130,11 @@ def downgrade() -> None:
         sa.column("key", sa.String(length=120)),
     )
     op.get_bind().execute(
-        bot_settings.delete().where(bot_settings.c.key == "hsk30_enabled")
+        bot_settings.delete().where(
+            bot_settings.c.key.in_(
+                ("hsk30_enabled", "hsk30_unlock_price_tjs")
+            )
+        )
     )
 
     op.drop_column(
