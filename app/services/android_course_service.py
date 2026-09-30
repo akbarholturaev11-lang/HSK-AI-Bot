@@ -18,6 +18,8 @@ from typing import Any
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
+from app.services.course_track_service import CourseTrackService
+from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.course_miniapp_profile_service import (
     COURSE_FOUNDATION_ID,
     COURSE_FOUNDATION_VERSION,
@@ -211,6 +213,10 @@ class AndroidCourseService(DesktopCourseService):
         profile = await CourseMiniAppProfileService(self.session).get_or_create(
             context.user.id
         )
+        track_status = await CourseTrackService(self.session).status(context.user)
+        hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(
+            context.user
+        )
         await self.session.commit()
         return {
             "ok": True,
@@ -222,6 +228,8 @@ class AndroidCourseService(DesktopCourseService):
                 "start_mode": profile.start_mode,
                 "timezone_offset_minutes": profile.timezone_offset_minutes,
             },
+            "course_tracks": track_status,
+            "hsk30_unlock": hsk30_unlock,
         }
 
     async def complete_onboarding(
