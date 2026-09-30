@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "lesson": 18,
+  "source_title_hanzi": "我学会了包饺子",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_text": {
+    "uz": "Dars Bahor bayramini nishonlash, Li Wenning oilasiga mehmonga borish va chet elda o‘qish davrini eslash orqali taxminiy sonlar, “刚才/刚刚”, “只要……就……” va “从……起” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через празднование Весеннего праздника, визит к семье Ли Вэня и воспоминания об учёбе за границей вводит приблизительные числа, “刚才/刚刚”, “只要……就……” и “从……起”.",
+    "tj": "Дарс тавассути ҷашни Баҳор, меҳмонӣ ба оилаи Ли Вэн ва ёд кардани давраи таҳсил дар хориҷ ифодаи миқдори тахминӣ, “刚才/刚刚”, “只要……就……” ва “从……起”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "怎样",
+      "pinyin": "zěnyàng",
+      "uz": "qanday; qanday qilib",
+      "ru": "как; каким образом",
+      "tj": "чӣ хел; чӣ гуна"
+    },
+    {
+      "hanzi": "过节",
+      "pinyin": "guòjié",
+      "uz": "bayramni nishonlamoq",
+      "ru": "праздновать праздник",
+      "tj": "идро ҷашн гирифтан"
+    },
+    {
+      "hanzi": "节",
+      "pinyin": "jié",
+      "uz": "bayram",
+      "ru": "праздник",
+      "tj": "ид"
+    },
+    {
+      "hanzi": "节日",
+      "pinyin": "jiérì",
+      "uz": "bayram kuni; bayram",
+      "ru": "праздник; праздничный день",
+      "tj": "ид; рӯзи ид"
+    },
+    {
+      "hanzi": "联欢",
+      "pinyin": "liánhuān",
+      "uz": "birgalikda bayram qilmoq; ko‘ngilochar tadbir",
+      "ru": "совместно праздновать; праздничный вечер",
+      "tj": "якҷо ҷашн гирифтан; базми идона"
+    },
+    {
+      "hanzi": "大概",
+      "pinyin": "dàgài",
+      "uz": "taxminan; chamasi",
+      "ru": "примерно; вероятно",
+      "tj": "тақрибан; эҳтимол"
+    },
+    {
+      "hanzi": "阿姨",
+      "pinyin": "āyí",
+      "uz": "xola; ayol kishiga hurmat bilan murojaat",
+      "ru": "тётя; вежливое обращение к женщине",
+      "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+    },
+    {
+      "hanzi": "叔叔",
+      "pinyin": "shūshu",
+      "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+      "ru": "дядя; вежливое обращение к мужчине",
+      "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+    },
+    {
+      "hanzi": "收",
+      "pinyin": "shōu",
+      "uz": "qabul qilmoq; olmoq",
+      "ru": "принимать; получать",
+      "tj": "қабул кардан; гирифтан"
+    },
+    {
+      "hanzi": "总",
+      "pinyin": "zǒng",
+      "uz": "doim; har doim",
+      "ru": "всегда; всё время",
+      "tj": "ҳамеша"
+    },
+    {
+      "hanzi": "起",
+      "pinyin": "qǐ",
+      "uz": "...dan boshlab",
+      "ru": "с; начиная с",
+      "tj": "аз ... сар карда"
+    },
+    {
+      "hanzi": "见面",
+      "pinyin": "jiànmiàn",
+      "uz": "uchrashmoq",
+      "ru": "встречаться",
+      "tj": "вохӯрдан"
+    },
+    {
+      "hanzi": "矿泉水",
+      "pinyin": "kuàngquánshuǐ",
+      "uz": "mineral suv",
+      "ru": "минеральная вода",
+      "tj": "оби маъданӣ"
+    },
+    {
+      "hanzi": "刚刚",
+      "pinyin": "gānggāng",
+      "uz": "hozirgina; endigina",
+      "ru": "только что",
+      "tj": "ҳозиргина"
+    },
+    {
+      "hanzi": "出发",
+      "pinyin": "chūfā",
+      "uz": "yo‘lga chiqmoq",
+      "ru": "отправляться; выезжать",
+      "tj": "ба роҳ баромадан"
+    },
+    {
+      "hanzi": "不久",
+      "pinyin": "bùjiǔ",
+      "uz": "ko‘p o‘tmay; yaqinda",
+      "ru": "недолго; вскоре",
+      "tj": "дере нагузашта; наздик"
+    },
+    {
+      "hanzi": "发生",
+      "pinyin": "fāshēng",
+      "uz": "sodir bo‘lmoq",
+      "ru": "происходить",
+      "tj": "рух додан"
+    },
+    {
+      "hanzi": "刚",
+      "pinyin": "gāng",
+      "uz": "hozirgina; endi",
+      "ru": "только что",
+      "tj": "ҳозиргина"
+    },
+    {
+      "hanzi": "只要",
+      "pinyin": "zhǐyào",
+      "uz": "faqat ... bo‘lsa kifoya",
+      "ru": "если только; достаточно чтобы",
+      "tj": "танҳо ... бошад кифоя"
+    },
+    {
+      "hanzi": "学期",
+      "pinyin": "xuéqī",
+      "uz": "semestr; o‘quv davri",
+      "ru": "семестр; учебный период",
+      "tj": "семестр; давраи таҳсил"
+    },
+    {
+      "hanzi": "毕业",
+      "pinyin": "bìyè",
+      "uz": "o‘qishni bitirmoq",
+      "ru": "оканчивать учебное заведение",
+      "tj": "таҳсилро хатм кардан"
+    },
+    {
+      "hanzi": "出生",
+      "pinyin": "chūshēng",
+      "uz": "tug‘ilmoq",
+      "ru": "рождаться",
+      "tj": "таваллуд шудан"
+    },
+    {
+      "hanzi": "过去",
+      "pinyin": "guòqù",
+      "uz": "o‘tmish",
+      "ru": "прошлое",
+      "tj": "гузашта"
+    },
+    {
+      "hanzi": "懂得",
+      "pinyin": "dǒngde",
+      "uz": "tushunmoq; anglamoq",
+      "ru": "понимать; осознавать",
+      "tj": "фаҳмидан; дарк кардан"
+    },
+    {
+      "hanzi": "坚持",
+      "pinyin": "jiānchí",
+      "uz": "qat’iy davom ettirmoq; tashlamaslik",
+      "ru": "упорно продолжать; придерживаться",
+      "tj": "пайваста идома додан; устувор будан"
+    },
+    {
+      "hanzi": "完成",
+      "pinyin": "wánchéng",
+      "uz": "tugatmoq; bajarib bo‘lmoq",
+      "ru": "завершать; выполнять",
+      "tj": "анҷом додан"
+    },
+    {
+      "hanzi": "目标",
+      "pinyin": "mùbiāo",
+      "uz": "maqsad",
+      "ru": "цель",
+      "tj": "мақсад"
+    },
+    {
+      "hanzi": "发展",
+      "pinyin": "fāzhǎn",
+      "uz": "rivojlanmoq; rivojlantirmoq",
+      "ru": "развиваться; развивать",
+      "tj": "рушд кардан; инкишоф додан"
+    },
+    {
+      "hanzi": "春节",
+      "pinyin": "Chūnjié",
+      "uz": "Bahor bayrami (Xitoy Yangi yili)",
+      "ru": "Праздник Весны (Китайский Новый год)",
+      "tj": "Иди Баҳор (Соли нави чинӣ)"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "概数表达法",
+      "title_uz": "Taxminiy sonni ifodalash",
+      "title_ru": "Выражение приблизительного количества",
+      "title_tj": "Ифодаи миқдори тахминӣ",
+      "rule_uz": "Ikki yaqin son yonma-yon kelib aniq bo‘lmagan taxminiy miqdorni bildiradi: 七八天 — “yetti-sakkiz kun”, 五六个 — “besh-olti dona”.",
+      "rule_ru": "Два соседних числительных ставятся рядом, чтобы выразить приблизительное количество: 七八天 — «семь-восемь дней», 五六个 — «пять-шесть».",
+      "rule_tj": "Ду адади наздик паҳлуи ҳам омада миқдори тахминиро ифода мекунанд: 七八天 — «ҳафт-ҳашт рӯз», 五六个 — «панҷ-шаш».",
+      "examples": [
+        {
+          "hanzi": "春节大概放七八天假。",
+          "uz": "Bahor bayramida taxminan yetti-sakkiz kun ta’til bo‘ladi.",
+          "ru": "На Праздник Весны обычно дают примерно семь-восемь дней выходных.",
+          "tj": "Дар Иди Баҳор тақрибан ҳафт-ҳашт рӯз таътил мешавад."
+        },
+        {
+          "hanzi": "教室里来了五六个学生。",
+          "uz": "Sinfga besh-olti talaba keldi.",
+          "ru": "В класс пришло пять-шесть студентов.",
+          "tj": "Ба синф панҷ-шаш донишҷӯ омад."
+        },
+        {
+          "hanzi": "这些照片是三四年前照的吧？",
+          "uz": "Bu suratlar uch-to‘rt yil oldin olingan-a?",
+          "ru": "Эти фотографии сделаны года три-четыре назад, да?",
+          "tj": "Ин суратҳо се-чор сол пеш гирифта шудаанд, дуруст?"
+        }
+      ]
+    },
+    {
+      "label": "“刚才”和“刚刚”",
+      "title_uz": "“刚才” va “刚刚” — “hozirgina”",
+      "title_ru": "“刚才” и “刚刚” — «только что»",
+      "title_tj": "“刚才” ва “刚刚” — «ҳозиргина»",
+      "rule_uz": "Ikkalasi ham yaqinda sodir bo‘lgan ishni bildiradi. “刚才” vaqt oti bo‘lib, “hozirgina” degan aniq vaqtni ko‘rsatadi; “刚刚” esa ravish sifatida fe’l oldidan kelib ish endigina sodir bo‘lganini ta’kidlaydi.",
+      "rule_ru": "Оба слова указывают на недавнее событие. “刚才” — временное существительное «только что», а “刚刚” — наречие перед глаголом, подчёркивающее, что действие произошло совсем недавно.",
+      "rule_tj": "Ҳар ду калима амали ба наздикӣ рухдодаро нишон медиҳанд. “刚才” исми вақт ба маънои «ҳозиргина» аст, “刚刚” бошад зарф шуда пеш аз феъл меояд ва нав рӯй додани амалро таъкид мекунад.",
+      "examples": [
+        {
+          "hanzi": "刚才的电话是我妈妈打来的。",
+          "uz": "Hozirgina bo‘lgan qo‘ng‘iroqni onam qilgan edi.",
+          "ru": "Только что звонила моя мама.",
+          "tj": "Занги ҳозиргина аз модарам буд."
+        },
+        {
+          "hanzi": "我刚才看过一遍，不想再看了。",
+          "uz": "Men hozirgina bir marta ko‘rib chiqdim, yana ko‘rgim kelmaydi.",
+          "ru": "Я только что уже посмотрел один раз и не хочу смотреть снова.",
+          "tj": "Ман ҳозиргина як бор дидам, боз дидан намехоҳам."
+        },
+        {
+          "hanzi": "我刚刚看视频学会了包饺子。",
+          "uz": "Men hozirgina video ko‘rib jiaozi tugishni o‘rgandim.",
+          "ru": "Я только что научился лепить цзяоцзы по видео.",
+          "tj": "Ман ҳозиргина видео дида ҷяози печониданро омӯхтам."
+        },
+        {
+          "hanzi": "他刚刚来北京两个月。",
+          "uz": "U Pekinga kelganiga endigina ikki oy bo‘ldi.",
+          "ru": "Он живёт в Пекине всего два месяца.",
+          "tj": "Ҳамагӣ ду моҳ шуд, ки ӯ ба Пекин омадааст."
+        }
+      ]
+    },
+    {
+      "label": "条件复句“只要……，就……”",
+      "title_uz": "Shartli gap “只要……就……”",
+      "title_ru": "Условная конструкция “只要……就……”",
+      "title_tj": "Ҷумлаи шартии “只要……就……”",
+      "rule_uz": "“只要A，就B” A bajarilishi B uchun yetarli shart ekanini bildiradi: A bo‘lsa kifoya, B sodir bo‘ladi. Bu “只有……才……”dagi zarur shartdan farq qiladi.",
+      "rule_ru": "“只要A，就B” означает, что A является достаточным условием для B: достаточно A, и B произойдёт. Это отличается от необходимого условия в “只有……才……”.",
+      "rule_tj": "“只要A，就B” нишон медиҳад, ки A барои B шарти кофӣ аст: A бошад, B рух медиҳад. Ин аз шарти зарурии “只有……才……” фарқ мекунад.",
+      "examples": [
+        {
+          "hanzi": "我只要几天不跟他视频，就很想他。",
+          "uz": "U bilan bir necha kun videoqo‘ng‘iroq qilmasam, darrov sog‘inaman.",
+          "ru": "Стоит мне несколько дней не созваниваться с ним по видео, я сразу начинаю скучать.",
+          "tj": "Ҳамин ки чанд рӯз бо ӯ видео суҳбат накунам, сахт пазмонаш мешавам."
+        },
+        {
+          "hanzi": "只要你同意，我们就这么决定了。",
+          "uz": "Sen rozi bo‘lsang kifoya, shunday qaror qilamiz.",
+          "ru": "Если ты согласен, тогда так и решим.",
+          "tj": "Танҳо ту розӣ бошӣ, ҳамин тавр қарор мекунем."
+        },
+        {
+          "hanzi": "只要你坚持每天早睡，身体就一定会好起来。",
+          "uz": "Har kuni erta uxlashni davom ettirsang, sog‘lig‘ing albatta yaxshilanadi.",
+          "ru": "Если будешь постоянно ложиться рано, здоровье обязательно улучшится.",
+          "tj": "Агар ҳар рӯз барвақт хобиданро идома диҳӣ, саломатият ҳатман беҳтар мешавад."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“从……起”",
+      "title_uz": "“从……起” — “…dan boshlab”",
+      "title_ru": "“从……起” — «начиная с…»",
+      "title_tj": "“从……起” — «аз ... сар карда»",
+      "rule_uz": "“从 + vaqt/hodisa + 起” ma’lum vaqt yoki hodisa yangi holatning boshlanish nuqtasi ekanini bildiradi.",
+      "rule_ru": "“从 + время/событие + 起” показывает точку, с которой начинается новое действие, состояние или период.",
+      "rule_tj": "“从 + вақт/ҳодиса + 起” нуқтаи оғоз шудани амал, ҳолат ё давраи навро нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "他从那时起就努力学习。",
+          "uz": "U o‘sha paytdan boshlab astoydil o‘qiy boshladi.",
+          "ru": "С того времени он стал усердно учиться.",
+          "tj": "Ӯ аз ҳамон вақт сар карда ҷиддӣ таҳсил кард."
+        },
+        {
+          "hanzi": "从那天起，我们就变成了好朋友。",
+          "uz": "O‘sha kundan boshlab biz yaxshi do‘st bo‘lib qoldik.",
+          "ru": "С того дня мы стали хорошими друзьями.",
+          "tj": "Аз ҳамон рӯз мо дӯстони хуб шудем."
+        },
+        {
+          "hanzi": "从那次旅游起，我对中国文化更有兴趣了。",
+          "uz": "O‘sha sayohatdan boshlab Xitoy madaniyatiga qiziqishim yanada oshdi.",
+          "ru": "После той поездки я стал ещё больше интересоваться китайской культурой.",
+          "tj": "Аз ҳамон сафар сар карда шавқам ба фарҳанги Чин боз ҳам зиёд шуд."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在飞机上，白家月和李文在聊天儿。",
+      "scene_uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+      "scene_ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+      "scene_tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "我要在中国过年，真开心。",
+          "uz": "Xitoyda Yangi yilni o‘tkazaman, juda xursandman.",
+          "ru": "Я буду встречать Новый год в Китае, очень радуюсь.",
+          "tj": "Ман Соли навро дар Чин мегузаронам, хеле хушҳолам."
+        },
+        {
+          "hanzi": "第一次请外国朋友来家里过春节，我也很高兴。",
+          "uz": "Chet ellik do‘stimni uyga Bahor bayramiga birinchi marta taklif qilyapman, men ham juda xursandman.",
+          "ru": "Я впервые приглашаю иностранного друга домой на Праздник Весны и тоже очень рад.",
+          "tj": "Бори аввал дӯсти хориҷиро ба хона барои Иди Баҳор даъват мекунам, ман ҳам хеле хушҳолам."
+        },
+        {
+          "hanzi": "你们怎样过节？",
+          "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+          "ru": "Как вы отмечаете праздник?",
+          "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+        },
+        {
+          "hanzi": "春节是中国最重要的节日，我们一般会回家，跟家人一起过。",
+          "uz": "Bahor bayrami Xitoydagi eng muhim bayram, odatda uyga qaytib oilamiz bilan birga nishonlaymiz.",
+          "ru": "Праздник Весны — самый важный праздник в Китае. Обычно мы возвращаемся домой и проводим его с семьёй.",
+          "tj": "Иди Баҳор муҳимтарин иди Чин аст, одатан ба хона баргашта бо оила якҷо ҷашн мегирем."
+        },
+        {
+          "hanzi": "那你跟家人会一起做什么？",
+          "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+          "ru": "А что вы обычно делаете вместе с семьёй?",
+          "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+        },
+        {
+          "hanzi": "我们家会一边包饺子，一边看春节联欢晚会，一直到十二点以后才睡觉。",
+          "uz": "Biz uyda jiaozi tugib turib Bahor bayrami gala-konsertini ko‘ramiz va faqat soat o‘n ikkidan keyin uxlaymiz.",
+          "ru": "У нас дома лепят цзяоцзы и одновременно смотрят праздничный новогодний концерт, а спать ложатся только после полуночи.",
+          "tj": "Мо дар хона ҷяози печонида истода консерти идонаи Баҳорро мебинем ва танҳо баъди соати дувоздаҳ мехобем."
+        },
+        {
+          "hanzi": "听起来很有意思。春节放几天假？",
+          "uz": "Juda qiziq eshitilyapti. Bahor bayramida necha kun ta’til bo‘ladi?",
+          "ru": "Звучит интересно. Сколько выходных на Праздник Весны?",
+          "tj": "Хеле ҷолиб садо медиҳад. Дар Иди Баҳор чанд рӯз таътил мешавад?"
+        },
+        {
+          "hanzi": "大概七八天。",
+          "uz": "Taxminan yetti-sakkiz kun.",
+          "ru": "Примерно семь-восемь дней.",
+          "tj": "Тақрибан ҳафт-ҳашт рӯз."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在李文家，白家月给李文的父母拜年。",
+      "scene_uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+      "scene_ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+      "scene_tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад.",
+      "turns": [
+        {
+          "hanzi": "张阿姨，李叔叔。过年好！这是我准备的礼物，请收下。",
+          "uz": "Zhang xola, Li amaki, Yangi yilingiz bilan! Bu sizlar uchun tayyorlagan sovg‘am, qabul qilinglar.",
+          "ru": "Тётя Чжан, дядя Ли, с Новым годом! Это мой подарок, примите, пожалуйста.",
+          "tj": "Холаи Чжан, амаки Ли, Соли нав муборак! Ин тӯҳфаи ман, марҳамат қабул кунед."
+        },
+        {
+          "hanzi": "谢谢家月，你太客气了！",
+          "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+          "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+          "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+        },
+        {
+          "hanzi": "总听小文说起你，今天终于有机会见面了。",
+          "uz": "Xiaowen sendan doim gapirardi, bugun nihoyat uchrashish nasib qildi.",
+          "ru": "Сяовэнь всё время рассказывал о тебе, сегодня наконец удалось встретиться.",
+          "tj": "Сяовэн ҳамеша дар бораи ту мегуфт, имрӯз ниҳоят имкони дидор шуд."
+        },
+        {
+          "hanzi": "谢谢您和叔叔请我来家里做客。",
+          "uz": "Meni uyingizga mehmonga taklif qilganingiz uchun sizga va amakiga rahmat.",
+          "ru": "Спасибо вам и дяде, что пригласили меня в гости.",
+          "tj": "Раҳмат ба шумо ва амак, ки маро ба хона меҳмон даъват кардед."
+        },
+        {
+          "hanzi": "桌子上有饮料，还有矿泉水，你想喝什么就自己拿。",
+          "uz": "Stolda ichimliklar va mineral suv bor, nimani ichging kelsa o‘zing olaver.",
+          "ru": "На столе напитки и минеральная вода, бери сама что хочешь.",
+          "tj": "Рӯйи миз нӯшокиҳо ва оби маъданӣ ҳаст, ҳар чӣ хоҳӣ худат бигир."
+        },
+        {
+          "hanzi": "你先坐着看会儿电视，饺子很快就包好了。",
+          "uz": "Avval o‘tirib biroz televizor ko‘r, jiaozi tezda tayyor bo‘ladi.",
+          "ru": "Пока посиди и немного посмотри телевизор, цзяоцзы скоро будут готовы.",
+          "tj": "Аввал нишаста каме телевизор бин, ҷяози зуд тайёр мешавад."
+        },
+        {
+          "hanzi": "我刚刚看视频学会了包饺子，我跟你们一起包吧。",
+          "uz": "Men hozirgina videodan jiaozi tugishni o‘rgandim, sizlar bilan birga qilay.",
+          "ru": "Я только что по видео научилась лепить цзяоцзы, давайте я помогу вам.",
+          "tj": "Ман ҳозиргина аз видео ҷяози печониданро омӯхтам, бо шумо якҷо мекунам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在李文家，李文妈妈和白家月在聊天儿。",
+      "scene_uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+      "scene_ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+      "scene_tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "这张照片是李文出国前照的吗？",
+          "uz": "Bu surat Li Wen chet elga ketishidan oldin olinganmi?",
+          "ru": "Эта фотография сделана до того, как Ли Вэнь уехал за границу?",
+          "tj": "Ин сурат пеш аз ба хориҷ рафтани Ли Вэн гирифта шудааст?"
+        },
+        {
+          "hanzi": "对，这是他从北京出发时，我们全家在机场照的。",
+          "uz": "Ha, u Pekindan yo‘lga chiqqan paytda butun oilamiz aeroportda tushgan surat.",
+          "ru": "Да, мы всей семьёй сделали её в аэропорту, когда он уезжал из Пекина.",
+          "tj": "Ҳа, вақте ӯ аз Пекин ба роҳ баромад, тамоми оила дар фурудгоҳ ин аксро гирифтем."
+        },
+        {
+          "hanzi": "那是三四年前吧？",
+          "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+          "ru": "Это было года три-четыре назад, да?",
+          "tj": "Ин се-чор сол пеш буд, дуруст?"
+        },
+        {
+          "hanzi": "是啊，时间过得真快，好像是不久前发生的一样。",
+          "uz": "Ha, vaqt juda tez o‘tadi, xuddi yaqindagina bo‘lgandek.",
+          "ru": "Да, время летит быстро, кажется, будто это случилось совсем недавно.",
+          "tj": "Ҳа, вақт хеле зуд мегузарад, гӯё ҳамин наздикӣ рӯй дода бошад."
+        },
+        {
+          "hanzi": "您一定特别想李文吧？",
+          "uz": "Li Wenni juda sog‘ingandirsiz?",
+          "ru": "Вы, наверное, очень скучаете по Ли Вэню?",
+          "tj": "Шумо Ли Вэнро хеле пазмон мешавед, дуруст?"
+        },
+        {
+          "hanzi": "他刚离开家时，我很不习惯，只要几天不跟他视频，就很想他。",
+          "uz": "U endi uyidan ketgan paytda juda ko‘nika olmagandim; bir necha kun video orqali gaplashmasak, darrov sog‘inardim.",
+          "ru": "Когда он только уехал из дома, мне было непривычно: стоило несколько дней не созваниваться по видео, я очень скучала.",
+          "tj": "Вақте ӯ нав аз хона рафт, бароям хеле ғайриодатӣ буд; чанд рӯз видео суҳбат накунем, сахт пазмонаш мешавам."
+        },
+        {
+          "hanzi": "还有最后一个学期就要毕业了，他很快就会回来了。",
+          "uz": "Faqat oxirgi bir semestr qoldi, keyin bitiradi va tez orada qaytadi.",
+          "ru": "Остался последний семестр до выпуска, скоро он вернётся.",
+          "tj": "Танҳо як семестри охир мондааст, баъд хатм мекунад ва зуд бармегардад."
+        }
+      ]
+    }
+  ]
+}
