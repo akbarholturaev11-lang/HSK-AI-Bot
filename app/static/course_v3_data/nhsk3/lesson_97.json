@@ -1,0 +1,809 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 97,
+  "source_lesson": 13,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我的新邻居来自英国",
+  "subtitle": {
+    "uz": "Turli hududlardagi yashash va mehmondorchilik odatlari farqini tushunish; minnatdorchilik, tabrik va maqtov iboralarini ishlatish; “一边……一边……” bilan bir vaqtda bajariladigan harakatlarni tasvirlash.",
+    "ru": "Понимать различия бытовых и гостевых привычек в разных регионах; использовать выражения благодарности, поздравления и похвалы; описывать одновременные действия конструкцией “一边……一边……”.",
+    "tj": "Фарқи одатҳои зиндагӣ ва меҳмондорӣ дар минтақаҳои гуногунро фаҳмидан; ибораҳои ташаккур, табрик ва таърифро истифода бурдан; бо “一边……一边……” амалҳои ҳамзамонро тавсиф кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "请客",
+      "pinyin": "qǐngkè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mehmon qilmoq; hisobni to‘lamoq",
+        "ru": "угощать; приглашать за свой счёт",
+        "tj": "меҳмон кардан; ҳисобро пардохтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "南方",
+      "pinyin": "nánfāng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "janub",
+        "ru": "юг",
+        "tj": "ҷануб"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "北方",
+      "pinyin": "běifāng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shimol",
+        "ru": "север",
+        "tj": "шимол"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "做法",
+      "pinyin": "zuòfǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "usul; tayyorlash yo‘li",
+        "ru": "способ; метод приготовления",
+        "tj": "усул; тарзи тайёр кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "“把” gapi (4): natijaning darajasini ko‘rsatish",
+        "ru": "Предложение с “把” (4): степень результата",
+        "tj": "Ҷумлаи “把” (4): дараҷаи натиҷа"
+      },
+      "title_zh": "“把”字句（4）",
+      "rule": {
+        "uz": "“把 + obyekt + fe’l + 得 + sifat/holat” shakli obyektga qilingan harakat natijasining darajasini ko‘rsatadi: ovozni juda baland qilish, yozuvni juda kichik yozish kabi.",
+        "ru": "Конструкция “把 + объект + глагол + 得 + характеристика” показывает степень результата воздействия на объект.",
+        "tj": "Сохтори “把 + объект + феъл + 得 + сифат/ҳолат” дараҷаи натиҷаи амалро нисбат ба объект нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你把声音开得太大了。",
+          "pinyin": "Nǐ bǎ shēngyīn kāi de tài dà le.",
+          "translation": {
+            "uz": "Ovozni juda baland qilib yubording.",
+            "ru": "Ты сделал звук слишком громким.",
+            "tj": "Ту садоро хеле баланд кардӣ."
+          }
+        },
+        {
+          "zh": "他把球踢进去了吗？",
+          "pinyin": "Tā bǎ qiú tī jìnqu le ma?",
+          "translation": {
+            "uz": "U to‘pni ichkariga tepib kiritdimi?",
+            "ru": "Он забил мяч внутрь?",
+            "tj": "Ӯ тӯбро зада даровард?"
+          }
+        },
+        {
+          "zh": "你把字写得太小了，我看不清楚。",
+          "pinyin": "Nǐ bǎ zì xiě de tài xiǎo le, wǒ kàn bu qīngchu.",
+          "translation": {
+            "uz": "Yozuvni juda kichik yozibsan, aniq ko‘rolmayapman.",
+            "ru": "Ты написал слишком мелко, я не могу разглядеть.",
+            "tj": "Ту ҳарфҳоро хеле майда навиштӣ, ман равшан дида наметавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda Yang Tongle hamkasblarini mehmon qilmoqda.",
+        "ru": "В ресторане Ян Тунлэ угощает коллег.",
+        "tj": "Дар тарабхона Ян Тунлэ ҳамкоронашро меҳмон мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "今天我请客，你们想吃什么就点什么！",
+          "pinyin": "Jīntiān wǒ qǐngkè, nǐmen xiǎng chī shénme jiù diǎn shénme!",
+          "text": {
+            "uz": "Bugun men mehmon qilaman, nima yegingiz kelsa, o‘shani buyurtma qilinglar!",
+            "ru": "Сегодня угощаю я, заказывайте что хотите!",
+            "tj": "Имрӯз ман меҳмон мекунам, ҳар чӣ хоҳед фармоиш диҳед!"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那我就不客气了。听说这家饭馆的鱼做得很特别？",
+          "pinyin": "Nà wǒ jiù bú kèqi le. Tīngshuō zhè jiā fànguǎn de yú zuò de hěn tèbié?",
+          "text": {
+            "uz": "Unda tortinmayman. Eshitishimcha, bu restoranda baliq o‘zgacha tayyorlanar ekan?",
+            "ru": "Тогда церемониться не буду. Говорят, здесь рыбу готовят по-особому?",
+            "tj": "Пас таоруф намекунам. Шунидам, ки дар ин тарабхона моҳиро махсус тайёр мекунанд?"
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "我不常吃南方菜，还是你决定吧。",
+          "pinyin": "Wǒ bù cháng chī nánfāng cài, háishi nǐ juédìng ba.",
+          "text": {
+            "uz": "Men janubiy taomlarni tez-tez yemayman, yaxshisi sen tanla.",
+            "ru": "Я редко ем южную кухню, лучше ты решай.",
+            "tj": "Ман таомҳои ҷанубиро кам мехӯрам, беҳтараш худат интихоб кун."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "咱们就三个人，别点那么多。",
+          "pinyin": "Zánmen jiù sān ge rén, bié diǎn nàme duō.",
+          "text": {
+            "uz": "Biz atigi uch kishimiz, buncha ko‘p buyurtma qilma.",
+            "ru": "Нас всего трое, не заказывай столько.",
+            "tj": "Мо ҳамагӣ се нафарем, ин қадар зиёд фармоиш надиҳ."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "好，那先来这几个菜。",
+          "pinyin": "Hǎo, nà xiān lái zhè jǐ ge cài.",
+          "text": {
+            "uz": "Xo‘p, avval shu taomlarni olamiz.",
+            "ru": "Хорошо, тогда пока эти блюда.",
+            "tj": "Хуб, ҳоло ҳамин чанд хӯрокро гирем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming tug‘ilgan kun bazmiga tayyorlanmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин готовятся к дню рождения.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин ба ҷашни зодрӯз омодагӣ мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "音乐的声音合适吗？",
+          "pinyin": "Yīnyuè de shēngyīn héshì ma?",
+          "text": {
+            "uz": "Musiqa ovozi mosmi?",
+            "ru": "Громкость музыки нормальная?",
+            "tj": "Баландии мусиқӣ мувофиқ аст?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "你把声音开得太大了，我去关小一点儿。",
+          "pinyin": "Nǐ bǎ shēngyīn kāi de tài dà le, wǒ qù guān xiǎo yìdiǎnr.",
+          "text": {
+            "uz": "Ovozni juda baland qilibsan, men biroz pasaytiraman.",
+            "ru": "Ты сделал слишком громко, я немного убавлю.",
+            "tj": "Ту садоро хеле баланд кардӣ, ман каме паст мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming tug‘ilgan kun bazmini o‘tkazmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин проводят день рождения.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин ҷашни зодрӯз мегузаронанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小明",
+          "zh": "谢谢您，我可以打开吗？",
+          "pinyin": "Xièxie nín, wǒ kěyǐ dǎkāi ma?",
+          "text": {
+            "uz": "Rahmat, ochsam bo‘ladimi?",
+            "ru": "Спасибо, можно открыть?",
+            "tj": "Раҳмат, кушоям мешавад?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "当然可以，你妈妈说你跟姐姐一样，都喜欢画画，对吗？",
+          "pinyin": "Dāngrán kěyǐ, nǐ māma shuō nǐ gēn jiějie yíyàng, dōu xǐhuan huàhuà, duì ma?",
+          "text": {
+            "uz": "Albatta, onang aytdi, sen ham opang kabi rasm chizishni yoqtirarkan-san, to‘g‘rimi?",
+            "ru": "Конечно. Мама сказала, что ты, как и сестра, любишь рисовать, верно?",
+            "tj": "Албатта. Модарат гуфт, ки ту ҳам мисли апаат расмкаширо дӯст медорӣ, дуруст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "请客",
+            "pinyin": "qǐngkè",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mehmon qilmoq; hisobni to‘lamoq",
+              "ru": "угощать; приглашать за свой счёт",
+              "tj": "меҳмон кардан; ҳисобро пардохтан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "请客",
+          "pinyin": "qǐngkè",
+          "translation": {
+            "uz": "mehmon qilmoq; hisobni to‘lamoq",
+            "ru": "угощать; приглашать за свой счёт",
+            "tj": "меҳмон кардан; ҳисобро пардохтан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "qǐngkè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается qǐngkè?",
+            "tj": "qǐngkè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "南方",
+            "做法",
+            "北方",
+            "请客"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "请客 = mehmon qilmoq; hisobni to‘lamoq (qǐngkè)",
+            "ru": "请客 = угощать; приглашать за свой счёт (qǐngkè)",
+            "tj": "请客 = меҳмон кардан; ҳисобро пардохтан (qǐngkè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "南方",
+            "pinyin": "nánfāng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "janub",
+              "ru": "юг",
+              "tj": "ҷануб"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "南方 talaffuzini tanlang:",
+            "ru": "Выберите произношение 南方:",
+            "tj": "Талаффузи 南方-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuòfǎ",
+            "nánfāng",
+            "běifāng",
+            "qǐngkè"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "南方 — nánfāng",
+            "ru": "南方 — nánfāng",
+            "tj": "南方 — nánfāng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "北方",
+            "pinyin": "běifāng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shimol",
+              "ru": "север",
+              "tj": "шимол"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shimol' xitoycha qaysi?",
+            "ru": "'север' по-китайски?",
+            "tj": "'шимол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "南方",
+            "北方",
+            "做法",
+            "请客"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "shimol = 北方 (běifāng)",
+            "ru": "север = 北方 (běifāng)",
+            "tj": "шимол = 北方 (běifāng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "做法",
+            "pinyin": "zuòfǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "usul; tayyorlash yo‘li",
+              "ru": "способ; метод приготовления",
+              "tj": "усул; тарзи тайёр кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "做法",
+          "pinyin": "zuòfǎ",
+          "options": [
+            "南方",
+            "做法",
+            "北方",
+            "请客"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "做法 — usul; tayyorlash yo‘li (zuòfǎ)",
+            "ru": "做法 — способ; метод приготовления (zuòfǎ)",
+            "tj": "做法 — усул; тарзи тайёр кардан (zuòfǎ)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "请客 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 请客:",
+            "tj": "Маънои калимаи 请客-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shimol",
+              "ru": "север",
+              "tj": "шимол"
+            },
+            {
+              "uz": "usul; tayyorlash yo‘li",
+              "ru": "способ; метод приготовления",
+              "tj": "усул; тарзи тайёр кардан"
+            },
+            {
+              "uz": "janub",
+              "ru": "юг",
+              "tj": "ҷануб"
+            },
+            {
+              "uz": "mehmon qilmoq; hisobni to‘lamoq",
+              "ru": "угощать; приглашать за свой счёт",
+              "tj": "меҳмон кардан; ҳисобро пардохтан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "请客 = mehmon qilmoq; hisobni to‘lamoq (qǐngkè)",
+            "ru": "请客 = угощать; приглашать за свой счёт (qǐngkè)",
+            "tj": "请客 = меҳмон кардан; ҳисобро пардохтан (qǐngkè)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "请客",
+              {
+                "uz": "mehmon qilmoq; hisobni to‘lamoq",
+                "ru": "угощать; приглашать за свой счёт",
+                "tj": "меҳмон кардан; ҳисобро пардохтан"
+              }
+            ],
+            [
+              "南方",
+              {
+                "uz": "janub",
+                "ru": "юг",
+                "tj": "ҷануб"
+              }
+            ],
+            [
+              "北方",
+              {
+                "uz": "shimol",
+                "ru": "север",
+                "tj": "шимол"
+              }
+            ],
+            [
+              "做法",
+              {
+                "uz": "usul; tayyorlash yo‘li",
+                "ru": "способ; метод приготовления",
+                "tj": "усул; тарзи тайёр кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "“把” gapi (4): natijaning darajasini ko‘rsatish",
+              "ru": "Предложение с “把” (4): степень результата",
+              "tj": "Ҷумлаи “把” (4): дараҷаи натиҷа"
+            },
+            "title_zh": "“把”字句（4）",
+            "rule": {
+              "uz": "“把 + obyekt + fe’l + 得 + sifat/holat” shakli obyektga qilingan harakat natijasining darajasini ko‘rsatadi: ovozni juda baland qilish, yozuvni juda kichik yozish kabi.",
+              "ru": "Конструкция “把 + объект + глагол + 得 + характеристика” показывает степень результата воздействия на объект.",
+              "tj": "Сохтори “把 + объект + феъл + 得 + сифат/ҳолат” дараҷаи натиҷаи амалро нисбат ба объект нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "你把声音开得太大了。",
+                "pinyin": "Nǐ bǎ shēngyīn kāi de tài dà le.",
+                "translation": {
+                  "uz": "Ovozni juda baland qilib yubording.",
+                  "ru": "Ты сделал звук слишком громким.",
+                  "tj": "Ту садоро хеле баланд кардӣ."
+                }
+              },
+              {
+                "zh": "他把球踢进去了吗？",
+                "pinyin": "Tā bǎ qiú tī jìnqu le ma?",
+                "translation": {
+                  "uz": "U to‘pni ichkariga tepib kiritdimi?",
+                  "ru": "Он забил мяч внутрь?",
+                  "tj": "Ӯ тӯбро зада даровард?"
+                }
+              },
+              {
+                "zh": "你把字写得太小了，我看不清楚。",
+                "pinyin": "Nǐ bǎ zì xiě de tài xiǎo le, wǒ kàn bu qīngchu.",
+                "translation": {
+                  "uz": "Yozuvni juda kichik yozibsan, aniq ko‘rolmayapman.",
+                  "ru": "Ты написал слишком мелко, я не могу разглядеть.",
+                  "tj": "Ту ҳарфҳоро хеле майда навиштӣ, ман равшан дида наметавонам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ovozni juda baland qilib yubording.",
+            "ru": "Ты сделал звук слишком громким.",
+            "tj": "Ту садоро хеле баланд кардӣ."
+          },
+          "tokens": [
+            "南方",
+            "太",
+            "开",
+            "声音",
+            "得",
+            "大",
+            "你",
+            "了",
+            "把",
+            "请客"
+          ],
+          "answer_tokens": [
+            "你",
+            "把",
+            "声音",
+            "开",
+            "得",
+            "太",
+            "大",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你把声音开得太大了。 — Nǐ bǎ shēngyīn kāi de tài dà le.",
+            "ru": "你把声音开得太大了。 — Nǐ bǎ shēngyīn kāi de tài dà le.",
+            "tj": "你把声音开得太大了。 — Nǐ bǎ shēngyīn kāi de tài dà le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U to‘pni ichkariga tepib kiritdimi?» — xitoychada qaysi biri?",
+            "ru": "«Он забил мяч внутрь?» — какое предложение по-китайски?",
+            "tj": "«Ӯ тӯбро зада даровард?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你把字写得太小了，我看不清楚。",
+            "你把声音开得太大了。",
+            "他把球踢进去了吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他把球踢进去了吗？ — Tā bǎ qiú tī jìnqu le ma?",
+            "ru": "他把球踢进去了吗？ — Tā bǎ qiú tī jìnqu le ma?",
+            "tj": "他把球踢进去了吗？ — Tā bǎ qiú tī jìnqu le ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "我不常吃南方菜，还是你决定吧。",
+          "pinyin": "Wǒ bù cháng chī nánfāng cài, háishi nǐ juédìng ba.",
+          "translation": {
+            "uz": "Men janubiy taomlarni tez-tez yemayman, yaxshisi sen tanla.",
+            "ru": "Я редко ем южную кухню, лучше ты решай.",
+            "tj": "Ман таомҳои ҷанубиро кам мехӯрам, беҳтараш худат интихоб кун."
+          },
+          "tokens": {
+            "uz": [
+              "men",
+              "tez-tez",
+              "yaxshisi",
+              "yemayman",
+              "sen",
+              "Bugun",
+              "Men",
+              "tanla",
+              "janubiy",
+              "taomlarni"
+            ],
+            "ru": [
+              "лучше",
+              "решай",
+              "ем",
+              "Сегодня",
+              "Я",
+              "кухню",
+              "ты",
+              "угощаю",
+              "редко",
+              "южную"
+            ],
+            "tj": [
+              "мехӯрам",
+              "кун",
+              "Ман",
+              "интихоб",
+              "ман",
+              "Имрӯз",
+              "худат",
+              "таомҳои",
+              "беҳтараш",
+              "кам",
+              "ҷанубиро"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "janubiy",
+              "taomlarni",
+              "tez-tez",
+              "yemayman",
+              "yaxshisi",
+              "sen",
+              "tanla"
+            ],
+            "ru": [
+              "Я",
+              "редко",
+              "ем",
+              "южную",
+              "кухню",
+              "лучше",
+              "ты",
+              "решай"
+            ],
+            "tj": [
+              "Ман",
+              "таомҳои",
+              "ҷанубиро",
+              "кам",
+              "мехӯрам",
+              "беҳтараш",
+              "худат",
+              "интихоб",
+              "кун"
+            ]
+          },
+          "explanation": {
+            "uz": "我不常吃南方菜，还是你决定吧。 — Men janubiy taomlarni tez-tez yemayman, yaxshisi sen tanla.",
+            "ru": "我不常吃南方菜，还是你决定吧。 — Я редко ем южную кухню, лучше ты решай.",
+            "tj": "我不常吃南方菜，还是你决定吧。 — Ман таомҳои ҷанубиро кам мехӯрам, беҳтараш худат интихоб кун."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "请客",
+          "pinyin": "qǐngkè",
+          "translation": {
+            "uz": "mehmon qilmoq; hisobni to‘lamoq",
+            "ru": "угощать; приглашать за свой счёт",
+            "tj": "меҳмон кардан; ҳисобро пардохтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "街 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 街:",
+            "tj": "Маънои калимаи 街-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shimol",
+              "ru": "север",
+              "tj": "шимол"
+            },
+            {
+              "uz": "mehmon qilmoq; hisobni to‘lamoq",
+              "ru": "угощать; приглашать за свой счёт",
+              "tj": "меҳмон кардан; ҳисобро пардохтан"
+            },
+            {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            },
+            {
+              "uz": "janub",
+              "ru": "юг",
+              "tj": "ҷануб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "街 = ko‘cha (jiē)",
+            "ru": "街 = улица (jiē)",
+            "tj": "街 = кӯча (jiē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "街",
+            "pinyin": "jiē",
+            "meaning": {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mehmon qilmoq; hisobni to‘lamoq' xitoycha qaysi?",
+            "ru": "'угощать; приглашать за свой счёт' по-китайски?",
+            "tj": "'меҳмон кардан; ҳисобро пардохтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "南方",
+            "北方",
+            "做法",
+            "请客"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mehmon qilmoq; hisobni to‘lamoq = 请客 (qǐngkè)",
+            "ru": "угощать; приглашать за свой счёт = 请客 (qǐngkè)",
+            "tj": "меҳмон кардан; ҳисобро пардохтан = 请客 (qǐngkè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "请客",
+            "pinyin": "qǐngkè",
+            "meaning": {
+              "uz": "mehmon qilmoq; hisobni to‘lamoq",
+              "ru": "угощать; приглашать за свой счёт",
+              "tj": "меҳмон кардан; ҳисобро пардохтан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

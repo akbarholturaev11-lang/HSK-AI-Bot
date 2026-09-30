@@ -1,0 +1,1136 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 112,
+  "source_lesson": 14,
+  "part_no": 8,
+  "part_count": 8,
+  "checkpoint": true,
+  "title": "这本书被别人借走了",
+  "subtitle": {
+    "uz": "Kampusdagi tadbirlar haqida gaplashish; boshqalarga dalda berish va qo‘llab-quvvatlash; “被” bilan passiv ma’noni ifodalash.",
+    "ru": "Говорить о мероприятиях в кампусе; поддерживать и подбадривать других; выражать пассивное значение с помощью “被”.",
+    "tj": "Дар бораи чорабиниҳои кампус суҳбат кардан; дигаронро рӯҳбаланд кардан; бо “被” маънои пассивро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "词典",
+      "pinyin": "cídiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "lug‘at",
+        "ru": "словарь",
+        "tj": "луғат"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "最好",
+      "pinyin": "zuìhǎo",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yaxshisi; eng yaxshi",
+        "ru": "лучше всего; самый хороший",
+        "tj": "беҳтараш; беҳтарин"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "节",
+      "pinyin": "jié",
+      "pos": "m.",
+      "meaning": {
+        "uz": "dars uchun hisob so‘zi",
+        "ru": "счётное слово для уроков",
+        "tj": "воҳиди ҳисоб барои дарс"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "图书馆",
+      "pinyin": "túshūguǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kutubxona",
+        "ru": "библиотека",
+        "tj": "китобхона"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "被",
+      "pinyin": "bèi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "passiv gap ko‘rsatkichi",
+        "ru": "показатель пассивной конструкции",
+        "tj": "нишондиҳандаи ҷумлаи пассив"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "名人",
+      "pinyin": "míngrén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mashhur shaxs",
+        "ru": "известный человек",
+        "tj": "шахси машҳур"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "故事",
+      "pinyin": "gùshi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hikoya",
+        "ru": "история; рассказ",
+        "tj": "ҳикоя"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "然后",
+      "pinyin": "ránhòu",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "keyin; undan so‘ng",
+        "ru": "затем; потом",
+        "tj": "баъд; сипас"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "报纸",
+      "pinyin": "bàozhǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "gazeta",
+        "ru": "газета",
+        "tj": "рӯзнома"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "忘记",
+      "pinyin": "wàngjì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "unutmoq",
+        "ru": "забывать",
+        "tj": "фаромӯш кардан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "电子书",
+      "pinyin": "diànzǐshū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "elektron kitob",
+        "ru": "электронная книга",
+        "tj": "китоби электронӣ"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "女生",
+      "pinyin": "nǚshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz talaba; qiz bola",
+        "ru": "студентка; девушка",
+        "tj": "донишҷӯи духтар; духтар"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "表演",
+      "pinyin": "biǎoyǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sahna ko‘rinishi ko‘rsatmoq; ijro etmoq",
+        "ru": "выступать; исполнять",
+        "tj": "баромад кардан; иҷро кардан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "节目",
+      "pinyin": "jiémù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dastur; sahna raqami",
+        "ru": "номер программы; выступление",
+        "tj": "барнома; рақами саҳнавӣ"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "怎么办",
+      "pinyin": "zěnme bàn",
+      "pos": "",
+      "meaning": {
+        "uz": "nima qilamiz?; nima qilish kerak?",
+        "ru": "что делать?",
+        "tj": "чӣ бояд кард?"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "校长",
+      "pinyin": "xiàozhǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab/universitet rahbari",
+        "ru": "директор; ректор",
+        "tj": "директор; роҳбари муассиса"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "面前",
+      "pinyin": "miànqián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oldida",
+        "ru": "перед; перед глазами",
+        "tj": "дар пеш; назди"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "有些",
+      "pinyin": "yǒuxiē",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "biroz; ayrim",
+        "ru": "немного; некоторые",
+        "tj": "каме; баъзе"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "相信",
+      "pinyin": "xiāngxìn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishonmoq",
+        "ru": "верить",
+        "tj": "бовар кардан"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "新年",
+      "pinyin": "xīnnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "Yangi yil",
+        "ru": "Новый год",
+        "tj": "Соли нав"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "班级",
+      "pinyin": "bānjí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sinf; guruh",
+        "ru": "класс; учебная группа",
+        "tj": "синф; гурӯҳ"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "跳",
+      "pinyin": "tiào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sakramoq; raqs tushmoq",
+        "ru": "прыгать; танцевать",
+        "tj": "ҷаҳидан; рақсидан"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "留学生",
+      "pinyin": "liúxuéshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chet ellik talaba",
+        "ru": "иностранный студент",
+        "tj": "донишҷӯи хориҷӣ"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "最后",
+      "pinyin": "zuìhòu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oxiri; nihoyat",
+        "ru": "в конце; последний",
+        "tj": "охир; ниҳоят"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "一块儿",
+      "pinyin": "yíkuàir",
+      "pos": "adv./n.",
+      "meaning": {
+        "uz": "birga",
+        "ru": "вместе",
+        "tj": "якҷо"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "网站",
+      "pinyin": "wǎngzhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "veb-sayt",
+        "ru": "веб-сайт",
+        "tj": "сомона"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "视频",
+      "pinyin": "shìpín",
+      "pos": "n.",
+      "meaning": {
+        "uz": "video",
+        "ru": "видео",
+        "tj": "видео"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Passiv gap (1): “被”",
+        "ru": "Пассивное предложение (1): “被”",
+        "tj": "Ҷумлаи пассивӣ (1): “被”"
+      },
+      "title_zh": "被动句（1）",
+      "rule": {
+        "uz": "“A 被 B + fe’l” shaklida A harakat ta’siriga uchraydigan obyekt, B esa harakatni bajaruvchi shaxs yoki sabab bo‘ladi. B ayrim hollarda tushirib qoldirilishi mumkin.",
+        "ru": "В конструкции “A 被 B + глагол” A — объект воздействия, B — исполнитель действия. В некоторых случаях исполнитель может не называться.",
+        "tj": "Дар сохтори “A 被 B + феъл” A объекти таъсир ва B иҷрокунандаи амал аст. Баъзан иҷрокунанда зикр намешавад."
+      },
+      "examples": [
+        {
+          "zh": "这本书被别人借走了。",
+          "pinyin": "Zhè běn shū bèi biérén jiè zǒu le.",
+          "translation": {
+            "uz": "Bu kitobni boshqa birov olib ketibdi.",
+            "ru": "Эту книгу кто-то другой взял.",
+            "tj": "Ин китобро каси дигар гирифта бурдааст."
+          }
+        },
+        {
+          "zh": "水果可能被弟弟吃了。",
+          "pinyin": "Shuǐguǒ kěnéng bèi dìdi chī le.",
+          "translation": {
+            "uz": "Mevalarni ukam yeb qo‘ygan bo‘lishi mumkin.",
+            "ru": "Возможно, фрукты съел младший брат.",
+            "tj": "Шояд меваҳоро додарам хӯрда бошад."
+          }
+        },
+        {
+          "zh": "我们俩经常被叫错名字。",
+          "pinyin": "Wǒmen liǎ jīngcháng bèi jiào cuò míngzi.",
+          "translation": {
+            "uz": "Ikkalamizning ismimizni tez-tez adashtirib aytishadi.",
+            "ru": "Наши имена часто путают.",
+            "tj": "Номи ҳардуи моро зуд-зуд хато мегӯянд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Ketma-ket gap “先……再/然后……”",
+        "ru": "Последовательная конструкция “先……再/然后……”",
+        "tj": "Сохтори пайдарпай “先……再/然后……”"
+      },
+      "title_zh": "承接复句“先……，再/然后……”",
+      "rule": {
+        "uz": "“先 A，再/然后 B” avval A, undan keyin B bajarilishini bildiradi.",
+        "ru": "“先 A，再/然后 B” показывает последовательность: сначала A, затем B.",
+        "tj": "“先 A，再/然后 B” пайдарпайиро нишон медиҳад: аввал A, баъд B."
+      },
+      "examples": [
+        {
+          "zh": "我要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng.",
+          "translation": {
+            "uz": "Avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+            "ru": "Сначала пойду в библиотеку за книгой, потом плавать.",
+            "tj": "Аввал ба китобхона барои китоб, баъд ба шиноварӣ меравам."
+          }
+        },
+        {
+          "zh": "你先去买门票，再来这里找我。",
+          "pinyin": "Nǐ xiān qù mǎi ménpiào, zài lái zhèlǐ zhǎo wǒ.",
+          "translation": {
+            "uz": "Avval kirish chiptasini ol, keyin bu yerga meni topgani kel.",
+            "ru": "Сначала купи билет, потом приходи сюда ко мне.",
+            "tj": "Аввал чипта бихар, баъд ин ҷо назди ман биё."
+          }
+        },
+        {
+          "zh": "你们先回房间休息一会儿，然后再出来吃晚饭。",
+          "pinyin": "Nǐmen xiān huí fángjiān xiūxi yíhuìr, ránhòu zài chūlái chī wǎnfàn.",
+          "translation": {
+            "uz": "Avval xonaga qaytib biroz dam olinglar, keyin kechki ovqatga chiqinglar.",
+            "ru": "Сначала вернитесь в номер и немного отдохните, потом выходите на ужин.",
+            "tj": "Аввал ба ҳуҷра баргашта каме истироҳат кунед, баъд барои хӯроки шом бароед."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "“X什么啊” — e’tiroz yoki dalda berish",
+        "ru": "“X什么啊” — возражение или подбадривание",
+        "tj": "“X什么啊” — эътироз ё рӯҳбаландкунӣ"
+      },
+      "title_zh": "固定格式“×什么（啊）”",
+      "rule": {
+        "uz": "Fe’l yoki sifatdan keyin “什么啊” kelib, suhbatdoshning xavotiri yoki bahosini inkor qilib, “nima uchun bunday o‘ylayapsan?” kabi dalda beradi.",
+        "ru": "Модель “X什么啊” после глагола или прилагательного выражает возражение против переживания или оценки собеседника и часто подбадривает его.",
+        "tj": "Қолаби “X什么啊” пас аз феъл ё сифат нигаронӣ ё баҳогузории ҳамсуҳбатро рад карда, ӯро рӯҳбаланд мекунад."
+      },
+      "examples": [
+        {
+          "zh": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng.",
+          "translation": {
+            "uz": "Direktor, o‘qituvchilar va shuncha talaba oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+            "ru": "Как подумаю, что выступать перед директором, учителями и столькими студентами, начинаю волноваться.",
+            "tj": "Вақте фикр мекунам, ки назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+          }
+        },
+        {
+          "zh": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ.",
+          "translation": {
+            "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shig‘ingni yoqtiramiz, o‘zingga ishon.",
+            "ru": "Чего нервничать? Нам всем нравится, как ты поёшь, поверь в себя.",
+            "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+          }
+        },
+        {
+          "zh": "我最近胖了很多，不想拍照了。",
+          "pinyin": "Wǒ zuìjìn pàng le hěn duō, bù xiǎng pāizhào le.",
+          "translation": {
+            "uz": "So‘nggi paytda ancha semirdim, suratga tushgim kelmayapti.",
+            "ru": "В последнее время я сильно поправился и не хочу фотографироваться.",
+            "tj": "Вақтҳои охир хеле фарбеҳ шудам, акс гирифтан намехоҳам."
+          }
+        },
+        {
+          "zh": "胖什么啊，你看起来不胖也不瘦。",
+          "pinyin": "Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu.",
+          "translation": {
+            "uz": "Qanaqa semirish? Sen na semiz, na ozg‘in ko‘rinyapsan.",
+            "ru": "Какой ещё толстый? Ты выглядишь ни толстым, ни худым.",
+            "tj": "Куҷо фарбеҳ? Ту на фарбеҳ ва на лоғар менамоӣ."
+          }
+        },
+        {
+          "zh": "还有十分钟，快点儿走吧。",
+          "pinyin": "Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba.",
+          "translation": {
+            "uz": "Yana o‘n daqiqa qoldi, tezroq yuraylik.",
+            "ru": "Осталось десять минут, пойдём быстрее.",
+            "tj": "Даҳ дақиқа мондааст, тезтар равем."
+          }
+        },
+        {
+          "zh": "急什么啊，马上就到了。",
+          "pinyin": "Jí shénme a, mǎshàng jiù dào le.",
+          "translation": {
+            "uz": "Nimaga shoshilasan? Hozir yetib boramiz.",
+            "ru": "Чего спешить? Уже почти приехали.",
+            "tj": "Чаро шитоб мекунӣ? Ҳозир мерасем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "我借的这本词典最好今天还，但是我没时间去。",
+          "pinyin": "Wǒ jiè de zhè běn cídiǎn zuìhǎo jīntiān huán, dànshì wǒ méi shíjiān qù.",
+          "text": {
+            "uz": "Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.",
+            "ru": "Этот словарь лучше вернуть сегодня, но у меня нет времени идти.",
+            "tj": "Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "下午我只有两节课，可以帮你去图书馆还书。",
+          "pinyin": "Xiàwǔ wǒ zhǐ yǒu liǎng jié kè, kěyǐ bāng nǐ qù túshūguǎn huán shū.",
+          "text": {
+            "uz": "Tushdan keyin faqat ikki darsim bor, kutubxonaga borib kitobni qaytarib beraman.",
+            "ru": "Днём у меня всего два занятия, могу вернуть книгу за тебя.",
+            "tj": "Баъд аз нисфирӯзӣ танҳо ду дарс дорам, метавонам китобро ба китобхона баргардонам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "那太谢谢了。你能再帮我借本书吗？",
+          "pinyin": "Nà tài xièxie le. Nǐ néng zài bāng wǒ jiè běn shū ma?",
+          "text": {
+            "uz": "Juda rahmat. Yana bir kitob olib bera olasanmi?",
+            "ru": "Большое спасибо. Можешь ещё взять для меня одну книгу?",
+            "tj": "Хеле раҳмат. Боз як китоб барои ман гирифта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行，你告诉我书名。",
+          "pinyin": "Xíng, nǐ gàosu wǒ shūmíng.",
+          "text": {
+            "uz": "Bo‘ladi, kitob nomini ayt.",
+            "ru": "Хорошо, скажи название.",
+            "tj": "Мешавад, номи китобро бигӯ."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+          "pinyin": "Wǒ bǎ míngzi xiě zài zhǐ shàng ba. Wǒ qù le hǎo jǐ cì túshūguǎn, zhè běn shū dōu bèi biérén jiè zǒu le.",
+          "text": {
+            "uz": "Nomini qog‘ozga yozib beraman. Kutubxonaga bir necha marta bordim, har safar bu kitobni boshqa birov olib ketgan edi.",
+            "ru": "Я запишу название на бумаге. Я несколько раз ходил в библиотеку, но эту книгу всё время кто-то уже брал.",
+            "tj": "Номашро дар коғаз менависам. Чанд бор ба китобхона рафтам, ҳар дафъа ин китобро каси дигар гирифта буд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "《名人的故事》？我有这本书。明天我借给你吧。",
+          "pinyin": "Míngrén de Gùshi? Wǒ yǒu zhè běn shū. Míngtiān wǒ jiè gěi nǐ ba.",
+          "text": {
+            "uz": "“Mashhur insonlar hikoyalari”mi? Menda bu kitob bor. Ertaga senga berib turaman.",
+            "ru": "«Истории знаменитых людей»? У меня есть эта книга. Завтра дам тебе.",
+            "tj": "«Ҳикояҳои одамони машҳур»? Ин китоб дар ман ҳаст. Фардо ба ту медиҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Bai Jiayue va Annie suhbatlashmoqda.",
+        "ru": "В кампусе Бай Цзяюэ и Энни разговаривают.",
+        "tj": "Дар кампус Бай Ҷяюэ ва Энни суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "今天下课早，你一会儿做什么？",
+          "pinyin": "Jīntiān xiàkè zǎo, nǐ yíhuìr zuò shénme?",
+          "text": {
+            "uz": "Bugun dars erta tugadi, hozir nima qilasan?",
+            "ru": "Сегодня занятия закончились рано, что будешь делать?",
+            "tj": "Имрӯз дарс барвақт тамом шуд, ҳозир чӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我今天忙得很，要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ jīntiān máng de hěn, yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng.",
+          "text": {
+            "uz": "Bugun juda bandman, avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+            "ru": "Сегодня я очень занята: сначала в библиотеку за книгой, потом плавать.",
+            "tj": "Имрӯз хеле банд ҳастам: аввал ба китобхона, баъд ба шиноварӣ меравам."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "咱们一起走吧，我想去图书馆看看中文报纸。",
+          "pinyin": "Zánmen yìqǐ zǒu ba, wǒ xiǎng qù túshūguǎn kànkan Zhōngwén bàozhǐ.",
+          "text": {
+            "uz": "Birga boraylik, men kutubxonada xitoycha gazetalarni ko‘rmoqchiman.",
+            "ru": "Пойдём вместе, я хочу посмотреть китайские газеты в библиотеке.",
+            "tj": "Якҷо равем, ман мехоҳам дар китобхона рӯзномаҳои чиниро бинам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "等等，我的校园卡不见了，没有卡进不去图书馆。",
+          "pinyin": "Děngdeng, wǒ de xiàoyuánkǎ bú jiàn le, méiyǒu kǎ jìn bu qù túshūguǎn.",
+          "text": {
+            "uz": "To‘xta, kampus kartam yo‘qolibdi, kartasiz kutubxonaga kira olmayman.",
+            "ru": "Подожди, моя кампус-карта пропала, без неё в библиотеку не войти.",
+            "tj": "Ист, корти кампусам гум шудааст, бе корт ба китобхона даромада намешавад."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "你想想上一次用是什么时候？",
+          "pinyin": "Nǐ xiǎngxiang shàng yí cì yòng shì shénme shíhou?",
+          "text": {
+            "uz": "O‘ylab ko‘r, oxirgi marta qachon ishlatganding?",
+            "ru": "Вспомни, когда ты пользовалась ею в последний раз?",
+            "tj": "Фикр кун, бори охир кай истифода карда будӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我忘记了，可能被我放在家里了。",
+          "pinyin": "Wǒ wàngjì le, kěnéng bèi wǒ fàng zài jiālǐ le.",
+          "text": {
+            "uz": "Unutdim, balki uyda qoldirgandirman.",
+            "ru": "Забыла, возможно, я оставила её дома.",
+            "tj": "Фаромӯш кардам, шояд дар хона гузошта бошам."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "进不去图书馆也没关系，上网看看有没有电子书。",
+          "pinyin": "Jìn bu qù túshūguǎn yě méi guānxi, shàngwǎng kànkan yǒu méiyǒu diànzǐshū.",
+          "text": {
+            "uz": "Kutubxonaga kira olmasang ham hechqisi yo‘q, internetdan elektron kitob bor-yo‘qligini ko‘r.",
+            "ru": "Ничего страшного, если не войдёшь в библиотеку; посмотри электронную книгу в интернете.",
+            "tj": "Агар ба китобхона даромада натавонӣ ҳам, ҳеҷ гап нест, аз интернет китоби электронӣ ҳаст ё не бин."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "不行，我必须去，我还得帮李文还书呢。",
+          "pinyin": "Bù xíng, wǒ bìxū qù, wǒ hái děi bāng Lǐ Wén huán shū ne.",
+          "text": {
+            "uz": "Yo‘q, borishim shart, Li Wenga kitobini qaytarishga yordam berishim kerak.",
+            "ru": "Нет, мне обязательно нужно идти, я ещё должна вернуть книгу за Ли Вэня.",
+            "tj": "Не, ҳатман бояд равам, барои Ли Вэн китобро баргардонданам лозим."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue ovqatlanib suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ едят и разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ хӯрок хӯрда суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "下周学校有晚会，你知道吗？",
+          "pinyin": "Xià zhōu xuéxiào yǒu wǎnhuì, nǐ zhīdào ma?",
+          "text": {
+            "uz": "Keyingi hafta maktabda kecha bo‘ladi, bilasanmi?",
+            "ru": "На следующей неделе в школе будет вечер, знаешь?",
+            "tj": "Ҳафтаи оянда дар мактаб шомгоҳӣ мешавад, медонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "知道，我和几个女生要表演一个节目。你也参加吗？",
+          "pinyin": "Zhīdào, wǒ hé jǐ ge nǚshēng yào biǎoyǎn yí ge jiémù. Nǐ yě cānjiā ma?",
+          "text": {
+            "uz": "Bilaman, men bir nechta qiz bilan bir chiqish tayyorlayapman. Sen ham qatnashasanmi?",
+            "ru": "Знаю, я с несколькими девушками готовлю номер. Ты тоже участвуешь?",
+            "tj": "Медонам, ман бо чанд духтар як барнома иҷро мекунем. Ту ҳам иштирок мекунӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我想唱中文歌，但是还没找到人一起表演，不知道怎么办。",
+          "pinyin": "Wǒ xiǎng chàng Zhōngwén gē, dànshì hái méi zhǎodào rén yìqǐ biǎoyǎn, bù zhīdào zěnme bàn.",
+          "text": {
+            "uz": "Xitoycha qo‘shiq aytmoqchiman, lekin birga chiqadigan odam topmadim, nima qilishni bilmayapman.",
+            "ru": "Хочу спеть китайскую песню, но пока не нашёл партнёра и не знаю, что делать.",
+            "tj": "Мехоҳам суруди чинӣ хонам, аммо касе барои ҳамроҳ баромадан наёфтам, намедонам чӣ кор кунам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "找不到人，你就一个人唱吧。",
+          "pinyin": "Zhǎo bú dào rén, nǐ jiù yí ge rén chàng ba.",
+          "text": {
+            "uz": "Odam topilmasa, o‘zing yolg‘iz aytaver.",
+            "ru": "Если никого не найдёшь, пой один.",
+            "tj": "Агар касе наёбӣ, худат танҳо суруд хон."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng.",
+          "text": {
+            "uz": "Direktor, o‘qituvchilar va shuncha talabalar oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+            "ru": "Как только думаю, что выступать перед директором, учителями и столькими студентами, начинаю нервничать.",
+            "tj": "Ҳамин ки фикр мекунам назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ.",
+          "text": {
+            "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shiq aytishingni yoqtiramiz, o‘zingga ishon.",
+            "ru": "Чего нервничать? Нам всем нравится, как ты поёшь. Поверь в себя.",
+            "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kutubxona' xitoycha qaysi?",
+            "ru": "'библиотека' по-китайски?",
+            "tj": "'китобхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "图书馆",
+            "最好",
+            "词典",
+            "节"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kutubxona = 图书馆 (túshūguǎn)",
+            "ru": "библиотека = 图书馆 (túshūguǎn)",
+            "tj": "китобхона = 图书馆 (túshūguǎn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "词典",
+              {
+                "uz": "lug‘at",
+                "ru": "словарь",
+                "tj": "луғат"
+              }
+            ],
+            [
+              "最好",
+              {
+                "uz": "yaxshisi; eng yaxshi",
+                "ru": "лучше всего; самый хороший",
+                "tj": "беҳтараш; беҳтарин"
+              }
+            ],
+            [
+              "节",
+              {
+                "uz": "dars uchun hisob so‘zi",
+                "ru": "счётное слово для уроков",
+                "tj": "воҳиди ҳисоб барои дарс"
+              }
+            ],
+            [
+              "图书馆",
+              {
+                "uz": "kutubxona",
+                "ru": "библиотека",
+                "tj": "китобхона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Yana o‘n daqiqa qoldi, tezroq yuraylik.» — xitoychada qaysi biri?",
+            "ru": "«Осталось десять минут, пойдём быстрее.» — какое предложение по-китайски?",
+            "tj": "«Даҳ дақиқа мондааст, тезтар равем.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "还有十分钟，快点儿走吧。",
+            "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+            "我们俩经常被叫错名字。",
+            "这本书被别人借走了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "还有十分钟，快点儿走吧。 — Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba.",
+            "ru": "还有十分钟，快点儿走吧。 — Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba.",
+            "tj": "还有十分钟，快点儿走吧。 — Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "míngrén qaysi ieroglif?",
+            "ru": "Какой иероглиф читается míngrén?",
+            "tj": "míngrén кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "词典",
+            "最好",
+            "节",
+            "名人"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "名人 = mashhur shaxs (míngrén)",
+            "ru": "名人 = известный человек (míngrén)",
+            "tj": "名人 = шахси машҳур (míngrén)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "找不到人，你就一个人唱吧。",
+          "pinyin": "Zhǎo bú dào rén, nǐ jiù yí ge rén chàng ba.",
+          "translation": {
+            "uz": "Odam topilmasa, o‘zing yolg‘iz aytaver.",
+            "ru": "Если никого не найдёшь, пой один.",
+            "tj": "Агар касе наёбӣ, худат танҳо суруд хон."
+          },
+          "tokens": {
+            "uz": [
+              "lug‘atimni",
+              "yolg‘iz",
+              "o‘zing",
+              "topilmasa",
+              "aytaver",
+              "Olgan",
+              "Odam"
+            ],
+            "ru": [
+              "пой",
+              "найдёшь",
+              "никого",
+              "один",
+              "Если",
+              "словарь",
+              "не",
+              "Этот"
+            ],
+            "tj": [
+              "худат",
+              "наёбӣ",
+              "касе",
+              "луғатро",
+              "Агар",
+              "суруд",
+              "Ин",
+              "танҳо",
+              "хон"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Odam",
+              "topilmasa",
+              "o‘zing",
+              "yolg‘iz",
+              "aytaver"
+            ],
+            "ru": [
+              "Если",
+              "никого",
+              "не",
+              "найдёшь",
+              "пой",
+              "один"
+            ],
+            "tj": [
+              "Агар",
+              "касе",
+              "наёбӣ",
+              "худат",
+              "танҳо",
+              "суруд",
+              "хон"
+            ]
+          },
+          "explanation": {
+            "uz": "找不到人，你就一个人唱吧。 — Odam topilmasa, o‘zing yolg‘iz aytaver.",
+            "ru": "找不到人，你就一个人唱吧。 — Если никого не найдёшь, пой один.",
+            "tj": "找不到人，你就一个人唱吧。 — Агар касе наёбӣ, худат танҳо суруд хон."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "然后",
+          "pinyin": "ránhòu",
+          "options": [
+            "最好",
+            "词典",
+            "节",
+            "然后"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "然后 — keyin; undan so‘ng (ránhòu)",
+            "ru": "然后 — затем; потом (ránhòu)",
+            "tj": "然后 — баъд; сипас (ránhòu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "被",
+              {
+                "uz": "passiv gap ko‘rsatkichi",
+                "ru": "показатель пассивной конструкции",
+                "tj": "нишондиҳандаи ҷумлаи пассив"
+              }
+            ],
+            [
+              "名人",
+              {
+                "uz": "mashhur shaxs",
+                "ru": "известный человек",
+                "tj": "шахси машҳур"
+              }
+            ],
+            [
+              "故事",
+              {
+                "uz": "hikoya",
+                "ru": "история; рассказ",
+                "tj": "ҳикоя"
+              }
+            ],
+            [
+              "然后",
+              {
+                "uz": "keyin; undan so‘ng",
+                "ru": "затем; потом",
+                "tj": "баъд; сипас"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "我借的这本词典最好今天还，但是我没时间去。",
+          "pinyin": "Wǒ jiè de zhè běn cídiǎn zuìhǎo jīntiān huán, dànshì wǒ méi shíjiān qù.",
+          "options": [
+            "那太谢谢了。你能再帮我借本书吗？",
+            "我借的这本词典最好今天还，但是我没时间去。",
+            "下午我只有两节课，可以帮你去图书馆还书。",
+            "行，你告诉我书名。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我借的这本词典最好今天还，但是我没时间去。 — Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.",
+            "ru": "我借的这本词典最好今天还，但是我没时间去。 — Этот словарь лучше вернуть сегодня, но у меня нет времени идти.",
+            "tj": "我借的这本词典最好今天还，但是我没时间去。 — Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 李文 avval nima deydi?",
+            "ru": "Что 李文 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 李文 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "下午我只有两节课，可以帮你去图书馆还书。",
+            "行，你告诉我书名。",
+            "我借的这本词典最好今天还，但是我没时间去。",
+            "那太谢谢了。你能再帮我借本书吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我借的这本词典最好今天还，但是我没时间去。",
+            "ru": "Правильный ответ: 我借的这本词典最好今天还，但是我没时间去。",
+            "tj": "Ҷавоби дуруст: 我借的这本词典最好今天还，但是我没时间去。"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "李文",
+              "zh": "我借的这本词典最好今天还，但是我没时间去。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "下午我只有两节课，可以帮你去图书馆还书。",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "那太谢谢了。你能再帮我借本书吗？",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "行，你告诉我书名。",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "《名人的故事》？我有这本书。明天我借给你吧。",
+            "下午我只有两节课，可以帮你去图书馆还书。",
+            "那太谢谢了。你能再帮我借本书吗？",
+            "我借的这本词典最好今天还，但是我没时间去。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 《名人的故事》？我有这本书。明天我借给你吧。",
+            "ru": "Правильный ответ: 《名人的故事》？我有这本书。明天我借给你吧。",
+            "tj": "Ҷавоби дуруст: 《名人的故事》？我有这本书。明天我借给你吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我____的这本词典最好今天还，但是我没时间去。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "一",
+            "七",
+            "万",
+            "借"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 借 — 我借的这本词典最好今天还，但是我没时间去。 (Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.)",
+            "ru": "Верно: 借 — 我借的这本词典最好今天还，但是我没时间去。 (Этот словарь лучше вернуть сегодня, но у меня нет времени идти.)",
+            "tj": "Дуруст: 借 — 我借的这本词典最好今天还，但是我没时间去。 (Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 白家月 nima deydi?",
+            "ru": "Что 白家月 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 白家月 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "《名人的故事》？我有这本书。明天我借给你吧。",
+            "那太谢谢了。你能再帮我借本书吗？",
+            "下午我只有两节课，可以帮你去图书馆还书。",
+            "我借的这本词典最好今天还，但是我没时间去。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 《名人的故事》？我有这本书。明天我借给你吧。",
+            "ru": "Правильный ответ: 《名人的故事》？我有这本书。明天我借给你吧。",
+            "tj": "Ҷавоби дуруст: 《名人的故事》？我有这本书。明天我借给你吧。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "行，你告诉我书名。",
+          "pinyin": "Xíng, nǐ gàosu wǒ shūmíng.",
+          "translation": {
+            "uz": "Bo‘ladi, kitob nomini ayt.",
+            "ru": "Хорошо, скажи название.",
+            "tj": "Мешавад, номи китобро бигӯ."
+          }
+        }
+      ]
+    }
+  ]
+}

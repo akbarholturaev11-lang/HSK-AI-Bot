@@ -1,0 +1,683 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 119,
+  "source_lesson": 15,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我是半个南京人",
+  "subtitle": {
+    "uz": "Joyning o‘rni va atrof-muhitini tasvirlash; tabiiy manzara yoki tarixiy-madaniy joylarni tanishtirish; “在……看来” bilan shaxs yoki guruh nuqtai nazarini ifodalash; Nanjing va Sariq daryo haqida asosiy ma’lumotlarni tushunish.",
+    "ru": "Описывать расположение и окружающую среду места; рассказывать о природных и историко-культурных объектах; выражать личную или групповую точку зрения конструкцией “在……看来”; познакомиться с базовой информацией о Нанкине и Хуанхэ.",
+    "tj": "Ҷойгиршавӣ ва муҳити атрофро тавсиф кардан; манзараҳои табиӣ ё ҷойҳои таърихию фарҳангиро муаррифӣ кардан; бо “在……看来” нуқтаи назари шахс ё гурӯҳро ифода кардан; бо маълумоти асосӣ дар бораи Нанҷин ва дарёи Хуанхэ шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "遇见",
+      "pinyin": "yùjiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uchratmoq",
+        "ru": "встретить",
+        "tj": "вохӯрдан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "南京",
+      "pinyin": "Nánjīng",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Nanjing",
+        "ru": "Нанкин",
+        "tj": "Нанҷин"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "黄河",
+      "pinyin": "Huáng Hé",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Sariq daryo (Huang He)",
+        "ru": "Хуанхэ (Жёлтая река)",
+        "tj": "Хуанхэ (Дарёи Зард)"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "您搬到蓝天小区一段时间了，觉得怎么样？",
+          "pinyin": "Nín bān dào Lántiān Xiǎoqū yí duàn shíjiān le, juéde zěnmeyàng?",
+          "text": {
+            "uz": "Lantian turar-joy majmuasiga ko‘chganingizga bir muddat bo‘ldi, qanday?",
+            "ru": "Вы уже некоторое время живёте в жилом комплексе Ланьтянь. Как вам?",
+            "tj": "Муддате шуд ба маҷмааи Лантян кӯчидаед, чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "小区环境挺好的，附近买东西也很方便，过马路就是超市。",
+          "pinyin": "Xiǎoqū huánjìng tǐng hǎo de, fùjìn mǎi dōngxi yě hěn fāngbiàn, guò mǎlù jiù shì chāoshì.",
+          "text": {
+            "uz": "Majmuaning muhiti yaxshi, yaqin atrofda xarid qilish ham qulay, yo‘lning narigi tomonida supermarket bor.",
+            "ru": "Обстановка хорошая, покупки рядом делать удобно, через дорогу супермаркет.",
+            "tj": "Муҳити маҷмаа хуб аст, харид дар наздикӣ ҳам қулай, аз роҳ гузарӣ супермаркет аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "平时孩子们在哪儿玩？",
+          "pinyin": "Píngshí háizimen zài nǎr wán?",
+          "text": {
+            "uz": "Odatda bolalar qayerda o‘ynaydi?",
+            "ru": "Где дети обычно играют?",
+            "tj": "Одатан кӯдакон дар куҷо бозӣ мекунанд?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "小区里有很多树，孩子们放学后就在树下做游戏。你想买房子吗？",
+          "pinyin": "Xiǎoqū lǐ yǒu hěn duō shù, háizimen fàngxué hòu jiù zài shù xià zuò yóuxì. Nǐ xiǎng mǎi fángzi ma?",
+          "text": {
+            "uz": "Majmuada daraxtlar ko‘p, bolalar darsdan keyin daraxt tagida o‘ynaydi. Uy sotib olmoqchimisan?",
+            "ru": "В комплексе много деревьев, после школы дети играют под ними. Ты хочешь купить жильё?",
+            "tj": "Дар маҷмаа дарахт зиёд аст, кӯдакон баъди дарс зери дарахт бозӣ мекунанд. Хона харидан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "蓝天小区的老人挺多的，这几年小区根据他们的需要，有了很多变化。",
+          "pinyin": "Lántiān Xiǎoqū de lǎorén tǐng duō de, zhè jǐ nián xiǎoqū gēnjù tāmen de xūyào, yǒu le hěn duō biànhuà.",
+          "text": {
+            "uz": "Lantian majmuasida keksalar ancha ko‘p, so‘nggi yillarda ularning ehtiyojlariga ko‘ra ko‘p o‘zgarishlar qilindi.",
+            "ru": "В Ланьтяне довольно много пожилых, и в последние годы комплекс сильно изменился с учётом их потребностей.",
+            "tj": "Дар маҷмааи Лантян пиронсолон зиёданд ва чанд соли охир мувофиқи ниёзҳои онҳо тағйироти зиёд шудааст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "真不错！过几天我去蓝天小区看看。",
+          "pinyin": "Zhēn búcuò! Guò jǐ tiān wǒ qù Lántiān Xiǎoqū kànkan.",
+          "text": {
+            "uz": "Juda yaxshi! Bir necha kundan keyin Lantian majmuasini ko‘rgani boraman.",
+            "ru": "Отлично! Через несколько дней съезжу посмотреть Ланьтянь.",
+            "tj": "Хеле хуб! Баъди чанд рӯз ба маҷмааи Лантян рафта мебинам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "假期我想去南京旅游，但是我不太了解那里。",
+          "pinyin": "Jiàqī wǒ xiǎng qù Nánjīng lǚyóu, dànshì wǒ bú tài liǎojiě nàlǐ.",
+          "text": {
+            "uz": "Ta’tilda Nanjingga sayohat qilmoqchiman, lekin u joyni yaxshi bilmayman.",
+            "ru": "На каникулах хочу поехать в Нанкин, но мало о нём знаю.",
+            "tj": "Дар таътил мехоҳам ба Нанҷин саёҳат равам, аммо он ҷоро хуб намешиносам."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "我虽然不是南京人，可是我是在南京上的大学，可以说是半个南京人。",
+          "pinyin": "Wǒ suīrán bú shì Nánjīng rén, kěshì wǒ shì zài Nánjīng shàng de dàxué, kěyǐ shuō shì bàn ge Nánjīng rén.",
+          "text": {
+            "uz": "Men Nanjinglik bo‘lmasam ham, universitetni Nanjingda o‘qiganman, o‘zimni yarim Nanjinglik desa bo‘ladi.",
+            "ru": "Я не уроженец Нанкина, но учился там в университете, так что можно сказать, что я наполовину нанкинец.",
+            "tj": "Гарчанде ман аз Нанҷин нестам, донишгоҳро дар Нанҷин хондаам, метавон гуфт ним Нанҷинӣ ҳастам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "太好了！你快给我介绍一下南京吧。",
+          "pinyin": "Tài hǎo le! Nǐ kuài gěi wǒ jièshào yíxià Nánjīng ba.",
+          "text": {
+            "uz": "Zo‘r! Tezroq menga Nanjingni tanishtirib ber.",
+            "ru": "Отлично! Расскажи мне скорее о Нанкине.",
+            "tj": "Олиҷаноб! Зуд ба ман Нанҷинро муаррифӣ кун."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "除了这些以外，你再告诉我一些外地人不知道的地方。",
+          "pinyin": "Chúle zhèxiē yǐwài, nǐ zài gàosu wǒ yìxiē wàidì rén bù zhīdào de dìfang.",
+          "text": {
+            "uz": "Bulardan tashqari, menga tashqaridan kelganlar bilmaydigan joylarni ham ayt.",
+            "ru": "Кроме этого, расскажи ещё о местах, которые приезжие обычно не знают.",
+            "tj": "Ба ғайр аз инҳо, боз ҷойҳоеро бигӯ, ки одамони аз дигар ҷой омада намедонанд."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那太多了，我得一点儿一点儿给您讲。",
+          "pinyin": "Nà tài duō le, wǒ děi yìdiǎnr yìdiǎnr gěi nín jiǎng.",
+          "text": {
+            "uz": "Bunday joylar juda ko‘p, sizga asta-sekin aytib berishim kerak.",
+            "ru": "Таких мест очень много, придётся рассказывать понемногу.",
+            "tj": "Ин гуна ҷойҳо хеле зиёданд, бояд кам-кам ба шумо нақл кунам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "行，下班后我请你吃晚饭，咱们边吃边聊。",
+          "pinyin": "Xíng, xiàbān hòu wǒ qǐng nǐ chī wǎnfàn, zánmen biān chī biān liáo.",
+          "text": {
+            "uz": "Mayli, ishdan keyin seni kechki ovqatga taklif qilaman, ovqatlanib turib gaplashamiz.",
+            "ru": "Хорошо, после работы угощу тебя ужином, будем есть и разговаривать.",
+            "tj": "Хуб, баъди кор туро ба хӯроки шом даъват мекунам, хӯрда истода суҳбат мекунем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Xiaoming suhbatlashmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Сяомин разговаривают.",
+        "tj": "Дар хона Ван Исюэ ва Лю Сяомин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小明",
+          "zh": "我知道，是黄河！",
+          "pinyin": "Wǒ zhīdào, shì Huáng Hé!",
+          "text": {
+            "uz": "Bilaman, bu Sariq daryo!",
+            "ru": "Знаю — Хуанхэ!",
+            "tj": "Медонам, Хуанхэ!"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "你说对了。我再问问你，你知道它为什么叫黄河吗？",
+          "pinyin": "Nǐ shuō duì le. Wǒ zài wènwen nǐ, nǐ zhīdào tā wèishénme jiào Huáng Hé ma?",
+          "text": {
+            "uz": "To‘g‘ri. Yana so‘ray, nega Sariq daryo deb atalishini bilasanmi?",
+            "ru": "Правильно. Ещё вопрос: знаешь, почему её называют Хуанхэ?",
+            "tj": "Дуруст. Боз мепурсам: медонӣ чаро онро Хуанхэ мегӯянд?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "不是。黄河虽然不是最长的河，可是在历史上很重要。",
+          "pinyin": "Bú shì. Huáng Hé suīrán bú shì zuì cháng de hé, kěshì zài lìshǐ shàng hěn zhòngyào.",
+          "text": {
+            "uz": "Yo‘q. Sariq daryo eng uzun bo‘lmasa ham, tarixda juda muhim.",
+            "ru": "Нет. Хуанхэ не самая длинная, но исторически она очень важна.",
+            "tj": "Не. Хуанхэ гарчанде дарозтарин дарё нест, дар таърих хеле муҳим аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "遇见",
+            "pinyin": "yùjiàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "uchratmoq",
+              "ru": "встретить",
+              "tj": "вохӯрдан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uchratmoq' xitoycha qaysi?",
+            "ru": "'встретить' по-китайски?",
+            "tj": "'вохӯрдан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "蓝",
+            "附近",
+            "段",
+            "遇见"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "uchratmoq = 遇见 (yùjiàn)",
+            "ru": "встретить = 遇见 (yùjiàn)",
+            "tj": "вохӯрдан = 遇见 (yùjiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "南京",
+            "pinyin": "Nánjīng",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Nanjing",
+              "ru": "Нанкин",
+              "tj": "Нанҷин"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "南京",
+          "pinyin": "Nánjīng",
+          "translation": {
+            "uz": "Nanjing",
+            "ru": "Нанкин",
+            "tj": "Нанҷин"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "南京",
+          "pinyin": "Nánjīng",
+          "options": [
+            "段",
+            "蓝",
+            "南京",
+            "附近"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "南京 — Nanjing (Nánjīng)",
+            "ru": "南京 — Нанкин (Nánjīng)",
+            "tj": "南京 — Нанҷин (Nánjīng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "黄河",
+            "pinyin": "Huáng Hé",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Sariq daryo (Huang He)",
+              "ru": "Хуанхэ (Жёлтая река)",
+              "tj": "Хуанхэ (Дарёи Зард)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "黄河 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 黄河:",
+            "tj": "Маънои калимаи 黄河-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "Sariq daryo (Huang He)",
+              "ru": "Хуанхэ (Жёлтая река)",
+              "tj": "Хуанхэ (Дарёи Зард)"
+            },
+            {
+              "uz": "yaqin atrof",
+              "ru": "поблизости; окрестности",
+              "tj": "наздикӣ; атроф"
+            },
+            {
+              "uz": "bo‘lak; davr (hisob so‘zi)",
+              "ru": "отрезок; период (счётное слово)",
+              "tj": "қисм; давра (воҳиди ҳисоб)"
+            },
+            {
+              "uz": "ko‘k; moviy",
+              "ru": "синий; голубой",
+              "tj": "кабуд; осмонӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "黄河 = Sariq daryo (Huang He) (Huáng Hé)",
+            "ru": "黄河 = Хуанхэ (Жёлтая река) (Huáng Hé)",
+            "tj": "黄河 = Хуанхэ (Дарёи Зард) (Huáng Hé)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yùjiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yùjiàn?",
+            "tj": "yùjiàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "遇见",
+            "蓝",
+            "段",
+            "附近"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "遇见 = uchratmoq (yùjiàn)",
+            "ru": "遇见 = встретить (yùjiàn)",
+            "tj": "遇见 = вохӯрдан (yùjiàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "遇见",
+              {
+                "uz": "uchratmoq",
+                "ru": "встретить",
+                "tj": "вохӯрдан"
+              }
+            ],
+            [
+              "南京",
+              {
+                "uz": "Nanjing",
+                "ru": "Нанкин",
+                "tj": "Нанҷин"
+              }
+            ],
+            [
+              "黄河",
+              {
+                "uz": "Sariq daryo (Huang He)",
+                "ru": "Хуанхэ (Жёлтая река)",
+                "tj": "Хуанхэ (Дарёи Зард)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "黄河",
+          "pinyin": "Huáng Hé",
+          "translation": {
+            "uz": "Sariq daryo (Huang He)",
+            "ru": "Хуанхэ (Жёлтая река)",
+            "tj": "Хуанхэ (Дарёи Зард)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你说对了。我再问问你，你知道它为什么叫黄河吗？",
+          "pinyin": "Nǐ shuō duì le. Wǒ zài wènwen nǐ, nǐ zhīdào tā wèishénme jiào Huáng Hé ma?",
+          "translation": {
+            "uz": "To‘g‘ri. Yana so‘ray, nega Sariq daryo deb atalishini bilasanmi?",
+            "ru": "Правильно. Ещё вопрос: знаешь, почему её называют Хуанхэ?",
+            "tj": "Дуруст. Боз мепурсам: медонӣ чаро онро Хуанхэ мегӯянд?"
+          },
+          "tokens": {
+            "uz": [
+              "bilasanmi",
+              "daryo",
+              "so‘ray",
+              "Ta’tilda",
+              "Nanjingga",
+              "deb",
+              "Sariq",
+              "Yana",
+              "To‘g‘ri",
+              "atalishini",
+              "nega"
+            ],
+            "ru": [
+              "знаешь",
+              "её",
+              "вопрос",
+              "почему",
+              "Хуанхэ",
+              "Ещё",
+              "Правильно",
+              "называют",
+              "На",
+              "каникулах"
+            ],
+            "tj": [
+              "мепурсам",
+              "Хуанхэ",
+              "таътил",
+              "чаро",
+              "Дар",
+              "онро",
+              "Боз",
+              "медонӣ",
+              "мегӯянд",
+              "Дуруст"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "To‘g‘ri",
+              "Yana",
+              "so‘ray",
+              "nega",
+              "Sariq",
+              "daryo",
+              "deb",
+              "atalishini",
+              "bilasanmi"
+            ],
+            "ru": [
+              "Правильно",
+              "Ещё",
+              "вопрос",
+              "знаешь",
+              "почему",
+              "её",
+              "называют",
+              "Хуанхэ"
+            ],
+            "tj": [
+              "Дуруст",
+              "Боз",
+              "мепурсам",
+              "медонӣ",
+              "чаро",
+              "онро",
+              "Хуанхэ",
+              "мегӯянд"
+            ]
+          },
+          "explanation": {
+            "uz": "你说对了。我再问问你，你知道它为什么叫黄河吗？ — To‘g‘ri. Yana so‘ray, nega Sariq daryo deb atalishini bilasanmi?",
+            "ru": "你说对了。我再问问你，你知道它为什么叫黄河吗？ — Правильно. Ещё вопрос: знаешь, почему её называют Хуанхэ?",
+            "tj": "你说对了。我再问问你，你知道它为什么叫黄河吗？ — Дуруст. Боз мепурсам: медонӣ чаро онро Хуанхэ мегӯянд?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "不是。黄河虽然不是最长的河，可是在历史上很重要。",
+          "pinyin": "Bú shì. Huáng Hé suīrán bú shì zuì cháng de hé, kěshì zài lìshǐ shàng hěn zhòngyào.",
+          "options": [
+            "假期我想去南京旅游，但是我不太了解那里。",
+            "不是。黄河虽然不是最长的河，可是在历史上很重要。",
+            "我虽然不是南京人，可是我是在南京上的大学，可以说是半个南京人。",
+            "太好了！你快给我介绍一下南京吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "不是。黄河虽然不是最长的河，可是在历史上很重要。 — Yo‘q. Sariq daryo eng uzun bo‘lmasa ham, tarixda juda muhim.",
+            "ru": "不是。黄河虽然不是最长的河，可是在历史上很重要。 — Нет. Хуанхэ не самая длинная, но исторически она очень важна.",
+            "tj": "不是。黄河虽然不是最长的河，可是在历史上很重要。 — Не. Хуанхэ гарчанде дарозтарин дарё нест, дар таърих хеле муҳим аст."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "南京",
+          "pinyin": "Nánjīng",
+          "translation": {
+            "uz": "Nanjing",
+            "ru": "Нанкин",
+            "tj": "Нанҷин"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "经过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 经过:",
+            "tj": "Маънои калимаи 经过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘tmoq; orqali o‘tish",
+              "ru": "проходить через; после",
+              "tj": "гузаштан аз; тавассути"
+            },
+            {
+              "uz": "ko‘k; moviy",
+              "ru": "синий; голубой",
+              "tj": "кабуд; осмонӣ"
+            },
+            {
+              "uz": "bo‘lak; davr (hisob so‘zi)",
+              "ru": "отрезок; период (счётное слово)",
+              "tj": "қисм; давра (воҳиди ҳисоб)"
+            },
+            {
+              "uz": "yaqin atrof",
+              "ru": "поблизости; окрестности",
+              "tj": "наздикӣ; атроф"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "经过 = o‘tmoq; orqali o‘tish (jīngguò)",
+            "ru": "经过 = проходить через; после (jīngguò)",
+            "tj": "经过 = гузаштан аз; тавассути (jīngguò)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "经过",
+            "pinyin": "jīngguò",
+            "meaning": {
+              "uz": "o‘tmoq; orqali o‘tish",
+              "ru": "проходить через; после",
+              "tj": "гузаштан аз; тавассути"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Nanjing' xitoycha qaysi?",
+            "ru": "'Нанкин' по-китайски?",
+            "tj": "'Нанҷин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "附近",
+            "段",
+            "蓝",
+            "南京"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "Nanjing = 南京 (Nánjīng)",
+            "ru": "Нанкин = 南京 (Nánjīng)",
+            "tj": "Нанҷин = 南京 (Nánjīng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "南京",
+            "pinyin": "Nánjīng",
+            "meaning": {
+              "uz": "Nanjing",
+              "ru": "Нанкин",
+              "tj": "Нанҷин"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

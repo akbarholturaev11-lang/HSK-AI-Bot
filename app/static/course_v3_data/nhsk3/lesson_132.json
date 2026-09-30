@@ -1,0 +1,761 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 132,
+  "source_lesson": 17,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我要多向认真的人学习",
+  "subtitle": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "屋子",
+      "pinyin": "wūzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xona; uy",
+        "ru": "комната; дом",
+        "tj": "ҳуҷра; хона"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "有关",
+      "pinyin": "yǒuguān",
+      "pos": "v./prep.",
+      "meaning": {
+        "uz": "aloqador; haqida",
+        "ru": "связанный; касающийся",
+        "tj": "вобаста; марбут"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "关机",
+      "pinyin": "guānjī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "telefon/qurilmani o‘chirmoq",
+        "ru": "выключать устройство",
+        "tj": "дастгоҳро хомӯш кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "前天",
+      "pinyin": "qiántiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "avvalgi kun; indindan oldingi kun",
+        "ru": "позавчера",
+        "tj": "пешдирӯз"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "Shartli qo‘shma gap “只有……才……”",
+        "ru": "Условная конструкция “只有……才……”",
+        "tj": "Ҷумлаи шартии “只有……才……”"
+      },
+      "title_zh": "条件复句“只有……，才……”",
+      "rule": {
+        "uz": "“只有A，才B” B natija yuz berishi uchun A yagona yoki zarur shart ekanini bildiradi: “faqat A bo‘lsagina B”.",
+        "ru": "“只有A，才B” показывает, что A является необходимым или единственным условием для результата B: «только если A, тогда B».",
+        "tj": "“只有A，才B” нишон медиҳад, ки A шарти зарурӣ ё ягона барои натиҷаи B аст: «танҳо агар A, пас B»."
+      },
+      "examples": [
+        {
+          "zh": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。",
+          "pinyin": "Zhǐyǒu xiǎng qīngchu zìjǐ zhēnzhèng xǐhuan shénme, cái néng zuòchū zuì héshì de xuǎnzé.",
+          "translation": {
+            "uz": "Faqat aslida nimani yoqtirishingni aniq tushunsanggina eng mos tanlovni qila olasan.",
+            "ru": "Только поняв, что тебе действительно нравится, можно сделать самый подходящий выбор.",
+            "tj": "Танҳо вақте равшан мефаҳмӣ, ки воқеан чиро дӯст медорӣ, интихоби мувофиқтарин карда метавонӣ."
+          }
+        },
+        {
+          "zh": "只有每天锻炼身体，才会越来越健康。",
+          "pinyin": "Zhǐyǒu měitiān duànliàn shēntǐ, cái huì yuèláiyuè jiànkāng.",
+          "translation": {
+            "uz": "Faqat har kuni mashq qilsanggina borgan sari sog‘lom bo‘lasan.",
+            "ru": "Только если заниматься каждый день, здоровье будет становиться всё лучше.",
+            "tj": "Танҳо агар ҳар рӯз машқ кунӣ, торафт солимтар мешавӣ."
+          }
+        },
+        {
+          "zh": "只有多听、多说、多看，你的中文水平才能提高。",
+          "pinyin": "Zhǐyǒu duō tīng, duō shuō, duō kàn, nǐ de Zhōngwén shuǐpíng cái néng tígāo.",
+          "translation": {
+            "uz": "Faqat ko‘p tinglab, gapirib va o‘qisang, xitoy tiling darajasi oshadi.",
+            "ru": "Только если больше слушать, говорить и читать, уровень китайского повысится.",
+            "tj": "Танҳо бо бисёр шунидан, гуфтан ва хондан сатҳи чиниат баланд мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+        "ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+        "tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "怎么回事？",
+          "pinyin": "Zěnme huí shì?",
+          "text": {
+            "uz": "Nima bo‘ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ гап шуд?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de.",
+          "text": {
+            "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+            "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+            "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "text": {
+            "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+            "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+        "ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+        "tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de.",
+          "text": {
+            "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+            "ru": "Что тут странного? Я пришёл заниматься.",
+            "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你怎么还来图书馆学习？同学们都在到处找工作呢。",
+          "pinyin": "Nǐ zěnme hái lái túshūguǎn xuéxí? Tóngxuémen dōu zài dàochù zhǎo gōngzuò ne.",
+          "text": {
+            "uz": "Nega hali ham kutubxonada o‘qiyapsan? Sinfdoshlar hamma joyda ish qidiryapti-ku.",
+            "ru": "Почему ты всё ещё учишься в библиотеке? Однокурсники повсюду ищут работу.",
+            "tj": "Чаро ҳоло ҳам дар китобхона мехонӣ? Ҳамсинфон ҳама ҷо кор меҷӯянд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "text": {
+            "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "你说得对，我记得那个屋子里有些跟电脑有关的书，我去找找。",
+          "pinyin": "Nǐ shuō de duì, wǒ jìde nàge wūzi lǐ yǒuxiē gēn diànnǎo yǒuguān de shū, wǒ qù zhǎozhao.",
+          "text": {
+            "uz": "To‘g‘ri aytding, o‘sha xonada kompyuterga oid kitoblar bor edi, borib qidiraman.",
+            "ru": "Ты права, я помню, в той комнате были книги о компьютерах. Пойду поищу.",
+            "tj": "Дуруст гуфтӣ, дар хотир дорам он ҳуҷра китобҳои вобаста ба компютер дошт, рафта меҷӯям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?",
+          "text": {
+            "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+            "ru": "Телефон разрядился. Ты меня искал по делу?",
+            "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "text": {
+            "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn.",
+          "text": {
+            "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+            "ru": "Я покажу тебе несколько полезных сайтов.",
+            "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "屋子",
+            "pinyin": "wūzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xona; uy",
+              "ru": "комната; дом",
+              "tj": "ҳуҷра; хона"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wūzi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wūzi?",
+            "tj": "wūzi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "害怕",
+            "楼梯",
+            "向",
+            "屋子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "屋子 = xona; uy (wūzi)",
+            "ru": "屋子 = комната; дом (wūzi)",
+            "tj": "屋子 = ҳуҷра; хона (wūzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "有关",
+            "pinyin": "yǒuguān",
+            "pos": "v./prep.",
+            "meaning": {
+              "uz": "aloqador; haqida",
+              "ru": "связанный; касающийся",
+              "tj": "вобаста; марбут"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "有关 talaffuzini tanlang:",
+            "ru": "Выберите произношение 有关:",
+            "tj": "Талаффузи 有关-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàng",
+            "yǒuguān",
+            "hàipà",
+            "lóutī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "有关 — yǒuguān",
+            "ru": "有关 — yǒuguān",
+            "tj": "有关 — yǒuguān"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "关机",
+            "pinyin": "guānjī",
+            "pos": "v.",
+            "meaning": {
+              "uz": "telefon/qurilmani o‘chirmoq",
+              "ru": "выключать устройство",
+              "tj": "дастгоҳро хомӯш кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'telefon/qurilmani o‘chirmoq' xitoycha qaysi?",
+            "ru": "'выключать устройство' по-китайски?",
+            "tj": "'дастгоҳро хомӯш кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "楼梯",
+            "关机",
+            "害怕"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "telefon/qurilmani o‘chirmoq = 关机 (guānjī)",
+            "ru": "выключать устройство = 关机 (guānjī)",
+            "tj": "дастгоҳро хомӯш кардан = 关机 (guānjī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "前天",
+            "pinyin": "qiántiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "avvalgi kun; indindan oldingi kun",
+              "ru": "позавчера",
+              "tj": "пешдирӯз"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "前天",
+          "pinyin": "qiántiān",
+          "translation": {
+            "uz": "avvalgi kun; indindan oldingi kun",
+            "ru": "позавчера",
+            "tj": "пешдирӯз"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "前天",
+          "pinyin": "qiántiān",
+          "options": [
+            "前天",
+            "向",
+            "楼梯",
+            "害怕"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "前天 — avvalgi kun; indindan oldingi kun (qiántiān)",
+            "ru": "前天 — позавчера (qiántiān)",
+            "tj": "前天 — пешдирӯз (qiántiān)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "屋子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 屋子:",
+            "tj": "Маънои калимаи 屋子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "xona; uy",
+              "ru": "комната; дом",
+              "tj": "ҳуҷра; хона"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "屋子 = xona; uy (wūzi)",
+            "ru": "屋子 = комната; дом (wūzi)",
+            "tj": "屋子 = ҳуҷра; хона (wūzi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "屋子",
+              {
+                "uz": "xona; uy",
+                "ru": "комната; дом",
+                "tj": "ҳуҷра; хона"
+              }
+            ],
+            [
+              "有关",
+              {
+                "uz": "aloqador; haqida",
+                "ru": "связанный; касающийся",
+                "tj": "вобаста; марбут"
+              }
+            ],
+            [
+              "关机",
+              {
+                "uz": "telefon/qurilmani o‘chirmoq",
+                "ru": "выключать устройство",
+                "tj": "дастгоҳро хомӯш кардан"
+              }
+            ],
+            [
+              "前天",
+              {
+                "uz": "avvalgi kun; indindan oldingi kun",
+                "ru": "позавчера",
+                "tj": "пешдирӯз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "Shartli qo‘shma gap “只有……才……”",
+              "ru": "Условная конструкция “只有……才……”",
+              "tj": "Ҷумлаи шартии “只有……才……”"
+            },
+            "title_zh": "条件复句“只有……，才……”",
+            "rule": {
+              "uz": "“只有A，才B” B natija yuz berishi uchun A yagona yoki zarur shart ekanini bildiradi: “faqat A bo‘lsagina B”.",
+              "ru": "“只有A，才B” показывает, что A является необходимым или единственным условием для результата B: «только если A, тогда B».",
+              "tj": "“只有A，才B” нишон медиҳад, ки A шарти зарурӣ ё ягона барои натиҷаи B аст: «танҳо агар A, пас B»."
+            },
+            "examples": [
+              {
+                "zh": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。",
+                "pinyin": "Zhǐyǒu xiǎng qīngchu zìjǐ zhēnzhèng xǐhuan shénme, cái néng zuòchū zuì héshì de xuǎnzé.",
+                "translation": {
+                  "uz": "Faqat aslida nimani yoqtirishingni aniq tushunsanggina eng mos tanlovni qila olasan.",
+                  "ru": "Только поняв, что тебе действительно нравится, можно сделать самый подходящий выбор.",
+                  "tj": "Танҳо вақте равшан мефаҳмӣ, ки воқеан чиро дӯст медорӣ, интихоби мувофиқтарин карда метавонӣ."
+                }
+              },
+              {
+                "zh": "只有每天锻炼身体，才会越来越健康。",
+                "pinyin": "Zhǐyǒu měitiān duànliàn shēntǐ, cái huì yuèláiyuè jiànkāng.",
+                "translation": {
+                  "uz": "Faqat har kuni mashq qilsanggina borgan sari sog‘lom bo‘lasan.",
+                  "ru": "Только если заниматься каждый день, здоровье будет становиться всё лучше.",
+                  "tj": "Танҳо агар ҳар рӯз машқ кунӣ, торафт солимтар мешавӣ."
+                }
+              },
+              {
+                "zh": "只有多听、多说、多看，你的中文水平才能提高。",
+                "pinyin": "Zhǐyǒu duō tīng, duō shuō, duō kàn, nǐ de Zhōngwén shuǐpíng cái néng tígāo.",
+                "translation": {
+                  "uz": "Faqat ko‘p tinglab, gapirib va o‘qisang, xitoy tiling darajasi oshadi.",
+                  "ru": "Только если больше слушать, говорить и читать, уровень китайского повысится.",
+                  "tj": "Танҳо бо бисёр шунидан, гуфтан ва хондан сатҳи чиниат баланд мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Faqat aslida nimani yoqtirishingni aniq tushunsanggina eng mos tanlovni qila olasan.» — xitoychada qaysi biri?",
+            "ru": "«Только поняв, что тебе действительно нравится, можно сделать самый подходящий выбор.» — какое предложение по-китайски?",
+            "tj": "«Танҳо вақте равшан мефаҳмӣ, ки воқеан чиро дӯст медорӣ, интихоби мувофиқтарин карда метавонӣ.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "只有每天锻炼身体，才会越来越健康。",
+            "只有多听、多说、多看，你的中文水平才能提高。",
+            "只有想清楚自己真正喜欢什么，才能做出最合适的选择。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。 — Zhǐyǒu xiǎng qīngchu zìjǐ zhēnzhèng xǐhuan shénme, cái néng zuòchū zuì héshì de xuǎnzé.",
+            "ru": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。 — Zhǐyǒu xiǎng qīngchu zìjǐ zhēnzhèng xǐhuan shénme, cái néng zuòchū zuì héshì de xuǎnzé.",
+            "tj": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。 — Zhǐyǒu xiǎng qīngchu zìjǐ zhēnzhèng xǐhuan shénme, cái néng zuòchū zuì héshì de xuǎnzé."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "前天",
+          "pinyin": "qiántiān",
+          "options": [
+            "前天",
+            "楼梯",
+            "害怕",
+            "向"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "前天 — avvalgi kun; indindan oldingi kun (qiántiān)",
+            "ru": "前天 — позавчера (qiántiān)",
+            "tj": "前天 — пешдирӯз (qiántiān)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "屋子",
+              {
+                "uz": "xona; uy",
+                "ru": "комната; дом",
+                "tj": "ҳуҷра; хона"
+              }
+            ],
+            [
+              "有关",
+              {
+                "uz": "aloqador; haqida",
+                "ru": "связанный; касающийся",
+                "tj": "вобаста; марбут"
+              }
+            ],
+            [
+              "关机",
+              {
+                "uz": "telefon/qurilmani o‘chirmoq",
+                "ru": "выключать устройство",
+                "tj": "дастгоҳро хомӯш кардан"
+              }
+            ],
+            [
+              "前天",
+              {
+                "uz": "avvalgi kun; indindan oldingi kun",
+                "ru": "позавчера",
+                "tj": "пешдирӯз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "前天",
+          "pinyin": "qiántiān",
+          "translation": {
+            "uz": "avvalgi kun; indindan oldingi kun",
+            "ru": "позавчера",
+            "tj": "пешдирӯз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "可 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 可:",
+            "tj": "Маънои калимаи 可-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "可 = ammo; lekin (kě)",
+            "ru": "可 = но; однако (kě)",
+            "tj": "可 = аммо; лекин (kě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "可",
+            "pinyin": "kě",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'avvalgi kun; indindan oldingi kun' xitoycha qaysi?",
+            "ru": "'позавчера' по-китайски?",
+            "tj": "'пешдирӯз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "前天",
+            "楼梯",
+            "害怕"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "avvalgi kun; indindan oldingi kun = 前天 (qiántiān)",
+            "ru": "позавчера = 前天 (qiántiān)",
+            "tj": "пешдирӯз = 前天 (qiántiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "前天",
+            "pinyin": "qiántiān",
+            "meaning": {
+              "uz": "avvalgi kun; indindan oldingi kun",
+              "ru": "позавчера",
+              "tj": "пешдирӯз"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

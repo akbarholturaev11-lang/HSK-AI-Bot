@@ -1,0 +1,807 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 38,
+  "source_lesson": 8,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "虽然你忘了，但是我记得",
+  "subtitle": {
+    "uz": "“比” bilan taqqoslash; 比 gaplarida 很/非常 o‘rniga 更/还 bilan darajani kuchaytirish; “虽然……但是……” bilan qarama-qarshilikni ifodalash; narx, kino va tug‘ilgan kun haqida gaplashish.",
+    "ru": "Сравнивать с “比”; усиливать степень в сравнении с 更/还 вместо 很/非常; выражать уступительно-противительные отношения через “虽然……但是……”；обсуждать цену, кино и день рождения.",
+    "tj": "Бо “比” муқоиса кардан; дар ҷумлаҳои муқоисавӣ ба ҷойи 很/非常 бо 更/还 дараҷаро қавӣ кардан; бо “虽然……但是……” зиддиятро ифода кардан; дар бораи нарх, кино ва зодрӯз суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "右边",
+      "pinyin": "yòubian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘ng tomon",
+        "ru": "правая сторона",
+        "tj": "тарафи рост"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "右",
+      "pinyin": "yòu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘ng",
+        "ru": "право; правый",
+        "tj": "рост"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "记得",
+      "pinyin": "jìde",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eslamoq",
+        "ru": "помнить",
+        "tj": "дар хотир доштан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "爱情片",
+      "pinyin": "àiqíngpiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "romantik film",
+        "ru": "романтический фильм",
+        "tj": "филми ошиқона"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Taqqoslash gapi (2)",
+        "ru": "Сравнительное предложение (2)",
+        "tj": "Ҷумлаи муқоисавӣ (2)"
+      },
+      "title_zh": "比较句（2）",
+      "rule": {
+        "uz": "“比” taqqoslash gapida sifat oldidan 很 yoki 非常 ishlatilmaydi; darajani kuchaytirish uchun 还 yoki 更 ishlatiladi.",
+        "ru": "В предложениях с 比 перед прилагательным нельзя ставить 很/非常; усиление выражается 还 или 更.",
+        "tj": "Дар ҷумлаҳои бо 比 пеш аз сифат 很/非常 намеояд; барои қавитар кардани дараҷа 还 ё 更 истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "我看网上说这个电影比那个爱情片更有意思。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "今天比昨天更热。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我觉得奶茶比牛奶还好喝。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Savdo markazida Wang Yixue va Liu Ming xarid qilmoqda.",
+        "ru": "В торговом центре Ван Исюэ и Лю Мин делают покупки.",
+        "tj": "Дар маркази савдо Ван Исюэ ва Лю Мин харид мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看，这两块手表怎么样？",
+          "pinyin": "Nǐ kàn, zhè liǎng kuài shǒubiǎo zěnmeyàng?",
+          "text": {
+            "uz": "Qara, bu ikki qo‘l soati qanday?",
+            "ru": "Посмотри, как тебе эти двое часов?",
+            "tj": "Бин, ин ду соат чӣ хеланд?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "都不错！",
+          "pinyin": "Dōu búcuò!",
+          "text": {
+            "uz": "Ikkalasi ham yomon emas!",
+            "ru": "Оба неплохие!",
+            "tj": "Ҳардуяш ҳам бад нест!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我喜欢左边这个。",
+          "pinyin": "Wǒ xǐhuan zuǒbian zhège.",
+          "text": {
+            "uz": "Menga chapdagisi yoqdi.",
+            "ru": "Мне нравится тот, что слева.",
+            "tj": "Ба ман тарафи чап писанд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我也觉得左边的比右边的好看。",
+          "pinyin": "Wǒ yě juéde zuǒbian de bǐ yòubian de hǎokàn.",
+          "text": {
+            "uz": "Menimcha ham chapdagisi o‘ngdagidan chiroyliroq.",
+            "ru": "Мне тоже кажется, что левый красивее правого.",
+            "tj": "Ба назари ман ҳам чапаш аз росташ зеботар аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看看要多少钱！",
+          "pinyin": "Nǐ kànkan yào duōshao qián!",
+          "text": {
+            "uz": "Narxiga qara!",
+            "ru": "Посмотри, сколько стоит!",
+            "tj": "Нархашро бин!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "真不便宜！八千八！",
+          "pinyin": "Zhēn bù piányi! Bā qiān bā!",
+          "text": {
+            "uz": "Juda qimmat ekan! Sakkiz ming sakkiz yuz!",
+            "ru": "Совсем недёшево! Восемь тысяч восемьсот!",
+            "tj": "Хеле гарон будааст! Ҳашт ҳазору ҳаштсад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kinoteatr tashqarisida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "ru": "Снаружи кинотеатра Ван Исюэ и Лю Мин разговаривают.",
+        "tj": "Берун аз кинотеатр Ван Исюэ ва Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天有不少电影，我们看个电影吧。",
+          "pinyin": "Jīntiān yǒu bù shǎo diànyǐng, wǒmen kàn ge diànyǐng ba.",
+          "text": {
+            "uz": "Bugun ancha film bor, bir film ko‘raylik.",
+            "ru": "Сегодня много фильмов, давай посмотрим один.",
+            "tj": "Имрӯз филмҳо бисёранд, биё як филм бинем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好啊！我们看哪个？",
+          "pinyin": "Hǎo a! Wǒmen kàn nǎge?",
+          "text": {
+            "uz": "Mayli! Qaysinisini ko‘ramiz?",
+            "ru": "Хорошо! Какой посмотрим?",
+            "tj": "Хуб! Кадомашро мебинем?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我记得你喜欢看爱情片，我们看那个爱情片，怎么样？",
+          "pinyin": "Wǒ jìde nǐ xǐhuan kàn àiqíngpiàn, wǒmen kàn nàge àiqíngpiàn, zěnmeyàng?",
+          "text": {
+            "uz": "Esimda, sen romantik filmlarni yoqtirasan. O‘sha romantik filmni ko‘rsak qanday?",
+            "ru": "Я помню, ты любишь романтические фильмы. Как насчёт того?",
+            "tj": "Дар хотир дорам, ту филмҳои ошиқонаро дӯст медорӣ. Он филмро бинем, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。",
+          "pinyin": "Háishi kàn zhège ba, wǒ kàn wǎngshang shuō zhège diànyǐng bǐ nàge àiqíngpiàn gèng yǒu yìsi.",
+          "text": {
+            "uz": "Yaxshisi bunisini ko‘raylik. Internetda bu film o‘sha romantik filmdan qiziqroq deyilgan.",
+            "ru": "Лучше посмотрим этот. В интернете пишут, что он интереснее того романтического.",
+            "tj": "Беҳтараш ҳаминро бинем. Дар интернет гуфтаанд, ки ин аз он филми ошиқона ҷолибтар аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好。我去买票。",
+          "pinyin": "Hǎo. Wǒ qù mǎi piào.",
+          "text": {
+            "uz": "Xo‘p. Men chipta olaman.",
+            "ru": "Хорошо. Я куплю билеты.",
+            "tj": "Хуб. Ман чипта мехарам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "到网上买吧，网上买比在这里买便宜。",
+          "pinyin": "Dào wǎngshang mǎi ba, wǎngshang mǎi bǐ zài zhèlǐ mǎi piányi.",
+          "text": {
+            "uz": "Internetdan ol, onlayn olish bu yerdan olishdan arzonroq.",
+            "ru": "Купи онлайн, в интернете дешевле, чем здесь.",
+            "tj": "Аз интернет бихар, онлайниаш аз ин ҷо арзонтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue va Liu Ming taom buyurtma qilmoqda.",
+        "ru": "В ресторане Ван Исюэ и Лю Мин заказывают блюда.",
+        "tj": "Дар тарабхона Ван Исюэ ва Лю Мин хӯрок фармоиш медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "您好！就要这几个菜吧，谢谢！",
+          "pinyin": "Nín hǎo! Jiù yào zhè jǐ ge cài ba, xièxie!",
+          "text": {
+            "uz": "Salom! Shu bir nechta taomni olamiz, rahmat!",
+            "ru": "Здравствуйте! Возьмём эти блюда, спасибо!",
+            "tj": "Салом! Ҳамин чанд хӯрокро мегирем, раҳмат!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "怎么点这么多菜？",
+          "pinyin": "Zěnme diǎn zhème duō cài?",
+          "text": {
+            "uz": "Nega buncha ko‘p taom buyurtma qilding?",
+            "ru": "Зачем заказал столько блюд?",
+            "tj": "Чаро ин қадар хӯрок фармоиш додӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你想想，今天是几月几号？",
+          "pinyin": "Nǐ xiǎngxiang, jīntiān shì jǐ yuè jǐ hào?",
+          "text": {
+            "uz": "O‘ylab ko‘r, bugun nechanchi sana?",
+            "ru": "Подумай, какое сегодня число?",
+            "tj": "Фикр кун, имрӯз чандуми моҳ аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "8月27号。啊！我的生日！",
+          "pinyin": "Bā yuè èrshíqī hào. A! Wǒ de shēngrì!",
+          "text": {
+            "uz": "27-avgust. Voy! Tug‘ilgan kunim!",
+            "ru": "27 августа. А! Мой день рождения!",
+            "tj": "27-уми август. Оҳ! Зодрӯзи ман!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "右边",
+            "pinyin": "yòubian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘ng tomon",
+              "ru": "правая сторона",
+              "tj": "тарафи рост"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "右边 talaffuzini tanlang:",
+            "ru": "Выберите произношение 右边:",
+            "tj": "Талаффузи 右边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuǒ",
+            "yòubian",
+            "shǒubiǎo",
+            "zuǒbian"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "右边 — yòubian",
+            "ru": "右边 — yòubian",
+            "tj": "右边 — yòubian"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "右",
+            "pinyin": "yòu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘ng",
+              "ru": "право; правый",
+              "tj": "рост"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "右",
+          "pinyin": "yòu",
+          "translation": {
+            "uz": "o‘ng",
+            "ru": "право; правый",
+            "tj": "рост"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘ng' xitoycha qaysi?",
+            "ru": "'право; правый' по-китайски?",
+            "tj": "'рост' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "左",
+            "右",
+            "手表",
+            "左边"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘ng = 右 (yòu)",
+            "ru": "право; правый = 右 (yòu)",
+            "tj": "рост = 右 (yòu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "记得",
+            "pinyin": "jìde",
+            "pos": "v.",
+            "meaning": {
+              "uz": "eslamoq",
+              "ru": "помнить",
+              "tj": "дар хотир доштан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "记得",
+          "pinyin": "jìde",
+          "options": [
+            "左",
+            "记得",
+            "左边",
+            "手表"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "记得 — eslamoq (jìde)",
+            "ru": "记得 — помнить (jìde)",
+            "tj": "记得 — дар хотир доштан (jìde)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "爱情片",
+            "pinyin": "àiqíngpiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "romantik film",
+              "ru": "романтический фильм",
+              "tj": "филми ошиқона"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "爱情片 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 爱情片:",
+            "tj": "Маънои калимаи 爱情片-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "romantik film",
+              "ru": "романтический фильм",
+              "tj": "филми ошиқона"
+            },
+            {
+              "uz": "chap",
+              "ru": "лево; левый",
+              "tj": "чап"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            },
+            {
+              "uz": "qo‘l soati",
+              "ru": "наручные часы",
+              "tj": "соати дастӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "爱情片 = romantik film (àiqíngpiàn)",
+            "ru": "爱情片 = романтический фильм (àiqíngpiàn)",
+            "tj": "爱情片 = филми ошиқона (àiqíngpiàn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yòubian qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yòubian?",
+            "tj": "yòubian кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "手表",
+            "左边",
+            "右边",
+            "左"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "右边 = o‘ng tomon (yòubian)",
+            "ru": "右边 = правая сторона (yòubian)",
+            "tj": "右边 = тарафи рост (yòubian)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "右边",
+              {
+                "uz": "o‘ng tomon",
+                "ru": "правая сторона",
+                "tj": "тарафи рост"
+              }
+            ],
+            [
+              "右",
+              {
+                "uz": "o‘ng",
+                "ru": "право; правый",
+                "tj": "рост"
+              }
+            ],
+            [
+              "记得",
+              {
+                "uz": "eslamoq",
+                "ru": "помнить",
+                "tj": "дар хотир доштан"
+              }
+            ],
+            [
+              "爱情片",
+              {
+                "uz": "romantik film",
+                "ru": "романтический фильм",
+                "tj": "филми ошиқона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Taqqoslash gapi (2)",
+              "ru": "Сравнительное предложение (2)",
+              "tj": "Ҷумлаи муқоисавӣ (2)"
+            },
+            "title_zh": "比较句（2）",
+            "rule": {
+              "uz": "“比” taqqoslash gapida sifat oldidan 很 yoki 非常 ishlatilmaydi; darajani kuchaytirish uchun 还 yoki 更 ishlatiladi.",
+              "ru": "В предложениях с 比 перед прилагательным нельзя ставить 很/非常; усиление выражается 还 или 更.",
+              "tj": "Дар ҷумлаҳои бо 比 пеш аз сифат 很/非常 намеояд; барои қавитар кардани дараҷа 还 ё 更 истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "我看网上说这个电影比那个爱情片更有意思。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "今天比昨天更热。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我觉得奶茶比牛奶还好喝。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "热",
+            "昨天",
+            "手表",
+            "比",
+            "今天",
+            "更",
+            "左边"
+          ],
+          "answer_tokens": [
+            "今天",
+            "比",
+            "昨天",
+            "更",
+            "热"
+          ],
+          "explanation": {
+            "uz": "今天比昨天更热。",
+            "ru": "今天比昨天更热。",
+            "tj": "今天比昨天更热。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我觉得奶茶比牛奶还好喝。",
+            "我看网上说这个电影比那个爱情片更有意思。",
+            "今天比昨天更热。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今天比昨天更热。 — ",
+            "ru": "今天比昨天更热。 — ",
+            "tj": "今天比昨天更热。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。",
+          "pinyin": "Háishi kàn zhège ba, wǒ kàn wǎngshang shuō zhège diànyǐng bǐ nàge àiqíngpiàn gèng yǒu yìsi.",
+          "options": [
+            "我也觉得左边的比右边的好看。",
+            "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。",
+            "我记得你喜欢看爱情片，我们看那个爱情片，怎么样？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。 — Yaxshisi bunisini ko‘raylik. Internetda bu film o‘sha romantik filmdan qiziqroq deyilgan.",
+            "ru": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。 — Лучше посмотрим этот. В интернете пишут, что он интереснее того романтического.",
+            "tj": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。 — Беҳтараш ҳаминро бинем. Дар интернет гуфтаанд, ки ин аз он филми ошиқона ҷолибтар аст."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "右",
+          "pinyin": "yòu",
+          "translation": {
+            "uz": "o‘ng",
+            "ru": "право; правый",
+            "tj": "рост"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "左边 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 左边:",
+            "tj": "Маънои калимаи 左边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chap",
+              "ru": "лево; левый",
+              "tj": "чап"
+            },
+            {
+              "uz": "...dan; taqqoslamoq",
+              "ru": "чем; сравнивать",
+              "tj": "нисбат ба; муқоиса кардан"
+            },
+            {
+              "uz": "qo‘l soati",
+              "ru": "наручные часы",
+              "tj": "соати дастӣ"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "左边 = chap tomon (zuǒbian)",
+            "ru": "左边 = левая сторона (zuǒbian)",
+            "tj": "左边 = тарафи чап (zuǒbian)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "左边",
+            "pinyin": "zuǒbian",
+            "meaning": {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘ng' xitoycha qaysi?",
+            "ru": "'право; правый' по-китайски?",
+            "tj": "'рост' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "左边",
+            "右",
+            "左",
+            "手表"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘ng = 右 (yòu)",
+            "ru": "право; правый = 右 (yòu)",
+            "tj": "рост = 右 (yòu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "右",
+            "pinyin": "yòu",
+            "meaning": {
+              "uz": "o‘ng",
+              "ru": "право; правый",
+              "tj": "рост"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

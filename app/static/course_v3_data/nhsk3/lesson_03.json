@@ -1,0 +1,631 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 3,
+  "source_lesson": 1,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我们去机场接你们",
+  "subtitle": {
+    "uz": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+    "ru": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+    "tj": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "丢",
+      "pinyin": "diū",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘qotmoq",
+        "ru": "терять",
+        "tj": "гум кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "箱子",
+      "pinyin": "xiāngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "quti; chamadon",
+        "ru": "ящик; чемодан",
+        "tj": "қуттӣ; ҷомадон"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "号码",
+      "pinyin": "hàomǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "raqam",
+        "ru": "номер",
+        "tj": "рақам"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "好像",
+      "pinyin": "hǎoxiàng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "go‘yo; o‘xshaydi",
+        "ru": "кажется; похоже",
+        "tj": "гӯё; ба назар мерасад"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Bir nechta aniqlovchining ketma-ket kelishi",
+        "ru": "Несколько определений перед существительным",
+        "tj": "Якчанд муайянкунанда пеш аз исм"
+      },
+      "title_zh": "多项定语",
+      "rule": {
+        "uz": "Bir otni bir nechta aniqlovchi tavsiflashi mumkin. Ular ot oldidan ketma-ket keladi; uzunroq fe’lli tavsiflar odatda “的” bilan otga bog‘lanadi.",
+        "ru": "Одно существительное может иметь несколько определений. Они последовательно ставятся перед существительным; более развёрнутые глагольные описания обычно связываются с ним через “的”.",
+        "tj": "Як исм метавонад чанд муайянкунанда дошта бошад. Онҳо пайдарпай пеш аз исм меоянд; тавсифҳои феълии дарозтар одатан бо “的” ба исм мепайванданд."
+      },
+      "examples": [
+        {
+          "zh": "李文是那个穿着黑衣服的短头发的年轻人吗？",
+          "pinyin": "Lǐ Wén shì nàge chuānzhe hēi yīfu de duǎn tóufa de niánqīng rén ma?",
+          "translation": {
+            "uz": "Li Wen qora kiyim kiygan, kalta sochli o‘sha yosh yigitmi?",
+            "ru": "Ли Вэнь — тот молодой человек в чёрной одежде с короткими волосами?",
+            "tj": "Ли Вэн ҳамон ҷавони либоси сиёҳпӯш ва мӯйкӯтоҳ аст?"
+          }
+        },
+        {
+          "zh": "昨天和家月一起看电影的两个人是我的朋友。",
+          "pinyin": "Zuótiān hé Jiāyuè yìqǐ kàn diànyǐng de liǎng ge rén shì wǒ de péngyou.",
+          "translation": {
+            "uz": "Kecha Jiayue bilan film ko‘rgan ikki kishi mening do‘stlarim.",
+            "ru": "Два человека, которые вчера смотрели фильм вместе с Цзяюэ, — мои друзья.",
+            "tj": "Ду нафаре, ки дирӯз бо Ҷяюэ филм диданд, дӯстони мананд."
+          }
+        },
+        {
+          "zh": "我那件新买的白色的衣服在哪儿？",
+          "pinyin": "Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?",
+          "translation": {
+            "uz": "Mening yangi sotib olgan oq kiyimim qayerda?",
+            "ru": "Где моя новая белая одежда, которую я купил?",
+            "tj": "Либоси сафеди навхаридаи ман куҷост?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Aeroportda Li Wen va Bai Jiayue bagaj olish joyida.",
+        "ru": "В аэропорту Ли Вэнь и Бай Цзяюэ находятся у выдачи багажа.",
+        "tj": "Дар фурудгоҳ Ли Вэн ва Бай Ҷяюэ дар ҷойи гирифтани бағоҷ ҳастанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "是一个黑色的箱子，上面写着我的名字和电话号码。",
+          "pinyin": "Shì yí ge hēisè de xiāngzi, shàngmian xiězhe wǒ de míngzi hé diànhuà hàomǎ.",
+          "text": {
+            "uz": "Qora chamadon, ustida ismim va telefon raqamim yozilgan.",
+            "ru": "Это чёрный чемодан, на нём написаны моё имя и номер телефона.",
+            "tj": "Ҷомадони сиёҳ аст, рӯяш ному рақами телефонам навишта шудааст."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我好像在哪儿看到过这个箱子，是不是有人拿错了？",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi, shì bú shì yǒu rén ná cuò le?",
+          "text": {
+            "uz": "Bu chamadonni qayerdadir ko‘rgandekman, balki kimdir adashib olib ketgandir?",
+            "ru": "Кажется, я где-то видел этот чемодан. Может, кто-то взял его по ошибке?",
+            "tj": "Ба назарам, ин ҷомадонро дар ягон ҷо дида будам. Шояд касе иштибоҳан гирифта бошад?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "丢",
+            "pinyin": "diū",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yo‘qotmoq",
+              "ru": "терять",
+              "tj": "гум кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "丢 talaffuzini tanlang:",
+            "ru": "Выберите произношение 丢:",
+            "tj": "Талаффузи 丢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhǎng",
+            "xiàng",
+            "yǐwéi",
+            "diū"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "丢 — diū",
+            "ru": "丢 — diū",
+            "tj": "丢 — diū"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "箱子",
+            "pinyin": "xiāngzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "quti; chamadon",
+              "ru": "ящик; чемодан",
+              "tj": "қуттӣ; ҷомадон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'quti; chamadon' xitoycha qaysi?",
+            "ru": "'ящик; чемодан' по-китайски?",
+            "tj": "'қуттӣ; ҷомадон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "长",
+            "以为",
+            "像",
+            "箱子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "quti; chamadon = 箱子 (xiāngzi)",
+            "ru": "ящик; чемодан = 箱子 (xiāngzi)",
+            "tj": "қуттӣ; ҷомадон = 箱子 (xiāngzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "号码",
+            "pinyin": "hàomǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "号码",
+          "pinyin": "hàomǎ",
+          "translation": {
+            "uz": "raqam",
+            "ru": "номер",
+            "tj": "рақам"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "号码",
+          "pinyin": "hàomǎ",
+          "options": [
+            "号码",
+            "以为",
+            "像",
+            "长"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "号码 — raqam (hàomǎ)",
+            "ru": "号码 — номер (hàomǎ)",
+            "tj": "号码 — рақам (hàomǎ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "好像",
+            "pinyin": "hǎoxiàng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "go‘yo; o‘xshaydi",
+              "ru": "кажется; похоже",
+              "tj": "гӯё; ба назар мерасад"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好像 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好像:",
+            "tj": "Маънои калимаи 好像-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "go‘yo; o‘xshaydi",
+              "ru": "кажется; похоже",
+              "tj": "гӯё; ба назар мерасад"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            },
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            },
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好像 = go‘yo; o‘xshaydi (hǎoxiàng)",
+            "ru": "好像 = кажется; похоже (hǎoxiàng)",
+            "tj": "好像 = гӯё; ба назар мерасад (hǎoxiàng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "diū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается diū?",
+            "tj": "diū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "像",
+            "以为",
+            "丢",
+            "长"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "丢 = yo‘qotmoq (diū)",
+            "ru": "丢 = терять (diū)",
+            "tj": "丢 = гум кардан (diū)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "丢",
+              {
+                "uz": "yo‘qotmoq",
+                "ru": "терять",
+                "tj": "гум кардан"
+              }
+            ],
+            [
+              "箱子",
+              {
+                "uz": "quti; chamadon",
+                "ru": "ящик; чемодан",
+                "tj": "қуттӣ; ҷомадон"
+              }
+            ],
+            [
+              "号码",
+              {
+                "uz": "raqam",
+                "ru": "номер",
+                "tj": "рақам"
+              }
+            ],
+            [
+              "好像",
+              {
+                "uz": "go‘yo; o‘xshaydi",
+                "ru": "кажется; похоже",
+                "tj": "гӯё; ба назар мерасад"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Bir nechta aniqlovchining ketma-ket kelishi",
+              "ru": "Несколько определений перед существительным",
+              "tj": "Якчанд муайянкунанда пеш аз исм"
+            },
+            "title_zh": "多项定语",
+            "rule": {
+              "uz": "Bir otni bir nechta aniqlovchi tavsiflashi mumkin. Ular ot oldidan ketma-ket keladi; uzunroq fe’lli tavsiflar odatda “的” bilan otga bog‘lanadi.",
+              "ru": "Одно существительное может иметь несколько определений. Они последовательно ставятся перед существительным; более развёрнутые глагольные описания обычно связываются с ним через “的”.",
+              "tj": "Як исм метавонад чанд муайянкунанда дошта бошад. Онҳо пайдарпай пеш аз исм меоянд; тавсифҳои феълии дарозтар одатан бо “的” ба исм мепайванданд."
+            },
+            "examples": [
+              {
+                "zh": "李文是那个穿着黑衣服的短头发的年轻人吗？",
+                "pinyin": "Lǐ Wén shì nàge chuānzhe hēi yīfu de duǎn tóufa de niánqīng rén ma?",
+                "translation": {
+                  "uz": "Li Wen qora kiyim kiygan, kalta sochli o‘sha yosh yigitmi?",
+                  "ru": "Ли Вэнь — тот молодой человек в чёрной одежде с короткими волосами?",
+                  "tj": "Ли Вэн ҳамон ҷавони либоси сиёҳпӯш ва мӯйкӯтоҳ аст?"
+                }
+              },
+              {
+                "zh": "昨天和家月一起看电影的两个人是我的朋友。",
+                "pinyin": "Zuótiān hé Jiāyuè yìqǐ kàn diànyǐng de liǎng ge rén shì wǒ de péngyou.",
+                "translation": {
+                  "uz": "Kecha Jiayue bilan film ko‘rgan ikki kishi mening do‘stlarim.",
+                  "ru": "Два человека, которые вчера смотрели фильм вместе с Цзяюэ, — мои друзья.",
+                  "tj": "Ду нафаре, ки дирӯз бо Ҷяюэ филм диданд, дӯстони мананд."
+                }
+              },
+              {
+                "zh": "我那件新买的白色的衣服在哪儿？",
+                "pinyin": "Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?",
+                "translation": {
+                  "uz": "Mening yangi sotib olgan oq kiyimim qayerda?",
+                  "ru": "Где моя новая белая одежда, которую я купил?",
+                  "tj": "Либоси сафеди навхаридаи ман куҷост?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Mening yangi sotib olgan oq kiyimim qayerda?» — xitoychada qaysi biri?",
+            "ru": "«Где моя новая белая одежда, которую я купил?» — какое предложение по-китайски?",
+            "tj": "«Либоси сафеди навхаридаи ман куҷост?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我那件新买的白色的衣服在哪儿？",
+            "李文是那个穿着黑衣服的短头发的年轻人吗？",
+            "昨天和家月一起看电影的两个人是我的朋友。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我那件新买的白色的衣服在哪儿？ — Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?",
+            "ru": "我那件新买的白色的衣服在哪儿？ — Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?",
+            "tj": "我那件新买的白色的衣服在哪儿？ — Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "好像",
+          "pinyin": "hǎoxiàng",
+          "translation": {
+            "uz": "go‘yo; o‘xshaydi",
+            "ru": "кажется; похоже",
+            "tj": "гӯё; ба назар мерасад"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "箱子",
+          "pinyin": "xiāngzi",
+          "options": [
+            "像",
+            "长",
+            "箱子",
+            "以为"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "箱子 — quti; chamadon (xiāngzi)",
+            "ru": "箱子 — ящик; чемодан (xiāngzi)",
+            "tj": "箱子 — қуттӣ; ҷомадон (xiāngzi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "号码",
+          "pinyin": "hàomǎ",
+          "translation": {
+            "uz": "raqam",
+            "ru": "номер",
+            "tj": "рақам"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "接 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 接:",
+            "tj": "Маънои калимаи 接-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            },
+            {
+              "uz": "kutib olmoq",
+              "ru": "встречать; забирать",
+              "tj": "пешвоз гирифтан"
+            },
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "接 = kutib olmoq (jiē)",
+            "ru": "接 = встречать; забирать (jiē)",
+            "tj": "接 = пешвоз гирифтан (jiē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "接",
+            "pinyin": "jiē",
+            "meaning": {
+              "uz": "kutib olmoq",
+              "ru": "встречать; забирать",
+              "tj": "пешвоз гирифтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'raqam' xitoycha qaysi?",
+            "ru": "'номер' по-китайски?",
+            "tj": "'рақам' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "长",
+            "像",
+            "以为",
+            "号码"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "raqam = 号码 (hàomǎ)",
+            "ru": "номер = 号码 (hàomǎ)",
+            "tj": "рақам = 号码 (hàomǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "号码",
+            "pinyin": "hàomǎ",
+            "meaning": {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,730 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 129,
+  "source_lesson": 17,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我要多向认真的人学习",
+  "subtitle": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "向",
+      "pinyin": "xiàng",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "tomon; ...dan o‘rganmoq",
+        "ru": "к; по направлению к; у кого-либо",
+        "tj": "ба сӯи; аз касе омӯхтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "楼梯",
+      "pinyin": "lóutī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "zina",
+        "ru": "лестница",
+        "tj": "зинапоя"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "害怕",
+      "pinyin": "hàipà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qo‘rqmoq",
+        "ru": "бояться",
+        "tj": "тарсидан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "生气",
+      "pinyin": "shēngqì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "jahli chiqmoq",
+        "ru": "сердиться",
+        "tj": "қаҳр кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Predlog “向” — yo‘nalish va o‘rganish manbai",
+        "ru": "Предлог “向” — направление и источник обучения",
+        "tj": "Пешоянди “向” — самт ва манбаи омӯзиш"
+      },
+      "title_zh": "介词“向”",
+      "rule": {
+        "uz": "“向 + shaxs/yo‘nalish + fe’l” harakatning qaysi tomonga yoki kimga yo‘nalganini bildiradi. “向某人学习” — “kimdandir o‘rganmoq”.",
+        "ru": "“向 + человек/направление + глагол” показывает направление действия или того, к кому оно обращено. “向某人学习” означает «учиться у кого-либо».",
+        "tj": "“向 + шахс/самт + феъл” самти амал ё ба кӣ равона шудани онро нишон медиҳад. “向某人学习” — «аз касе омӯхтан»."
+      },
+      "examples": [
+        {
+          "zh": "别再向前走了。",
+          "pinyin": "Bié zài xiàng qián zǒu le.",
+          "translation": {
+            "uz": "Endi oldinga yurma.",
+            "ru": "Не иди дальше вперёд.",
+            "tj": "Дигар ба пеш нарав."
+          }
+        },
+        {
+          "zh": "以后我要多向认真的人学习。",
+          "pinyin": "Yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "translation": {
+            "uz": "Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "В дальнейшем я буду больше учиться у серьёзных людей.",
+            "tj": "Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        },
+        {
+          "zh": "孩子一看见妈妈，就向她跑过去了。",
+          "pinyin": "Háizi yí kànjiàn māma, jiù xiàng tā pǎo guòqu le.",
+          "translation": {
+            "uz": "Bola onasini ko‘rishi bilan unga qarab yugurdi.",
+            "ru": "Как только ребёнок увидел маму, сразу побежал к ней.",
+            "tj": "Кӯдак ҳамин ки модарашро дид, ба сӯяш давид."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+        "ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+        "tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "怎么回事？",
+          "pinyin": "Zěnme huí shì?",
+          "text": {
+            "uz": "Nima bo‘ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ гап шуд?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de.",
+          "text": {
+            "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+            "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+            "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "text": {
+            "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+            "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+        "ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+        "tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de.",
+          "text": {
+            "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+            "ru": "Что тут странного? Я пришёл заниматься.",
+            "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "text": {
+            "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?",
+          "text": {
+            "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+            "ru": "Телефон разрядился. Ты меня искал по делу?",
+            "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "text": {
+            "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn.",
+          "text": {
+            "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+            "ru": "Я покажу тебе несколько полезных сайтов.",
+            "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "向",
+            "pinyin": "xiàng",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "向",
+          "pinyin": "xiàng",
+          "translation": {
+            "uz": "tomon; ...dan o‘rganmoq",
+            "ru": "к; по направлению к; у кого-либо",
+            "tj": "ба сӯи; аз касе омӯхтан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tomon; ...dan o‘rganmoq' xitoycha qaysi?",
+            "ru": "'к; по направлению к; у кого-либо' по-китайски?",
+            "tj": "'ба сӯи; аз касе омӯхтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "生气",
+            "害怕",
+            "楼梯"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "tomon; ...dan o‘rganmoq = 向 (xiàng)",
+            "ru": "к; по направлению к; у кого-либо = 向 (xiàng)",
+            "tj": "ба сӯи; аз касе омӯхтан = 向 (xiàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "楼梯",
+            "pinyin": "lóutī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "楼梯",
+          "pinyin": "lóutī",
+          "options": [
+            "害怕",
+            "生气",
+            "楼梯",
+            "向"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "楼梯 — zina (lóutī)",
+            "ru": "楼梯 — лестница (lóutī)",
+            "tj": "楼梯 — зинапоя (lóutī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "害怕",
+            "pinyin": "hàipà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "害怕 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 害怕:",
+            "tj": "Маънои калимаи 害怕-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "қаҳр кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "害怕 = qo‘rqmoq (hàipà)",
+            "ru": "害怕 = бояться (hàipà)",
+            "tj": "害怕 = тарсидан (hàipà)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "生气",
+            "pinyin": "shēngqì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "қаҳр кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shēngqì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shēngqì?",
+            "tj": "shēngqì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "生气",
+            "害怕",
+            "向",
+            "楼梯"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "生气 = jahli chiqmoq (shēngqì)",
+            "ru": "生气 = сердиться (shēngqì)",
+            "tj": "生气 = қаҳр кардан (shēngqì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "向 talaffuzini tanlang:",
+            "ru": "Выберите произношение 向:",
+            "tj": "Талаффузи 向-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hàipà",
+            "xiàng",
+            "lóutī",
+            "shēngqì"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "向 — xiàng",
+            "ru": "向 — xiàng",
+            "tj": "向 — xiàng"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "向",
+              {
+                "uz": "tomon; ...dan o‘rganmoq",
+                "ru": "к; по направлению к; у кого-либо",
+                "tj": "ба сӯи; аз касе омӯхтан"
+              }
+            ],
+            [
+              "楼梯",
+              {
+                "uz": "zina",
+                "ru": "лестница",
+                "tj": "зинапоя"
+              }
+            ],
+            [
+              "害怕",
+              {
+                "uz": "qo‘rqmoq",
+                "ru": "бояться",
+                "tj": "тарсидан"
+              }
+            ],
+            [
+              "生气",
+              {
+                "uz": "jahli chiqmoq",
+                "ru": "сердиться",
+                "tj": "қаҳр кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Predlog “向” — yo‘nalish va o‘rganish manbai",
+              "ru": "Предлог “向” — направление и источник обучения",
+              "tj": "Пешоянди “向” — самт ва манбаи омӯзиш"
+            },
+            "title_zh": "介词“向”",
+            "rule": {
+              "uz": "“向 + shaxs/yo‘nalish + fe’l” harakatning qaysi tomonga yoki kimga yo‘nalganini bildiradi. “向某人学习” — “kimdandir o‘rganmoq”.",
+              "ru": "“向 + человек/направление + глагол” показывает направление действия или того, к кому оно обращено. “向某人学习” означает «учиться у кого-либо».",
+              "tj": "“向 + шахс/самт + феъл” самти амал ё ба кӣ равона шудани онро нишон медиҳад. “向某人学习” — «аз касе омӯхтан»."
+            },
+            "examples": [
+              {
+                "zh": "别再向前走了。",
+                "pinyin": "Bié zài xiàng qián zǒu le.",
+                "translation": {
+                  "uz": "Endi oldinga yurma.",
+                  "ru": "Не иди дальше вперёд.",
+                  "tj": "Дигар ба пеш нарав."
+                }
+              },
+              {
+                "zh": "以后我要多向认真的人学习。",
+                "pinyin": "Yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+                "translation": {
+                  "uz": "Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+                  "ru": "В дальнейшем я буду больше учиться у серьёзных людей.",
+                  "tj": "Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+                }
+              },
+              {
+                "zh": "孩子一看见妈妈，就向她跑过去了。",
+                "pinyin": "Háizi yí kànjiàn māma, jiù xiàng tā pǎo guòqu le.",
+                "translation": {
+                  "uz": "Bola onasini ko‘rishi bilan unga qarab yugurdi.",
+                  "ru": "Как только ребёнок увидел маму, сразу побежал к ней.",
+                  "tj": "Кӯдак ҳамин ки модарашро дид, ба сӯяш давид."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Endi oldinga yurma.",
+            "ru": "Не иди дальше вперёд.",
+            "tj": "Дигар ба пеш нарав."
+          },
+          "tokens": [
+            "了",
+            "再",
+            "向",
+            "楼梯",
+            "前",
+            "别",
+            "走",
+            "害怕"
+          ],
+          "answer_tokens": [
+            "别",
+            "再",
+            "向",
+            "前",
+            "走",
+            "了"
+          ],
+          "explanation": {
+            "uz": "别再向前走了。 — Bié zài xiàng qián zǒu le.",
+            "ru": "别再向前走了。 — Bié zài xiàng qián zǒu le.",
+            "tj": "别再向前走了。 — Bié zài xiàng qián zǒu le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bola onasini ko‘rishi bilan unga qarab yugurdi.» — xitoychada qaysi biri?",
+            "ru": "«Как только ребёнок увидел маму, сразу побежал к ней.» — какое предложение по-китайски?",
+            "tj": "«Кӯдак ҳамин ки модарашро дид, ба сӯяш давид.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "以后我要多向认真的人学习。",
+            "孩子一看见妈妈，就向她跑过去了。",
+            "别再向前走了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "孩子一看见妈妈，就向她跑过去了。 — Háizi yí kànjiàn māma, jiù xiàng tā pǎo guòqu le.",
+            "ru": "孩子一看见妈妈，就向她跑过去了。 — Háizi yí kànjiàn māma, jiù xiàng tā pǎo guòqu le.",
+            "tj": "孩子一看见妈妈，就向她跑过去了。 — Háizi yí kànjiàn māma, jiù xiàng tā pǎo guòqu le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "楼梯",
+          "pinyin": "lóutī",
+          "options": [
+            "生气",
+            "楼梯",
+            "害怕",
+            "向"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "楼梯 — zina (lóutī)",
+            "ru": "楼梯 — лестница (lóutī)",
+            "tj": "楼梯 — зинапоя (lóutī)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "向",
+          "pinyin": "xiàng",
+          "translation": {
+            "uz": "tomon; ...dan o‘rganmoq",
+            "ru": "к; по направлению к; у кого-либо",
+            "tj": "ба сӯи; аз касе омӯхтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "脏 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 脏:",
+            "tj": "Маънои калимаи 脏-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iflos",
+              "ru": "грязный",
+              "tj": "ифлос"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "脏 = iflos (zāng)",
+            "ru": "脏 = грязный (zāng)",
+            "tj": "脏 = ифлос (zāng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "脏",
+            "pinyin": "zāng",
+            "meaning": {
+              "uz": "iflos",
+              "ru": "грязный",
+              "tj": "ифлос"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tomon; ...dan o‘rganmoq' xitoycha qaysi?",
+            "ru": "'к; по направлению к; у кого-либо' по-китайски?",
+            "tj": "'ба сӯи; аз касе омӯхтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "楼梯",
+            "向",
+            "害怕",
+            "生气"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tomon; ...dan o‘rganmoq = 向 (xiàng)",
+            "ru": "к; по направлению к; у кого-либо = 向 (xiàng)",
+            "tj": "ба сӯи; аз касе омӯхтан = 向 (xiàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "向",
+            "pinyin": "xiàng",
+            "meaning": {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

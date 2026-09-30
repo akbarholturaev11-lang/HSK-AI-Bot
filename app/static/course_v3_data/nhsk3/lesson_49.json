@@ -1,0 +1,718 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 49,
+  "source_lesson": 7,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "那条裙子比短裤更好看",
+  "subtitle": {
+    "uz": "Xarid tajribasini tushunish va aytib berish; mahsulot xususiyatlarini baholash; “比” taqqoslashining inkor shaklini ishlatish; Xitoydagi xarid odatlari bilan tanishish.",
+    "ru": "Понимать и описывать опыт покупок; оценивать свойства товаров; использовать отрицательную форму сравнений с “比”; познакомиться со способами совершения покупок в Китае.",
+    "tj": "Таҷрибаи харидро фаҳмидан ва шарҳ додан; хусусиятҳои молро арзёбӣ кардан; шакли инкории муқоисаи “比”-ро истифода бурдан; бо тарзҳои харид дар Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "辆",
+      "pinyin": "liàng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "transport vositalari uchun hisob so‘zi",
+        "ru": "счётное слово для транспортных средств",
+        "tj": "воҳиди ҳисоб барои нақлиёт"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "自行车",
+      "pinyin": "zìxíngchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "velosiped",
+        "ru": "велосипед",
+        "tj": "дучарха"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "旧",
+      "pinyin": "jiù",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "eski",
+        "ru": "старый",
+        "tj": "кӯҳна"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "矮",
+      "pinyin": "ǎi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "past; bo‘yi kalta",
+        "ru": "низкий; невысокий",
+        "tj": "паст; қадпаст"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Ketma-ket harakatli gap (2)",
+        "ru": "Предложение с последовательными действиями (2)",
+        "tj": "Ҷумла бо амалҳои пайдарпай (2)"
+      },
+      "title_zh": "连动句（2）",
+      "rule": {
+        "uz": "Bir ega ketma-ket ikki yoki undan ortiq harakat bajarganda, fe’llar bitta gapda ketma-ket kelishi mumkin. Harakatlardan biri boshqa harakatning usuli yoki holatini ko‘rsatishi mumkin.",
+        "ru": "Когда один субъект последовательно выполняет несколько действий, глаголы могут следовать друг за другом в одном предложении. Одно действие может обозначать способ выполнения другого.",
+        "tj": "Вақте як мубтадо пайдарпай чанд амалро иҷро мекунад, феълҳо метавонанд дар як ҷумла паси ҳам оянд. Яке аз амалҳо метавонад тарзи иҷрои амали дигарро нишон диҳад."
+      },
+      "examples": [
+        {
+          "zh": "咱们可以走着去。",
+          "pinyin": "Zánmen kěyǐ zǒuzhe qù.",
+          "translation": {
+            "uz": "Biz piyoda bora olamiz.",
+            "ru": "Мы можем пойти пешком.",
+            "tj": "Мо метавонем пиёда равем."
+          }
+        },
+        {
+          "zh": "弟弟吃着苹果写作业。",
+          "pinyin": "Dìdi chīzhe píngguǒ xiě zuòyè.",
+          "translation": {
+            "uz": "Ukam olma yeb turib uy vazifasini qilyapti.",
+            "ru": "Младший брат делает домашнее задание, одновременно ест яблоко.",
+            "tj": "Додарам себ хӯрда истода вазифаи хонагиро иҷро мекунад."
+          }
+        },
+        {
+          "zh": "他们坐着看电视。",
+          "pinyin": "Tāmen zuòzhe kàn diànshì.",
+          "translation": {
+            "uz": "Ular o‘tirib televizor ko‘rishmoqda.",
+            "ru": "Они смотрят телевизор сидя.",
+            "tj": "Онҳо нишаста телевизор мебинанд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming xaridga borishni muhokama qilmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин обсуждают поход за покупками.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин харид рафтанро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "是啊，她现在长高了，这辆车已经太矮了。",
+          "pinyin": "Shì a, tā xiànzài zhǎng gāo le, zhè liàng chē yǐjīng tài ǎi le.",
+          "text": {
+            "uz": "Ha, u bo‘yi o‘sdi, bu velosiped endi unga juda past.",
+            "ru": "Да, она выросла, этот велосипед уже слишком маленький.",
+            "tj": "Ҳа, қадаш баланд шуд, ин дучарха ҳоло барои ӯ хеле паст аст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "商场里开了一家自行车店，咱们给她买辆新的吧。",
+          "pinyin": "Shāngchǎng lǐ kāi le yì jiā zìxíngchē diàn, zánmen gěi tā mǎi liàng xīn de ba.",
+          "text": {
+            "uz": "Savdo markazida velosiped do‘koni ochilibdi, unga yangisini olaylik.",
+            "ru": "В торговом центре открылся магазин велосипедов, давай купим ей новый.",
+            "tj": "Дар маркази савдо мағозаи дучарха кушода шудааст, биё барояш нав бихарем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "好，咱们带小雪一起去，让她试一下。",
+          "pinyin": "Hǎo, zánmen dài Xiǎoxuě yìqǐ qù, ràng tā shì yíxià.",
+          "text": {
+            "uz": "Mayli, Xiaoxueni ham olib boraylik, o‘zi sinab ko‘rsin.",
+            "ru": "Хорошо, возьмём Сяосюэ с собой, пусть попробует.",
+            "tj": "Хуб, Сяосюэро ҳам мебарем, бигзор худаш санҷад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那今天就去吧！我也想再看看衣服。咱们怎么去？",
+          "pinyin": "Nà jīntiān jiù qù ba! Wǒ yě xiǎng zài kànkan yīfu. Zánmen zěnme qù?",
+          "text": {
+            "uz": "Unda bugun boraylik! Men ham kiyimlarni yana ko‘rmoqchiman. Qanday boramiz?",
+            "ru": "Тогда пойдём сегодня! Я ещё хочу посмотреть одежду. Как поедем?",
+            "tj": "Пас имрӯз равем! Ман ҳам мехоҳам либосҳоро боз бинам. Чӣ тавр меравем?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "商场不远，咱们可以走着去。",
+          "pinyin": "Shāngchǎng bù yuǎn, zánmen kěyǐ zǒuzhe qù.",
+          "text": {
+            "uz": "Savdo markazi uzoq emas, piyoda borsak bo‘ladi.",
+            "ru": "Торговый центр недалеко, можем пойти пешком.",
+            "tj": "Маркази савдо дур нест, пиёда рафтан мумкин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue velosipedni olib bo‘lib, kiyim tanlamoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ после покупки велосипеда выбирают одежду.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ баъди харидани дучарха либос интихоб мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "贵多少？",
+          "pinyin": "Guì duōshao?",
+          "text": {
+            "uz": "Qanchaga qimmatroq?",
+            "ru": "Насколько дороже?",
+            "tj": "Чанд қадар гаронтар?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do‘konda Wang Yixue xarid qilmoqda.",
+        "ru": "В магазине Ван Исюэ делает покупки.",
+        "tj": "Дар мағоза Ван Исюэ харид мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "店员",
+          "zh": "您给我五十五吧，不能再便宜了。",
+          "pinyin": "Nín gěi wǒ wǔshíwǔ ba, bù néng zài piányi le.",
+          "text": {
+            "uz": "55 yuan bering, bundan arzon qila olmayman.",
+            "ru": "Давайте 55 юаней, дешевле уже нельзя.",
+            "tj": "55 юан диҳед, аз ин арзонтар намешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "辆",
+            "pinyin": "liàng",
+            "pos": "m.",
+            "meaning": {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "辆",
+          "pinyin": "liàng",
+          "translation": {
+            "uz": "transport vositalari uchun hisob so‘zi",
+            "ru": "счётное слово для транспортных средств",
+            "tj": "воҳиди ҳисоб барои нақлиёт"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'transport vositalari uchun hisob so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для транспортных средств' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои нақлиёт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "矮",
+            "辆",
+            "自行车",
+            "旧"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "transport vositalari uchun hisob so‘zi = 辆 (liàng)",
+            "ru": "счётное слово для транспортных средств = 辆 (liàng)",
+            "tj": "воҳиди ҳисоб барои нақлиёт = 辆 (liàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "自行车",
+            "pinyin": "zìxíngchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "自行车",
+          "pinyin": "zìxíngchē",
+          "options": [
+            "矮",
+            "辆",
+            "自行车",
+            "旧"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "自行车 — velosiped (zìxíngchē)",
+            "ru": "自行车 — велосипед (zìxíngchē)",
+            "tj": "自行车 — дучарха (zìxíngchē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "旧",
+            "pinyin": "jiù",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "旧 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 旧:",
+            "tj": "Маънои калимаи 旧-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "past; bo‘yi kalta",
+              "ru": "низкий; невысокий",
+              "tj": "паст; қадпаст"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            },
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "旧 = eski (jiù)",
+            "ru": "旧 = старый (jiù)",
+            "tj": "旧 = кӯҳна (jiù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "矮",
+            "pinyin": "ǎi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "past; bo‘yi kalta",
+              "ru": "низкий; невысокий",
+              "tj": "паст; қадпаст"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ǎi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ǎi?",
+            "tj": "ǎi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "自行车",
+            "辆",
+            "矮",
+            "旧"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "矮 = past; bo‘yi kalta (ǎi)",
+            "ru": "矮 = низкий; невысокий (ǎi)",
+            "tj": "矮 = паст; қадпаст (ǎi)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "辆 talaffuzini tanlang:",
+            "ru": "Выберите произношение 辆:",
+            "tj": "Талаффузи 辆-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zìxíngchē",
+            "liàng",
+            "jiù",
+            "ǎi"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "辆 — liàng",
+            "ru": "辆 — liàng",
+            "tj": "辆 — liàng"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "辆",
+              {
+                "uz": "transport vositalari uchun hisob so‘zi",
+                "ru": "счётное слово для транспортных средств",
+                "tj": "воҳиди ҳисоб барои нақлиёт"
+              }
+            ],
+            [
+              "自行车",
+              {
+                "uz": "velosiped",
+                "ru": "велосипед",
+                "tj": "дучарха"
+              }
+            ],
+            [
+              "旧",
+              {
+                "uz": "eski",
+                "ru": "старый",
+                "tj": "кӯҳна"
+              }
+            ],
+            [
+              "矮",
+              {
+                "uz": "past; bo‘yi kalta",
+                "ru": "низкий; невысокий",
+                "tj": "паст; қадпаст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Ketma-ket harakatli gap (2)",
+              "ru": "Предложение с последовательными действиями (2)",
+              "tj": "Ҷумла бо амалҳои пайдарпай (2)"
+            },
+            "title_zh": "连动句（2）",
+            "rule": {
+              "uz": "Bir ega ketma-ket ikki yoki undan ortiq harakat bajarganda, fe’llar bitta gapda ketma-ket kelishi mumkin. Harakatlardan biri boshqa harakatning usuli yoki holatini ko‘rsatishi mumkin.",
+              "ru": "Когда один субъект последовательно выполняет несколько действий, глаголы могут следовать друг за другом в одном предложении. Одно действие может обозначать способ выполнения другого.",
+              "tj": "Вақте як мубтадо пайдарпай чанд амалро иҷро мекунад, феълҳо метавонанд дар як ҷумла паси ҳам оянд. Яке аз амалҳо метавонад тарзи иҷрои амали дигарро нишон диҳад."
+            },
+            "examples": [
+              {
+                "zh": "咱们可以走着去。",
+                "pinyin": "Zánmen kěyǐ zǒuzhe qù.",
+                "translation": {
+                  "uz": "Biz piyoda bora olamiz.",
+                  "ru": "Мы можем пойти пешком.",
+                  "tj": "Мо метавонем пиёда равем."
+                }
+              },
+              {
+                "zh": "弟弟吃着苹果写作业。",
+                "pinyin": "Dìdi chīzhe píngguǒ xiě zuòyè.",
+                "translation": {
+                  "uz": "Ukam olma yeb turib uy vazifasini qilyapti.",
+                  "ru": "Младший брат делает домашнее задание, одновременно ест яблоко.",
+                  "tj": "Додарам себ хӯрда истода вазифаи хонагиро иҷро мекунад."
+                }
+              },
+              {
+                "zh": "他们坐着看电视。",
+                "pinyin": "Tāmen zuòzhe kàn diànshì.",
+                "translation": {
+                  "uz": "Ular o‘tirib televizor ko‘rishmoqda.",
+                  "ru": "Они смотрят телевизор сидя.",
+                  "tj": "Онҳо нишаста телевизор мебинанд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Biz piyoda bora olamiz.",
+            "ru": "Мы можем пойти пешком.",
+            "tj": "Мо метавонем пиёда равем."
+          },
+          "tokens": [
+            "可以",
+            "着",
+            "咱们",
+            "自行车",
+            "走",
+            "辆",
+            "去"
+          ],
+          "answer_tokens": [
+            "咱们",
+            "可以",
+            "走",
+            "着",
+            "去"
+          ],
+          "explanation": {
+            "uz": "咱们可以走着去。 — Zánmen kěyǐ zǒuzhe qù.",
+            "ru": "咱们可以走着去。 — Zánmen kěyǐ zǒuzhe qù.",
+            "tj": "咱们可以走着去。 — Zánmen kěyǐ zǒuzhe qù."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ukam olma yeb turib uy vazifasini qilyapti.» — xitoychada qaysi biri?",
+            "ru": "«Младший брат делает домашнее задание, одновременно ест яблоко.» — какое предложение по-китайски?",
+            "tj": "«Додарам себ хӯрда истода вазифаи хонагиро иҷро мекунад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "弟弟吃着苹果写作业。",
+            "他们坐着看电视。",
+            "咱们可以走着去。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "弟弟吃着苹果写作业。 — Dìdi chīzhe píngguǒ xiě zuòyè.",
+            "ru": "弟弟吃着苹果写作业。 — Dìdi chīzhe píngguǒ xiě zuòyè.",
+            "tj": "弟弟吃着苹果写作业。 — Dìdi chīzhe píngguǒ xiě zuòyè."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "自行车",
+          "pinyin": "zìxíngchē",
+          "options": [
+            "旧",
+            "自行车",
+            "辆",
+            "矮"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "自行车 — velosiped (zìxíngchē)",
+            "ru": "自行车 — велосипед (zìxíngchē)",
+            "tj": "自行车 — дучарха (zìxíngchē)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "辆",
+          "pinyin": "liàng",
+          "translation": {
+            "uz": "transport vositalari uchun hisob so‘zi",
+            "ru": "счётное слово для транспортных средств",
+            "tj": "воҳиди ҳисоб барои нақлиёт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "该 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 该:",
+            "tj": "Маънои калимаи 该-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            },
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "该 = kerak; vaqti keldi (gāi)",
+            "ru": "该 = следует; пора (gāi)",
+            "tj": "该 = бояд; вақти он расид (gāi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "该",
+            "pinyin": "gāi",
+            "meaning": {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'transport vositalari uchun hisob so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для транспортных средств' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои нақлиёт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "矮",
+            "旧",
+            "辆",
+            "自行车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "transport vositalari uchun hisob so‘zi = 辆 (liàng)",
+            "ru": "счётное слово для транспортных средств = 辆 (liàng)",
+            "tj": "воҳиди ҳисоб барои нақлиёт = 辆 (liàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "辆",
+            "pinyin": "liàng",
+            "meaning": {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

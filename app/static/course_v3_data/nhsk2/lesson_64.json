@@ -1,0 +1,720 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 64,
+  "source_lesson": 13,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我们爱上中文课",
+  "subtitle": {
+    "uz": "“拿/送/卖 + 给” bilan ikki obyektli gap tuzish; “比”dan keyin miqdor birikmasi bilan aniq farqni aytish; “一点儿/一些” bilan kichik farqni ifodalash; yangi yil sovg‘alari va dars haqida gaplashish.",
+    "ru": "Строить двуобъектные предложения с “拿/送/卖 + 给”; выражать конкретную разницу количественной группой после 比; показывать небольшую разницу с “一点儿/一些”; говорить о новогодних подарках и занятиях.",
+    "tj": "Бо “拿/送/卖 + 给” ҷумлаи дуобъектӣ сохтан; баъди 比 бо таркиби миқдорӣ фарқи дақиқро гуфтан; бо “一点儿/一些” фарқи хурдро ифода кардан; дар бораи тӯҳфаҳои Соли нав ва дарс суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "那样",
+      "pinyin": "nàyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "unday; shunday",
+        "ru": "так; таким образом",
+        "tj": "он тавр; чунин"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "告诉",
+      "pinyin": "gàosu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "aytmoq; xabar bermoq",
+        "ru": "сказать; сообщить",
+        "tj": "гуфтан; хабар додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "班",
+      "pinyin": "bān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sinf; guruh",
+        "ru": "класс; группа",
+        "tj": "синф; гурӯҳ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Бай Цзяюэ и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Бай Ҷяюэ ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "时间过得真快啊！新年就要到了。",
+          "pinyin": "Shíjiān guò de zhēn kuài a! Xīnnián jiù yào dào le.",
+          "text": {
+            "uz": "Vaqt juda tez o‘tyapti! Yangi yilga ham oz qoldi.",
+            "ru": "Как быстро летит время! Новый год уже скоро.",
+            "tj": "Вақт чӣ қадар тез мегузарад! Соли нав ҳам наздик аст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？",
+          "pinyin": "Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?",
+          "text": {
+            "uz": "Unga Yangi yil sovg‘asi tayyorlaylik. Nima sovg‘a qilsak yaxshi?",
+            "ru": "Давай приготовим ей новогодний подарок. Что лучше подарить?",
+            "tj": "Биё барояш тӯҳфаи Соли нав тайёр кунем. Чӣ тӯҳфа диҳем беҳтар?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。",
+          "pinyin": "Nà wǒmen qù huādiàn kànkan, xiànzài mǎi huā de rén duō, xīwàng huādiàn hái yǒu piàoliang de huā.",
+          "text": {
+            "uz": "Unda gul do‘koniga borib ko‘raylik. Hozir gul oladiganlar ko‘p, umid qilamanki, chiroyli gullar qolgan.",
+            "ru": "Тогда пойдём в цветочный магазин. Сейчас много покупателей; надеюсь, красивые цветы ещё остались.",
+            "tj": "Пас ба мағозаи гул рафта бинем. Ҳоло харидори гул зиёд аст, умедворам гулҳои зебо ҳанӯз ҳастанд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei dars bermoqda.",
+        "ru": "В классе Ван Ифэй ведёт урок.",
+        "tj": "Дар синф Ван Ифэй дарс медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是啊！你们都学会了吗？",
+          "pinyin": "Shì a! Nǐmen dōu xuéhuì le ma?",
+          "text": {
+            "uz": "Ha! Hammasini o‘rgandingizmi?",
+            "ru": "Да! Вы всё выучили?",
+            "tj": "Ҳа! Ҳамаашро омӯхтед?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "学会了，没有问题。",
+          "pinyin": "Xuéhuì le, méiyǒu wèntí.",
+          "text": {
+            "uz": "O‘rgandik, muammo yo‘q.",
+            "ru": "Выучили, без проблем.",
+            "tj": "Омӯхтем, мушкил нест."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "好。现在我来说，你们在本子上面写。",
+          "pinyin": "Hǎo. Xiànzài wǒ lái shuō, nǐmen zài běnzi shàngmian xiě.",
+          "text": {
+            "uz": "Yaxshi. Endi men aytaman, sizlar daftarga yozinglar.",
+            "ru": "Хорошо. Теперь я буду говорить, а вы записывайте в тетради.",
+            "tj": "Хуб. Ҳоло ман мегӯям, шумо дар дафтар нависед."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同学们，“洗手间”的“间”字写错了，它的里面是“日”，不是“口”。",
+          "pinyin": "Tóngxuémen, “xǐshǒujiān” de “jiān” zì xiěcuò le, tā de lǐmian shì “rì”, bú shì “kǒu”.",
+          "text": {
+            "uz": "O‘quvchilar, “洗手间”dagi “间” xato yozilgan: ichida “日”, “口” emas.",
+            "ru": "Ребята, иероглиф “间” в “洗手间” написан неправильно: внутри “日”, а не “口”.",
+            "tj": "Донишҷӯён, “间” дар “洗手间” хато навишта шудааст: дарунаш “日” аст, на “口”."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。",
+          "pinyin": "“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.",
+          "text": {
+            "uz": "“日” “口”dan bir chiziq ko‘p; “口” yozilsa, “问题”dagi “问” bo‘lib qoladi.",
+            "ru": "В “日” на одну черту больше, чем в “口”; если написать “口”, получится “问” из “问题”.",
+            "tj": "“日” аз “口” як хат бештар дорад; агар “口” нависем, “问”-и “问题” мешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "没错，你说得很对。",
+          "pinyin": "Méi cuò, nǐ shuō de hěn duì.",
+          "text": {
+            "uz": "To‘g‘ri, juda to‘g‘ri aytding.",
+            "ru": "Верно, ты совершенно права.",
+            "tj": "Дуруст, хеле дуруст гуфтӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В классе Энни и Бай Цзяюэ разговаривают.",
+        "tj": "Дар синф Энни ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你觉得这个本子怎么样？",
+          "pinyin": "Jiāyuè, nǐ juéde zhège běnzi zěnmeyàng?",
+          "text": {
+            "uz": "Jiayue, bu daftar senga qanday?",
+            "ru": "Цзяюэ, как тебе этот блокнот?",
+            "tj": "Ҷяюэ, ин дафтар чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "很漂亮，多少钱一个？",
+          "pinyin": "Hěn piàoliang, duōshao qián yí ge?",
+          "text": {
+            "uz": "Juda chiroyli, bittasi qancha?",
+            "ru": "Очень красивый. Сколько стоит один?",
+            "tj": "Хеле зебо, яктояш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "比我们一起买的那个本子贵一点儿。",
+          "pinyin": "Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.",
+          "text": {
+            "uz": "Birga olgan daftarimizdan biroz qimmatroq.",
+            "ru": "Немного дороже того блокнота, который мы покупали вместе.",
+            "tj": "Аз дафтаре, ки якҷо харида будем, каме гаронтар."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这么漂亮的本子，不可能贵一点儿吧？",
+          "pinyin": "Zhème piàoliang de běnzi, bù kěnéng guì yìdiǎnr ba?",
+          "text": {
+            "uz": "Bunday chiroyli daftar faqat biroz qimmatroq bo‘lishi mumkin emas-a?",
+            "ru": "Такой красивый блокнот не может быть всего чуть дороже, правда?",
+            "tj": "Чунин дафтари зебо фақат каме гаронтар бошад, мумкин нест-ку?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我是上网买的，真没那么贵。我买了两个，送你一个。",
+          "pinyin": "Wǒ shì shàngwǎng mǎi de, zhēn méi nàme guì. Wǒ mǎile liǎng ge, sòng nǐ yí ge.",
+          "text": {
+            "uz": "Internetdan oldim, aslida unchalik qimmat emas. Ikkita oldim, bittasini senga beraman.",
+            "ru": "Я купила в интернете, на самом деле не так дорого. Купила два, один подарю тебе.",
+            "tj": "Аз интернет харидам, аслан он қадар гарон нест. Дуто харидам, яктоашро ба ту медиҳам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "谢谢！那我送给你什么呢？",
+          "pinyin": "Xièxie! Nà wǒ sòng gěi nǐ shénme ne?",
+          "text": {
+            "uz": "Rahmat! Unda men senga nima sovg‘a qilay?",
+            "ru": "Спасибо! А что мне подарить тебе?",
+            "tj": "Раҳмат! Пас ман ба ту чӣ тӯҳфа кунам?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "咖啡杯吧，我最喜欢喝咖啡了。",
+          "pinyin": "Kāfēibēi ba, wǒ zuì xǐhuan hē kāfēi le.",
+          "text": {
+            "uz": "Qahva piyolasi bo‘lsin, men qahvani eng ko‘p yoqtiraman.",
+            "ru": "Чашку для кофе — я больше всего люблю кофе.",
+            "tj": "Пиёлаи қаҳва бошад, ман қаҳваро аз ҳама бештар дӯст медорам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好，那样我们就都有新年礼物了！",
+          "pinyin": "Hǎo, nàyàng wǒmen jiù dōu yǒu xīnnián lǐwù le!",
+          "text": {
+            "uz": "Xo‘p, shunda ikkalamizda ham Yangi yil sovg‘asi bo‘ladi!",
+            "ru": "Хорошо, тогда у нас обеих будут новогодние подарки!",
+            "tj": "Хуб, он гоҳ ҳардуямон тӯҳфаи Соли нав дорем!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "那样",
+            "pinyin": "nàyàng",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "unday; shunday",
+              "ru": "так; таким образом",
+              "tj": "он тавр; чунин"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "那样",
+          "pinyin": "nàyàng",
+          "translation": {
+            "uz": "unday; shunday",
+            "ru": "так; таким образом",
+            "tj": "он тавр; чунин"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'unday; shunday' xitoycha qaysi?",
+            "ru": "'так; таким образом' по-китайски?",
+            "tj": "'он тавр; чунин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "那样",
+            "教",
+            "花",
+            "新年"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "unday; shunday = 那样 (nàyàng)",
+            "ru": "так; таким образом = 那样 (nàyàng)",
+            "tj": "он тавр; чунин = 那样 (nàyàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "告诉",
+            "pinyin": "gàosu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "aytmoq; xabar bermoq",
+              "ru": "сказать; сообщить",
+              "tj": "гуфтан; хабар додан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "告诉",
+          "pinyin": "gàosu",
+          "options": [
+            "告诉",
+            "教",
+            "新年",
+            "花"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "告诉 — aytmoq; xabar bermoq (gàosu)",
+            "ru": "告诉 — сказать; сообщить (gàosu)",
+            "tj": "告诉 — гуфтан; хабар додан (gàosu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "班",
+            "pinyin": "bān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sinf; guruh",
+              "ru": "класс; группа",
+              "tj": "синф; гурӯҳ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "班 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 班:",
+            "tj": "Маънои калимаи 班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            },
+            {
+              "uz": "sinf; guruh",
+              "ru": "класс; группа",
+              "tj": "синф; гурӯҳ"
+            },
+            {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            },
+            {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "班 = sinf; guruh (bān)",
+            "ru": "班 = класс; группа (bān)",
+            "tj": "班 = синф; гурӯҳ (bān)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nàyàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nàyàng?",
+            "tj": "nàyàng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "新年",
+            "那样",
+            "教",
+            "花"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "那样 = unday; shunday (nàyàng)",
+            "ru": "那样 = так; таким образом (nàyàng)",
+            "tj": "那样 = он тавр; чунин (nàyàng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "那样",
+              {
+                "uz": "unday; shunday",
+                "ru": "так; таким образом",
+                "tj": "он тавр; чунин"
+              }
+            ],
+            [
+              "告诉",
+              {
+                "uz": "aytmoq; xabar bermoq",
+                "ru": "сказать; сообщить",
+                "tj": "гуфтан; хабар додан"
+              }
+            ],
+            [
+              "班",
+              {
+                "uz": "sinf; guruh",
+                "ru": "класс; группа",
+                "tj": "синф; гурӯҳ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "告诉",
+          "pinyin": "gàosu",
+          "translation": {
+            "uz": "aytmoq; xabar bermoq",
+            "ru": "сказать; сообщить",
+            "tj": "гуфтан; хабар додан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "那样",
+          "pinyin": "nàyàng",
+          "options": [
+            "那样",
+            "新年",
+            "花",
+            "教"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "那样 — unday; shunday (nàyàng)",
+            "ru": "那样 — так; таким образом (nàyàng)",
+            "tj": "那样 — он тавр; чунин (nàyàng)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "好，那样我们就都有新年礼物了！",
+          "pinyin": "Hǎo, nàyàng wǒmen jiù dōu yǒu xīnnián lǐwù le!",
+          "translation": {
+            "uz": "Xo‘p, shunda ikkalamizda ham Yangi yil sovg‘asi bo‘ladi!",
+            "ru": "Хорошо, тогда у нас обеих будут новогодние подарки!",
+            "tj": "Хуб, он гоҳ ҳардуямон тӯҳфаи Соли нав дорем!"
+          },
+          "tokens": {
+            "uz": [
+              "Yangi",
+              "ikkalamizda",
+              "shunda",
+              "sovg‘asi",
+              "Xo‘p",
+              "ham",
+              "bo‘ladi",
+              "yil"
+            ],
+            "ru": [
+              "тогда",
+              "новогодние",
+              "Хорошо",
+              "обеих",
+              "у",
+              "нас",
+              "будут",
+              "подарки"
+            ],
+            "tj": [
+              "дорем",
+              "гоҳ",
+              "Хуб",
+              "Соли",
+              "он",
+              "нав",
+              "тӯҳфаи",
+              "ҳардуямон"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xo‘p",
+              "shunda",
+              "ikkalamizda",
+              "ham",
+              "Yangi",
+              "yil",
+              "sovg‘asi",
+              "bo‘ladi"
+            ],
+            "ru": [
+              "Хорошо",
+              "тогда",
+              "у",
+              "нас",
+              "обеих",
+              "будут",
+              "новогодние",
+              "подарки"
+            ],
+            "tj": [
+              "Хуб",
+              "он",
+              "гоҳ",
+              "ҳардуямон",
+              "тӯҳфаи",
+              "Соли",
+              "нав",
+              "дорем"
+            ]
+          },
+          "explanation": {
+            "uz": "好，那样我们就都有新年礼物了！ — Xo‘p, shunda ikkalamizda ham Yangi yil sovg‘asi bo‘ladi!",
+            "ru": "好，那样我们就都有新年礼物了！ — Хорошо, тогда у нас обеих будут новогодние подарки!",
+            "tj": "好，那样我们就都有新年礼物了！ — Хуб, он гоҳ ҳардуямон тӯҳфаи Соли нав дорем!"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sinf; guruh' xitoycha qaysi?",
+            "ru": "'класс; группа' по-китайски?",
+            "tj": "'синф; гурӯҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "新年",
+            "教",
+            "班",
+            "花"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "sinf; guruh = 班 (bān)",
+            "ru": "класс; группа = 班 (bān)",
+            "tj": "синф; гурӯҳ = 班 (bān)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "那样",
+          "pinyin": "nàyàng",
+          "translation": {
+            "uz": "unday; shunday",
+            "ru": "так; таким образом",
+            "tj": "он тавр; чунин"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "笔 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 笔:",
+            "tj": "Маънои калимаи 笔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            },
+            {
+              "uz": "chiziq (ieroglif zarbasi)",
+              "ru": "черта; штрих",
+              "tj": "хат; зарба"
+            },
+            {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            },
+            {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "笔 = chiziq (ieroglif zarbasi) (bǐ)",
+            "ru": "笔 = черта; штрих (bǐ)",
+            "tj": "笔 = хат; зарба (bǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "笔",
+            "pinyin": "bǐ",
+            "meaning": {
+              "uz": "chiziq (ieroglif zarbasi)",
+              "ru": "черта; штрих",
+              "tj": "хат; зарба"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'unday; shunday' xitoycha qaysi?",
+            "ru": "'так; таким образом' по-китайски?",
+            "tj": "'он тавр; чунин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "花",
+            "教",
+            "那样",
+            "新年"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "unday; shunday = 那样 (nàyàng)",
+            "ru": "так; таким образом = 那样 (nàyàng)",
+            "tj": "он тавр; чунин = 那样 (nàyàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "那样",
+            "pinyin": "nàyàng",
+            "meaning": {
+              "uz": "unday; shunday",
+              "ru": "так; таким образом",
+              "tj": "он тавр; чунин"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

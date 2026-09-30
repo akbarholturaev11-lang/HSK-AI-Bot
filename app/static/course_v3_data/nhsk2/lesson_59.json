@@ -1,0 +1,837 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 59,
+  "source_lesson": 12,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "这里比北京冷多了",
+  "subtitle": {
+    "uz": "“比” gapida 多了/得多 bilan katta farqni ifodalash; holat to‘ldiruvchili fe’l bilan 比 ning ikki joylashuvini ishlatish; obyektli/ajraluvchi fe’llarda 比 taqqoslashini to‘g‘ri tuzish; ob-havo va sport haqida gaplashish.",
+    "ru": "Выражать большую разницу с 多了/得多 в предложениях с 比; использовать два положения 比 при глаголе с дополнением состояния; правильно строить сравнение с объектными и разделяемыми глаголами; говорить о погоде и спорте.",
+    "tj": "Дар ҷумлаи 比 бо 多了/得多 фарқи калонро ифода кардан; бо феъли дорои пуркунандаи ҳолат ду ҷойи 比-ро истифода бурдан; муқоисаро бо феълҳои объектдор/ҷудошаванда дуруст сохтан; дар бораи обу ҳаво ва варзиш суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "站",
+      "pinyin": "zhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bekat; stansiya",
+        "ru": "остановка; станция",
+        "tj": "истгоҳ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "小时候",
+      "pinyin": "xiǎoshíhou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bolalik payti",
+        "ru": "в детстве",
+        "tj": "вақти кӯдакӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "好",
+      "pinyin": "hǎo",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda; ancha",
+        "ru": "очень; довольно",
+        "tj": "хеле; бисёр"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Taqqoslash gapi (6)",
+        "ru": "Сравнительное предложение (6)",
+        "tj": "Ҷумлаи муқоисавӣ (6)"
+      },
+      "title_zh": "比较句（6）",
+      "rule": {
+        "uz": "“比” gapida fe’l ham obyekt, ham holat to‘ldiruvchisini olsa, obyektni oldinga chiqarish yoki fe’lni takrorlash mumkin. Ajraluvchi fe’lda fe’l morfemasi takrorlanadi.",
+        "ru": "В сравнении с 比, если глагол имеет и объект, и дополнение состояния, объект можно вынести вперёд или повторить глагол. У разделяемого глагола повторяется глагольный морф.",
+        "tj": "Дар ҷумлаи 比, агар феъл ҳам объект ва ҳам пуркунандаи ҳолат дошта бошад, объектро пеш овардан ё феълро такрор кардан мумкин. Дар феъли ҷудошаванда морфемаи феъл такрор мешавад."
+      },
+      "examples": [
+        {
+          "zh": "你跑步跑得比我快。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "白家月汉字写得比陈天中好。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他踢足球比我踢得好。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xonada Wang Yixue Bai Jiayuening qo‘ng‘irog‘ini qabul qildi.",
+        "ru": "В комнате Ван Исюэ принимает звонок от Бай Цзяюэ.",
+        "tj": "Дар ҳуҷра Ван Исюэ занги Бай Ҷяюэро қабул мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "喂，家月，是你啊！有什么事情吗？",
+          "pinyin": "Wèi, Jiāyuè, shì nǐ a! Yǒu shénme shìqing ma?",
+          "text": {
+            "uz": "Allo, Jiayue, sen ekansan! Biror ish bormi?",
+            "ru": "Алло, Цзяюэ, это ты! Что-то случилось?",
+            "tj": "Алло, Ҷяюэ, ту будаӣ! Ягон кор ҳаст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "没什么事，就想跟您说说话。",
+          "pinyin": "Méi shénme shì, jiù xiǎng gēn nín shuōshuo huà.",
+          "text": {
+            "uz": "Hech qanday ish yo‘q, shunchaki siz bilan gaplashgim keldi.",
+            "ru": "Ничего особенного, просто захотелось с вами поговорить.",
+            "tj": "Кори махсус нест, танҳо мехостам бо шумо суҳбат кунам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好啊。你今天没课吗？",
+          "pinyin": "Hǎo a. Nǐ jīntiān méi kè ma?",
+          "text": {
+            "uz": "Mayli. Bugun darsing yo‘qmi?",
+            "ru": "Хорошо. У тебя сегодня нет занятий?",
+            "tj": "Хуб. Имрӯз дарс надорӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "下午有课。您那里天气怎么样？",
+          "pinyin": "Xiàwǔ yǒu kè. Nín nàli tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Tushdan keyin darsim bor. Sizlarda ob-havo qanday?",
+            "ru": "Занятия днём. Какая у вас погода?",
+            "tj": "Баъд аз нисфирӯзӣ дарс дорам. Он ҷо ҳаво чӣ хел?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Wang Yixue Wang Yifeiga telefon qilmoqda.",
+        "ru": "В гостиной Ван Исюэ звонит Ван Ифэй.",
+        "tj": "Дар меҳмонхона Ван Исюэ ба Ван Ифэй занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "今天不大，昨天比今天下得大。",
+          "pinyin": "Jīntiān bú dà, zuótiān bǐ jīntiān xià de dà.",
+          "text": {
+            "uz": "Bugun kuchli emas, kecha bugungidan kuchliroq yog‘di.",
+            "ru": "Сегодня не сильно, вчера снег шёл сильнее, чем сегодня.",
+            "tj": "Имрӯз сахт нест, дирӯз аз имрӯз сахттар борид."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "这几天我在网上上课，没出去过。",
+          "pinyin": "Zhè jǐ tiān wǒ zài wǎngshang shàngkè, méi chūquguo.",
+          "text": {
+            "uz": "Shu kunlarda onlayn dars beryapman, tashqariga chiqmadim.",
+            "ru": "Эти дни я преподаю онлайн и не выходила.",
+            "tj": "Ин чанд рӯз онлайн дарс медиҳам ва берун набаромадаам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "那就好，有事记得给我打电话。",
+          "pinyin": "Nà jiù hǎo, yǒu shì jìde gěi wǒ dǎ diànhuà.",
+          "text": {
+            "uz": "Yaxshi, biror narsa bo‘lsa menga telefon qilishni unutma.",
+            "ru": "Тогда хорошо. Если что — не забудь позвонить.",
+            "tj": "Хуб, агар коре шавад, ба ман занг заданро фаромӯш накун."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Li Wen Bai Jiayuega telefon qilmoqda.",
+        "ru": "В комнате Ли Вэнь звонит Бай Цзяюэ.",
+        "tj": "Дар ҳуҷра Ли Вэн ба Бай Ҷяюэ занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "喂，家月，今天天气不错，我们去跑步吧！",
+          "pinyin": "Wèi, Jiāyuè, jīntiān tiānqì búcuò, wǒmen qù pǎobù ba!",
+          "text": {
+            "uz": "Allo, Jiayue, bugun havo yaxshi, yugurishga boraylik!",
+            "ru": "Алло, Цзяюэ, погода сегодня хорошая, пойдём побегаем!",
+            "tj": "Алло, Ҷяюэ, имрӯз ҳаво хуб аст, биё давидан равем!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你跑步跑得比我快，我们能一起跑吗？",
+          "pinyin": "Nǐ pǎobù pǎo de bǐ wǒ kuài, wǒmen néng yìqǐ pǎo ma?",
+          "text": {
+            "uz": "Sen mendan tezroq yugurasan, birga yugura olamizmi?",
+            "ru": "Ты бегаешь быстрее меня, сможем бежать вместе?",
+            "tj": "Ту аз ман тезтар медавӣ, якҷо давида метавонем?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "可以的，我慢慢跑，等着你。",
+          "pinyin": "Kěyǐ de, wǒ mànmàn pǎo, děngzhe nǐ.",
+          "text": {
+            "uz": "Bo‘ladi, men sekin yuguraman, seni kutib turaman.",
+            "ru": "Конечно, я буду бежать медленно и ждать тебя.",
+            "tj": "Мешавад, ман оҳиста медавам ва туро интизор мешавам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好吧。你真爱跑步啊！",
+          "pinyin": "Hǎo ba. Nǐ zhēn ài pǎobù a!",
+          "text": {
+            "uz": "Mayli. Sen yugurishni juda yaxshi ko‘rarkan-san!",
+            "ru": "Хорошо. Ты и правда любишь бегать!",
+            "tj": "Хуб. Ту воқеан давиданро дӯст медорӣ!"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我从小就经常跟爸爸跑步，跑步能让人快乐！",
+          "pinyin": "Wǒ cóngxiǎo jiù jīngcháng gēn bàba pǎobù, pǎobù néng ràng rén kuàilè!",
+          "text": {
+            "uz": "Men bolaligimdan dadam bilan tez-tez yuguraman, yugurish odamni xursand qiladi!",
+            "ru": "Я с детства часто бегаю с папой; бег делает людей счастливее!",
+            "tj": "Ман аз кӯдакӣ бо падарам зуд-зуд медавам, давидан одамро хушҳол мекунад!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好，那我准备一下。",
+          "pinyin": "Hǎo, nà wǒ zhǔnbèi yíxià.",
+          "text": {
+            "uz": "Xo‘p, unda men tayyorlanaman.",
+            "ru": "Хорошо, тогда я подготовлюсь.",
+            "tj": "Хуб, пас ман тайёр мешавам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我现在坐地铁去找你，一会儿楼下见。",
+          "pinyin": "Wǒ xiànzài zuò dìtiě qù zhǎo nǐ, yíhuìr lóuxià jiàn.",
+          "text": {
+            "uz": "Hozir metroda oldingga boraman, birozdan keyin bino pastida ko‘rishamiz.",
+            "ru": "Сейчас поеду к тебе на метро, увидимся скоро внизу.",
+            "tj": "Ҳоло бо метро назди ту меоям, каме баъд поёни бино мебинем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "站",
+            "pinyin": "zhàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bekat; stansiya' xitoycha qaysi?",
+            "ru": "'остановка; станция' по-китайски?",
+            "tj": "'истгоҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "站",
+            "正",
+            "事情",
+            "晴"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bekat; stansiya = 站 (zhàn)",
+            "ru": "остановка; станция = 站 (zhàn)",
+            "tj": "истгоҳ = 站 (zhàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "小时候",
+            "pinyin": "xiǎoshíhou",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bolalik payti",
+              "ru": "в детстве",
+              "tj": "вақти кӯдакӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "小时候",
+          "pinyin": "xiǎoshíhou",
+          "translation": {
+            "uz": "bolalik payti",
+            "ru": "в детстве",
+            "tj": "вақти кӯдакӣ"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "小时候",
+          "pinyin": "xiǎoshíhou",
+          "options": [
+            "小时候",
+            "正",
+            "事情",
+            "晴"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "小时候 — bolalik payti (xiǎoshíhou)",
+            "ru": "小时候 — в детстве (xiǎoshíhou)",
+            "tj": "小时候 — вақти кӯдакӣ (xiǎoshíhou)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "好",
+            "pinyin": "hǎo",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "juda; ancha",
+              "ru": "очень; довольно",
+              "tj": "хеле; бисёр"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好:",
+            "tj": "Маънои калимаи 好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "juda; ancha",
+              "ru": "очень; довольно",
+              "tj": "хеле; бисёр"
+            },
+            {
+              "uz": "aynan hozir; davom etayotgan",
+              "ru": "как раз; прямо сейчас",
+              "tj": "айни ҳозир; маҳз"
+            },
+            {
+              "uz": "ish; voqea; masala",
+              "ru": "дело; событие",
+              "tj": "кор; ҳодиса; масъала"
+            },
+            {
+              "uz": "ochiq; quyoshli",
+              "ru": "ясный; солнечный",
+              "tj": "соф; офтобӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好 = juda; ancha (hǎo)",
+            "ru": "好 = очень; довольно (hǎo)",
+            "tj": "好 = хеле; бисёр (hǎo)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhàn?",
+            "tj": "zhàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "事情",
+            "站",
+            "正",
+            "晴"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "站 = bekat; stansiya (zhàn)",
+            "ru": "站 = остановка; станция (zhàn)",
+            "tj": "站 = истгоҳ (zhàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "站",
+              {
+                "uz": "bekat; stansiya",
+                "ru": "остановка; станция",
+                "tj": "истгоҳ"
+              }
+            ],
+            [
+              "小时候",
+              {
+                "uz": "bolalik payti",
+                "ru": "в детстве",
+                "tj": "вақти кӯдакӣ"
+              }
+            ],
+            [
+              "好",
+              {
+                "uz": "juda; ancha",
+                "ru": "очень; довольно",
+                "tj": "хеле; бисёр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Taqqoslash gapi (6)",
+              "ru": "Сравнительное предложение (6)",
+              "tj": "Ҷумлаи муқоисавӣ (6)"
+            },
+            "title_zh": "比较句（6）",
+            "rule": {
+              "uz": "“比” gapida fe’l ham obyekt, ham holat to‘ldiruvchisini olsa, obyektni oldinga chiqarish yoki fe’lni takrorlash mumkin. Ajraluvchi fe’lda fe’l morfemasi takrorlanadi.",
+              "ru": "В сравнении с 比, если глагол имеет и объект, и дополнение состояния, объект можно вынести вперёд или повторить глагол. У разделяемого глагола повторяется глагольный морф.",
+              "tj": "Дар ҷумлаи 比, агар феъл ҳам объект ва ҳам пуркунандаи ҳолат дошта бошад, объектро пеш овардан ё феълро такрор кардан мумкин. Дар феъли ҷудошаванда морфемаи феъл такрор мешавад."
+            },
+            "examples": [
+              {
+                "zh": "你跑步跑得比我快。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "白家月汉字写得比陈天中好。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他踢足球比我踢得好。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "跑步",
+            "比",
+            "跑",
+            "你",
+            "事情",
+            "快",
+            "我",
+            "晴",
+            "得"
+          ],
+          "answer_tokens": [
+            "你",
+            "跑步",
+            "跑",
+            "得",
+            "比",
+            "我",
+            "快"
+          ],
+          "explanation": {
+            "uz": "你跑步跑得比我快。",
+            "ru": "你跑步跑得比我快。",
+            "tj": "你跑步跑得比我快。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你跑步跑得比我快。",
+            "白家月汉字写得比陈天中好。",
+            "他踢足球比我踢得好。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "白家月汉字写得比陈天中好。 — ",
+            "ru": "白家月汉字写得比陈天中好。 — ",
+            "tj": "白家月汉字写得比陈天中好。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Mayli. Bugun darsing yo‘qmi?",
+            "ru": "Хорошо. У тебя сегодня нет занятий?",
+            "tj": "Хуб. Имрӯз дарс надорӣ?"
+          },
+          "tokens": [
+            "好",
+            "事情",
+            "课",
+            "今天",
+            "晴",
+            "你",
+            "啊",
+            "吗",
+            "没"
+          ],
+          "answer_tokens": [
+            "好",
+            "啊",
+            "你",
+            "今天",
+            "没",
+            "课",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "好啊。你今天没课吗？ — Hǎo a. Nǐ jīntiān méi kè ma?",
+            "ru": "好啊。你今天没课吗？ — Hǎo a. Nǐ jīntiān méi kè ma?",
+            "tj": "好啊。你今天没课吗？ — Hǎo a. Nǐ jīntiān méi kè ma?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xo‘p, unda men tayyorlanaman.",
+            "ru": "Хорошо, тогда я подготовлюсь.",
+            "tj": "Хуб, пас ман тайёр мешавам."
+          },
+          "tokens": [
+            "晴",
+            "好",
+            "那",
+            "事情",
+            "我",
+            "一下",
+            "准备"
+          ],
+          "answer_tokens": [
+            "好",
+            "那",
+            "我",
+            "准备",
+            "一下"
+          ],
+          "explanation": {
+            "uz": "好，那我准备一下。 — Hǎo, nà wǒ zhǔnbèi yíxià.",
+            "ru": "好，那我准备一下。 — Hǎo, nà wǒ zhǔnbèi yíxià.",
+            "tj": "好，那我准备一下。 — Hǎo, nà wǒ zhǔnbèi yíxià."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "好，那我准备一下。",
+          "pinyin": "Hǎo, nà wǒ zhǔnbèi yíxià.",
+          "translation": {
+            "uz": "Xo‘p, unda men tayyorlanaman.",
+            "ru": "Хорошо, тогда я подготовлюсь.",
+            "tj": "Хуб, пас ман тайёр мешавам."
+          },
+          "tokens": {
+            "uz": [
+              "men",
+              "Xo‘p",
+              "Bugun",
+              "tayyorlanaman",
+              "Mayli",
+              "unda"
+            ],
+            "ru": [
+              "я",
+              "Хорошо",
+              "тогда",
+              "подготовлюсь",
+              "тебя",
+              "У"
+            ],
+            "tj": [
+              "мешавам",
+              "пас",
+              "дарс",
+              "Имрӯз",
+              "ман",
+              "тайёр",
+              "Хуб"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xo‘p",
+              "unda",
+              "men",
+              "tayyorlanaman"
+            ],
+            "ru": [
+              "Хорошо",
+              "тогда",
+              "я",
+              "подготовлюсь"
+            ],
+            "tj": [
+              "Хуб",
+              "пас",
+              "ман",
+              "тайёр",
+              "мешавам"
+            ]
+          },
+          "explanation": {
+            "uz": "好，那我准备一下。 — Xo‘p, unda men tayyorlanaman.",
+            "ru": "好，那我准备一下。 — Хорошо, тогда я подготовлюсь.",
+            "tj": "好，那我准备一下。 — Хуб, пас ман тайёр мешавам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "小时候",
+          "pinyin": "xiǎoshíhou",
+          "translation": {
+            "uz": "bolalik payti",
+            "ru": "в детстве",
+            "tj": "вақти кӯдакӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "地铁 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 地铁:",
+            "tj": "Маънои калимаи 地铁-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ochiq; quyoshli",
+              "ru": "ясный; солнечный",
+              "tj": "соф; офтобӣ"
+            },
+            {
+              "uz": "metro",
+              "ru": "метро",
+              "tj": "метро"
+            },
+            {
+              "uz": "aynan hozir; davom etayotgan",
+              "ru": "как раз; прямо сейчас",
+              "tj": "айни ҳозир; маҳз"
+            },
+            {
+              "uz": "ish; voqea; masala",
+              "ru": "дело; событие",
+              "tj": "кор; ҳодиса; масъала"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "地铁 = metro (dìtiě)",
+            "ru": "地铁 = метро (dìtiě)",
+            "tj": "地铁 = метро (dìtiě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "地铁",
+            "pinyin": "dìtiě",
+            "meaning": {
+              "uz": "metro",
+              "ru": "метро",
+              "tj": "метро"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bolalik payti' xitoycha qaysi?",
+            "ru": "'в детстве' по-китайски?",
+            "tj": "'вақти кӯдакӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "事情",
+            "晴",
+            "小时候",
+            "正"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "bolalik payti = 小时候 (xiǎoshíhou)",
+            "ru": "в детстве = 小时候 (xiǎoshíhou)",
+            "tj": "вақти кӯдакӣ = 小时候 (xiǎoshíhou)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "小时候",
+            "pinyin": "xiǎoshíhou",
+            "meaning": {
+              "uz": "bolalik payti",
+              "ru": "в детстве",
+              "tj": "вақти кӯдакӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

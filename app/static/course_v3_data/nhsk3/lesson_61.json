@@ -1,0 +1,680 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 61,
+  "source_lesson": 8,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "今天我出院了",
+  "subtitle": {
+    "uz": "Kasallik, shifoxona va dori qabul qilish tajribasini tasvirlash; sog‘liq odatlari haqida gaplashish; vaqt davomiyligi to‘ldiruvchisi bilan holatning hozirgacha qancha vaqt davom etganini ifodalash.",
+    "ru": "Описывать болезнь, лечение в больнице и приём лекарств; говорить о здоровье и привычках; выражать длительность состояния до настоящего момента с дополнением времени.",
+    "tj": "Таҷрибаи беморӣ, бистарӣ шудан ва истеъмоли доруро тавсиф кардан; дар бораи саломатӣ ва одатҳо суҳбат кардан; бо пуркунандаи давомнокӣ муддати то ҳозир идома ёфтани ҳолатро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "担心",
+      "pinyin": "dānxīn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xavotirlanmoq",
+        "ru": "беспокоиться",
+        "tj": "ташвиш кашидан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "腿",
+      "pinyin": "tuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oyoq",
+        "ru": "нога",
+        "tj": "пой"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "病人",
+      "pinyin": "bìngrén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bemor",
+        "ru": "пациент; больной",
+        "tj": "бемор"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "差不多",
+      "pinyin": "chàbuduō",
+      "pos": "adv./adj.",
+      "meaning": {
+        "uz": "deyarli; taxminan",
+        "ru": "почти; примерно",
+        "tj": "қариб; тақрибан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktab sport zalida Li Wen Chen Tianzhongni uchratdi.",
+        "ru": "В школьном спортзале Ли Вэнь встретил Чэнь Тяньчжуна.",
+        "tj": "Дар толори варзишии мактаб Ли Вэн бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "你的运动习惯真不错。",
+          "pinyin": "Nǐ de yùndòng xíguàn zhēn búcuò.",
+          "text": {
+            "uz": "Sport odating juda yaxshi ekan.",
+            "ru": "У тебя отличная спортивная привычка.",
+            "tj": "Одати варзишиат хеле хуб аст."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "因为我今年胖了十多斤，不能再胖下去了，有点儿不健康。",
+          "pinyin": "Yīnwèi wǒ jīnnián pàng le shí duō jīn, bù néng zài pàng xiàqu le, yǒudiǎnr bù jiànkāng.",
+          "text": {
+            "uz": "Chunki bu yil o‘n jindan ko‘proq semirdim, yana semirish mumkin emas, bu sog‘lom emas.",
+            "ru": "Потому что в этом году я набрал больше десяти цзиней. Дальше толстеть нельзя, это уже нездорово.",
+            "tj": "Чунки имсол зиёда аз даҳ ҷин фарбеҳ шудам, дигар набояд фарбеҳ шавам, ин каме носолим аст."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我下课以后常去打羽毛球，你也来玩吧。",
+          "pinyin": "Wǒ xiàkè yǐhòu cháng qù dǎ yǔmáoqiú, nǐ yě lái wán ba.",
+          "text": {
+            "uz": "Men darsdan keyin tez-tez badminton o‘ynayman, sen ham kel.",
+            "ru": "После занятий я часто играю в бадминтон, приходи тоже.",
+            "tj": "Ман баъди дарс зуд-зуд бадминтон бозӣ мекунам, ту ҳам биё."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "我知道，但是你们的水平太高了，我打得不怎么样。",
+          "pinyin": "Wǒ zhīdào, dànshì nǐmen de shuǐpíng tài gāo le, wǒ dǎ de bù zěnmeyàng.",
+          "text": {
+            "uz": "Bilaman, lekin sizlarning darajangiz juda yuqori, men uncha yaxshi o‘ynamayman.",
+            "ru": "Знаю, но у вас слишком высокий уровень, а я играю не очень.",
+            "tj": "Медонам, аммо сатҳи шумо хеле баланд аст, ман он қадар хуб бозӣ намекунам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "没关系，我可以教你。",
+          "pinyin": "Méi guānxi, wǒ kěyǐ jiāo nǐ.",
+          "text": {
+            "uz": "Hechqisi yo‘q, men senga o‘rgataman.",
+            "ru": "Ничего, я могу тебя научить.",
+            "tj": "Ҳеҷ гап нест, ман метавонам ба ту омӯзонам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Annie Chen Tianzhongning holidan xabar olmoqda.",
+        "ru": "В классе Энни спрашивает Чэнь Тяньчжуна о самочувствии.",
+        "tj": "Дар синф Энни аҳволи Чэн Тянҷунро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "你怎么了？看上去有点儿不舒服。",
+          "pinyin": "Nǐ zěnme le? Kàn shàngqu yǒudiǎnr bù shūfu.",
+          "text": {
+            "uz": "Senga nima bo‘ldi? O‘zingni biroz yomon his qilayotgandek ko‘rinyapsan.",
+            "ru": "Что с тобой? Выглядишь так, будто тебе нехорошо.",
+            "tj": "Ба ту чӣ шуд? Ба назар каме худро бад ҳис мекунӣ."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "是不是感冒了？发烧吗？",
+          "pinyin": "Shì bú shì gǎnmào le? Fāshāo ma?",
+          "text": {
+            "uz": "Shamolladingmi? Isitmang bormi?",
+            "ru": "Ты простудился? Температура есть?",
+            "tj": "Шамол хӯрдӣ? Таб дорӣ?"
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "我送你去医院，让医生检查一下吧。",
+          "pinyin": "Wǒ sòng nǐ qù yīyuàn, ràng yīshēng jiǎnchá yíxià ba.",
+          "text": {
+            "uz": "Men seni shifoxonaga olib boraman, shifokor tekshirib ko‘rsin.",
+            "ru": "Я отвезу тебя в больницу, пусть врач осмотрит.",
+            "tj": "Ман туро ба беморхона мебарам, бигзор духтур муоина кунад."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "好吧，如果下午还发烧，就一定要去看医生。",
+          "pinyin": "Hǎo ba, rúguǒ xiàwǔ hái fāshāo, jiù yídìng yào qù kàn yīshēng.",
+          "text": {
+            "uz": "Mayli, agar tushdan keyin ham isitma bo‘lsa, albatta shifokorga bor.",
+            "ru": "Хорошо. Если днём температура останется, обязательно иди к врачу.",
+            "tj": "Хуб, агар баъд аз нисфирӯзӣ ҳам таб дошта бошӣ, ҳатман ба духтур рав."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "谢谢关心，我会注意的。",
+          "pinyin": "Xièxie guānxīn, wǒ huì zhùyì de.",
+          "text": {
+            "uz": "G‘amxo‘rliging uchun rahmat, e’tibor beraman.",
+            "ru": "Спасибо за заботу, я буду внимателен.",
+            "tj": "Раҳмат барои ғамхорӣ, эҳтиёт мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shifoxona palatasida Annie Chen Tianzhongni ko‘rgani keldi.",
+        "ru": "В больничной палате Энни пришла навестить Чэнь Тяньчжуна.",
+        "tj": "Дар палатаи беморхона Энни барои дидани Чэн Тянҷун омадааст."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "你怎么突然住院了？大家都很担心你。",
+          "pinyin": "Nǐ zěnme tūrán zhùyuàn le? Dàjiā dōu hěn dānxīn nǐ.",
+          "text": {
+            "uz": "Nega birdan shifoxonaga yotib qolding? Hamma sendan xavotirda.",
+            "ru": "Почему ты вдруг попал в больницу? Все за тебя переживают.",
+            "tj": "Чаро ногаҳон дар беморхона бистарӣ шудӣ? Ҳама барои ту хавотиранд."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "我的腿疼了几个星期了，医生说需要住院做检查。",
+          "pinyin": "Wǒ de tuǐ téng le jǐ ge xīngqī le, yīshēng shuō xūyào zhùyuàn zuò jiǎnchá.",
+          "text": {
+            "uz": "Oyog‘im bir necha haftadan beri og‘riyapti, shifokor tekshiruv uchun yotishim kerakligini aytdi.",
+            "ru": "Нога болит уже несколько недель, врач сказал, что нужно лечь в больницу на обследование.",
+            "tj": "Поям чанд ҳафта боз дард мекунад, духтур гуфт барои санҷиш бояд бистарӣ шавам."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是啊，我很少生病。我上次来医院已经过去差不多两年了。",
+          "pinyin": "Shì a, wǒ hěn shǎo shēngbìng. Wǒ shàng cì lái yīyuàn yǐjīng guòqu chàbuduō liǎng nián le.",
+          "text": {
+            "uz": "Ha, men kam kasal bo‘laman. Shifoxonaga oxirgi kelganimga deyarli ikki yil bo‘ldi.",
+            "ru": "Да, я редко болею. С прошлого визита в больницу прошло почти два года.",
+            "tj": "Ҳа, ман кам бемор мешавам. Аз бори охир ба беморхона омаданам қариб ду сол гузашт."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "医生也这么说，但是还得做完检查才能知道。",
+          "pinyin": "Yīshēng yě zhème shuō, dànshì hái děi zuò wán jiǎnchá cái néng zhīdào.",
+          "text": {
+            "uz": "Shifokor ham shunday dedi, lekin aniq bilish uchun tekshiruvni tugatish kerak.",
+            "ru": "Врач тоже так сказал, но узнать точно можно только после обследования.",
+            "tj": "Духтур ҳам ҳаминро гуфт, аммо танҳо баъди анҷоми санҷиш маълум мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "担心",
+            "pinyin": "dānxīn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xavotirlanmoq",
+              "ru": "беспокоиться",
+              "tj": "ташвиш кашидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "担心",
+          "pinyin": "dānxīn",
+          "translation": {
+            "uz": "xavotirlanmoq",
+            "ru": "беспокоиться",
+            "tj": "ташвиш кашидан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "担心 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 担心:",
+            "tj": "Маънои калимаи 担心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд"
+            },
+            {
+              "uz": "sport zali; sport saroyi",
+              "ru": "спортивный зал; спорткомплекс",
+              "tj": "толори варзиш; маҷмааи варзишӣ"
+            },
+            {
+              "uz": "yaqinda; so‘nggi paytlarda",
+              "ru": "в последнее время",
+              "tj": "вақтҳои охир"
+            },
+            {
+              "uz": "xavotirlanmoq",
+              "ru": "беспокоиться",
+              "tj": "ташвиш кашидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "担心 = xavotirlanmoq (dānxīn)",
+            "ru": "担心 = беспокоиться (dānxīn)",
+            "tj": "担心 = ташвиш кашидан (dānxīn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "腿",
+            "pinyin": "tuǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "пой"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tuǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tuǐ?",
+            "tj": "tuǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "常",
+            "体育馆",
+            "最近",
+            "腿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "腿 = oyoq (tuǐ)",
+            "ru": "腿 = нога (tuǐ)",
+            "tj": "腿 = пой (tuǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "病人",
+            "pinyin": "bìngrén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bemor",
+              "ru": "пациент; больной",
+              "tj": "бемор"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "病人 talaffuzini tanlang:",
+            "ru": "Выберите произношение 病人:",
+            "tj": "Талаффузи 病人-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "cháng",
+            "tǐyùguǎn",
+            "bìngrén",
+            "zuìjìn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "病人 — bìngrén",
+            "ru": "病人 — bìngrén",
+            "tj": "病人 — bìngrén"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "差不多",
+            "pinyin": "chàbuduō",
+            "pos": "adv./adj.",
+            "meaning": {
+              "uz": "deyarli; taxminan",
+              "ru": "почти; примерно",
+              "tj": "қариб; тақрибан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'deyarli; taxminan' xitoycha qaysi?",
+            "ru": "'почти; примерно' по-китайски?",
+            "tj": "'қариб; тақрибан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "常",
+            "差不多",
+            "最近",
+            "体育馆"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "deyarli; taxminan = 差不多 (chàbuduō)",
+            "ru": "почти; примерно = 差不多 (chàbuduō)",
+            "tj": "қариб; тақрибан = 差不多 (chàbuduō)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "担心",
+          "pinyin": "dānxīn",
+          "options": [
+            "担心",
+            "常",
+            "最近",
+            "体育馆"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "担心 — xavotirlanmoq (dānxīn)",
+            "ru": "担心 — беспокоиться (dānxīn)",
+            "tj": "担心 — ташвиш кашидан (dānxīn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "担心",
+              {
+                "uz": "xavotirlanmoq",
+                "ru": "беспокоиться",
+                "tj": "ташвиш кашидан"
+              }
+            ],
+            [
+              "腿",
+              {
+                "uz": "oyoq",
+                "ru": "нога",
+                "tj": "пой"
+              }
+            ],
+            [
+              "病人",
+              {
+                "uz": "bemor",
+                "ru": "пациент; больной",
+                "tj": "бемор"
+              }
+            ],
+            [
+              "差不多",
+              {
+                "uz": "deyarli; taxminan",
+                "ru": "почти; примерно",
+                "tj": "қариб; тақрибан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我的腿疼了几个星期了，医生说需要住院做检查。",
+          "pinyin": "Wǒ de tuǐ téng le jǐ ge xīngqī le, yīshēng shuō xūyào zhùyuàn zuò jiǎnchá.",
+          "options": [
+            "我的腿疼了几个星期了，医生说需要住院做检查。",
+            "你怎么突然住院了？大家都很担心你。",
+            "是啊，我很少生病。我上次来医院已经过去差不多两年了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我的腿疼了几个星期了，医生说需要住院做检查。 — Oyog‘im bir necha haftadan beri og‘riyapti, shifokor tekshiruv uchun yotishim kerakligini aytdi.",
+            "ru": "我的腿疼了几个星期了，医生说需要住院做检查。 — Нога болит уже несколько недель, врач сказал, что нужно лечь в больницу на обследование.",
+            "tj": "我的腿疼了几个星期了，医生说需要住院做检查。 — Поям чанд ҳафта боз дард мекунад, духтур гуфт барои санҷиш бояд бистарӣ шавам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "腿",
+          "pinyin": "tuǐ",
+          "options": [
+            "最近",
+            "腿",
+            "常",
+            "体育馆"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "腿 — oyoq (tuǐ)",
+            "ru": "腿 — нога (tuǐ)",
+            "tj": "腿 — пой (tuǐ)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bìngrén qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bìngrén?",
+            "tj": "bìngrén кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "最近",
+            "常",
+            "病人",
+            "体育馆"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "病人 = bemor (bìngrén)",
+            "ru": "病人 = пациент; больной (bìngrén)",
+            "tj": "病人 = бемор (bìngrén)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "担心",
+          "pinyin": "dānxīn",
+          "translation": {
+            "uz": "xavotirlanmoq",
+            "ru": "беспокоиться",
+            "tj": "ташвиш кашидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "关心 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 关心:",
+            "tj": "Маънои калимаи 关心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "g‘amxo‘rlik qilmoq; holidan xabar olmoq",
+              "ru": "заботиться; интересоваться состоянием",
+              "tj": "ғамхорӣ кардан; аҳвол пурсидан"
+            },
+            {
+              "uz": "sport zali; sport saroyi",
+              "ru": "спортивный зал; спорткомплекс",
+              "tj": "толори варзиш; маҷмааи варзишӣ"
+            },
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд"
+            },
+            {
+              "uz": "yaqinda; so‘nggi paytlarda",
+              "ru": "в последнее время",
+              "tj": "вақтҳои охир"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "关心 = g‘amxo‘rlik qilmoq; holidan xabar olmoq (guānxīn)",
+            "ru": "关心 = заботиться; интересоваться состоянием (guānxīn)",
+            "tj": "关心 = ғамхорӣ кардан; аҳвол пурсидан (guānxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "关心",
+            "pinyin": "guānxīn",
+            "meaning": {
+              "uz": "g‘amxo‘rlik qilmoq; holidan xabar olmoq",
+              "ru": "заботиться; интересоваться состоянием",
+              "tj": "ғамхорӣ кардан; аҳвол пурсидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xavotirlanmoq' xitoycha qaysi?",
+            "ru": "'беспокоиться' по-китайски?",
+            "tj": "'ташвиш кашидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "体育馆",
+            "担心",
+            "最近",
+            "常"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "xavotirlanmoq = 担心 (dānxīn)",
+            "ru": "беспокоиться = 担心 (dānxīn)",
+            "tj": "ташвиш кашидан = 担心 (dānxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "担心",
+            "pinyin": "dānxīn",
+            "meaning": {
+              "uz": "xavotirlanmoq",
+              "ru": "беспокоиться",
+              "tj": "ташвиш кашидан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

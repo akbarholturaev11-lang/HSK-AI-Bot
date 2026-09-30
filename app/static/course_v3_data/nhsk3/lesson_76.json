@@ -1,0 +1,675 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 76,
+  "source_lesson": 10,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "你明天再把书还给我",
+  "subtitle": {
+    "uz": "O‘qish va imtihon holatini tushunish va tasvirlash; o‘qishdagi muammolar va usullar haqida gaplashish; “把” gaplari orqali narsaning joyi yoki holati o‘zgarishini ifodalash; Xitoy ta’lim tizimi bilan tanishish.",
+    "ru": "Понимать и описывать учёбу и экзамены; обсуждать учебные трудности и методы; использовать предложения с “把” для выражения изменения положения/состояния предмета; познакомиться с системой образования Китая.",
+    "tj": "Ҳолати таҳсил ва имтиҳонро фаҳмидан ва тавсиф кардан; дар бораи мушкилот ва усулҳои омӯзиш суҳбат кардан; бо ҷумлаҳои “把” тағйири ҷой ё ҳолати ашёро ифода кардан; бо низоми таҳсилоти Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "差",
+      "pinyin": "chà",
+      "pos": "adj./v.",
+      "meaning": {
+        "uz": "yomon; past",
+        "ru": "плохой; слабый",
+        "tj": "бад; паст"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "复习",
+      "pinyin": "fùxí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "takrorlamoq",
+        "ru": "повторять материал",
+        "tj": "такрор кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "外语",
+      "pinyin": "wàiyǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chet tili",
+        "ru": "иностранный язык",
+        "tj": "забони хориҷӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "当然",
+      "pinyin": "dāngrán",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "albatta",
+        "ru": "конечно",
+        "tj": "албатта"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Liu Xiaoxue sinfdoshi bilan o‘qish usullari haqida gaplashmoqda.",
+        "ru": "В классе Лю Сяосюэ обсуждает с одноклассником методы учёбы.",
+        "tj": "Дар синф Лю Сяосюэ бо ҳамсинфаш дар бораи усулҳои омӯзиш суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "同学",
+          "zh": "你的数学越来越好，能不能介绍一下学习方法？",
+          "pinyin": "Nǐ de shùxué yuèláiyuè hǎo, néng bu néng jièshào yíxià xuéxí fāngfǎ?",
+          "text": {
+            "uz": "Matematikang borgan sari yaxshilanmoqda, o‘qish usulingni aytib bera olasanmi?",
+            "ru": "У тебя математика всё лучше. Можешь рассказать о своём способе учиться?",
+            "tj": "Математикаат торафт беҳтар мешавад, метавонӣ усули омӯзишатро фаҳмонӣ?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "没有什么特别的方法，认真听课，认真记笔记。",
+          "pinyin": "Méiyǒu shénme tèbié de fāngfǎ, rènzhēn tīngkè, rènzhēn jì bǐjì.",
+          "text": {
+            "uz": "Maxsus usul yo‘q: darsni diqqat bilan tinglayman va konspektni puxta yozaman.",
+            "ru": "Ничего особенного: внимательно слушаю урок и тщательно веду конспект.",
+            "tj": "Усули махсус нест: дарсро бодиққат мешунавам ва қайдҳоро ҷиддӣ менависам."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "我看过你的笔记，记得非常清楚。",
+          "pinyin": "Wǒ kàn guo nǐ de bǐjì, jì de fēicháng qīngchu.",
+          "text": {
+            "uz": "Konspektingni ko‘rganman, juda aniq yozilgan.",
+            "ru": "Я видел твои записи — всё записано очень ясно.",
+            "tj": "Қайдҳоятро дидаам, хеле равшан навишта шудаанд."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "老师写在黑板上的题都很重要，所以我会把这些题都记在本子上。",
+          "pinyin": "Lǎoshī xiě zài hēibǎn shàng de tí dōu hěn zhòngyào, suǒyǐ wǒ huì bǎ zhèxiē tí dōu jì zài běnzi shàng.",
+          "text": {
+            "uz": "O‘qituvchi doskaga yozgan savollarning hammasi muhim, shuning uchun ularni daftarga yozib olaman.",
+            "ru": "Все задания, которые учитель пишет на доске, важны, поэтому я записываю их в тетрадь.",
+            "tj": "Ҳамаи саволҳое, ки омӯзгор дар тахта менависад, муҳиманд, барои ҳамин онҳоро дар дафтар қайд мекунам."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说得对。我没有记笔记的习惯。",
+          "pinyin": "Nǐ shuō de duì. Wǒ méiyǒu jì bǐjì de xíguàn.",
+          "text": {
+            "uz": "To‘g‘ri aytding. Menda konspekt yozish odati yo‘q.",
+            "ru": "Ты права. У меня нет привычки вести записи.",
+            "tj": "Дуруст гуфтӣ. Ман одати қайд навиштан надорам."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "笔记挺重要的，我每天写作业以前，都要看一遍。",
+          "pinyin": "Bǐjì tǐng zhòngyào de, wǒ měitiān xiě zuòyè yǐqián, dōu yào kàn yí biàn.",
+          "text": {
+            "uz": "Konspekt ancha muhim, har kuni uy vazifasini qilishdan oldin bir marta ko‘rib chiqaman.",
+            "ru": "Конспект довольно важен. Каждый день перед домашней работой я его полностью просматриваю.",
+            "tj": "Қайдҳо хеле муҳиманд, ҳар рӯз пеш аз вазифаи хонагӣ як бор аз назар мегузаронам."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "这个方法真好！我以后也试试，希望能提高成绩。",
+          "pinyin": "Zhège fāngfǎ zhēn hǎo! Wǒ yǐhòu yě shìshi, xīwàng néng tígāo chéngjì.",
+          "text": {
+            "uz": "Bu usul juda yaxshi! Men ham sinab ko‘raman, natijalarim yaxshilanishiga umid qilaman.",
+            "ru": "Отличный способ! Я тоже попробую, надеюсь улучшить результаты.",
+            "tj": "Ин усул хеле хуб аст! Ман ҳам месанҷам, умедворам натиҷаам беҳтар мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Liu Xiaoxue sinfdoshi bilan kechagi imtihon haqida gaplashmoqda.",
+        "ru": "В классе Лю Сяосюэ обсуждает с одноклассником вчерашний экзамен.",
+        "tj": "Дар синф Лю Сяосюэ бо ҳамсинфаш дар бораи имтиҳони дирӯза суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "同学",
+          "zh": "小雪，昨天的考试，你考得怎么样？",
+          "pinyin": "Xiǎoxuě, zuótiān de kǎoshì, nǐ kǎo de zěnmeyàng?",
+          "text": {
+            "uz": "Xiaoxue, kechagi imtihonni qanday topshirding?",
+            "ru": "Сяосюэ, как ты сдала вчерашний экзамен?",
+            "tj": "Сяосюэ, имтиҳони дирӯзаро чӣ хел супоридӣ?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "我觉得历史有点儿难，你呢？",
+          "pinyin": "Wǒ juéde lìshǐ yǒudiǎnr nán, nǐ ne?",
+          "text": {
+            "uz": "Menimcha, tarix biroz qiyin edi. Sen-chi?",
+            "ru": "Мне показалось, история была немного сложной. А тебе?",
+            "tj": "Ба назарам, таърих каме душвор буд. Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "数学考试我没看清楚要求，做错了好几个题，考得挺差的。",
+          "pinyin": "Shùxué kǎoshì wǒ méi kàn qīngchu yāoqiú, zuò cuò le hǎo jǐ ge tí, kǎo de tǐng chà de.",
+          "text": {
+            "uz": "Matematika imtihonida talabni aniq o‘qimadim, bir nechta savolni xato qildim, ancha yomon topshirdim.",
+            "ru": "На математике я невнимательно прочитал требования, ошибся в нескольких заданиях и написал довольно плохо.",
+            "tj": "Дар имтиҳони математика талабро равшан нахондам, чанд саволро хато кардам ва хеле бад супоридам."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "明天还有考试呢，别想那么多了，先复习外语吧。",
+          "pinyin": "Míngtiān hái yǒu kǎoshì ne, bié xiǎng nàme duō le, xiān fùxí wàiyǔ ba.",
+          "text": {
+            "uz": "Ertaga yana imtihon bor, buncha o‘ylama, avval chet tilini takrorlaylik.",
+            "ru": "Завтра ещё экзамен, не думай об этом слишком много, лучше повторим иностранный язык.",
+            "tj": "Фардо боз имтиҳон ҳаст, бисёр фикр накун, аввал забони хориҷиро такрор кунем."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "外语作业里有几个问题，我可以问问你吗？",
+          "pinyin": "Wàiyǔ zuòyè lǐ yǒu jǐ ge wèntí, wǒ kěyǐ wènwen nǐ ma?",
+          "text": {
+            "uz": "Chet tili vazifasida bir nechta savolim bor, sendan so‘rasam bo‘ladimi?",
+            "ru": "В задании по иностранному языку есть несколько вопросов, можно тебя спросить?",
+            "tj": "Дар вазифаи забони хориҷӣ чанд савол дорам, аз ту пурсам мешавад?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ustoz Li kabinetida Liu Xiaoxue va sinfdoshi savol so‘ramoqda.",
+        "ru": "В кабинете учителя Ли Лю Сяосюэ и её одноклассник задают вопросы.",
+        "tj": "Дар кабинети устод Ли Лю Сяосюэ ва ҳамсинфаш савол мепурсанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李老师",
+          "zh": "好，坐下说吧，哪个题不会？",
+          "pinyin": "Hǎo, zuòxia shuō ba, nǎge tí bú huì?",
+          "text": {
+            "uz": "Xo‘p, o‘tiringlar, qaysi savolni bilmaysizlar?",
+            "ru": "Хорошо, садитесь. Какое задание непонятно?",
+            "tj": "Хуб, шинед. Кадом саволро намедонед?"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "我这本书上还有几个练习，你们回家也做一做，明天再把书还给我。",
+          "pinyin": "Wǒ zhè běn shū shàng hái yǒu jǐ ge liànxí, nǐmen huí jiā yě zuò yí zuò, míngtiān zài bǎ shū huán gěi wǒ.",
+          "text": {
+            "uz": "Mening bu kitobimda yana bir nechta mashq bor, uyda ularni ham qilib ko‘ringlar, kitobni ertaga menga qaytaringlar.",
+            "ru": "В моей книге есть ещё несколько упражнений. Сделайте их дома и верните мне книгу завтра.",
+            "tj": "Дар ин китоби ман боз чанд машқ ҳаст, дар хона онҳоро ҳам иҷро кунед ва китобро фардо ба ман баргардонед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "差",
+            "pinyin": "chà",
+            "pos": "adj./v.",
+            "meaning": {
+              "uz": "yomon; past",
+              "ru": "плохой; слабый",
+              "tj": "бад; паст"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "差 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 差:",
+            "tj": "Маънои калимаи 差-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yomon; past",
+              "ru": "плохой; слабый",
+              "tj": "бад; паст"
+            },
+            {
+              "uz": "konspekt; qayd",
+              "ru": "конспект; заметки",
+              "tj": "қайд; конспект"
+            },
+            {
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
+            },
+            {
+              "uz": "jiddiy; diqqat bilan",
+              "ru": "серьёзный; внимательно",
+              "tj": "ҷиддӣ; бодиққат"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "差 = yomon; past (chà)",
+            "ru": "差 = плохой; слабый (chà)",
+            "tj": "差 = бад; паст (chà)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "复习",
+            "pinyin": "fùxí",
+            "pos": "v.",
+            "meaning": {
+              "uz": "takrorlamoq",
+              "ru": "повторять материал",
+              "tj": "такрор кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fùxí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fùxí?",
+            "tj": "fùxí кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "数学",
+            "复习",
+            "认真",
+            "笔记"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "复习 = takrorlamoq (fùxí)",
+            "ru": "复习 = повторять материал (fùxí)",
+            "tj": "复习 = такрор кардан (fùxí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "外语",
+            "pinyin": "wàiyǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chet tili",
+              "ru": "иностранный язык",
+              "tj": "забони хориҷӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "外语 talaffuzini tanlang:",
+            "ru": "Выберите произношение 外语:",
+            "tj": "Талаффузи 外语-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wàiyǔ",
+            "rènzhēn",
+            "bǐjì",
+            "shùxué"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "外语 — wàiyǔ",
+            "ru": "外语 — wàiyǔ",
+            "tj": "外语 — wàiyǔ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "当然",
+            "pinyin": "dāngrán",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "albatta",
+              "ru": "конечно",
+              "tj": "албатта"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "当然",
+          "pinyin": "dāngrán",
+          "translation": {
+            "uz": "albatta",
+            "ru": "конечно",
+            "tj": "албатта"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'albatta' xitoycha qaysi?",
+            "ru": "'конечно' по-китайски?",
+            "tj": "'албатта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "笔记",
+            "当然",
+            "数学",
+            "认真"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "albatta = 当然 (dāngrán)",
+            "ru": "конечно = 当然 (dāngrán)",
+            "tj": "албатта = 当然 (dāngrán)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "差",
+          "pinyin": "chà",
+          "options": [
+            "笔记",
+            "数学",
+            "认真",
+            "差"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "差 — yomon; past (chà)",
+            "ru": "差 — плохой; слабый (chà)",
+            "tj": "差 — бад; паст (chà)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "差",
+              {
+                "uz": "yomon; past",
+                "ru": "плохой; слабый",
+                "tj": "бад; паст"
+              }
+            ],
+            [
+              "复习",
+              {
+                "uz": "takrorlamoq",
+                "ru": "повторять материал",
+                "tj": "такрор кардан"
+              }
+            ],
+            [
+              "外语",
+              {
+                "uz": "chet tili",
+                "ru": "иностранный язык",
+                "tj": "забони хориҷӣ"
+              }
+            ],
+            [
+              "当然",
+              {
+                "uz": "albatta",
+                "ru": "конечно",
+                "tj": "албатта"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "差",
+              {
+                "uz": "yomon; past",
+                "ru": "плохой; слабый",
+                "tj": "бад; паст"
+              }
+            ],
+            [
+              "复习",
+              {
+                "uz": "takrorlamoq",
+                "ru": "повторять материал",
+                "tj": "такрор кардан"
+              }
+            ],
+            [
+              "外语",
+              {
+                "uz": "chet tili",
+                "ru": "иностранный язык",
+                "tj": "забони хориҷӣ"
+              }
+            ],
+            [
+              "当然",
+              {
+                "uz": "albatta",
+                "ru": "конечно",
+                "tj": "албатта"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "明天还有考试呢，别想那么多了，先复习外语吧。",
+          "pinyin": "Míngtiān hái yǒu kǎoshì ne, bié xiǎng nàme duō le, xiān fùxí wàiyǔ ba.",
+          "options": [
+            "明天还有考试呢，别想那么多了，先复习外语吧。",
+            "数学考试我没看清楚要求，做错了好几个题，考得挺差的。",
+            "外语作业里有几个问题，我可以问问你吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "明天还有考试呢，别想那么多了，先复习外语吧。 — Ertaga yana imtihon bor, buncha o‘ylama, avval chet tilini takrorlaylik.",
+            "ru": "明天还有考试呢，别想那么多了，先复习外语吧。 — Завтра ещё экзамен, не думай об этом слишком много, лучше повторим иностранный язык.",
+            "tj": "明天还有考试呢，别想那么多了，先复习外语吧。 — Фардо боз имтиҳон ҳаст, бисёр фикр накун, аввал забони хориҷиро такрор кунем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "当然",
+          "pinyin": "dāngrán",
+          "translation": {
+            "uz": "albatta",
+            "ru": "конечно",
+            "tj": "албатта"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "要求 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 要求:",
+            "tj": "Маънои калимаи 要求-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jiddiy; diqqat bilan",
+              "ru": "серьёзный; внимательно",
+              "tj": "ҷиддӣ; бодиққат"
+            },
+            {
+              "uz": "talab; talab qilmoq",
+              "ru": "требование; требовать",
+              "tj": "талаб; талаб кардан"
+            },
+            {
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
+            },
+            {
+              "uz": "konspekt; qayd",
+              "ru": "конспект; заметки",
+              "tj": "қайд; конспект"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "要求 = talab; talab qilmoq (yāoqiú)",
+            "ru": "要求 = требование; требовать (yāoqiú)",
+            "tj": "要求 = талаб; талаб кардан (yāoqiú)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "要求",
+            "pinyin": "yāoqiú",
+            "meaning": {
+              "uz": "talab; talab qilmoq",
+              "ru": "требование; требовать",
+              "tj": "талаб; талаб кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'albatta' xitoycha qaysi?",
+            "ru": "'конечно' по-китайски?",
+            "tj": "'албатта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "数学",
+            "笔记",
+            "认真",
+            "当然"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "albatta = 当然 (dāngrán)",
+            "ru": "конечно = 当然 (dāngrán)",
+            "tj": "албатта = 当然 (dāngrán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "当然",
+            "pinyin": "dāngrán",
+            "meaning": {
+              "uz": "albatta",
+              "ru": "конечно",
+              "tj": "албатта"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

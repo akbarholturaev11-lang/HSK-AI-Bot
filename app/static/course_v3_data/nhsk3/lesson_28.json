@@ -1,0 +1,834 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 28,
+  "source_lesson": 4,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这家宾馆跟别的都不一样",
+  "subtitle": {
+    "uz": "Ta’til va sayohat rejalarini muhokama qilish; safardagi taassurotlarni ifodalash; to‘liq inkorni aytish; “除了” yordamida istisno yoki qo‘shimcha ma’noni berish.",
+    "ru": "Обсуждать планы на каникулы и впечатления от поездки; выражать полное отрицание; использовать “除了” для исключения или добавления.",
+    "tj": "Нақшаҳои таътил ва сафарро муҳокима кардан; таассуроти сафарро ифода кардан; инкори пурраро гуфтан; бо “除了” маънои истисно ё илова додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "特别",
+      "pinyin": "tèbié",
+      "pos": "adj./adv.",
+      "meaning": {
+        "uz": "alohida; juda",
+        "ru": "особенный; особенно",
+        "tj": "махсус; хеле"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "别的",
+      "pinyin": "biéde",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "boshqa",
+        "ru": "другой; остальные",
+        "tj": "дигар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "一样",
+      "pinyin": "yíyàng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "bir xil",
+        "ru": "одинаковый",
+        "tj": "якхела"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "牛",
+      "pinyin": "niú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sigir; qoramol",
+        "ru": "корова; крупный рогатый скот",
+        "tj": "гов; чорвои калон"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Taqqoslash gapi (9): “跟……一样 / 不一样”",
+        "ru": "Сравнительное предложение (9): “跟……一样 / 不一样”",
+        "tj": "Ҷумлаи муқоисавӣ (9): “跟……一样 / 不一样”"
+      },
+      "title_zh": "比较句（9）",
+      "rule": {
+        "uz": "“A 跟 B 一样” A va B bir xil ekanini, “A 跟 B 不一样” esa farq qilishini bildiradi. “一样”dan keyin sifat kelib, aynan qaysi belgi bir xil ekanini ko‘rsatishi mumkin.",
+        "ru": "“A 跟 B 一样” означает, что A и B одинаковы, а “A 跟 B 不一样” — что отличаются. После “一样” может стоять прилагательное, уточняющее признак сравнения.",
+        "tj": "“A 跟 B 一样” якхела будани A ва B-ро, “A 跟 B 不一样” фарқ доштани онҳоро нишон медиҳад. Баъд аз “一样” сифат омада метавонад."
+      },
+      "examples": [
+        {
+          "zh": "这家宾馆跟别的都不一样。",
+          "pinyin": "Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng.",
+          "translation": {
+            "uz": "Bu mehmonxona boshqalarining hech biriga o‘xshamaydi.",
+            "ru": "Эта гостиница совсем не такая, как другие.",
+            "tj": "Ин меҳмонхона аз дигарҳо фарқ мекунад."
+          }
+        },
+        {
+          "zh": "他买的新手机跟我的一样。",
+          "pinyin": "Tā mǎi de xīn shǒujī gēn wǒ de yíyàng.",
+          "translation": {
+            "uz": "U sotib olgan yangi telefon menikiga bir xil.",
+            "ru": "Его новый телефон такой же, как мой.",
+            "tj": "Телефони нави ӯ бо телефони ман якхел аст."
+          }
+        },
+        {
+          "zh": "这个房间跟那个房间一样大。",
+          "pinyin": "Zhège fángjiān gēn nàge fángjiān yíyàng dà.",
+          "translation": {
+            "uz": "Bu xona u xona bilan bir xil kattalikda.",
+            "ru": "Эта комната такая же большая, как та.",
+            "tj": "Ин ҳуҷра бо он ҳуҷра як андоза калон аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "这个假期咱们去哪儿玩玩吧。",
+          "pinyin": "Zhège jiàqī zánmen qù nǎr wánwan ba.",
+          "text": {
+            "uz": "Bu ta’tilda biror joyga sayrga boraylik.",
+            "ru": "Давай куда-нибудь съездим на этих каникулах.",
+            "tj": "Дар ин таътил биё ба ягон ҷо сайр равем."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "好啊，你想去哪儿，咱们就去哪儿。",
+          "pinyin": "Hǎo a, nǐ xiǎng qù nǎr, zánmen jiù qù nǎr.",
+          "text": {
+            "uz": "Mayli, qayerga borishni xohlasang, o‘sha yerga boramiz.",
+            "ru": "Хорошо, куда ты захочешь, туда и поедем.",
+            "tj": "Хуб, ба куҷо хоҳӣ, ҳамон ҷо меравем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "你喜欢海，找个海边住几天，怎么样？",
+          "pinyin": "Nǐ xǐhuan hǎi, zhǎo ge hǎibiān zhù jǐ tiān, zěnmeyàng?",
+          "text": {
+            "uz": "Sen dengizni yoqtirasan, dengiz bo‘yida bir necha kun yashasak qanday?",
+            "ru": "Ты любишь море. Может, поживём несколько дней у моря?",
+            "tj": "Ту баҳрро дӯст медорӣ, чанд рӯз дар соҳил зиндагӣ кунем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "现在去海边有点儿冷。",
+          "pinyin": "Xiànzài qù hǎibiān yǒudiǎnr lěng.",
+          "text": {
+            "uz": "Hozir dengiz bo‘yiga borish biroz sovuq.",
+            "ru": "Сейчас на море немного холодно.",
+            "tj": "Ҳоло ба соҳил рафтан каме хунук аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那去草原吧？草原一点儿也不冷。",
+          "pinyin": "Nà qù cǎoyuán ba? Cǎoyuán yìdiǎnr yě bù lěng.",
+          "text": {
+            "uz": "Unda dashtga boramizmi? Dasht umuman sovuq emas.",
+            "ru": "Тогда поедем в степь? Там совсем не холодно.",
+            "tj": "Пас ба саҳро равем? Он ҷо тамоман хунук нест."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "这个主意好！我好久没骑马了。",
+          "pinyin": "Zhège zhǔyi hǎo! Wǒ hǎojiǔ méi qí mǎ le.",
+          "text": {
+            "uz": "Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+            "ru": "Хорошая идея! Я давно не ездил верхом.",
+            "tj": "Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "对，在草原上骑马、吃羊肉、看月亮，一定很有意思。",
+          "pinyin": "Duì, zài cǎoyuán shàng qí mǎ, chī yángròu, kàn yuèliang, yídìng hěn yǒuyìsi.",
+          "text": {
+            "uz": "Ha, dashtda ot minish, qo‘y go‘shti yeyish va oy tomosha qilish albatta qiziq bo‘ladi.",
+            "ru": "Да, ездить верхом, есть баранину и смотреть на луну в степи — наверняка будет интересно.",
+            "tj": "Ҳа, дар саҳро аспсаворӣ кардан, гӯшти гӯсфанд хӯрдан ва моҳро тамошо кардан ҳатман ҷолиб мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "出去玩的机票买好了吗？",
+          "pinyin": "Chūqù wán de jīpiào mǎi hǎo le ma?",
+          "text": {
+            "uz": "Sayohat uchun aviachiptalarni olib bo‘ldingmi?",
+            "ru": "Билеты на поездку уже куплены?",
+            "tj": "Чиптаҳои сафарро харида шуд?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "买好了。星期六上午十点一刻起飞。",
+          "pinyin": "Mǎi hǎo le. Xīngqīliù shàngwǔ shí diǎn yí kè qǐfēi.",
+          "text": {
+            "uz": "Ha. Shanba kuni ertalab soat o‘ndan chorak o‘tganda uchadi.",
+            "ru": "Да. Вылет в субботу в 10:15 утра.",
+            "tj": "Ҳа. Рӯзи шанбе соати 10:15 парвоз мекунем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "宾馆也选好了吗？",
+          "pinyin": "Bīnguǎn yě xuǎn hǎo le ma?",
+          "text": {
+            "uz": "Mehmonxonani ham tanlab bo‘ldingmi?",
+            "ru": "Гостиницу тоже выбрали?",
+            "tj": "Меҳмонхонаро ҳам интихоб кардед?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "是的，这家宾馆很特别，跟别的都不一样。一出门就能看见牛和羊！",
+          "pinyin": "Shì de, zhè jiā bīnguǎn hěn tèbié, gēn biéde dōu bù yíyàng. Yì chūmén jiù néng kànjiàn niú hé yáng!",
+          "text": {
+            "uz": "Ha, bu mehmonxona juda o‘zgacha, boshqalarga umuman o‘xshamaydi. Eshikdan chiqishing bilan sigir va qo‘ylarni ko‘rasan!",
+            "ru": "Да, эта гостиница очень необычная, совсем не похожа на другие. Вышел за дверь — и сразу видишь коров и овец!",
+            "tj": "Ҳа, ин меҳмонхона хеле махсус аст ва аз дигарҳо фарқ мекунад. Ҳамин ки берун мебароӣ, гову гӯсфандро мебинӣ!"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "太好了！你看看要带什么东西？",
+          "pinyin": "Tài hǎo le! Nǐ kànkan yào dài shénme dōngxi?",
+          "text": {
+            "uz": "Zo‘r! Qara, nimalarni olib borish kerak?",
+            "ru": "Отлично! Посмотри, что нужно взять с собой.",
+            "tj": "Олиҷаноб! Бин, чӣ чизҳоро бояд бо худ гирем?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "一定不会忘带的。我现在就去准备行李。",
+          "pinyin": "Yídìng bú huì wàng dài de. Wǒ xiànzài jiù qù zhǔnbèi xíngli.",
+          "text": {
+            "uz": "Albatta unutmayman. Hozirning o‘zida yuklarni tayyorlayman.",
+            "ru": "Точно не забуду. Сейчас же пойду собирать багаж.",
+            "tj": "Ҳатман фаромӯш намекунам. Ҳозир меравам бағоҷро тайёр мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda Yang Tongle va Wang Yifei tashqariga chiqib, oldindan buyurtma qilingan haydovchi-gid bilan uchrashmoqda.",
+        "ru": "В аэропорту Ян Тунлэ и Ван Ифэй выходят и встречаются с заранее заказанным водителем-гидом.",
+        "tj": "Дар фурудгоҳ Ян Тунлэ ва Ван Ифэй берун омада, бо ронанда-роҳбалади пешакӣ фармоишдода вохӯрданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "还有一个包，我自己拿就可以。",
+          "pinyin": "Hái yǒu yí ge bāo, wǒ zìjǐ ná jiù kěyǐ.",
+          "text": {
+            "uz": "Yana bitta sumka bor, uni o‘zim olaman.",
+            "ru": "Есть ещё одна сумка, её я понесу сам.",
+            "tj": "Боз як халта ҳаст, худам мебардорам."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "车在一层，请跟我来。",
+          "pinyin": "Chē zài yì céng, qǐng gēn wǒ lái.",
+          "text": {
+            "uz": "Mashina birinchi qavatda, ortimdan yuringlar.",
+            "ru": "Машина на первом этаже, идите за мной.",
+            "tj": "Мошин дар ошёнаи якум аст, аз паси ман биёед."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "我们住的宾馆离机场远吗？",
+          "pinyin": "Wǒmen zhù de bīnguǎn lí jīchǎng yuǎn ma?",
+          "text": {
+            "uz": "Biz turadigan mehmonxona aeroportdan uzoqmi?",
+            "ru": "Гостиница, где мы будем жить, далеко от аэропорта?",
+            "tj": "Меҳмонхонае, ки мо мемонем, аз фурудгоҳ дур аст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "特别",
+            "pinyin": "tèbié",
+            "pos": "adj./adv.",
+            "meaning": {
+              "uz": "alohida; juda",
+              "ru": "особенный; особенно",
+              "tj": "махсус; хеле"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "特别 talaffuzini tanlang:",
+            "ru": "Выберите произношение 特别:",
+            "tj": "Талаффузи 特别-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "cǎoyuán",
+            "tèbié",
+            "hǎi",
+            "jiàqī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "特别 — tèbié",
+            "ru": "特别 — tèbié",
+            "tj": "特别 — tèbié"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "别的",
+            "pinyin": "biéde",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "boshqa",
+              "ru": "другой; остальные",
+              "tj": "дигар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'boshqa' xitoycha qaysi?",
+            "ru": "'другой; остальные' по-китайски?",
+            "tj": "'дигар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "海",
+            "别的",
+            "草原",
+            "假期"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "boshqa = 别的 (biéde)",
+            "ru": "другой; остальные = 别的 (biéde)",
+            "tj": "дигар = 别的 (biéde)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "一样",
+            "pinyin": "yíyàng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "bir xil",
+              "ru": "одинаковый",
+              "tj": "якхела"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "一样",
+          "pinyin": "yíyàng",
+          "options": [
+            "草原",
+            "海",
+            "假期",
+            "一样"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "一样 — bir xil (yíyàng)",
+            "ru": "一样 — одинаковый (yíyàng)",
+            "tj": "一样 — якхела (yíyàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "牛",
+            "pinyin": "niú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sigir; qoramol",
+              "ru": "корова; крупный рогатый скот",
+              "tj": "гов; чорвои калон"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "牛",
+          "pinyin": "niú",
+          "translation": {
+            "uz": "sigir; qoramol",
+            "ru": "корова; крупный рогатый скот",
+            "tj": "гов; чорвои калон"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "牛 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 牛:",
+            "tj": "Маънои калимаи 牛-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "sigir; qoramol",
+              "ru": "корова; крупный рогатый скот",
+              "tj": "гов; чорвои калон"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "牛 = sigir; qoramol (niú)",
+            "ru": "牛 = корова; крупный рогатый скот (niú)",
+            "tj": "牛 = гов; чорвои калон (niú)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tèbié qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tèbié?",
+            "tj": "tèbié кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "假期",
+            "特别",
+            "海",
+            "草原"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "特别 = alohida; juda (tèbié)",
+            "ru": "特别 = особенный; особенно (tèbié)",
+            "tj": "特别 = махсус; хеле (tèbié)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "特别",
+              {
+                "uz": "alohida; juda",
+                "ru": "особенный; особенно",
+                "tj": "махсус; хеле"
+              }
+            ],
+            [
+              "别的",
+              {
+                "uz": "boshqa",
+                "ru": "другой; остальные",
+                "tj": "дигар"
+              }
+            ],
+            [
+              "一样",
+              {
+                "uz": "bir xil",
+                "ru": "одинаковый",
+                "tj": "якхела"
+              }
+            ],
+            [
+              "牛",
+              {
+                "uz": "sigir; qoramol",
+                "ru": "корова; крупный рогатый скот",
+                "tj": "гов; чорвои калон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Taqqoslash gapi (9): “跟……一样 / 不一样”",
+              "ru": "Сравнительное предложение (9): “跟……一样 / 不一样”",
+              "tj": "Ҷумлаи муқоисавӣ (9): “跟……一样 / 不一样”"
+            },
+            "title_zh": "比较句（9）",
+            "rule": {
+              "uz": "“A 跟 B 一样” A va B bir xil ekanini, “A 跟 B 不一样” esa farq qilishini bildiradi. “一样”dan keyin sifat kelib, aynan qaysi belgi bir xil ekanini ko‘rsatishi mumkin.",
+              "ru": "“A 跟 B 一样” означает, что A и B одинаковы, а “A 跟 B 不一样” — что отличаются. После “一样” может стоять прилагательное, уточняющее признак сравнения.",
+              "tj": "“A 跟 B 一样” якхела будани A ва B-ро, “A 跟 B 不一样” фарқ доштани онҳоро нишон медиҳад. Баъд аз “一样” сифат омада метавонад."
+            },
+            "examples": [
+              {
+                "zh": "这家宾馆跟别的都不一样。",
+                "pinyin": "Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng.",
+                "translation": {
+                  "uz": "Bu mehmonxona boshqalarining hech biriga o‘xshamaydi.",
+                  "ru": "Эта гостиница совсем не такая, как другие.",
+                  "tj": "Ин меҳмонхона аз дигарҳо фарқ мекунад."
+                }
+              },
+              {
+                "zh": "他买的新手机跟我的一样。",
+                "pinyin": "Tā mǎi de xīn shǒujī gēn wǒ de yíyàng.",
+                "translation": {
+                  "uz": "U sotib olgan yangi telefon menikiga bir xil.",
+                  "ru": "Его новый телефон такой же, как мой.",
+                  "tj": "Телефони нави ӯ бо телефони ман якхел аст."
+                }
+              },
+              {
+                "zh": "这个房间跟那个房间一样大。",
+                "pinyin": "Zhège fángjiān gēn nàge fángjiān yíyàng dà.",
+                "translation": {
+                  "uz": "Bu xona u xona bilan bir xil kattalikda.",
+                  "ru": "Эта комната такая же большая, как та.",
+                  "tj": "Ин ҳуҷра бо он ҳуҷра як андоза калон аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu mehmonxona boshqalarining hech biriga o‘xshamaydi.",
+            "ru": "Эта гостиница совсем не такая, как другие.",
+            "tj": "Ин меҳмонхона аз дигарҳо фарқ мекунад."
+          },
+          "tokens": [
+            "一样",
+            "家",
+            "假期",
+            "这",
+            "都",
+            "跟",
+            "别的",
+            "不",
+            "宾馆",
+            "海"
+          ],
+          "answer_tokens": [
+            "这",
+            "家",
+            "宾馆",
+            "跟",
+            "别的",
+            "都",
+            "不",
+            "一样"
+          ],
+          "explanation": {
+            "uz": "这家宾馆跟别的都不一样。 — Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng.",
+            "ru": "这家宾馆跟别的都不一样。 — Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng.",
+            "tj": "这家宾馆跟别的都不一样。 — Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu mehmonxona boshqalarining hech biriga o‘xshamaydi.» — xitoychada qaysi biri?",
+            "ru": "«Эта гостиница совсем не такая, как другие.» — какое предложение по-китайски?",
+            "tj": "«Ин меҳмонхона аз дигарҳо фарқ мекунад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他买的新手机跟我的一样。",
+            "这个房间跟那个房间一样大。",
+            "这家宾馆跟别的都不一样。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "这家宾馆跟别的都不一样。 — Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng.",
+            "ru": "这家宾馆跟别的都不一样。 — Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng.",
+            "tj": "这家宾馆跟别的都不一样。 — Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "特别",
+              {
+                "uz": "alohida; juda",
+                "ru": "особенный; особенно",
+                "tj": "махсус; хеле"
+              }
+            ],
+            [
+              "别的",
+              {
+                "uz": "boshqa",
+                "ru": "другой; остальные",
+                "tj": "дигар"
+              }
+            ],
+            [
+              "一样",
+              {
+                "uz": "bir xil",
+                "ru": "одинаковый",
+                "tj": "якхела"
+              }
+            ],
+            [
+              "牛",
+              {
+                "uz": "sigir; qoramol",
+                "ru": "корова; крупный рогатый скот",
+                "tj": "гов; чорвои калон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "牛",
+          "pinyin": "niú",
+          "translation": {
+            "uz": "sigir; qoramol",
+            "ru": "корова; крупный рогатый скот",
+            "tj": "гов; чорвои калон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "宾馆 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 宾馆:",
+            "tj": "Маънои калимаи 宾馆-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "mehmonxona",
+              "ru": "гостиница",
+              "tj": "меҳмонхона"
+            },
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "宾馆 = mehmonxona (bīnguǎn)",
+            "ru": "宾馆 = гостиница (bīnguǎn)",
+            "tj": "宾馆 = меҳмонхона (bīnguǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "宾馆",
+            "pinyin": "bīnguǎn",
+            "meaning": {
+              "uz": "mehmonxona",
+              "ru": "гостиница",
+              "tj": "меҳмонхона"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sigir; qoramol' xitoycha qaysi?",
+            "ru": "'корова; крупный рогатый скот' по-китайски?",
+            "tj": "'гов; чорвои калон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "牛",
+            "海",
+            "假期",
+            "草原"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "sigir; qoramol = 牛 (niú)",
+            "ru": "корова; крупный рогатый скот = 牛 (niú)",
+            "tj": "гов; чорвои калон = 牛 (niú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "牛",
+            "pinyin": "niú",
+            "meaning": {
+              "uz": "sigir; qoramol",
+              "ru": "корова; крупный рогатый скот",
+              "tj": "гов; чорвои калон"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

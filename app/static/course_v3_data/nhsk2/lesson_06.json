@@ -1,0 +1,742 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 6,
+  "source_lesson": 2,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "还是打车去北大吧",
+  "subtitle": {
+    "uz": "“还是……吧” orqali afzal variantni tavsiya qilish; “多” bilan taxminiy sonni ifodalash; fe’l/fe’lli birikma va ega-kesim birikmasini aniqlovchi sifatida ishlatish; transport va kampus haqida gaplashish.",
+    "ru": "Советовать предпочтительный вариант с “还是……吧”; выражать приблизительные числа с “多”; использовать глаголы, глагольные и субъектно-предикативные группы как определения; говорить о транспорте и кампусе.",
+    "tj": "Бо “还是……吧” варианти афзалро тавсия кардан; бо “多” шумораи тахминиро ифода кардан; феъл ва ибораҳои феълӣ/мубтадо-хабарро ҳамчун муайянкунанда истифода бурдан; дар бораи нақлиёт ва кампус суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "公交车",
+      "pinyin": "gōngjiāochē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "avtobus",
+        "ru": "автобус",
+        "tj": "автобус"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "但",
+      "pinyin": "dàn",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "ammo; lekin",
+        "ru": "но; однако",
+        "tj": "аммо; лекин"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "车站",
+      "pinyin": "chēzhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bekat; stansiya",
+        "ru": "остановка; станция",
+        "tj": "истгоҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "远",
+      "pinyin": "yuǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "uzoq",
+        "ru": "далёкий",
+        "tj": "дур"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“还是……吧” qolipi",
+        "ru": "Конструкция “还是……吧”",
+        "tj": "Қолаби “还是……吧”"
+      },
+      "title_zh": "固定格式“还是……吧”",
+      "rule": {
+        "uz": "“还是……吧” bir necha variantdan gapiruvchi ma’qul deb hisoblagan variantni tavsiya qiladi.",
+        "ru": "“还是……吧” советует выбрать из нескольких вариантов тот, который говорящий считает более подходящим.",
+        "tj": "“还是……吧” аз чанд вариант онеро тавсия мекунад, ки гӯянда муносибтар мешуморад."
+      },
+      "examples": [
+        {
+          "zh": "我们还是打车去吧。",
+          "pinyin": "Wǒmen háishi dǎchē qù ba.",
+          "translation": {
+            "uz": "Yaxshisi taksida boraylik.",
+            "ru": "Давай лучше поедем на такси.",
+            "tj": "Беҳтараш бо таксӣ равем."
+          }
+        },
+        {
+          "zh": "那件衣服很好看，还是买那件吧。",
+          "pinyin": "Nà jiàn yīfu hěn hǎokàn, háishi mǎi nà jiàn ba.",
+          "translation": {
+            "uz": "U kiyim chiroyli, yaxshisi o‘shanisini olaylik.",
+            "ru": "Та одежда красивая, лучше купить её.",
+            "tj": "Он либос зебост, беҳтараш ҳамонро бихарем."
+          }
+        },
+        {
+          "zh": "你第一次去北京，还是找个人接你吧。",
+          "pinyin": "Nǐ dì yī cì qù Běijīng, háishi zhǎo ge rén jiē nǐ ba.",
+          "translation": {
+            "uz": "Pekinga birinchi marta boryapsan, yaxshisi seni kutib oladigan odam top.",
+            "ru": "Ты впервые едешь в Пекин, лучше найди кого-нибудь, кто тебя встретит.",
+            "tj": "Бори аввал ба Пекин меравӣ, беҳтараш касеро ёб, ки пешвозат гирад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona resepsiyasida Bai Jiayue va Annie xodimdan ma’lumot so‘ramoqda.",
+        "ru": "На стойке гостиницы Бай Цзяюэ и Энни спрашивают сотрудника.",
+        "tj": "Дар қабули меҳмонхона Бай Ҷяюэ ва Энни аз корманд маълумот мепурсанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Hotel staff",
+          "zh": "有，但车站有点儿远。",
+          "pinyin": "Yǒu, dàn chēzhàn yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Bor, lekin bekat biroz uzoq.",
+            "ru": "Есть, но остановка немного далеко.",
+            "tj": "Ҳаст, аммо истгоҳ каме дур аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好，没问题。",
+          "pinyin": "Hǎo, méi wèntí.",
+          "text": {
+            "uz": "Xo‘p, muammo yo‘q.",
+            "ru": "Хорошо, без проблем.",
+            "tj": "Хуб, мушкиле нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universitetida Bai Jiayue va Annie kampusni tomosha qilmoqda.",
+        "ru": "В Пекинском университете Бай Цзяюэ и Энни осматривают кампус.",
+        "tj": "Дар Донишгоҳи Пекин Бай Ҷяюэ ва Энни кампусро тамошо мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你是怎么知道的？",
+          "pinyin": "Nǐ shì zěnme zhīdào de?",
+          "text": {
+            "uz": "Buni qayerdan bilding?",
+            "ru": "Как ты это узнала?",
+            "tj": "Инро чӣ тавр фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我也想来这儿学习。",
+          "pinyin": "Wǒ yě xiǎng lái zhèr xuéxí.",
+          "text": {
+            "uz": "Men ham bu yerga o‘qishga kelishni xohlayman.",
+            "ru": "Я тоже хочу приехать сюда учиться.",
+            "tj": "Ман ҳам мехоҳам барои таҳсил ба ин ҷо биёям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universiteti kampusida Bai Jiayue va Annie kinoteatrni ko‘rdi.",
+        "ru": "На кампусе Пекинского университета Бай Цзяюэ и Энни увидели кинотеатр.",
+        "tj": "Дар кампуси Донишгоҳи Пекин Бай Ҷяюэ ва Энни кинотеатрро диданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你看，学校里有家电影院！",
+          "pinyin": "Jiāyuè, nǐ kàn, xuéxiào lǐ yǒu jiā diànyǐngyuàn!",
+          "text": {
+            "uz": "Jiayue, qara, universitetda kinoteatr bor!",
+            "ru": "Цзяюэ, смотри, в университете есть кинотеатр!",
+            "tj": "Ҷяюэ, бин, дар донишгоҳ кинотеатр ҳаст!"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "那你想不想去看个电影？",
+          "pinyin": "Nà nǐ xiǎng bu xiǎng qù kàn ge diànyǐng?",
+          "text": {
+            "uz": "Unda film ko‘rgani bormoqchimisan?",
+            "ru": "Тогда хочешь сходить посмотреть фильм?",
+            "tj": "Пас мехоҳӣ филм тамошо кунӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "公交车",
+            "pinyin": "gōngjiāochē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "公交车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 公交车:",
+            "tj": "Маънои калимаи 公交车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            },
+            {
+              "uz": "uzoq",
+              "ru": "далёкий",
+              "tj": "дур"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "公交车 = avtobus (gōngjiāochē)",
+            "ru": "公交车 = автобус (gōngjiāochē)",
+            "tj": "公交车 = автобус (gōngjiāochē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "但",
+            "pinyin": "dàn",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "但",
+          "pinyin": "dàn",
+          "translation": {
+            "uz": "ammo; lekin",
+            "ru": "но; однако",
+            "tj": "аммо; лекин"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dàn?",
+            "tj": "dàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "车站",
+            "远",
+            "公交车",
+            "但"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "但 = ammo; lekin (dàn)",
+            "ru": "但 = но; однако (dàn)",
+            "tj": "但 = аммо; лекин (dàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "车站",
+            "pinyin": "chēzhàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "车站 talaffuzini tanlang:",
+            "ru": "Выберите произношение 车站:",
+            "tj": "Талаффузи 车站-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gōngjiāochē",
+            "yuǎn",
+            "chēzhàn",
+            "dàn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "车站 — chēzhàn",
+            "ru": "车站 — chēzhàn",
+            "tj": "车站 — chēzhàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "远",
+            "pinyin": "yuǎn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "uzoq",
+              "ru": "далёкий",
+              "tj": "дур"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzoq' xitoycha qaysi?",
+            "ru": "'далёкий' по-китайски?",
+            "tj": "'дур' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "车站",
+            "远",
+            "但",
+            "公交车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uzoq = 远 (yuǎn)",
+            "ru": "далёкий = 远 (yuǎn)",
+            "tj": "дур = 远 (yuǎn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "公交车",
+          "pinyin": "gōngjiāochē",
+          "options": [
+            "远",
+            "但",
+            "公交车",
+            "车站"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "公交车 — avtobus (gōngjiāochē)",
+            "ru": "公交车 — автобус (gōngjiāochē)",
+            "tj": "公交车 — автобус (gōngjiāochē)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "公交车",
+              {
+                "uz": "avtobus",
+                "ru": "автобус",
+                "tj": "автобус"
+              }
+            ],
+            [
+              "但",
+              {
+                "uz": "ammo; lekin",
+                "ru": "но; однако",
+                "tj": "аммо; лекин"
+              }
+            ],
+            [
+              "车站",
+              {
+                "uz": "bekat; stansiya",
+                "ru": "остановка; станция",
+                "tj": "истгоҳ"
+              }
+            ],
+            [
+              "远",
+              {
+                "uz": "uzoq",
+                "ru": "далёкий",
+                "tj": "дур"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“还是……吧” qolipi",
+              "ru": "Конструкция “还是……吧”",
+              "tj": "Қолаби “还是……吧”"
+            },
+            "title_zh": "固定格式“还是……吧”",
+            "rule": {
+              "uz": "“还是……吧” bir necha variantdan gapiruvchi ma’qul deb hisoblagan variantni tavsiya qiladi.",
+              "ru": "“还是……吧” советует выбрать из нескольких вариантов тот, который говорящий считает более подходящим.",
+              "tj": "“还是……吧” аз чанд вариант онеро тавсия мекунад, ки гӯянда муносибтар мешуморад."
+            },
+            "examples": [
+              {
+                "zh": "我们还是打车去吧。",
+                "pinyin": "Wǒmen háishi dǎchē qù ba.",
+                "translation": {
+                  "uz": "Yaxshisi taksida boraylik.",
+                  "ru": "Давай лучше поедем на такси.",
+                  "tj": "Беҳтараш бо таксӣ равем."
+                }
+              },
+              {
+                "zh": "那件衣服很好看，还是买那件吧。",
+                "pinyin": "Nà jiàn yīfu hěn hǎokàn, háishi mǎi nà jiàn ba.",
+                "translation": {
+                  "uz": "U kiyim chiroyli, yaxshisi o‘shanisini olaylik.",
+                  "ru": "Та одежда красивая, лучше купить её.",
+                  "tj": "Он либос зебост, беҳтараш ҳамонро бихарем."
+                }
+              },
+              {
+                "zh": "你第一次去北京，还是找个人接你吧。",
+                "pinyin": "Nǐ dì yī cì qù Běijīng, háishi zhǎo ge rén jiē nǐ ba.",
+                "translation": {
+                  "uz": "Pekinga birinchi marta boryapsan, yaxshisi seni kutib oladigan odam top.",
+                  "ru": "Ты впервые едешь в Пекин, лучше найди кого-нибудь, кто тебя встретит.",
+                  "tj": "Бори аввал ба Пекин меравӣ, беҳтараш касеро ёб, ки пешвозат гирад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Yaxshisi taksida boraylik.» — xitoychada qaysi biri?",
+            "ru": "«Давай лучше поедем на такси.» — какое предложение по-китайски?",
+            "tj": "«Беҳтараш бо таксӣ равем.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你第一次去北京，还是找个人接你吧。",
+            "我们还是打车去吧。",
+            "那件衣服很好看，还是买那件吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我们还是打车去吧。 — Wǒmen háishi dǎchē qù ba.",
+            "ru": "我们还是打车去吧。 — Wǒmen háishi dǎchē qù ba.",
+            "tj": "我们还是打车去吧。 — Wǒmen háishi dǎchē qù ba."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "车站",
+          "pinyin": "chēzhàn",
+          "options": [
+            "但",
+            "车站",
+            "远",
+            "公交车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "车站 — bekat; stansiya (chēzhàn)",
+            "ru": "车站 — остановка; станция (chēzhàn)",
+            "tj": "车站 — истгоҳ (chēzhàn)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "有，但车站有点儿远。",
+          "pinyin": "Yǒu, dàn chēzhàn yǒudiǎnr yuǎn.",
+          "translation": {
+            "uz": "Bor, lekin bekat biroz uzoq.",
+            "ru": "Есть, но остановка немного далеко.",
+            "tj": "Ҳаст, аммо истгоҳ каме дур аст."
+          },
+          "tokens": {
+            "uz": [
+              "biroz",
+              "Bor",
+              "uzoq",
+              "lekin",
+              "bekat"
+            ],
+            "ru": [
+              "немного",
+              "далеко",
+              "Есть",
+              "но",
+              "остановка"
+            ],
+            "tj": [
+              "дур",
+              "аст",
+              "каме",
+              "аммо",
+              "истгоҳ",
+              "Ҳаст"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bor",
+              "lekin",
+              "bekat",
+              "biroz",
+              "uzoq"
+            ],
+            "ru": [
+              "Есть",
+              "но",
+              "остановка",
+              "немного",
+              "далеко"
+            ],
+            "tj": [
+              "Ҳаст",
+              "аммо",
+              "истгоҳ",
+              "каме",
+              "дур",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "有，但车站有点儿远。 — Bor, lekin bekat biroz uzoq.",
+            "ru": "有，但车站有点儿远。 — Есть, но остановка немного далеко.",
+            "tj": "有，但车站有点儿远。 — Ҳаст, аммо истгоҳ каме дур аст."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "但",
+          "pinyin": "dàn",
+          "translation": {
+            "uz": "ammo; lekin",
+            "ru": "но; однако",
+            "tj": "аммо; лекин"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "给 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 给:",
+            "tj": "Маънои калимаи 给-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ga; uchun",
+              "ru": "кому; для",
+              "tj": "ба; барои"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "给 = ga; uchun (gěi)",
+            "ru": "给 = кому; для (gěi)",
+            "tj": "给 = ба; барои (gěi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "给",
+            "pinyin": "gěi",
+            "meaning": {
+              "uz": "ga; uchun",
+              "ru": "кому; для",
+              "tj": "ба; барои"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ammo; lekin' xitoycha qaysi?",
+            "ru": "'но; однако' по-китайски?",
+            "tj": "'аммо; лекин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "公交车",
+            "远",
+            "但",
+            "车站"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ammo; lekin = 但 (dàn)",
+            "ru": "но; однако = 但 (dàn)",
+            "tj": "аммо; лекин = 但 (dàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "但",
+            "pinyin": "dàn",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,716 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 70,
+  "source_lesson": 9,
+  "part_no": 6,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "打不好没关系",
+  "subtitle": {
+    "uz": "Sport musobaqalari, sportchilar va natijalar haqida gaplashish; mumkinlik to‘ldiruvchisi bilan harakatning uddalanishi yoki uddalanmasligini aytish; “越A越B” bilan holatning o‘zgarishini ifodalash.",
+    "ru": "Говорить о спортивных соревнованиях, спортсменах и результатах; использовать дополнение возможности для выражения того, возможно ли выполнить действие; описывать изменение ситуации через “越A越B”.",
+    "tj": "Дар бораи мусобиқаҳои варзишӣ, варзишгарон ва натиҷаҳо суҳбат кардан; бо пуркунандаи имконият иҷро шудан ё нашудани амалро ифода кардан; бо “越A越B” тағйирёбии ҳолатро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "得分",
+      "pinyin": "défēn",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "ochko olmoq; hisob",
+        "ru": "набирать очки; счёт",
+        "tj": "хол гирифтан; ҳисоб"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "体育",
+      "pinyin": "tǐyù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "jismoniy tarbiya; sport",
+        "ru": "физкультура; спорт",
+        "tj": "тарбияи ҷисмонӣ; варзиш"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "世界",
+      "pinyin": "shìjiè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dunyo",
+        "ru": "мир",
+        "tj": "ҷаҳон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "运动员",
+      "pinyin": "yùndòngyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sportchi",
+        "ru": "спортсмен",
+        "tj": "варзишгар"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kutubxona oldida Li Wen Bai Jiayue tomon yugurib keldi.",
+        "ru": "У входа в библиотеку Ли Вэнь подбегает к Бай Цзяюэ.",
+        "tj": "Дар назди китобхона Ли Вэн ба тарафи Бай Ҷяюэ давида меояд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，对不起，我昨天忘了还你校园卡了。",
+          "pinyin": "Jiāyuè, duìbuqǐ, wǒ zuótiān wàng le huán nǐ xiàoyuánkǎ le.",
+          "text": {
+            "uz": "Jiayue, uzr, kecha kampus kartangni qaytarishni unutibman.",
+            "ru": "Цзяюэ, прости, я вчера забыл вернуть твою кампус-карту.",
+            "tj": "Ҷяюэ, бубахш, дирӯз корти кампусатро баргардонданро фаромӯш кардам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "没关系。你怎么这么快就过来了？",
+          "pinyin": "Méi guānxi. Nǐ zěnme zhème kuài jiù guòlái le?",
+          "text": {
+            "uz": "Hechqisi yo‘q. Qanday qilib bunchalik tez kelib qolding?",
+            "ru": "Ничего. Как ты так быстро пришёл?",
+            "tj": "Ҳеҷ гап нест. Чӣ тавр ин қадар зуд омадӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我正在球场打球呢，接了你的电话就跑过来了。",
+          "pinyin": "Wǒ zhèngzài qiúchǎng dǎqiú ne, jiē le nǐ de diànhuà jiù pǎo guòlái le.",
+          "text": {
+            "uz": "Men sport maydonida to‘p o‘ynayotgan edim, qo‘ng‘irog‘ingni olib darrov yugurib keldim.",
+            "ru": "Я играл на площадке; как только ответил на твой звонок, сразу прибежал.",
+            "tj": "Ман дар майдон тӯб бозӣ мекардам, зангатро гирифтаму фавран давида омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+          "text": {
+            "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+            "ru": "Говорят, ради подготовки к соревнованиям вы каждый день тренируетесь.",
+            "tj": "Шунидам, барои омодагӣ ба мусобиқаҳо шумо ҳар рӯз машқи тӯб мекунед."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "是啊！你打算参加运动会吗？",
+          "pinyin": "Shì a! Nǐ dǎsuàn cānjiā yùndònghuì ma?",
+          "text": {
+            "uz": "Ha! Sen ham sport musobaqasida qatnashmoqchimisan?",
+            "ru": "Да! Ты собираешься участвовать в соревнованиях?",
+            "tj": "Ҳа! Ту ҳам дар мусобиқа иштирок карданӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我想参加网球比赛，最近一直在练习。",
+          "pinyin": "Wǒ xiǎng cānjiā wǎngqiú bǐsài, zuìjìn yìzhí zài liànxí.",
+          "text": {
+            "uz": "Tennis musobaqasida qatnashmoqchiman, so‘nggi paytlar doim mashq qilyapman.",
+            "ru": "Хочу участвовать в теннисном турнире, в последнее время постоянно тренируюсь.",
+            "tj": "Мехоҳам дар мусобиқаи теннис иштирок кунам, вақтҳои охир пайваста машқ мекунам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "好，到时候我去看你的比赛。",
+          "pinyin": "Hǎo, dào shíhou wǒ qù kàn nǐ de bǐsài.",
+          "text": {
+            "uz": "Yaxshi, o‘sha payt musobaqangni ko‘rgani boraman.",
+            "ru": "Хорошо, тогда я приду посмотреть твой матч.",
+            "tj": "Хуб, он вақт мусобиқаатро дидан меоям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，你跟我们一起打羽毛球吧？",
+          "pinyin": "Jiāyuè, nǐ gēn wǒmen yìqǐ dǎ yǔmáoqiú ba?",
+          "text": {
+            "uz": "Jiayue, biz bilan badminton o‘ynaysanmi?",
+            "ru": "Цзяюэ, поиграешь с нами в бадминтон?",
+            "tj": "Ҷяюэ, бо мо бадминтон бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我好多年没打羽毛球了，几乎忘了怎么打了。",
+          "pinyin": "Wǒ hǎoduō nián méi dǎ yǔmáoqiú le, jīhū wàng le zěnme dǎ le.",
+          "text": {
+            "uz": "Men ko‘p yildan beri badminton o‘ynamadim, qanday o‘ynashni deyarli unutdim.",
+            "ru": "Я много лет не играла в бадминтон и почти забыла как.",
+            "tj": "Ман солҳои зиёд бадминтон бозӣ накардаам ва қариб фаромӯш кардам чӣ тавр бозӣ мекунанд."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "不是比赛，打不好没关系。",
+          "pinyin": "Bú shì bǐsài, dǎ bù hǎo méi guānxi.",
+          "text": {
+            "uz": "Bu musobaqa emas, yaxshi o‘ynay olmasang ham hechqisi yo‘q.",
+            "ru": "Это не соревнование, ничего страшного, если сыграешь плохо.",
+            "tj": "Ин мусобиқа нест, агар хуб бозӣ карда натавонӣ ҳам, ҳеҷ гап нест."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "这么多同学一起打，如果总是接不住球，就太不好意思了。",
+          "pinyin": "Zhème duō tóngxué yìqǐ dǎ, rúguǒ zǒngshì jiē bú zhù qiú, jiù tài bù hǎoyìsi le.",
+          "text": {
+            "uz": "Shuncha sinfdosh birga o‘ynasa, men doim to‘pni qaytara olmasam juda noqulay bo‘ladi.",
+            "ru": "Когда столько однокурсников играют вместе, будет неловко, если я всё время не смогу принять мяч.",
+            "tj": "Ин қадар ҳамсабақ якҷо бозӣ кунанд, агар ман ҳамеша тӯбро гирифта натавонам, хеле хиҷолат мешавад."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "你想得太多了！大家打球只是为了锻炼身体。",
+          "pinyin": "Nǐ xiǎng de tài duō le! Dàjiā dǎqiú zhǐshì wèile duànliàn shēntǐ.",
+          "text": {
+            "uz": "Juda ko‘p o‘ylayapsan! Hamma faqat badan chiniqtirish uchun o‘ynayapti.",
+            "ru": "Ты слишком много думаешь! Все играют просто ради физической нагрузки.",
+            "tj": "Ту аз ҳад зиёд фикр мекунӣ! Ҳама танҳо барои машқи бадан бозӣ мекунанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我先自己练练吧，下周再跟你们一起打。",
+          "pinyin": "Wǒ xiān zìjǐ liànlian ba, xià zhōu zài gēn nǐmen yìqǐ dǎ.",
+          "text": {
+            "uz": "Avval o‘zim biroz mashq qilay, keyingi hafta sizlar bilan o‘ynayman.",
+            "ru": "Я сначала сама немного потренируюсь, а на следующей неделе сыграю с вами.",
+            "tj": "Аввал худам каме машқ мекунам, ҳафтаи оянда бо шумо бозӣ мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Li Wen, Bai Jiayue va Chen Tianzhong birga televizor ko‘rmoqda.",
+        "ru": "Дома у Ли Вэня Ли Вэнь, Бай Цзяюэ и Чэнь Тяньчжун вместе смотрят телевизор.",
+        "tj": "Дар хонаи Ли Вэн, Ли Вэн, Бай Ҷяюэ ва Чэн Тянҷун якҷо телевизор мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "足球比赛已经开始了，快过来看吧！",
+          "pinyin": "Zúqiú bǐsài yǐjīng kāishǐ le, kuài guòlái kàn ba!",
+          "text": {
+            "uz": "Futbol o‘yini boshlanib bo‘ldi, tez kelib ko‘ringlar!",
+            "ru": "Футбольный матч уже начался, идите скорее смотреть!",
+            "tj": "Бозии футбол аллакай оғоз шуд, зуд биёед тамошо кунед!"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "你们先看，冰箱里有啤酒和饮料，我去拿一下。",
+          "pinyin": "Nǐmen xiān kàn, bīngxiāng lǐ yǒu píjiǔ hé yǐnliào, wǒ qù ná yíxià.",
+          "text": {
+            "uz": "Sizlar ko‘raveringlar, muzlatkichda ichimliklar bor, men olib kelaman.",
+            "ru": "Вы смотрите, в холодильнике есть напитки, я принесу.",
+            "tj": "Шумо тамошо кунед, дар яхдон нӯшокиҳо ҳастанд, ман меорам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "今天怎么回事？总是踢不进去！",
+          "pinyin": "Jīntiān zěnme huí shì? Zǒngshì tī bu jìnqu!",
+          "text": {
+            "uz": "Bugun nima bo‘lyapti? To‘pni hech kirita olishmayapti!",
+            "ru": "Что сегодня происходит? Всё никак не могут забить!",
+            "tj": "Имрӯз чӣ гап? Ҳеҷ тӯбро дароварда наметавонанд!"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "是啊，主要的球员没参加比赛，所以大家也都受到影响了。",
+          "pinyin": "Shì a, zhǔyào de qiúyuán méi cānjiā bǐsài, suǒyǐ dàjiā yě dōu shòudào yǐngxiǎng le.",
+          "text": {
+            "uz": "Ha, asosiy o‘yinchilar qatnashmadi, shuning uchun boshqalarga ham ta’sir qildi.",
+            "ru": "Да, ключевые игроки не участвуют, поэтому это повлияло и на остальных.",
+            "tj": "Ҳа, бозигарони асосӣ иштирок накарданд, барои ҳамин ба дигарон ҳам таъсир расид."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "越看越着急，我不看了，你们告诉我得分吧。",
+          "pinyin": "Yuè kàn yuè zháojí, wǒ bù kàn le, nǐmen gàosu wǒ défēn ba.",
+          "text": {
+            "uz": "Ko‘rganim sari xavotirim oshyapti, boshqa ko‘rmayman, natijani keyin aytarsizlar.",
+            "ru": "Чем больше смотрю, тем сильнее нервничаю. Не буду смотреть, скажите потом счёт.",
+            "tj": "Ҳар қадар мебинам, ҳамон қадар хавотир мешавам. Дигар намебинам, баъд ҳисобро бигӯед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "得分",
+            "pinyin": "défēn",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "ochko olmoq; hisob",
+              "ru": "набирать очки; счёт",
+              "tj": "хол гирифтан; ҳисоб"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "得分",
+          "pinyin": "défēn",
+          "options": [
+            "得分",
+            "校园",
+            "卡",
+            "球场"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "得分 — ochko olmoq; hisob (défēn)",
+            "ru": "得分 — набирать очки; счёт (défēn)",
+            "tj": "得分 — хол гирифтан; ҳисоб (défēn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "体育",
+            "pinyin": "tǐyù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "jismoniy tarbiya; sport",
+              "ru": "физкультура; спорт",
+              "tj": "тарбияи ҷисмонӣ; варзиш"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "体育",
+          "pinyin": "tǐyù",
+          "translation": {
+            "uz": "jismoniy tarbiya; sport",
+            "ru": "физкультура; спорт",
+            "tj": "тарбияи ҷисмонӣ; варзиш"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "体育 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 体育:",
+            "tj": "Маънои калимаи 体育-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            },
+            {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            },
+            {
+              "uz": "jismoniy tarbiya; sport",
+              "ru": "физкультура; спорт",
+              "tj": "тарбияи ҷисмонӣ; варзиш"
+            },
+            {
+              "uz": "sport maydoni; to‘p o‘ynash maydoni",
+              "ru": "спортивная площадка; поле",
+              "tj": "майдони варзишӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "体育 = jismoniy tarbiya; sport (tǐyù)",
+            "ru": "体育 = физкультура; спорт (tǐyù)",
+            "tj": "体育 = тарбияи ҷисмонӣ; варзиш (tǐyù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "世界",
+            "pinyin": "shìjiè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dunyo",
+              "ru": "мир",
+              "tj": "ҷаҳон"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shìjiè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shìjiè?",
+            "tj": "shìjiè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "卡",
+            "世界",
+            "球场",
+            "校园"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "世界 = dunyo (shìjiè)",
+            "ru": "世界 = мир (shìjiè)",
+            "tj": "世界 = ҷаҳон (shìjiè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "运动员",
+            "pinyin": "yùndòngyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sportchi",
+              "ru": "спортсмен",
+              "tj": "варзишгар"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "运动员 talaffuzini tanlang:",
+            "ru": "Выберите произношение 运动员:",
+            "tj": "Талаффузи 运动员-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "kǎ",
+            "yùndòngyuán",
+            "xiàoyuán",
+            "qiúchǎng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "运动员 — yùndòngyuán",
+            "ru": "运动员 — yùndòngyuán",
+            "tj": "运动员 — yùndòngyuán"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ochko olmoq; hisob' xitoycha qaysi?",
+            "ru": "'набирать очки; счёт' по-китайски?",
+            "tj": "'хол гирифтан; ҳисоб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "卡",
+            "校园",
+            "球场",
+            "得分"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ochko olmoq; hisob = 得分 (défēn)",
+            "ru": "набирать очки; счёт = 得分 (défēn)",
+            "tj": "хол гирифтан; ҳисоб = 得分 (défēn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "得分",
+              {
+                "uz": "ochko olmoq; hisob",
+                "ru": "набирать очки; счёт",
+                "tj": "хол гирифтан; ҳисоб"
+              }
+            ],
+            [
+              "体育",
+              {
+                "uz": "jismoniy tarbiya; sport",
+                "ru": "физкультура; спорт",
+                "tj": "тарбияи ҷисмонӣ; варзиш"
+              }
+            ],
+            [
+              "世界",
+              {
+                "uz": "dunyo",
+                "ru": "мир",
+                "tj": "ҷаҳон"
+              }
+            ],
+            [
+              "运动员",
+              {
+                "uz": "sportchi",
+                "ru": "спортсмен",
+                "tj": "варзишгар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "体育",
+          "pinyin": "tǐyù",
+          "options": [
+            "校园",
+            "卡",
+            "体育",
+            "球场"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "体育 — jismoniy tarbiya; sport (tǐyù)",
+            "ru": "体育 — физкультура; спорт (tǐyù)",
+            "tj": "体育 — тарбияи ҷисмонӣ; варзиш (tǐyù)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "得分",
+              {
+                "uz": "ochko olmoq; hisob",
+                "ru": "набирать очки; счёт",
+                "tj": "хол гирифтан; ҳисоб"
+              }
+            ],
+            [
+              "体育",
+              {
+                "uz": "jismoniy tarbiya; sport",
+                "ru": "физкультура; спорт",
+                "tj": "тарбияи ҷисмонӣ; варзиш"
+              }
+            ],
+            [
+              "世界",
+              {
+                "uz": "dunyo",
+                "ru": "мир",
+                "tj": "ҷаҳон"
+              }
+            ],
+            [
+              "运动员",
+              {
+                "uz": "sportchi",
+                "ru": "спортсмен",
+                "tj": "варзишгар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "体育",
+          "pinyin": "tǐyù",
+          "translation": {
+            "uz": "jismoniy tarbiya; sport",
+            "ru": "физкультура; спорт",
+            "tj": "тарбияи ҷисмонӣ; варзиш"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "主要 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 主要:",
+            "tj": "Маънои калимаи 主要-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "asosiy",
+              "ru": "основной; главный",
+              "tj": "асосӣ"
+            },
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            },
+            {
+              "uz": "sport maydoni; to‘p o‘ynash maydoni",
+              "ru": "спортивная площадка; поле",
+              "tj": "майдони варзишӣ"
+            },
+            {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "主要 = asosiy (zhǔyào)",
+            "ru": "主要 = основной; главный (zhǔyào)",
+            "tj": "主要 = асосӣ (zhǔyào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "主要",
+            "pinyin": "zhǔyào",
+            "meaning": {
+              "uz": "asosiy",
+              "ru": "основной; главный",
+              "tj": "асосӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'jismoniy tarbiya; sport' xitoycha qaysi?",
+            "ru": "'физкультура; спорт' по-китайски?",
+            "tj": "'тарбияи ҷисмонӣ; варзиш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "球场",
+            "校园",
+            "卡",
+            "体育"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "jismoniy tarbiya; sport = 体育 (tǐyù)",
+            "ru": "физкультура; спорт = 体育 (tǐyù)",
+            "tj": "тарбияи ҷисмонӣ; варзиш = 体育 (tǐyù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "体育",
+            "pinyin": "tǐyù",
+            "meaning": {
+              "uz": "jismoniy tarbiya; sport",
+              "ru": "физкультура; спорт",
+              "tj": "тарбияи ҷисмонӣ; варзиш"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

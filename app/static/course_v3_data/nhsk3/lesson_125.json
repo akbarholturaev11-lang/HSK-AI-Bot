@@ -1,0 +1,824 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 125,
+  "source_lesson": 16,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我听说有的熊猫出国了",
+  "subtitle": {
+    "uz": "Hayvonlarning tashqi ko‘rinishi, odatlari va yashash muhitini tasvirlash; hayvonlar haqidagi shaxsiy fikrni aytish; taqqoslash gapida miqdor yoki vaqt farqini aniq ifodalash; katta panda haqida asosiy ma’lumotlarni tushunish.",
+    "ru": "Описывать особенности животных, их повадки и среду обитания; выражать личное мнение о животных; точно указывать разницу в количестве или времени в сравнительных предложениях; знать основные сведения о большой панде.",
+    "tj": "Хусусият, одат ва муҳити зисти ҳайвонотро тавсиф кардан; фикри шахсиро дар бораи ҳайвонот баён кардан; дар ҷумлаи муқоисавӣ фарқи миқдор ё вақтро дақиқ нишон додан; маълумоти асосиро дар бораи пандаи калон фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "野生",
+      "pinyin": "yěshēng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yovvoyi tabiatda yashaydigan",
+        "ru": "дикий; живущий в природе",
+        "tj": "ваҳшӣ; дар табиат зисткунанда"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "关于",
+      "pinyin": "guānyú",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "haqida; to‘g‘risida",
+        "ru": "о; относительно",
+        "tj": "дар бораи"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "饱",
+      "pinyin": "bǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "to‘q",
+        "ru": "сытый",
+        "tj": "сер"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "张",
+      "pinyin": "zhāng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ochmoq; yoymoq",
+        "ru": "раскрывать; раздвигать",
+        "tj": "кушодан; боз кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Predlog “关于” — “haqida”",
+        "ru": "Предлог “关于” — «о / относительно»",
+        "tj": "Пешоянди “关于” — «дар бораи»"
+      },
+      "title_zh": "介词“关于”",
+      "rule": {
+        "uz": "“关于 + mavzu” gapning qaysi masala yoki mavzu haqida ekanini ko‘rsatadi. Ko‘pincha gap boshida keladi.",
+        "ru": "“关于 + тема” указывает, о каком вопросе или предмете идёт речь. Часто ставится в начале предложения.",
+        "tj": "“关于 + мавзӯъ” нишон медиҳад, ки сухан дар бораи кадом масъала ё мавзӯъ меравад. Аксаран дар аввали ҷумла меояд."
+      },
+      "examples": [
+        {
+          "zh": "关于这个问题，我得慢慢给你讲。",
+          "pinyin": "Guānyú zhège wèntí, wǒ děi mànmàn gěi nǐ jiǎng.",
+          "translation": {
+            "uz": "Bu masala haqida senga asta-sekin tushuntirishim kerak.",
+            "ru": "Об этом вопросе мне придётся рассказать тебе постепенно.",
+            "tj": "Дар бораи ин масъала бояд оҳиста-оҳиста ба ту шарҳ диҳам."
+          }
+        },
+        {
+          "zh": "关于他的要求，我们还要开会以后再决定。",
+          "pinyin": "Guānyú tā de yāoqiú, wǒmen hái yào kāihuì yǐhòu zài juédìng.",
+          "translation": {
+            "uz": "Uning talabi haqida yig‘ilishdan keyin qaror qilamiz.",
+            "ru": "По поводу его требования мы решим после совещания.",
+            "tj": "Дар бораи талаби ӯ баъди ҷаласа қарор мекунем."
+          }
+        },
+        {
+          "zh": "关于比赛的时间，我明天一定告诉大家。",
+          "pinyin": "Guānyú bǐsài de shíjiān, wǒ míngtiān yídìng gàosu dàjiā.",
+          "translation": {
+            "uz": "Musobaqa vaqti haqida ertaga hammaga albatta aytaman.",
+            "ru": "О времени соревнования я обязательно сообщу всем завтра.",
+            "tj": "Дар бораи вақти мусобиқа фардо ҳатман ба ҳама мегӯям."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Hayvon asrab olish markazida Wang Yixue va bolalar hayvonlarni ko‘rmoqda.",
+        "ru": "В центре пристройства животных Ван Исюэ и дети смотрят животных.",
+        "tj": "Дар маркази ба фарзандхонӣ додани ҳайвонот Ван Исюэ ва кӯдакон ҳайвонотро мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "这只小猫你们养了多久了？",
+          "pinyin": "Zhè zhī xiǎomāo nǐmen yǎng le duō jiǔ le?",
+          "text": {
+            "uz": "Bu mushukchani qancha vaqtdan beri parvarish qilyapsizlar?",
+            "ru": "Как долго вы уже ухаживаете за этим котёнком?",
+            "tj": "Ин гурбачаро чанд вақт боз нигоҳубин мекунед?"
+          }
+        },
+        {
+          "speaker": "服务员",
+          "zh": "已经一年多了。第一天看见它的时候，它又脏又小。",
+          "pinyin": "Yǐjīng yì nián duō le. Dì yī tiān kànjiàn tā de shíhou, tā yòu zāng yòu xiǎo.",
+          "text": {
+            "uz": "Bir yildan oshdi. Birinchi ko‘rganimizda u ham iflos, ham juda kichkina edi.",
+            "ru": "Уже больше года. Когда мы впервые её увидели, она была грязной и маленькой.",
+            "tj": "Зиёда аз як сол шуд. Рӯзи аввале ки дидем, ҳам ифлос буд, ҳам хурд."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "现在它变得又干净又漂亮了。",
+          "pinyin": "Xiànzài tā biàn de yòu gānjìng yòu piàoliang le.",
+          "text": {
+            "uz": "Hozir u ham toza, ham chiroyli bo‘lib qolibdi.",
+            "ru": "Теперь она стала чистой и красивой.",
+            "tj": "Ҳоло ҳам тоза ва ҳам зебо шудааст."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你们把它照顾得真好。",
+          "pinyin": "Nǐmen bǎ tā zhàogù de zhēn hǎo.",
+          "text": {
+            "uz": "Sizlar uni juda yaxshi parvarish qilibsizlar.",
+            "ru": "Вы очень хорошо за ней ухаживаете.",
+            "tj": "Шумо онро хеле хуб нигоҳубин кардаед."
+          }
+        },
+        {
+          "speaker": "服务员",
+          "zh": "它就好像我们的孩子，我们照顾它，它也认得我们了。",
+          "pinyin": "Tā jiù hǎoxiàng wǒmen de háizi, wǒmen zhàogù tā, tā yě rènde wǒmen le.",
+          "text": {
+            "uz": "U xuddi farzandimizdek: biz unga qaraymiz, u ham bizni taniydi.",
+            "ru": "Она словно наш ребёнок: мы заботимся о ней, и она уже узнаёт нас.",
+            "tj": "Он мисли фарзанди мост: мо нигоҳубинаш мекунем ва ӯ ҳам моро мешиносад."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "妈妈，我们家也养一只小猫吧。",
+          "pinyin": "Māma, wǒmen jiā yě yǎng yì zhī xiǎomāo ba.",
+          "text": {
+            "uz": "Oyi, biz ham uyda mushukcha boqaylik.",
+            "ru": "Мама, давай и мы заведём котёнка.",
+            "tj": "Оча, биё мо ҳам дар хона гурбача нигоҳ дорем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Hayvonot bog‘ida Wang Yixue va bolalar yurib suhbatlashmoqda.",
+        "ru": "В зоопарке Ван Исюэ и дети идут и разговаривают.",
+        "tj": "Дар боғи ҳайвонот Ван Исюэ ва кӯдакон роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小明",
+          "zh": "妈妈，大熊猫这个名字很奇怪，它们跟猫有什么关系？",
+          "pinyin": "Māma, dàxióngmāo zhège míngzi hěn qíguài, tāmen gēn māo yǒu shénme guānxì?",
+          "text": {
+            "uz": "Oyi, “katta panda” degan nom g‘alati, uning mushuk bilan qanday aloqasi bor?",
+            "ru": "Мама, название «большая панда» странное. Какое отношение она имеет к кошкам?",
+            "tj": "Оча, номи «пандаи калон» аҷиб аст, он бо гурба чӣ алоқа дорад?"
+          }
+        },
+        {
+          "speaker": "刘小明",
+          "zh": "大熊猫为什么只吃竹子不吃肉？",
+          "pinyin": "Dàxióngmāo wèishénme zhǐ chī zhúzi bù chī ròu?",
+          "text": {
+            "uz": "Nega pandalar faqat bambuk yeydi, go‘sht yemaydi?",
+            "ru": "Почему большие панды едят только бамбук, а мясо не едят?",
+            "tj": "Чаро пандаҳо танҳо бамбук мехӯранд ва гӯшт намехӯранд?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "它们跟人一样，也可以吃肉，但是对肉不感兴趣。",
+          "pinyin": "Tāmen gēn rén yíyàng, yě kěyǐ chī ròu, dànshì duì ròu bù gǎn xìngqù.",
+          "text": {
+            "uz": "Ular ham odamlar kabi go‘sht yeya oladi, lekin go‘shtga qiziqmaydi.",
+            "ru": "Они, как люди, тоже могут есть мясо, но оно их не интересует.",
+            "tj": "Онҳо мисли одамон гӯшт хӯрда метавонанд, аммо ба гӯшт шавқ надоранд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "关于这个问题，我得慢慢给你讲。",
+          "pinyin": "Guānyú zhège wèntí, wǒ děi mànmàn gěi nǐ jiǎng.",
+          "text": {
+            "uz": "Bu masala haqida senga asta-sekin tushuntirib berishim kerak.",
+            "ru": "Об этом вопросе придётся рассказать тебе постепенно.",
+            "tj": "Дар бораи ин масъала бояд оҳиста ба ту нақл кунам."
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "弟弟，你真是“十万个为什么”。",
+          "pinyin": "Dìdi, nǐ zhēn shì 'shí wàn ge wèishénme'.",
+          "text": {
+            "uz": "Uka, sen haqiqiy “yuz mingta nega” ekansan.",
+            "ru": "Братишка, ты прямо «сто тысяч почему».",
+            "tj": "Додар, ту ҳақиқатан «сад ҳазор чаро» ҳастӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Panda pavilonida Wang Yixue va bolalar katta pandalarni tomosha qilmoqda.",
+        "ru": "В павильоне панд Ван Исюэ и дети наблюдают за большими пандами.",
+        "tj": "Дар павилиони пандаҳо Ван Исюэ ва кӯдакон пандаҳои калонро тамошо мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "这只大熊猫一会儿爬上去，一会儿跳下来，可爱极了！",
+          "pinyin": "Zhè zhī dàxióngmāo yíhuìr pá shàngqu, yíhuìr tiào xiàlái, kě'ài jí le!",
+          "text": {
+            "uz": "Bu panda goh tepaga chiqadi, goh pastga sakraydi, juda yoqimtoy!",
+            "ru": "Эта панда то забирается наверх, то спрыгивает вниз — невероятно милая!",
+            "tj": "Ин панда гоҳ боло мебарояд, гоҳ поён меҷаҳад, ниҳоят дилрабост!"
+          }
+        },
+        {
+          "speaker": "刘小明",
+          "zh": "对，除了睡觉以外，很多时间都在吃东西。",
+          "pinyin": "Duì, chúle shuìjiào yǐwài, hěn duō shíjiān dōu zài chī dōngxi.",
+          "text": {
+            "uz": "Ha, uxlashdan tashqari ko‘p vaqtini ovqat yeyishga sarflaydi.",
+            "ru": "Да, кроме сна, большую часть времени они едят.",
+            "tj": "Ҳа, ба ғайр аз хоб вақти зиёдашонро ба хӯрдан мегузаронанд."
+          }
+        },
+        {
+          "speaker": "刘小明",
+          "zh": "大熊猫的生活真舒服啊！",
+          "pinyin": "Dàxióngmāo de shēnghuó zhēn shūfu a!",
+          "text": {
+            "uz": "Pandalarning hayoti rostdan ham mazza ekan!",
+            "ru": "Какая же комфортная жизнь у панд!",
+            "tj": "Зиндагии пандаҳо воқеан роҳат аст!"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "妈妈，您帮我和这两只大熊猫照一张照片吧。",
+          "pinyin": "Māma, nín bāng wǒ hé zhè liǎng zhī dàxióngmāo zhào yì zhāng zhàopiàn ba.",
+          "text": {
+            "uz": "Oyi, meni mana bu ikki panda bilan birga suratga olib qo‘ying.",
+            "ru": "Мама, сфотографируй меня с этими двумя пандами.",
+            "tj": "Оча, маро бо ҳамин ду панда як акс гиред."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "野生",
+            "pinyin": "yěshēng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "yovvoyi tabiatda yashaydigan",
+              "ru": "дикий; живущий в природе",
+              "tj": "ваҳшӣ; дар табиат зисткунанда"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "野生",
+          "pinyin": "yěshēng",
+          "translation": {
+            "uz": "yovvoyi tabiatda yashaydigan",
+            "ru": "дикий; живущий в природе",
+            "tj": "ваҳшӣ; дар табиат зисткунанда"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "野生",
+          "pinyin": "yěshēng",
+          "options": [
+            "一会儿",
+            "脏",
+            "可爱",
+            "野生"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "野生 — yovvoyi tabiatda yashaydigan (yěshēng)",
+            "ru": "野生 — дикий; живущий в природе (yěshēng)",
+            "tj": "野生 — ваҳшӣ; дар табиат зисткунанда (yěshēng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "关于",
+            "pinyin": "guānyú",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "haqida; to‘g‘risida",
+              "ru": "о; относительно",
+              "tj": "дар бораи"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "关于 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 关于:",
+            "tj": "Маънои калимаи 关于-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "haqida; to‘g‘risida",
+              "ru": "о; относительно",
+              "tj": "дар бораи"
+            },
+            {
+              "uz": "bir oz vaqt; goh",
+              "ru": "немного времени; то... то...",
+              "tj": "каме вақт; гоҳ"
+            },
+            {
+              "uz": "iflos",
+              "ru": "грязный",
+              "tj": "ифлос"
+            },
+            {
+              "uz": "yoqimtoy; sevimli",
+              "ru": "милый; симпатичный",
+              "tj": "дилрабо; дӯстдоштании"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "关于 = haqida; to‘g‘risida (guānyú)",
+            "ru": "关于 = о; относительно (guānyú)",
+            "tj": "关于 = дар бораи (guānyú)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "饱",
+            "pinyin": "bǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "to‘q",
+              "ru": "сытый",
+              "tj": "сер"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bǎo?",
+            "tj": "bǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "可爱",
+            "一会儿",
+            "饱",
+            "脏"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "饱 = to‘q (bǎo)",
+            "ru": "饱 = сытый (bǎo)",
+            "tj": "饱 = сер (bǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "张",
+            "pinyin": "zhāng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ochmoq; yoymoq",
+              "ru": "раскрывать; раздвигать",
+              "tj": "кушодан; боз кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "张 talaffuzini tanlang:",
+            "ru": "Выберите произношение 张:",
+            "tj": "Талаффузи 张-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhāng",
+            "yíhuìr",
+            "zāng",
+            "kě'ài"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "张 — zhāng",
+            "ru": "张 — zhāng",
+            "tj": "张 — zhāng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yovvoyi tabiatda yashaydigan' xitoycha qaysi?",
+            "ru": "'дикий; живущий в природе' по-китайски?",
+            "tj": "'ваҳшӣ; дар табиат зисткунанда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "野生",
+            "可爱",
+            "一会儿",
+            "脏"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yovvoyi tabiatda yashaydigan = 野生 (yěshēng)",
+            "ru": "дикий; живущий в природе = 野生 (yěshēng)",
+            "tj": "ваҳшӣ; дар табиат зисткунанда = 野生 (yěshēng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "野生",
+              {
+                "uz": "yovvoyi tabiatda yashaydigan",
+                "ru": "дикий; живущий в природе",
+                "tj": "ваҳшӣ; дар табиат зисткунанда"
+              }
+            ],
+            [
+              "关于",
+              {
+                "uz": "haqida; to‘g‘risida",
+                "ru": "о; относительно",
+                "tj": "дар бораи"
+              }
+            ],
+            [
+              "饱",
+              {
+                "uz": "to‘q",
+                "ru": "сытый",
+                "tj": "сер"
+              }
+            ],
+            [
+              "张",
+              {
+                "uz": "ochmoq; yoymoq",
+                "ru": "раскрывать; раздвигать",
+                "tj": "кушодан; боз кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Predlog “关于” — “haqida”",
+              "ru": "Предлог “关于” — «о / относительно»",
+              "tj": "Пешоянди “关于” — «дар бораи»"
+            },
+            "title_zh": "介词“关于”",
+            "rule": {
+              "uz": "“关于 + mavzu” gapning qaysi masala yoki mavzu haqida ekanini ko‘rsatadi. Ko‘pincha gap boshida keladi.",
+              "ru": "“关于 + тема” указывает, о каком вопросе или предмете идёт речь. Часто ставится в начале предложения.",
+              "tj": "“关于 + мавзӯъ” нишон медиҳад, ки сухан дар бораи кадом масъала ё мавзӯъ меравад. Аксаран дар аввали ҷумла меояд."
+            },
+            "examples": [
+              {
+                "zh": "关于这个问题，我得慢慢给你讲。",
+                "pinyin": "Guānyú zhège wèntí, wǒ děi mànmàn gěi nǐ jiǎng.",
+                "translation": {
+                  "uz": "Bu masala haqida senga asta-sekin tushuntirishim kerak.",
+                  "ru": "Об этом вопросе мне придётся рассказать тебе постепенно.",
+                  "tj": "Дар бораи ин масъала бояд оҳиста-оҳиста ба ту шарҳ диҳам."
+                }
+              },
+              {
+                "zh": "关于他的要求，我们还要开会以后再决定。",
+                "pinyin": "Guānyú tā de yāoqiú, wǒmen hái yào kāihuì yǐhòu zài juédìng.",
+                "translation": {
+                  "uz": "Uning talabi haqida yig‘ilishdan keyin qaror qilamiz.",
+                  "ru": "По поводу его требования мы решим после совещания.",
+                  "tj": "Дар бораи талаби ӯ баъди ҷаласа қарор мекунем."
+                }
+              },
+              {
+                "zh": "关于比赛的时间，我明天一定告诉大家。",
+                "pinyin": "Guānyú bǐsài de shíjiān, wǒ míngtiān yídìng gàosu dàjiā.",
+                "translation": {
+                  "uz": "Musobaqa vaqti haqida ertaga hammaga albatta aytaman.",
+                  "ru": "О времени соревнования я обязательно сообщу всем завтра.",
+                  "tj": "Дар бораи вақти мусобиқа фардо ҳатман ба ҳама мегӯям."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____这个问题，我得慢慢给你讲。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "脏",
+            "一会儿",
+            "关于",
+            "可爱"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 关于 (guānyú) — haqida; to‘g‘risida",
+            "ru": "Верно: 关于 (guānyú) — о; относительно",
+            "tj": "Дуруст: 关于 (guānyú) — дар бораи"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Uning talabi haqida yig‘ilishdan keyin qaror qilamiz.» — xitoychada qaysi biri?",
+            "ru": "«По поводу его требования мы решим после совещания.» — какое предложение по-китайски?",
+            "tj": "«Дар бораи талаби ӯ баъди ҷаласа қарор мекунем.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "关于这个问题，我得慢慢给你讲。",
+            "关于他的要求，我们还要开会以后再决定。",
+            "关于比赛的时间，我明天一定告诉大家。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "关于他的要求，我们还要开会以后再决定。 — Guānyú tā de yāoqiú, wǒmen hái yào kāihuì yǐhòu zài juédìng.",
+            "ru": "关于他的要求，我们还要开会以后再决定。 — Guānyú tā de yāoqiú, wǒmen hái yào kāihuì yǐhòu zài juédìng.",
+            "tj": "关于他的要求，我们还要开会以后再决定。 — Guānyú tā de yāoqiú, wǒmen hái yào kāihuì yǐhòu zài juédìng."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bǎo?",
+            "tj": "bǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "脏",
+            "可爱",
+            "一会儿",
+            "饱"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "饱 = to‘q (bǎo)",
+            "ru": "饱 = сытый (bǎo)",
+            "tj": "饱 = сер (bǎo)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "张 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 张:",
+            "tj": "Маънои калимаи 张-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yoqimtoy; sevimli",
+              "ru": "милый; симпатичный",
+              "tj": "дилрабо; дӯстдоштании"
+            },
+            {
+              "uz": "ochmoq; yoymoq",
+              "ru": "раскрывать; раздвигать",
+              "tj": "кушодан; боз кардан"
+            },
+            {
+              "uz": "iflos",
+              "ru": "грязный",
+              "tj": "ифлос"
+            },
+            {
+              "uz": "bir oz vaqt; goh",
+              "ru": "немного времени; то... то...",
+              "tj": "каме вақт; гоҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "张 = ochmoq; yoymoq (zhāng)",
+            "ru": "张 = раскрывать; раздвигать (zhāng)",
+            "tj": "张 = кушодан; боз кардан (zhāng)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "其实 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 其实:",
+            "tj": "Маънои калимаи 其实-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir oz vaqt; goh",
+              "ru": "немного времени; то... то...",
+              "tj": "каме вақт; гоҳ"
+            },
+            {
+              "uz": "yoqimtoy; sevimli",
+              "ru": "милый; симпатичный",
+              "tj": "дилрабо; дӯстдоштании"
+            },
+            {
+              "uz": "aslida",
+              "ru": "на самом деле",
+              "tj": "дар асл"
+            },
+            {
+              "uz": "iflos",
+              "ru": "грязный",
+              "tj": "ифлос"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "其实 = aslida (qíshí)",
+            "ru": "其实 = на самом деле (qíshí)",
+            "tj": "其实 = дар асл (qíshí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "其实",
+            "pinyin": "qíshí",
+            "meaning": {
+              "uz": "aslida",
+              "ru": "на самом деле",
+              "tj": "дар асл"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yovvoyi tabiatda yashaydigan' xitoycha qaysi?",
+            "ru": "'дикий; живущий в природе' по-китайски?",
+            "tj": "'ваҳшӣ; дар табиат зисткунанда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可爱",
+            "野生",
+            "一会儿",
+            "脏"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yovvoyi tabiatda yashaydigan = 野生 (yěshēng)",
+            "ru": "дикий; живущий в природе = 野生 (yěshēng)",
+            "tj": "ваҳшӣ; дар табиат зисткунанда = 野生 (yěshēng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "野生",
+            "pinyin": "yěshēng",
+            "meaning": {
+              "uz": "yovvoyi tabiatda yashaydigan",
+              "ru": "дикий; живущий в природе",
+              "tj": "ваҳшӣ; дар табиат зисткунанда"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

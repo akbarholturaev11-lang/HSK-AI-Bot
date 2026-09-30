@@ -1,0 +1,659 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 1,
+  "source_lesson": 1,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我们去机场接你们",
+  "subtitle": {
+    "uz": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+    "ru": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+    "tj": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "以为",
+      "pinyin": "yǐwéi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+        "ru": "полагать, считать (часто ошибочно)",
+        "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "像",
+      "pinyin": "xiàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘xshamoq",
+        "ru": "быть похожим; походить",
+        "tj": "монанд будан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "长",
+      "pinyin": "zhǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+        "ru": "расти; выглядеть (о внешности)",
+        "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "身高",
+      "pinyin": "shēngāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bo‘y balandligi",
+        "ru": "рост человека",
+        "tj": "қад; баландии қомат"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“看上去 / 看起来” — tashqi taassurotni ifodalash",
+        "ru": "“看上去 / 看起来” — внешнее впечатление",
+        "tj": "“看上去 / 看起来” — таассуроти зоҳирӣ"
+      },
+      "title_zh": "固定短语“看上去/看起来”",
+      "rule": {
+        "uz": "“看上去” va “看起来” biror odam yoki narsaning ko‘rinishi va kuzatuvchida uyg‘otgan taassurotini bildiradi. Keyin odatda sifat yoki tavsif keladi.",
+        "ru": "“看上去” и “看起来” передают впечатление по внешнему виду человека или предмета. После них обычно ставится прилагательное или описание.",
+        "tj": "“看上去” ва “看起来” таассуротро аз намуди зоҳирии шахс ё ашё ифода мекунанд. Баъди онҳо одатан сифат ё тавсиф меояд."
+      },
+      "examples": [
+        {
+          "zh": "他们看上去有点儿像。",
+          "pinyin": "Tāmen kàn shàngqu yǒudiǎnr xiàng.",
+          "translation": {
+            "uz": "Ular ko‘rinishidan biroz o‘xshaydi.",
+            "ru": "Они на вид немного похожи.",
+            "tj": "Онҳо аз рӯйи намуд каме монанданд."
+          }
+        },
+        {
+          "zh": "这些菜看起来都很好吃。",
+          "pinyin": "Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+          "translation": {
+            "uz": "Bu taomlarning hammasi juda mazali ko‘rinadi.",
+            "ru": "Все эти блюда выглядят очень аппетитно.",
+            "tj": "Ҳамаи ин хӯрокҳо хеле болаззат ба назар мерасанд."
+          }
+        },
+        {
+          "zh": "那个新来的老师看上去很年轻。",
+          "pinyin": "Nàge xīn lái de lǎoshī kàn shàngqu hěn niánqīng.",
+          "translation": {
+            "uz": "Yangi kelgan o‘qituvchi juda yosh ko‘rinadi.",
+            "ru": "Новый преподаватель выглядит очень молодо.",
+            "tj": "Устоди навомада хеле ҷавон ба назар мерасад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "以为",
+            "pinyin": "yǐwéi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "以为",
+          "pinyin": "yǐwéi",
+          "translation": {
+            "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+            "ru": "полагать, считать (часто ошибочно)",
+            "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "以为 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 以为:",
+            "tj": "Маънои калимаи 以为-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "bo‘y balandligi",
+              "ru": "рост человека",
+              "tj": "қад; баландии қомат"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            },
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "以为 = deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin) (yǐwéi)",
+            "ru": "以为 = полагать, считать (часто ошибочно) (yǐwéi)",
+            "tj": "以为 = гумон кардан, фикр кардан (аксар вақт нодуруст) (yǐwéi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "像",
+            "pinyin": "xiàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiàng?",
+            "tj": "xiàng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "长",
+            "像",
+            "身高",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "像 = o‘xshamoq (xiàng)",
+            "ru": "像 = быть похожим; походить (xiàng)",
+            "tj": "像 = монанд будан (xiàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "长",
+            "pinyin": "zhǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "长 talaffuzini tanlang:",
+            "ru": "Выберите произношение 长:",
+            "tj": "Талаффузи 长-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shēngāo",
+            "yǐwéi",
+            "xiàng",
+            "zhǎng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "长 — zhǎng",
+            "ru": "长 — zhǎng",
+            "tj": "长 — zhǎng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "身高",
+            "pinyin": "shēngāo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bo‘y balandligi",
+              "ru": "рост человека",
+              "tj": "қад; баландии қомат"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bo‘y balandligi' xitoycha qaysi?",
+            "ru": "'рост человека' по-китайски?",
+            "tj": "'қад; баландии қомат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "长",
+            "以为",
+            "身高",
+            "像"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "bo‘y balandligi = 身高 (shēngāo)",
+            "ru": "рост человека = 身高 (shēngāo)",
+            "tj": "қад; баландии қомат = 身高 (shēngāo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "以为",
+          "pinyin": "yǐwéi",
+          "options": [
+            "身高",
+            "长",
+            "以为",
+            "像"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "以为 — deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin) (yǐwéi)",
+            "ru": "以为 — полагать, считать (часто ошибочно) (yǐwéi)",
+            "tj": "以为 — гумон кардан, фикр кардан (аксар вақт нодуруст) (yǐwéi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "以为",
+              {
+                "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+                "ru": "полагать, считать (часто ошибочно)",
+                "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+              }
+            ],
+            [
+              "像",
+              {
+                "uz": "o‘xshamoq",
+                "ru": "быть похожим; походить",
+                "tj": "монанд будан"
+              }
+            ],
+            [
+              "长",
+              {
+                "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+                "ru": "расти; выглядеть (о внешности)",
+                "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+              }
+            ],
+            [
+              "身高",
+              {
+                "uz": "bo‘y balandligi",
+                "ru": "рост человека",
+                "tj": "қад; баландии қомат"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“看上去 / 看起来” — tashqi taassurotni ifodalash",
+              "ru": "“看上去 / 看起来” — внешнее впечатление",
+              "tj": "“看上去 / 看起来” — таассуроти зоҳирӣ"
+            },
+            "title_zh": "固定短语“看上去/看起来”",
+            "rule": {
+              "uz": "“看上去” va “看起来” biror odam yoki narsaning ko‘rinishi va kuzatuvchida uyg‘otgan taassurotini bildiradi. Keyin odatda sifat yoki tavsif keladi.",
+              "ru": "“看上去” и “看起来” передают впечатление по внешнему виду человека или предмета. После них обычно ставится прилагательное или описание.",
+              "tj": "“看上去” ва “看起来” таассуротро аз намуди зоҳирии шахс ё ашё ифода мекунанд. Баъди онҳо одатан сифат ё тавсиф меояд."
+            },
+            "examples": [
+              {
+                "zh": "他们看上去有点儿像。",
+                "pinyin": "Tāmen kàn shàngqu yǒudiǎnr xiàng.",
+                "translation": {
+                  "uz": "Ular ko‘rinishidan biroz o‘xshaydi.",
+                  "ru": "Они на вид немного похожи.",
+                  "tj": "Онҳо аз рӯйи намуд каме монанданд."
+                }
+              },
+              {
+                "zh": "这些菜看起来都很好吃。",
+                "pinyin": "Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+                "translation": {
+                  "uz": "Bu taomlarning hammasi juda mazali ko‘rinadi.",
+                  "ru": "Все эти блюда выглядят очень аппетитно.",
+                  "tj": "Ҳамаи ин хӯрокҳо хеле болаззат ба назар мерасанд."
+                }
+              },
+              {
+                "zh": "那个新来的老师看上去很年轻。",
+                "pinyin": "Nàge xīn lái de lǎoshī kàn shàngqu hěn niánqīng.",
+                "translation": {
+                  "uz": "Yangi kelgan o‘qituvchi juda yosh ko‘rinadi.",
+                  "ru": "Новый преподаватель выглядит очень молодо.",
+                  "tj": "Устоди навомада хеле ҷавон ба назар мерасад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ular ko‘rinishidan biroz o‘xshaydi.",
+            "ru": "Они на вид немного похожи.",
+            "tj": "Онҳо аз рӯйи намуд каме монанданд."
+          },
+          "tokens": [
+            "长",
+            "以为",
+            "他们",
+            "上去",
+            "看",
+            "像",
+            "有点儿"
+          ],
+          "answer_tokens": [
+            "他们",
+            "看",
+            "上去",
+            "有点儿",
+            "像"
+          ],
+          "explanation": {
+            "uz": "他们看上去有点儿像。 — Tāmen kàn shàngqu yǒudiǎnr xiàng.",
+            "ru": "他们看上去有点儿像。 — Tāmen kàn shàngqu yǒudiǎnr xiàng.",
+            "tj": "他们看上去有点儿像。 — Tāmen kàn shàngqu yǒudiǎnr xiàng."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu taomlarning hammasi juda mazali ko‘rinadi.» — xitoychada qaysi biri?",
+            "ru": "«Все эти блюда выглядят очень аппетитно.» — какое предложение по-китайски?",
+            "tj": "«Ҳамаи ин хӯрокҳо хеле болаззат ба назар мерасанд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "那个新来的老师看上去很年轻。",
+            "这些菜看起来都很好吃。",
+            "他们看上去有点儿像。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这些菜看起来都很好吃。 — Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+            "ru": "这些菜看起来都很好吃。 — Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+            "tj": "这些菜看起来都很好吃。 — Zhèxiē cài kàn qǐlái dōu hěn hǎochī."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "他们看上去有点儿像。",
+          "pinyin": "Tāmen kàn shàngqu yǒudiǎnr xiàng.",
+          "translation": {
+            "uz": "Ular ko‘rinishidan biroz o‘xshaydi.",
+            "ru": "Они на вид немного похожи.",
+            "tj": "Онҳо аз рӯйи намуд каме монанданд."
+          },
+          "tokens": {
+            "uz": [
+              "Ular",
+              "o‘xshaydi",
+              "ko‘rinishidan",
+              "biroz"
+            ],
+            "ru": [
+              "Они",
+              "на",
+              "похожи",
+              "вид",
+              "немного"
+            ],
+            "tj": [
+              "рӯйи",
+              "каме",
+              "аз",
+              "намуд",
+              "Онҳо",
+              "монанданд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ular",
+              "ko‘rinishidan",
+              "biroz",
+              "o‘xshaydi"
+            ],
+            "ru": [
+              "Они",
+              "на",
+              "вид",
+              "немного",
+              "похожи"
+            ],
+            "tj": [
+              "Онҳо",
+              "аз",
+              "рӯйи",
+              "намуд",
+              "каме",
+              "монанданд"
+            ]
+          },
+          "explanation": {
+            "uz": "他们看上去有点儿像。 — Ular ko‘rinishidan biroz o‘xshaydi.",
+            "ru": "他们看上去有点儿像。 — Они на вид немного похожи.",
+            "tj": "他们看上去有点儿像。 — Онҳо аз рӯйи намуд каме монанданд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "以为",
+          "pinyin": "yǐwéi",
+          "translation": {
+            "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+            "ru": "полагать, считать (часто ошибочно)",
+            "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "姓名 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 姓名:",
+            "tj": "Маънои калимаи 姓名-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            },
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "姓名 = ism-familiya (xìngmíng)",
+            "ru": "姓名 = имя и фамилия (xìngmíng)",
+            "tj": "姓名 = ному насаб (xìngmíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "姓名",
+            "pinyin": "xìngmíng",
+            "meaning": {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)' xitoycha qaysi?",
+            "ru": "'полагать, считать (часто ошибочно)' по-китайски?",
+            "tj": "'гумон кардан, фикр кардан (аксар вақт нодуруст)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "像",
+            "长",
+            "以为",
+            "身高"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin) = 以为 (yǐwéi)",
+            "ru": "полагать, считать (часто ошибочно) = 以为 (yǐwéi)",
+            "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст) = 以为 (yǐwéi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "以为",
+            "pinyin": "yǐwéi",
+            "meaning": {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

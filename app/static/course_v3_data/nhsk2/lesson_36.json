@@ -1,0 +1,997 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 36,
+  "source_lesson": 7,
+  "part_no": 5,
+  "part_count": 5,
+  "checkpoint": true,
+  "title": "他篮球打得很好",
+  "subtitle": {
+    "uz": "“一……就……” bilan ketma-ket/tez sodir bo‘ladigan harakatlarni ifodalash; 得 orqali holat to‘ldiruvchisini ishlatish; ajraluvchi fe’l va obyektli fe’llarda holat to‘ldiruvchisi tartibini to‘g‘ri qo‘llash; sport haqida gaplashish.",
+    "ru": "Выражать быстрое следование действий конструкцией “一……就……”；использовать дополнение состояния с 得; правильно строить его с разделяемыми и переходными глаголами; говорить о спорте.",
+    "tj": "Бо “一……就……” пайдарпай ё зуд рух додани амалҳоро ифода кардан; пуркунандаи ҳолатро бо 得 истифода бурдан; тартиби онро бо феълҳои ҷудошаванда ва объектдор дуруст сохтани; дар бораи варзиш суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "从",
+      "pinyin": "cóng",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "dan; ...dan boshlab",
+        "ru": "из; от",
+        "tj": "аз"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "往",
+      "pinyin": "wǎng",
+      "pos": "prep./v.",
+      "meaning": {
+        "uz": "tomon; ...ga qarab bormoq",
+        "ru": "в направлении; направляться",
+        "tj": "ба сӯи; рафтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "跑",
+      "pinyin": "pǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yugurmoq; chopmoq",
+        "ru": "бежать",
+        "tj": "давидан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "打",
+      "pinyin": "dǎ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘ynamoq (sport); urmoq",
+        "ru": "играть; ударять",
+        "tj": "бозӣ кардан; задан"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "篮球",
+      "pinyin": "lánqiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "basketbol",
+        "ru": "баскетбол",
+        "tj": "баскетбол"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "sport; mashq qilmoq",
+        "ru": "спорт; заниматься",
+        "tj": "варзиш; машқ кардан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "踢",
+      "pinyin": "tī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tepmoq",
+        "ru": "пинать",
+        "tj": "лагад задан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "足球",
+      "pinyin": "zúqiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "futbol",
+        "ru": "футбол",
+        "tj": "футбол"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "球",
+      "pinyin": "qiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "to‘p",
+        "ru": "мяч",
+        "tj": "тӯб"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "得",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+        "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+        "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "跑步",
+      "pinyin": "pǎobù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yugurmoq",
+        "ru": "бегать",
+        "tj": "давидан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "游泳",
+      "pinyin": "yóuyǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "游",
+      "pinyin": "yóu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "爱好",
+      "pinyin": "àihào",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "qiziqish; yoqtirmoq",
+        "ru": "хобби; увлекаться",
+        "tj": "шавқ; дӯст доштан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "开始",
+      "pinyin": "kāishǐ",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "boshlamoq; boshlanish",
+        "ru": "начинать; начало",
+        "tj": "оғоз кардан; оғоз"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“一……就……” ixcham qo‘shma gapi",
+        "ru": "Сжатое сложное предложение “一……就……”",
+        "tj": "Ҷумлаи фишурдаи “一……就……”"
+      },
+      "title_zh": "紧缩复句“一……就……”",
+      "rule": {
+        "uz": "“一……就……” ikkinchi harakat birinchidan darhol keyin sodir bo‘lishini yoki birinchi harakat shart/sabab, ikkinchisi natija ekanini bildiradi. Ega bir xil bo‘lsa ega 一 yoki 就 oldida; egalar turli bo‘lsa har biri 一 va 就 oldida keladi.",
+        "ru": "“一……就……” показывает, что второе действие следует сразу за первым, либо первое является условием/причиной, а второе — результатом. При одном субъекте он ставится перед 一 или 就; при разных — каждый перед своей частью.",
+        "tj": "“一……就……” нишон медиҳад, ки амали дуюм фавран пас аз якум рух медиҳад ё якум шарт/сабаб, дуюм натиҷа аст. Агар мубтадо як бошад, пеш аз 一 ё 就; агар гуногун бошад, ҳар мубтадо пеш аз қисми худ меояд."
+      },
+      "examples": [
+        {
+          "zh": "你怎么一下课就往外跑？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我一到家，妈妈就打来电话了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "一到星期六，陈天中就跟同学去打篮球。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Holat to‘ldiruvchisi (1)",
+        "ru": "Дополнение состояния (1)",
+        "tj": "Пуркунандаи ҳолат (1)"
+      },
+      "title_zh": "状态补语（1）",
+      "rule": {
+        "uz": "Holat to‘ldiruvchisi fe’ldan keyin harakat qanday bajarilganini ko‘rsatadi. Asosiy shakl: fe’l+得+sifatli birikma. Inkor sifat oldidan 不 bilan. Savol: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+        "ru": "Дополнение состояния после глагола уточняет, как выполняется действие. Схема: глагол+得+прилагательная группа. Отрицание — 不 перед прилагательным. Вопрос: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+        "tj": "Пуркунандаи ҳолат пас аз феъл тарзи иҷрои амалро мефаҳмонад. Сохтор: феъл+得+ибораи сифатӣ. Инкор бо 不 пеш аз сифат. Савол: 吗; V+得+Adj+不+Adj; V+得+怎么样."
+      },
+      "examples": [
+        {
+          "zh": "我踢得还可以。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他们玩得很高兴。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "白家月跑得不快。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你跑得快吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他来得早不早？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他们玩得怎么样？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Holat to‘ldiruvchisi (2)",
+        "ru": "Дополнение состояния (2)",
+        "tj": "Пуркунандаи ҳолат (2)"
+      },
+      "title_zh": "状态补语（2）",
+      "rule": {
+        "uz": "Holat to‘ldiruvchili gapda fe’l ajraluvchi so‘z bo‘lsa, fe’l morfemasi takrorlanadi. Fe’l obyekt olsa, obyektni oldinga chiqarish yoki fe’lni takrorlash mumkin.",
+        "ru": "Если глагол разделяемый, его глагольный морф повторяется. Если у глагола есть объект, объект можно вынести перед глаголом либо повторить глагол.",
+        "tj": "Агар феъл ҷудошаванда бошад, морфемаи феъл такрор мешавад. Агар объект дошта бошад, объектро пеш овардан ё феълро такрор кардан мумкин."
+      },
+      "examples": [
+        {
+          "zh": "我游泳游得不快。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你篮球打得怎么样？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "白家月写汉字写得很好看。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Энни и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Энни ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "安妮，你是什么时候从北京回来的？",
+          "pinyin": "Ānnī, nǐ shì shénme shíhou cóng Běijīng huílái de?",
+          "text": {
+            "uz": "Annie, sen Pekindan qachon qaytding?",
+            "ru": "Энни, когда ты вернулась из Пекина?",
+            "tj": "Энни, кай аз Пекин баргаштӣ?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "昨天下午。天中，你怎么一下课就往外跑？",
+          "pinyin": "Zuótiān xiàwǔ. Tiānzhōng, nǐ zěnme yí xiàkè jiù wǎng wài pǎo?",
+          "text": {
+            "uz": "Kecha tushdan keyin. Tianzhong, nega dars tugashi bilan tashqariga yugurasan?",
+            "ru": "Вчера днём. Тяньчжун, почему ты сразу после урока выбегаешь наружу?",
+            "tj": "Дирӯз баъд аз нисфирӯзӣ. Тянҷун, чаро ҳамин ки дарс тамом мешавад, ба берун медавӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我跟同学说好了，一起去打篮球。",
+          "pinyin": "Wǒ gēn tóngxué shuōhǎo le, yìqǐ qù dǎ lánqiú.",
+          "text": {
+            "uz": "Sinfdoshlar bilan kelishib qo‘ydim, birga basketbol o‘ynagani boramiz.",
+            "ru": "Я договорился с одноклассниками вместе поиграть в баскетбол.",
+            "tj": "Бо ҳамсинфон маслиҳат кардем, якҷо баскетбол бозӣ мекунем."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我也想跟你们一起玩。",
+          "pinyin": "Wǒ yě xiǎng gēn nǐmen yìqǐ wán.",
+          "text": {
+            "uz": "Men ham sizlar bilan birga o‘ynagim keladi.",
+            "ru": "Я тоже хочу поиграть с вами.",
+            "tj": "Ман ҳам мехоҳам бо шумо якҷо бозӣ кунам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "没问题，走吧。",
+          "pinyin": "Méi wèntí, zǒu ba.",
+          "text": {
+            "uz": "Muammo yo‘q, yur.",
+            "ru": "Без проблем, пошли.",
+            "tj": "Мушкил нест, равем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "天中，你是不是很喜欢打篮球？",
+          "pinyin": "Tiānzhōng, nǐ shì bu shì hěn xǐhuan dǎ lánqiú?",
+          "text": {
+            "uz": "Tianzhong, sen basketbol o‘ynashni juda yoqtirasanmi?",
+            "ru": "Тяньчжун, ты очень любишь играть в баскетбол?",
+            "tj": "Тянҷун, ту баскетбол бозӣ карданро хеле дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "没错。",
+          "pinyin": "Méi cuò.",
+          "text": {
+            "uz": "To‘g‘ri.",
+            "ru": "Именно.",
+            "tj": "Дуруст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你还喜欢什么运动？",
+          "pinyin": "Nǐ hái xǐhuan shénme yùndòng?",
+          "text": {
+            "uz": "Yana qaysi sportni yoqtirasan?",
+            "ru": "Какие ещё виды спорта ты любишь?",
+            "tj": "Боз кадом варзишро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我还喜欢踢足球，一到星期天就跟朋友们去踢球。",
+          "pinyin": "Wǒ hái xǐhuan tī zúqiú, yí dào Xīngqītiān jiù gēn péngyoumen qù tī qiú.",
+          "text": {
+            "uz": "Futbolni ham yoqtiraman, yakshanba kelishi bilan do‘stlar bilan futbol o‘ynagani boraman.",
+            "ru": "Я ещё люблю футбол: как только наступает воскресенье, иду с друзьями играть.",
+            "tj": "Футболро ҳам дӯст медорам; ҳамин ки якшанбе шавад, бо дӯстон футбол бозӣ меравам."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你踢得怎么样？",
+          "pinyin": "Nǐ tī de zěnmeyàng?",
+          "text": {
+            "uz": "Qanday o‘ynaysan?",
+            "ru": "Как ты играешь?",
+            "tj": "Чӣ хел бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我踢得还可以。",
+          "pinyin": "Wǒ tī de hái kěyǐ.",
+          "text": {
+            "uz": "Yomon emas o‘ynayman.",
+            "ru": "Играю неплохо.",
+            "tj": "Бад не бозӣ мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "你篮球打得怎么样？",
+          "pinyin": "Nǐ lánqiú dǎ de zěnmeyàng?",
+          "text": {
+            "uz": "Basketbolni qanday o‘ynaysan?",
+            "ru": "Как ты играешь в баскетбол?",
+            "tj": "Баскетболро чӣ хел бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "打得还可以。",
+          "pinyin": "Dǎ de hái kěyǐ.",
+          "text": {
+            "uz": "Yomon emas.",
+            "ru": "Неплохо.",
+            "tj": "Бад не."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "跑步呢？你跑得快不快？",
+          "pinyin": "Pǎobù ne? Nǐ pǎo de kuài bu kuài?",
+          "text": {
+            "uz": "Yugurish-chi? Tez yugurasanmi?",
+            "ru": "А бег? Ты быстро бегаешь?",
+            "tj": "Давидан чӣ? Тез медавӣ?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我跑得不快，也不太喜欢跑步。",
+          "pinyin": "Wǒ pǎo de bú kuài, yě bú tài xǐhuan pǎobù.",
+          "text": {
+            "uz": "Tez yugurmayman, yugurishni ham uncha yoqtirmayman.",
+            "ru": "Я бегаю небыстро и не очень люблю бег.",
+            "tj": "Ман тез намедавам ва давиданро ҳам он қадар дӯст намедорам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "那你喜欢游泳吗？",
+          "pinyin": "Nà nǐ xǐhuan yóuyǒng ma?",
+          "text": {
+            "uz": "Unda suzishni yoqtirasanmi?",
+            "ru": "А плавать любишь?",
+            "tj": "Пас шиновариро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "喜欢，但我游泳游得不快。",
+          "pinyin": "Xǐhuan, dàn wǒ yóuyǒng yóu de bú kuài.",
+          "text": {
+            "uz": "Ha, lekin tez suzolmayman.",
+            "ru": "Люблю, но плаваю небыстро.",
+            "tj": "Дӯст медорам, аммо тез шино намекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Chen Tianzhong kundalik yozmoqda.",
+        "ru": "В комнате Чэнь Тяньчжун пишет дневник.",
+        "tj": "Дар ҳуҷра Чэн Тянҷун рӯзнома менависад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Narration",
+          "zh": "我的爱好是运动。从上小学开始，我每天都跟爸爸去运动。现在我篮球打得很好，足球踢得不错，游泳游得也很快。我一有时间就去运动。",
+          "pinyin": "Wǒ de àihào shì yùndòng. Cóng shàng xiǎoxué kāishǐ, wǒ měitiān dōu gēn bàba qù yùndòng. Xiànzài wǒ lánqiú dǎ de hěn hǎo, zúqiú tī de búcuò, yóuyǒng yóu de yě hěn kuài. Wǒ yì yǒu shíjiān jiù qù yùndòng.",
+          "text": {
+            "uz": "Mening qiziqishim sport. Boshlang‘ich maktabdan beri har kuni dadam bilan sport qilaman. Hozir basketbolni juda yaxshi, futbolni yomon emas o‘ynayman, suzishim ham tez. Vaqtim bo‘lishi bilan sport qilaman.",
+            "ru": "Моё хобби — спорт. С начальной школы я каждый день занимаюсь с папой. Сейчас я очень хорошо играю в баскетбол, неплохо в футбол и быстро плаваю. Как только есть время, иду заниматься спортом.",
+            "tj": "Шавқи ман варзиш аст. Аз мактаби ибтидоӣ ҳар рӯз бо падарам машқ мекунам. Ҳоло баскетболро хеле хуб, футболро бад не бозӣ мекунам ва тез шино мекунам. Ҳамин ки вақт дошта бошам, ба варзиш меравам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "运动 talaffuzini tanlang:",
+            "ru": "Выберите произношение 运动:",
+            "tj": "Талаффузи 运动-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yùndòng",
+            "pǎo",
+            "wǎng",
+            "cóng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "运动 — yùndòng",
+            "ru": "运动 — yùndòng",
+            "tj": "运动 — yùndòng"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "白家月写汉字写得很好看。",
+            "他们玩得怎么样？",
+            "他们玩得很高兴。",
+            "你跑得快吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他们玩得很高兴。 — ",
+            "ru": "他们玩得很高兴。 — ",
+            "tj": "他们玩得很高兴。 — "
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'futbol' xitoycha qaysi?",
+            "ru": "'футбол' по-китайски?",
+            "tj": "'футбол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "足球",
+            "往",
+            "跑",
+            "从"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "futbol = 足球 (zúqiú)",
+            "ru": "футбол = 足球 (zúqiú)",
+            "tj": "футбол = 足球 (zúqiú)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "de qaysi ieroglif?",
+            "ru": "Какой иероглиф читается de?",
+            "tj": "de кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "从",
+            "跑",
+            "往",
+            "得"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "得 = fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama (de)",
+            "ru": "得 = частица между глаголом/прилагательным и дополнением состояния/степени (de)",
+            "tj": "得 = ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа (de)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "篮球",
+              {
+                "uz": "basketbol",
+                "ru": "баскетбол",
+                "tj": "баскетбол"
+              }
+            ],
+            [
+              "运动",
+              {
+                "uz": "sport; mashq qilmoq",
+                "ru": "спорт; заниматься",
+                "tj": "варзиш; машқ кардан"
+              }
+            ],
+            [
+              "踢",
+              {
+                "uz": "tepmoq",
+                "ru": "пинать",
+                "tj": "лагад задан"
+              }
+            ],
+            [
+              "足球",
+              {
+                "uz": "futbol",
+                "ru": "футбол",
+                "tj": "футбол"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "从",
+              {
+                "uz": "dan; ...dan boshlab",
+                "ru": "из; от",
+                "tj": "аз"
+              }
+            ],
+            [
+              "往",
+              {
+                "uz": "tomon; ...ga qarab bormoq",
+                "ru": "в направлении; направляться",
+                "tj": "ба сӯи; рафтан"
+              }
+            ],
+            [
+              "跑",
+              {
+                "uz": "yugurmoq; chopmoq",
+                "ru": "бежать",
+                "tj": "давидан"
+              }
+            ],
+            [
+              "打",
+              {
+                "uz": "o‘ynamoq (sport); urmoq",
+                "ru": "играть; ударять",
+                "tj": "бозӣ кардан; задан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "天中，你是不是很喜欢打篮球？",
+          "pinyin": "Tiānzhōng, nǐ shì bu shì hěn xǐhuan dǎ lánqiú?",
+          "translation": {
+            "uz": "Tianzhong, sen basketbol o‘ynashni juda yoqtirasanmi?",
+            "ru": "Тяньчжун, ты очень любишь играть в баскетбол?",
+            "tj": "Тянҷун, ту баскетбол бозӣ карданро хеле дӯст медорӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "Pekindan",
+              "sen",
+              "o‘ynashni",
+              "yoqtirasanmi",
+              "juda",
+              "Annie",
+              "basketbol",
+              "Tianzhong"
+            ],
+            "ru": [
+              "очень",
+              "Энни",
+              "играть",
+              "баскетбол",
+              "Тяньчжун",
+              "в",
+              "любишь",
+              "когда",
+              "ты"
+            ],
+            "tj": [
+              "медорӣ",
+              "Энни",
+              "карданро",
+              "ту",
+              "Тянҷун",
+              "хеле",
+              "бозӣ",
+              "кай",
+              "дӯст",
+              "баскетбол"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Tianzhong",
+              "sen",
+              "basketbol",
+              "o‘ynashni",
+              "juda",
+              "yoqtirasanmi"
+            ],
+            "ru": [
+              "Тяньчжун",
+              "ты",
+              "очень",
+              "любишь",
+              "играть",
+              "в",
+              "баскетбол"
+            ],
+            "tj": [
+              "Тянҷун",
+              "ту",
+              "баскетбол",
+              "бозӣ",
+              "карданро",
+              "хеле",
+              "дӯст",
+              "медорӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "天中，你是不是很喜欢打篮球？ — Tianzhong, sen basketbol o‘ynashni juda yoqtirasanmi?",
+            "ru": "天中，你是不是很喜欢打篮球？ — Тяньчжун, ты очень любишь играть в баскетбол?",
+            "tj": "天中，你是不是很喜欢打篮球？ — Тянҷун, ту баскетбол бозӣ карданро хеле дӯст медорӣ?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "安妮，你是什么时候从北京回来的？",
+          "pinyin": "Ānnī, nǐ shì shénme shíhou cóng Běijīng huílái de?",
+          "options": [
+            "我跟同学说好了，一起去打篮球。",
+            "昨天下午。天中，你怎么一下课就往外跑？",
+            "我也想跟你们一起玩。",
+            "安妮，你是什么时候从北京回来的？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "安妮，你是什么时候从北京回来的？ — Annie, sen Pekindan qachon qaytding?",
+            "ru": "安妮，你是什么时候从北京回来的？ — Энни, когда ты вернулась из Пекина?",
+            "tj": "安妮，你是什么时候从北京回来的？ — Энни, кай аз Пекин баргаштӣ?"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "安妮，你是什么时候从北京回来的？",
+              "blank": false
+            },
+            {
+              "speaker": "Annie",
+              "zh": "昨天下午。天中，你怎么一下课就往外跑？",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "我跟同学说好了，一起去打篮球。",
+              "blank": false
+            },
+            {
+              "speaker": "Annie",
+              "zh": "我也想跟你们一起玩。",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "没问题，走吧。",
+            "我跟同学说好了，一起去打篮球。",
+            "安妮，你是什么时候从北京回来的？",
+            "昨天下午。天中，你怎么一下课就往外跑？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 没问题，走吧。",
+            "ru": "Правильный ответ: 没问题，走吧。",
+            "tj": "Ҷавоби дуруст: 没问题，走吧。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Chen Tianzhong nima deydi?",
+            "ru": "Что Chen Tianzhong говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Chen Tianzhong чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "没问题，走吧。",
+            "我跟同学说好了，一起去打篮球。",
+            "昨天下午。天中，你怎么一下课就往外跑？",
+            "安妮，你是什么时候从北京回来的？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 没问题，走吧。",
+            "ru": "Правильный ответ: 没问题，走吧。",
+            "tj": "Ҷавоби дуруст: 没问题，走吧。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Chen Tianzhong avval nima deydi?",
+            "ru": "Что Chen Tianzhong говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Chen Tianzhong аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我跟同学说好了，一起去打篮球。",
+            "我也想跟你们一起玩。",
+            "安妮，你是什么时候从北京回来的？",
+            "昨天下午。天中，你怎么一下课就往外跑？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 安妮，你是什么时候从北京回来的？",
+            "ru": "Правильный ответ: 安妮，你是什么时候从北京回来的？",
+            "tj": "Ҷавоби дуруст: 安妮，你是什么时候从北京回来的？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____妮，你是什么时候从北京回来的？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "万",
+            "七",
+            "一",
+            "安"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 安 — 安妮，你是什么时候从北京回来的？ (Annie, sen Pekindan qachon qaytding?)",
+            "ru": "Верно: 安 — 安妮，你是什么时候从北京回来的？ (Энни, когда ты вернулась из Пекина?)",
+            "tj": "Дуруст: 安 — 安妮，你是什么时候从北京回来的？ (Энни, кай аз Пекин баргаштӣ?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你篮球打得怎么样？",
+          "pinyin": "Nǐ lánqiú dǎ de zěnmeyàng?",
+          "translation": {
+            "uz": "Basketbolni qanday o‘ynaysan?",
+            "ru": "Как ты играешь в баскетбол?",
+            "tj": "Баскетболро чӣ хел бозӣ мекунӣ?"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,696 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 108,
+  "source_lesson": 14,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这本书被别人借走了",
+  "subtitle": {
+    "uz": "Kampusdagi tadbirlar haqida gaplashish; boshqalarga dalda berish va qo‘llab-quvvatlash; “被” bilan passiv ma’noni ifodalash.",
+    "ru": "Говорить о мероприятиях в кампусе; поддерживать и подбадривать других; выражать пассивное значение с помощью “被”.",
+    "tj": "Дар бораи чорабиниҳои кампус суҳбат кардан; дигаронро рӯҳбаланд кардан; бо “被” маънои пассивро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "表演",
+      "pinyin": "biǎoyǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sahna ko‘rinishi ko‘rsatmoq; ijro etmoq",
+        "ru": "выступать; исполнять",
+        "tj": "баромад кардан; иҷро кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "节目",
+      "pinyin": "jiémù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dastur; sahna raqami",
+        "ru": "номер программы; выступление",
+        "tj": "барнома; рақами саҳнавӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "怎么办",
+      "pinyin": "zěnme bàn",
+      "pos": "",
+      "meaning": {
+        "uz": "nima qilamiz?; nima qilish kerak?",
+        "ru": "что делать?",
+        "tj": "чӣ бояд кард?"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "校长",
+      "pinyin": "xiàozhǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab/universitet rahbari",
+        "ru": "директор; ректор",
+        "tj": "директор; роҳбари муассиса"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "我借的这本词典最好今天还，但是我没时间去。",
+          "pinyin": "Wǒ jiè de zhè běn cídiǎn zuìhǎo jīntiān huán, dànshì wǒ méi shíjiān qù.",
+          "text": {
+            "uz": "Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.",
+            "ru": "Этот словарь лучше вернуть сегодня, но у меня нет времени идти.",
+            "tj": "Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "下午我只有两节课，可以帮你去图书馆还书。",
+          "pinyin": "Xiàwǔ wǒ zhǐ yǒu liǎng jié kè, kěyǐ bāng nǐ qù túshūguǎn huán shū.",
+          "text": {
+            "uz": "Tushdan keyin faqat ikki darsim bor, kutubxonaga borib kitobni qaytarib beraman.",
+            "ru": "Днём у меня всего два занятия, могу вернуть книгу за тебя.",
+            "tj": "Баъд аз нисфирӯзӣ танҳо ду дарс дорам, метавонам китобро ба китобхона баргардонам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "那太谢谢了。你能再帮我借本书吗？",
+          "pinyin": "Nà tài xièxie le. Nǐ néng zài bāng wǒ jiè běn shū ma?",
+          "text": {
+            "uz": "Juda rahmat. Yana bir kitob olib bera olasanmi?",
+            "ru": "Большое спасибо. Можешь ещё взять для меня одну книгу?",
+            "tj": "Хеле раҳмат. Боз як китоб барои ман гирифта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行，你告诉我书名。",
+          "pinyin": "Xíng, nǐ gàosu wǒ shūmíng.",
+          "text": {
+            "uz": "Bo‘ladi, kitob nomini ayt.",
+            "ru": "Хорошо, скажи название.",
+            "tj": "Мешавад, номи китобро бигӯ."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+          "pinyin": "Wǒ bǎ míngzi xiě zài zhǐ shàng ba. Wǒ qù le hǎo jǐ cì túshūguǎn, zhè běn shū dōu bèi biérén jiè zǒu le.",
+          "text": {
+            "uz": "Nomini qog‘ozga yozib beraman. Kutubxonaga bir necha marta bordim, har safar bu kitobni boshqa birov olib ketgan edi.",
+            "ru": "Я запишу название на бумаге. Я несколько раз ходил в библиотеку, но эту книгу всё время кто-то уже брал.",
+            "tj": "Номашро дар коғаз менависам. Чанд бор ба китобхона рафтам, ҳар дафъа ин китобро каси дигар гирифта буд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "《名人的故事》？我有这本书。明天我借给你吧。",
+          "pinyin": "Míngrén de Gùshi? Wǒ yǒu zhè běn shū. Míngtiān wǒ jiè gěi nǐ ba.",
+          "text": {
+            "uz": "“Mashhur insonlar hikoyalari”mi? Menda bu kitob bor. Ertaga senga berib turaman.",
+            "ru": "«Истории знаменитых людей»? У меня есть эта книга. Завтра дам тебе.",
+            "tj": "«Ҳикояҳои одамони машҳур»? Ин китоб дар ман ҳаст. Фардо ба ту медиҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Bai Jiayue va Annie suhbatlashmoqda.",
+        "ru": "В кампусе Бай Цзяюэ и Энни разговаривают.",
+        "tj": "Дар кампус Бай Ҷяюэ ва Энни суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "今天下课早，你一会儿做什么？",
+          "pinyin": "Jīntiān xiàkè zǎo, nǐ yíhuìr zuò shénme?",
+          "text": {
+            "uz": "Bugun dars erta tugadi, hozir nima qilasan?",
+            "ru": "Сегодня занятия закончились рано, что будешь делать?",
+            "tj": "Имрӯз дарс барвақт тамом шуд, ҳозир чӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我今天忙得很，要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ jīntiān máng de hěn, yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng.",
+          "text": {
+            "uz": "Bugun juda bandman, avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+            "ru": "Сегодня я очень занята: сначала в библиотеку за книгой, потом плавать.",
+            "tj": "Имрӯз хеле банд ҳастам: аввал ба китобхона, баъд ба шиноварӣ меравам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "等等，我的校园卡不见了，没有卡进不去图书馆。",
+          "pinyin": "Děngdeng, wǒ de xiàoyuánkǎ bú jiàn le, méiyǒu kǎ jìn bu qù túshūguǎn.",
+          "text": {
+            "uz": "To‘xta, kampus kartam yo‘qolibdi, kartasiz kutubxonaga kira olmayman.",
+            "ru": "Подожди, моя кампус-карта пропала, без неё в библиотеку не войти.",
+            "tj": "Ист, корти кампусам гум шудааст, бе корт ба китобхона даромада намешавад."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "你想想上一次用是什么时候？",
+          "pinyin": "Nǐ xiǎngxiang shàng yí cì yòng shì shénme shíhou?",
+          "text": {
+            "uz": "O‘ylab ko‘r, oxirgi marta qachon ishlatganding?",
+            "ru": "Вспомни, когда ты пользовалась ею в последний раз?",
+            "tj": "Фикр кун, бори охир кай истифода карда будӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我忘记了，可能被我放在家里了。",
+          "pinyin": "Wǒ wàngjì le, kěnéng bèi wǒ fàng zài jiālǐ le.",
+          "text": {
+            "uz": "Unutdim, balki uyda qoldirgandirman.",
+            "ru": "Забыла, возможно, я оставила её дома.",
+            "tj": "Фаромӯш кардам, шояд дар хона гузошта бошам."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "进不去图书馆也没关系，上网看看有没有电子书。",
+          "pinyin": "Jìn bu qù túshūguǎn yě méi guānxi, shàngwǎng kànkan yǒu méiyǒu diànzǐshū.",
+          "text": {
+            "uz": "Kutubxonaga kira olmasang ham hechqisi yo‘q, internetdan elektron kitob bor-yo‘qligini ko‘r.",
+            "ru": "Ничего страшного, если не войдёшь в библиотеку; посмотри электронную книгу в интернете.",
+            "tj": "Агар ба китобхона даромада натавонӣ ҳам, ҳеҷ гап нест, аз интернет китоби электронӣ ҳаст ё не бин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue ovqatlanib suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ едят и разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ хӯрок хӯрда суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "下周学校有晚会，你知道吗？",
+          "pinyin": "Xià zhōu xuéxiào yǒu wǎnhuì, nǐ zhīdào ma?",
+          "text": {
+            "uz": "Keyingi hafta maktabda kecha bo‘ladi, bilasanmi?",
+            "ru": "На следующей неделе в школе будет вечер, знаешь?",
+            "tj": "Ҳафтаи оянда дар мактаб шомгоҳӣ мешавад, медонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "知道，我和几个女生要表演一个节目。你也参加吗？",
+          "pinyin": "Zhīdào, wǒ hé jǐ ge nǚshēng yào biǎoyǎn yí ge jiémù. Nǐ yě cānjiā ma?",
+          "text": {
+            "uz": "Bilaman, men bir nechta qiz bilan bir chiqish tayyorlayapman. Sen ham qatnashasanmi?",
+            "ru": "Знаю, я с несколькими девушками готовлю номер. Ты тоже участвуешь?",
+            "tj": "Медонам, ман бо чанд духтар як барнома иҷро мекунем. Ту ҳам иштирок мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "找不到人，你就一个人唱吧。",
+          "pinyin": "Zhǎo bú dào rén, nǐ jiù yí ge rén chàng ba.",
+          "text": {
+            "uz": "Odam topilmasa, o‘zing yolg‘iz aytaver.",
+            "ru": "Если никого не найдёшь, пой один.",
+            "tj": "Агар касе наёбӣ, худат танҳо суруд хон."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng.",
+          "text": {
+            "uz": "Direktor, o‘qituvchilar va shuncha talabalar oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+            "ru": "Как только думаю, что выступать перед директором, учителями и столькими студентами, начинаю нервничать.",
+            "tj": "Ҳамин ки фикр мекунам назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "表演",
+            "pinyin": "biǎoyǎn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sahna ko‘rinishi ko‘rsatmoq; ijro etmoq",
+              "ru": "выступать; исполнять",
+              "tj": "баромад кардан; иҷро кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "表演 talaffuzini tanlang:",
+            "ru": "Выберите произношение 表演:",
+            "tj": "Талаффузи 表演-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "biǎoyǎn",
+            "jié",
+            "zuìhǎo",
+            "cídiǎn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "表演 — biǎoyǎn",
+            "ru": "表演 — biǎoyǎn",
+            "tj": "表演 — biǎoyǎn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "节目",
+            "pinyin": "jiémù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dastur; sahna raqami",
+              "ru": "номер программы; выступление",
+              "tj": "барнома; рақами саҳнавӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dastur; sahna raqami' xitoycha qaysi?",
+            "ru": "'номер программы; выступление' по-китайски?",
+            "tj": "'барнома; рақами саҳнавӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "节",
+            "词典",
+            "节目",
+            "最好"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "dastur; sahna raqami = 节目 (jiémù)",
+            "ru": "номер программы; выступление = 节目 (jiémù)",
+            "tj": "барнома; рақами саҳнавӣ = 节目 (jiémù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "怎么办",
+            "pinyin": "zěnme bàn",
+            "pos": "",
+            "meaning": {
+              "uz": "nima qilamiz?; nima qilish kerak?",
+              "ru": "что делать?",
+              "tj": "чӣ бояд кард?"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "怎么办",
+          "pinyin": "zěnme bàn",
+          "options": [
+            "词典",
+            "节",
+            "最好",
+            "怎么办"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "怎么办 — nima qilamiz?; nima qilish kerak? (zěnme bàn)",
+            "ru": "怎么办 — что делать? (zěnme bàn)",
+            "tj": "怎么办 — чӣ бояд кард? (zěnme bàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "校长",
+            "pinyin": "xiàozhǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maktab/universitet rahbari",
+              "ru": "директор; ректор",
+              "tj": "директор; роҳбари муассиса"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "校长",
+          "pinyin": "xiàozhǎng",
+          "translation": {
+            "uz": "maktab/universitet rahbari",
+            "ru": "директор; ректор",
+            "tj": "директор; роҳбари муассиса"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "校长 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 校长:",
+            "tj": "Маънои калимаи 校长-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "lug‘at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "maktab/universitet rahbari",
+              "ru": "директор; ректор",
+              "tj": "директор; роҳбари муассиса"
+            },
+            {
+              "uz": "dars uchun hisob so‘zi",
+              "ru": "счётное слово для уроков",
+              "tj": "воҳиди ҳисоб барои дарс"
+            },
+            {
+              "uz": "yaxshisi; eng yaxshi",
+              "ru": "лучше всего; самый хороший",
+              "tj": "беҳтараш; беҳтарин"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "校长 = maktab/universitet rahbari (xiàozhǎng)",
+            "ru": "校长 = директор; ректор (xiàozhǎng)",
+            "tj": "校长 = директор; роҳбари муассиса (xiàozhǎng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "biǎoyǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается biǎoyǎn?",
+            "tj": "biǎoyǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "词典",
+            "最好",
+            "节",
+            "表演"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "表演 = sahna ko‘rinishi ko‘rsatmoq; ijro etmoq (biǎoyǎn)",
+            "ru": "表演 = выступать; исполнять (biǎoyǎn)",
+            "tj": "表演 = баромад кардан; иҷро кардан (biǎoyǎn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "表演",
+              {
+                "uz": "sahna ko‘rinishi ko‘rsatmoq; ijro etmoq",
+                "ru": "выступать; исполнять",
+                "tj": "баромад кардан; иҷро кардан"
+              }
+            ],
+            [
+              "节目",
+              {
+                "uz": "dastur; sahna raqami",
+                "ru": "номер программы; выступление",
+                "tj": "барнома; рақами саҳнавӣ"
+              }
+            ],
+            [
+              "怎么办",
+              {
+                "uz": "nima qilamiz?; nima qilish kerak?",
+                "ru": "что делать?",
+                "tj": "чӣ бояд кард?"
+              }
+            ],
+            [
+              "校长",
+              {
+                "uz": "maktab/universitet rahbari",
+                "ru": "директор; ректор",
+                "tj": "директор; роҳбари муассиса"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "校长",
+          "pinyin": "xiàozhǎng",
+          "options": [
+            "节",
+            "校长",
+            "词典",
+            "最好"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "校长 — maktab/universitet rahbari (xiàozhǎng)",
+            "ru": "校长 — директор; ректор (xiàozhǎng)",
+            "tj": "校长 — директор; роҳбари муассиса (xiàozhǎng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "表演",
+              {
+                "uz": "sahna ko‘rinishi ko‘rsatmoq; ijro etmoq",
+                "ru": "выступать; исполнять",
+                "tj": "баромад кардан; иҷро кардан"
+              }
+            ],
+            [
+              "节目",
+              {
+                "uz": "dastur; sahna raqami",
+                "ru": "номер программы; выступление",
+                "tj": "барнома; рақами саҳнавӣ"
+              }
+            ],
+            [
+              "怎么办",
+              {
+                "uz": "nima qilamiz?; nima qilish kerak?",
+                "ru": "что делать?",
+                "tj": "чӣ бояд кард?"
+              }
+            ],
+            [
+              "校长",
+              {
+                "uz": "maktab/universitet rahbari",
+                "ru": "директор; ректор",
+                "tj": "директор; роҳбари муассиса"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "校长",
+          "pinyin": "xiàozhǎng",
+          "translation": {
+            "uz": "maktab/universitet rahbari",
+            "ru": "директор; ректор",
+            "tj": "директор; роҳбари муассиса"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "女生 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 女生:",
+            "tj": "Маънои калимаи 女生-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qiz talaba; qiz bola",
+              "ru": "студентка; девушка",
+              "tj": "донишҷӯи духтар; духтар"
+            },
+            {
+              "uz": "lug‘at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "dars uchun hisob so‘zi",
+              "ru": "счётное слово для уроков",
+              "tj": "воҳиди ҳисоб барои дарс"
+            },
+            {
+              "uz": "yaxshisi; eng yaxshi",
+              "ru": "лучше всего; самый хороший",
+              "tj": "беҳтараш; беҳтарин"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "女生 = qiz talaba; qiz bola (nǚshēng)",
+            "ru": "女生 = студентка; девушка (nǚshēng)",
+            "tj": "女生 = донишҷӯи духтар; духтар (nǚshēng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "女生",
+            "pinyin": "nǚshēng",
+            "meaning": {
+              "uz": "qiz talaba; qiz bola",
+              "ru": "студентка; девушка",
+              "tj": "донишҷӯи духтар; духтар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maktab/universitet rahbari' xitoycha qaysi?",
+            "ru": "'директор; ректор' по-китайски?",
+            "tj": "'директор; роҳбари муассиса' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "词典",
+            "节",
+            "最好",
+            "校长"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "maktab/universitet rahbari = 校长 (xiàozhǎng)",
+            "ru": "директор; ректор = 校长 (xiàozhǎng)",
+            "tj": "директор; роҳбари муассиса = 校长 (xiàozhǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "校长",
+            "pinyin": "xiàozhǎng",
+            "meaning": {
+              "uz": "maktab/universitet rahbari",
+              "ru": "директор; ректор",
+              "tj": "директор; роҳбари муассиса"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

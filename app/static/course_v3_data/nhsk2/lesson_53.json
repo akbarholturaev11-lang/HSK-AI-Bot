@@ -1,0 +1,787 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 53,
+  "source_lesson": 11,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我最喜欢吃中国菜",
+  "subtitle": {
+    "uz": "“着” bilan davom etayotgan holat yoki harakatni ifodalash; “着”li gapda obyekt va savol shakllarini to‘g‘ri ishlatish; “最” bilan eng yuqori darajani ifodalash; salomatlik va ovqat haqida gaplashish.",
+    "ru": "Выражать продолжающееся действие или состояние с “着”; правильно располагать объект и строить вопросы в предложениях с “着”; выражать превосходную степень с “最”; говорить о самочувствии и еде.",
+    "tj": "Бо “着” амал ё ҳолати давомдорро ифода кардан; объект ва шаклҳои саволро дар ҷумлаҳои “着” дуруст истифода бурдан; бо “最” дараҷаи олитаринро ифода кардан; дар бораи саломатӣ ва хӯрок суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "着",
+      "pinyin": "zhe",
+      "pos": "part.",
+      "meaning": {
+        "uz": "davomiy holat/harakat yuklamasi",
+        "ru": "аспектная частица продолженности",
+        "tj": "ҳиссачаи давомнокии ҳолат/амал"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "路上",
+      "pinyin": "lùshang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yo‘lda",
+        "ru": "в дороге; на дороге",
+        "tj": "дар роҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "慢",
+      "pinyin": "màn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sekin",
+        "ru": "медленный",
+        "tj": "суст"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Aspekt yuklamasi “着” (1)",
+        "ru": "Аспектная частица “着” (1)",
+        "tj": "Ҳиссачаи аспектии “着” (1)"
+      },
+      "title_zh": "动态助词“着”（1）",
+      "rule": {
+        "uz": "“着” fe’ldan keyin kelib, harakat yoki holatning davom etishini bildiradi. Inkor shakli fe’l oldiga 没（有） qo‘yish bilan tuziladi.",
+        "ru": "“着” ставится после глагола и выражает продолжение действия или состояния. Отрицание образуется с 没（有） перед глаголом.",
+        "tj": "“着” баъди феъл омада, давом ёфтани амал ё ҳолатро ифода мекунад. Инкор бо 没（有） пеш аз феъл сохта мешавад."
+      },
+      "examples": [
+        {
+          "zh": "那你在这儿坐着。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "教室的门开着。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "教室的门没开着。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В классе Ван Ифэй и Бай Цзяюэ разговаривают.",
+        "tj": "Дар синф Ван Ифэй ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "家月，都下课了，你怎么还不回家？",
+          "pinyin": "Jiāyuè, dōu xiàkè le, nǐ zěnme hái bù huí jiā?",
+          "text": {
+            "uz": "Jiayue, dars tugadi-ku, nega hali uyga ketmading?",
+            "ru": "Цзяюэ, урок уже закончился, почему ты ещё не идёшь домой?",
+            "tj": "Ҷяюэ, дарс тамом шуд, чаро ҳоло ҳам ба хона намеравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我头疼，不太舒服。",
+          "pinyin": "Wǒ tóu téng, bú tài shūfu.",
+          "text": {
+            "uz": "Boshim og‘riyapti, o‘zimni yaxshi his qilmayapman.",
+            "ru": "У меня болит голова, я не очень хорошо себя чувствую.",
+            "tj": "Сарам дард мекунад, худро хуб ҳис намекунам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你这几天经常头疼，去医院看看吧。",
+          "pinyin": "Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba.",
+          "text": {
+            "uz": "Shu kunlarda boshing tez-tez og‘riyapti, shifoxonaga borib ko‘rin.",
+            "ru": "В последние дни у тебя часто болит голова, сходи в больницу.",
+            "tj": "Ин чанд рӯз сарат зуд-зуд дард мекунад, ба беморхона рафта муоина шав."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我想休息一下，现在不能动，一动就疼。",
+          "pinyin": "Wǒ xiǎng xiūxi yíxià, xiànzài bù néng dòng, yí dòng jiù téng.",
+          "text": {
+            "uz": "Biroz dam olmoqchiman, hozir qimirlolmayman, qimirlasam darrov og‘riydi.",
+            "ru": "Хочу немного отдохнуть. Сейчас не могу двигаться: как только двигаюсь, сразу болит.",
+            "tj": "Мехоҳам каме истироҳат кунам, ҳоло ҳаракат карда наметавонам, ҳамин ки ҳаракат кунам, дард мекунад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "那你在这儿坐着，我去开车，一会儿送你去医院。",
+          "pinyin": "Nà nǐ zài zhèr zuòzhe, wǒ qù kāichē, yíhuìr sòng nǐ qù yīyuàn.",
+          "text": {
+            "uz": "Unda shu yerda o‘tirib tur, men mashinani olib kelaman, keyin seni shifoxonaga olib boraman.",
+            "ru": "Тогда посиди здесь, я возьму машину и через немного времени отвезу тебя в больницу.",
+            "tj": "Пас ҳамин ҷо нишаста ист, ман мошинро меорам ва каме баъд туро ба беморхона мебарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining mashinasida Wang Yifei va Bai Jiayue suhbatlashmoqda, Li Wen telefon qildi.",
+        "ru": "В машине Ван Ифэй разговаривает с Бай Цзяюэ; звонит Ли Вэнь.",
+        "tj": "Дар мошини Ван Ифэй ӯ бо Бай Ҷяюэ суҳбат мекунад ва Ли Вэн занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "现在路上车多，还下着雪，我开慢一点儿。",
+          "pinyin": "Xiànzài lùshang chē duō, hái xiàzhe xuě, wǒ kāi màn yìdiǎnr.",
+          "text": {
+            "uz": "Hozir yo‘lda mashina ko‘p, yana qor yog‘ayapti, men sekinroq haydayman.",
+            "ru": "Сейчас на дороге много машин, ещё идёт снег, я поеду помедленнее.",
+            "tj": "Ҳоло дар роҳ мошин зиёд аст, барф ҳам меборад, ман сусттар меронам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "没问题，现在头没那么疼了。",
+          "pinyin": "Méi wèntí, xiànzài tóu méi nàme téng le.",
+          "text": {
+            "uz": "Mayli, hozir boshim unchalik og‘rimayapti.",
+            "ru": "Хорошо, сейчас голова уже не так сильно болит.",
+            "tj": "Хуб, ҳоло сарам он қадар дард намекунад."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "没什么事。今天雪这么大，你们开车去哪儿啊？",
+          "pinyin": "Méi shénme shì. Jīntiān xuě zhème dà, nǐmen kāichē qù nǎr a?",
+          "text": {
+            "uz": "Muhim ish yo‘q. Bugun qor juda kuchli, mashinada qayerga ketyapsizlar?",
+            "ru": "Ничего важного. Сегодня такой сильный снег, куда вы едете?",
+            "tj": "Кори муҳиме нест. Имрӯз барф ин қадар зиёд, бо мошин ба куҷо меравед?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "去医院，我头有点儿疼。",
+          "pinyin": "Qù yīyuàn, wǒ tóu yǒudiǎnr téng.",
+          "text": {
+            "uz": "Shifoxonaga, boshim biroz og‘riyapti.",
+            "ru": "В больницу, у меня немного болит голова.",
+            "tj": "Ба беморхона, сарам каме дард мекунад."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那我一会儿去看看你。",
+          "pinyin": "Nà wǒ yíhuìr qù kànkan nǐ.",
+          "text": {
+            "uz": "Unda birozdan keyin seni ko‘rgani boraman.",
+            "ru": "Тогда я чуть позже зайду тебя навестить.",
+            "tj": "Пас каме баъд туро дидан меоям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Li Wen Bai Jiayueni ko‘rgani keldi.",
+        "ru": "В комнате Ли Вэнь пришёл навестить Бай Цзяюэ.",
+        "tj": "Дар ҳуҷра Ли Вэн барои дидани Бай Ҷяюэ омадааст."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "家月，你怎么样了？头还疼吗？",
+          "pinyin": "Jiāyuè, nǐ zěnmeyàng le? Tóu hái téng ma?",
+          "text": {
+            "uz": "Jiayue, qalaysan? Boshing hali og‘riyaptimi?",
+            "ru": "Цзяюэ, как ты? Голова ещё болит?",
+            "tj": "Ҷяюэ, аҳволат чӣ хел? Сарат ҳоло ҳам дард мекунад?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "不那么疼了。医生开了一些药，吃完就好多了。",
+          "pinyin": "Bú nàme téng le. Yīshēng kāile yìxiē yào, chīwán jiù hǎoduō le.",
+          "text": {
+            "uz": "Unchalik og‘rimayapti. Shifokor dori yozib berdi, ichganimdan keyin ancha yaxshi bo‘ldim.",
+            "ru": "Уже не так болит. Врач выписал лекарства, после них стало намного лучше.",
+            "tj": "Дигар он қадар дард намекунад. Духтур дору навишт, баъди истеъмол хеле беҳтар шудам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那就好！",
+          "pinyin": "Nà jiù hǎo!",
+          "text": {
+            "uz": "Unda yaxshi!",
+            "ru": "Вот и хорошо!",
+            "tj": "Хуб шудааст!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "着",
+            "pinyin": "zhe",
+            "pos": "part.",
+            "meaning": {
+              "uz": "davomiy holat/harakat yuklamasi",
+              "ru": "аспектная частица продолженности",
+              "tj": "ҳиссачаи давомнокии ҳолат/амал"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "着 talaffuzini tanlang:",
+            "ru": "Выберите произношение 着:",
+            "tj": "Талаффузи 着-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīngcháng",
+            "téng",
+            "zhe",
+            "tóu"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "着 — zhe",
+            "ru": "着 — zhe",
+            "tj": "着 — zhe"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "路上",
+            "pinyin": "lùshang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yo‘lda",
+              "ru": "в дороге; на дороге",
+              "tj": "дар роҳ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "路上",
+          "pinyin": "lùshang",
+          "translation": {
+            "uz": "yo‘lda",
+            "ru": "в дороге; на дороге",
+            "tj": "дар роҳ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yo‘lda' xitoycha qaysi?",
+            "ru": "'в дороге; на дороге' по-китайски?",
+            "tj": "'дар роҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "疼",
+            "头",
+            "路上",
+            "经常"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "yo‘lda = 路上 (lùshang)",
+            "ru": "в дороге; на дороге = 路上 (lùshang)",
+            "tj": "дар роҳ = 路上 (lùshang)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "慢",
+            "pinyin": "màn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "sekin",
+              "ru": "медленный",
+              "tj": "суст"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "慢",
+          "pinyin": "màn",
+          "options": [
+            "慢",
+            "头",
+            "疼",
+            "经常"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "慢 — sekin (màn)",
+            "ru": "慢 — медленный (màn)",
+            "tj": "慢 — суст (màn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "着 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 着:",
+            "tj": "Маънои калимаи 着-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "og‘rimoq; og‘riqli",
+              "ru": "болеть; больной",
+              "tj": "дард кардан"
+            },
+            {
+              "uz": "bosh",
+              "ru": "голова",
+              "tj": "сар"
+            },
+            {
+              "uz": "davomiy holat/harakat yuklamasi",
+              "ru": "аспектная частица продолженности",
+              "tj": "ҳиссачаи давомнокии ҳолат/амал"
+            },
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд; аксар вақт"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "着 = davomiy holat/harakat yuklamasi (zhe)",
+            "ru": "着 = аспектная частица продолженности (zhe)",
+            "tj": "着 = ҳиссачаи давомнокии ҳолат/амал (zhe)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "着",
+              {
+                "uz": "davomiy holat/harakat yuklamasi",
+                "ru": "аспектная частица продолженности",
+                "tj": "ҳиссачаи давомнокии ҳолат/амал"
+              }
+            ],
+            [
+              "路上",
+              {
+                "uz": "yo‘lda",
+                "ru": "в дороге; на дороге",
+                "tj": "дар роҳ"
+              }
+            ],
+            [
+              "慢",
+              {
+                "uz": "sekin",
+                "ru": "медленный",
+                "tj": "суст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Aspekt yuklamasi “着” (1)",
+              "ru": "Аспектная частица “着” (1)",
+              "tj": "Ҳиссачаи аспектии “着” (1)"
+            },
+            "title_zh": "动态助词“着”（1）",
+            "rule": {
+              "uz": "“着” fe’ldan keyin kelib, harakat yoki holatning davom etishini bildiradi. Inkor shakli fe’l oldiga 没（有） qo‘yish bilan tuziladi.",
+              "ru": "“着” ставится после глагола и выражает продолжение действия или состояния. Отрицание образуется с 没（有） перед глаголом.",
+              "tj": "“着” баъди феъл омада, давом ёфтани амал ё ҳолатро ифода мекунад. Инкор бо 没（有） пеш аз феъл сохта мешавад."
+            },
+            "examples": [
+              {
+                "zh": "那你在这儿坐着。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "教室的门开着。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "教室的门没开着。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "你",
+            "头",
+            "那",
+            "着",
+            "在",
+            "疼",
+            "坐",
+            "这儿"
+          ],
+          "answer_tokens": [
+            "那",
+            "你",
+            "在",
+            "这儿",
+            "坐",
+            "着"
+          ],
+          "explanation": {
+            "uz": "那你在这儿坐着。",
+            "ru": "那你在这儿坐着。",
+            "tj": "那你在这儿坐着。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "教室的门开着。",
+            "教室的门没开着。",
+            "那你在这儿坐着。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "教室的门开着。 — ",
+            "ru": "教室的门开着。 — ",
+            "tj": "教室的门开着。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "路上",
+          "pinyin": "lùshang",
+          "options": [
+            "路上",
+            "疼",
+            "头",
+            "经常"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "路上 — yo‘lda (lùshang)",
+            "ru": "路上 — в дороге; на дороге (lùshang)",
+            "tj": "路上 — дар роҳ (lùshang)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "开",
+            "教室",
+            "吗",
+            "的",
+            "头",
+            "疼",
+            "门",
+            "着"
+          ],
+          "answer_tokens": [
+            "教室",
+            "的",
+            "门",
+            "开",
+            "着",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "教室的门开着吗？",
+            "ru": "教室的门开着吗？",
+            "tj": "教室的门开着吗？"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "着",
+              {
+                "uz": "davomiy holat/harakat yuklamasi",
+                "ru": "аспектная частица продолженности",
+                "tj": "ҳиссачаи давомнокии ҳолат/амал"
+              }
+            ],
+            [
+              "路上",
+              {
+                "uz": "yo‘lda",
+                "ru": "в дороге; на дороге",
+                "tj": "дар роҳ"
+              }
+            ],
+            [
+              "慢",
+              {
+                "uz": "sekin",
+                "ru": "медленный",
+                "tj": "суст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "路上",
+          "pinyin": "lùshang",
+          "translation": {
+            "uz": "yo‘lda",
+            "ru": "в дороге; на дороге",
+            "tj": "дар роҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "头 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 头:",
+            "tj": "Маънои калимаи 头-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qimirlamoq; harakatlanmoq",
+              "ru": "двигаться",
+              "tj": "ҳаракат кардан"
+            },
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд; аксар вақт"
+            },
+            {
+              "uz": "og‘rimoq; og‘riqli",
+              "ru": "болеть; больной",
+              "tj": "дард кардан"
+            },
+            {
+              "uz": "bosh",
+              "ru": "голова",
+              "tj": "сар"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "头 = bosh (tóu)",
+            "ru": "头 = голова (tóu)",
+            "tj": "头 = сар (tóu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "头",
+            "pinyin": "tóu",
+            "meaning": {
+              "uz": "bosh",
+              "ru": "голова",
+              "tj": "сар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yo‘lda' xitoycha qaysi?",
+            "ru": "'в дороге; на дороге' по-китайски?",
+            "tj": "'дар роҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "头",
+            "路上",
+            "经常",
+            "疼"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yo‘lda = 路上 (lùshang)",
+            "ru": "в дороге; на дороге = 路上 (lùshang)",
+            "tj": "дар роҳ = 路上 (lùshang)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "路上",
+            "pinyin": "lùshang",
+            "meaning": {
+              "uz": "yo‘lda",
+              "ru": "в дороге; на дороге",
+              "tj": "дар роҳ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

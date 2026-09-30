@@ -1,0 +1,780 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 82,
+  "source_lesson": 11,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "看来我没办法解决这个问题",
+  "subtitle": {
+    "uz": "Ish jarayoni, yig‘ilish va ishdagi muammolar haqida gaplashish; kasb va ish tanlovi bo‘yicha fikr bildirish; “看来” bilan kuzatuv asosida xulosa chiqarish.",
+    "ru": "Говорить о работе, совещаниях и рабочих проблемах; обсуждать выбор профессии и отношение к работе; использовать “看来” для вывода на основе наблюдений.",
+    "tj": "Дар бораи кори рӯзмарра, ҷаласа ва мушкилоти корӣ суҳбат кардан; интихоби касб ва муносибат ба корро муҳокима кардан; бо “看来” аз рӯйи мушоҳида хулоса баровардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "地点",
+      "pinyin": "dìdiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "joy; manzil",
+        "ru": "место; адрес",
+        "tj": "ҷой; макон"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "室",
+      "pinyin": "shì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xona; bo‘lim",
+        "ru": "помещение; кабинет",
+        "tj": "ҳуҷра; утоқ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "发",
+      "pinyin": "fā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yubormoq; jo‘natmoq",
+        "ru": "отправлять; посылать",
+        "tj": "фиристодан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "笔记本（电脑）",
+      "pinyin": "bǐjìběn (diànnǎo)",
+      "pos": "n.",
+      "meaning": {
+        "uz": "noutbuk",
+        "ru": "ноутбук",
+        "tj": "ноутбук"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "“看来” — vaziyatdan xulosa chiqarish",
+        "ru": "“看来” — вывод по ситуации",
+        "tj": "“看来” — хулоса аз рӯйи вазъ"
+      },
+      "title_zh": "固定短语“看来”",
+      "rule": {
+        "uz": "“看来” mavjud belgilar, vaziyat yoki kuzatuv asosida taxminiy xulosa chiqarishda ishlatiladi: “ko‘rinishidan / chamasi”.",
+        "ru": "“看来” используется, когда говорящий делает вывод или предположение на основе наблюдаемой ситуации: «похоже / судя по всему».",
+        "tj": "“看来” вақте истифода мешавад, ки гӯянда аз рӯйи аломатҳо ё вазъ хулоса мебарорад: «ба назар / зоҳиран»."
+      },
+      "examples": [
+        {
+          "zh": "看来我没办法解决这个问题。",
+          "pinyin": "Kànlái wǒ méi bànfǎ jiějué zhège wèntí.",
+          "translation": {
+            "uz": "Ko‘rinishidan, bu muammoni hal qila olmayman.",
+            "ru": "Похоже, я не могу решить эту проблему.",
+            "tj": "Ба назар, ман ин мушкилро ҳал карда наметавонам."
+          }
+        },
+        {
+          "zh": "这么晚了，看来他今天不会来了。",
+          "pinyin": "Zhème wǎn le, kànlái tā jīntiān bú huì lái le.",
+          "translation": {
+            "uz": "Juda kech bo‘ldi, chamasi u bugun kelmaydi.",
+            "ru": "Уже так поздно — похоже, сегодня он не придёт.",
+            "tj": "Ин қадар дер шуд, ба назар имрӯз намеояд."
+          }
+        },
+        {
+          "zh": "电梯坏了，看来咱们只能走下去了。",
+          "pinyin": "Diàntī huài le, kànlái zánmen zhǐ néng zǒu xiàqu le.",
+          "translation": {
+            "uz": "Lift buzilibdi, ko‘rinishidan piyoda tushishga to‘g‘ri keladi.",
+            "ru": "Лифт сломан, похоже, придётся спускаться пешком.",
+            "tj": "Лифт вайрон шудааст, ба назар танҳо пиёда поён рафтан мемонад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle ishni muhokama qilmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ обсуждают работу.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ корро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "会议下午几点开始？",
+          "pinyin": "Huìyì xiàwǔ jǐ diǎn kāishǐ?",
+          "text": {
+            "uz": "Yig‘ilish tushdan keyin soat nechada boshlanadi?",
+            "ru": "Во сколько начинается совещание днём?",
+            "tj": "Ҷаласа баъд аз нисфирӯзӣ соати чанд сар мешавад?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "今天下午经理不在，不开会了。",
+          "pinyin": "Jīntiān xiàwǔ jīnglǐ bú zài, bù kāihuì le.",
+          "text": {
+            "uz": "Bugun tushdan keyin menejer yo‘q, yig‘ilish bo‘lmaydi.",
+            "ru": "Сегодня днём менеджера не будет, совещание отменяется.",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ мудир нест, ҷаласа намешавад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那什么时候开会？",
+          "pinyin": "Nà shénme shíhou kāihuì?",
+          "text": {
+            "uz": "Unda yig‘ilish qachon bo‘ladi?",
+            "ru": "Тогда когда будет совещание?",
+            "tj": "Пас ҷаласа кай мешавад?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "后天上午十点，会议地点换到第一会议室。我正要给大家发邮件。",
+          "pinyin": "Hòutiān shàngwǔ shí diǎn, huìyì dìdiǎn huàn dào dì yī huìyìshì. Wǒ zhèng yào gěi dàjiā fā yóujiàn.",
+          "text": {
+            "uz": "Indinga ertalab soat o‘nda, joyi birinchi yig‘ilish xonasiga ko‘chirildi. Hozir hammaga email yubormoqchiman.",
+            "ru": "Послезавтра в десять утра, место перенесли в первую переговорную. Я как раз собираюсь разослать всем письмо.",
+            "tj": "Пасфардо соати даҳи саҳар, ҷой ба утоқи якуми ҷаласа иваз шуд. Ҳозир ба ҳама email мефиристам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "开会的时候，我们用会议室的电脑还是自己的笔记本电脑？",
+          "pinyin": "Kāihuì de shíhou, wǒmen yòng huìyìshì de diànnǎo háishi zìjǐ de bǐjìběn diànnǎo?",
+          "text": {
+            "uz": "Yig‘ilish paytida xonadagi kompyuterni ishlatamizmi yoki o‘z noutbukimizni?",
+            "ru": "На совещании используем компьютер в переговорной или свои ноутбуки?",
+            "tj": "Ҳангоми ҷаласа компютери утоқро истифода мебарем ё ноутбуки худро?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yig‘ilish xonasida Wang Yixue va Yang Tongle majlis oldidan tayyorlanmoqda.",
+        "ru": "В переговорной Ван Исюэ и Ян Тунлэ готовятся к совещанию.",
+        "tj": "Дар утоқи ҷаласа Ван Исюэ ва Ян Тунлэ ба ҷаласа омодагӣ мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "电脑接好了吗？",
+          "pinyin": "Diànnǎo jiē hǎo le ma?",
+          "text": {
+            "uz": "Kompyuter ulandimi?",
+            "ru": "Компьютер подключён?",
+            "tj": "Компютер пайваст шуд?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "已经接好了，您开机看看有没有问题。",
+          "pinyin": "Yǐjīng jiē hǎo le, nín kāijī kànkan yǒu méiyǒu wèntí.",
+          "text": {
+            "uz": "Ha, ulandi. Yoqib ko‘ring, muammo bormi yo‘qmi.",
+            "ru": "Да, уже подключён. Включите и проверьте, всё ли работает.",
+            "tj": "Ҳа, пайваст шуд. Фурӯзон карда бинед, мушкил ҳаст ё не."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "现在什么都看不见。",
+          "pinyin": "Xiànzài shénme dōu kàn bu jiàn.",
+          "text": {
+            "uz": "Hozir hech narsa ko‘rinmayapti.",
+            "ru": "Сейчас ничего не видно.",
+            "tj": "Ҳоло ҳеҷ чиз дида намешавад."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "现在呢？",
+          "pinyin": "Xiànzài ne?",
+          "text": {
+            "uz": "Hozir-chi?",
+            "ru": "А сейчас?",
+            "tj": "Ҳозир чӣ?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "十二点多了，咱们先去吃饭吧。吃完饭，我跟您一起把这些工作做完。",
+          "pinyin": "Shí'èr diǎn duō le, zánmen xiān qù chīfàn ba. Chī wán fàn, wǒ gēn nín yìqǐ bǎ zhèxiē gōngzuò zuò wán.",
+          "text": {
+            "uz": "Soat o‘n ikkidan o‘tdi, avval ovqatlanaylik. Ovqatdan keyin bu ishlarni siz bilan birga tugataman.",
+            "ru": "Уже после двенадцати, давайте сначала поедим. После еды я помогу вам закончить всю эту работу.",
+            "tj": "Соат аз дувоздаҳ гузашт, аввал хӯрок хӯрем. Баъди хӯрок ин корҳоро бо шумо якҷо анҷом медиҳам."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "您没看到邮件吗？经理还没回来呢，下周才能开会。",
+          "pinyin": "Nín méi kàndào yóujiàn ma? Jīnglǐ hái méi huílái ne, xià zhōu cái néng kāihuì.",
+          "text": {
+            "uz": "Emailni ko‘rmadingizmi? Menejer hali qaytmadi, yig‘ilish faqat keyingi hafta bo‘ladi.",
+            "ru": "Вы не видели письмо? Менеджер ещё не вернулся, совещание будет только на следующей неделе.",
+            "tj": "Email-ро надидед? Мудир ҳоло барнагаштааст, ҷаласа танҳо ҳафтаи оянда мешавад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那不着急了。走，吃饭去。",
+          "pinyin": "Nà bù zháojí le. Zǒu, chīfàn qù.",
+          "text": {
+            "uz": "Unda shoshilmasak ham bo‘ladi. Yuring, ovqatlanamiz.",
+            "ru": "Тогда спешить некуда. Пойдём есть.",
+            "tj": "Пас шитоб лозим нест. Равем хӯрок хӯрем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "地点",
+            "pinyin": "dìdiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "joy; manzil",
+              "ru": "место; адрес",
+              "tj": "ҷой; макон"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dìdiǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dìdiǎn?",
+            "tj": "dìdiǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "开会",
+            "会议",
+            "地点",
+            "经理"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "地点 = joy; manzil (dìdiǎn)",
+            "ru": "地点 = место; адрес (dìdiǎn)",
+            "tj": "地点 = ҷой; макон (dìdiǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "室",
+            "pinyin": "shì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xona; bo‘lim",
+              "ru": "помещение; кабинет",
+              "tj": "ҳуҷра; утоқ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "室",
+          "pinyin": "shì",
+          "translation": {
+            "uz": "xona; bo‘lim",
+            "ru": "помещение; кабинет",
+            "tj": "ҳуҷра; утоқ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "室 talaffuzini tanlang:",
+            "ru": "Выберите произношение 室:",
+            "tj": "Талаффузи 室-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīnglǐ",
+            "shì",
+            "kāihuì",
+            "huìyì"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "室 — shì",
+            "ru": "室 — shì",
+            "tj": "室 — shì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "发",
+            "pinyin": "fā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yubormoq; jo‘natmoq",
+              "ru": "отправлять; посылать",
+              "tj": "фиристодан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yubormoq; jo‘natmoq' xitoycha qaysi?",
+            "ru": "'отправлять; посылать' по-китайски?",
+            "tj": "'фиристодан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "发",
+            "会议",
+            "开会",
+            "经理"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yubormoq; jo‘natmoq = 发 (fā)",
+            "ru": "отправлять; посылать = 发 (fā)",
+            "tj": "фиристодан = 发 (fā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "笔记本（电脑）",
+            "pinyin": "bǐjìběn (diànnǎo)",
+            "pos": "n.",
+            "meaning": {
+              "uz": "noutbuk",
+              "ru": "ноутбук",
+              "tj": "ноутбук"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "笔记本（电脑）",
+          "pinyin": "bǐjìběn (diànnǎo)",
+          "options": [
+            "开会",
+            "笔记本（电脑）",
+            "会议",
+            "经理"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "笔记本（电脑） — noutbuk (bǐjìběn (diànnǎo))",
+            "ru": "笔记本（电脑） — ноутбук (bǐjìběn (diànnǎo))",
+            "tj": "笔记本（电脑） — ноутбук (bǐjìběn (diànnǎo))"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "地点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 地点:",
+            "tj": "Маънои калимаи 地点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            },
+            {
+              "uz": "menejer; rahbar",
+              "ru": "менеджер; руководитель",
+              "tj": "мудир; роҳбар"
+            },
+            {
+              "uz": "yig‘ilish o‘tkazmoq",
+              "ru": "проводить совещание",
+              "tj": "ҷаласа гузарондан"
+            },
+            {
+              "uz": "joy; manzil",
+              "ru": "место; адрес",
+              "tj": "ҷой; макон"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "地点 = joy; manzil (dìdiǎn)",
+            "ru": "地点 = место; адрес (dìdiǎn)",
+            "tj": "地点 = ҷой; макон (dìdiǎn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "地点",
+              {
+                "uz": "joy; manzil",
+                "ru": "место; адрес",
+                "tj": "ҷой; макон"
+              }
+            ],
+            [
+              "室",
+              {
+                "uz": "xona; bo‘lim",
+                "ru": "помещение; кабинет",
+                "tj": "ҳуҷра; утоқ"
+              }
+            ],
+            [
+              "发",
+              {
+                "uz": "yubormoq; jo‘natmoq",
+                "ru": "отправлять; посылать",
+                "tj": "фиристодан"
+              }
+            ],
+            [
+              "笔记本（电脑）",
+              {
+                "uz": "noutbuk",
+                "ru": "ноутбук",
+                "tj": "ноутбук"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "“看来” — vaziyatdan xulosa chiqarish",
+              "ru": "“看来” — вывод по ситуации",
+              "tj": "“看来” — хулоса аз рӯйи вазъ"
+            },
+            "title_zh": "固定短语“看来”",
+            "rule": {
+              "uz": "“看来” mavjud belgilar, vaziyat yoki kuzatuv asosida taxminiy xulosa chiqarishda ishlatiladi: “ko‘rinishidan / chamasi”.",
+              "ru": "“看来” используется, когда говорящий делает вывод или предположение на основе наблюдаемой ситуации: «похоже / судя по всему».",
+              "tj": "“看来” вақте истифода мешавад, ки гӯянда аз рӯйи аломатҳо ё вазъ хулоса мебарорад: «ба назар / зоҳиран»."
+            },
+            "examples": [
+              {
+                "zh": "看来我没办法解决这个问题。",
+                "pinyin": "Kànlái wǒ méi bànfǎ jiějué zhège wèntí.",
+                "translation": {
+                  "uz": "Ko‘rinishidan, bu muammoni hal qila olmayman.",
+                  "ru": "Похоже, я не могу решить эту проблему.",
+                  "tj": "Ба назар, ман ин мушкилро ҳал карда наметавонам."
+                }
+              },
+              {
+                "zh": "这么晚了，看来他今天不会来了。",
+                "pinyin": "Zhème wǎn le, kànlái tā jīntiān bú huì lái le.",
+                "translation": {
+                  "uz": "Juda kech bo‘ldi, chamasi u bugun kelmaydi.",
+                  "ru": "Уже так поздно — похоже, сегодня он не придёт.",
+                  "tj": "Ин қадар дер шуд, ба назар имрӯз намеояд."
+                }
+              },
+              {
+                "zh": "电梯坏了，看来咱们只能走下去了。",
+                "pinyin": "Diàntī huài le, kànlái zánmen zhǐ néng zǒu xiàqu le.",
+                "translation": {
+                  "uz": "Lift buzilibdi, ko‘rinishidan piyoda tushishga to‘g‘ri keladi.",
+                  "ru": "Лифт сломан, похоже, придётся спускаться пешком.",
+                  "tj": "Лифт вайрон шудааст, ба назар танҳо пиёда поён рафтан мемонад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Lift buzilibdi, ko‘rinishidan piyoda tushishga to‘g‘ri keladi.» — xitoychada qaysi biri?",
+            "ru": "«Лифт сломан, похоже, придётся спускаться пешком.» — какое предложение по-китайски?",
+            "tj": "«Лифт вайрон шудааст, ба назар танҳо пиёда поён рафтан мемонад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这么晚了，看来他今天不会来了。",
+            "电梯坏了，看来咱们只能走下去了。",
+            "看来我没办法解决这个问题。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "电梯坏了，看来咱们只能走下去了。 — Diàntī huài le, kànlái zánmen zhǐ néng zǒu xiàqu le.",
+            "ru": "电梯坏了，看来咱们只能走下去了。 — Diàntī huài le, kànlái zánmen zhǐ néng zǒu xiàqu le.",
+            "tj": "电梯坏了，看来咱们只能走下去了。 — Diàntī huài le, kànlái zánmen zhǐ néng zǒu xiàqu le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "发 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 发:",
+            "tj": "Маънои калимаи 发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yubormoq; jo‘natmoq",
+              "ru": "отправлять; посылать",
+              "tj": "фиристодан"
+            },
+            {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            },
+            {
+              "uz": "menejer; rahbar",
+              "ru": "менеджер; руководитель",
+              "tj": "мудир; роҳбар"
+            },
+            {
+              "uz": "yig‘ilish o‘tkazmoq",
+              "ru": "проводить совещание",
+              "tj": "ҷаласа гузарондан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "发 = yubormoq; jo‘natmoq (fā)",
+            "ru": "发 = отправлять; посылать (fā)",
+            "tj": "发 = фиристодан (fā)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "笔记本（电脑）",
+          "pinyin": "bǐjìběn (diànnǎo)",
+          "options": [
+            "会议",
+            "经理",
+            "开会",
+            "笔记本（电脑）"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "笔记本（电脑） — noutbuk (bǐjìběn (diànnǎo))",
+            "ru": "笔记本（电脑） — ноутбук (bǐjìběn (diànnǎo))",
+            "tj": "笔记本（电脑） — ноутбук (bǐjìběn (diànnǎo))"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "室",
+          "pinyin": "shì",
+          "translation": {
+            "uz": "xona; bo‘lim",
+            "ru": "помещение; кабинет",
+            "tj": "ҳуҷра; утоқ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "经理 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 经理:",
+            "tj": "Маънои калимаи 经理-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yig‘ilish o‘tkazmoq",
+              "ru": "проводить совещание",
+              "tj": "ҷаласа гузарондан"
+            },
+            {
+              "uz": "indinga",
+              "ru": "послезавтра",
+              "tj": "пасфардо"
+            },
+            {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            },
+            {
+              "uz": "menejer; rahbar",
+              "ru": "менеджер; руководитель",
+              "tj": "мудир; роҳбар"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "经理 = menejer; rahbar (jīnglǐ)",
+            "ru": "经理 = менеджер; руководитель (jīnglǐ)",
+            "tj": "经理 = мудир; роҳбар (jīnglǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "经理",
+            "pinyin": "jīnglǐ",
+            "meaning": {
+              "uz": "menejer; rahbar",
+              "ru": "менеджер; руководитель",
+              "tj": "мудир; роҳбар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xona; bo‘lim' xitoycha qaysi?",
+            "ru": "'помещение; кабинет' по-китайски?",
+            "tj": "'ҳуҷра; утоқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "会议",
+            "开会",
+            "室",
+            "经理"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "xona; bo‘lim = 室 (shì)",
+            "ru": "помещение; кабинет = 室 (shì)",
+            "tj": "ҳуҷра; утоқ = 室 (shì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "室",
+            "pinyin": "shì",
+            "meaning": {
+              "uz": "xona; bo‘lim",
+              "ru": "помещение; кабинет",
+              "tj": "ҳуҷра; утоқ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,769 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 71,
+  "source_lesson": 15,
+  "part_no": 2,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我想再去一次中国",
+  "subtitle": {
+    "uz": "“次” bilan harakat necha marta sodir bo‘lganini aytish; frequency complement va obyektning tartibini to‘g‘ri qo‘llash; “有+miqdor” bilan ma’lum miqdorga yetganlikni ifodalash; sayohat va qaytish rejalari haqida gaplashish.",
+    "ru": "Выражать количество повторений действия с “次”; правильно располагать дополнение кратности и объект; выражать достигнутое количество конструкцией “有+количество”; говорить о путешествиях и возвращении домой.",
+    "tj": "Бо “次” шумораи такрори амалро гуфтан; ҷойи пуркунандаи такрор ва объектро дуруст истифода бурдан; бо “有+миқдор” расидан ба миқдори муайянро ифода кардан; дар бораи сафар ва бозгашт суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "出门",
+      "pinyin": "chūmén",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uydan chiqmoq",
+        "ru": "выходить из дома",
+        "tj": "аз хона баромадан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "路",
+      "pinyin": "lù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yo‘l",
+        "ru": "дорога; путь",
+        "tj": "роҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "机场",
+      "pinyin": "jīchǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aeroport",
+        "ru": "аэропорт",
+        "tj": "фурудгоҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "机票",
+      "pinyin": "jīpiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aviachipta",
+        "ru": "авиабилет",
+        "tj": "чиптаи ҳавопаймо"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Takror soni to‘ldiruvchisi (2)",
+        "ru": "Дополнение кратности (2)",
+        "tj": "Пуркунандаи такрор (2)"
+      },
+      "title_zh": "动量补语（2）",
+      "rule": {
+        "uz": "Fe’l frequency complement va obyekt bilan kelganda, obyekt narsa oti bo‘lsa odatda frequency complementdan keyin; olmosh bo‘lsa uning oldidan keladi.",
+        "ru": "Если у глагола есть и дополнение кратности, и объект: предметный объект обычно ставится после дополнения, а местоимение — перед ним.",
+        "tj": "Агар феъл ҳам пуркунандаи такрор ва ҳам объект дошта бошад, объекти ашёӣ одатан пас аз пуркунанда, ҷонишин бошад пеш аз он меояд."
+      },
+      "examples": [
+        {
+          "zh": "因为我想再吃一次烤鸭，再喝一次奶茶。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我想找他一次。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "安妮来过这儿两次。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda o‘quvchilar imtihon topshirmoqda.",
+        "ru": "В классе ученики сдают экзамен.",
+        "tj": "Дар синф донишҷӯён имтиҳон месупоранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "考试就要开始了，请大家写上姓名，写好后就可以做题了。",
+          "pinyin": "Kǎoshì jiù yào kāishǐ le, qǐng dàjiā xiě shàng xìngmíng, xiěhǎo hòu jiù kěyǐ zuò tí le.",
+          "text": {
+            "uz": "Imtihon boshlanishiga oz qoldi, iltimos ism-familiyangizni yozing, yozib bo‘lgach savollarni ishlashingiz mumkin.",
+            "ru": "Экзамен сейчас начнётся. Напишите имя и фамилию; после этого можно приступать к заданиям.",
+            "tj": "Имтиҳон ҳозир оғоз мешавад. Лутфан ному насабатонро нависед; баъд аз он саволҳоро иҷро кунед."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "老师，我做完了。",
+          "pinyin": "Lǎoshī, wǒ zuòwán le.",
+          "text": {
+            "uz": "Ustoz, men tugatdim.",
+            "ru": "Преподаватель, я закончила.",
+            "tj": "Устод, ман тамом кардам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我也做完了。",
+          "pinyin": "Lǎoshī, wǒ yě zuòwán le.",
+          "text": {
+            "uz": "Ustoz, men ham tugatdim.",
+            "ru": "Преподаватель, я тоже закончил.",
+            "tj": "Устод, ман ҳам тамом кардам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "……对了，你们考完试想做什么？",
+          "pinyin": "... Duì le, nǐmen kǎowán shì xiǎng zuò shénme?",
+          "text": {
+            "uz": "Aytgancha, imtihondan keyin nima qilmoqchisizlar?",
+            "ru": "Кстати, что хотите делать после экзамена?",
+            "tj": "Ростӣ, баъди имтиҳон чӣ кор кардан мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "考完试了，我现在可以出国旅游了。",
+          "pinyin": "Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.",
+          "text": {
+            "uz": "Imtihon tugadi, endi chet elga sayohat qila olaman.",
+            "ru": "Экзамен закончился, теперь я могу путешествовать за границу.",
+            "tj": "Имтиҳон тамом шуд, ҳоло метавонам ба хориҷ саёҳат кунам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "你要去哪儿？",
+          "pinyin": "Nǐ yào qù nǎr?",
+          "text": {
+            "uz": "Qayerga bormoqchisan?",
+            "ru": "Куда собираешься?",
+            "tj": "Ба куҷо рафтан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "你想做的事情很多啊！",
+          "pinyin": "Nǐ xiǎng zuò de shìqing hěn duō a!",
+          "text": {
+            "uz": "Qilmoqchi bo‘lgan ishlaring juda ko‘p ekan!",
+            "ru": "У тебя столько планов!",
+            "tj": "Корҳое, ки кардан мехоҳӣ, хеле зиёданд!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "太好了！出门旅游，多个朋友多条路。",
+          "pinyin": "Tài hǎo le! Chūmén lǚyóu, duō ge péngyou duō tiáo lù.",
+          "text": {
+            "uz": "Zo‘r! Sayohatga chiqqanda bir do‘st ko‘p bo‘lsa, bir yo‘l ko‘p.",
+            "ru": "Отлично! В поездке лишний друг — лишний путь и возможность.",
+            "tj": "Олиҷаноб! Дар сафар як дӯст бештар — як роҳ бештар."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "不到一年。我六月的时候回去了一次。",
+          "pinyin": "Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.",
+          "text": {
+            "uz": "Bir yil bo‘lgani yo‘q. Iyun oyida bir marta qaytgandim.",
+            "ru": "Ещё не год. Я один раз ездил домой в июне.",
+            "tj": "Ҳанӯз як сол не. Моҳи июн як бор баргашта будам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我怎么忘了？还是我送你去的机场呢。",
+          "pinyin": "Wǒ zěnme wàng le? Háishi wǒ sòng nǐ qù de jīchǎng ne.",
+          "text": {
+            "uz": "Qanday unutibman? Axir seni aeroportga men kuzatgan edim.",
+            "ru": "Как я могла забыть? Ведь именно я провожала тебя в аэропорт.",
+            "tj": "Чӣ хел фаромӯш кардаам? Охир ман туро ба фурудгоҳ гусел карда будам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "是啊。",
+          "pinyin": "Shì a.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我记得你那次的机票很便宜。",
+          "pinyin": "Wǒ jìde nǐ nà cì de jīpiào hěn piányi.",
+          "text": {
+            "uz": "Esimda, o‘sha safardagi aviachiptang juda arzon edi.",
+            "ru": "Помню, тогда твой авиабилет был очень дешёвым.",
+            "tj": "Дар хотир дорам, он дафъа чиптаи ҳавопаймоят хеле арзон буд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "出门",
+            "pinyin": "chūmén",
+            "pos": "v.",
+            "meaning": {
+              "uz": "uydan chiqmoq",
+              "ru": "выходить из дома",
+              "tj": "аз хона баромадан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出门 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出门:",
+            "tj": "Маънои калимаи 出门-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            },
+            {
+              "uz": "uydan chiqmoq",
+              "ru": "выходить из дома",
+              "tj": "аз хона баромадан"
+            },
+            {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            },
+            {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "出门 = uydan chiqmoq (chūmén)",
+            "ru": "出门 = выходить из дома (chūmén)",
+            "tj": "出门 = аз хона баромадан (chūmén)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "路",
+            "pinyin": "lù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yo‘l",
+              "ru": "дорога; путь",
+              "tj": "роҳ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lù?",
+            "tj": "lù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出国",
+            "姓名",
+            "门票",
+            "路"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "路 = yo‘l (lù)",
+            "ru": "路 = дорога; путь (lù)",
+            "tj": "路 = роҳ (lù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "机场",
+            "pinyin": "jīchǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "机场",
+          "pinyin": "jīchǎng",
+          "translation": {
+            "uz": "aeroport",
+            "ru": "аэропорт",
+            "tj": "фурудгоҳ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "机场 talaffuzini tanlang:",
+            "ru": "Выберите произношение 机场:",
+            "tj": "Талаффузи 机场-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīchǎng",
+            "xìngmíng",
+            "chūguó",
+            "ménpiào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "机场 — jīchǎng",
+            "ru": "机场 — jīchǎng",
+            "tj": "机场 — jīchǎng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "机票",
+            "pinyin": "jīpiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aviachipta",
+              "ru": "авиабилет",
+              "tj": "чиптаи ҳавопаймо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aviachipta' xitoycha qaysi?",
+            "ru": "'авиабилет' по-китайски?",
+            "tj": "'чиптаи ҳавопаймо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "门票",
+            "姓名",
+            "出国",
+            "机票"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "aviachipta = 机票 (jīpiào)",
+            "ru": "авиабилет = 机票 (jīpiào)",
+            "tj": "чиптаи ҳавопаймо = 机票 (jīpiào)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "出门",
+          "pinyin": "chūmén",
+          "options": [
+            "出国",
+            "门票",
+            "出门",
+            "姓名"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "出门 — uydan chiqmoq (chūmén)",
+            "ru": "出门 — выходить из дома (chūmén)",
+            "tj": "出门 — аз хона баромадан (chūmén)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "出门",
+              {
+                "uz": "uydan chiqmoq",
+                "ru": "выходить из дома",
+                "tj": "аз хона баромадан"
+              }
+            ],
+            [
+              "路",
+              {
+                "uz": "yo‘l",
+                "ru": "дорога; путь",
+                "tj": "роҳ"
+              }
+            ],
+            [
+              "机场",
+              {
+                "uz": "aeroport",
+                "ru": "аэропорт",
+                "tj": "фурудгоҳ"
+              }
+            ],
+            [
+              "机票",
+              {
+                "uz": "aviachipta",
+                "ru": "авиабилет",
+                "tj": "чиптаи ҳавопаймо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Takror soni to‘ldiruvchisi (2)",
+              "ru": "Дополнение кратности (2)",
+              "tj": "Пуркунандаи такрор (2)"
+            },
+            "title_zh": "动量补语（2）",
+            "rule": {
+              "uz": "Fe’l frequency complement va obyekt bilan kelganda, obyekt narsa oti bo‘lsa odatda frequency complementdan keyin; olmosh bo‘lsa uning oldidan keladi.",
+              "ru": "Если у глагола есть и дополнение кратности, и объект: предметный объект обычно ставится после дополнения, а местоимение — перед ним.",
+              "tj": "Агар феъл ҳам пуркунандаи такрор ва ҳам объект дошта бошад, объекти ашёӣ одатан пас аз пуркунанда, ҷонишин бошад пеш аз он меояд."
+            },
+            "examples": [
+              {
+                "zh": "因为我想再吃一次烤鸭，再喝一次奶茶。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我想找他一次。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "安妮来过这儿两次。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "出国",
+            "次",
+            "找",
+            "一",
+            "他",
+            "我",
+            "想",
+            "姓名"
+          ],
+          "answer_tokens": [
+            "我",
+            "想",
+            "找",
+            "他",
+            "一",
+            "次"
+          ],
+          "explanation": {
+            "uz": "我想找他一次。",
+            "ru": "我想找他一次。",
+            "tj": "我想找他一次。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我想找他一次。",
+            "安妮来过这儿两次。",
+            "因为我想再吃一次烤鸭，再喝一次奶茶。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "安妮来过这儿两次。 — ",
+            "ru": "安妮来过这儿两次。 — ",
+            "tj": "安妮来过这儿两次。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我记得你那次的机票很便宜。",
+          "pinyin": "Wǒ jìde nǐ nà cì de jīpiào hěn piányi.",
+          "options": [
+            "我记得你那次的机票很便宜。",
+            "太好了！出门旅游，多个朋友多条路。",
+            "我怎么忘了？还是我送你去的机场呢。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我记得你那次的机票很便宜。 — Esimda, o‘sha safardagi aviachiptang juda arzon edi.",
+            "ru": "我记得你那次的机票很便宜。 — Помню, тогда твой авиабилет был очень дешёвым.",
+            "tj": "我记得你那次的机票很便宜。 — Дар хотир дорам, он дафъа чиптаи ҳавопаймоят хеле арзон буд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "机场",
+          "pinyin": "jīchǎng",
+          "translation": {
+            "uz": "aeroport",
+            "ru": "аэропорт",
+            "tj": "фурудгоҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "门票 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 门票:",
+            "tj": "Маънои калимаи 门票-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            },
+            {
+              "uz": "yuqori sinf; o‘rta maktabning yuqori bosqichi",
+              "ru": "старшая школа",
+              "tj": "мактаби миёнаи болоӣ"
+            },
+            {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            },
+            {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "门票 = kirish chiptasi (ménpiào)",
+            "ru": "门票 = входной билет (ménpiào)",
+            "tj": "门票 = чиптаи даромад (ménpiào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "门票",
+            "pinyin": "ménpiào",
+            "meaning": {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aeroport' xitoycha qaysi?",
+            "ru": "'аэропорт' по-китайски?",
+            "tj": "'фурудгоҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "出国",
+            "门票",
+            "机场",
+            "姓名"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "aeroport = 机场 (jīchǎng)",
+            "ru": "аэропорт = 机场 (jīchǎng)",
+            "tj": "фурудгоҳ = 机场 (jīchǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "机场",
+            "pinyin": "jīchǎng",
+            "meaning": {
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

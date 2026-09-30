@@ -1,0 +1,588 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 135,
+  "source_lesson": 17,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我要多向认真的人学习",
+  "subtitle": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "只有",
+      "pinyin": "zhǐyǒu",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "faqat ... bo‘lsagina",
+        "ru": "только если; лишь при",
+        "tj": "танҳо агар"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "真正",
+      "pinyin": "zhēnzhèng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "haqiqiy; chinakam",
+        "ru": "настоящий; истинно",
+        "tj": "воқеӣ; ҳақиқӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "难题",
+      "pinyin": "nántí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiyin masala; murakkab savol",
+        "ru": "трудная задача; сложный вопрос",
+        "tj": "масъалаи душвор"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+        "ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+        "tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "怎么回事？",
+          "pinyin": "Zěnme huí shì?",
+          "text": {
+            "uz": "Nima bo‘ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ гап шуд?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de.",
+          "text": {
+            "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+            "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+            "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "text": {
+            "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+            "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+        "ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+        "tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de.",
+          "text": {
+            "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+            "ru": "Что тут странного? Я пришёл заниматься.",
+            "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你怎么还来图书馆学习？同学们都在到处找工作呢。",
+          "pinyin": "Nǐ zěnme hái lái túshūguǎn xuéxí? Tóngxuémen dōu zài dàochù zhǎo gōngzuò ne.",
+          "text": {
+            "uz": "Nega hali ham kutubxonada o‘qiyapsan? Sinfdoshlar hamma joyda ish qidiryapti-ku.",
+            "ru": "Почему ты всё ещё учишься в библиотеке? Однокурсники повсюду ищут работу.",
+            "tj": "Чаро ҳоло ҳам дар китобхона мехонӣ? Ҳамсинфон ҳама ҷо кор меҷӯянд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "text": {
+            "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "你说得对，我记得那个屋子里有些跟电脑有关的书，我去找找。",
+          "pinyin": "Nǐ shuō de duì, wǒ jìde nàge wūzi lǐ yǒuxiē gēn diànnǎo yǒuguān de shū, wǒ qù zhǎozhao.",
+          "text": {
+            "uz": "To‘g‘ri aytding, o‘sha xonada kompyuterga oid kitoblar bor edi, borib qidiraman.",
+            "ru": "Ты права, я помню, в той комнате были книги о компьютерах. Пойду поищу.",
+            "tj": "Дуруст гуфтӣ, дар хотир дорам он ҳуҷра китобҳои вобаста ба компютер дошт, рафта меҷӯям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?",
+          "text": {
+            "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+            "ru": "Телефон разрядился. Ты меня искал по делу?",
+            "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "前天我看见家月了，她告诉我你打算继续留学？",
+          "pinyin": "Qiántiān wǒ kànjiàn Jiāyuè le, tā gàosu wǒ nǐ dǎsuàn jìxù liúxué?",
+          "text": {
+            "uz": "Peshindin Jiayueni ko‘rdim, u sen chet elda o‘qishni davom ettirmoqchi ekaningni aytdi?",
+            "ru": "Позавчера я видел Цзяюэ. Она сказала, что ты собираешься продолжить учёбу за границей?",
+            "tj": "Пешдирӯз Ҷяюэро дидам, ӯ гуфт ту мехоҳӣ таҳсилро дар хориҷ идома диҳӣ?"
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "text": {
+            "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "好，那我上网查一查。",
+          "pinyin": "Hǎo, nà wǒ shàngwǎng chá yì chá.",
+          "text": {
+            "uz": "Xo‘p, unda internetdan tekshirib ko‘raman.",
+            "ru": "Хорошо, тогда посмотрю информацию в интернете.",
+            "tj": "Хуб, пас аз интернет маълумот меҷӯям."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn.",
+          "text": {
+            "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+            "ru": "Я покажу тебе несколько полезных сайтов.",
+            "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "只有",
+            "pinyin": "zhǐyǒu",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "faqat ... bo‘lsagina",
+              "ru": "только если; лишь при",
+              "tj": "танҳо агар"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "只有",
+          "pinyin": "zhǐyǒu",
+          "options": [
+            "向",
+            "楼梯",
+            "只有",
+            "害怕"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "只有 — faqat ... bo‘lsagina (zhǐyǒu)",
+            "ru": "只有 — только если; лишь при (zhǐyǒu)",
+            "tj": "只有 — танҳо агар (zhǐyǒu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "真正",
+            "pinyin": "zhēnzhèng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "haqiqiy; chinakam",
+              "ru": "настоящий; истинно",
+              "tj": "воқеӣ; ҳақиқӣ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "真正 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 真正:",
+            "tj": "Маънои калимаи 真正-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "haqiqiy; chinakam",
+              "ru": "настоящий; истинно",
+              "tj": "воқеӣ; ҳақиқӣ"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "真正 = haqiqiy; chinakam (zhēnzhèng)",
+            "ru": "真正 = настоящий; истинно (zhēnzhèng)",
+            "tj": "真正 = воқеӣ; ҳақиқӣ (zhēnzhèng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "难题",
+            "pinyin": "nántí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qiyin masala; murakkab savol",
+              "ru": "трудная задача; сложный вопрос",
+              "tj": "масъалаи душвор"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "难题",
+          "pinyin": "nántí",
+          "translation": {
+            "uz": "qiyin masala; murakkab savol",
+            "ru": "трудная задача; сложный вопрос",
+            "tj": "масъалаи душвор"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nántí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nántí?",
+            "tj": "nántí кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "难题",
+            "楼梯",
+            "向",
+            "害怕"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "难题 = qiyin masala; murakkab savol (nántí)",
+            "ru": "难题 = трудная задача; сложный вопрос (nántí)",
+            "tj": "难题 = масъалаи душвор (nántí)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "只有 talaffuzini tanlang:",
+            "ru": "Выберите произношение 只有:",
+            "tj": "Талаффузи 只有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lóutī",
+            "xiàng",
+            "hàipà",
+            "zhǐyǒu"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "只有 — zhǐyǒu",
+            "ru": "只有 — zhǐyǒu",
+            "tj": "只有 — zhǐyǒu"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "只有",
+              {
+                "uz": "faqat ... bo‘lsagina",
+                "ru": "только если; лишь при",
+                "tj": "танҳо агар"
+              }
+            ],
+            [
+              "真正",
+              {
+                "uz": "haqiqiy; chinakam",
+                "ru": "настоящий; истинно",
+                "tj": "воқеӣ; ҳақиқӣ"
+              }
+            ],
+            [
+              "难题",
+              {
+                "uz": "qiyin masala; murakkab savol",
+                "ru": "трудная задача; сложный вопрос",
+                "tj": "масъалаи душвор"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "只有",
+          "pinyin": "zhǐyǒu",
+          "translation": {
+            "uz": "faqat ... bo‘lsagina",
+            "ru": "только если; лишь при",
+            "tj": "танҳо агар"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "难题",
+          "pinyin": "nántí",
+          "options": [
+            "向",
+            "楼梯",
+            "害怕",
+            "难题"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "难题 — qiyin masala; murakkab savol (nántí)",
+            "ru": "难题 — трудная задача; сложный вопрос (nántí)",
+            "tj": "难题 — масъалаи душвор (nántí)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "真正",
+          "pinyin": "zhēnzhèng",
+          "options": [
+            "害怕",
+            "向",
+            "真正",
+            "楼梯"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "真正 — haqiqiy; chinakam (zhēnzhèng)",
+            "ru": "真正 — настоящий; истинно (zhēnzhèng)",
+            "tj": "真正 — воқеӣ; ҳақиқӣ (zhēnzhèng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "难题",
+          "pinyin": "nántí",
+          "translation": {
+            "uz": "qiyin masala; murakkab savol",
+            "ru": "трудная задача; сложный вопрос",
+            "tj": "масъалаи душвор"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "回答 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 回答:",
+            "tj": "Маънои калимаи 回答-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "javob bermoq",
+              "ru": "отвечать",
+              "tj": "ҷавоб додан"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "回答 = javob bermoq (huídá)",
+            "ru": "回答 = отвечать (huídá)",
+            "tj": "回答 = ҷавоб додан (huídá)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "回答",
+            "pinyin": "huídá",
+            "meaning": {
+              "uz": "javob bermoq",
+              "ru": "отвечать",
+              "tj": "ҷавоб додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qiyin masala; murakkab savol' xitoycha qaysi?",
+            "ru": "'трудная задача; сложный вопрос' по-китайски?",
+            "tj": "'масъалаи душвор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "害怕",
+            "楼梯",
+            "难题",
+            "向"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qiyin masala; murakkab savol = 难题 (nántí)",
+            "ru": "трудная задача; сложный вопрос = 难题 (nántí)",
+            "tj": "масъалаи душвор = 难题 (nántí)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "难题",
+            "pinyin": "nántí",
+            "meaning": {
+              "uz": "qiyin masala; murakkab savol",
+              "ru": "трудная задача; сложный вопрос",
+              "tj": "масъалаи душвор"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

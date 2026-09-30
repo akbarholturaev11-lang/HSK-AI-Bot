@@ -1,0 +1,1099 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 16,
+  "source_lesson": 2,
+  "part_no": 8,
+  "part_count": 8,
+  "checkpoint": true,
+  "title": "你们想吃什么就点什么",
+  "subtitle": {
+    "uz": "Restorandagi taomlar, xizmat va ovqatlanish odatlari haqida gaplashish; so‘roq olmoshlarini “istalgan/har qanday” ma’nosida ishlatish; Xitoyda ovqatlanishda ishlatiladigan asosiy idish-tovoq va anjomlarni tushunish.",
+    "ru": "Говорить о блюдах, обслуживании и пищевых привычках; использовать вопросительные местоимения в значении «любой/какой угодно»; понимать основные столовые приборы и посуду, используемые в Китае.",
+    "tj": "Дар бораи хӯрокҳои тарабхона, хизматрасонӣ ва одатҳои ғизоӣ суҳбат кардан; ҷонишинҳои саволиро ба маънои «ҳар кадом/дилхоҳ» истифода бурдан; асбобу зарфҳои асосии хӯрокхӯриро дар Чин фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "菜单",
+      "pinyin": "càidān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "menyu",
+        "ru": "меню",
+        "tj": "меню"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "又",
+      "pinyin": "yòu",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ham; yana (parallel belgilar/holatlar)",
+        "ru": "и; ещё (при параллельных признаках)",
+        "tj": "ҳам; боз"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "饿",
+      "pinyin": "è",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "och",
+        "ru": "голодный",
+        "tj": "гурусна"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "渴",
+      "pinyin": "kě",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "chanqagan",
+        "ru": "испытывать жажду",
+        "tj": "ташна"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "客气",
+      "pinyin": "kèqi",
+      "pos": "v./adj.",
+      "meaning": {
+        "uz": "muloyimlik qilmoq; tortinmoq",
+        "ru": "церемониться; быть вежливым",
+        "tj": "таоруф кардан; боадаб будан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "饮料",
+      "pinyin": "yǐnliào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ichimlik",
+        "ru": "напиток",
+        "tj": "нӯшокӣ"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "好久",
+      "pinyin": "hǎojiǔ",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "anchadan beri; uzoq vaqt",
+        "ru": "давно; долго",
+        "tj": "кайҳо; муддати дароз"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "服务",
+      "pinyin": "fúwù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xizmat ko‘rsatmoq; xizmat",
+        "ru": "обслуживать; обслуживание",
+        "tj": "хизмат расондан; хизмат"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "员",
+      "pinyin": "yuán",
+      "pos": "suf.",
+      "meaning": {
+        "uz": "xodim ma’nosini beruvchi qo‘shimcha",
+        "ru": "суффикс со значением работника",
+        "tj": "пасванд ба маънои корманд"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "双",
+      "pinyin": "shuāng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "juft (hisob so‘zi)",
+        "ru": "пара (счётное слово)",
+        "tj": "ҷуфт (воҳиди ҳисоб)"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "筷子",
+      "pinyin": "kuàizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "cho‘pcha",
+        "ru": "палочки для еды",
+        "tj": "чӯбчаҳои хӯрокхӯрӣ"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "勺子",
+      "pinyin": "sháozi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qoshiq",
+        "ru": "ложка",
+        "tj": "қошуқ"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "碗",
+      "pinyin": "wǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kosa; piyola",
+        "ru": "миска; пиала",
+        "tj": "коса"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "马上",
+      "pinyin": "mǎshàng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "darhol; hozirning o‘zida",
+        "ru": "сразу; немедленно",
+        "tj": "фавран; ҳозир"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "热情",
+      "pinyin": "rèqíng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "samimiy; iliq muomala qiladigan",
+        "ru": "радушный; приветливый",
+        "tj": "гарм; меҳрубон"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "尝",
+      "pinyin": "cháng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tatib ko‘rmoq",
+        "ru": "пробовать на вкус",
+        "tj": "чашидан"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "记",
+      "pinyin": "jì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eslab qolmoq; yozib olmoq",
+        "ru": "запоминать; записывать",
+        "tj": "дар хотир доштан; қайд кардан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "用",
+      "pinyin": "yòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishlatmoq; foydalanmoq",
+        "ru": "использовать",
+        "tj": "истифода бурдан"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "鸡",
+      "pinyin": "jī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tovuq",
+        "ru": "курица",
+        "tj": "мурғ"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "张",
+      "pinyin": "zhāng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yassi narsalar uchun hisob so‘zi",
+        "ru": "счётное слово для плоских предметов",
+        "tj": "воҳиди ҳисоб барои ашёи ҳамвор"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "不用",
+      "pinyin": "búyòng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "kerak emas; hojat yo‘q",
+        "ru": "не нужно",
+        "tj": "лозим нест"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "选",
+      "pinyin": "xuǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanlamoq",
+        "ru": "выбирать",
+        "tj": "интихоб кардан"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "外卖",
+      "pinyin": "wàimài",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "yetkazib beriladigan taom; dostavka",
+        "ru": "еда с доставкой; доставка еды",
+        "tj": "хӯроки расонидашаванда; доставка"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "方便",
+      "pinyin": "fāngbiàn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qulay",
+        "ru": "удобный",
+        "tj": "қулай"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "蛋糕",
+      "pinyin": "dàngāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tort; pirog",
+        "ru": "торт; пирожное",
+        "tj": "торт"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "只",
+      "pinyin": "zhǐ",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "faqat",
+        "ru": "только",
+        "tj": "фақат"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "方便面",
+      "pinyin": "fāngbiànmiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tez tayyor bo‘ladigan lag‘mon",
+        "ru": "лапша быстрого приготовления",
+        "tj": "угрои зудтайёр"
+      }
+    },
+    {
+      "no": 28,
+      "zh": "简单",
+      "pinyin": "jiǎndān",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "oddiy; sodda",
+        "ru": "простой",
+        "tj": "сода; осон"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“又……又……” — ikki belgini parallel ifodalash",
+        "ru": "“又……又……” — одновременное выражение двух признаков",
+        "tj": "“又……又……” — ифодаи ҳамзамони ду хусусият"
+      },
+      "title_zh": "并列复句“又……又……”",
+      "rule": {
+        "uz": "“又A又B” bir odam yoki narsada ikki holat, sifat yoki xususiyat bir vaqtda mavjudligini bildiradi. A va B odatda bir xil grammatik turdagi birliklar bo‘ladi.",
+        "ru": "Конструкция “又A又B” показывает, что у одного человека или предмета одновременно есть два признака, состояния или свойства. A и B обычно однородны по грамматической функции.",
+        "tj": "Сохтори “又A又B” нишон медиҳад, ки дар як шахс ё ашё ду ҳолат ё хусусият ҳамзамон вуҷуд дорад. A ва B одатан аз ҷиҳати вазифаи грамматикӣ ҳамнавъанд."
+      },
+      "examples": [
+        {
+          "zh": "我现在还真是又饿又渴。",
+          "pinyin": "Wǒ xiànzài hái zhēn shì yòu è yòu kě.",
+          "translation": {
+            "uz": "Hozir rostdan ham ham ochman, ham chanqaganman.",
+            "ru": "Сейчас я действительно и голоден, и хочу пить.",
+            "tj": "Ҳоло воқеан ҳам гуруснаам, ҳам ташна."
+          }
+        },
+        {
+          "zh": "那个女孩儿又高又漂亮。",
+          "pinyin": "Nàge nǚháir yòu gāo yòu piàoliang.",
+          "translation": {
+            "uz": "U qiz ham baland bo‘yli, ham chiroyli.",
+            "ru": "Та девушка и высокая, и красивая.",
+            "tj": "Он духтар ҳам қадбаланд аст, ҳам зебо."
+          }
+        },
+        {
+          "zh": "这个饭馆的菜又便宜又好吃。",
+          "pinyin": "Zhège fànguǎn de cài yòu piányi yòu hǎochī.",
+          "translation": {
+            "uz": "Bu restorandagi taomlar ham arzon, ham mazali.",
+            "ru": "В этом ресторане блюда и дешёвые, и вкусные.",
+            "tj": "Хӯрокҳои ин тарабхона ҳам арзонанд, ҳам болаззат."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "So‘roq olmoshlarining so‘roq bo‘lmagan ma’nosi (2)",
+        "ru": "Невопросительное употребление вопросительных местоимений (2)",
+        "tj": "Истифодаи ғайрисаволии ҷонишинҳои саволӣ (2)"
+      },
+      "title_zh": "疑问代词的非疑问用法（2）",
+      "rule": {
+        "uz": "So‘roq olmoshi “都” bilan kelganda “qaysi bo‘lsa ham / hammasi” ma’nosini beradi. Masalan, 哪个……都…… — “qaysi biri bo‘lsa ham”.",
+        "ru": "В сочетании с “都” вопросительное местоимение получает значение «любой / все без исключения». Например, 哪个……都…… — «какой ни возьми».",
+        "tj": "Вақте ҷонишини саволӣ бо “都” меояд, маънои «ҳар кадом / ҳама»-ро медиҳад. Масалан, 哪个……都…… — «ҳар кадомаш»."
+      },
+      "examples": [
+        {
+          "zh": "哪个菜都好吃。",
+          "pinyin": "Nǎge cài dōu hǎochī.",
+          "translation": {
+            "uz": "Qaysi taomni olsang ham mazali.",
+            "ru": "Любое блюдо вкусное.",
+            "tj": "Ҳар кадом хӯрок болаззат аст."
+          }
+        },
+        {
+          "zh": "这次旅游，我去哪儿都可以。",
+          "pinyin": "Zhè cì lǚyóu, wǒ qù nǎr dōu kěyǐ.",
+          "translation": {
+            "uz": "Bu sayohatda men uchun qayerga borsak ham bo‘ladi.",
+            "ru": "В эту поездку мне подходит любое место.",
+            "tj": "Дар ин сафар барои ман ба ҳар ҷо рафтан мумкин аст."
+          }
+        },
+        {
+          "zh": "我下午有时间，你想什么时候来都没问题。",
+          "pinyin": "Wǒ xiàwǔ yǒu shíjiān, nǐ xiǎng shénme shíhou lái dōu méi wèntí.",
+          "translation": {
+            "uz": "Tushdan keyin vaqtim bor, qachon kelishni xohlasang ham bo‘ladi.",
+            "ru": "Днём я свободен, можешь прийти в любое время.",
+            "tj": "Баъд аз нисфирӯзӣ вақт дорам, ҳар вақте хоҳӣ биёӣ, мушкил нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "So‘roq olmoshlarining so‘roq bo‘lmagan ma’nosi (3)",
+        "ru": "Невопросительное употребление вопросительных местоимений (3)",
+        "tj": "Истифодаи ғайрисаволии ҷонишинҳои саволӣ (3)"
+      },
+      "title_zh": "疑问代词的非疑问用法（3）",
+      "rule": {
+        "uz": "Bir xil so‘roq olmoshi ikki qismda takrorlanib, “nimani xohlasang — o‘shani”, “qayerga xohlasang — o‘sha yerga” kabi moslikni bildiradi. Ikkinchi qismda ko‘pincha “就” ishlatiladi.",
+        "ru": "Повтор одного и того же вопросительного местоимения в двух частях выражает соответствие: «что хочешь — то и…», «куда хочешь — туда и…». Во второй части часто используется “就”.",
+        "tj": "Такрори ҳамон ҷонишини саволӣ дар ду қисм мувофиқатро ифода мекунад: «чиро хоҳӣ — ҳамонро…», «ба куҷо хоҳӣ — ҳамон ҷо…». Дар қисми дуюм аксаран “就” меояд."
+      },
+      "examples": [
+        {
+          "zh": "你们想吃什么就点什么。",
+          "pinyin": "Nǐmen xiǎng chī shénme jiù diǎn shénme.",
+          "translation": {
+            "uz": "Nima yegingiz kelsa, o‘shani buyurtma qiling.",
+            "ru": "Заказывайте то, что хотите съесть.",
+            "tj": "Чиро хӯрдан хоҳед, ҳамонро фармоиш диҳед."
+          }
+        },
+        {
+          "zh": "你觉得哪个好看就买哪个。",
+          "pinyin": "Nǐ juéde nǎge hǎokàn jiù mǎi nǎge.",
+          "translation": {
+            "uz": "Qaysi biri chiroyli deb o‘ylasang, o‘shani sotib ol.",
+            "ru": "Какой тебе покажется красивее, тот и покупай.",
+            "tj": "Кадомашро зебо шуморӣ, ҳамонро бихар."
+          }
+        },
+        {
+          "zh": "你想去哪儿，我们就去哪儿。",
+          "pinyin": "Nǐ xiǎng qù nǎr, wǒmen jiù qù nǎr.",
+          "translation": {
+            "uz": "Qayerga borishni xohlasang, o‘sha yerga boramiz.",
+            "ru": "Куда ты захочешь, туда мы и поедем.",
+            "tj": "Ба куҷо хоҳӣ, ҳамон ҷо меравем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue, Liu Ming, Bai Jiayue va Li Wen taom buyurtma qilmoqda.",
+        "ru": "В ресторане Ван Исюэ, Лю Мин, Бай Цзяюэ и Ли Вэнь выбирают блюда.",
+        "tj": "Дар тарабхона Ван Исюэ, Лю Мин, Бай Ҷяюэ ва Ли Вэн хӯрок фармоиш медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "家月，李文，你们看看菜单，想吃点儿什么？",
+          "pinyin": "Jiāyuè, Lǐ Wén, nǐmen kànkan càidān, xiǎng chī diǎnr shénme?",
+          "text": {
+            "uz": "Jiayue, Li Wen, menyuga qaranglar, nima yemoqchisizlar?",
+            "ru": "Цзяюэ, Ли Вэнь, посмотрите меню. Что хотите поесть?",
+            "tj": "Ҷяюэ, Ли Вэн, менюро бинед, чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "谢谢一雪姐，我都可以，你们点吧。",
+          "pinyin": "Xièxie Yīxuě jiě, wǒ dōu kěyǐ, nǐmen diǎn ba.",
+          "text": {
+            "uz": "Rahmat, Yixue opa, menga hammasi bo‘ladi, sizlar buyurtma qilinglar.",
+            "ru": "Спасибо, сестра Исюэ, мне всё подходит, заказывайте вы.",
+            "tj": "Раҳмат, апаи Исюэ, барои ман ҳамааш мешавад, шумо фармоиш диҳед."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "飞了这么远，现在还真是又饿又渴。",
+          "pinyin": "Fēi le zhème yuǎn, xiànzài hái zhēn shì yòu è yòu kě.",
+          "text": {
+            "uz": "Shuncha uzoq uchib keldik, hozir rostdan ham ham ochman, ham chanqaganman.",
+            "ru": "Так далеко летели — сейчас я и правда и голодна, и хочу пить.",
+            "tj": "Ин қадар дур парвоз кардем, ҳоло воқеан ҳам гуруснаам, ҳам ташна."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那多点点儿，别客气。你们喝什么饮料？",
+          "pinyin": "Nà duō diǎn diǎnr, bié kèqi. Nǐmen hē shénme yǐnliào?",
+          "text": {
+            "uz": "Unda ko‘proq buyurtma qilinglar, tortinmanglar. Qanday ichimlik ichasizlar?",
+            "ru": "Тогда заказывайте побольше, не стесняйтесь. Что будете пить?",
+            "tj": "Пас бештар фармоиш диҳед, таоруф накунед. Чӣ нӯшокӣ менӯшед?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "好久没喝中国茶，也好久没吃饺子了。我想喝绿茶、吃饺子，可以吗？",
+          "pinyin": "Hǎojiǔ méi hē Zhōngguó chá, yě hǎojiǔ méi chī jiǎozi le. Wǒ xiǎng hē lǜchá, chī jiǎozi, kěyǐ ma?",
+          "text": {
+            "uz": "Anchadan beri xitoy choyi ichmadim, jiaozi ham yemadim. Ko‘k choy ichib, jiaozi yegim keladi, maylimi?",
+            "ru": "Я давно не пила китайский чай и давно не ела цзяоцзы. Хочу зелёный чай и цзяоцзы, можно?",
+            "tj": "Кайҳо чойи чинӣ нанӯшидаам ва ҷяозит ҳам нахӯрдаам. Чойи сабз ва ҷяози мехоҳам, мешавад?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "没问题。你们看看还想吃什么。",
+          "pinyin": "Méi wèntí. Nǐmen kànkan hái xiǎng chī shénme.",
+          "text": {
+            "uz": "Muammo yo‘q. Yana nima yegingiz kelishini ko‘ringlar.",
+            "ru": "Без проблем. Посмотрите, что ещё хотите заказать.",
+            "tj": "Мушкил нест. Бинед, боз чӣ хӯрдан мехоҳед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue, Liu Ming, Bai Jiayue va Li Wen birga ovqatlanmoqda.",
+        "ru": "В ресторане Ван Исюэ, Лю Мин, Бай Цзяюэ и Ли Вэнь вместе едят.",
+        "tj": "Дар тарабхона Ван Исюэ, Лю Мин, Бай Ҷяюэ ва Ли Вэн якҷо хӯрок мехӯранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "服务员，再给我们拿一双筷子、一个勺子和一个碗。",
+          "pinyin": "Fúwùyuán, zài gěi wǒmen ná yì shuāng kuàizi, yí ge sháozi hé yí ge wǎn.",
+          "text": {
+            "uz": "Ofitsiant, bizga yana bir juft cho‘pcha, bir qoshiq va bir kosa olib keling.",
+            "ru": "Официант, принесите нам ещё одну пару палочек, ложку и миску.",
+            "tj": "Пешхизмат, ба мо боз як ҷуфт чӯбча, як қошуқ ва як коса биёред."
+          }
+        },
+        {
+          "speaker": "服务员",
+          "zh": "好的，请等一下，我马上去拿。",
+          "pinyin": "Hǎo de, qǐng děng yíxià, wǒ mǎshàng qù ná.",
+          "text": {
+            "uz": "Xo‘p, biroz kuting, hozir olib kelaman.",
+            "ru": "Хорошо, подождите немного, сейчас принесу.",
+            "tj": "Хуб, каме интизор шавед, ҳозир меорам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "这家饭馆的服务很热情，菜也都做得很好吃。你们尝尝，看喜不喜欢这些菜。",
+          "pinyin": "Zhè jiā fànguǎn de fúwù hěn rèqíng, cài yě dōu zuò de hěn hǎochī. Nǐmen chángchang, kàn xǐ bu xǐhuan zhèxiē cài.",
+          "text": {
+            "uz": "Bu restoranda xizmat juda samimiy, taomlari ham juda mazali tayyorlanadi. Tatib ko‘ringlar, yoqadimi-yo‘qmi.",
+            "ru": "В этом ресторане очень радушное обслуживание, и блюда готовят вкусно. Попробуйте, нравятся ли вам эти блюда.",
+            "tj": "Хизматрасонии ин тарабхона хеле гарм аст, хӯрокҳоро ҳам болаззат тайёр мекунанд. Чашида бинед, писанд меояд ё не."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "哪个菜都好吃。您点的这些菜真不错。",
+          "pinyin": "Nǎge cài dōu hǎochī. Nín diǎn de zhèxiē cài zhēn búcuò.",
+          "text": {
+            "uz": "Qaysi taomni olsak ham mazali. Siz buyurtma qilgan taomlar juda yaxshi ekan.",
+            "ru": "Все блюда вкусные. То, что вы заказали, действительно отлично.",
+            "tj": "Ҳар кадом хӯрок болаззат аст. Хӯрокҳое, ки шумо фармоиш додед, хеле хубанд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "这里的饭菜又便宜又好吃，我们经常来，服务员都记住我们爱吃的菜了。",
+          "pinyin": "Zhèlǐ de fàncài yòu piányi yòu hǎochī, wǒmen jīngcháng lái, fúwùyuán dōu jìzhu wǒmen ài chī de cài le.",
+          "text": {
+            "uz": "Bu yerning taomlari ham arzon, ham mazali. Biz tez-tez kelamiz, ofitsiantlar hatto qaysi taomlarni yoqtirishimizni eslab qolishgan.",
+            "ru": "Здесь еда и дешёвая, и вкусная. Мы часто приходим, и официанты уже запомнили, что мы любим.",
+            "tj": "Хӯрокҳои ин ҷо ҳам арзонанд, ҳам болаззат. Мо зуд-зуд меоем ва пешхизматҳо ҳатто хӯрокҳои дӯстдоштаи моро дар хотир доранд."
+          }
+        },
+        {
+          "speaker": "服务员",
+          "zh": "王姐，您经常来吃饭，今天送您一些水果，请慢用。",
+          "pinyin": "Wáng jiě, nín jīngcháng lái chīfàn, jīntiān sòng nín yìxiē shuǐguǒ, qǐng mànyòng.",
+          "text": {
+            "uz": "Wang opa, siz tez-tez kelasiz, bugun sizga biroz meva sovg‘a qilamiz, bemalol tanovul qiling.",
+            "ru": "Сестра Ван, вы часто у нас бываете, сегодня мы угощаем вас фруктами. Приятного аппетита.",
+            "tj": "Апаи Ван, шумо зуд-зуд меоед, имрӯз ба шумо каме мева туҳфа мекунем. Марҳамат, оҳиста бихӯред."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue, Liu Ming, Bai Jiayue va Li Wen ovqatlanib, suhbatni davom ettirmoqda.",
+        "ru": "В ресторане Ван Исюэ, Лю Мин, Бай Цзяюэ и Ли Вэнь продолжают есть и разговаривать.",
+        "tj": "Дар тарабхона Ван Исюэ, Лю Мин, Бай Ҷяюэ ва Ли Вэн хӯрокхӯрда суҳбатро идома медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "这个鸡肉饭太好吃了，我要再来吃一次。",
+          "pinyin": "Zhège jīròufàn tài hǎochī le, wǒ yào zài lái chī yí cì.",
+          "text": {
+            "uz": "Bu tovuqli guruch juda mazali ekan, yana kelib bir marta yeyman.",
+            "ru": "Этот рис с курицей очень вкусный, я обязательно приду ещё раз.",
+            "tj": "Ин биринҷи мурғдор хеле болаззат аст, боз як бор меоям мехӯрам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "你可以拿走这张菜单，看看下次还吃点儿什么。",
+          "pinyin": "Nǐ kěyǐ názǒu zhè zhāng càidān, kànkan xià cì hái chī diǎnr shénme.",
+          "text": {
+            "uz": "Bu menyuni olib ketsang bo‘ladi, keyingi safar yana nima yeyishni ko‘rib qo‘yasan.",
+            "ru": "Можешь взять это меню и посмотреть, что заказать в следующий раз.",
+            "tj": "Ин менюро гирифта рав, барои дафъаи дигар бубин, боз чӣ мехӯрӣ."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "不用拿菜单，在手机上就能看到，也可以选好了让他们给你送。",
+          "pinyin": "Búyòng ná càidān, zài shǒujī shàng jiù néng kàndào, yě kěyǐ xuǎn hǎo le ràng tāmen gěi nǐ sòng.",
+          "text": {
+            "uz": "Menyuni olish shart emas, telefonda ham ko‘rish mumkin. Tanlab bo‘lgach, ulardan yetkazib berishni so‘rashing mumkin.",
+            "ru": "Меню брать не нужно: всё видно в телефоне. Можно выбрать и попросить доставить.",
+            "tj": "Менюро гирифтан лозим нест, дар телефон ҳам дидан мумкин. Интихоб карда, хоҳиш мекунӣ расонанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "他们家还能送外卖？",
+          "pinyin": "Tāmen jiā hái néng sòng wàimài?",
+          "text": {
+            "uz": "Ular yetkazib berish ham qiladimi?",
+            "ru": "У них ещё и доставка есть?",
+            "tj": "Онҳо хӯрокро расонида ҳам медиҳанд?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "对，现在很多饭馆都能送外卖，想吃什么就点什么。",
+          "pinyin": "Duì, xiànzài hěn duō fànguǎn dōu néng sòng wàimài, xiǎng chī shénme jiù diǎn shénme.",
+          "text": {
+            "uz": "Ha, hozir ko‘p restoranlar ovqat yetkazib beradi. Nima yeging kelsa, o‘shani buyurtma qilasan.",
+            "ru": "Да, сейчас многие рестораны доставляют еду. Заказываешь то, что хочешь.",
+            "tj": "Ҳа, ҳоло бисёр тарабхонаҳо хӯрок мерасонанд. Чиро хоҳӣ, ҳамонро фармоиш медиҳӣ."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那真是太方便了！",
+          "pinyin": "Nà zhēn shì tài fāngbiàn le!",
+          "text": {
+            "uz": "Bu juda qulay ekan!",
+            "ru": "Это действительно очень удобно!",
+            "tj": "Ин воқеан хеле қулай аст!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "菜单",
+              {
+                "uz": "menyu",
+                "ru": "меню",
+                "tj": "меню"
+              }
+            ],
+            [
+              "又",
+              {
+                "uz": "ham; yana (parallel belgilar/holatlar)",
+                "ru": "и; ещё (при параллельных признаках)",
+                "tj": "ҳам; боз"
+              }
+            ],
+            [
+              "饿",
+              {
+                "uz": "och",
+                "ru": "голодный",
+                "tj": "гурусна"
+              }
+            ],
+            [
+              "渴",
+              {
+                "uz": "chanqagan",
+                "ru": "испытывать жажду",
+                "tj": "ташна"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Tushdan keyin vaqtim bor, qachon kelishni xohlasang ham bo‘ladi.» — xitoychada qaysi biri?",
+            "ru": "«Днём я свободен, можешь прийти в любое время.» — какое предложение по-китайски?",
+            "tj": "«Баъд аз нисфирӯзӣ вақт дорам, ҳар вақте хоҳӣ биёӣ, мушкил нест.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我下午有时间，你想什么时候来都没问题。",
+            "这个饭馆的菜又便宜又好吃。",
+            "你想去哪儿，我们就去哪儿。",
+            "你觉得哪个好看就买哪个。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我下午有时间，你想什么时候来都没问题。 — Wǒ xiàwǔ yǒu shíjiān, nǐ xiǎng shénme shíhou lái dōu méi wèntí.",
+            "ru": "我下午有时间，你想什么时候来都没问题。 — Wǒ xiàwǔ yǒu shíjiān, nǐ xiǎng shénme shíhou lái dōu méi wèntí.",
+            "tj": "我下午有时间，你想什么时候来都没问题。 — Wǒ xiàwǔ yǒu shíjiān, nǐ xiǎng shénme shíhou lái dōu méi wèntí."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhāng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhāng?",
+            "tj": "zhāng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "菜单",
+            "又",
+            "饿",
+            "张"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "张 = yassi narsalar uchun hisob so‘zi (zhāng)",
+            "ru": "张 = счётное слово для плоских предметов (zhāng)",
+            "tj": "张 = воҳиди ҳисоб барои ашёи ҳамвор (zhāng)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "他们家还能送外卖？",
+          "pinyin": "Tāmen jiā hái néng sòng wàimài?",
+          "translation": {
+            "uz": "Ular yetkazib berish ham qiladimi?",
+            "ru": "У них ещё и доставка есть?",
+            "tj": "Онҳо хӯрокро расонида ҳам медиҳанд?"
+          },
+          "tokens": {
+            "uz": [
+              "berish",
+              "qiladimi",
+              "Li",
+              "yetkazib",
+              "Jiayue",
+              "ham",
+              "Ular"
+            ],
+            "ru": [
+              "есть",
+              "доставка",
+              "них",
+              "ещё",
+              "Цзяюэ",
+              "и",
+              "Ли",
+              "У"
+            ],
+            "tj": [
+              "Онҳо",
+              "Ҷяюэ",
+              "медиҳанд",
+              "расонида",
+              "Ли",
+              "ҳам",
+              "хӯрокро"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ular",
+              "yetkazib",
+              "berish",
+              "ham",
+              "qiladimi"
+            ],
+            "ru": [
+              "У",
+              "них",
+              "ещё",
+              "и",
+              "доставка",
+              "есть"
+            ],
+            "tj": [
+              "Онҳо",
+              "хӯрокро",
+              "расонида",
+              "ҳам",
+              "медиҳанд"
+            ]
+          },
+          "explanation": {
+            "uz": "他们家还能送外卖？ — Ular yetkazib berish ham qiladimi?",
+            "ru": "他们家还能送外卖？ — У них ещё и доставка есть?",
+            "tj": "他们家还能送外卖？ — Онҳо хӯрокро расонида ҳам медиҳанд?"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ishlatmoq; foydalanmoq' xitoycha qaysi?",
+            "ru": "'использовать' по-китайски?",
+            "tj": "'истифода бурдан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "菜单",
+            "饿",
+            "又",
+            "用"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ishlatmoq; foydalanmoq = 用 (yòng)",
+            "ru": "использовать = 用 (yòng)",
+            "tj": "истифода бурдан = 用 (yòng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "尝 talaffuzini tanlang:",
+            "ru": "Выберите произношение 尝:",
+            "tj": "Талаффузи 尝-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "càidān",
+            "cháng",
+            "yòu",
+            "è"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "尝 — cháng",
+            "ru": "尝 — cháng",
+            "tj": "尝 — cháng"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "客气",
+              {
+                "uz": "muloyimlik qilmoq; tortinmoq",
+                "ru": "церемониться; быть вежливым",
+                "tj": "таоруф кардан; боадаб будан"
+              }
+            ],
+            [
+              "饮料",
+              {
+                "uz": "ichimlik",
+                "ru": "напиток",
+                "tj": "нӯшокӣ"
+              }
+            ],
+            [
+              "好久",
+              {
+                "uz": "anchadan beri; uzoq vaqt",
+                "ru": "давно; долго",
+                "tj": "кайҳо; муддати дароз"
+              }
+            ],
+            [
+              "服务",
+              {
+                "uz": "xizmat ko‘rsatmoq; xizmat",
+                "ru": "обслуживать; обслуживание",
+                "tj": "хизмат расондан; хизмат"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "家月，李文，你们看看菜单，想吃点儿什么？",
+          "pinyin": "Jiāyuè, Lǐ Wén, nǐmen kànkan càidān, xiǎng chī diǎnr shénme?",
+          "options": [
+            "谢谢一雪姐，我都可以，你们点吧。",
+            "家月，李文，你们看看菜单，想吃点儿什么？",
+            "那多点点儿，别客气。你们喝什么饮料？",
+            "飞了这么远，现在还真是又饿又渴。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "家月，李文，你们看看菜单，想吃点儿什么？ — Jiayue, Li Wen, menyuga qaranglar, nima yemoqchisizlar?",
+            "ru": "家月，李文，你们看看菜单，想吃点儿什么？ — Цзяюэ, Ли Вэнь, посмотрите меню. Что хотите поесть?",
+            "tj": "家月，李文，你们看看菜单，想吃点儿什么？ — Ҷяюэ, Ли Вэн, менюро бинед, чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 王一雪 avval nima deydi?",
+            "ru": "Что 王一雪 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 王一雪 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "飞了这么远，现在还真是又饿又渴。",
+            "家月，李文，你们看看菜单，想吃点儿什么？",
+            "谢谢一雪姐，我都可以，你们点吧。",
+            "那多点点儿，别客气。你们喝什么饮料？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 家月，李文，你们看看菜单，想吃点儿什么？",
+            "ru": "Правильный ответ: 家月，李文，你们看看菜单，想吃点儿什么？",
+            "tj": "Ҷавоби дуруст: 家月，李文，你们看看菜单，想吃点儿什么？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 王一雪 nima deydi?",
+            "ru": "Что 王一雪 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 王一雪 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "谢谢一雪姐，我都可以，你们点吧。",
+            "家月，李文，你们看看菜单，想吃点儿什么？",
+            "飞了这么远，现在还真是又饿又渴。",
+            "没问题。你们看看还想吃什么。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 没问题。你们看看还想吃什么。",
+            "ru": "Правильный ответ: 没问题。你们看看还想吃什么。",
+            "tj": "Ҷавоби дуруст: 没问题。你们看看还想吃什么。"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "王一雪",
+              "zh": "家月，李文，你们看看菜单，想吃点儿什么？",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "谢谢一雪姐，我都可以，你们点吧。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "飞了这么远，现在还真是又饿又渴。",
+              "blank": false
+            },
+            {
+              "speaker": "王一雪",
+              "zh": "那多点点儿，别客气。你们喝什么饮料？",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "好久没喝中国茶，也好久没吃饺子了。我想喝绿茶、吃饺子，可以吗？",
+              "blank": false
+            },
+            {
+              "speaker": "王一雪",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "没问题。你们看看还想吃什么。",
+            "家月，李文，你们看看菜单，想吃点儿什么？",
+            "飞了这么远，现在还真是又饿又渴。",
+            "谢谢一雪姐，我都可以，你们点吧。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 没问题。你们看看还想吃什么。",
+            "ru": "Правильный ответ: 没问题。你们看看还想吃什么。",
+            "tj": "Ҷавоби дуруст: 没问题。你们看看还想吃什么。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____月，李文，你们看看菜单，想吃点儿什么？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "万",
+            "七",
+            "家",
+            "一"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 家 — 家月，李文，你们看看菜单，想吃点儿什么？ (Jiayue, Li Wen, menyuga qaranglar, nima yemoqchisizlar?)",
+            "ru": "Верно: 家 — 家月，李文，你们看看菜单，想吃点儿什么？ (Цзяюэ, Ли Вэнь, посмотрите меню. Что хотите поесть?)",
+            "tj": "Дуруст: 家 — 家月，李文，你们看看菜单，想吃点儿什么？ (Ҷяюэ, Ли Вэн, менюро бинед, чӣ хӯрдан мехоҳед?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "他们家还能送外卖？",
+          "pinyin": "Tāmen jiā hái néng sòng wàimài?",
+          "translation": {
+            "uz": "Ular yetkazib berish ham qiladimi?",
+            "ru": "У них ещё и доставка есть?",
+            "tj": "Онҳо хӯрокро расонида ҳам медиҳанд?"
+          }
+        }
+      ]
+    }
+  ]
+}

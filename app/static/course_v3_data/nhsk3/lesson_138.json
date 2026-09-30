@@ -1,0 +1,739 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 138,
+  "source_lesson": 18,
+  "part_no": 2,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "我学会了包饺子",
+  "subtitle": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "联欢",
+      "pinyin": "liánhuān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "birgalikda bayram qilmoq; ko‘ngilochar tadbir",
+        "ru": "совместно праздновать; праздничный вечер",
+        "tj": "якҷо ҷашн гирифтан; базми идона"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "大概",
+      "pinyin": "dàgài",
+      "pos": "adv./adj.",
+      "meaning": {
+        "uz": "taxminan; chamasi",
+        "ru": "примерно; вероятно",
+        "tj": "тақрибан; эҳтимол"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "阿姨",
+      "pinyin": "āyí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xola; ayol kishiga hurmat bilan murojaat",
+        "ru": "тётя; вежливое обращение к женщине",
+        "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "叔叔",
+      "pinyin": "shūshu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+        "ru": "дядя; вежливое обращение к мужчине",
+        "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "“刚才” va “刚刚” — “hozirgina”",
+        "ru": "“刚才” и “刚刚” — «только что»",
+        "tj": "“刚才” ва “刚刚” — «ҳозиргина»"
+      },
+      "title_zh": "“刚才”和“刚刚”",
+      "rule": {
+        "uz": "Ikkalasi ham yaqinda sodir bo‘lgan ishni bildiradi. “刚才” vaqt oti bo‘lib, “hozirgina” degan aniq vaqtni ko‘rsatadi; “刚刚” esa ravish sifatida fe’l oldidan kelib ish endigina sodir bo‘lganini ta’kidlaydi.",
+        "ru": "Оба слова указывают на недавнее событие. “刚才” — временное существительное «только что», а “刚刚” — наречие перед глаголом, подчёркивающее, что действие произошло совсем недавно.",
+        "tj": "Ҳар ду калима амали ба наздикӣ рухдодаро нишон медиҳанд. “刚才” исми вақт ба маънои «ҳозиргина» аст, “刚刚” бошад зарф шуда пеш аз феъл меояд ва нав рӯй додани амалро таъкид мекунад."
+      },
+      "examples": [
+        {
+          "zh": "刚才的电话是我妈妈打来的。",
+          "pinyin": "Gāngcái de diànhuà shì wǒ māma dǎ lái de.",
+          "translation": {
+            "uz": "Hozirgina bo‘lgan qo‘ng‘iroqni onam qilgan edi.",
+            "ru": "Только что звонила моя мама.",
+            "tj": "Занги ҳозиргина аз модарам буд."
+          }
+        },
+        {
+          "zh": "我刚才看过一遍，不想再看了。",
+          "pinyin": "Wǒ gāngcái kàn guo yí biàn, bù xiǎng zài kàn le.",
+          "translation": {
+            "uz": "Men hozirgina bir marta ko‘rib chiqdim, yana ko‘rgim kelmaydi.",
+            "ru": "Я только что уже посмотрел один раз и не хочу смотреть снова.",
+            "tj": "Ман ҳозиргина як бор дидам, боз дидан намехоҳам."
+          }
+        },
+        {
+          "zh": "我刚刚看视频学会了包饺子。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi.",
+          "translation": {
+            "uz": "Men hozirgina video ko‘rib jiaozi tugishni o‘rgandim.",
+            "ru": "Я только что научился лепить цзяоцзы по видео.",
+            "tj": "Ман ҳозиргина видео дида ҷяози печониданро омӯхтам."
+          }
+        },
+        {
+          "zh": "他刚刚来北京两个月。",
+          "pinyin": "Tā gānggāng lái Běijīng liǎng ge yuè.",
+          "translation": {
+            "uz": "U Pekinga kelganiga endigina ikki oy bo‘ldi.",
+            "ru": "Он живёт в Пекине всего два месяца.",
+            "tj": "Ҳамагӣ ду моҳ шуд, ки ӯ ба Пекин омадааст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+        "ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+        "tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?",
+          "text": {
+            "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+            "ru": "Как вы отмечаете праздник?",
+            "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "text": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "大概七八天。",
+          "pinyin": "Dàgài qī bā tiān.",
+          "text": {
+            "uz": "Taxminan yetti-sakkiz kun.",
+            "ru": "Примерно семь-восемь дней.",
+            "tj": "Тақрибан ҳафт-ҳашт рӯз."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+        "ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+        "tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "李叔叔",
+          "zh": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!",
+          "text": {
+            "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+            "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+            "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢您和叔叔请我来家里做客。",
+          "pinyin": "Xièxie nín hé shūshu qǐng wǒ lái jiālǐ zuòkè.",
+          "text": {
+            "uz": "Meni uyingizga mehmonga taklif qilganingiz uchun sizga va amakiga rahmat.",
+            "ru": "Спасибо вам и дяде, что пригласили меня в гости.",
+            "tj": "Раҳмат ба шумо ва амак, ки маро ба хона меҳмон даъват кардед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+        "ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+        "tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?",
+          "text": {
+            "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+            "ru": "Это было года три-четыре назад, да?",
+            "tj": "Ин се-чор сол пеш буд, дуруст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "联欢",
+            "pinyin": "liánhuān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "birgalikda bayram qilmoq; ko‘ngilochar tadbir",
+              "ru": "совместно праздновать; праздничный вечер",
+              "tj": "якҷо ҷашн гирифтан; базми идона"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "联欢 talaffuzini tanlang:",
+            "ru": "Выберите произношение 联欢:",
+            "tj": "Талаффузи 联欢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zěnyàng",
+            "guòjié",
+            "liánhuān",
+            "jié"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "联欢 — liánhuān",
+            "ru": "联欢 — liánhuān",
+            "tj": "联欢 — liánhuān"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "大概",
+            "pinyin": "dàgài",
+            "pos": "adv./adj.",
+            "meaning": {
+              "uz": "taxminan; chamasi",
+              "ru": "примерно; вероятно",
+              "tj": "тақрибан; эҳтимол"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大概",
+          "pinyin": "dàgài",
+          "translation": {
+            "uz": "taxminan; chamasi",
+            "ru": "примерно; вероятно",
+            "tj": "тақрибан; эҳтимол"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'taxminan; chamasi' xitoycha qaysi?",
+            "ru": "'примерно; вероятно' по-китайски?",
+            "tj": "'тақрибан; эҳтимол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "怎样",
+            "节",
+            "大概",
+            "过节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "taxminan; chamasi = 大概 (dàgài)",
+            "ru": "примерно; вероятно = 大概 (dàgài)",
+            "tj": "тақрибан; эҳтимол = 大概 (dàgài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "阿姨",
+            "pinyin": "āyí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xola; ayol kishiga hurmat bilan murojaat",
+              "ru": "тётя; вежливое обращение к женщине",
+              "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "阿姨",
+          "pinyin": "āyí",
+          "options": [
+            "过节",
+            "怎样",
+            "阿姨",
+            "节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "阿姨 — xola; ayol kishiga hurmat bilan murojaat (āyí)",
+            "ru": "阿姨 — тётя; вежливое обращение к женщине (āyí)",
+            "tj": "阿姨 — хола; муроҷиати эҳтиромӣ ба зан (āyí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "叔叔",
+            "pinyin": "shūshu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+              "ru": "дядя; вежливое обращение к мужчине",
+              "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "叔叔 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 叔叔:",
+            "tj": "Маънои калимаи 叔叔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+              "ru": "дядя; вежливое обращение к мужчине",
+              "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "叔叔 = amaki; erkak kishiga hurmat bilan murojaat (shūshu)",
+            "ru": "叔叔 = дядя; вежливое обращение к мужчине (shūshu)",
+            "tj": "叔叔 = амак; муроҷиати эҳтиромӣ ба мард (shūshu)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liánhuān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liánhuān?",
+            "tj": "liánhuān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "节",
+            "过节",
+            "怎样",
+            "联欢"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "联欢 = birgalikda bayram qilmoq; ko‘ngilochar tadbir (liánhuān)",
+            "ru": "联欢 = совместно праздновать; праздничный вечер (liánhuān)",
+            "tj": "联欢 = якҷо ҷашн гирифтан; базми идона (liánhuān)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "联欢",
+              {
+                "uz": "birgalikda bayram qilmoq; ko‘ngilochar tadbir",
+                "ru": "совместно праздновать; праздничный вечер",
+                "tj": "якҷо ҷашн гирифтан; базми идона"
+              }
+            ],
+            [
+              "大概",
+              {
+                "uz": "taxminan; chamasi",
+                "ru": "примерно; вероятно",
+                "tj": "тақрибан; эҳтимол"
+              }
+            ],
+            [
+              "阿姨",
+              {
+                "uz": "xola; ayol kishiga hurmat bilan murojaat",
+                "ru": "тётя; вежливое обращение к женщине",
+                "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+              }
+            ],
+            [
+              "叔叔",
+              {
+                "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+                "ru": "дядя; вежливое обращение к мужчине",
+                "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "“刚才” va “刚刚” — “hozirgina”",
+              "ru": "“刚才” и “刚刚” — «только что»",
+              "tj": "“刚才” ва “刚刚” — «ҳозиргина»"
+            },
+            "title_zh": "“刚才”和“刚刚”",
+            "rule": {
+              "uz": "Ikkalasi ham yaqinda sodir bo‘lgan ishni bildiradi. “刚才” vaqt oti bo‘lib, “hozirgina” degan aniq vaqtni ko‘rsatadi; “刚刚” esa ravish sifatida fe’l oldidan kelib ish endigina sodir bo‘lganini ta’kidlaydi.",
+              "ru": "Оба слова указывают на недавнее событие. “刚才” — временное существительное «только что», а “刚刚” — наречие перед глаголом, подчёркивающее, что действие произошло совсем недавно.",
+              "tj": "Ҳар ду калима амали ба наздикӣ рухдодаро нишон медиҳанд. “刚才” исми вақт ба маънои «ҳозиргина» аст, “刚刚” бошад зарф шуда пеш аз феъл меояд ва нав рӯй додани амалро таъкид мекунад."
+            },
+            "examples": [
+              {
+                "zh": "刚才的电话是我妈妈打来的。",
+                "pinyin": "Gāngcái de diànhuà shì wǒ māma dǎ lái de.",
+                "translation": {
+                  "uz": "Hozirgina bo‘lgan qo‘ng‘iroqni onam qilgan edi.",
+                  "ru": "Только что звонила моя мама.",
+                  "tj": "Занги ҳозиргина аз модарам буд."
+                }
+              },
+              {
+                "zh": "我刚才看过一遍，不想再看了。",
+                "pinyin": "Wǒ gāngcái kàn guo yí biàn, bù xiǎng zài kàn le.",
+                "translation": {
+                  "uz": "Men hozirgina bir marta ko‘rib chiqdim, yana ko‘rgim kelmaydi.",
+                  "ru": "Я только что уже посмотрел один раз и не хочу смотреть снова.",
+                  "tj": "Ман ҳозиргина як бор дидам, боз дидан намехоҳам."
+                }
+              },
+              {
+                "zh": "我刚刚看视频学会了包饺子。",
+                "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi.",
+                "translation": {
+                  "uz": "Men hozirgina video ko‘rib jiaozi tugishni o‘rgandim.",
+                  "ru": "Я только что научился лепить цзяоцзы по видео.",
+                  "tj": "Ман ҳозиргина видео дида ҷяози печониданро омӯхтам."
+                }
+              },
+              {
+                "zh": "他刚刚来北京两个月。",
+                "pinyin": "Tā gānggāng lái Běijīng liǎng ge yuè.",
+                "translation": {
+                  "uz": "U Pekinga kelganiga endigina ikki oy bo‘ldi.",
+                  "ru": "Он живёт в Пекине всего два месяца.",
+                  "tj": "Ҳамагӣ ду моҳ шуд, ки ӯ ба Пекин омадааст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U Pekinga kelganiga endigina ikki oy bo‘ldi.» — xitoychada qaysi biri?",
+            "ru": "«Он живёт в Пекине всего два месяца.» — какое предложение по-китайски?",
+            "tj": "«Ҳамагӣ ду моҳ шуд, ки ӯ ба Пекин омадааст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我刚才看过一遍，不想再看了。",
+            "刚才的电话是我妈妈打来的。",
+            "我刚刚看视频学会了包饺子。",
+            "他刚刚来北京两个月。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "他刚刚来北京两个月。 — Tā gānggāng lái Běijīng liǎng ge yuè.",
+            "ru": "他刚刚来北京两个月。 — Tā gānggāng lái Běijīng liǎng ge yuè.",
+            "tj": "他刚刚来北京两个月。 — Tā gānggāng lái Běijīng liǎng ge yuè."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "阿姨 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 阿姨:",
+            "tj": "Маънои калимаи 阿姨-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "xola; ayol kishiga hurmat bilan murojaat",
+              "ru": "тётя; вежливое обращение к женщине",
+              "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "阿姨 = xola; ayol kishiga hurmat bilan murojaat (āyí)",
+            "ru": "阿姨 = тётя; вежливое обращение к женщине (āyí)",
+            "tj": "阿姨 = хола; муроҷиати эҳтиромӣ ба зан (āyí)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "叔叔",
+          "pinyin": "shūshu",
+          "options": [
+            "节",
+            "叔叔",
+            "过节",
+            "怎样"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "叔叔 — amaki; erkak kishiga hurmat bilan murojaat (shūshu)",
+            "ru": "叔叔 — дядя; вежливое обращение к мужчине (shūshu)",
+            "tj": "叔叔 — амак; муроҷиати эҳтиромӣ ба мард (shūshu)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大概",
+          "pinyin": "dàgài",
+          "translation": {
+            "uz": "taxminan; chamasi",
+            "ru": "примерно; вероятно",
+            "tj": "тақрибан; эҳтимол"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "过节 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 过节:",
+            "tj": "Маънои калимаи 过节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            },
+            {
+              "uz": "bayram kuni; bayram",
+              "ru": "праздник; праздничный день",
+              "tj": "ид; рӯзи ид"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "过节 = bayramni nishonlamoq (guòjié)",
+            "ru": "过节 = праздновать праздник (guòjié)",
+            "tj": "过节 = идро ҷашн гирифтан (guòjié)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "过节",
+            "pinyin": "guòjié",
+            "meaning": {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'taxminan; chamasi' xitoycha qaysi?",
+            "ru": "'примерно; вероятно' по-китайски?",
+            "tj": "'тақрибан; эҳтимол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "大概",
+            "节",
+            "怎样",
+            "过节"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "taxminan; chamasi = 大概 (dàgài)",
+            "ru": "примерно; вероятно = 大概 (dàgài)",
+            "tj": "тақрибан; эҳтимол = 大概 (dàgài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "大概",
+            "pinyin": "dàgài",
+            "meaning": {
+              "uz": "taxminan; chamasi",
+              "ru": "примерно; вероятно",
+              "tj": "тақрибан; эҳтимол"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

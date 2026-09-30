@@ -1,0 +1,930 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 43,
+  "source_lesson": 9,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我去买杯奶茶",
+  "subtitle": {
+    "uz": "“没有” bilan ‘...chalik emas’ taqqoslashini ifodalash; “离” bilan makon/vaqt masofasini aytish; vaqt davomiyligi to‘ldiruvchisini ishlatish; kiyim tanlash, ichimlik va yo‘l haqida gaplashish.",
+    "ru": "Сравнивать через “没有” в значении «не такой, как»; выражать пространственную/временную дистанцию с “离”; использовать дополнение длительности; говорить об одежде, напитках и дороге.",
+    "tj": "Бо “没有” муқоисаи «ба дараҷаи ... нест»-ро ифода кардан; бо “离” масофаи макон/вақтро гуфтан; пуркунандаи давомнокии вақтро истифода бурдан; дар бораи либос, нӯшокӣ ва роҳ суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "个子",
+      "pinyin": "gèzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bo‘y",
+        "ru": "рост",
+        "tj": "қад"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "那么",
+      "pinyin": "nàme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "unchalik; shunday",
+        "ru": "так; настолько",
+        "tj": "он қадар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "高",
+      "pinyin": "gāo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "baland; bo‘yi uzun",
+        "ru": "высокий",
+        "tj": "баланд"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Vaqt davomiyligi to‘ldiruvchisi (1)",
+        "ru": "Дополнение длительности (1)",
+        "tj": "Пуркунандаи давомнокӣ (1)"
+      },
+      "title_zh": "时量补语（1）",
+      "rule": {
+        "uz": "Vaqt oralig‘i ifodasi fe’ldan keyin kelib harakat/holat qancha davom etganini ko‘rsatadi: ega+fe’l+davomiylik. Obyekt narsa oti bo‘lsa odatda davomiylikdan keyin, murojaat/olmosh bo‘lsa oldin keladi. Fe’l takrorlanishi mumkin; ajraluvchi fe’lda fe’l morfemasi takrorlanadi. V dan keyin 了 va gap oxirida yana 了 bo‘lsa harakat hali davom etmoqda.",
+        "ru": "Выражение периода после глагола показывает длительность действия/состояния: субъект+глагол+длительность. Предметный объект обычно после длительности, обращение/местоимение — перед ней. Глагол можно повторять; у разделяемого глагола повторяется глагольный морф. 了 после глагола и ещё 了 в конце означает продолжающееся действие.",
+        "tj": "Ифодаи муддат пас аз феъл давомнокии амал/ҳолатро нишон медиҳад: мубтадо+феъл+муддат. Объекти ашёӣ одатан пас аз муддат, муроҷиат/ҷонишин пеш аз он меояд. Феълро такрор кардан мумкин; дар феъли ҷудошаванда морфемаи феъл такрор мешавад. 了 баъди феъл ва 了 дар охир давом доштани амалро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "走半个多小时就到了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他们学了两年。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我们休息十分钟。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我看了一个晚上电视。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "李文等了她一个小时。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我找了陈天中二十多分钟。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他们学中文学了两年。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "李文等她等了一个小时。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "安妮游泳游了一个下午。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "陈天中跑步跑了两个小时。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他写了半个小时汉字了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "陈天中跑步跑了两个小时了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Do‘konda Wang Yixue va Liu Ming shimlarni ko‘rmoqda.",
+        "ru": "В магазине Ван Исюэ и Лю Мин смотрят брюки.",
+        "tj": "Дар мағоза Ван Исюэ ва Лю Мин шим мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "儿子的裤子坏了，我们给他买条新的吧。",
+          "pinyin": "Érzi de kùzi huài le, wǒmen gěi tā mǎi tiáo xīn de ba.",
+          "text": {
+            "uz": "O‘g‘limizning shimi buzilibdi, unga yangisini olaylik.",
+            "ru": "Брюки сына испортились, давай купим ему новые.",
+            "tj": "Шими писарамон вайрон шудааст, барояш нав бихарем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好啊。",
+          "pinyin": "Hǎo a.",
+          "text": {
+            "uz": "Mayli.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看这条黑色的怎么样？",
+          "pinyin": "Nǐ kàn zhè tiáo hēisè de zěnmeyàng?",
+          "text": {
+            "uz": "Bu qora shim qanday?",
+            "ru": "Как тебе эти чёрные брюки?",
+            "tj": "Ин шими сиёҳ чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "没有你上次买的那条好看。",
+          "pinyin": "Méiyǒu nǐ shàng cì mǎi de nà tiáo hǎokàn.",
+          "text": {
+            "uz": "O‘tgan safar olganingchalik chiroyli emas.",
+            "ru": "Не такие красивые, как те, что ты купила в прошлый раз.",
+            "tj": "Ба зебоии оне, ки дафъаи гузашта харидӣ, намерасад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "旁边那个男孩儿就穿了这样的裤子，我觉得很好看啊！",
+          "pinyin": "Pángbian nàge nánháir jiù chuānle zhèyàng de kùzi, wǒ juéde hěn hǎokàn a!",
+          "text": {
+            "uz": "Yonimizdagi bola ham shunday shim kiygan, menimcha juda chiroyli!",
+            "ru": "Вон мальчик рядом носит такие брюки, по-моему, выглядят отлично!",
+            "tj": "Писарбачаи паҳлӯ ҳамин хел шим пӯшидааст, ба назарам хеле зебост!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "儿子的个子没有他那么高，穿上就不会太好看。",
+          "pinyin": "Érzi de gèzi méiyǒu tā nàme gāo, chuānshang jiù bú huì tài hǎokàn.",
+          "text": {
+            "uz": "O‘g‘limizning bo‘yi unchalik baland emas, kiysa bunchalik yarashmaydi.",
+            "ru": "Наш сын не такой высокий, как он; на нём они будут смотреться хуже.",
+            "tj": "Қади писарамон ба он қадар баланд нест, пӯшад он қадар зебо намешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好吧，我们再去那边看看。",
+          "pinyin": "Hǎo ba, wǒmen zài qù nàbian kànkan.",
+          "text": {
+            "uz": "Mayli, yana u tomonga borib ko‘raylik.",
+            "ru": "Ладно, давай посмотрим ещё там.",
+            "tj": "Хуб, боз он тараф рафта бинем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do‘kon kirishida Wang Yixue va Liu Ming tashqariga chiqmoqda.",
+        "ru": "У входа в магазин Ван Исюэ и Лю Мин выходят наружу.",
+        "tj": "Дар назди даромадгоҳи мағоза Ван Исюэ ва Лю Мин ба берун мебароянд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "那你等一下，我去买杯奶茶。",
+          "pinyin": "Nà nǐ děng yíxià, wǒ qù mǎi bēi nǎichá.",
+          "text": {
+            "uz": "Unda biroz kut, men bir piyola sutli choy olib kelaman.",
+            "ru": "Тогда подожди, я схожу куплю молочный чай.",
+            "tj": "Пас каме интизор шав, ман рафта як пиёла чойи ширӣ мехарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxona oldida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "ru": "У входа в кофейню Ван Исюэ и Лю Мин разговаривают.",
+        "tj": "Дар назди қаҳвахона Ван Исюэ ва Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们打车回去吧。",
+          "pinyin": "Wǒmen dǎchē huíqù ba.",
+          "text": {
+            "uz": "Uyga taksida qaytaylik.",
+            "ru": "Давай поедем обратно на такси.",
+            "tj": "Биё бо таксӣ ба хона баргардем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "要走多长时间？",
+          "pinyin": "Yào zǒu duō cháng shíjiān?",
+          "text": {
+            "uz": "Qancha vaqt yurish kerak?",
+            "ru": "Сколько времени идти?",
+            "tj": "Чанд вақт роҳ рафтан лозим?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "走半个多小时就到了。",
+          "pinyin": "Zǒu bàn ge duō xiǎoshí jiù dào le.",
+          "text": {
+            "uz": "Yarim soatdan sal ko‘proq yursak yetamiz.",
+            "ru": "Чуть больше получаса пешком — и дойдём.",
+            "tj": "Каме бештар аз ним соат роҳ равем, мерасем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。每天上下班都坐车，今天运动运动吧。",
+          "pinyin": "Hǎo de. Měitiān shàngxiàbān dōu zuò chē, jīntiān yùndong yùndong ba.",
+          "text": {
+            "uz": "Xo‘p. Har kuni ishga borib-kelishda mashinada yuraman, bugun sal harakat qilay.",
+            "ru": "Хорошо. Каждый день езжу на работу и обратно, сегодня немного разомнёмся.",
+            "tj": "Хуб. Ҳар рӯз ба кору аз кор бо мошин меравам, имрӯз каме машқ кунем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "个子",
+            "pinyin": "gèzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bo‘y",
+              "ru": "рост",
+              "tj": "қад"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "个子",
+          "pinyin": "gèzi",
+          "translation": {
+            "uz": "bo‘y",
+            "ru": "рост",
+            "tj": "қад"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "个子 talaffuzini tanlang:",
+            "ru": "Выберите произношение 个子:",
+            "tj": "Талаффузи 个子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huài",
+            "nánháir",
+            "pángbian",
+            "gèzi"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "个子 — gèzi",
+            "ru": "个子 — gèzi",
+            "tj": "个子 — gèzi"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "那么",
+            "pinyin": "nàme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "unchalik; shunday",
+              "ru": "так; настолько",
+              "tj": "он қадар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'unchalik; shunday' xitoycha qaysi?",
+            "ru": "'так; настолько' по-китайски?",
+            "tj": "'он қадар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "旁边",
+            "男孩儿",
+            "坏",
+            "那么"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "unchalik; shunday = 那么 (nàme)",
+            "ru": "так; настолько = 那么 (nàme)",
+            "tj": "он қадар = 那么 (nàme)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "高",
+            "pinyin": "gāo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "baland; bo‘yi uzun",
+              "ru": "высокий",
+              "tj": "баланд"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "高",
+          "pinyin": "gāo",
+          "options": [
+            "高",
+            "坏",
+            "旁边",
+            "男孩儿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "高 — baland; bo‘yi uzun (gāo)",
+            "ru": "高 — высокий (gāo)",
+            "tj": "高 — баланд (gāo)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "个子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 个子:",
+            "tj": "Маънои калимаи 个子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            },
+            {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            },
+            {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            },
+            {
+              "uz": "bo‘y",
+              "ru": "рост",
+              "tj": "қад"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "个子 = bo‘y (gèzi)",
+            "ru": "个子 = рост (gèzi)",
+            "tj": "个子 = қад (gèzi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "个子",
+              {
+                "uz": "bo‘y",
+                "ru": "рост",
+                "tj": "қад"
+              }
+            ],
+            [
+              "那么",
+              {
+                "uz": "unchalik; shunday",
+                "ru": "так; настолько",
+                "tj": "он қадар"
+              }
+            ],
+            [
+              "高",
+              {
+                "uz": "baland; bo‘yi uzun",
+                "ru": "высокий",
+                "tj": "баланд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Vaqt davomiyligi to‘ldiruvchisi (1)",
+              "ru": "Дополнение длительности (1)",
+              "tj": "Пуркунандаи давомнокӣ (1)"
+            },
+            "title_zh": "时量补语（1）",
+            "rule": {
+              "uz": "Vaqt oralig‘i ifodasi fe’ldan keyin kelib harakat/holat qancha davom etganini ko‘rsatadi: ega+fe’l+davomiylik. Obyekt narsa oti bo‘lsa odatda davomiylikdan keyin, murojaat/olmosh bo‘lsa oldin keladi. Fe’l takrorlanishi mumkin; ajraluvchi fe’lda fe’l morfemasi takrorlanadi. V dan keyin 了 va gap oxirida yana 了 bo‘lsa harakat hali davom etmoqda.",
+              "ru": "Выражение периода после глагола показывает длительность действия/состояния: субъект+глагол+длительность. Предметный объект обычно после длительности, обращение/местоимение — перед ней. Глагол можно повторять; у разделяемого глагола повторяется глагольный морф. 了 после глагола и ещё 了 в конце означает продолжающееся действие.",
+              "tj": "Ифодаи муддат пас аз феъл давомнокии амал/ҳолатро нишон медиҳад: мубтадо+феъл+муддат. Объекти ашёӣ одатан пас аз муддат, муроҷиат/ҷонишин пеш аз он меояд. Феълро такрор кардан мумкин; дар феъли ҷудошаванда морфемаи феъл такрор мешавад. 了 баъди феъл ва 了 дар охир давом доштани амалро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "走半个多小时就到了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他们学了两年。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我们休息十分钟。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我看了一个晚上电视。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "李文等了她一个小时。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我找了陈天中二十多分钟。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他们学中文学了两年。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "李文等她等了一个小时。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "安妮游泳游了一个下午。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "陈天中跑步跑了两个小时。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他写了半个小时汉字了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "陈天中跑步跑了两个小时了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "多",
+            "就",
+            "了",
+            "个",
+            "旁边",
+            "小时",
+            "到",
+            "走",
+            "坏",
+            "半"
+          ],
+          "answer_tokens": [
+            "走",
+            "半",
+            "个",
+            "多",
+            "小时",
+            "就",
+            "到",
+            "了"
+          ],
+          "explanation": {
+            "uz": "走半个多小时就到了。",
+            "ru": "走半个多小时就到了。",
+            "tj": "走半个多小时就到了。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "李文等她等了一个小时。",
+            "李文等了她一个小时。",
+            "陈天中跑步跑了两个小时了。",
+            "我看了一个晚上电视。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我看了一个晚上电视。 — ",
+            "ru": "我看了一个晚上电视。 — ",
+            "tj": "我看了一个晚上电视。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "个子",
+          "pinyin": "gèzi",
+          "options": [
+            "男孩儿",
+            "坏",
+            "旁边",
+            "个子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "个子 — bo‘y (gèzi)",
+            "ru": "个子 — рост (gèzi)",
+            "tj": "个子 — қад (gèzi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "有",
+            "姐姐",
+            "高",
+            "吗",
+            "妹妹",
+            "旁边",
+            "坏"
+          ],
+          "answer_tokens": [
+            "妹妹",
+            "有",
+            "姐姐",
+            "高",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "妹妹有姐姐高吗？",
+            "ru": "妹妹有姐姐高吗？",
+            "tj": "妹妹有姐姐高吗？"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "那么",
+          "pinyin": "nàme",
+          "options": [
+            "旁边",
+            "坏",
+            "男孩儿",
+            "那么"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那么 — unchalik; shunday (nàme)",
+            "ru": "那么 — так; настолько (nàme)",
+            "tj": "那么 — он қадар (nàme)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "个子",
+          "pinyin": "gèzi",
+          "translation": {
+            "uz": "bo‘y",
+            "ru": "рост",
+            "tj": "қад"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "男孩儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 男孩儿:",
+            "tj": "Маънои калимаи 男孩儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            },
+            {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            },
+            {
+              "uz": "bunday; shunday",
+              "ru": "такой; так",
+              "tj": "чунин; ҳамин тавр"
+            },
+            {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "男孩儿 = o‘g‘il bola (nánháir)",
+            "ru": "男孩儿 = мальчик (nánháir)",
+            "tj": "男孩儿 = писарбача (nánháir)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "男孩儿",
+            "pinyin": "nánháir",
+            "meaning": {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bo‘y' xitoycha qaysi?",
+            "ru": "'рост' по-китайски?",
+            "tj": "'қад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "个子",
+            "男孩儿",
+            "旁边",
+            "坏"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bo‘y = 个子 (gèzi)",
+            "ru": "рост = 个子 (gèzi)",
+            "tj": "қад = 个子 (gèzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "个子",
+            "pinyin": "gèzi",
+            "meaning": {
+              "uz": "bo‘y",
+              "ru": "рост",
+              "tj": "қад"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

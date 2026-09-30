@@ -1,0 +1,600 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 144,
+  "source_lesson": 18,
+  "part_no": 8,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "我学会了包饺子",
+  "subtitle": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "目标",
+      "pinyin": "mùbiāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maqsad",
+        "ru": "цель",
+        "tj": "мақсад"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "发展",
+      "pinyin": "fāzhǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "rivojlanmoq; rivojlantirmoq",
+        "ru": "развиваться; развивать",
+        "tj": "рушд кардан; инкишоф додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "春节",
+      "pinyin": "Chūnjié",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Bahor bayrami (Xitoy Yangi yili)",
+        "ru": "Праздник Весны (Китайский Новый год)",
+        "tj": "Иди Баҳор (Соли нави чинӣ)"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+        "ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+        "tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "第一次请外国朋友来家里过春节，我也很高兴。",
+          "pinyin": "Dì yí cì qǐng wàiguó péngyou lái jiālǐ guò Chūnjié, wǒ yě hěn gāoxìng.",
+          "text": {
+            "uz": "Chet ellik do‘stimni uyga Bahor bayramiga birinchi marta taklif qilyapman, men ham juda xursandman.",
+            "ru": "Я впервые приглашаю иностранного друга домой на Праздник Весны и тоже очень рад.",
+            "tj": "Бори аввал дӯсти хориҷиро ба хона барои Иди Баҳор даъват мекунам, ман ҳам хеле хушҳолам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?",
+          "text": {
+            "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+            "ru": "Как вы отмечаете праздник?",
+            "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "text": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我们家会一边包饺子，一边看春节联欢晚会，一直到十二点以后才睡觉。",
+          "pinyin": "Wǒmen jiā huì yìbiān bāo jiǎozi, yìbiān kàn Chūnjié Liánhuān Wǎnhuì, yìzhí dào shí'èr diǎn yǐhòu cái shuìjiào.",
+          "text": {
+            "uz": "Biz uyda jiaozi tugib turib Bahor bayrami gala-konsertini ko‘ramiz va faqat soat o‘n ikkidan keyin uxlaymiz.",
+            "ru": "У нас дома лепят цзяоцзы и одновременно смотрят праздничный новогодний концерт, а спать ложатся только после полуночи.",
+            "tj": "Мо дар хона ҷяози печонида истода консерти идонаи Баҳорро мебинем ва танҳо баъди соати дувоздаҳ мехобем."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "大概七八天。",
+          "pinyin": "Dàgài qī bā tiān.",
+          "text": {
+            "uz": "Taxminan yetti-sakkiz kun.",
+            "ru": "Примерно семь-восемь дней.",
+            "tj": "Тақрибан ҳафт-ҳашт рӯз."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+        "ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+        "tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "李叔叔",
+          "zh": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!",
+          "text": {
+            "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+            "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+            "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢您和叔叔请我来家里做客。",
+          "pinyin": "Xièxie nín hé shūshu qǐng wǒ lái jiālǐ zuòkè.",
+          "text": {
+            "uz": "Meni uyingizga mehmonga taklif qilganingiz uchun sizga va amakiga rahmat.",
+            "ru": "Спасибо вам и дяде, что пригласили меня в гости.",
+            "tj": "Раҳмат ба шумо ва амак, ки маро ба хона меҳмон даъват кардед."
+          }
+        },
+        {
+          "speaker": "李叔叔",
+          "zh": "桌子上有饮料，还有矿泉水，你想喝什么就自己拿。",
+          "pinyin": "Zhuōzi shàng yǒu yǐnliào, hái yǒu kuàngquánshuǐ, nǐ xiǎng hē shénme jiù zìjǐ ná.",
+          "text": {
+            "uz": "Stolda ichimliklar va mineral suv bor, nimani ichging kelsa o‘zing olaver.",
+            "ru": "На столе напитки и минеральная вода, бери сама что хочешь.",
+            "tj": "Рӯйи миз нӯшокиҳо ва оби маъданӣ ҳаст, ҳар чӣ хоҳӣ худат бигир."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我刚刚看视频学会了包饺子，我跟你们一起包吧。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi, wǒ gēn nǐmen yìqǐ bāo ba.",
+          "text": {
+            "uz": "Men hozirgina videodan jiaozi tugishni o‘rgandim, sizlar bilan birga qilay.",
+            "ru": "Я только что по видео научилась лепить цзяоцзы, давайте я помогу вам.",
+            "tj": "Ман ҳозиргина аз видео ҷяози печониданро омӯхтам, бо шумо якҷо мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+        "ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+        "tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?",
+          "text": {
+            "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+            "ru": "Это было года три-четыре назад, да?",
+            "tj": "Ин се-чор сол пеш буд, дуруст?"
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "是啊，时间过得真快，好像是不久前发生的一样。",
+          "pinyin": "Shì a, shíjiān guò de zhēn kuài, hǎoxiàng shì bùjiǔ qián fāshēng de yíyàng.",
+          "text": {
+            "uz": "Ha, vaqt juda tez o‘tadi, xuddi yaqindagina bo‘lgandek.",
+            "ru": "Да, время летит быстро, кажется, будто это случилось совсем недавно.",
+            "tj": "Ҳа, вақт хеле зуд мегузарад, гӯё ҳамин наздикӣ рӯй дода бошад."
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "他刚离开家时，我很不习惯，只要几天不跟他视频，就很想他。",
+          "pinyin": "Tā gāng líkāi jiā shí, wǒ hěn bù xíguàn, zhǐyào jǐ tiān bù gēn tā shìpín, jiù hěn xiǎng tā.",
+          "text": {
+            "uz": "U endi uyidan ketgan paytda juda ko‘nika olmagandim; bir necha kun video orqali gaplashmasak, darrov sog‘inardim.",
+            "ru": "Когда он только уехал из дома, мне было непривычно: стоило несколько дней не созваниваться по видео, я очень скучала.",
+            "tj": "Вақте ӯ нав аз хона рафт, бароям хеле ғайриодатӣ буд; чанд рӯз видео суҳбат накунем, сахт пазмонаш мешавам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "还有最后一个学期就要毕业了，他很快就会回来了。",
+          "pinyin": "Hái yǒu zuìhòu yí ge xuéqī jiù yào bìyè le, tā hěn kuài jiù huì huílái le.",
+          "text": {
+            "uz": "Faqat oxirgi bir semestr qoldi, keyin bitiradi va tez orada qaytadi.",
+            "ru": "Остался последний семестр до выпуска, скоро он вернётся.",
+            "tj": "Танҳо як семестри охир мондааст, баъд хатм мекунад ва зуд бармегардад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "目标",
+            "pinyin": "mùbiāo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maqsad",
+              "ru": "цель",
+              "tj": "мақсад"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maqsad' xitoycha qaysi?",
+            "ru": "'цель' по-китайски?",
+            "tj": "'мақсад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "目标",
+            "节",
+            "过节",
+            "怎样"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "maqsad = 目标 (mùbiāo)",
+            "ru": "цель = 目标 (mùbiāo)",
+            "tj": "мақсад = 目标 (mùbiāo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "发展",
+            "pinyin": "fāzhǎn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "rivojlanmoq; rivojlantirmoq",
+              "ru": "развиваться; развивать",
+              "tj": "рушд кардан; инкишоф додан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "发展",
+          "pinyin": "fāzhǎn",
+          "options": [
+            "发展",
+            "过节",
+            "怎样",
+            "节"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "发展 — rivojlanmoq; rivojlantirmoq (fāzhǎn)",
+            "ru": "发展 — развиваться; развивать (fāzhǎn)",
+            "tj": "发展 — рушд кардан; инкишоф додан (fāzhǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "春节",
+            "pinyin": "Chūnjié",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Bahor bayrami (Xitoy Yangi yili)",
+              "ru": "Праздник Весны (Китайский Новый год)",
+              "tj": "Иди Баҳор (Соли нави чинӣ)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "春节",
+          "pinyin": "Chūnjié",
+          "translation": {
+            "uz": "Bahor bayrami (Xitoy Yangi yili)",
+            "ru": "Праздник Весны (Китайский Новый год)",
+            "tj": "Иди Баҳор (Соли нави чинӣ)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "春节 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 春节:",
+            "tj": "Маънои калимаи 春节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "Bahor bayrami (Xitoy Yangi yili)",
+              "ru": "Праздник Весны (Китайский Новый год)",
+              "tj": "Иди Баҳор (Соли нави чинӣ)"
+            },
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "春节 = Bahor bayrami (Xitoy Yangi yili) (Chūnjié)",
+            "ru": "春节 = Праздник Весны (Китайский Новый год) (Chūnjié)",
+            "tj": "春节 = Иди Баҳор (Соли нави чинӣ) (Chūnjié)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mùbiāo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mùbiāo?",
+            "tj": "mùbiāo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "节",
+            "怎样",
+            "目标",
+            "过节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "目标 = maqsad (mùbiāo)",
+            "ru": "目标 = цель (mùbiāo)",
+            "tj": "目标 = мақсад (mùbiāo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "目标",
+              {
+                "uz": "maqsad",
+                "ru": "цель",
+                "tj": "мақсад"
+              }
+            ],
+            [
+              "发展",
+              {
+                "uz": "rivojlanmoq; rivojlantirmoq",
+                "ru": "развиваться; развивать",
+                "tj": "рушд кардан; инкишоф додан"
+              }
+            ],
+            [
+              "春节",
+              {
+                "uz": "Bahor bayrami (Xitoy Yangi yili)",
+                "ru": "Праздник Весны (Китайский Новый год)",
+                "tj": "Иди Баҳор (Соли нави чинӣ)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "目标",
+              {
+                "uz": "maqsad",
+                "ru": "цель",
+                "tj": "мақсад"
+              }
+            ],
+            [
+              "发展",
+              {
+                "uz": "rivojlanmoq; rivojlantirmoq",
+                "ru": "развиваться; развивать",
+                "tj": "рушд кардан; инкишоф додан"
+              }
+            ],
+            [
+              "春节",
+              {
+                "uz": "Bahor bayrami (Xitoy Yangi yili)",
+                "ru": "Праздник Весны (Китайский Новый год)",
+                "tj": "Иди Баҳор (Соли нави чинӣ)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "春节",
+          "pinyin": "Chūnjié",
+          "options": [
+            "怎样",
+            "春节",
+            "节",
+            "过节"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "春节 — Bahor bayrami (Xitoy Yangi yili) (Chūnjié)",
+            "ru": "春节 — Праздник Весны (Китайский Новый год) (Chūnjié)",
+            "tj": "春节 — Иди Баҳор (Соли нави чинӣ) (Chūnjié)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "春节",
+          "pinyin": "Chūnjié",
+          "translation": {
+            "uz": "Bahor bayrami (Xitoy Yangi yili)",
+            "ru": "Праздник Весны (Китайский Новый год)",
+            "tj": "Иди Баҳор (Соли нави чинӣ)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "完成 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 完成:",
+            "tj": "Маънои калимаи 完成-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tugatmoq; bajarib bo‘lmoq",
+              "ru": "завершать; выполнять",
+              "tj": "анҷом додан"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "完成 = tugatmoq; bajarib bo‘lmoq (wánchéng)",
+            "ru": "完成 = завершать; выполнять (wánchéng)",
+            "tj": "完成 = анҷом додан (wánchéng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "完成",
+            "pinyin": "wánchéng",
+            "meaning": {
+              "uz": "tugatmoq; bajarib bo‘lmoq",
+              "ru": "завершать; выполнять",
+              "tj": "анҷом додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Bahor bayrami (Xitoy Yangi yili)' xitoycha qaysi?",
+            "ru": "'Праздник Весны (Китайский Новый год)' по-китайски?",
+            "tj": "'Иди Баҳор (Соли нави чинӣ)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "过节",
+            "春节",
+            "怎样",
+            "节"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Bahor bayrami (Xitoy Yangi yili) = 春节 (Chūnjié)",
+            "ru": "Праздник Весны (Китайский Новый год) = 春节 (Chūnjié)",
+            "tj": "Иди Баҳор (Соли нави чинӣ) = 春节 (Chūnjié)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "春节",
+            "pinyin": "Chūnjié",
+            "meaning": {
+              "uz": "Bahor bayrami (Xitoy Yangi yili)",
+              "ru": "Праздник Весны (Китайский Новый год)",
+              "tj": "Иди Баҳор (Соли нави чинӣ)"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,812 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 44,
+  "source_lesson": 6,
+  "part_no": 4,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "高铁上还可以点外卖",
+  "subtitle": {
+    "uz": "Transport turlarining xususiyatlari va safar tajribasi haqida gapirish; “如果……就……” bilan shartli vaziyat va natijani ifodalash; “越来越” bilan o‘zgarish tendensiyasini tasvirlash; Xitoyning zamonaviy transporti — tezyurar poyezd bilan tanishish.",
+    "ru": "Говорить об особенностях транспорта и опыте поездки; выражать условие и результат с “如果……就……” ; описывать тенденцию изменения с “越来越”; познакомиться с китайскими скоростными поездами.",
+    "tj": "Дар бораи хусусиятҳои нақлиёт ва таҷрибаи сафар суҳбат кардан; бо “如果……就……” шарт ва натиҷаро ифода кардан; бо “越来越” тамоюли тағйирро тавсиф кардан; бо қатораи баландсуръати Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "耳机",
+      "pinyin": "ěrjī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "quloqchin",
+        "ru": "наушники",
+        "tj": "гӯшмонак"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "充电宝",
+      "pinyin": "chōngdiànbǎo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "powerbank; tashqi quvvatlagich",
+        "ru": "пауэрбанк; внешний аккумулятор",
+        "tj": "пауэрбанк; батареяи беруна"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "常用",
+      "pinyin": "chángyòng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘p ishlatiladigan",
+        "ru": "часто используемый",
+        "tj": "зуд-зуд истифодашаванда"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "越",
+      "pinyin": "yuè",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "borgan sari; qanchalik",
+        "ru": "всё более; чем",
+        "tj": "ҳар қадар; торафт"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“越来越” — borgan sari o‘zgarish",
+        "ru": "“越来越” — постепенное усиление изменения",
+        "tj": "“越来越” — тағйирёбии торафт зиёд"
+      },
+      "title_zh": "固定短语“越来越”",
+      "rule": {
+        "uz": "“越来越 + sifat/fe’l” vaqt o‘tishi bilan xususiyat yoki holatning borgan sari kuchayib borishini bildiradi.",
+        "ru": "“越来越 + прилагательное/глагол” показывает, что с течением времени признак или состояние постепенно усиливается.",
+        "tj": "“越来越 + сифат/феъл” нишон медиҳад, ки бо гузашти вақт хусусият ё ҳолат торафт бештар мешавад."
+      },
+      "examples": [
+        {
+          "zh": "前面的人越来越多。",
+          "pinyin": "Qiánmian de rén yuèláiyuè duō.",
+          "translation": {
+            "uz": "Oldindagi odamlar borgan sari ko‘paymoqda.",
+            "ru": "Впереди людей становится всё больше.",
+            "tj": "Одамони пеш торафт зиёд мешаванд."
+          }
+        },
+        {
+          "zh": "我越来越喜欢这里的生活了。",
+          "pinyin": "Wǒ yuèláiyuè xǐhuan zhèlǐ de shēnghuó le.",
+          "translation": {
+            "uz": "Bu yerdagi hayot menga borgan sari ko‘proq yoqyapti.",
+            "ru": "Мне всё больше нравится жизнь здесь.",
+            "tj": "Зиндагии ин ҷо ба ман торафт бештар писанд мешавад."
+          }
+        },
+        {
+          "zh": "她越来越高，也越来越漂亮了。",
+          "pinyin": "Tā yuèláiyuè gāo, yě yuèláiyuè piàoliang le.",
+          "translation": {
+            "uz": "U borgan sari bo‘y cho‘zib, yanada chiroyli bo‘lib boryapti.",
+            "ru": "Она становится всё выше и всё красивее.",
+            "tj": "Ӯ торафт қадбаландтар ва зеботар мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，咱们该买去上海的票了。你打算怎么去上海？",
+          "pinyin": "Jiāyuè, zánmen gāi mǎi qù Shànghǎi de piào le. Nǐ dǎsuàn zěnme qù Shànghǎi?",
+          "text": {
+            "uz": "Jiayue, Shanxayga chipta olish vaqti keldi. Shanxayga qanday borishni rejalashtiryapsan?",
+            "ru": "Цзяюэ, нам пора покупать билеты в Шанхай. Как ты планируешь ехать?",
+            "tj": "Ҷяюэ, вақти харидани чипта ба Шанхай расид. Чӣ тавр рафтанӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我还没坐过高铁，咱们坐高铁去，怎么样？",
+          "pinyin": "Wǒ hái méi zuò guo gāotiě, zánmen zuò gāotiě qù, zěnmeyàng?",
+          "text": {
+            "uz": "Men hali tezyurar poyezdda yurmaganman, shunda tezyurar poyezdda boramizmi?",
+            "ru": "Я ещё не ездила на скоростном поезде. Давай поедем на нём?",
+            "tj": "Ман ҳоло бо қатораи баландсуръат нарафтаам, бо он равем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行！怎么买高铁票？",
+          "pinyin": "Xíng! Zěnme mǎi gāotiě piào?",
+          "text": {
+            "uz": "Bo‘ladi! Tezyurar poyezd chiptasini qanday olamiz?",
+            "ru": "Хорошо! Как купить билет на скоростной поезд?",
+            "tj": "Мешавад! Чиптаи қатораи баландсуръатро чӣ тавр мехарем?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "用手机App就能买。给我你的护照，我帮你买。",
+          "pinyin": "Yòng shǒujī App jiù néng mǎi. Gěi wǒ nǐ de hùzhào, wǒ bāng nǐ mǎi.",
+          "text": {
+            "uz": "Telefon ilovasi orqali olsa bo‘ladi. Pasportingni ber, men olib beraman.",
+            "ru": "Можно купить через приложение. Дай паспорт, я помогу купить.",
+            "tj": "Бо барномаи телефон харидан мумкин. Шиносномаатро деҳ, ман кӯмак мекунам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "早就听说过高铁，终于可以坐上了。",
+          "pinyin": "Zǎo jiù tīngshuō guo gāotiě, zhōngyú kěyǐ zuò shàng le.",
+          "text": {
+            "uz": "Tezyurar poyezd haqida anchadan beri eshitganman, nihoyat minib ko‘raman.",
+            "ru": "Я давно слышала о скоростных поездах, наконец-то смогу прокатиться.",
+            "tj": "Дар бораи қатораи баландсуръат кайҳо шунида будам, ниҳоят савор мешавам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "高铁又快又舒服，你一定会喜欢的。",
+          "pinyin": "Gāotiě yòu kuài yòu shūfu, nǐ yídìng huì xǐhuan de.",
+          "text": {
+            "uz": "Tezyurar poyezd ham tez, ham qulay, albatta yoqadi.",
+            "ru": "Скоростной поезд и быстрый, и удобный — тебе точно понравится.",
+            "tj": "Қатораи баландсуръат ҳам тез аст, ҳам роҳат, ҳатман писандат мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mashinada Liu Ming Bai Jiayue va Li Wenni tezyurar poyezd vokzaliga olib bormoqda.",
+        "ru": "В машине Лю Мин везёт Бай Цзяюэ и Ли Вэня на вокзал скоростных поездов.",
+        "tj": "Дар мошин Лю Мин Бай Ҷяюэ ва Ли Вэнро ба истгоҳи қатораи баландсуръат мебарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "过了前面的路口就到高铁站了。",
+          "pinyin": "Guò le qiánmian de lùkǒu jiù dào gāotiězhàn le.",
+          "text": {
+            "uz": "Oldingi chorrahadan o‘tsak, vokzalga yetamiz.",
+            "ru": "После следующего перекрёстка уже будет вокзал.",
+            "tj": "Аз чорроҳаи пеш гузарем, ба истгоҳ мерасем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "好，你们还有一个小时，应该不会迟到的。",
+          "pinyin": "Hǎo, nǐmen hái yǒu yí ge xiǎoshí, yīnggāi bú huì chídào de.",
+          "text": {
+            "uz": "Xo‘p, sizlarda hali bir soat bor, kechikmasangiz kerak.",
+            "ru": "Хорошо, у вас ещё час, опоздать не должны.",
+            "tj": "Хуб, ҳоло як соат доред, набояд дер кунед."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我发现这条路车多，红绿灯也多。",
+          "pinyin": "Wǒ fāxiàn zhè tiáo lù chē duō, hónglǜdēng yě duō.",
+          "text": {
+            "uz": "Payqadim, bu yo‘lda mashina ham ko‘p, svetofor ham ko‘p.",
+            "ru": "Я заметила, на этой дороге много и машин, и светофоров.",
+            "tj": "Пай бурдам, дар ин роҳ ҳам мошин зиёд аст, ҳам чароғҳои роҳнамо."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "是啊，这条路我走过一次，后来再也不走了。",
+          "pinyin": "Shì a, zhè tiáo lù wǒ zǒu guo yí cì, hòulái zài yě bù zǒu le.",
+          "text": {
+            "uz": "Ha, bu yo‘ldan bir marta yurganman, keyin boshqa umuman yurmagandim.",
+            "ru": "Да, я ездил этой дорогой один раз, после этого больше не ездил.",
+            "tj": "Ҳа, як бор аз ин роҳ рафта будам, баъд дигар нарафтам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那您今天为什么走了这条路？",
+          "pinyin": "Nà nín jīntiān wèishénme zǒu le zhè tiáo lù?",
+          "text": {
+            "uz": "Unda bugun nega shu yo‘ldan keldingiz?",
+            "ru": "Тогда почему сегодня вы поехали этой дорогой?",
+            "tj": "Пас имрӯз чаро аз ҳамин роҳ омадед?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "我一急就走错了。如果没走错，二十分钟以前就到了。",
+          "pinyin": "Wǒ yì jí jiù zǒu cuò le. Rúguǒ méi zǒu cuò, èrshí fēnzhōng yǐqián jiù dào le.",
+          "text": {
+            "uz": "Shoshilib, yo‘lni adashtirib yubordim. Adashtirmaganimda, yigirma daqiqa oldin yetib kelardik.",
+            "ru": "Я поторопился и свернул не туда. Если бы не ошибся, приехали бы двадцать минут назад.",
+            "tj": "Шитоб карда роҳро хато кардам. Агар хато намекардам, бист дақиқа пеш мерасидем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Tezyurar poyezd vokzalida Li Wen va Bai Jiayue xavfsizlik tekshiruvi hamda chipta nazorati uchun navbatda turibdi.",
+        "ru": "На вокзале скоростных поездов Ли Вэнь и Бай Цзяюэ стоят в очереди на досмотр и проверку билетов.",
+        "tj": "Дар истгоҳи қатораи баландсуръат Ли Вэн ва Бай Ҷяюэ барои санҷиши амният ва чипта дар навбатанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "前面的人越来越多。",
+          "pinyin": "Qiánmian de rén yuèláiyuè duō.",
+          "text": {
+            "uz": "Oldindagi odamlar borgan sari ko‘payyapti.",
+            "ru": "Впереди людей становится всё больше.",
+            "tj": "Одамони пеш торафт зиёд мешаванд."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "对，马上就进高铁站了。咱们一起走，别分开。",
+          "pinyin": "Duì, mǎshàng jiù jìn gāotiězhàn le. Zánmen yìqǐ zǒu, bié fēnkāi.",
+          "text": {
+            "uz": "Ha, hozir vokzal ichiga kiramiz. Birga yuraylik, ajralib ketmaylik.",
+            "ru": "Да, скоро войдём на вокзал. Идём вместе, не разделяйся.",
+            "tj": "Ҳа, ҳозир ба истгоҳ медароем. Якҷо равем, ҷудо нашавем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "耳机",
+            "pinyin": "ěrjī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "quloqchin",
+              "ru": "наушники",
+              "tj": "гӯшмонак"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'quloqchin' xitoycha qaysi?",
+            "ru": "'наушники' по-китайски?",
+            "tj": "'гӯшмонак' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打算",
+            "高铁",
+            "该",
+            "耳机"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "quloqchin = 耳机 (ěrjī)",
+            "ru": "наушники = 耳机 (ěrjī)",
+            "tj": "гӯшмонак = 耳机 (ěrjī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "充电宝",
+            "pinyin": "chōngdiànbǎo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "powerbank; tashqi quvvatlagich",
+              "ru": "пауэрбанк; внешний аккумулятор",
+              "tj": "пауэрбанк; батареяи беруна"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "充电宝",
+          "pinyin": "chōngdiànbǎo",
+          "options": [
+            "该",
+            "高铁",
+            "充电宝",
+            "打算"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "充电宝 — powerbank; tashqi quvvatlagich (chōngdiànbǎo)",
+            "ru": "充电宝 — пауэрбанк; внешний аккумулятор (chōngdiànbǎo)",
+            "tj": "充电宝 — пауэрбанк; батареяи беруна (chōngdiànbǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "常用",
+            "pinyin": "chángyòng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ko‘p ishlatiladigan",
+              "ru": "часто используемый",
+              "tj": "зуд-зуд истифодашаванда"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "常用 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 常用:",
+            "tj": "Маънои калимаи 常用-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            },
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            },
+            {
+              "uz": "ko‘p ishlatiladigan",
+              "ru": "часто используемый",
+              "tj": "зуд-зуд истифодашаванда"
+            },
+            {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "常用 = ko‘p ishlatiladigan (chángyòng)",
+            "ru": "常用 = часто используемый (chángyòng)",
+            "tj": "常用 = зуд-зуд истифодашаванда (chángyòng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "越",
+            "pinyin": "yuè",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "borgan sari; qanchalik",
+              "ru": "всё более; чем",
+              "tj": "ҳар қадар; торафт"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "越",
+          "pinyin": "yuè",
+          "translation": {
+            "uz": "borgan sari; qanchalik",
+            "ru": "всё более; чем",
+            "tj": "ҳар қадар; торафт"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yuè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yuè?",
+            "tj": "yuè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "高铁",
+            "越",
+            "该",
+            "打算"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "越 = borgan sari; qanchalik (yuè)",
+            "ru": "越 = всё более; чем (yuè)",
+            "tj": "越 = ҳар қадар; торафт (yuè)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "耳机 talaffuzini tanlang:",
+            "ru": "Выберите произношение 耳机:",
+            "tj": "Талаффузи 耳机-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "ěrjī",
+            "gāotiě",
+            "dǎsuàn",
+            "gāi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "耳机 — ěrjī",
+            "ru": "耳机 — ěrjī",
+            "tj": "耳机 — ěrjī"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "耳机",
+              {
+                "uz": "quloqchin",
+                "ru": "наушники",
+                "tj": "гӯшмонак"
+              }
+            ],
+            [
+              "充电宝",
+              {
+                "uz": "powerbank; tashqi quvvatlagich",
+                "ru": "пауэрбанк; внешний аккумулятор",
+                "tj": "пауэрбанк; батареяи беруна"
+              }
+            ],
+            [
+              "常用",
+              {
+                "uz": "ko‘p ishlatiladigan",
+                "ru": "часто используемый",
+                "tj": "зуд-зуд истифодашаванда"
+              }
+            ],
+            [
+              "越",
+              {
+                "uz": "borgan sari; qanchalik",
+                "ru": "всё более; чем",
+                "tj": "ҳар қадар; торафт"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“越来越” — borgan sari o‘zgarish",
+              "ru": "“越来越” — постепенное усиление изменения",
+              "tj": "“越来越” — тағйирёбии торафт зиёд"
+            },
+            "title_zh": "固定短语“越来越”",
+            "rule": {
+              "uz": "“越来越 + sifat/fe’l” vaqt o‘tishi bilan xususiyat yoki holatning borgan sari kuchayib borishini bildiradi.",
+              "ru": "“越来越 + прилагательное/глагол” показывает, что с течением времени признак или состояние постепенно усиливается.",
+              "tj": "“越来越 + сифат/феъл” нишон медиҳад, ки бо гузашти вақт хусусият ё ҳолат торафт бештар мешавад."
+            },
+            "examples": [
+              {
+                "zh": "前面的人越来越多。",
+                "pinyin": "Qiánmian de rén yuèláiyuè duō.",
+                "translation": {
+                  "uz": "Oldindagi odamlar borgan sari ko‘paymoqda.",
+                  "ru": "Впереди людей становится всё больше.",
+                  "tj": "Одамони пеш торафт зиёд мешаванд."
+                }
+              },
+              {
+                "zh": "我越来越喜欢这里的生活了。",
+                "pinyin": "Wǒ yuèláiyuè xǐhuan zhèlǐ de shēnghuó le.",
+                "translation": {
+                  "uz": "Bu yerdagi hayot menga borgan sari ko‘proq yoqyapti.",
+                  "ru": "Мне всё больше нравится жизнь здесь.",
+                  "tj": "Зиндагии ин ҷо ба ман торафт бештар писанд мешавад."
+                }
+              },
+              {
+                "zh": "她越来越高，也越来越漂亮了。",
+                "pinyin": "Tā yuèláiyuè gāo, yě yuèláiyuè piàoliang le.",
+                "translation": {
+                  "uz": "U borgan sari bo‘y cho‘zib, yanada chiroyli bo‘lib boryapti.",
+                  "ru": "Она становится всё выше и всё красивее.",
+                  "tj": "Ӯ торафт қадбаландтар ва зеботар мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Oldindagi odamlar borgan sari ko‘paymoqda.",
+            "ru": "Впереди людей становится всё больше.",
+            "tj": "Одамони пеш торафт зиёд мешаванд."
+          },
+          "tokens": [
+            "打算",
+            "前面",
+            "越",
+            "该",
+            "越",
+            "人",
+            "的",
+            "多",
+            "来"
+          ],
+          "answer_tokens": [
+            "前面",
+            "的",
+            "人",
+            "越",
+            "来",
+            "越",
+            "多"
+          ],
+          "explanation": {
+            "uz": "前面的人越来越多。 — Qiánmian de rén yuèláiyuè duō.",
+            "ru": "前面的人越来越多。 — Qiánmian de rén yuèláiyuè duō.",
+            "tj": "前面的人越来越多。 — Qiánmian de rén yuèláiyuè duō."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu yerdagi hayot menga borgan sari ko‘proq yoqyapti.» — xitoychada qaysi biri?",
+            "ru": "«Мне всё больше нравится жизнь здесь.» — какое предложение по-китайски?",
+            "tj": "«Зиндагии ин ҷо ба ман торафт бештар писанд мешавад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我越来越喜欢这里的生活了。",
+            "她越来越高，也越来越漂亮了。",
+            "前面的人越来越多。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我越来越喜欢这里的生活了。 — Wǒ yuèláiyuè xǐhuan zhèlǐ de shēnghuó le.",
+            "ru": "我越来越喜欢这里的生活了。 — Wǒ yuèláiyuè xǐhuan zhèlǐ de shēnghuó le.",
+            "tj": "我越来越喜欢这里的生活了。 — Wǒ yuèláiyuè xǐhuan zhèlǐ de shēnghuó le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "耳机",
+              {
+                "uz": "quloqchin",
+                "ru": "наушники",
+                "tj": "гӯшмонак"
+              }
+            ],
+            [
+              "充电宝",
+              {
+                "uz": "powerbank; tashqi quvvatlagich",
+                "ru": "пауэрбанк; внешний аккумулятор",
+                "tj": "пауэрбанк; батареяи беруна"
+              }
+            ],
+            [
+              "常用",
+              {
+                "uz": "ko‘p ishlatiladigan",
+                "ru": "часто используемый",
+                "tj": "зуд-зуд истифодашаванда"
+              }
+            ],
+            [
+              "越",
+              {
+                "uz": "borgan sari; qanchalik",
+                "ru": "всё более; чем",
+                "tj": "ҳар қадар; торафт"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "越",
+          "pinyin": "yuè",
+          "translation": {
+            "uz": "borgan sari; qanchalik",
+            "ru": "всё более; чем",
+            "tj": "ҳар қадар; торафт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "以前 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 以前:",
+            "tj": "Маънои калимаи 以前-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            },
+            {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            },
+            {
+              "uz": "oldin; ilgari",
+              "ru": "раньше; до",
+              "tj": "пеш; қаблан"
+            },
+            {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "以前 = oldin; ilgari (yǐqián)",
+            "ru": "以前 = раньше; до (yǐqián)",
+            "tj": "以前 = пеш; қаблан (yǐqián)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "以前",
+            "pinyin": "yǐqián",
+            "meaning": {
+              "uz": "oldin; ilgari",
+              "ru": "раньше; до",
+              "tj": "пеш; қаблан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'borgan sari; qanchalik' xitoycha qaysi?",
+            "ru": "'всё более; чем' по-китайски?",
+            "tj": "'ҳар қадар; торафт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "越",
+            "高铁",
+            "打算",
+            "该"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "borgan sari; qanchalik = 越 (yuè)",
+            "ru": "всё более; чем = 越 (yuè)",
+            "tj": "ҳар қадар; торафт = 越 (yuè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "越",
+            "pinyin": "yuè",
+            "meaning": {
+              "uz": "borgan sari; qanchalik",
+              "ru": "всё более; чем",
+              "tj": "ҳар қадар; торафт"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

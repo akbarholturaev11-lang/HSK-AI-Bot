@@ -1,0 +1,751 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 9,
+  "source_lesson": 2,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "还是打车去北大吧",
+  "subtitle": {
+    "uz": "“还是……吧” orqali afzal variantni tavsiya qilish; “多” bilan taxminiy sonni ifodalash; fe’l/fe’lli birikma va ega-kesim birikmasini aniqlovchi sifatida ishlatish; transport va kampus haqida gaplashish.",
+    "ru": "Советовать предпочтительный вариант с “还是……吧”; выражать приблизительные числа с “多”; использовать глаголы, глагольные и субъектно-предикативные группы как определения; говорить о транспорте и кампусе.",
+    "tj": "Бо “还是……吧” варианти афзалро тавсия кардан; бо “多” шумораи тахминиро ифода кардан; феъл ва ибораҳои феълӣ/мубтадо-хабарро ҳамчун муайянкунанда истифода бурдан; дар бораи нақлиёт ва кампус суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "教室",
+      "pinyin": "jiàoshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sinfxona",
+        "ru": "аудитория; класс",
+        "tj": "синфхона"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "票",
+      "pinyin": "piào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chipta",
+        "ru": "билет",
+        "tj": "чипта"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "别",
+      "pinyin": "bié",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "qilmang; yaxshisi qilma",
+        "ru": "не; лучше не",
+        "tj": "накун; беҳтараш не"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "过来",
+      "pinyin": "guòlai",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bu tomonga kelmoq",
+        "ru": "подойти; прийти сюда",
+        "tj": "ба ин тараф омадан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona resepsiyasida Bai Jiayue va Annie xodimdan ma’lumot so‘ramoqda.",
+        "ru": "На стойке гостиницы Бай Цзяюэ и Энни спрашивают сотрудника.",
+        "tj": "Дар қабули меҳмонхона Бай Ҷяюэ ва Энни аз корманд маълумот мепурсанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Hotel staff",
+          "zh": "有，但车站有点儿远。",
+          "pinyin": "Yǒu, dàn chēzhàn yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Bor, lekin bekat biroz uzoq.",
+            "ru": "Есть, но остановка немного далеко.",
+            "tj": "Ҳаст, аммо истгоҳ каме дур аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这儿好打车吗？",
+          "pinyin": "Zhèr hǎo dǎchē ma?",
+          "text": {
+            "uz": "Bu yerda taksi tutish osonmi?",
+            "ru": "Здесь легко поймать такси?",
+            "tj": "Ин ҷо таксӣ гирифтан осон аст?"
+          }
+        },
+        {
+          "speaker": "Hotel staff",
+          "zh": "好打车。",
+          "pinyin": "Hǎo dǎchē.",
+          "text": {
+            "uz": "Taksi tutish oson.",
+            "ru": "Легко.",
+            "tj": "Осон аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好，没问题。",
+          "pinyin": "Hǎo, méi wèntí.",
+          "text": {
+            "uz": "Xo‘p, muammo yo‘q.",
+            "ru": "Хорошо, без проблем.",
+            "tj": "Хуб, мушкиле нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universitetida Bai Jiayue va Annie kampusni tomosha qilmoqda.",
+        "ru": "В Пекинском университете Бай Цзяюэ и Энни осматривают кампус.",
+        "tj": "Дар Донишгоҳи Пекин Бай Ҷяюэ ва Энни кампусро тамошо мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "学校里人真多啊！",
+          "pinyin": "Xuéxiào lǐ rén zhēn duō a!",
+          "text": {
+            "uz": "Universitetda odam juda ko‘p ekan!",
+            "ru": "Как много людей в университете!",
+            "tj": "Дар донишгоҳ одам хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你是怎么知道的？",
+          "pinyin": "Nǐ shì zěnme zhīdào de?",
+          "text": {
+            "uz": "Buni qayerdan bilding?",
+            "ru": "Как ты это узнала?",
+            "tj": "Инро чӣ тавр фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我也想来这儿学习。",
+          "pinyin": "Wǒ yě xiǎng lái zhèr xuéxí.",
+          "text": {
+            "uz": "Men ham bu yerga o‘qishga kelishni xohlayman.",
+            "ru": "Я тоже хочу приехать сюда учиться.",
+            "tj": "Ман ҳам мехоҳам барои таҳсил ба ин ҷо биёям."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "那边就有一间教室，我们去看一下吧。",
+          "pinyin": "Nàbian jiù yǒu yì jiān jiàoshì, wǒmen qù kàn yíxià ba.",
+          "text": {
+            "uz": "Ana u tomonda bir sinfxona bor, borib ko‘raylik.",
+            "ru": "Вон там как раз есть аудитория, давай посмотрим.",
+            "tj": "Он тараф як синфхона ҳаст, биё рафта бинем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universiteti kampusida Bai Jiayue va Annie kinoteatrni ko‘rdi.",
+        "ru": "На кампусе Пекинского университета Бай Цзяюэ и Энни увидели кинотеатр.",
+        "tj": "Дар кампуси Донишгоҳи Пекин Бай Ҷяюэ ва Энни кинотеатрро диданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你看，学校里有家电影院！",
+          "pinyin": "Jiāyuè, nǐ kàn, xuéxiào lǐ yǒu jiā diànyǐngyuàn!",
+          "text": {
+            "uz": "Jiayue, qara, universitetda kinoteatr bor!",
+            "ru": "Цзяюэ, смотри, в университете есть кинотеатр!",
+            "tj": "Ҷяюэ, бин, дар донишгоҳ кинотеатр ҳаст!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "是啊，电影院还不小。",
+          "pinyin": "Shì a, diànyǐngyuàn hái bù xiǎo.",
+          "text": {
+            "uz": "Ha, kinoteatr ham kichik emas.",
+            "ru": "Да, и кинотеатр немаленький.",
+            "tj": "Ҳа, кинотеатр ҳам хурд нест."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "他们卖的电影票也很便宜。",
+          "pinyin": "Tāmen mài de diànyǐngpiào yě hěn piányi.",
+          "text": {
+            "uz": "Ular sotadigan kino chiptalari ham juda arzon.",
+            "ru": "Билеты в кино, которые они продают, тоже очень дешёвые.",
+            "tj": "Чиптаҳои кинои онҳо ҳам хеле арзонанд."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "天啊！有的还不到二十块钱。",
+          "pinyin": "Tiān a! Yǒude hái bú dào èrshí kuài qián.",
+          "text": {
+            "uz": "Voy! Ba’zilari hatto yigirma yuanga ham yetmaydi.",
+            "ru": "Ничего себе! Некоторые стоят даже меньше двадцати юаней.",
+            "tj": "Вой! Баъзеаш ҳатто ба бист юан ҳам намерасад."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "那你想不想去看个电影？",
+          "pinyin": "Nà nǐ xiǎng bu xiǎng qù kàn ge diànyǐng?",
+          "text": {
+            "uz": "Unda film ko‘rgani bormoqchimisan?",
+            "ru": "Тогда хочешь сходить посмотреть фильм?",
+            "tj": "Пас мехоҳӣ филм тамошо кунӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "教室",
+            "pinyin": "jiàoshì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sinfxona",
+              "ru": "аудитория; класс",
+              "tj": "синфхона"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "教室",
+          "pinyin": "jiàoshì",
+          "translation": {
+            "uz": "sinfxona",
+            "ru": "аудитория; класс",
+            "tj": "синфхона"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sinfxona' xitoycha qaysi?",
+            "ru": "'аудитория; класс' по-китайски?",
+            "tj": "'синфхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "教室",
+            "但",
+            "车站",
+            "公交车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "sinfxona = 教室 (jiàoshì)",
+            "ru": "аудитория; класс = 教室 (jiàoshì)",
+            "tj": "синфхона = 教室 (jiàoshì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "票",
+            "pinyin": "piào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chipta",
+              "ru": "билет",
+              "tj": "чипта"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "票",
+          "pinyin": "piào",
+          "options": [
+            "公交车",
+            "车站",
+            "但",
+            "票"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "票 — chipta (piào)",
+            "ru": "票 — билет (piào)",
+            "tj": "票 — чипта (piào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "别",
+            "pinyin": "bié",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "qilmang; yaxshisi qilma",
+              "ru": "не; лучше не",
+              "tj": "накун; беҳтараш не"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "别 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 别:",
+            "tj": "Маънои калимаи 别-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qilmang; yaxshisi qilma",
+              "ru": "не; лучше не",
+              "tj": "накун; беҳтараш не"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "别 = qilmang; yaxshisi qilma (bié)",
+            "ru": "别 = не; лучше не (bié)",
+            "tj": "别 = накун; беҳтараш не (bié)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "过来",
+            "pinyin": "guòlai",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bu tomonga kelmoq",
+              "ru": "подойти; прийти сюда",
+              "tj": "ба ин тараф омадан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "guòlai qaysi ieroglif?",
+            "ru": "Какой иероглиф читается guòlai?",
+            "tj": "guòlai кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "但",
+            "车站",
+            "过来",
+            "公交车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "过来 = bu tomonga kelmoq (guòlai)",
+            "ru": "过来 = подойти; прийти сюда (guòlai)",
+            "tj": "过来 = ба ин тараф омадан (guòlai)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "教室 talaffuzini tanlang:",
+            "ru": "Выберите произношение 教室:",
+            "tj": "Талаффузи 教室-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chēzhàn",
+            "dàn",
+            "gōngjiāochē",
+            "jiàoshì"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "教室 — jiàoshì",
+            "ru": "教室 — jiàoshì",
+            "tj": "教室 — jiàoshì"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "教室",
+              {
+                "uz": "sinfxona",
+                "ru": "аудитория; класс",
+                "tj": "синфхона"
+              }
+            ],
+            [
+              "票",
+              {
+                "uz": "chipta",
+                "ru": "билет",
+                "tj": "чипта"
+              }
+            ],
+            [
+              "别",
+              {
+                "uz": "qilmang; yaxshisi qilma",
+                "ru": "не; лучше не",
+                "tj": "накун; беҳтараш не"
+              }
+            ],
+            [
+              "过来",
+              {
+                "uz": "bu tomonga kelmoq",
+                "ru": "подойти; прийти сюда",
+                "tj": "ба ин тараф омадан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "教室",
+          "pinyin": "jiàoshì",
+          "options": [
+            "车站",
+            "但",
+            "教室",
+            "公交车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "教室 — sinfxona (jiàoshì)",
+            "ru": "教室 — аудитория; класс (jiàoshì)",
+            "tj": "教室 — синфхона (jiàoshì)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "那边就有一间教室，我们去看一下吧。",
+          "pinyin": "Nàbian jiù yǒu yì jiān jiàoshì, wǒmen qù kàn yíxià ba.",
+          "translation": {
+            "uz": "Ana u tomonda bir sinfxona bor, borib ko‘raylik.",
+            "ru": "Вон там как раз есть аудитория, давай посмотрим.",
+            "tj": "Он тараф як синфхона ҳаст, биё рафта бинем."
+          },
+          "tokens": {
+            "uz": [
+              "borib",
+              "Ana",
+              "Ular",
+              "ko‘raylik",
+              "sotadigan",
+              "u",
+              "sinfxona",
+              "tomonda",
+              "bir",
+              "bor"
+            ],
+            "ru": [
+              "раз",
+              "давай",
+              "Билеты",
+              "Вон",
+              "как",
+              "там",
+              "есть",
+              "аудитория",
+              "в",
+              "посмотрим"
+            ],
+            "tj": [
+              "Он",
+              "як",
+              "тараф",
+              "бинем",
+              "рафта",
+              "биё",
+              "ҳаст",
+              "кинои",
+              "Чиптаҳои",
+              "синфхона"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ana",
+              "u",
+              "tomonda",
+              "bir",
+              "sinfxona",
+              "bor",
+              "borib",
+              "ko‘raylik"
+            ],
+            "ru": [
+              "Вон",
+              "там",
+              "как",
+              "раз",
+              "есть",
+              "аудитория",
+              "давай",
+              "посмотрим"
+            ],
+            "tj": [
+              "Он",
+              "тараф",
+              "як",
+              "синфхона",
+              "ҳаст",
+              "биё",
+              "рафта",
+              "бинем"
+            ]
+          },
+          "explanation": {
+            "uz": "那边就有一间教室，我们去看一下吧。 — Ana u tomonda bir sinfxona bor, borib ko‘raylik.",
+            "ru": "那边就有一间教室，我们去看一下吧。 — Вон там как раз есть аудитория, давай посмотрим.",
+            "tj": "那边就有一间教室，我们去看一下吧。 — Он тараф як синфхона ҳаст, биё рафта бинем."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "教室",
+              {
+                "uz": "sinfxona",
+                "ru": "аудитория; класс",
+                "tj": "синфхона"
+              }
+            ],
+            [
+              "票",
+              {
+                "uz": "chipta",
+                "ru": "билет",
+                "tj": "чипта"
+              }
+            ],
+            [
+              "别",
+              {
+                "uz": "qilmang; yaxshisi qilma",
+                "ru": "не; лучше не",
+                "tj": "накун; беҳтараш не"
+              }
+            ],
+            [
+              "过来",
+              {
+                "uz": "bu tomonga kelmoq",
+                "ru": "подойти; прийти сюда",
+                "tj": "ба ин тараф омадан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "教室",
+          "pinyin": "jiàoshì",
+          "translation": {
+            "uz": "sinfxona",
+            "ru": "аудитория; класс",
+            "tj": "синфхона"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "名 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 名:",
+            "tj": "Маънои калимаи 名-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "odamlar uchun hisob so‘zi; o‘rin; nom",
+              "ru": "счётное слово для людей; место; имя",
+              "tj": "воҳиди ҳисоб барои одам; ҷой; ном"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "名 = odamlar uchun hisob so‘zi; o‘rin; nom (míng)",
+            "ru": "名 = счётное слово для людей; место; имя (míng)",
+            "tj": "名 = воҳиди ҳисоб барои одам; ҷой; ном (míng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "名",
+            "pinyin": "míng",
+            "meaning": {
+              "uz": "odamlar uchun hisob so‘zi; o‘rin; nom",
+              "ru": "счётное слово для людей; место; имя",
+              "tj": "воҳиди ҳисоб барои одам; ҷой; ном"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sinfxona' xitoycha qaysi?",
+            "ru": "'аудитория; класс' по-китайски?",
+            "tj": "'синфхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "公交车",
+            "车站",
+            "但",
+            "教室"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "sinfxona = 教室 (jiàoshì)",
+            "ru": "аудитория; класс = 教室 (jiàoshì)",
+            "tj": "синфхона = 教室 (jiàoshì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "教室",
+            "pinyin": "jiàoshì",
+            "meaning": {
+              "uz": "sinfxona",
+              "ru": "аудитория; класс",
+              "tj": "синфхона"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,725 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 17,
+  "source_lesson": 4,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你穿红色的很好看",
+  "subtitle": {
+    "uz": "“过” bilan o‘tgan tajribani aytish; 因为……所以…… bilan sabab-natijani ifodalash; “的” iborasidan foydalanish; kiyim va rang tanlash haqida gaplashish.",
+    "ru": "Говорить о прошлом опыте с “过”; выражать причину и следствие с 因为……所以……; использовать конструкцию с “的”; обсуждать одежду и выбор цвета.",
+    "tj": "Бо “过” таҷрибаи гузаштаеро баён кардан; бо 因为……所以…… сабабу натиҷаро ифода кардан; ибораи “的”-ро истифода бурдан; дар бораи либос ва интихоби ранг суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "裤子",
+      "pinyin": "kùzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shim",
+        "ru": "брюки",
+        "tj": "шим"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "白色",
+      "pinyin": "báisè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oq rang",
+        "ru": "белый цвет",
+        "tj": "ранги сафед"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "因为",
+      "pinyin": "yīnwèi",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "chunki; sababli",
+        "ru": "потому что",
+        "tj": "зеро; барои он ки"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "试",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sinab ko‘rmoq",
+        "ru": "пробовать; примерять",
+        "tj": "санҷидан; пӯшида дидан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Sabab-natija gapi “因为……，所以……”",
+        "ru": "Причинно-следственное предложение “因为……，所以……”",
+        "tj": "Ҷумлаи сабабу натиҷа “因为……，所以……”"
+      },
+      "title_zh": "因果复句“因为……，所以……”",
+      "rule": {
+        "uz": "“因为……所以……” sabab-natija munosabatini bildiradi. 因为 va 所以 juft ishlatilishi ham, bittasi alohida ishlatilishi ham mumkin.",
+        "ru": "“因为……所以……” образует причинно-следственное сложное предложение. 因为 и 所以 могут употребляться вместе или по отдельности.",
+        "tj": "“因为……所以……” ҷумлаи сабабу натиҷаро месозад. 因为 ва 所以 метавонанд якҷо ё яке аз онҳо алоҳида истифода шаванд."
+      },
+      "examples": [
+        {
+          "zh": "就是因为没穿过，所以要试试啊！",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "因为我生病了，今天没去上班。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我没去过他家，所以让他来车站接我。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Savdo markazi oldida Wang Yixue va Liu Xiaoxue suhbatlashmoqda.",
+        "ru": "У входа в торговый центр Ван Исюэ и Лю Сяосюэ разговаривают.",
+        "tj": "Дар назди маркази савдо Ван Исюэ ва Лю Сяосюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "妈妈，我们来过这家商场吗？",
+          "pinyin": "Māma, wǒmen láiguo zhè jiā shāngchǎng ma?",
+          "text": {
+            "uz": "Oyi, biz bu savdo markaziga oldin kelganmizmi?",
+            "ru": "Мама, мы уже бывали в этом торговом центре?",
+            "tj": "Оча, мо пештар ба ин маркази савдо омада будем?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "没来过，这是新开的。",
+          "pinyin": "Méi láiguo, zhè shì xīn kāi de.",
+          "text": {
+            "uz": "Yo‘q, kelmaganmiz, bu yangi ochilgan.",
+            "ru": "Нет, не бывали, он недавно открылся.",
+            "tj": "Не, наомада будем, ин нав кушода шудааст."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "我们进去看看吧。",
+          "pinyin": "Wǒmen jìnqu kànkan ba.",
+          "text": {
+            "uz": "Ichkariga kirib ko‘raylik.",
+            "ru": "Давай зайдём и посмотрим.",
+            "tj": "Биё даромада тамошо кунем."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "我想买条裤子。",
+          "pinyin": "Wǒ xiǎng mǎi tiáo kùzi.",
+          "text": {
+            "uz": "Bir shim sotib olmoqchiman.",
+            "ru": "Я хочу купить брюки.",
+            "tj": "Мехоҳам як шим харам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "没问题。",
+          "pinyin": "Méi wèntí.",
+          "text": {
+            "uz": "Muammo yo‘q.",
+            "ru": "Без проблем.",
+            "tj": "Мушкил нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Wang Yixue va Liu Xiaoxue kiyim ko‘rmoqda.",
+        "ru": "В торговом центре Ван Исюэ и Лю Сяосюэ выбирают одежду.",
+        "tj": "Дар маркази савдо Ван Исюэ ва Лю Сяосюэ либос мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "妈妈，我想买这条白色的裤子。",
+          "pinyin": "Māma, wǒ xiǎng mǎi zhè tiáo báisè de kùzi.",
+          "text": {
+            "uz": "Oyi, men mana bu oq shimni olmoqchiman.",
+            "ru": "Мама, я хочу купить эти белые брюки.",
+            "tj": "Оча, мехоҳам ҳамин шими сафедро харам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你有很多白色的衣服，为什么还买白色的？",
+          "pinyin": "Nǐ yǒu hěn duō báisè de yīfu, wèishénme hái mǎi báisè de?",
+          "text": {
+            "uz": "Senda oq kiyimlar ko‘p-ku, nega yana oqini olmoqchisan?",
+            "ru": "У тебя много белой одежды, зачем снова покупать белое?",
+            "tj": "Ту либоси сафед бисёр дорӣ, чаро боз сафед мехарӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "因为我喜欢白色啊！",
+          "pinyin": "Yīnwèi wǒ xǐhuan báisè a!",
+          "text": {
+            "uz": "Chunki men oq rangni yoqtiraman!",
+            "ru": "Потому что мне нравится белый!",
+            "tj": "Зеро ман ранги сафедро дӯст медорам!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "裤子",
+            "pinyin": "kùzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shim",
+              "ru": "брюки",
+              "tj": "шим"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "裤子",
+          "pinyin": "kùzi",
+          "translation": {
+            "uz": "shim",
+            "ru": "брюки",
+            "tj": "шим"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kùzi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kùzi?",
+            "tj": "kùzi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "进去",
+            "过",
+            "商场",
+            "裤子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "裤子 = shim (kùzi)",
+            "ru": "裤子 = брюки (kùzi)",
+            "tj": "裤子 = шим (kùzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "白色",
+            "pinyin": "báisè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oq rang",
+              "ru": "белый цвет",
+              "tj": "ранги сафед"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "白色 talaffuzini tanlang:",
+            "ru": "Выберите произношение 白色:",
+            "tj": "Талаффузи 白色-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "guo",
+            "shāngchǎng",
+            "báisè",
+            "jìnqu"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "白色 — báisè",
+            "ru": "白色 — báisè",
+            "tj": "白色 — báisè"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "因为",
+            "pinyin": "yīnwèi",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "chunki; sababli",
+              "ru": "потому что",
+              "tj": "зеро; барои он ки"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chunki; sababli' xitoycha qaysi?",
+            "ru": "'потому что' по-китайски?",
+            "tj": "'зеро; барои он ки' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "进去",
+            "商场",
+            "因为",
+            "过"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "chunki; sababli = 因为 (yīnwèi)",
+            "ru": "потому что = 因为 (yīnwèi)",
+            "tj": "зеро; барои он ки = 因为 (yīnwèi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "试",
+            "pinyin": "shì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sinab ko‘rmoq",
+              "ru": "пробовать; примерять",
+              "tj": "санҷидан; пӯшида дидан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "试",
+          "pinyin": "shì",
+          "options": [
+            "商场",
+            "试",
+            "过",
+            "进去"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "试 — sinab ko‘rmoq (shì)",
+            "ru": "试 — пробовать; примерять (shì)",
+            "tj": "试 — санҷидан; пӯшида дидан (shì)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "裤子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 裤子:",
+            "tj": "Маънои калимаи 裤子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shim",
+              "ru": "брюки",
+              "tj": "шим"
+            },
+            {
+              "uz": "ichkariga kirmoq",
+              "ru": "зайти внутрь",
+              "tj": "ба дарун даромадан"
+            },
+            {
+              "uz": "o‘tgan tajribani bildiruvchi yuklama",
+              "ru": "частица прошедшего опыта",
+              "tj": "ҳиссачаи таҷрибаи гузашта"
+            },
+            {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "裤子 = shim (kùzi)",
+            "ru": "裤子 = брюки (kùzi)",
+            "tj": "裤子 = шим (kùzi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "裤子",
+              {
+                "uz": "shim",
+                "ru": "брюки",
+                "tj": "шим"
+              }
+            ],
+            [
+              "白色",
+              {
+                "uz": "oq rang",
+                "ru": "белый цвет",
+                "tj": "ранги сафед"
+              }
+            ],
+            [
+              "因为",
+              {
+                "uz": "chunki; sababli",
+                "ru": "потому что",
+                "tj": "зеро; барои он ки"
+              }
+            ],
+            [
+              "试",
+              {
+                "uz": "sinab ko‘rmoq",
+                "ru": "пробовать; примерять",
+                "tj": "санҷидан; пӯшида дидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Sabab-natija gapi “因为……，所以……”",
+              "ru": "Причинно-следственное предложение “因为……，所以……”",
+              "tj": "Ҷумлаи сабабу натиҷа “因为……，所以……”"
+            },
+            "title_zh": "因果复句“因为……，所以……”",
+            "rule": {
+              "uz": "“因为……所以……” sabab-natija munosabatini bildiradi. 因为 va 所以 juft ishlatilishi ham, bittasi alohida ishlatilishi ham mumkin.",
+              "ru": "“因为……所以……” образует причинно-следственное сложное предложение. 因为 и 所以 могут употребляться вместе или по отдельности.",
+              "tj": "“因为……所以……” ҷумлаи сабабу натиҷаро месозад. 因为 ва 所以 метавонанд якҷо ё яке аз онҳо алоҳида истифода шаванд."
+            },
+            "examples": [
+              {
+                "zh": "就是因为没穿过，所以要试试啊！",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "因为我生病了，今天没去上班。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我没去过他家，所以让他来车站接我。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "我",
+            "商场",
+            "上班",
+            "生病",
+            "今天",
+            "去",
+            "了",
+            "过",
+            "没",
+            "因为"
+          ],
+          "answer_tokens": [
+            "因为",
+            "我",
+            "生病",
+            "了",
+            "今天",
+            "没",
+            "去",
+            "上班"
+          ],
+          "explanation": {
+            "uz": "因为我生病了，今天没去上班。",
+            "ru": "因为我生病了，今天没去上班。",
+            "tj": "因为我生病了，今天没去上班。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我没去过他家，所以让他来车站接我。",
+            "因为我生病了，今天没去上班。",
+            "就是因为没穿过，所以要试试啊！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "因为我生病了，今天没去上班。 — ",
+            "ru": "因为我生病了，今天没去上班。 — ",
+            "tj": "因为我生病了，今天没去上班。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "妈妈，我想买这条白色的裤子。",
+          "pinyin": "Māma, wǒ xiǎng mǎi zhè tiáo báisè de kùzi.",
+          "options": [
+            "妈妈，我想买这条白色的裤子。",
+            "我想买条裤子。",
+            "因为我喜欢白色啊！",
+            "你有很多白色的衣服，为什么还买白色的？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "妈妈，我想买这条白色的裤子。 — Oyi, men mana bu oq shimni olmoqchiman.",
+            "ru": "妈妈，我想买这条白色的裤子。 — Мама, я хочу купить эти белые брюки.",
+            "tj": "妈妈，我想买这条白色的裤子。 — Оча, мехоҳам ҳамин шими сафедро харам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "裤子",
+          "pinyin": "kùzi",
+          "translation": {
+            "uz": "shim",
+            "ru": "брюки",
+            "tj": "шим"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 过:",
+            "tj": "Маънои калимаи 过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ichkariga kirmoq",
+              "ru": "зайти внутрь",
+              "tj": "ба дарун даромадан"
+            },
+            {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            },
+            {
+              "uz": "o‘tgan tajribani bildiruvchi yuklama",
+              "ru": "частица прошедшего опыта",
+              "tj": "ҳиссачаи таҷрибаи гузашта"
+            },
+            {
+              "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для длинных/узких предметов",
+              "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "过 = o‘tgan tajribani bildiruvchi yuklama (guo)",
+            "ru": "过 = частица прошедшего опыта (guo)",
+            "tj": "过 = ҳиссачаи таҷрибаи гузашта (guo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "过",
+            "pinyin": "guo",
+            "meaning": {
+              "uz": "o‘tgan tajribani bildiruvchi yuklama",
+              "ru": "частица прошедшего опыта",
+              "tj": "ҳиссачаи таҷрибаи гузашта"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shim' xitoycha qaysi?",
+            "ru": "'брюки' по-китайски?",
+            "tj": "'шим' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "进去",
+            "裤子",
+            "商场",
+            "过"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "shim = 裤子 (kùzi)",
+            "ru": "брюки = 裤子 (kùzi)",
+            "tj": "шим = 裤子 (kùzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "裤子",
+            "pinyin": "kùzi",
+            "meaning": {
+              "uz": "shim",
+              "ru": "брюки",
+              "tj": "шим"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

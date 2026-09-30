@@ -1,0 +1,719 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 131,
+  "source_lesson": 17,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我要多向认真的人学习",
+  "subtitle": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "到处",
+      "pinyin": "dàochù",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "har yerda",
+        "ru": "повсюду",
+        "tj": "ҳар ҷо"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "继续",
+      "pinyin": "jìxù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "davom ettirmoq",
+        "ru": "продолжать",
+        "tj": "идома додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "同意",
+      "pinyin": "tóngyì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "rozi bo‘lmoq",
+        "ru": "соглашаться",
+        "tj": "розӣ шудан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "可",
+      "pinyin": "kě",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "ammo; lekin",
+        "ru": "но; однако",
+        "tj": "аммо; лекин"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Kuchaytiruvchi qo‘shma gap “…，更…”",
+        "ru": "Градационная конструкция “…，更…”",
+        "tj": "Сохтори тақвиятии “…，更…”"
+      },
+      "title_zh": "递进复句“……，更……”",
+      "rule": {
+        "uz": "Ikkinchi qismdagi “更” birinchi qismdan ham kuchliroq, qo‘shimcha yoki yuqori darajadagi holatni bildiradi: “bundan ham…”.",
+        "ru": "“更” во второй части усиливает или добавляет более значимую информацию по сравнению с первой: «тем более / ещё больше».",
+        "tj": "“更” дар қисми дуюм маълумоти қавитар ё иловагиро нисбат ба қисми аввал нишон медиҳад: «боз ҳам бештар»."
+      },
+      "examples": [
+        {
+          "zh": "我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "translation": {
+            "uz": "Hali nimani o‘qishni ham hal qilganim yo‘q, qaysi mamlakatga borishni esa undan ham kam o‘yladim.",
+            "ru": "Я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳоло ҳатто чӣ хонданро қарор накардаам, боз ҳам бештар кадом кишвар рафтанро фикр накардаам."
+          }
+        },
+        {
+          "zh": "想提高中文水平要多听多看，更要多说多练。",
+          "pinyin": "Xiǎng tígāo Zhōngwén shuǐpíng yào duō tīng duō kàn, gèng yào duō shuō duō liàn.",
+          "translation": {
+            "uz": "Xitoy tilini yaxshilash uchun ko‘p tinglash va o‘qish kerak, undan ham muhimi ko‘p gapirib, mashq qilish kerak.",
+            "ru": "Чтобы повысить уровень китайского, нужно больше слушать и читать, а ещё важнее — больше говорить и практиковаться.",
+            "tj": "Барои беҳтар кардани чинӣ бисёр шунидану хондан лозим, боз ҳам бештар гуфтану машқ кардан даркор."
+          }
+        },
+        {
+          "zh": "来中国学习，我学会了中文，更了解了中国文化。",
+          "pinyin": "Lái Zhōngguó xuéxí, wǒ xuéhuì le Zhōngwén, gèng liǎojiě le Zhōngguó wénhuà.",
+          "translation": {
+            "uz": "Xitoyga o‘qishga kelib, xitoy tilini o‘rgandim va Xitoy madaniyatini yanada chuqurroq tushundim.",
+            "ru": "Приехав учиться в Китай, я выучил китайский и ещё лучше понял китайскую культуру.",
+            "tj": "Ба Чин барои таҳсил омада, чиниро омӯхтам ва фарҳанги Чинро боз ҳам хубтар фаҳмидам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+        "ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+        "tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "怎么回事？",
+          "pinyin": "Zěnme huí shì?",
+          "text": {
+            "uz": "Nima bo‘ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ гап шуд?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de.",
+          "text": {
+            "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+            "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+            "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "text": {
+            "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+            "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+        "ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+        "tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de.",
+          "text": {
+            "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+            "ru": "Что тут странного? Я пришёл заниматься.",
+            "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你怎么还来图书馆学习？同学们都在到处找工作呢。",
+          "pinyin": "Nǐ zěnme hái lái túshūguǎn xuéxí? Tóngxuémen dōu zài dàochù zhǎo gōngzuò ne.",
+          "text": {
+            "uz": "Nega hali ham kutubxonada o‘qiyapsan? Sinfdoshlar hamma joyda ish qidiryapti-ku.",
+            "ru": "Почему ты всё ещё учишься в библиотеке? Однокурсники повсюду ищут работу.",
+            "tj": "Чаро ҳоло ҳам дар китобхона мехонӣ? Ҳамсинфон ҳама ҷо кор меҷӯянд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "text": {
+            "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?",
+          "text": {
+            "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+            "ru": "Телефон разрядился. Ты меня искал по делу?",
+            "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "text": {
+            "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn.",
+          "text": {
+            "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+            "ru": "Я покажу тебе несколько полезных сайтов.",
+            "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "到处",
+            "pinyin": "dàochù",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "har yerda",
+              "ru": "повсюду",
+              "tj": "ҳар ҷо"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "到处 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 到处:",
+            "tj": "Маънои калимаи 到处-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "har yerda",
+              "ru": "повсюду",
+              "tj": "ҳар ҷо"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "到处 = har yerda (dàochù)",
+            "ru": "到处 = повсюду (dàochù)",
+            "tj": "到处 = ҳар ҷо (dàochù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "继续",
+            "pinyin": "jìxù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "davom ettirmoq",
+              "ru": "продолжать",
+              "tj": "идома додан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jìxù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jìxù?",
+            "tj": "jìxù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "向",
+            "害怕",
+            "继续",
+            "楼梯"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "继续 = davom ettirmoq (jìxù)",
+            "ru": "继续 = продолжать (jìxù)",
+            "tj": "继续 = идома додан (jìxù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "同意",
+            "pinyin": "tóngyì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "rozi bo‘lmoq",
+              "ru": "соглашаться",
+              "tj": "розӣ шудан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "同意",
+          "pinyin": "tóngyì",
+          "translation": {
+            "uz": "rozi bo‘lmoq",
+            "ru": "соглашаться",
+            "tj": "розӣ шудан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "同意 talaffuzini tanlang:",
+            "ru": "Выберите произношение 同意:",
+            "tj": "Талаффузи 同意-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàng",
+            "hàipà",
+            "tóngyì",
+            "lóutī"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "同意 — tóngyì",
+            "ru": "同意 — tóngyì",
+            "tj": "同意 — tóngyì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "可",
+            "pinyin": "kě",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ammo; lekin' xitoycha qaysi?",
+            "ru": "'но; однако' по-китайски?",
+            "tj": "'аммо; лекин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "可",
+            "害怕",
+            "楼梯"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ammo; lekin = 可 (kě)",
+            "ru": "но; однако = 可 (kě)",
+            "tj": "аммо; лекин = 可 (kě)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "到处",
+          "pinyin": "dàochù",
+          "options": [
+            "害怕",
+            "楼梯",
+            "到处",
+            "向"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "到处 — har yerda (dàochù)",
+            "ru": "到处 — повсюду (dàochù)",
+            "tj": "到处 — ҳар ҷо (dàochù)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "到处",
+              {
+                "uz": "har yerda",
+                "ru": "повсюду",
+                "tj": "ҳар ҷо"
+              }
+            ],
+            [
+              "继续",
+              {
+                "uz": "davom ettirmoq",
+                "ru": "продолжать",
+                "tj": "идома додан"
+              }
+            ],
+            [
+              "同意",
+              {
+                "uz": "rozi bo‘lmoq",
+                "ru": "соглашаться",
+                "tj": "розӣ шудан"
+              }
+            ],
+            [
+              "可",
+              {
+                "uz": "ammo; lekin",
+                "ru": "но; однако",
+                "tj": "аммо; лекин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Kuchaytiruvchi qo‘shma gap “…，更…”",
+              "ru": "Градационная конструкция “…，更…”",
+              "tj": "Сохтори тақвиятии “…，更…”"
+            },
+            "title_zh": "递进复句“……，更……”",
+            "rule": {
+              "uz": "Ikkinchi qismdagi “更” birinchi qismdan ham kuchliroq, qo‘shimcha yoki yuqori darajadagi holatni bildiradi: “bundan ham…”.",
+              "ru": "“更” во второй части усиливает или добавляет более значимую информацию по сравнению с первой: «тем более / ещё больше».",
+              "tj": "“更” дар қисми дуюм маълумоти қавитар ё иловагиро нисбат ба қисми аввал нишон медиҳад: «боз ҳам бештар»."
+            },
+            "examples": [
+              {
+                "zh": "我还没想好学什么，更没想好去哪个国家。",
+                "pinyin": "Wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+                "translation": {
+                  "uz": "Hali nimani o‘qishni ham hal qilganim yo‘q, qaysi mamlakatga borishni esa undan ham kam o‘yladim.",
+                  "ru": "Я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+                  "tj": "Ҳоло ҳатто чӣ хонданро қарор накардаам, боз ҳам бештар кадом кишвар рафтанро фикр накардаам."
+                }
+              },
+              {
+                "zh": "想提高中文水平要多听多看，更要多说多练。",
+                "pinyin": "Xiǎng tígāo Zhōngwén shuǐpíng yào duō tīng duō kàn, gèng yào duō shuō duō liàn.",
+                "translation": {
+                  "uz": "Xitoy tilini yaxshilash uchun ko‘p tinglash va o‘qish kerak, undan ham muhimi ko‘p gapirib, mashq qilish kerak.",
+                  "ru": "Чтобы повысить уровень китайского, нужно больше слушать и читать, а ещё важнее — больше говорить и практиковаться.",
+                  "tj": "Барои беҳтар кардани чинӣ бисёр шунидану хондан лозим, боз ҳам бештар гуфтану машқ кардан даркор."
+                }
+              },
+              {
+                "zh": "来中国学习，我学会了中文，更了解了中国文化。",
+                "pinyin": "Lái Zhōngguó xuéxí, wǒ xuéhuì le Zhōngwén, gèng liǎojiě le Zhōngguó wénhuà.",
+                "translation": {
+                  "uz": "Xitoyga o‘qishga kelib, xitoy tilini o‘rgandim va Xitoy madaniyatini yanada chuqurroq tushundim.",
+                  "ru": "Приехав учиться в Китай, я выучил китайский и ещё лучше понял китайскую культуру.",
+                  "tj": "Ба Чин барои таҳсил омада, чиниро омӯхтам ва фарҳанги Чинро боз ҳам хубтар фаҳмидам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Xitoy tilini yaxshilash uchun ko‘p tinglash va o‘qish kerak, undan ham muhimi ko‘p gapirib, mashq qilish kerak.» — xitoychada qaysi biri?",
+            "ru": "«Чтобы повысить уровень китайского, нужно больше слушать и читать, а ещё важнее — больше говорить и практиковаться.» — какое предложение по-китайски?",
+            "tj": "«Барои беҳтар кардани чинӣ бисёр шунидану хондан лозим, боз ҳам бештар гуфтану машқ кардан даркор.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "想提高中文水平要多听多看，更要多说多练。",
+            "我还没想好学什么，更没想好去哪个国家。",
+            "来中国学习，我学会了中文，更了解了中国文化。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "想提高中文水平要多听多看，更要多说多练。 — Xiǎng tígāo Zhōngwén shuǐpíng yào duō tīng duō kàn, gèng yào duō shuō duō liàn.",
+            "ru": "想提高中文水平要多听多看，更要多说多练。 — Xiǎng tígāo Zhōngwén shuǐpíng yào duō tīng duō kàn, gèng yào duō shuō duō liàn.",
+            "tj": "想提高中文水平要多听多看，更要多说多练。 — Xiǎng tígāo Zhōngwén shuǐpíng yào duō tīng duō kàn, gèng yào duō shuō duō liàn."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "可",
+          "pinyin": "kě",
+          "translation": {
+            "uz": "ammo; lekin",
+            "ru": "но; однако",
+            "tj": "аммо; лекин"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "继续",
+          "pinyin": "jìxù",
+          "options": [
+            "继续",
+            "害怕",
+            "楼梯",
+            "向"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "继续 — davom ettirmoq (jìxù)",
+            "ru": "继续 — продолжать (jìxù)",
+            "tj": "继续 — идома додан (jìxù)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "同意",
+          "pinyin": "tóngyì",
+          "translation": {
+            "uz": "rozi bo‘lmoq",
+            "ru": "соглашаться",
+            "tj": "розӣ шудан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "错 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 错:",
+            "tj": "Маънои калимаи 错-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "xato",
+              "ru": "ошибка",
+              "tj": "хато"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "错 = xato (cuò)",
+            "ru": "错 = ошибка (cuò)",
+            "tj": "错 = хато (cuò)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "错",
+            "pinyin": "cuò",
+            "meaning": {
+              "uz": "xato",
+              "ru": "ошибка",
+              "tj": "хато"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'rozi bo‘lmoq' xitoycha qaysi?",
+            "ru": "'соглашаться' по-китайски?",
+            "tj": "'розӣ шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "楼梯",
+            "害怕",
+            "同意"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "rozi bo‘lmoq = 同意 (tóngyì)",
+            "ru": "соглашаться = 同意 (tóngyì)",
+            "tj": "розӣ шудан = 同意 (tóngyì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "同意",
+            "pinyin": "tóngyì",
+            "meaning": {
+              "uz": "rozi bo‘lmoq",
+              "ru": "соглашаться",
+              "tj": "розӣ шудан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

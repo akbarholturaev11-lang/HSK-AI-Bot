@@ -1,0 +1,854 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 34,
+  "source_lesson": 7,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "他篮球打得很好",
+  "subtitle": {
+    "uz": "“一……就……” bilan ketma-ket/tez sodir bo‘ladigan harakatlarni ifodalash; 得 orqali holat to‘ldiruvchisini ishlatish; ajraluvchi fe’l va obyektli fe’llarda holat to‘ldiruvchisi tartibini to‘g‘ri qo‘llash; sport haqida gaplashish.",
+    "ru": "Выражать быстрое следование действий конструкцией “一……就……”；использовать дополнение состояния с 得; правильно строить его с разделяемыми и переходными глаголами; говорить о спорте.",
+    "tj": "Бо “一……就……” пайдарпай ё зуд рух додани амалҳоро ифода кардан; пуркунандаи ҳолатро бо 得 истифода бурдан; тартиби онро бо феълҳои ҷудошаванда ва объектдор дуруст сохтани; дар бораи варзиш суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "球",
+      "pinyin": "qiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "to‘p",
+        "ru": "мяч",
+        "tj": "тӯб"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "得",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+        "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+        "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "跑步",
+      "pinyin": "pǎobù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yugurmoq",
+        "ru": "бегать",
+        "tj": "давидан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "游泳",
+      "pinyin": "yóuyǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Holat to‘ldiruvchisi (1)",
+        "ru": "Дополнение состояния (1)",
+        "tj": "Пуркунандаи ҳолат (1)"
+      },
+      "title_zh": "状态补语（1）",
+      "rule": {
+        "uz": "Holat to‘ldiruvchisi fe’ldan keyin harakat qanday bajarilganini ko‘rsatadi. Asosiy shakl: fe’l+得+sifatli birikma. Inkor sifat oldidan 不 bilan. Savol: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+        "ru": "Дополнение состояния после глагола уточняет, как выполняется действие. Схема: глагол+得+прилагательная группа. Отрицание — 不 перед прилагательным. Вопрос: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+        "tj": "Пуркунандаи ҳолат пас аз феъл тарзи иҷрои амалро мефаҳмонад. Сохтор: феъл+得+ибораи сифатӣ. Инкор бо 不 пеш аз сифат. Савол: 吗; V+得+Adj+不+Adj; V+得+怎么样."
+      },
+      "examples": [
+        {
+          "zh": "我踢得还可以。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他们玩得很高兴。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "白家月跑得不快。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你跑得快吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他来得早不早？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他们玩得怎么样？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Энни и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Энни ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我跟同学说好了，一起去打篮球。",
+          "pinyin": "Wǒ gēn tóngxué shuōhǎo le, yìqǐ qù dǎ lánqiú.",
+          "text": {
+            "uz": "Sinfdoshlar bilan kelishib qo‘ydim, birga basketbol o‘ynagani boramiz.",
+            "ru": "Я договорился с одноклассниками вместе поиграть в баскетбол.",
+            "tj": "Бо ҳамсинфон маслиҳат кардем, якҷо баскетбол бозӣ мекунем."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我也想跟你们一起玩。",
+          "pinyin": "Wǒ yě xiǎng gēn nǐmen yìqǐ wán.",
+          "text": {
+            "uz": "Men ham sizlar bilan birga o‘ynagim keladi.",
+            "ru": "Я тоже хочу поиграть с вами.",
+            "tj": "Ман ҳам мехоҳам бо шумо якҷо бозӣ кунам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "没问题，走吧。",
+          "pinyin": "Méi wèntí, zǒu ba.",
+          "text": {
+            "uz": "Muammo yo‘q, yur.",
+            "ru": "Без проблем, пошли.",
+            "tj": "Мушкил нест, равем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "你还喜欢什么运动？",
+          "pinyin": "Nǐ hái xǐhuan shénme yùndòng?",
+          "text": {
+            "uz": "Yana qaysi sportni yoqtirasan?",
+            "ru": "Какие ещё виды спорта ты любишь?",
+            "tj": "Боз кадом варзишро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我还喜欢踢足球，一到星期天就跟朋友们去踢球。",
+          "pinyin": "Wǒ hái xǐhuan tī zúqiú, yí dào Xīngqītiān jiù gēn péngyoumen qù tī qiú.",
+          "text": {
+            "uz": "Futbolni ham yoqtiraman, yakshanba kelishi bilan do‘stlar bilan futbol o‘ynagani boraman.",
+            "ru": "Я ещё люблю футбол: как только наступает воскресенье, иду с друзьями играть.",
+            "tj": "Футболро ҳам дӯст медорам; ҳамин ки якшанбе шавад, бо дӯстон футбол бозӣ меравам."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你踢得怎么样？",
+          "pinyin": "Nǐ tī de zěnmeyàng?",
+          "text": {
+            "uz": "Qanday o‘ynaysan?",
+            "ru": "Как ты играешь?",
+            "tj": "Чӣ хел бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我踢得还可以。",
+          "pinyin": "Wǒ tī de hái kěyǐ.",
+          "text": {
+            "uz": "Yomon emas o‘ynayman.",
+            "ru": "Играю неплохо.",
+            "tj": "Бад не бозӣ мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "你篮球打得怎么样？",
+          "pinyin": "Nǐ lánqiú dǎ de zěnmeyàng?",
+          "text": {
+            "uz": "Basketbolni qanday o‘ynaysan?",
+            "ru": "Как ты играешь в баскетбол?",
+            "tj": "Баскетболро чӣ хел бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "打得还可以。",
+          "pinyin": "Dǎ de hái kěyǐ.",
+          "text": {
+            "uz": "Yomon emas.",
+            "ru": "Неплохо.",
+            "tj": "Бад не."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "跑步呢？你跑得快不快？",
+          "pinyin": "Pǎobù ne? Nǐ pǎo de kuài bu kuài?",
+          "text": {
+            "uz": "Yugurish-chi? Tez yugurasanmi?",
+            "ru": "А бег? Ты быстро бегаешь?",
+            "tj": "Давидан чӣ? Тез медавӣ?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我跑得不快，也不太喜欢跑步。",
+          "pinyin": "Wǒ pǎo de bú kuài, yě bú tài xǐhuan pǎobù.",
+          "text": {
+            "uz": "Tez yugurmayman, yugurishni ham uncha yoqtirmayman.",
+            "ru": "Я бегаю небыстро и не очень люблю бег.",
+            "tj": "Ман тез намедавам ва давиданро ҳам он қадар дӯст намедорам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "那你喜欢游泳吗？",
+          "pinyin": "Nà nǐ xǐhuan yóuyǒng ma?",
+          "text": {
+            "uz": "Unda suzishni yoqtirasanmi?",
+            "ru": "А плавать любишь?",
+            "tj": "Пас шиновариро дӯст медорӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "球",
+            "pinyin": "qiú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "to‘p",
+              "ru": "мяч",
+              "tj": "тӯб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'to‘p' xitoycha qaysi?",
+            "ru": "'мяч' по-китайски?",
+            "tj": "'тӯб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "跑",
+            "球",
+            "往",
+            "从"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "to‘p = 球 (qiú)",
+            "ru": "мяч = 球 (qiú)",
+            "tj": "тӯб = 球 (qiú)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "得",
+            "pinyin": "de",
+            "pos": "part.",
+            "meaning": {
+              "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+              "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+              "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "得",
+          "pinyin": "de",
+          "translation": {
+            "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+            "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+            "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "得",
+          "pinyin": "de",
+          "options": [
+            "跑",
+            "得",
+            "往",
+            "从"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "得 — fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama (de)",
+            "ru": "得 — частица между глаголом/прилагательным и дополнением состояния/степени (de)",
+            "tj": "得 — ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа (de)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "跑步",
+            "pinyin": "pǎobù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yugurmoq",
+              "ru": "бегать",
+              "tj": "давидан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "跑步 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 跑步:",
+            "tj": "Маънои калимаи 跑步-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            },
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "yugurmoq",
+              "ru": "бегать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "跑步 = yugurmoq (pǎobù)",
+            "ru": "跑步 = бегать (pǎobù)",
+            "tj": "跑步 = давидан (pǎobù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "游泳",
+            "pinyin": "yóuyǒng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "suzmoq",
+              "ru": "плавать",
+              "tj": "шино кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yóuyǒng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yóuyǒng?",
+            "tj": "yóuyǒng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "往",
+            "游泳",
+            "从",
+            "跑"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "游泳 = suzmoq (yóuyǒng)",
+            "ru": "游泳 = плавать (yóuyǒng)",
+            "tj": "游泳 = шино кардан (yóuyǒng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "球 talaffuzini tanlang:",
+            "ru": "Выберите произношение 球:",
+            "tj": "Талаффузи 球-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qiú",
+            "pǎo",
+            "wǎng",
+            "cóng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "球 — qiú",
+            "ru": "球 — qiú",
+            "tj": "球 — qiú"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "球",
+              {
+                "uz": "to‘p",
+                "ru": "мяч",
+                "tj": "тӯб"
+              }
+            ],
+            [
+              "得",
+              {
+                "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+                "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+                "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа"
+              }
+            ],
+            [
+              "跑步",
+              {
+                "uz": "yugurmoq",
+                "ru": "бегать",
+                "tj": "давидан"
+              }
+            ],
+            [
+              "游泳",
+              {
+                "uz": "suzmoq",
+                "ru": "плавать",
+                "tj": "шино кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Holat to‘ldiruvchisi (1)",
+              "ru": "Дополнение состояния (1)",
+              "tj": "Пуркунандаи ҳолат (1)"
+            },
+            "title_zh": "状态补语（1）",
+            "rule": {
+              "uz": "Holat to‘ldiruvchisi fe’ldan keyin harakat qanday bajarilganini ko‘rsatadi. Asosiy shakl: fe’l+得+sifatli birikma. Inkor sifat oldidan 不 bilan. Savol: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+              "ru": "Дополнение состояния после глагола уточняет, как выполняется действие. Схема: глагол+得+прилагательная группа. Отрицание — 不 перед прилагательным. Вопрос: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+              "tj": "Пуркунандаи ҳолат пас аз феъл тарзи иҷрои амалро мефаҳмонад. Сохтор: феъл+得+ибораи сифатӣ. Инкор бо 不 пеш аз сифат. Савол: 吗; V+得+Adj+不+Adj; V+得+怎么样."
+            },
+            "examples": [
+              {
+                "zh": "我踢得还可以。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他们玩得很高兴。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "白家月跑得不快。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "你跑得快吗？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他来得早不早？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他们玩得怎么样？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "从",
+            "可以",
+            "我",
+            "还",
+            "往",
+            "踢",
+            "得"
+          ],
+          "answer_tokens": [
+            "我",
+            "踢",
+            "得",
+            "还",
+            "可以"
+          ],
+          "explanation": {
+            "uz": "我踢得还可以。",
+            "ru": "我踢得还可以。",
+            "tj": "我踢得还可以。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你跑得快吗？",
+            "他们玩得怎么样？",
+            "他来得早不早？",
+            "我踢得还可以。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你跑得快吗？ — ",
+            "ru": "你跑得快吗？ — ",
+            "tj": "你跑得快吗？ — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "跑步",
+          "pinyin": "pǎobù",
+          "options": [
+            "从",
+            "跑",
+            "跑步",
+            "往"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "跑步 — yugurmoq (pǎobù)",
+            "ru": "跑步 — бегать (pǎobù)",
+            "tj": "跑步 — давидан (pǎobù)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "游泳 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 游泳:",
+            "tj": "Маънои калимаи 游泳-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            },
+            {
+              "uz": "suzmoq",
+              "ru": "плавать",
+              "tj": "шино кардан"
+            },
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            },
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "游泳 = suzmoq (yóuyǒng)",
+            "ru": "游泳 = плавать (yóuyǒng)",
+            "tj": "游泳 = шино кардан (yóuyǒng)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "运动 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 运动:",
+            "tj": "Маънои калимаи 运动-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            },
+            {
+              "uz": "sport; mashq qilmoq",
+              "ru": "спорт; заниматься",
+              "tj": "варзиш; машқ кардан"
+            },
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "运动 = sport; mashq qilmoq (yùndòng)",
+            "ru": "运动 = спорт; заниматься (yùndòng)",
+            "tj": "运动 = варзиш; машқ кардан (yùndòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "meaning": {
+              "uz": "sport; mashq qilmoq",
+              "ru": "спорт; заниматься",
+              "tj": "варзиш; машқ кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama' xitoycha qaysi?",
+            "ru": "'частица между глаголом/прилагательным и дополнением состояния/степени' по-китайски?",
+            "tj": "'ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "从",
+            "往",
+            "得",
+            "跑"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama = 得 (de)",
+            "ru": "частица между глаголом/прилагательным и дополнением состояния/степени = 得 (de)",
+            "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа = 得 (de)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "得",
+            "pinyin": "de",
+            "meaning": {
+              "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+              "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+              "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

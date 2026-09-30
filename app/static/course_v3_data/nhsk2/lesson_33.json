@@ -1,0 +1,652 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 33,
+  "source_lesson": 7,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "他篮球打得很好",
+  "subtitle": {
+    "uz": "“一……就……” bilan ketma-ket/tez sodir bo‘ladigan harakatlarni ifodalash; 得 orqali holat to‘ldiruvchisini ishlatish; ajraluvchi fe’l va obyektli fe’llarda holat to‘ldiruvchisi tartibini to‘g‘ri qo‘llash; sport haqida gaplashish.",
+    "ru": "Выражать быстрое следование действий конструкцией “一……就……”；использовать дополнение состояния с 得; правильно строить его с разделяемыми и переходными глаголами; говорить о спорте.",
+    "tj": "Бо “一……就……” пайдарпай ё зуд рух додани амалҳоро ифода кардан; пуркунандаи ҳолатро бо 得 истифода бурдан; тартиби онро бо феълҳои ҷудошаванда ва объектдор дуруст сохтани; дар бораи варзиш суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "篮球",
+      "pinyin": "lánqiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "basketbol",
+        "ru": "баскетбол",
+        "tj": "баскетбол"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "sport; mashq qilmoq",
+        "ru": "спорт; заниматься",
+        "tj": "варзиш; машқ кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "踢",
+      "pinyin": "tī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tepmoq",
+        "ru": "пинать",
+        "tj": "лагад задан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "足球",
+      "pinyin": "zúqiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "futbol",
+        "ru": "футбол",
+        "tj": "футбол"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Энни и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Энни ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我跟同学说好了，一起去打篮球。",
+          "pinyin": "Wǒ gēn tóngxué shuōhǎo le, yìqǐ qù dǎ lánqiú.",
+          "text": {
+            "uz": "Sinfdoshlar bilan kelishib qo‘ydim, birga basketbol o‘ynagani boramiz.",
+            "ru": "Я договорился с одноклассниками вместе поиграть в баскетбол.",
+            "tj": "Бо ҳамсинфон маслиҳат кардем, якҷо баскетбол бозӣ мекунем."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我也想跟你们一起玩。",
+          "pinyin": "Wǒ yě xiǎng gēn nǐmen yìqǐ wán.",
+          "text": {
+            "uz": "Men ham sizlar bilan birga o‘ynagim keladi.",
+            "ru": "Я тоже хочу поиграть с вами.",
+            "tj": "Ман ҳам мехоҳам бо шумо якҷо бозӣ кунам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "没问题，走吧。",
+          "pinyin": "Méi wèntí, zǒu ba.",
+          "text": {
+            "uz": "Muammo yo‘q, yur.",
+            "ru": "Без проблем, пошли.",
+            "tj": "Мушкил нест, равем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "你还喜欢什么运动？",
+          "pinyin": "Nǐ hái xǐhuan shénme yùndòng?",
+          "text": {
+            "uz": "Yana qaysi sportni yoqtirasan?",
+            "ru": "Какие ещё виды спорта ты любишь?",
+            "tj": "Боз кадом варзишро дӯст медорӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "篮球",
+            "pinyin": "lánqiú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "basketbol",
+              "ru": "баскетбол",
+              "tj": "баскетбол"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "篮球",
+          "pinyin": "lánqiú",
+          "translation": {
+            "uz": "basketbol",
+            "ru": "баскетбол",
+            "tj": "баскетбол"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "篮球 talaffuzini tanlang:",
+            "ru": "Выберите произношение 篮球:",
+            "tj": "Талаффузи 篮球-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "cóng",
+            "lánqiú",
+            "wǎng",
+            "pǎo"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "篮球 — lánqiú",
+            "ru": "篮球 — lánqiú",
+            "tj": "篮球 — lánqiú"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "sport; mashq qilmoq",
+              "ru": "спорт; заниматься",
+              "tj": "варзиш; машқ кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sport; mashq qilmoq' xitoycha qaysi?",
+            "ru": "'спорт; заниматься' по-китайски?",
+            "tj": "'варзиш; машқ кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "从",
+            "往",
+            "运动",
+            "跑"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "sport; mashq qilmoq = 运动 (yùndòng)",
+            "ru": "спорт; заниматься = 运动 (yùndòng)",
+            "tj": "варзиш; машқ кардан = 运动 (yùndòng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "踢",
+            "pinyin": "tī",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tepmoq",
+              "ru": "пинать",
+              "tj": "лагад задан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "踢",
+          "pinyin": "tī",
+          "options": [
+            "从",
+            "踢",
+            "跑",
+            "往"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "踢 — tepmoq (tī)",
+            "ru": "踢 — пинать (tī)",
+            "tj": "踢 — лагад задан (tī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "足球",
+            "pinyin": "zúqiú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "futbol",
+              "ru": "футбол",
+              "tj": "футбол"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "足球 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 足球:",
+            "tj": "Маънои калимаи 足球-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            },
+            {
+              "uz": "futbol",
+              "ru": "футбол",
+              "tj": "футбол"
+            },
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "足球 = futbol (zúqiú)",
+            "ru": "足球 = футбол (zúqiú)",
+            "tj": "足球 = футбол (zúqiú)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lánqiú qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lánqiú?",
+            "tj": "lánqiú кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "跑",
+            "篮球",
+            "从",
+            "往"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "篮球 = basketbol (lánqiú)",
+            "ru": "篮球 = баскетбол (lánqiú)",
+            "tj": "篮球 = баскетбол (lánqiú)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "篮球",
+              {
+                "uz": "basketbol",
+                "ru": "баскетбол",
+                "tj": "баскетбол"
+              }
+            ],
+            [
+              "运动",
+              {
+                "uz": "sport; mashq qilmoq",
+                "ru": "спорт; заниматься",
+                "tj": "варзиш; машқ кардан"
+              }
+            ],
+            [
+              "踢",
+              {
+                "uz": "tepmoq",
+                "ru": "пинать",
+                "tj": "лагад задан"
+              }
+            ],
+            [
+              "足球",
+              {
+                "uz": "futbol",
+                "ru": "футбол",
+                "tj": "футбол"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "篮球",
+          "pinyin": "lánqiú",
+          "options": [
+            "篮球",
+            "跑",
+            "从",
+            "往"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "篮球 — basketbol (lánqiú)",
+            "ru": "篮球 — баскетбол (lánqiú)",
+            "tj": "篮球 — баскетбол (lánqiú)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "篮球",
+              {
+                "uz": "basketbol",
+                "ru": "баскетбол",
+                "tj": "баскетбол"
+              }
+            ],
+            [
+              "运动",
+              {
+                "uz": "sport; mashq qilmoq",
+                "ru": "спорт; заниматься",
+                "tj": "варзиш; машқ кардан"
+              }
+            ],
+            [
+              "踢",
+              {
+                "uz": "tepmoq",
+                "ru": "пинать",
+                "tj": "лагад задан"
+              }
+            ],
+            [
+              "足球",
+              {
+                "uz": "futbol",
+                "ru": "футбол",
+                "tj": "футбол"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我跟同学说好了，一起去打篮球。",
+          "pinyin": "Wǒ gēn tóngxué shuōhǎo le, yìqǐ qù dǎ lánqiú.",
+          "translation": {
+            "uz": "Sinfdoshlar bilan kelishib qo‘ydim, birga basketbol o‘ynagani boramiz.",
+            "ru": "Я договорился с одноклассниками вместе поиграть в баскетбол.",
+            "tj": "Бо ҳамсинфон маслиҳат кардем, якҷо баскетбол бозӣ мекунем."
+          },
+          "tokens": {
+            "uz": [
+              "bilan",
+              "qaysi",
+              "basketbol",
+              "o‘ynagani",
+              "qo‘ydim",
+              "Yana",
+              "birga",
+              "Sinfdoshlar",
+              "boramiz",
+              "kelishib"
+            ],
+            "ru": [
+              "ещё",
+              "одноклассниками",
+              "баскетбол",
+              "с",
+              "Какие",
+              "вместе",
+              "договорился",
+              "поиграть",
+              "Я",
+              "в"
+            ],
+            "tj": [
+              "якҷо",
+              "маслиҳат",
+              "баскетбол",
+              "мекунем",
+              "бозӣ",
+              "ҳамсинфон",
+              "Бо",
+              "Боз",
+              "кадом",
+              "кардем"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Sinfdoshlar",
+              "bilan",
+              "kelishib",
+              "qo‘ydim",
+              "birga",
+              "basketbol",
+              "o‘ynagani",
+              "boramiz"
+            ],
+            "ru": [
+              "Я",
+              "договорился",
+              "с",
+              "одноклассниками",
+              "вместе",
+              "поиграть",
+              "в",
+              "баскетбол"
+            ],
+            "tj": [
+              "Бо",
+              "ҳамсинфон",
+              "маслиҳат",
+              "кардем",
+              "якҷо",
+              "баскетбол",
+              "бозӣ",
+              "мекунем"
+            ]
+          },
+          "explanation": {
+            "uz": "我跟同学说好了，一起去打篮球。 — Sinfdoshlar bilan kelishib qo‘ydim, birga basketbol o‘ynagani boramiz.",
+            "ru": "我跟同学说好了，一起去打篮球。 — Я договорился с одноклассниками вместе поиграть в баскетбол.",
+            "tj": "我跟同学说好了，一起去打篮球。 — Бо ҳамсинфон маслиҳат кардем, якҷо баскетбол бозӣ мекунем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "篮球",
+          "pinyin": "lánqiú",
+          "translation": {
+            "uz": "basketbol",
+            "ru": "баскетбол",
+            "tj": "баскетбол"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "从 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 从:",
+            "tj": "Маънои калимаи 从-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘ynamoq (sport); urmoq",
+              "ru": "играть; ударять",
+              "tj": "бозӣ кардан; задан"
+            },
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            },
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "从 = dan; ...dan boshlab (cóng)",
+            "ru": "从 = из; от (cóng)",
+            "tj": "从 = аз (cóng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "从",
+            "pinyin": "cóng",
+            "meaning": {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'basketbol' xitoycha qaysi?",
+            "ru": "'баскетбол' по-китайски?",
+            "tj": "'баскетбол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "往",
+            "篮球",
+            "从",
+            "跑"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "basketbol = 篮球 (lánqiú)",
+            "ru": "баскетбол = 篮球 (lánqiú)",
+            "tj": "баскетбол = 篮球 (lánqiú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "篮球",
+            "pinyin": "lánqiú",
+            "meaning": {
+              "uz": "basketbol",
+              "ru": "баскетбол",
+              "tj": "баскетбол"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

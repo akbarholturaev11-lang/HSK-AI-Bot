@@ -1,0 +1,564 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 142,
+  "source_lesson": 18,
+  "part_no": 6,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "我学会了包饺子",
+  "subtitle": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "毕业",
+      "pinyin": "bìyè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qishni bitirmoq",
+        "ru": "оканчивать учебное заведение",
+        "tj": "таҳсилро хатм кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "出生",
+      "pinyin": "chūshēng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tug‘ilmoq",
+        "ru": "рождаться",
+        "tj": "таваллуд шудан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "过去",
+      "pinyin": "guòqù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘tmish",
+        "ru": "прошлое",
+        "tj": "гузашта"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+        "ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+        "tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?",
+          "text": {
+            "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+            "ru": "Как вы отмечаете праздник?",
+            "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "text": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "大概七八天。",
+          "pinyin": "Dàgài qī bā tiān.",
+          "text": {
+            "uz": "Taxminan yetti-sakkiz kun.",
+            "ru": "Примерно семь-восемь дней.",
+            "tj": "Тақрибан ҳафт-ҳашт рӯз."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+        "ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+        "tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "李叔叔",
+          "zh": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!",
+          "text": {
+            "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+            "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+            "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢您和叔叔请我来家里做客。",
+          "pinyin": "Xièxie nín hé shūshu qǐng wǒ lái jiālǐ zuòkè.",
+          "text": {
+            "uz": "Meni uyingizga mehmonga taklif qilganingiz uchun sizga va amakiga rahmat.",
+            "ru": "Спасибо вам и дяде, что пригласили меня в гости.",
+            "tj": "Раҳмат ба шумо ва амак, ки маро ба хона меҳмон даъват кардед."
+          }
+        },
+        {
+          "speaker": "李叔叔",
+          "zh": "桌子上有饮料，还有矿泉水，你想喝什么就自己拿。",
+          "pinyin": "Zhuōzi shàng yǒu yǐnliào, hái yǒu kuàngquánshuǐ, nǐ xiǎng hē shénme jiù zìjǐ ná.",
+          "text": {
+            "uz": "Stolda ichimliklar va mineral suv bor, nimani ichging kelsa o‘zing olaver.",
+            "ru": "На столе напитки и минеральная вода, бери сама что хочешь.",
+            "tj": "Рӯйи миз нӯшокиҳо ва оби маъданӣ ҳаст, ҳар чӣ хоҳӣ худат бигир."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我刚刚看视频学会了包饺子，我跟你们一起包吧。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi, wǒ gēn nǐmen yìqǐ bāo ba.",
+          "text": {
+            "uz": "Men hozirgina videodan jiaozi tugishni o‘rgandim, sizlar bilan birga qilay.",
+            "ru": "Я только что по видео научилась лепить цзяоцзы, давайте я помогу вам.",
+            "tj": "Ман ҳозиргина аз видео ҷяози печониданро омӯхтам, бо шумо якҷо мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+        "ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+        "tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?",
+          "text": {
+            "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+            "ru": "Это было года три-четыре назад, да?",
+            "tj": "Ин се-чор сол пеш буд, дуруст?"
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "是啊，时间过得真快，好像是不久前发生的一样。",
+          "pinyin": "Shì a, shíjiān guò de zhēn kuài, hǎoxiàng shì bùjiǔ qián fāshēng de yíyàng.",
+          "text": {
+            "uz": "Ha, vaqt juda tez o‘tadi, xuddi yaqindagina bo‘lgandek.",
+            "ru": "Да, время летит быстро, кажется, будто это случилось совсем недавно.",
+            "tj": "Ҳа, вақт хеле зуд мегузарад, гӯё ҳамин наздикӣ рӯй дода бошад."
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "他刚离开家时，我很不习惯，只要几天不跟他视频，就很想他。",
+          "pinyin": "Tā gāng líkāi jiā shí, wǒ hěn bù xíguàn, zhǐyào jǐ tiān bù gēn tā shìpín, jiù hěn xiǎng tā.",
+          "text": {
+            "uz": "U endi uyidan ketgan paytda juda ko‘nika olmagandim; bir necha kun video orqali gaplashmasak, darrov sog‘inardim.",
+            "ru": "Когда он только уехал из дома, мне было непривычно: стоило несколько дней не созваниваться по видео, я очень скучала.",
+            "tj": "Вақте ӯ нав аз хона рафт, бароям хеле ғайриодатӣ буд; чанд рӯз видео суҳбат накунем, сахт пазмонаш мешавам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "还有最后一个学期就要毕业了，他很快就会回来了。",
+          "pinyin": "Hái yǒu zuìhòu yí ge xuéqī jiù yào bìyè le, tā hěn kuài jiù huì huílái le.",
+          "text": {
+            "uz": "Faqat oxirgi bir semestr qoldi, keyin bitiradi va tez orada qaytadi.",
+            "ru": "Остался последний семестр до выпуска, скоро он вернётся.",
+            "tj": "Танҳо як семестри охир мондааст, баъд хатм мекунад ва зуд бармегардад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "毕业",
+            "pinyin": "bìyè",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘qishni bitirmoq",
+              "ru": "оканчивать учебное заведение",
+              "tj": "таҳсилро хатм кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "毕业",
+          "pinyin": "bìyè",
+          "translation": {
+            "uz": "o‘qishni bitirmoq",
+            "ru": "оканчивать учебное заведение",
+            "tj": "таҳсилро хатм кардан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bìyè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bìyè?",
+            "tj": "bìyè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "毕业",
+            "过节",
+            "节",
+            "怎样"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "毕业 = o‘qishni bitirmoq (bìyè)",
+            "ru": "毕业 = оканчивать учебное заведение (bìyè)",
+            "tj": "毕业 = таҳсилро хатм кардан (bìyè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "出生",
+            "pinyin": "chūshēng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tug‘ilmoq",
+              "ru": "рождаться",
+              "tj": "таваллуд шудан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "出生 talaffuzini tanlang:",
+            "ru": "Выберите произношение 出生:",
+            "tj": "Талаффузи 出生-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "guòjié",
+            "jié",
+            "zěnyàng",
+            "chūshēng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "出生 — chūshēng",
+            "ru": "出生 — chūshēng",
+            "tj": "出生 — chūshēng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "过去",
+            "pinyin": "guòqù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘tmish",
+              "ru": "прошлое",
+              "tj": "гузашта"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘tmish' xitoycha qaysi?",
+            "ru": "'прошлое' по-китайски?",
+            "tj": "'гузашта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "过节",
+            "怎样",
+            "过去",
+            "节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "o‘tmish = 过去 (guòqù)",
+            "ru": "прошлое = 过去 (guòqù)",
+            "tj": "гузашта = 过去 (guòqù)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "毕业",
+          "pinyin": "bìyè",
+          "options": [
+            "过节",
+            "节",
+            "毕业",
+            "怎样"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "毕业 — o‘qishni bitirmoq (bìyè)",
+            "ru": "毕业 — оканчивать учебное заведение (bìyè)",
+            "tj": "毕业 — таҳсилро хатм кардан (bìyè)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "毕业",
+              {
+                "uz": "o‘qishni bitirmoq",
+                "ru": "оканчивать учебное заведение",
+                "tj": "таҳсилро хатм кардан"
+              }
+            ],
+            [
+              "出生",
+              {
+                "uz": "tug‘ilmoq",
+                "ru": "рождаться",
+                "tj": "таваллуд шудан"
+              }
+            ],
+            [
+              "过去",
+              {
+                "uz": "o‘tmish",
+                "ru": "прошлое",
+                "tj": "гузашта"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "毕业",
+              {
+                "uz": "o‘qishni bitirmoq",
+                "ru": "оканчивать учебное заведение",
+                "tj": "таҳсилро хатм кардан"
+              }
+            ],
+            [
+              "出生",
+              {
+                "uz": "tug‘ilmoq",
+                "ru": "рождаться",
+                "tj": "таваллуд шудан"
+              }
+            ],
+            [
+              "过去",
+              {
+                "uz": "o‘tmish",
+                "ru": "прошлое",
+                "tj": "гузашта"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "毕业",
+          "pinyin": "bìyè",
+          "options": [
+            "过节",
+            "怎样",
+            "节",
+            "毕业"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "毕业 — o‘qishni bitirmoq (bìyè)",
+            "ru": "毕业 — оканчивать учебное заведение (bìyè)",
+            "tj": "毕业 — таҳсилро хатм кардан (bìyè)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "毕业",
+          "pinyin": "bìyè",
+          "translation": {
+            "uz": "o‘qishni bitirmoq",
+            "ru": "оканчивать учебное заведение",
+            "tj": "таҳсилро хатм кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "刚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 刚:",
+            "tj": "Маънои калимаи 刚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hozirgina; endi",
+              "ru": "только что",
+              "tj": "ҳозиргина"
+            },
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "刚 = hozirgina; endi (gāng)",
+            "ru": "刚 = только что (gāng)",
+            "tj": "刚 = ҳозиргина (gāng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "刚",
+            "pinyin": "gāng",
+            "meaning": {
+              "uz": "hozirgina; endi",
+              "ru": "только что",
+              "tj": "ҳозиргина"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘qishni bitirmoq' xitoycha qaysi?",
+            "ru": "'оканчивать учебное заведение' по-китайски?",
+            "tj": "'таҳсилро хатм кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "怎样",
+            "节",
+            "毕业",
+            "过节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "o‘qishni bitirmoq = 毕业 (bìyè)",
+            "ru": "оканчивать учебное заведение = 毕业 (bìyè)",
+            "tj": "таҳсилро хатм кардан = 毕业 (bìyè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "毕业",
+            "pinyin": "bìyè",
+            "meaning": {
+              "uz": "o‘qishni bitirmoq",
+              "ru": "оканчивать учебное заведение",
+              "tj": "таҳсилро хатм кардан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

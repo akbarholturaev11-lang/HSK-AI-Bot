@@ -1,0 +1,493 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 7,
+  "source_lesson": 1,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我们去机场接你们",
+  "subtitle": {
+    "uz": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+    "ru": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+    "tj": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "带",
+      "pinyin": "dài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "olib yurmoq; olib kelmoq",
+        "ru": "брать с собой; носить",
+        "tj": "бо худ гирифтан; бурдан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "帮助",
+      "pinyin": "bāngzhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "照片",
+      "pinyin": "zhàopiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "surat; fotosurat",
+        "ru": "фотография",
+        "tj": "сурат; акс"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Aeroportda Li Wen va Bai Jiayue bagaj olish joyida.",
+        "ru": "В аэропорту Ли Вэнь и Бай Цзяюэ находятся у выдачи багажа.",
+        "tj": "Дар фурудгоҳ Ли Вэн ва Бай Ҷяюэ дар ҷойи гирифтани бағоҷ ҳастанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "是一个黑色的箱子，上面写着我的名字和电话号码。",
+          "pinyin": "Shì yí ge hēisè de xiāngzi, shàngmian xiězhe wǒ de míngzi hé diànhuà hàomǎ.",
+          "text": {
+            "uz": "Qora chamadon, ustida ismim va telefon raqamim yozilgan.",
+            "ru": "Это чёрный чемодан, на нём написаны моё имя и номер телефона.",
+            "tj": "Ҷомадони сиёҳ аст, рӯяш ному рақами телефонам навишта шудааст."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我好像在哪儿看到过这个箱子，是不是有人拿错了？",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi, shì bú shì yǒu rén ná cuò le?",
+          "text": {
+            "uz": "Bu chamadonni qayerdadir ko‘rgandekman, balki kimdir adashib olib ketgandir?",
+            "ru": "Кажется, я где-то видел этот чемодан. Может, кто-то взял его по ошибке?",
+            "tj": "Ба назарам, ин ҷомадонро дар ягон ҷо дида будам. Шояд касе иштибоҳан гирифта бошад?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我们快找谁问一下吧，箱子里有不少重要的东西。",
+          "pinyin": "Wǒmen kuài zhǎo shéi wèn yíxià ba, xiāngzi lǐ yǒu bù shǎo zhòngyào de dōngxi.",
+          "text": {
+            "uz": "Tezroq biror kishidan so‘raylik, chamadonda ancha muhim narsalar bor.",
+            "ru": "Давай скорее у кого-нибудь спросим: в чемодане много важных вещей.",
+            "tj": "Биё зуд аз касе пурсем, дар ҷомадон чизҳои муҳими зиёд ҳастанд."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "别着急，我们拿着护照和机票，去服务台问问吧。",
+          "pinyin": "Bié zháojí, wǒmen názhe hùzhào hé jīpiào, qù fúwùtái wènwen ba.",
+          "text": {
+            "uz": "Xavotir olma, pasport va chiptalarimiz yonimizda, xizmat ko‘rsatish peshtaxtasiga borib so‘raylik.",
+            "ru": "Не волнуйся. Паспорт и билеты у нас с собой, пойдём спросим на стойке обслуживания.",
+            "tj": "Ташвиш накаш, шиноснома ва чиптаҳо бо мост, биё ба мизи хизматрасонӣ рафта пурсем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroport zalida Liu Ming va Wang Yixue mehmonlarni kutib olmoqda.",
+        "ru": "В зале аэропорта Лю Мин и Ван Исюэ встречают прилетающих.",
+        "tj": "Дар толори фурудгоҳ Лю Мин ва Ван Исюэ меҳмононро пешвоз мегиранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "我们站到中间去吧，这样他们好找一些。",
+          "pinyin": "Wǒmen zhàn dào zhōngjiān qù ba, zhèyàng tāmen hǎo zhǎo yìxiē.",
+          "text": {
+            "uz": "O‘rtaroqqa borib turaylik, shunda ular bizni osonroq topadi.",
+            "ru": "Давай встанем посередине, так им будет легче нас найти.",
+            "tj": "Биё дар миёна истем, ҳамин тавр моро осонтар меёбанд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "带",
+            "pinyin": "dài",
+            "pos": "v.",
+            "meaning": {
+              "uz": "olib yurmoq; olib kelmoq",
+              "ru": "брать с собой; носить",
+              "tj": "бо худ гирифтан; бурдан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "带",
+          "pinyin": "dài",
+          "translation": {
+            "uz": "olib yurmoq; olib kelmoq",
+            "ru": "брать с собой; носить",
+            "tj": "бо худ гирифтан; бурдан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dài?",
+            "tj": "dài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "长",
+            "带",
+            "像",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "带 = olib yurmoq; olib kelmoq (dài)",
+            "ru": "带 = брать с собой; носить (dài)",
+            "tj": "带 = бо худ гирифтан; бурдан (dài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "帮助",
+            "pinyin": "bāngzhù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "帮助 talaffuzini tanlang:",
+            "ru": "Выберите произношение 帮助:",
+            "tj": "Талаффузи 帮助-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhǎng",
+            "yǐwéi",
+            "bāngzhù",
+            "xiàng"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "帮助 — bāngzhù",
+            "ru": "帮助 — bāngzhù",
+            "tj": "帮助 — bāngzhù"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "照片",
+            "pinyin": "zhàopiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "surat; fotosurat",
+              "ru": "фотография",
+              "tj": "сурат; акс"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'surat; fotosurat' xitoycha qaysi?",
+            "ru": "'фотография' по-китайски?",
+            "tj": "'сурат; акс' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "长",
+            "照片",
+            "像",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "surat; fotosurat = 照片 (zhàopiàn)",
+            "ru": "фотография = 照片 (zhàopiàn)",
+            "tj": "сурат; акс = 照片 (zhàopiàn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "带",
+          "pinyin": "dài",
+          "options": [
+            "长",
+            "带",
+            "以为",
+            "像"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "带 — olib yurmoq; olib kelmoq (dài)",
+            "ru": "带 — брать с собой; носить (dài)",
+            "tj": "带 — бо худ гирифтан; бурдан (dài)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "带",
+              {
+                "uz": "olib yurmoq; olib kelmoq",
+                "ru": "брать с собой; носить",
+                "tj": "бо худ гирифтан; бурдан"
+              }
+            ],
+            [
+              "帮助",
+              {
+                "uz": "yordam bermoq",
+                "ru": "помогать",
+                "tj": "кӯмак кардан"
+              }
+            ],
+            [
+              "照片",
+              {
+                "uz": "surat; fotosurat",
+                "ru": "фотография",
+                "tj": "сурат; акс"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "带",
+          "pinyin": "dài",
+          "options": [
+            "带",
+            "像",
+            "长",
+            "以为"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "带 — olib yurmoq; olib kelmoq (dài)",
+            "ru": "带 — брать с собой; носить (dài)",
+            "tj": "带 — бо худ гирифтан; бурдан (dài)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "帮助",
+          "pinyin": "bāngzhù",
+          "translation": {
+            "uz": "yordam bermoq",
+            "ru": "помогать",
+            "tj": "кӯмак кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "照片",
+          "pinyin": "zhàopiàn",
+          "options": [
+            "像",
+            "照片",
+            "长",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "照片 — surat; fotosurat (zhàopiàn)",
+            "ru": "照片 — фотография (zhàopiàn)",
+            "tj": "照片 — сурат; акс (zhàopiàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "带",
+          "pinyin": "dài",
+          "translation": {
+            "uz": "olib yurmoq; olib kelmoq",
+            "ru": "брать с собой; носить",
+            "tj": "бо худ гирифтан; бурдан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "发现 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 发现:",
+            "tj": "Маънои калимаи 发现-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "aniqlamoq; payqamoq",
+              "ru": "обнаружить; заметить",
+              "tj": "пай бурдан; ошкор кардан"
+            },
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "发现 = aniqlamoq; payqamoq (fāxiàn)",
+            "ru": "发现 = обнаружить; заметить (fāxiàn)",
+            "tj": "发现 = пай бурдан; ошкор кардан (fāxiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "发现",
+            "pinyin": "fāxiàn",
+            "meaning": {
+              "uz": "aniqlamoq; payqamoq",
+              "ru": "обнаружить; заметить",
+              "tj": "пай бурдан; ошкор кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'olib yurmoq; olib kelmoq' xitoycha qaysi?",
+            "ru": "'брать с собой; носить' по-китайски?",
+            "tj": "'бо худ гирифтан; бурдан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "带",
+            "长",
+            "像",
+            "以为"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "olib yurmoq; olib kelmoq = 带 (dài)",
+            "ru": "брать с собой; носить = 带 (dài)",
+            "tj": "бо худ гирифтан; бурдан = 带 (dài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "带",
+            "pinyin": "dài",
+            "meaning": {
+              "uz": "olib yurmoq; olib kelmoq",
+              "ru": "брать с собой; носить",
+              "tj": "бо худ гирифтан; бурдан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

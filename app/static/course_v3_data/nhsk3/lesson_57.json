@@ -1,0 +1,701 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 57,
+  "source_lesson": 8,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "今天我出院了",
+  "subtitle": {
+    "uz": "Kasallik, shifoxona va dori qabul qilish tajribasini tasvirlash; sog‘liq odatlari haqida gaplashish; vaqt davomiyligi to‘ldiruvchisi bilan holatning hozirgacha qancha vaqt davom etganini ifodalash.",
+    "ru": "Описывать болезнь, лечение в больнице и приём лекарств; говорить о здоровье и привычках; выражать длительность состояния до настоящего момента с дополнением времени.",
+    "tj": "Таҷрибаи беморӣ, бистарӣ шудан ва истеъмоли доруро тавсиф кардан; дар бораи саломатӣ ва одатҳо суҳбат кардан; бо пуркунандаи давомнокӣ муддати то ҳозир идома ёфтани ҳолатро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "最近",
+      "pinyin": "zuìjìn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yaqinda; so‘nggi paytlarda",
+        "ru": "в последнее время",
+        "tj": "вақтҳои охир"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "常",
+      "pinyin": "cháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "tez-tez; ko‘pincha",
+        "ru": "часто",
+        "tj": "зуд-зуд"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "体育馆",
+      "pinyin": "tǐyùguǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sport zali; sport saroyi",
+        "ru": "спортивный зал; спорткомплекс",
+        "tj": "толори варзиш; маҷмааи варзишӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "习惯",
+      "pinyin": "xíguàn",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "odat; odatlanmoq",
+        "ru": "привычка; привыкать",
+        "tj": "одат; одат кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Yo‘nalish to‘ldiruvchisining ko‘chma ma’nosi (1)",
+        "ru": "Переносное употребление направительного дополнения (1)",
+        "tj": "Истифодаи маҷозии пуркунандаи самт (1)"
+      },
+      "title_zh": "趋向补语的引申用法（1）",
+      "rule": {
+        "uz": "“下去” fe’ldan keyin kelib harakat yoki holatning bundan keyin ham davom etishini bildirishi mumkin. Bu holatda u real yo‘nalishni emas, davomiylikni ifodalaydi.",
+        "ru": "“下去” после глагола может обозначать продолжение действия или состояния в дальнейшем. Здесь оно выражает не физическое направление, а продолжительность.",
+        "tj": "“下去” баъди феъл омада метавонад идома ёфтани амал ё ҳолатро нишон диҳад. Дар ин ҷо маънои самти воқеӣ надорад, балки давомнокиро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我今年胖了十多斤，不能再胖下去了。",
+          "pinyin": "Wǒ jīnnián pàng le shí duō jīn, bù néng zài pàng xiàqu le.",
+          "translation": {
+            "uz": "Bu yil o‘n jindan ko‘proq semirdim, bundan ortiq semirish mumkin emas.",
+            "ru": "В этом году я набрал больше десяти цзиней, дальше толстеть нельзя.",
+            "tj": "Имсол зиёда аз даҳ ҷин фарбеҳ шудам, дигар ин тавр фарбеҳ шудан мумкин нест."
+          }
+        },
+        {
+          "zh": "她读完了第一个问题，后面的你读下去。",
+          "pinyin": "Tā dú wán le dì yí ge wèntí, hòumian de nǐ dú xiàqu.",
+          "translation": {
+            "uz": "U birinchi savolni o‘qib bo‘ldi, qolganini sen davom ettirib o‘qi.",
+            "ru": "Она прочитала первый вопрос, дальше читай ты.",
+            "tj": "Ӯ саволи аввалро хонд, боқимондаашро ту идома деҳ."
+          }
+        },
+        {
+          "zh": "这几天天太热了，如果再热下去就不能出门了。",
+          "pinyin": "Zhè jǐ tiān tiān tài rè le, rúguǒ zài rè xiàqu jiù bù néng chūmén le.",
+          "translation": {
+            "uz": "Shu kunlarda havo juda issiq, yana shunday davom etsa tashqariga chiqib bo‘lmaydi.",
+            "ru": "В эти дни слишком жарко; если так будет продолжаться, выйти из дома будет нельзя.",
+            "tj": "Ин чанд рӯз ҳаво хеле гарм аст, агар ҳамин тавр давом кунад, берун баромадан намешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktab sport zalida Li Wen Chen Tianzhongni uchratdi.",
+        "ru": "В школьном спортзале Ли Вэнь встретил Чэнь Тяньчжуна.",
+        "tj": "Дар толори варзишии мактаб Ли Вэн бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "你的运动习惯真不错。",
+          "pinyin": "Nǐ de yùndòng xíguàn zhēn búcuò.",
+          "text": {
+            "uz": "Sport odating juda yaxshi ekan.",
+            "ru": "У тебя отличная спортивная привычка.",
+            "tj": "Одати варзишиат хеле хуб аст."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "我知道，但是你们的水平太高了，我打得不怎么样。",
+          "pinyin": "Wǒ zhīdào, dànshì nǐmen de shuǐpíng tài gāo le, wǒ dǎ de bù zěnmeyàng.",
+          "text": {
+            "uz": "Bilaman, lekin sizlarning darajangiz juda yuqori, men uncha yaxshi o‘ynamayman.",
+            "ru": "Знаю, но у вас слишком высокий уровень, а я играю не очень.",
+            "tj": "Медонам, аммо сатҳи шумо хеле баланд аст, ман он қадар хуб бозӣ намекунам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "没关系，我可以教你。",
+          "pinyin": "Méi guānxi, wǒ kěyǐ jiāo nǐ.",
+          "text": {
+            "uz": "Hechqisi yo‘q, men senga o‘rgataman.",
+            "ru": "Ничего, я могу тебя научить.",
+            "tj": "Ҳеҷ гап нест, ман метавонам ба ту омӯзонам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Annie Chen Tianzhongning holidan xabar olmoqda.",
+        "ru": "В классе Энни спрашивает Чэнь Тяньчжуна о самочувствии.",
+        "tj": "Дар синф Энни аҳволи Чэн Тянҷунро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "你怎么了？看上去有点儿不舒服。",
+          "pinyin": "Nǐ zěnme le? Kàn shàngqu yǒudiǎnr bù shūfu.",
+          "text": {
+            "uz": "Senga nima bo‘ldi? O‘zingni biroz yomon his qilayotgandek ko‘rinyapsan.",
+            "ru": "Что с тобой? Выглядишь так, будто тебе нехорошо.",
+            "tj": "Ба ту чӣ шуд? Ба назар каме худро бад ҳис мекунӣ."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "我送你去医院，让医生检查一下吧。",
+          "pinyin": "Wǒ sòng nǐ qù yīyuàn, ràng yīshēng jiǎnchá yíxià ba.",
+          "text": {
+            "uz": "Men seni shifoxonaga olib boraman, shifokor tekshirib ko‘rsin.",
+            "ru": "Я отвезу тебя в больницу, пусть врач осмотрит.",
+            "tj": "Ман туро ба беморхона мебарам, бигзор духтур муоина кунад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shifoxona palatasida Annie Chen Tianzhongni ko‘rgani keldi.",
+        "ru": "В больничной палате Энни пришла навестить Чэнь Тяньчжуна.",
+        "tj": "Дар палатаи беморхона Энни барои дидани Чэн Тянҷун омадааст."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "医生也这么说，但是还得做完检查才能知道。",
+          "pinyin": "Yīshēng yě zhème shuō, dànshì hái děi zuò wán jiǎnchá cái néng zhīdào.",
+          "text": {
+            "uz": "Shifokor ham shunday dedi, lekin aniq bilish uchun tekshiruvni tugatish kerak.",
+            "ru": "Врач тоже так сказал, но узнать точно можно только после обследования.",
+            "tj": "Духтур ҳам ҳаминро гуфт, аммо танҳо баъди анҷоми санҷиш маълум мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "最近",
+            "pinyin": "zuìjìn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yaqinda; so‘nggi paytlarda",
+              "ru": "в последнее время",
+              "tj": "вақтҳои охир"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "最近",
+          "pinyin": "zuìjìn",
+          "translation": {
+            "uz": "yaqinda; so‘nggi paytlarda",
+            "ru": "в последнее время",
+            "tj": "вақтҳои охир"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zuìjìn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuìjìn?",
+            "tj": "zuìjìn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "习惯",
+            "常",
+            "体育馆",
+            "最近"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "最近 = yaqinda; so‘nggi paytlarda (zuìjìn)",
+            "ru": "最近 = в последнее время (zuìjìn)",
+            "tj": "最近 = вақтҳои охир (zuìjìn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "常",
+            "pinyin": "cháng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "常 talaffuzini tanlang:",
+            "ru": "Выберите произношение 常:",
+            "tj": "Талаффузи 常-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuìjìn",
+            "xíguàn",
+            "cháng",
+            "tǐyùguǎn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "常 — cháng",
+            "ru": "常 — cháng",
+            "tj": "常 — cháng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "体育馆",
+            "pinyin": "tǐyùguǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sport zali; sport saroyi",
+              "ru": "спортивный зал; спорткомплекс",
+              "tj": "толори варзиш; маҷмааи варзишӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sport zali; sport saroyi' xitoycha qaysi?",
+            "ru": "'спортивный зал; спорткомплекс' по-китайски?",
+            "tj": "'толори варзиш; маҷмааи варзишӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "常",
+            "习惯",
+            "最近",
+            "体育馆"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "sport zali; sport saroyi = 体育馆 (tǐyùguǎn)",
+            "ru": "спортивный зал; спорткомплекс = 体育馆 (tǐyùguǎn)",
+            "tj": "толори варзиш; маҷмааи варзишӣ = 体育馆 (tǐyùguǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "习惯",
+            "pinyin": "xíguàn",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "odat; odatlanmoq",
+              "ru": "привычка; привыкать",
+              "tj": "одат; одат кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "习惯",
+          "pinyin": "xíguàn",
+          "options": [
+            "习惯",
+            "常",
+            "最近",
+            "体育馆"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "习惯 — odat; odatlanmoq (xíguàn)",
+            "ru": "习惯 — привычка; привыкать (xíguàn)",
+            "tj": "习惯 — одат; одат кардан (xíguàn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "最近 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 最近:",
+            "tj": "Маънои калимаи 最近-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд"
+            },
+            {
+              "uz": "sport zali; sport saroyi",
+              "ru": "спортивный зал; спорткомплекс",
+              "tj": "толори варзиш; маҷмааи варзишӣ"
+            },
+            {
+              "uz": "odat; odatlanmoq",
+              "ru": "привычка; привыкать",
+              "tj": "одат; одат кардан"
+            },
+            {
+              "uz": "yaqinda; so‘nggi paytlarda",
+              "ru": "в последнее время",
+              "tj": "вақтҳои охир"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "最近 = yaqinda; so‘nggi paytlarda (zuìjìn)",
+            "ru": "最近 = в последнее время (zuìjìn)",
+            "tj": "最近 = вақтҳои охир (zuìjìn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "最近",
+              {
+                "uz": "yaqinda; so‘nggi paytlarda",
+                "ru": "в последнее время",
+                "tj": "вақтҳои охир"
+              }
+            ],
+            [
+              "常",
+              {
+                "uz": "tez-tez; ko‘pincha",
+                "ru": "часто",
+                "tj": "зуд-зуд"
+              }
+            ],
+            [
+              "体育馆",
+              {
+                "uz": "sport zali; sport saroyi",
+                "ru": "спортивный зал; спорткомплекс",
+                "tj": "толори варзиш; маҷмааи варзишӣ"
+              }
+            ],
+            [
+              "习惯",
+              {
+                "uz": "odat; odatlanmoq",
+                "ru": "привычка; привыкать",
+                "tj": "одат; одат кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Yo‘nalish to‘ldiruvchisining ko‘chma ma’nosi (1)",
+              "ru": "Переносное употребление направительного дополнения (1)",
+              "tj": "Истифодаи маҷозии пуркунандаи самт (1)"
+            },
+            "title_zh": "趋向补语的引申用法（1）",
+            "rule": {
+              "uz": "“下去” fe’ldan keyin kelib harakat yoki holatning bundan keyin ham davom etishini bildirishi mumkin. Bu holatda u real yo‘nalishni emas, davomiylikni ifodalaydi.",
+              "ru": "“下去” после глагола может обозначать продолжение действия или состояния в дальнейшем. Здесь оно выражает не физическое направление, а продолжительность.",
+              "tj": "“下去” баъди феъл омада метавонад идома ёфтани амал ё ҳолатро нишон диҳад. Дар ин ҷо маънои самти воқеӣ надорад, балки давомнокиро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "我今年胖了十多斤，不能再胖下去了。",
+                "pinyin": "Wǒ jīnnián pàng le shí duō jīn, bù néng zài pàng xiàqu le.",
+                "translation": {
+                  "uz": "Bu yil o‘n jindan ko‘proq semirdim, bundan ortiq semirish mumkin emas.",
+                  "ru": "В этом году я набрал больше десяти цзиней, дальше толстеть нельзя.",
+                  "tj": "Имсол зиёда аз даҳ ҷин фарбеҳ шудам, дигар ин тавр фарбеҳ шудан мумкин нест."
+                }
+              },
+              {
+                "zh": "她读完了第一个问题，后面的你读下去。",
+                "pinyin": "Tā dú wán le dì yí ge wèntí, hòumian de nǐ dú xiàqu.",
+                "translation": {
+                  "uz": "U birinchi savolni o‘qib bo‘ldi, qolganini sen davom ettirib o‘qi.",
+                  "ru": "Она прочитала первый вопрос, дальше читай ты.",
+                  "tj": "Ӯ саволи аввалро хонд, боқимондаашро ту идома деҳ."
+                }
+              },
+              {
+                "zh": "这几天天太热了，如果再热下去就不能出门了。",
+                "pinyin": "Zhè jǐ tiān tiān tài rè le, rúguǒ zài rè xiàqu jiù bù néng chūmén le.",
+                "translation": {
+                  "uz": "Shu kunlarda havo juda issiq, yana shunday davom etsa tashqariga chiqib bo‘lmaydi.",
+                  "ru": "В эти дни слишком жарко; если так будет продолжаться, выйти из дома будет нельзя.",
+                  "tj": "Ин чанд рӯз ҳаво хеле гарм аст, агар ҳамин тавр давом кунад, берун баромадан намешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U birinchi savolni o‘qib bo‘ldi, qolganini sen davom ettirib o‘qi.» — xitoychada qaysi biri?",
+            "ru": "«Она прочитала первый вопрос, дальше читай ты.» — какое предложение по-китайски?",
+            "tj": "«Ӯ саволи аввалро хонд, боқимондаашро ту идома деҳ.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我今年胖了十多斤，不能再胖下去了。",
+            "她读完了第一个问题，后面的你读下去。",
+            "这几天天太热了，如果再热下去就不能出门了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她读完了第一个问题，后面的你读下去。 — Tā dú wán le dì yí ge wèntí, hòumian de nǐ dú xiàqu.",
+            "ru": "她读完了第一个问题，后面的你读下去。 — Tā dú wán le dì yí ge wèntí, hòumian de nǐ dú xiàqu.",
+            "tj": "她读完了第一个问题，后面的你读下去。 — Tā dú wán le dì yí ge wèntí, hòumian de nǐ dú xiàqu."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "常",
+          "pinyin": "cháng",
+          "options": [
+            "习惯",
+            "体育馆",
+            "最近",
+            "常"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "常 — tez-tez; ko‘pincha (cháng)",
+            "ru": "常 — часто (cháng)",
+            "tj": "常 — зуд-зуд (cháng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "最近",
+          "pinyin": "zuìjìn",
+          "options": [
+            "习惯",
+            "体育馆",
+            "常",
+            "最近"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "最近 — yaqinda; so‘nggi paytlarda (zuìjìn)",
+            "ru": "最近 — в последнее время (zuìjìn)",
+            "tj": "最近 — вақтҳои охир (zuìjìn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "最近",
+          "pinyin": "zuìjìn",
+          "translation": {
+            "uz": "yaqinda; so‘nggi paytlarda",
+            "ru": "в последнее время",
+            "tj": "вақтҳои охир"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "辆 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 辆:",
+            "tj": "Маънои калимаи 辆-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sport zali; sport saroyi",
+              "ru": "спортивный зал; спорткомплекс",
+              "tj": "толори варзиш; маҷмааи варзишӣ"
+            },
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "yaqinda; so‘nggi paytlarda",
+              "ru": "в последнее время",
+              "tj": "вақтҳои охир"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "辆 = transport vositalari uchun hisob so‘zi (liàng)",
+            "ru": "辆 = счётное слово для транспортных средств (liàng)",
+            "tj": "辆 = воҳиди ҳисоб барои нақлиёт (liàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "辆",
+            "pinyin": "liàng",
+            "meaning": {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yaqinda; so‘nggi paytlarda' xitoycha qaysi?",
+            "ru": "'в последнее время' по-китайски?",
+            "tj": "'вақтҳои охир' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "最近",
+            "习惯",
+            "体育馆",
+            "常"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yaqinda; so‘nggi paytlarda = 最近 (zuìjìn)",
+            "ru": "в последнее время = 最近 (zuìjìn)",
+            "tj": "вақтҳои охир = 最近 (zuìjìn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "最近",
+            "pinyin": "zuìjìn",
+            "meaning": {
+              "uz": "yaqinda; so‘nggi paytlarda",
+              "ru": "в последнее время",
+              "tj": "вақтҳои охир"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

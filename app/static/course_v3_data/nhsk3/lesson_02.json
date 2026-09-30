@@ -1,0 +1,646 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 2,
+  "source_lesson": 1,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我们去机场接你们",
+  "subtitle": {
+    "uz": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+    "ru": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+    "tj": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "米",
+      "pinyin": "mǐ",
+      "pos": "m.",
+      "meaning": {
+        "uz": "metr",
+        "ru": "метр",
+        "tj": "метр"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "瘦",
+      "pinyin": "shòu",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ozg‘in",
+        "ru": "худой; стройный",
+        "tj": "лоғар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutib olmoq",
+        "ru": "встречать; забирать",
+        "tj": "пешвоз гирифтан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "行李",
+      "pinyin": "xíngli",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bagaj; yuk",
+        "ru": "багаж",
+        "tj": "бағоҷ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "So‘roq olmoshlarining so‘roq bo‘lmagan ma’nosi (1)",
+        "ru": "Невопросительное употребление вопросительных местоимений (1)",
+        "tj": "Истифодаи ғайрисаволии ҷонишинҳои саволӣ (1)"
+      },
+      "title_zh": "疑问代词的非疑问用法（1）",
+      "rule": {
+        "uz": "谁、什么、哪儿/哪里、哪 kabi so‘roq olmoshlari ayrim gaplarda savol bermaydi, balki aniq bo‘lmagan odam, narsa, joy yoki vaqtni bildiradi.",
+        "ru": "谁、什么、哪儿/哪里、哪 в некоторых предложениях не задают вопрос, а обозначают неопределённого человека, предмет, место или время.",
+        "tj": "谁、什么、哪儿/哪里、哪 дар баъзе ҷумлаҳо савол намедиҳанд, балки шахс, ашё, ҷой ё вақти номуайянро ифода мекунанд."
+      },
+      "examples": [
+        {
+          "zh": "我好像在哪儿看到过这个箱子。",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi.",
+          "translation": {
+            "uz": "Men bu chamadonni qayerdadir ko‘rgandekman.",
+            "ru": "Кажется, я где-то видел этот чемодан.",
+            "tj": "Ба назарам, ман ин ҷомадонро дар ягон ҷо дида будам."
+          }
+        },
+        {
+          "zh": "你吃点儿什么再走吧。",
+          "pinyin": "Nǐ chī diǎnr shénme zài zǒu ba.",
+          "translation": {
+            "uz": "Ketishdan oldin biror narsa yeb ol.",
+            "ru": "Съешь что-нибудь перед уходом.",
+            "tj": "Пеш аз рафтан чизе бихӯр."
+          }
+        },
+        {
+          "zh": "我们哪天一起去踢足球吧。",
+          "pinyin": "Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba.",
+          "translation": {
+            "uz": "Biror kuni birga futbol o‘ynagani boraylik.",
+            "ru": "Давай как-нибудь вместе поиграем в футбол.",
+            "tj": "Ягон рӯз якҷо футбол бозӣ кунем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "米",
+            "pinyin": "mǐ",
+            "pos": "m.",
+            "meaning": {
+              "uz": "metr",
+              "ru": "метр",
+              "tj": "метр"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mǐ?",
+            "tj": "mǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "像",
+            "米",
+            "长",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "米 = metr (mǐ)",
+            "ru": "米 = метр (mǐ)",
+            "tj": "米 = метр (mǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "瘦",
+            "pinyin": "shòu",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ozg‘in",
+              "ru": "худой; стройный",
+              "tj": "лоғар"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "瘦",
+          "pinyin": "shòu",
+          "translation": {
+            "uz": "ozg‘in",
+            "ru": "худой; стройный",
+            "tj": "лоғар"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "瘦 talaffuzini tanlang:",
+            "ru": "Выберите произношение 瘦:",
+            "tj": "Талаффузи 瘦-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàng",
+            "yǐwéi",
+            "zhǎng",
+            "shòu"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "瘦 — shòu",
+            "ru": "瘦 — shòu",
+            "tj": "瘦 — shòu"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "接",
+            "pinyin": "jiē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kutib olmoq",
+              "ru": "встречать; забирать",
+              "tj": "пешвоз гирифтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kutib olmoq' xitoycha qaysi?",
+            "ru": "'встречать; забирать' по-китайски?",
+            "tj": "'пешвоз гирифтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "以为",
+            "长",
+            "接",
+            "像"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kutib olmoq = 接 (jiē)",
+            "ru": "встречать; забирать = 接 (jiē)",
+            "tj": "пешвоз гирифтан = 接 (jiē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "行李",
+            "pinyin": "xíngli",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bagaj; yuk",
+              "ru": "багаж",
+              "tj": "бағоҷ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "行李",
+          "pinyin": "xíngli",
+          "options": [
+            "像",
+            "长",
+            "行李",
+            "以为"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "行李 — bagaj; yuk (xíngli)",
+            "ru": "行李 — багаж (xíngli)",
+            "tj": "行李 — бағоҷ (xíngli)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "米 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 米:",
+            "tj": "Маънои калимаи 米-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            },
+            {
+              "uz": "metr",
+              "ru": "метр",
+              "tj": "метр"
+            },
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "米 = metr (mǐ)",
+            "ru": "米 = метр (mǐ)",
+            "tj": "米 = метр (mǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "米",
+              {
+                "uz": "metr",
+                "ru": "метр",
+                "tj": "метр"
+              }
+            ],
+            [
+              "瘦",
+              {
+                "uz": "ozg‘in",
+                "ru": "худой; стройный",
+                "tj": "лоғар"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "kutib olmoq",
+                "ru": "встречать; забирать",
+                "tj": "пешвоз гирифтан"
+              }
+            ],
+            [
+              "行李",
+              {
+                "uz": "bagaj; yuk",
+                "ru": "багаж",
+                "tj": "бағоҷ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "So‘roq olmoshlarining so‘roq bo‘lmagan ma’nosi (1)",
+              "ru": "Невопросительное употребление вопросительных местоимений (1)",
+              "tj": "Истифодаи ғайрисаволии ҷонишинҳои саволӣ (1)"
+            },
+            "title_zh": "疑问代词的非疑问用法（1）",
+            "rule": {
+              "uz": "谁、什么、哪儿/哪里、哪 kabi so‘roq olmoshlari ayrim gaplarda savol bermaydi, balki aniq bo‘lmagan odam, narsa, joy yoki vaqtni bildiradi.",
+              "ru": "谁、什么、哪儿/哪里、哪 в некоторых предложениях не задают вопрос, а обозначают неопределённого человека, предмет, место или время.",
+              "tj": "谁、什么、哪儿/哪里、哪 дар баъзе ҷумлаҳо савол намедиҳанд, балки шахс, ашё, ҷой ё вақти номуайянро ифода мекунанд."
+            },
+            "examples": [
+              {
+                "zh": "我好像在哪儿看到过这个箱子。",
+                "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi.",
+                "translation": {
+                  "uz": "Men bu chamadonni qayerdadir ko‘rgandekman.",
+                  "ru": "Кажется, я где-то видел этот чемодан.",
+                  "tj": "Ба назарам, ман ин ҷомадонро дар ягон ҷо дида будам."
+                }
+              },
+              {
+                "zh": "你吃点儿什么再走吧。",
+                "pinyin": "Nǐ chī diǎnr shénme zài zǒu ba.",
+                "translation": {
+                  "uz": "Ketishdan oldin biror narsa yeb ol.",
+                  "ru": "Съешь что-нибудь перед уходом.",
+                  "tj": "Пеш аз рафтан чизе бихӯр."
+                }
+              },
+              {
+                "zh": "我们哪天一起去踢足球吧。",
+                "pinyin": "Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba.",
+                "translation": {
+                  "uz": "Biror kuni birga futbol o‘ynagani boraylik.",
+                  "ru": "Давай как-нибудь вместе поиграем в футбол.",
+                  "tj": "Ягон рӯз якҷо футбол бозӣ кунем."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Biror kuni birga futbol o‘ynagani boraylik.",
+            "ru": "Давай как-нибудь вместе поиграем в футбол.",
+            "tj": "Ягон рӯз якҷо футбол бозӣ кунем."
+          },
+          "tokens": [
+            "哪",
+            "一起",
+            "天",
+            "踢",
+            "去",
+            "以为",
+            "足球",
+            "像",
+            "我们",
+            "吧"
+          ],
+          "answer_tokens": [
+            "我们",
+            "哪",
+            "天",
+            "一起",
+            "去",
+            "踢",
+            "足球",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "我们哪天一起去踢足球吧。 — Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba.",
+            "ru": "我们哪天一起去踢足球吧。 — Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba.",
+            "tj": "我们哪天一起去踢足球吧。 — Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ketishdan oldin biror narsa yeb ol.» — xitoychada qaysi biri?",
+            "ru": "«Съешь что-нибудь перед уходом.» — какое предложение по-китайски?",
+            "tj": "«Пеш аз рафтан чизе бихӯр.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我好像在哪儿看到过这个箱子。",
+            "我们哪天一起去踢足球吧。",
+            "你吃点儿什么再走吧。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你吃点儿什么再走吧。 — Nǐ chī diǎnr shénme zài zǒu ba.",
+            "ru": "你吃点儿什么再走吧。 — Nǐ chī diǎnr shénme zài zǒu ba.",
+            "tj": "你吃点儿什么再走吧。 — Nǐ chī diǎnr shénme zài zǒu ba."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "米",
+              {
+                "uz": "metr",
+                "ru": "метр",
+                "tj": "метр"
+              }
+            ],
+            [
+              "瘦",
+              {
+                "uz": "ozg‘in",
+                "ru": "худой; стройный",
+                "tj": "лоғар"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "kutib olmoq",
+                "ru": "встречать; забирать",
+                "tj": "пешвоз гирифтан"
+              }
+            ],
+            [
+              "行李",
+              {
+                "uz": "bagaj; yuk",
+                "ru": "багаж",
+                "tj": "бағоҷ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "瘦",
+          "pinyin": "shòu",
+          "translation": {
+            "uz": "ozg‘in",
+            "ru": "худой; стройный",
+            "tj": "лоғар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "像 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 像:",
+            "tj": "Маънои калимаи 像-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            },
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "bo‘y balandligi",
+              "ru": "рост человека",
+              "tj": "қад; баландии қомат"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "像 = o‘xshamoq (xiàng)",
+            "ru": "像 = быть похожим; походить (xiàng)",
+            "tj": "像 = монанд будан (xiàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "像",
+            "pinyin": "xiàng",
+            "meaning": {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ozg‘in' xitoycha qaysi?",
+            "ru": "'худой; стройный' по-китайски?",
+            "tj": "'лоғар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "像",
+            "瘦",
+            "以为",
+            "长"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ozg‘in = 瘦 (shòu)",
+            "ru": "худой; стройный = 瘦 (shòu)",
+            "tj": "лоғар = 瘦 (shòu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "瘦",
+            "pinyin": "shòu",
+            "meaning": {
+              "uz": "ozg‘in",
+              "ru": "худой; стройный",
+              "tj": "лоғар"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,709 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 26,
+  "source_lesson": 4,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这家宾馆跟别的都不一样",
+  "subtitle": {
+    "uz": "Ta’til va sayohat rejalarini muhokama qilish; safardagi taassurotlarni ifodalash; to‘liq inkorni aytish; “除了” yordamida istisno yoki qo‘shimcha ma’noni berish.",
+    "ru": "Обсуждать планы на каникулы и впечатления от поездки; выражать полное отрицание; использовать “除了” для исключения или добавления.",
+    "tj": "Нақшаҳои таътил ва сафарро муҳокима кардан; таассуроти сафарро ифода кардан; инкори пурраро гуфтан; бо “除了” маънои истисно ё илова додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "骑",
+      "pinyin": "qí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "minmoq (ot/velosiped)",
+        "ru": "ехать верхом; ехать на",
+        "tj": "савор шудан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "马",
+      "pinyin": "mǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ot",
+        "ru": "лошадь",
+        "tj": "асп"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "羊",
+      "pinyin": "yáng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qo‘y",
+        "ru": "овца",
+        "tj": "гӯсфанд"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "月亮",
+      "pinyin": "yuèliang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oy",
+        "ru": "луна",
+        "tj": "моҳ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "这个假期咱们去哪儿玩玩吧。",
+          "pinyin": "Zhège jiàqī zánmen qù nǎr wánwan ba.",
+          "text": {
+            "uz": "Bu ta’tilda biror joyga sayrga boraylik.",
+            "ru": "Давай куда-нибудь съездим на этих каникулах.",
+            "tj": "Дар ин таътил биё ба ягон ҷо сайр равем."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "好啊，你想去哪儿，咱们就去哪儿。",
+          "pinyin": "Hǎo a, nǐ xiǎng qù nǎr, zánmen jiù qù nǎr.",
+          "text": {
+            "uz": "Mayli, qayerga borishni xohlasang, o‘sha yerga boramiz.",
+            "ru": "Хорошо, куда ты захочешь, туда и поедем.",
+            "tj": "Хуб, ба куҷо хоҳӣ, ҳамон ҷо меравем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "你喜欢海，找个海边住几天，怎么样？",
+          "pinyin": "Nǐ xǐhuan hǎi, zhǎo ge hǎibiān zhù jǐ tiān, zěnmeyàng?",
+          "text": {
+            "uz": "Sen dengizni yoqtirasan, dengiz bo‘yida bir necha kun yashasak qanday?",
+            "ru": "Ты любишь море. Может, поживём несколько дней у моря?",
+            "tj": "Ту баҳрро дӯст медорӣ, чанд рӯз дар соҳил зиндагӣ кунем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "现在去海边有点儿冷。",
+          "pinyin": "Xiànzài qù hǎibiān yǒudiǎnr lěng.",
+          "text": {
+            "uz": "Hozir dengiz bo‘yiga borish biroz sovuq.",
+            "ru": "Сейчас на море немного холодно.",
+            "tj": "Ҳоло ба соҳил рафтан каме хунук аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那去草原吧？草原一点儿也不冷。",
+          "pinyin": "Nà qù cǎoyuán ba? Cǎoyuán yìdiǎnr yě bù lěng.",
+          "text": {
+            "uz": "Unda dashtga boramizmi? Dasht umuman sovuq emas.",
+            "ru": "Тогда поедем в степь? Там совсем не холодно.",
+            "tj": "Пас ба саҳро равем? Он ҷо тамоман хунук нест."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "这个主意好！我好久没骑马了。",
+          "pinyin": "Zhège zhǔyi hǎo! Wǒ hǎojiǔ méi qí mǎ le.",
+          "text": {
+            "uz": "Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+            "ru": "Хорошая идея! Я давно не ездил верхом.",
+            "tj": "Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "出去玩的机票买好了吗？",
+          "pinyin": "Chūqù wán de jīpiào mǎi hǎo le ma?",
+          "text": {
+            "uz": "Sayohat uchun aviachiptalarni olib bo‘ldingmi?",
+            "ru": "Билеты на поездку уже куплены?",
+            "tj": "Чиптаҳои сафарро харида шуд?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "太好了！你看看要带什么东西？",
+          "pinyin": "Tài hǎo le! Nǐ kànkan yào dài shénme dōngxi?",
+          "text": {
+            "uz": "Zo‘r! Qara, nimalarni olib borish kerak?",
+            "ru": "Отлично! Посмотри, что нужно взять с собой.",
+            "tj": "Олиҷаноб! Бин, чӣ чизҳоро бояд бо худ гирем?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda Yang Tongle va Wang Yifei tashqariga chiqib, oldindan buyurtma qilingan haydovchi-gid bilan uchrashmoqda.",
+        "ru": "В аэропорту Ян Тунлэ и Ван Ифэй выходят и встречаются с заранее заказанным водителем-гидом.",
+        "tj": "Дар фурудгоҳ Ян Тунлэ ва Ван Ифэй берун омада, бо ронанда-роҳбалади пешакӣ фармоишдода вохӯрданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "还有一个包，我自己拿就可以。",
+          "pinyin": "Hái yǒu yí ge bāo, wǒ zìjǐ ná jiù kěyǐ.",
+          "text": {
+            "uz": "Yana bitta sumka bor, uni o‘zim olaman.",
+            "ru": "Есть ещё одна сумка, её я понесу сам.",
+            "tj": "Боз як халта ҳаст, худам мебардорам."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "车在一层，请跟我来。",
+          "pinyin": "Chē zài yì céng, qǐng gēn wǒ lái.",
+          "text": {
+            "uz": "Mashina birinchi qavatda, ortimdan yuringlar.",
+            "ru": "Машина на первом этаже, идите за мной.",
+            "tj": "Мошин дар ошёнаи якум аст, аз паси ман биёед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "骑",
+            "pinyin": "qí",
+            "pos": "v.",
+            "meaning": {
+              "uz": "minmoq (ot/velosiped)",
+              "ru": "ехать верхом; ехать на",
+              "tj": "савор шудан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "骑 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 骑:",
+            "tj": "Маънои калимаи 骑-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "minmoq (ot/velosiped)",
+              "ru": "ехать верхом; ехать на",
+              "tj": "савор шудан"
+            },
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "骑 = minmoq (ot/velosiped) (qí)",
+            "ru": "骑 = ехать верхом; ехать на (qí)",
+            "tj": "骑 = савор шудан (qí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "马",
+            "pinyin": "mǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "马",
+          "pinyin": "mǎ",
+          "translation": {
+            "uz": "ot",
+            "ru": "лошадь",
+            "tj": "асп"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mǎ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mǎ?",
+            "tj": "mǎ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "海",
+            "草原",
+            "假期",
+            "马"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "马 = ot (mǎ)",
+            "ru": "马 = лошадь (mǎ)",
+            "tj": "马 = асп (mǎ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "羊",
+            "pinyin": "yáng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qo‘y",
+              "ru": "овца",
+              "tj": "гӯсфанд"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "羊 talaffuzini tanlang:",
+            "ru": "Выберите произношение 羊:",
+            "tj": "Талаффузи 羊-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hǎi",
+            "yáng",
+            "cǎoyuán",
+            "jiàqī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "羊 — yáng",
+            "ru": "羊 — yáng",
+            "tj": "羊 — yáng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "月亮",
+            "pinyin": "yuèliang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oy",
+              "ru": "луна",
+              "tj": "моҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oy' xitoycha qaysi?",
+            "ru": "'луна' по-китайски?",
+            "tj": "'моҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "草原",
+            "月亮",
+            "海",
+            "假期"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "oy = 月亮 (yuèliang)",
+            "ru": "луна = 月亮 (yuèliang)",
+            "tj": "моҳ = 月亮 (yuèliang)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "骑",
+          "pinyin": "qí",
+          "options": [
+            "骑",
+            "假期",
+            "海",
+            "草原"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "骑 — minmoq (ot/velosiped) (qí)",
+            "ru": "骑 — ехать верхом; ехать на (qí)",
+            "tj": "骑 — савор шудан (qí)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "骑",
+              {
+                "uz": "minmoq (ot/velosiped)",
+                "ru": "ехать верхом; ехать на",
+                "tj": "савор шудан"
+              }
+            ],
+            [
+              "马",
+              {
+                "uz": "ot",
+                "ru": "лошадь",
+                "tj": "асп"
+              }
+            ],
+            [
+              "羊",
+              {
+                "uz": "qo‘y",
+                "ru": "овца",
+                "tj": "гӯсфанд"
+              }
+            ],
+            [
+              "月亮",
+              {
+                "uz": "oy",
+                "ru": "луна",
+                "tj": "моҳ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "骑",
+              {
+                "uz": "minmoq (ot/velosiped)",
+                "ru": "ехать верхом; ехать на",
+                "tj": "савор шудан"
+              }
+            ],
+            [
+              "马",
+              {
+                "uz": "ot",
+                "ru": "лошадь",
+                "tj": "асп"
+              }
+            ],
+            [
+              "羊",
+              {
+                "uz": "qo‘y",
+                "ru": "овца",
+                "tj": "гӯсфанд"
+              }
+            ],
+            [
+              "月亮",
+              {
+                "uz": "oy",
+                "ru": "луна",
+                "tj": "моҳ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "马",
+          "pinyin": "mǎ",
+          "options": [
+            "草原",
+            "海",
+            "马",
+            "假期"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "马 — ot (mǎ)",
+            "ru": "马 — лошадь (mǎ)",
+            "tj": "马 — асп (mǎ)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "这个主意好！我好久没骑马了。",
+          "pinyin": "Zhège zhǔyi hǎo! Wǒ hǎojiǔ méi qí mǎ le.",
+          "translation": {
+            "uz": "Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+            "ru": "Хорошая идея! Я давно не ездил верхом.",
+            "tj": "Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+          },
+          "tokens": {
+            "uz": [
+              "minmaganman",
+              "ot",
+              "fikr",
+              "Bu",
+              "Anchadan",
+              "yaxshi",
+              "beri"
+            ],
+            "ru": [
+              "не",
+              "верхом",
+              "Я",
+              "ездил",
+              "Хорошая",
+              "идея",
+              "давно"
+            ],
+            "tj": [
+              "фикр",
+              "аспсаворӣ",
+              "хуб",
+              "аст",
+              "накардаам",
+              "Ин",
+              "Кайҳо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bu",
+              "yaxshi",
+              "fikr",
+              "Anchadan",
+              "beri",
+              "ot",
+              "minmaganman"
+            ],
+            "ru": [
+              "Хорошая",
+              "идея",
+              "Я",
+              "давно",
+              "не",
+              "ездил",
+              "верхом"
+            ],
+            "tj": [
+              "Ин",
+              "фикр",
+              "хуб",
+              "аст",
+              "Кайҳо",
+              "аспсаворӣ",
+              "накардаам"
+            ]
+          },
+          "explanation": {
+            "uz": "这个主意好！我好久没骑马了。 — Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+            "ru": "这个主意好！我好久没骑马了。 — Хорошая идея! Я давно не ездил верхом.",
+            "tj": "这个主意好！我好久没骑马了。 — Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "马",
+          "pinyin": "mǎ",
+          "translation": {
+            "uz": "ot",
+            "ru": "лошадь",
+            "tj": "асп"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "海 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 海:",
+            "tj": "Маънои калимаи 海-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "fikr; g‘oya",
+              "ru": "идея; замысел",
+              "tj": "фикр; ғоя"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "海 = dengiz (hǎi)",
+            "ru": "海 = море (hǎi)",
+            "tj": "海 = баҳр (hǎi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "海",
+            "pinyin": "hǎi",
+            "meaning": {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ot' xitoycha qaysi?",
+            "ru": "'лошадь' по-китайски?",
+            "tj": "'асп' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "假期",
+            "马",
+            "草原",
+            "海"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ot = 马 (mǎ)",
+            "ru": "лошадь = 马 (mǎ)",
+            "tj": "асп = 马 (mǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "马",
+            "pinyin": "mǎ",
+            "meaning": {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

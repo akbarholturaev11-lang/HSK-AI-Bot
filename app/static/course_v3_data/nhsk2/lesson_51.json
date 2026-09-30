@@ -1,0 +1,1016 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 51,
+  "source_lesson": 10,
+  "part_no": 5,
+  "part_count": 5,
+  "checkpoint": true,
+  "title": "就要考试了",
+  "subtitle": {
+    "uz": "Ega-kesim birikmasini kesim sifatida ishlatish; “还是” bilan tanlov savolini tuzish; “要/快/快要/就要……了” orqali yaqin kelajakdagi hodisani ifodalash; maktab va imtihon tayyorgarligi haqida gaplashish.",
+    "ru": "Использовать субъектно-предикативную группу как сказуемое; задавать альтернативные вопросы с “还是”; выражать скорое наступление события с “要/快/快要/就要……了”; говорить о подготовке к школе и экзамену.",
+    "tj": "Ибораи мубтадо-хабарро ҳамчун хабар истифода бурдан; бо “还是” саволи интихобӣ сохтан; бо “要/快/快要/就要……了” рӯйдоди наздикро ифода кардан; дар бораи омодагӣ ба мактаб ва имтиҳон суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "开学",
+      "pinyin": "kāixué",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qish/maktab boshlanmoq",
+        "ru": "начинаться (об учебном семестре)",
+        "tj": "оғоз шудани таҳсил"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "门",
+      "pinyin": "mén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "eshik",
+        "ru": "дверь",
+        "tj": "дар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "后面",
+      "pinyin": "hòumian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "orqa tomon",
+        "ru": "сзади; задняя сторона",
+        "tj": "қафо; тарафи қафо"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "笔",
+      "pinyin": "bǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ruchka; qalam",
+        "ru": "ручка; карандаш",
+        "tj": "ручка; қалам"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "帮",
+      "pinyin": "bāng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "考试",
+      "pinyin": "kǎoshì",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "imtihon topshirmoq; imtihon",
+        "ru": "сдавать экзамен; экзамен",
+        "tj": "имтиҳон супоридан; имтиҳон"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "词",
+      "pinyin": "cí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "so‘z",
+        "ru": "слово",
+        "tj": "калима"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "本子",
+      "pinyin": "běnzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "daftar",
+        "ru": "тетрадь",
+        "tj": "дафтар"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "错",
+      "pinyin": "cuò",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xato; noto‘g‘ri",
+        "ru": "ошибочный; неправильный",
+        "tj": "хато; нодуруст"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "题",
+      "pinyin": "tí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "savol; masala",
+        "ru": "вопрос; задача",
+        "tj": "савол; масъала"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "还是",
+      "pinyin": "háishi",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "yoki (tanlov savolida)",
+        "ru": "или (в альтернативном вопросе)",
+        "tj": "ё (дар саволи интихобӣ)"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "考",
+      "pinyin": "kǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "imtihon topshirmoq; tekshirmoq",
+        "ru": "сдавать экзамен; экзаменовать",
+        "tj": "имтиҳон супоридан; санҷидан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "快要",
+      "pinyin": "kuàiyào",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "sal qoldi; tez orada",
+        "ru": "вот-вот; скоро",
+        "tj": "қариб; ба зудӣ"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "笑",
+      "pinyin": "xiào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kulmoq; jilmaymoq",
+        "ru": "смеяться; улыбаться",
+        "tj": "хандидан; табассум кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Ega-kesim birikmasi kesim bo‘lgan gap",
+        "ru": "Предложение с субъектно-предикативной группой в роли сказуемого",
+        "tj": "Ҷумла бо ибораи мубтадо-хабар ҳамчун хабар"
+      },
+      "title_zh": "主谓谓语句",
+      "rule": {
+        "uz": "Ega-kesim birikmasi butun gapning kesimi bo‘lib, asosiy egani tavsiflaydi yoki izohlaydi. Ichki ega odatda asosiy eganing qismi yoki unga aloqador bo‘ladi. Tuzilishi: ega + ega-kesim birikmasi.",
+        "ru": "Субъектно-предикативная группа может быть сказуемым и описывать основное подлежащее. Внутренний субъект обычно является его частью или связан с ним. Схема: подлежащее + субъектно-предикативная группа.",
+        "tj": "Ибораи мубтадо-хабар метавонад ҳамчун хабар омада, мубтадои асосиро шарҳ диҳад. Мубтадои дохилӣ одатан қисми мубтадои умумӣ ё бо он вобаста аст. Сохтор: мубтадо + ибораи мубтадо-хабар."
+      },
+      "examples": [
+        {
+          "zh": "我的书包你看见了吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "弟弟手很小。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "这件事他知道。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Tanlov savoli",
+        "ru": "Альтернативный вопрос",
+        "tj": "Саволи интихобӣ"
+      },
+      "title_zh": "选择问句",
+      "rule": {
+        "uz": "“还是” so‘roq gapida variantlar orasidan tanlashni bildiradi. Asosiy shakl: （是）A 还是 B.",
+        "ru": "Союз “还是” в вопросительном предложении обозначает выбор. Схема: （是）A 还是 B.",
+        "tj": "Пайвандаки “还是” дар ҷумлаи саволӣ интихобро нишон медиҳад. Сохтор: （是）A 还是 B."
+      },
+      "examples": [
+        {
+          "zh": "妈妈，是您准备考试还是我准备考试？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你更喜欢打篮球、踢足球还是游泳？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我们什么时候去看电影？今天还是明天？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "“要/快/快要/就要……了” qolipi",
+        "ru": "Конструкция “要/快/快要/就要……了”",
+        "tj": "Қолаби “要/快/快要/就要……了”"
+      },
+      "title_zh": "固定格式“要/快/快要/就要……了”",
+      "rule": {
+        "uz": "“要/快/快要/就要……了” biror hodisa tez orada sodir bo‘lishini bildiradi. Gapda vaqt holi bo‘lsa, odatda “就要……了” ishlatiladi.",
+        "ru": "“要/快/快要/就要……了” показывает, что событие вот-вот произойдёт. Если в предложении есть обстоятельство времени, обычно употребляется “就要……了”.",
+        "tj": "“要/快/快要/就要……了” наздик будани рӯйдодро нишон медиҳад. Агар дар ҷумла ҳоли вақт бошад, одатан “就要……了” истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "饭菜快要做好了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "火车快开了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我们下星期就要考试了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xonada Liu Ming Liu Xiaominga narsalarni tayyorlashga yordam bermoqda.",
+        "ru": "В комнате Лю Мин помогает Лю Сяомину готовить вещи.",
+        "tj": "Дар ҳуҷра Лю Мин ба Лю Сяомин барои тайёр кардани чизҳо кӯмак мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "小明，你们明天开学，你准备好了吗？",
+          "pinyin": "Xiǎomíng, nǐmen míngtiān kāixué, nǐ zhǔnbèi hǎo le ma?",
+          "text": {
+            "uz": "Xiaoming, ertaga o‘qish boshlanadi, tayyormisan?",
+            "ru": "Сяомин, завтра начинается учёба, ты готов?",
+            "tj": "Сяомин, фардо таҳсил оғоз мешавад, тайёрӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "明天就开学啊？爸爸，我的书包你看见了吗？",
+          "pinyin": "Míngtiān jiù kāixué a? Bàba, wǒ de shūbāo nǐ kànjiàn le ma?",
+          "text": {
+            "uz": "Ertagayoq o‘qish boshlanadimi? Dada, mening sumkamni ko‘rdingizmi?",
+            "ru": "Учёба уже завтра начинается? Папа, ты видел мой рюкзак?",
+            "tj": "Фардо аллакай таҳсил сар мешавад? Дада, ҷузвдони маро дидед?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "书包在门后面。",
+          "pinyin": "Shūbāo zài mén hòumian.",
+          "text": {
+            "uz": "Sumka eshik orqasida.",
+            "ru": "Рюкзак за дверью.",
+            "tj": "Ҷузвдон пушти дар аст."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "书在哪儿呢？笔呢？",
+          "pinyin": "Shū zài nǎr ne? Bǐ ne?",
+          "text": {
+            "uz": "Kitob qayerda? Qalam-chi?",
+            "ru": "А книги где? А ручка?",
+            "tj": "Китоб куҷост? Қалам чӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "书在床上，笔在桌子上。",
+          "pinyin": "Shū zài chuáng shàng, bǐ zài zhuōzi shàng.",
+          "text": {
+            "uz": "Kitob karavot ustida, qalam stol ustida.",
+            "ru": "Книги на кровати, ручка на столе.",
+            "tj": "Китоб рӯйи кат, қалам рӯйи миз аст."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "太好了！现在都准备好了。",
+          "pinyin": "Tài hǎo le! Xiànzài dōu zhǔnbèi hǎo le.",
+          "text": {
+            "uz": "Zo‘r! Endi hammasi tayyor.",
+            "ru": "Отлично! Теперь всё готово.",
+            "tj": "Олиҷаноб! Ҳоло ҳама чиз тайёр аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "这次爸爸帮你，下次你自己准备，好不好？",
+          "pinyin": "Zhè cì bàba bāng nǐ, xià cì nǐ zìjǐ zhǔnbèi, hǎo bu hǎo?",
+          "text": {
+            "uz": "Bu safar dada yordam berdi, keyingi safar o‘zing tayyorlaysan, xo‘pmi?",
+            "ru": "В этот раз папа помог, в следующий подготовишься сам, хорошо?",
+            "tj": "Ин дафъа падарат кӯмак кард, дафъаи дигар худат тайёр мекунӣ, хуб?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "好！",
+          "pinyin": "Hǎo!",
+          "text": {
+            "uz": "Xo‘p!",
+            "ru": "Хорошо!",
+            "tj": "Хуб!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Wang Yixue va Liu Xiaoxue o‘qish haqida suhbatlashmoqda.",
+        "ru": "В комнате Ван Исюэ и Лю Сяосюэ говорят об учёбе.",
+        "tj": "Дар ҳуҷра Ван Исюэ ва Лю Сяосюэ дар бораи таҳсил суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "小雪，你在做什么呢？",
+          "pinyin": "Xiǎoxuě, nǐ zài zuò shénme ne?",
+          "text": {
+            "uz": "Xiaoxue, nima qilyapsan?",
+            "ru": "Сяосюэ, что ты делаешь?",
+            "tj": "Сяосюэ, чӣ кор карда истодаӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "明天考试，我在看书呢。",
+          "pinyin": "Míngtiān kǎoshì, wǒ zài kàn shū ne.",
+          "text": {
+            "uz": "Ertaga imtihon, kitob o‘qiyapman.",
+            "ru": "Завтра экзамен, я читаю.",
+            "tj": "Фардо имтиҳон, китоб мехонам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这些词要好好看看。",
+          "pinyin": "Zhèxiē cí yào hǎohāo kànkan.",
+          "text": {
+            "uz": "Bu so‘zlarni yaxshilab ko‘rib chiqish kerak.",
+            "ru": "Эти слова нужно как следует повторить.",
+            "tj": "Ин калимаҳоро хуб дида баромадан лозим."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "我看过了，意思也都懂了。",
+          "pinyin": "Wǒ kànguo le, yìsi yě dōu dǒng le.",
+          "text": {
+            "uz": "Ko‘rib chiqdim, ma’nolarini ham tushundim.",
+            "ru": "Я уже посмотрела и значения тоже поняла.",
+            "tj": "Ман дида баромадам, маъноҳояшро ҳам фаҳмидам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你的本子呢？本子上做错的题也要看一看。",
+          "pinyin": "Nǐ de běnzi ne? Běnzi shàng zuòcuò de tí yě yào kàn yí kàn.",
+          "text": {
+            "uz": "Daftaring-chi? Daftardagi xato qilgan savollaringni ham ko‘rib chiq.",
+            "ru": "А тетрадь? Нужно ещё посмотреть задания, где ты ошиблась.",
+            "tj": "Дафтарат чӣ? Саволҳои хато кардаатро ҳам дида баро."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "妈妈，是您准备考试还是我准备考试？",
+          "pinyin": "Māma, shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?",
+          "text": {
+            "uz": "Oyi, imtihonga siz tayyorlanyapsizmi yoki menmi?",
+            "ru": "Мама, к экзамену готовитесь вы или я?",
+            "tj": "Оча, ба имтиҳон шумо тайёр мешавед ё ман?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Wang Yixue bolalar bilan suhbatlashmoqda.",
+        "ru": "В гостиной Ван Исюэ разговаривает с детьми.",
+        "tj": "Дар меҳмонхона Ван Исюэ бо кӯдакон суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "妈妈，我回来了！",
+          "pinyin": "Māma, wǒ huílái le!",
+          "text": {
+            "uz": "Oyi, men qaytdim!",
+            "ru": "Мама, я вернулась!",
+            "tj": "Оча, ман баргаштам!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我买了奶茶，就在桌子上，自己去拿吧。",
+          "pinyin": "Wǒ mǎile nǎichá, jiù zài zhuōzi shàng, zìjǐ qù ná ba.",
+          "text": {
+            "uz": "Sutli choy oldim, stol ustida, o‘zing borib ol.",
+            "ru": "Я купила молочный чай, он на столе, возьми сама.",
+            "tj": "Чойи ширӣ харидам, рӯйи миз аст, худат гирифта гир."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "谢谢妈妈！",
+          "pinyin": "Xièxie māma!",
+          "text": {
+            "uz": "Rahmat, oyi!",
+            "ru": "Спасибо, мама!",
+            "tj": "Раҳмат, оча!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天考试考得怎么样？",
+          "pinyin": "Jīntiān kǎoshì kǎo de zěnmeyàng?",
+          "text": {
+            "uz": "Bugungi imtihonni qanday topshirding?",
+            "ru": "Как сегодня сдала экзамен?",
+            "tj": "Имтиҳони имрӯзаро чӣ хел супоридӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "我觉得比上次好。",
+          "pinyin": "Wǒ juéde bǐ shàng cì hǎo.",
+          "text": {
+            "uz": "Menimcha, o‘tgan safardagidan yaxshi.",
+            "ru": "Мне кажется, лучше, чем в прошлый раз.",
+            "tj": "Ба назарам, аз дафъаи гузашта беҳтар."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "真不错！饭菜快要做好了，你叫弟弟一起去洗手吧。",
+          "pinyin": "Zhēn búcuò! Fàncài kuàiyào zuòhǎo le, nǐ jiào dìdi yìqǐ qù xǐshǒu ba.",
+          "text": {
+            "uz": "Juda yaxshi! Ovqat deyarli tayyor, ukangni chaqirib birga qo‘l yuvishga boringlar.",
+            "ru": "Очень хорошо! Еда почти готова, позови брата и идите вместе мыть руки.",
+            "tj": "Хеле хуб! Хӯрок қариб тайёр шуд, додарро даъват кун ва якҷо даст шӯед."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "妈妈，我是第一名，姐姐还没洗完呢。",
+          "pinyin": "Māma, wǒ shì dì-yī míng, jiějie hái méi xǐwán ne.",
+          "text": {
+            "uz": "Oyi, men birinchi bo‘ldim, opam hali yuvib bo‘lmadi.",
+            "ru": "Мама, я первый закончил, сестра ещё не домыла руки.",
+            "tj": "Оча, ман якум шудам, апа ҳоло дасташро шуста тамом накардааст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你洗得真快啊！",
+          "pinyin": "Nǐ xǐ de zhēn kuài a!",
+          "text": {
+            "uz": "Juda tez yuvibsan!",
+            "ru": "Как быстро ты помыл руки!",
+            "tj": "Чӣ қадар тез шустаӣ!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Liu Xiaoxue kundalik yozmoqda.",
+        "ru": "В комнате Лю Сяосюэ пишет дневник.",
+        "tj": "Дар ҳуҷра Лю Сяосюэ рӯзнома менависад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Narration",
+          "zh": "快要开学了，爸爸帮弟弟准备书包、本子和笔。我就要考试了，妈妈让我看书、看做错的题。我们上学，爸爸、妈妈比我们还忙。我问他们：“是我和弟弟上学还是你们上学？”我问完，他们都笑了。",
+          "pinyin": "Kuàiyào kāixué le, bàba bāng dìdi zhǔnbèi shūbāo, běnzi hé bǐ. Wǒ jiù yào kǎoshì le, māma ràng wǒ kàn shū, kàn zuòcuò de tí. Wǒmen shàngxué, bàba, māma bǐ wǒmen hái máng. Wǒ wèn tāmen: “Shì wǒ hé dìdi shàngxué háishi nǐmen shàngxué?” Wǒ wènwán, tāmen dōu xiào le.",
+          "text": {
+            "uz": "Maktab boshlanishiga oz qoldi, dada ukamga sumka, daftar va qalamlarini tayyorlashga yordam berdi. Men ham tez orada imtihon topshiraman, oyi menga kitob va xato qilgan savollarimni ko‘rishni aytdi. Maktabga biz borsak ham, dada va oyi bizdan ham band. Ulardan: “Maktabga men bilan ukam boramizmi yoki sizlarmi?” deb so‘radim. So‘rab bo‘lgach, ikkalasi ham kuldi.",
+            "ru": "Скоро начинается школа. Папа помогает брату подготовить рюкзак, тетради и ручки. У меня скоро экзамен, мама велит читать и повторять задания, где я ошиблась. Учимся мы, но папа и мама заняты ещё больше нас. Я спросила: «В школу идём мы с братом или вы?» После моего вопроса они оба рассмеялись.",
+            "tj": "Ба оғози мактаб кам мондааст, падарам ба додарам барои тайёр кардани ҷузвдон, дафтар ва қалам кӯмак кард. Ман ҳам ба зудӣ имтиҳон месупорам, модарам гуфт китоб ва саволҳои хато кардаамро бинам. Мо ба мактаб меравем, аммо падараму модарам аз мо ҳам бандтаранд. Пурсидам: «Ба мактаб ману додарам меравем ё шумо?» Баъди саволам ҳарду хандиданд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "帮",
+              {
+                "uz": "yordam bermoq",
+                "ru": "помогать",
+                "tj": "кӯмак кардан"
+              }
+            ],
+            [
+              "考试",
+              {
+                "uz": "imtihon topshirmoq; imtihon",
+                "ru": "сдавать экзамен; экзамен",
+                "tj": "имтиҳон супоридан; имтиҳон"
+              }
+            ],
+            [
+              "词",
+              {
+                "uz": "so‘z",
+                "ru": "слово",
+                "tj": "калима"
+              }
+            ],
+            [
+              "本子",
+              {
+                "uz": "daftar",
+                "ru": "тетрадь",
+                "tj": "дафтар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "开学",
+              {
+                "uz": "o‘qish/maktab boshlanmoq",
+                "ru": "начинаться (об учебном семестре)",
+                "tj": "оғоз шудани таҳсил"
+              }
+            ],
+            [
+              "门",
+              {
+                "uz": "eshik",
+                "ru": "дверь",
+                "tj": "дар"
+              }
+            ],
+            [
+              "后面",
+              {
+                "uz": "orqa tomon",
+                "ru": "сзади; задняя сторона",
+                "tj": "қафо; тарафи қафо"
+              }
+            ],
+            [
+              "笔",
+              {
+                "uz": "ruchka; qalam",
+                "ru": "ручка; карандаш",
+                "tj": "ручка; қалам"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "错 talaffuzini tanlang:",
+            "ru": "Выберите произношение 错:",
+            "tj": "Талаффузи 错-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "mén",
+            "hòumian",
+            "kāixué",
+            "cuò"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "错 — cuò",
+            "ru": "错 — cuò",
+            "tj": "错 — cuò"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kuàiyào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kuàiyào?",
+            "tj": "kuàiyào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "后面",
+            "开学",
+            "门",
+            "快要"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "快要 = sal qoldi; tez orada (kuàiyào)",
+            "ru": "快要 = вот-вот; скоро (kuàiyào)",
+            "tj": "快要 = қариб; ба зудӣ (kuàiyào)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你更喜欢打篮球、踢足球还是游泳？",
+            "火车快开了。",
+            "我们什么时候去看电影？今天还是明天？",
+            "饭菜快要做好了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "饭菜快要做好了。 — ",
+            "ru": "饭菜快要做好了。 — ",
+            "tj": "饭菜快要做好了。 — "
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yoki (tanlov savolida)' xitoycha qaysi?",
+            "ru": "'или (в альтернативном вопросе)' по-китайски?",
+            "tj": "'ё (дар саволи интихобӣ)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "还是",
+            "后面",
+            "开学",
+            "门"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yoki (tanlov savolida) = 还是 (háishi)",
+            "ru": "или (в альтернативном вопросе) = 还是 (háishi)",
+            "tj": "ё (дар саволи интихобӣ) = 还是 (háishi)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我觉得比上次好。",
+          "pinyin": "Wǒ juéde bǐ shàng cì hǎo.",
+          "translation": {
+            "uz": "Menimcha, o‘tgan safardagidan yaxshi.",
+            "ru": "Мне кажется, лучше, чем в прошлый раз.",
+            "tj": "Ба назарам, аз дафъаи гузашта беҳтар."
+          },
+          "tokens": {
+            "uz": [
+              "ertaga",
+              "o‘tgan",
+              "Xiaoming",
+              "safardagidan",
+              "yaxshi",
+              "Menimcha"
+            ],
+            "ru": [
+              "Сяомин",
+              "завтра",
+              "в",
+              "Мне",
+              "прошлый",
+              "лучше",
+              "раз",
+              "кажется",
+              "чем"
+            ],
+            "tj": [
+              "беҳтар",
+              "Сяомин",
+              "Ба",
+              "гузашта",
+              "аз",
+              "назарам",
+              "дафъаи",
+              "фардо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Menimcha",
+              "o‘tgan",
+              "safardagidan",
+              "yaxshi"
+            ],
+            "ru": [
+              "Мне",
+              "кажется",
+              "лучше",
+              "чем",
+              "в",
+              "прошлый",
+              "раз"
+            ],
+            "tj": [
+              "Ба",
+              "назарам",
+              "аз",
+              "дафъаи",
+              "гузашта",
+              "беҳтар"
+            ]
+          },
+          "explanation": {
+            "uz": "我觉得比上次好。 — Menimcha, o‘tgan safardagidan yaxshi.",
+            "ru": "我觉得比上次好。 — Мне кажется, лучше, чем в прошлый раз.",
+            "tj": "我觉得比上次好。 — Ба назарам, аз дафъаи гузашта беҳтар."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "小明，你们明天开学，你准备好了吗？",
+          "pinyin": "Xiǎomíng, nǐmen míngtiān kāixué, nǐ zhǔnbèi hǎo le ma?",
+          "options": [
+            "明天就开学啊？爸爸，我的书包你看见了吗？",
+            "书包在门后面。",
+            "书在哪儿呢？笔呢？",
+            "小明，你们明天开学，你准备好了吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "小明，你们明天开学，你准备好了吗？ — Xiaoming, ertaga o‘qish boshlanadi, tayyormisan?",
+            "ru": "小明，你们明天开学，你准备好了吗？ — Сяомин, завтра начинается учёба, ты готов?",
+            "tj": "小明，你们明天开学，你准备好了吗？ — Сяомин, фардо таҳсил оғоз мешавад, тайёрӣ?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Liu Ming avval nima deydi?",
+            "ru": "Что Liu Ming говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Liu Ming аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "书在哪儿呢？笔呢？",
+            "书包在门后面。",
+            "小明，你们明天开学，你准备好了吗？",
+            "明天就开学啊？爸爸，我的书包你看见了吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 小明，你们明天开学，你准备好了吗？",
+            "ru": "Правильный ответ: 小明，你们明天开学，你准备好了吗？",
+            "tj": "Ҷавоби дуруст: 小明，你们明天开学，你准备好了吗？"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Liu Ming",
+              "zh": "小明，你们明天开学，你准备好了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Xiaoming",
+              "zh": "明天就开学啊？爸爸，我的书包你看见了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Ming",
+              "zh": "书包在门后面。",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Xiaoming",
+              "zh": "书在哪儿呢？笔呢？",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Ming",
+              "zh": "书在床上，笔在桌子上。",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Xiaoming",
+              "zh": "太好了！现在都准备好了。",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Ming",
+              "zh": "这次爸爸帮你，下次你自己准备，好不好？",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Xiaoming",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "明天就开学啊？爸爸，我的书包你看见了吗？",
+            "好！",
+            "小明，你们明天开学，你准备好了吗？",
+            "书包在门后面。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 好！",
+            "ru": "Правильный ответ: 好！",
+            "tj": "Ҷавоби дуруст: 好！"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____明，你们明天开学，你准备好了吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "万",
+            "一",
+            "小",
+            "七"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 小 — 小明，你们明天开学，你准备好了吗？ (Xiaoming, ertaga o‘qish boshlanadi, tayyormisan?)",
+            "ru": "Верно: 小 — 小明，你们明天开学，你准备好了吗？ (Сяомин, завтра начинается учёба, ты готов?)",
+            "tj": "Дуруст: 小 — 小明，你们明天开学，你准备好了吗？ (Сяомин, фардо таҳсил оғоз мешавад, тайёрӣ?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Liu Xiaoming nima deydi?",
+            "ru": "Что Liu Xiaoming говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Liu Xiaoming чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "明天就开学啊？爸爸，我的书包你看见了吗？",
+            "好！",
+            "书包在门后面。",
+            "小明，你们明天开学，你准备好了吗？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 好！",
+            "ru": "Правильный ответ: 好！",
+            "tj": "Ҷавоби дуруст: 好！"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你洗得真快啊！",
+          "pinyin": "Nǐ xǐ de zhēn kuài a!",
+          "translation": {
+            "uz": "Juda tez yuvibsan!",
+            "ru": "Как быстро ты помыл руки!",
+            "tj": "Чӣ қадар тез шустаӣ!"
+          }
+        }
+      ]
+    }
+  ]
+}
