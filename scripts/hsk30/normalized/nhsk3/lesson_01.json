@@ -1,0 +1,364 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 1,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ]
+  },
+  "title": {
+    "hanzi": "我们去机场接你们",
+    "pinyin": "Wǒmen qù jīchǎng jiē nǐmen"
+  },
+  "objectives": [
+    "能听懂并使用多项定语描述人或事物的特征。",
+    "能听懂并解决物品丢失的问题。",
+    "掌握疑问代词的用法，能表达不确定的人、事物或地方等信息。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "以为",
+      "pinyin": "yǐwéi",
+      "part_of_speech": "v.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "像",
+      "pinyin": "xiàng",
+      "part_of_speech": "v.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "长",
+      "pinyin": "zhǎng",
+      "part_of_speech": "v.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "身高",
+      "pinyin": "shēngāo",
+      "part_of_speech": "n.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "米",
+      "pinyin": "mǐ",
+      "part_of_speech": "m.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "瘦",
+      "pinyin": "shòu",
+      "part_of_speech": "adj.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "接",
+      "pinyin": "jiē",
+      "part_of_speech": "v.",
+      "source_page": 14
+    },
+    {
+      "hanzi": "行李",
+      "pinyin": "xíngli",
+      "part_of_speech": "n.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "丢",
+      "pinyin": "diū",
+      "part_of_speech": "v.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "箱子",
+      "pinyin": "xiāngzi",
+      "part_of_speech": "n.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "号码",
+      "pinyin": "hàomǎ",
+      "part_of_speech": "n.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "好像",
+      "pinyin": "hǎoxiàng",
+      "part_of_speech": "adv.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "重要",
+      "pinyin": "zhòngyào",
+      "part_of_speech": "adj.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "着急",
+      "pinyin": "zháojí",
+      "part_of_speech": "adj.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "护照",
+      "pinyin": "hùzhào",
+      "part_of_speech": "n.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "服务台",
+      "pinyin": "fúwùtái",
+      "part_of_speech": "n.",
+      "source_page": 16
+    },
+    {
+      "hanzi": "应该",
+      "pinyin": "yīnggāi",
+      "part_of_speech": "mod.",
+      "source_page": 18
+    },
+    {
+      "hanzi": "站",
+      "pinyin": "zhàn",
+      "part_of_speech": "v.",
+      "source_page": 18
+    },
+    {
+      "hanzi": "中间",
+      "pinyin": "zhōngjiān",
+      "part_of_speech": "n.",
+      "source_page": 18
+    },
+    {
+      "hanzi": "短",
+      "pinyin": "duǎn",
+      "part_of_speech": "adj.",
+      "source_page": 18
+    },
+    {
+      "hanzi": "头发",
+      "pinyin": "tóufa",
+      "part_of_speech": "n.",
+      "source_page": 18
+    },
+    {
+      "hanzi": "年轻",
+      "pinyin": "niánqīng",
+      "part_of_speech": "adj.",
+      "source_page": 18
+    },
+    {
+      "hanzi": "发现",
+      "pinyin": "fāxiàn",
+      "part_of_speech": "v.",
+      "source_page": 20
+    },
+    {
+      "hanzi": "不见",
+      "pinyin": "bùjiàn",
+      "part_of_speech": "v.",
+      "source_page": 20
+    },
+    {
+      "hanzi": "带",
+      "pinyin": "dài",
+      "part_of_speech": "v.",
+      "source_page": 20
+    },
+    {
+      "hanzi": "帮助",
+      "pinyin": "bāngzhù",
+      "part_of_speech": "v.",
+      "source_page": 20
+    },
+    {
+      "hanzi": "照片",
+      "pinyin": "zhàopiàn",
+      "part_of_speech": "n.",
+      "source_page": 20
+    }
+  ],
+  "grammar": [
+    {
+      "label": "固定短语“看上去/看起来”",
+      "source_page": 15,
+      "examples": [
+        {
+          "hanzi": "他们看上去有点儿像。",
+          "pinyin": "Tāmen kàn shàngqu yǒudiǎnr xiàng."
+        },
+        {
+          "hanzi": "这些菜看起来都很好吃。",
+          "pinyin": "Zhèxiē cài kàn qǐlái dōu hěn hǎochī."
+        },
+        {
+          "hanzi": "那个新来的老师看上去很年轻。",
+          "pinyin": "Nàge xīn lái de lǎoshī kàn shàngqu hěn niánqīng."
+        }
+      ]
+    },
+    {
+      "label": "疑问代词的非疑问用法（1）",
+      "source_page": 16,
+      "examples": [
+        {
+          "hanzi": "我好像在哪儿看到过这个箱子。",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi."
+        },
+        {
+          "hanzi": "你吃点儿什么再走吧。",
+          "pinyin": "Nǐ chī diǎnr shénme zài zǒu ba."
+        },
+        {
+          "hanzi": "我们哪天一起去踢足球吧。",
+          "pinyin": "Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba."
+        }
+      ]
+    },
+    {
+      "label": "多项定语",
+      "source_page": 18,
+      "examples": [
+        {
+          "hanzi": "李文是那个穿着黑衣服的短头发的年轻人吗？",
+          "pinyin": "Lǐ Wén shì nàge chuānzhe hēi yīfu de duǎn tóufa de niánqīng rén ma?"
+        },
+        {
+          "hanzi": "昨天和家月一起看电影的两个人是我的朋友。",
+          "pinyin": "Zuótiān hé Jiāyuè yìqǐ kàn diànyǐng de liǎng ge rén shì wǒ de péngyou."
+        },
+        {
+          "hanzi": "我那件新买的白色的衣服在哪儿？",
+          "pinyin": "Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?"
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在家里，刘明和王一雪在沙发上聊天儿。",
+      "source_page": 14,
+      "turns": [
+        {
+          "speaker": "刘明",
+          "hanzi": "这是杨同乐吗？他怎么跟白家月在一起？",
+          "pinyin": "Zhè shì Yáng Tónglè ma? Tā zěnme gēn Bái Jiāyuè zài yìqǐ?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "他不是杨同乐，他叫李文，是白家月的好朋友。",
+          "pinyin": "Tā bú shì Yáng Tónglè, tā jiào Lǐ Wén, shì Bái Jiāyuè de hǎo péngyou."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "我还以为是同乐呢，他们看上去有点儿像。",
+          "pinyin": "Wǒ hái yǐwéi shì Tónglè ne, tāmen kàn shàngqu yǒudiǎnr xiàng."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "是长得有点儿像，但是他比同乐高，身高有一米八。",
+          "pinyin": "Shì zhǎng de yǒudiǎnr xiàng, dànshì tā bǐ Tónglè gāo, shēngāo yǒu yì mǐ bā."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "看起来也比同乐瘦一点儿。",
+          "pinyin": "Kàn qǐlái yě bǐ Tónglè shòu yìdiǎnr."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "下个星期家月和李文要来北京，我去机场接他们。",
+          "pinyin": "Xià ge xīngqī Jiāyuè hé Lǐ Wén yào lái Běijīng, wǒ qù jīchǎng jiē tāmen."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "他们哪天到北京？我跟你一起去机场接他们吧。",
+          "pinyin": "Tāmen nǎ tiān dào Běijīng? Wǒ gēn nǐ yìqǐ qù jīchǎng jiē tāmen ba."
+        }
+      ]
+    },
+    {
+      "scene": "在机场，李文和白家月在行李领取处。",
+      "source_page": 16,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "我的行李怎么还没出来？是不是丢了？",
+          "pinyin": "Wǒ de xíngli zěnme hái méi chūlái? Shì bú shì diū le?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "你的行李箱是什么样的？",
+          "pinyin": "Nǐ de xínglixiāng shì shénme yàng de?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "是一个黑色的箱子，上面写着我的名字和电话号码。",
+          "pinyin": "Shì yí ge hēisè de xiāngzi, shàngmian xiězhe wǒ de míngzi hé diànhuà hàomǎ."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我好像在哪儿看到过这个箱子，是不是有人拿错了？",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi, shì bú shì yǒu rén ná cuò le?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我们快找谁问一下吧，箱子里有不少重要的东西。",
+          "pinyin": "Wǒmen kuài zhǎo shéi wèn yíxià ba, xiāngzi lǐ yǒu bù shǎo zhòngyào de dōngxi."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "别着急，我们拿着护照和机票，去服务台问问吧。",
+          "pinyin": "Bié zháojí, wǒmen názhe hùzhào hé jīpiào, qù fúwùtái wènwen ba."
+        }
+      ]
+    },
+    {
+      "scene": "在机场大厅，刘明和王一雪接机。",
+      "source_page": 18,
+      "turns": [
+        {
+          "speaker": "刘明",
+          "hanzi": "飞机早就到了，你看见白家月他们了吗？",
+          "pinyin": "Fēijī zǎo jiù dào le, nǐ kànjiàn Bái Jiāyuè tāmen le ma?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "没有，他们应该快出来了。",
+          "pinyin": "Méiyǒu, tāmen yīnggāi kuài chūlái le."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "我们站到中间去吧，这样他们好找一些。",
+          "pinyin": "Wǒmen zhàn dào zhōngjiān qù ba, zhèyàng tāmen hǎo zhǎo yìxiē."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "你看那个高个子的人是李文吗？",
+          "pinyin": "Nǐ kàn nàge gāo gèzi de rén shì Lǐ Wén ma?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "你说的是哪个？那个穿着黑衣服的短头发的年轻人？",
+          "pinyin": "Nǐ shuō de shì nǎge? Nàge chuānzhe hēi yīfu de duǎn tóufa de niánqīng rén?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "对，那个人就是李文！你看，家月在他后面呢。",
+          "pinyin": "Duì, nàge rén jiù shì Lǐ Wén! Nǐ kàn, Jiāyuè zài tā hòumian ne."
+        }
+      ]
+    }
+  ]
+}
