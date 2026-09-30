@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "lesson": 17,
+  "source_title_hanzi": "我要多向认真的人学习",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_text": {
+    "uz": "Dars xato qilish, o‘qishni davom ettirish va kelajak yo‘nalishini tanlash haqidagi suhbatlar orqali “向”, ritorik “不是……吗？”, kuchaytiruvchi “更” va “只有……才……” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через разговоры об ошибках, продолжении учёбы и выборе будущего направления вводит “向”, риторическое “不是……吗？”, усилительное “更” и конструкцию “只有……才……”.",
+    "tj": "Дарс тавассути суҳбат дар бораи хато кардан, идомаи таҳсил ва интихоби самти оянда “向”, саволи риторикии “不是……吗？”, “更”-и тақвиятӣ ва сохтори “只有……才……”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "向",
+      "pinyin": "xiàng",
+      "uz": "tomon; ...dan o‘rganmoq",
+      "ru": "к; по направлению к; у кого-либо",
+      "tj": "ба сӯи; аз касе омӯхтан"
+    },
+    {
+      "hanzi": "楼梯",
+      "pinyin": "lóutī",
+      "uz": "zina",
+      "ru": "лестница",
+      "tj": "зинапоя"
+    },
+    {
+      "hanzi": "害怕",
+      "pinyin": "hàipà",
+      "uz": "qo‘rqmoq",
+      "ru": "бояться",
+      "tj": "тарсидан"
+    },
+    {
+      "hanzi": "生气",
+      "pinyin": "shēngqì",
+      "uz": "jahli chiqmoq",
+      "ru": "сердиться",
+      "tj": "қаҳр кардан"
+    },
+    {
+      "hanzi": "常见",
+      "pinyin": "chángjiàn",
+      "uz": "ko‘p uchraydigan; odatiy",
+      "ru": "часто встречающийся; обычный",
+      "tj": "маъмул; зуд-зуд вохӯранда"
+    },
+    {
+      "hanzi": "聪明",
+      "pinyin": "cōngming",
+      "uz": "aqlli",
+      "ru": "умный",
+      "tj": "доно; зирак"
+    },
+    {
+      "hanzi": "错",
+      "pinyin": "cuò",
+      "uz": "xato",
+      "ru": "ошибка",
+      "tj": "хато"
+    },
+    {
+      "hanzi": "认为",
+      "pinyin": "rènwéi",
+      "uz": "deb hisoblamoq; fikr qilmoq",
+      "ru": "считать; полагать",
+      "tj": "ҳисоб кардан; фикр кардан"
+    },
+    {
+      "hanzi": "到处",
+      "pinyin": "dàochù",
+      "uz": "har yerda",
+      "ru": "повсюду",
+      "tj": "ҳар ҷо"
+    },
+    {
+      "hanzi": "继续",
+      "pinyin": "jìxù",
+      "uz": "davom ettirmoq",
+      "ru": "продолжать",
+      "tj": "идома додан"
+    },
+    {
+      "hanzi": "同意",
+      "pinyin": "tóngyì",
+      "uz": "rozi bo‘lmoq",
+      "ru": "соглашаться",
+      "tj": "розӣ шудан"
+    },
+    {
+      "hanzi": "可",
+      "pinyin": "kě",
+      "uz": "ammo; lekin",
+      "ru": "но; однако",
+      "tj": "аммо; лекин"
+    },
+    {
+      "hanzi": "屋子",
+      "pinyin": "wūzi",
+      "uz": "xona; uy",
+      "ru": "комната; дом",
+      "tj": "ҳуҷра; хона"
+    },
+    {
+      "hanzi": "有关",
+      "pinyin": "yǒuguān",
+      "uz": "aloqador; haqida",
+      "ru": "связанный; касающийся",
+      "tj": "вобаста; марбут"
+    },
+    {
+      "hanzi": "关机",
+      "pinyin": "guānjī",
+      "uz": "telefon/qurilmani o‘chirmoq",
+      "ru": "выключать устройство",
+      "tj": "дастгоҳро хомӯш кардан"
+    },
+    {
+      "hanzi": "前天",
+      "pinyin": "qiántiān",
+      "uz": "avvalgi kun; indindan oldingi kun",
+      "ru": "позавчера",
+      "tj": "пешдирӯз"
+    },
+    {
+      "hanzi": "留学",
+      "pinyin": "liúxué",
+      "uz": "chet elda o‘qimoq",
+      "ru": "учиться за границей",
+      "tj": "дар хориҷ таҳсил кардан"
+    },
+    {
+      "hanzi": "国家",
+      "pinyin": "guójiā",
+      "uz": "mamlakat",
+      "ru": "страна",
+      "tj": "кишвар"
+    },
+    {
+      "hanzi": "比如",
+      "pinyin": "bǐrú",
+      "uz": "masalan",
+      "ru": "например",
+      "tj": "масалан"
+    },
+    {
+      "hanzi": "查",
+      "pinyin": "chá",
+      "uz": "tekshirmoq; qidirmoq",
+      "ru": "проверять; искать информацию",
+      "tj": "санҷидан; ҷустуҷӯ кардан"
+    },
+    {
+      "hanzi": "有用",
+      "pinyin": "yǒuyòng",
+      "uz": "foydali",
+      "ru": "полезный",
+      "tj": "муфид"
+    },
+    {
+      "hanzi": "容易",
+      "pinyin": "róngyì",
+      "uz": "oson",
+      "ru": "лёгкий; легко",
+      "tj": "осон"
+    },
+    {
+      "hanzi": "回答",
+      "pinyin": "huídá",
+      "uz": "javob bermoq",
+      "ru": "отвечать",
+      "tj": "ҷавоб додан"
+    },
+    {
+      "hanzi": "方向",
+      "pinyin": "fāngxiàng",
+      "uz": "yo‘nalish",
+      "ru": "направление",
+      "tj": "самт"
+    },
+    {
+      "hanzi": "只有",
+      "pinyin": "zhǐyǒu",
+      "uz": "faqat ... bo‘lsagina",
+      "ru": "только если; лишь при",
+      "tj": "танҳо агар"
+    },
+    {
+      "hanzi": "真正",
+      "pinyin": "zhēnzhèng",
+      "uz": "haqiqiy; chinakam",
+      "ru": "настоящий; истинно",
+      "tj": "воқеӣ; ҳақиқӣ"
+    },
+    {
+      "hanzi": "难题",
+      "pinyin": "nántí",
+      "uz": "qiyin masala; murakkab savol",
+      "ru": "трудная задача; сложный вопрос",
+      "tj": "масъалаи душвор"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "介词“向”",
+      "title_uz": "Predlog “向” — yo‘nalish va o‘rganish manbai",
+      "title_ru": "Предлог “向” — направление и источник обучения",
+      "title_tj": "Пешоянди “向” — самт ва манбаи омӯзиш",
+      "rule_uz": "“向 + shaxs/yo‘nalish + fe’l” harakatning qaysi tomonga yoki kimga yo‘nalganini bildiradi. “向某人学习” — “kimdandir o‘rganmoq”.",
+      "rule_ru": "“向 + человек/направление + глагол” показывает направление действия или того, к кому оно обращено. “向某人学习” означает «учиться у кого-либо».",
+      "rule_tj": "“向 + шахс/самт + феъл” самти амал ё ба кӣ равона шудани онро нишон медиҳад. “向某人学习” — «аз касе омӯхтан».",
+      "examples": [
+        {
+          "hanzi": "别再向前走了。",
+          "uz": "Endi oldinga yurma.",
+          "ru": "Не иди дальше вперёд.",
+          "tj": "Дигар ба пеш нарав."
+        },
+        {
+          "hanzi": "以后我要多向认真的人学习。",
+          "uz": "Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+          "ru": "В дальнейшем я буду больше учиться у серьёзных людей.",
+          "tj": "Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+        },
+        {
+          "hanzi": "孩子一看见妈妈，就向她跑过去了。",
+          "uz": "Bola onasini ko‘rishi bilan unga qarab yugurdi.",
+          "ru": "Как только ребёнок увидел маму, сразу побежал к ней.",
+          "tj": "Кӯдак ҳамин ки модарашро дид, ба сӯяш давид."
+        }
+      ]
+    },
+    {
+      "label": "反问句“不是……吗？”",
+      "title_uz": "Ritorik savol “不是……吗？”",
+      "title_ru": "Риторический вопрос “不是……吗？”",
+      "title_tj": "Саволи риторикии “不是……吗？”",
+      "rule_uz": "“不是……吗？” odatda yangi ma’lumot so‘ramaydi. Gapiruvchi avval ma’lum bo‘lgan faktni eslatib, hayrat, e’tiroz yoki ta’kidni ifodalaydi.",
+      "rule_ru": "“不是……吗？” обычно не запрашивает новую информацию. Говорящий напоминает известный факт и выражает удивление, возражение или подчёркивание.",
+      "rule_tj": "“不是……吗？” одатан маълумоти нав намепурсад. Гӯянда далели маълумро ёдрас карда, ҳайрат, эътироз ё таъкидро нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "uz": "Sen kompyuter bilan shug‘ullanishni yoqtirmaysanmi? Kompyuter haqidagi kitoblarni ko‘rib chiq.",
+          "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+          "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+        },
+        {
+          "hanzi": "你不是说今天有事吗？为什么来了？",
+          "uz": "Bugun ishing bor degan eding-ku? Nega kelding?",
+          "ru": "Разве ты не говорил, что сегодня занят? Почему пришёл?",
+          "tj": "Магар нагуфта будӣ, ки имрӯз кор дорӣ? Чаро омадӣ?"
+        },
+        {
+          "hanzi": "考试不是下个月吗？你怎么今天就开始复习了？",
+          "uz": "Imtihon keyingi oy emasmi? Nega bugundan takrorlashni boshlading?",
+          "ru": "Разве экзамен не в следующем месяце? Почему ты уже сегодня начал готовиться?",
+          "tj": "Магар имтиҳон моҳи оянда нест? Чаро аз имрӯз такрорро сар кардӣ?"
+        }
+      ]
+    },
+    {
+      "label": "递进复句“……，更……”",
+      "title_uz": "Kuchaytiruvchi qo‘shma gap “…，更…”",
+      "title_ru": "Градационная конструкция “…，更…”",
+      "title_tj": "Сохтори тақвиятии “…，更…”",
+      "rule_uz": "Ikkinchi qismdagi “更” birinchi qismdan ham kuchliroq, qo‘shimcha yoki yuqori darajadagi holatni bildiradi: “bundan ham…”.",
+      "rule_ru": "“更” во второй части усиливает или добавляет более значимую информацию по сравнению с первой: «тем более / ещё больше».",
+      "rule_tj": "“更” дар қисми дуюм маълумоти қавитар ё иловагиро нисбат ба қисми аввал нишон медиҳад: «боз ҳам бештар».",
+      "examples": [
+        {
+          "hanzi": "我还没想好学什么，更没想好去哪个国家。",
+          "uz": "Hali nimani o‘qishni ham hal qilganim yo‘q, qaysi mamlakatga borishni esa undan ham kam o‘yladim.",
+          "ru": "Я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+          "tj": "Ҳоло ҳатто чӣ хонданро қарор накардаам, боз ҳам бештар кадом кишвар рафтанро фикр накардаам."
+        },
+        {
+          "hanzi": "想提高中文水平要多听多看，更要多说多练。",
+          "uz": "Xitoy tilini yaxshilash uchun ko‘p tinglash va o‘qish kerak, undan ham muhimi ko‘p gapirib, mashq qilish kerak.",
+          "ru": "Чтобы повысить уровень китайского, нужно больше слушать и читать, а ещё важнее — больше говорить и практиковаться.",
+          "tj": "Барои беҳтар кардани чинӣ бисёр шунидану хондан лозим, боз ҳам бештар гуфтану машқ кардан даркор."
+        },
+        {
+          "hanzi": "来中国学习，我学会了中文，更了解了中国文化。",
+          "uz": "Xitoyga o‘qishga kelib, xitoy tilini o‘rgandim va Xitoy madaniyatini yanada chuqurroq tushundim.",
+          "ru": "Приехав учиться в Китай, я выучил китайский и ещё лучше понял китайскую культуру.",
+          "tj": "Ба Чин барои таҳсил омада, чиниро омӯхтам ва фарҳанги Чинро боз ҳам хубтар фаҳмидам."
+        }
+      ]
+    },
+    {
+      "label": "条件复句“只有……，才……”",
+      "title_uz": "Shartli qo‘shma gap “只有……才……”",
+      "title_ru": "Условная конструкция “只有……才……”",
+      "title_tj": "Ҷумлаи шартии “只有……才……”",
+      "rule_uz": "“只有A，才B” B natija yuz berishi uchun A yagona yoki zarur shart ekanini bildiradi: “faqat A bo‘lsagina B”.",
+      "rule_ru": "“只有A，才B” показывает, что A является необходимым или единственным условием для результата B: «только если A, тогда B».",
+      "rule_tj": "“只有A，才B” нишон медиҳад, ки A шарти зарурӣ ё ягона барои натиҷаи B аст: «танҳо агар A, пас B».",
+      "examples": [
+        {
+          "hanzi": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。",
+          "uz": "Faqat aslida nimani yoqtirishingni aniq tushunsanggina eng mos tanlovni qila olasan.",
+          "ru": "Только поняв, что тебе действительно нравится, можно сделать самый подходящий выбор.",
+          "tj": "Танҳо вақте равшан мефаҳмӣ, ки воқеан чиро дӯст медорӣ, интихоби мувофиқтарин карда метавонӣ."
+        },
+        {
+          "hanzi": "只有每天锻炼身体，才会越来越健康。",
+          "uz": "Faqat har kuni mashq qilsanggina borgan sari sog‘lom bo‘lasan.",
+          "ru": "Только если заниматься каждый день, здоровье будет становиться всё лучше.",
+          "tj": "Танҳо агар ҳар рӯз машқ кунӣ, торафт солимтар мешавӣ."
+        },
+        {
+          "hanzi": "只有多听、多说、多看，你的中文水平才能提高。",
+          "uz": "Faqat ko‘p tinglab, gapirib va o‘qisang, xitoy tiling darajasi oshadi.",
+          "ru": "Только если больше слушать, говорить и читать, уровень китайского повысится.",
+          "tj": "Танҳо бо бисёр шунидан, гуфтан ва хондан сатҳи чиниат баланд мешавад."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在教学楼里，刘小雪和同学边走边聊。",
+      "scene_uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+      "scene_ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+      "scene_tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "别再向前走了，李老师的办公室已经到了。",
+          "uz": "Oldinga yuraverma, ustoz Lining kabinetiga yetdik.",
+          "ru": "Не иди дальше, мы уже пришли к кабинету учителя Ли.",
+          "tj": "Дигар ба пеш нарав, ба кабинети устод Ли расидем."
+        },
+        {
+          "hanzi": "你进去吧，我在楼梯那儿等你。我害怕见李老师。",
+          "uz": "Sen kiraver, men zina yonida kutaman. Ustoz Lini ko‘rishdan qo‘rqyapman.",
+          "ru": "Ты заходи, я подожду у лестницы. Я боюсь встречаться с учителем Ли.",
+          "tj": "Ту даро, ман назди зинапоя интизор мешавам. Аз дидани устод Ли метарсам."
+        },
+        {
+          "hanzi": "怎么回事？",
+          "uz": "Nima bo‘ldi?",
+          "ru": "Что случилось?",
+          "tj": "Чӣ гап шуд?"
+        },
+        {
+          "hanzi": "最近我做错了好几件事，我怕李老师生气。",
+          "uz": "So‘nggi paytda bir nechta xato qildim, ustoz Li jahli chiqishidan qo‘rqyapman.",
+          "ru": "В последнее время я несколько раз ошибся, боюсь, учитель Ли рассердится.",
+          "tj": "Вақтҳои охир чанд хато кардам, метарсам устод Ли қаҳр кунад."
+        },
+        {
+          "hanzi": "你想多了，做错事情是很常见的。",
+          "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+          "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+          "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+        },
+        {
+          "hanzi": "我把简单的事情做错了，李老师一定觉得我不认真。",
+          "uz": "Oddiy ishning o‘zini xato qildim, ustoz Li meni jiddiy emas deb o‘ylasa kerak.",
+          "ru": "Я ошибся в простой вещи, учитель Ли наверняка считает меня несерьёзным.",
+          "tj": "Кори оддиро ҳам хато кардам, устод Ли ҳатман фикр мекунад, ки ман ҷиддӣ нестам."
+        },
+        {
+          "hanzi": "有的人虽然很聪明，但是会在简单的事情中出错，因为他们认为事情简单，就不会认真去做了。",
+          "uz": "Ba’zi odamlar juda aqlli bo‘lsa ham oddiy ishda xato qiladi, chunki ishni oson deb o‘ylab, jiddiy bajarmaydi.",
+          "ru": "Некоторые люди очень умны, но ошибаются в простых вещах, потому что считают их лёгкими и перестают делать внимательно.",
+          "tj": "Баъзе одамон гарчанде доно бошанд ҳам, дар кори оддӣ хато мекунанд, зеро онро осон мешуморанд ва ҷиддӣ иҷро намекунанд."
+        },
+        {
+          "hanzi": "你说的就是我，以后我要多向认真的人学习。",
+          "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+          "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+          "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在阅览室门口，白家月碰到了陈天中。",
+      "scene_uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+      "scene_ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+      "scene_tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд.",
+      "turns": [
+        {
+          "hanzi": "太阳从西边出来了？这几天怎么总是在图书馆看见你？",
+          "uz": "Quyosh g‘arbdan chiqdimi? Shu kunlarda seni nega doim kutubxonada ko‘ryapman?",
+          "ru": "Солнце с запада взошло? Почему я в эти дни всё время вижу тебя в библиотеке?",
+          "tj": "Офтоб аз ғарб баромад магар? Чаро ин чанд рӯз туро ҳамеша дар китобхона мебинам?"
+        },
+        {
+          "hanzi": "这有什么奇怪的？我是来学习的。",
+          "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+          "ru": "Что тут странного? Я пришёл заниматься.",
+          "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+        },
+        {
+          "hanzi": "你怎么还来图书馆学习？同学们都在到处找工作呢。",
+          "uz": "Nega hali ham kutubxonada o‘qiyapsan? Sinfdoshlar hamma joyda ish qidiryapti-ku.",
+          "ru": "Почему ты всё ещё учишься в библиотеке? Однокурсники повсюду ищут работу.",
+          "tj": "Чаро ҳоло ҳам дар китобхона мехонӣ? Ҳамсинфон ҳама ҷо кор меҷӯянд."
+        },
+        {
+          "hanzi": "我不想现在就工作，还想继续学习，我爸妈也同意。可我还没想好学什么，所以来图书馆看看。",
+          "uz": "Hozirning o‘zida ishlashni xohlamayman, yana o‘qishni davom ettirmoqchiman, ota-onam ham rozi. Lekin nimani o‘qishni hali tanlamadim, shuning uchun kutubxonaga keldim.",
+          "ru": "Я не хочу сразу начинать работать, хочу продолжить учёбу, родители тоже согласны. Но я ещё не решил, что изучать, поэтому пришёл посмотреть в библиотеке.",
+          "tj": "Ҳоло кор кардан намехоҳам, мехоҳам таҳсилро идома диҳам, падару модарам ҳам розӣ. Аммо ҳоло чӣ хонданро қарор накардаам, барои ҳамин ба китобхона омадам."
+        },
+        {
+          "hanzi": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+          "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+          "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+        },
+        {
+          "hanzi": "你说得对，我记得那个屋子里有些跟电脑有关的书，我去找找。",
+          "uz": "To‘g‘ri aytding, o‘sha xonada kompyuterga oid kitoblar bor edi, borib qidiraman.",
+          "ru": "Ты права, я помню, в той комнате были книги о компьютерах. Пойду поищу.",
+          "tj": "Дуруст гуфтӣ, дар хотир дорам он ҳуҷра китобҳои вобаста ба компютер дошт, рафта меҷӯям."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在校园里，李文和陈天中在聊天儿。",
+      "scene_uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+      "scene_ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+      "scene_tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "天中，你的手机怎么关机了？",
+          "uz": "Tianzhong, telefoning nega o‘chiq?",
+          "ru": "Тяньчжун, почему у тебя телефон выключен?",
+          "tj": "Тянҷун, чаро телефонат хомӯш аст?"
+        },
+        {
+          "hanzi": "我的手机没电了。你找我有事吗？",
+          "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+          "ru": "Телефон разрядился. Ты меня искал по делу?",
+          "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+        },
+        {
+          "hanzi": "前天我看见家月了，她告诉我你打算继续留学？",
+          "uz": "Peshindin Jiayueni ko‘rdim, u sen chet elda o‘qishni davom ettirmoqchi ekaningni aytdi?",
+          "ru": "Позавчера я видел Цзяюэ. Она сказала, что ты собираешься продолжить учёбу за границей?",
+          "tj": "Пешдирӯз Ҷяюэро дидам, ӯ гуфт ту мехоҳӣ таҳсилро дар хориҷ идома диҳӣ?"
+        },
+        {
+          "hanzi": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+          "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+          "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+        },
+        {
+          "hanzi": "你可以去中国学中文啊。比如可以去北京、上海这样的大城市，那里有很多好大学，也有很多留学生。",
+          "uz": "Xitoyga borib xitoy tilini o‘qishing mumkin. Masalan, Pekin yoki Shanxay kabi katta shaharlarda yaxshi universitetlar va chet ellik talabalar ko‘p.",
+          "ru": "Можешь поехать в Китай учить китайский. Например, в Пекин или Шанхай: там много хороших университетов и иностранных студентов.",
+          "tj": "Метавонӣ ба Чин рафта чинӣ омӯзӣ. Масалан, Пекин ё Шанхай — он ҷо донишгоҳҳои хуб ва донишҷӯёни хориҷӣ зиёданд."
+        },
+        {
+          "hanzi": "好，那我上网查一查。",
+          "uz": "Xo‘p, unda internetdan tekshirib ko‘raman.",
+          "ru": "Хорошо, тогда посмотрю информацию в интернете.",
+          "tj": "Хуб, пас аз интернет маълумот меҷӯям."
+        },
+        {
+          "hanzi": "我给你介绍几个有用的网站。",
+          "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+          "ru": "Я покажу тебе несколько полезных сайтов.",
+          "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+        }
+      ]
+    }
+  ]
+}
