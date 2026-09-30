@@ -12,6 +12,7 @@ from app.services.user_access_state_service import UserAccessStateService
 
 HSK30_UNLOCK_PLAN_TYPE = "hsk30_unlock"
 HSK30_UNLOCK_PRICE_KEY = "hsk30_unlock_price_tjs"
+HSK30_UNLOCK_PAYMENT_ENABLED_KEY = "hsk30_unlock_payment_enabled"
 DEFAULT_HSK30_UNLOCK_PRICE_TJS = 10
 MIN_HSK30_UNLOCK_PRICE_TJS = 1
 MAX_HSK30_UNLOCK_PRICE_TJS = 10_000
@@ -42,6 +43,18 @@ class Hsk30UnlockService:
         await self.setting_repo.set(HSK30_UNLOCK_PRICE_KEY, str(amount))
         return amount
 
+    async def payment_enabled(self) -> bool:
+        return await self.setting_repo.get_bool(
+            HSK30_UNLOCK_PAYMENT_ENABLED_KEY,
+            default=True,
+        )
+
+    async def set_payment_enabled(self, enabled: bool):
+        return await self.setting_repo.set_bool(
+            HSK30_UNLOCK_PAYMENT_ENABLED_KEY,
+            bool(enabled),
+        )
+
     async def is_permanently_unlocked(self, user) -> bool:
         if not user:
             return False
@@ -50,6 +63,7 @@ class Hsk30UnlockService:
 
     async def payment_eligibility(self, user) -> dict:
         feature_enabled = await self.feature.is_enabled()
+        payment_enabled = await self.payment_enabled()
         permanently_unlocked = await self.is_permanently_unlocked(user)
         paid_access = UserAccessStateService.is_paid(user)
 
@@ -62,6 +76,9 @@ class Hsk30UnlockService:
         elif paid_access:
             reason = "hsk30_subscription_active"
             allowed = False
+        elif not payment_enabled:
+            reason = "hsk30_unlock_payment_disabled"
+            allowed = False
         else:
             reason = "payment_required"
             allowed = True
@@ -70,6 +87,7 @@ class Hsk30UnlockService:
             "allowed": allowed,
             "reason": reason,
             "feature_enabled": feature_enabled,
+            "payment_enabled": payment_enabled,
             "paid_access": paid_access,
             "permanently_unlocked": permanently_unlocked,
             "price_tjs": await self.price_tjs(),
