@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from scripts.hsk30.nhsk3_adapter import (
+from nhsk3_adapter import (
     TRANSLATION_DIR,
     Nhsk3TranslationError,
     load_seed_lesson,
