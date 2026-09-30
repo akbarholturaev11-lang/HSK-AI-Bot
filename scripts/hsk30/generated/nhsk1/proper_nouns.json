@@ -1,0 +1,82 @@
+[
+  {
+    "zh": "安妮",
+    "source_index": false,
+    "character_name_extra": true
+  },
+  {
+    "zh": "白家月",
+    "source_index": false,
+    "character_name_extra": true
+  },
+  {
+    "zh": "北京",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "陈天中",
+    "source_index": false,
+    "character_name_extra": true
+  },
+  {
+    "zh": "大兴机场",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "法国",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "汉语",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "汉字",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "胡医生",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "李文",
+    "source_index": false,
+    "character_name_extra": true
+  },
+  {
+    "zh": "泰国",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "王老师",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "西安",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "西安饭店",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "中国",
+    "source_index": true,
+    "character_name_extra": false
+  },
+  {
+    "zh": "中文",
+    "source_index": true,
+    "character_name_extra": false
+  }
+]
