@@ -5,6 +5,7 @@ from app.services.subscription_price_service import DEFAULT_SUBSCRIPTION_PRICES
 QR_PAYMENT_METHODS = {"alipay", "wechat"}
 SUBSCRIPTION_QR_SCOPE = "subscription"
 SUBSCRIPTION_DISCOUNT_20_QR_SCOPE = "subscription_20"
+HSK30_UNLOCK_QR_SCOPE = "hsk30_unlock"
 ADMIN_CAMPAIGN_QR_SCOPE_PREFIX = "admin_campaign:"
 
 
