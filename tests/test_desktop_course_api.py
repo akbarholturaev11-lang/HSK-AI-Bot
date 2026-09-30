@@ -19,10 +19,13 @@ from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_track_state import CourseTrackState
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_notification_service import CourseNotificationService
+from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
@@ -206,6 +209,39 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(device.first_open_at)
             self.assertEqual(int(first_open_events or 0), 0)
             self.assertEqual(progress.reminder_tz_offset, 5)
+
+    async def test_hsk30_map_preserves_native_level_when_permanently_unlocked(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.level = "nhsk1"
+            session.add(
+                CourseTrackState(
+                    user_id=user.id,
+                    track="hsk30",
+                    level="nhsk1",
+                    completed_lessons_count=0,
+                    unlocked_at=datetime.now(timezone.utc),
+                )
+            )
+            await BotSettingRepository(session).set_bool(
+                HSK30_ENABLED_SETTINGS_KEY,
+                True,
+            )
+            await session.commit()
+
+        response = await self.client.get(
+            "/api/v3/desktop/course/map?tz=300",
+            headers=self.auth_headers,
+        )
+
+        self.assertEqual(response.status_code, 200, response.text)
+        payload = response.json()
+        self.assertEqual(payload["level"], "nhsk1")
+        self.assertEqual(len(payload["units"]), 15)
+        self.assertTrue(payload["lesson_limit"]["allowed"])
+        self.assertTrue(
+            payload["lesson_limit"]["hsk30_access"]["permanently_unlocked"]
+        )
 
     async def test_sync_is_lightweight_and_reports_only_drift_markers(self):
         async with self.sessions() as session:
