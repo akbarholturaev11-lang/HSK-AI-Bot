@@ -1,0 +1,470 @@
+{
+  "schema_version": 1,
+  "lesson": 15,
+  "source_title_hanzi": "我是半个南京人",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Joyning o‘rni va atrof-muhitini tasvirlash; tabiiy manzara yoki tarixiy-madaniy joylarni tanishtirish; “在……看来” bilan shaxs yoki guruh nuqtai nazarini ifodalash; Nanjing va Sariq daryo haqida asosiy ma’lumotlarni tushunish.",
+    "ru": "Описывать расположение и окружающую среду места; рассказывать о природных и историко-культурных объектах; выражать личную или групповую точку зрения конструкцией “在……看来”; познакомиться с базовой информацией о Нанкине и Хуанхэ.",
+    "tj": "Ҷойгиршавӣ ва муҳити атрофро тавсиф кардан; манзараҳои табиӣ ё ҷойҳои таърихию фарҳангиро муаррифӣ кардан; бо “在……看来” нуқтаи назари шахс ё гурӯҳро ифода кардан; бо маълумоти асосӣ дар бораи Нанҷин ва дарёи Хуанхэ шинос шудан."
+  },
+  "intro_text": {
+    "uz": "Dars turar-joy majmuasi, Nanjing shahri va Sariq daryo haqidagi suhbatlar orqali “根据”, miqdorning takrorlanishi, “在……看来” va “不一会儿” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через разговоры о жилом комплексе, Нанкине и реке Хуанхэ вводит “根据”, повтор количественных сочетаний, “在……看来” и “不一会儿”.",
+    "tj": "Дарс тавассути суҳбат дар бораи маҷмааи истиқоматӣ, Нанҷин ва дарёи Хуанхэ “根据”, такрори таркибҳои миқдорӣ, “在……看来” ва “不一会儿”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "蓝",
+      "pinyin": "lán",
+      "uz": "ko‘k; moviy",
+      "ru": "синий; голубой",
+      "tj": "кабуд; осмонӣ"
+    },
+    {
+      "hanzi": "段",
+      "pinyin": "duàn",
+      "uz": "bo‘lak; davr (hisob so‘zi)",
+      "ru": "отрезок; период (счётное слово)",
+      "tj": "қисм; давра (воҳиди ҳисоб)"
+    },
+    {
+      "hanzi": "附近",
+      "pinyin": "fùjìn",
+      "uz": "yaqin atrof",
+      "ru": "поблизости; окрестности",
+      "tj": "наздикӣ; атроф"
+    },
+    {
+      "hanzi": "马路",
+      "pinyin": "mǎlù",
+      "uz": "yo‘l; katta ko‘cha",
+      "ru": "дорога; проезжая часть",
+      "tj": "роҳ; кӯчаи калон"
+    },
+    {
+      "hanzi": "平时",
+      "pinyin": "píngshí",
+      "uz": "odatda; kundalik paytda",
+      "ru": "обычно; в обычное время",
+      "tj": "одатан; вақти муқаррарӣ"
+    },
+    {
+      "hanzi": "放学",
+      "pinyin": "fàngxué",
+      "uz": "dars tugamoq; maktabdan chiqmoq",
+      "ru": "заканчивать занятия; уходить из школы",
+      "tj": "дарс тамом шудан; аз мактаб баромадан"
+    },
+    {
+      "hanzi": "游戏",
+      "pinyin": "yóuxì",
+      "uz": "o‘yin",
+      "ru": "игра",
+      "tj": "бозӣ"
+    },
+    {
+      "hanzi": "老人",
+      "pinyin": "lǎorén",
+      "uz": "keksa odam",
+      "ru": "пожилой человек",
+      "tj": "пиронсол"
+    },
+    {
+      "hanzi": "根据",
+      "pinyin": "gēnjù",
+      "uz": "asosida; ...ga ko‘ra",
+      "ru": "на основании; согласно",
+      "tj": "дар асоси; мувофиқи"
+    },
+    {
+      "hanzi": "了解",
+      "pinyin": "liǎojiě",
+      "uz": "tushunmoq; bilib olmoq",
+      "ru": "понимать; узнавать",
+      "tj": "фаҳмидан; шинос шудан"
+    },
+    {
+      "hanzi": "可是",
+      "pinyin": "kěshì",
+      "uz": "ammo; lekin",
+      "ru": "но; однако",
+      "tj": "аммо; лекин"
+    },
+    {
+      "hanzi": "以上",
+      "pinyin": "yǐshàng",
+      "uz": "...dan ortiq; yuqorida",
+      "ru": "свыше; выше",
+      "tj": "зиёда аз; боло"
+    },
+    {
+      "hanzi": "有名",
+      "pinyin": "yǒumíng",
+      "uz": "mashhur",
+      "ru": "известный",
+      "tj": "машҳур"
+    },
+    {
+      "hanzi": "景点",
+      "pinyin": "jǐngdiǎn",
+      "uz": "diqqatga sazovor joy",
+      "ru": "достопримечательность",
+      "tj": "ҷойи тамошобоб"
+    },
+    {
+      "hanzi": "游客",
+      "pinyin": "yóukè",
+      "uz": "sayyoh",
+      "ru": "турист",
+      "tj": "сайёҳ"
+    },
+    {
+      "hanzi": "外地",
+      "pinyin": "wàidì",
+      "uz": "boshqa joy; boshqa hudud",
+      "ru": "другая местность; приезжий регион",
+      "tj": "ҷойи дигар; минтақаи дигар"
+    },
+    {
+      "hanzi": "聊",
+      "pinyin": "liáo",
+      "uz": "suhbatlashmoq",
+      "ru": "беседовать; болтать",
+      "tj": "суҳбат кардан"
+    },
+    {
+      "hanzi": "河",
+      "pinyin": "hé",
+      "uz": "daryo",
+      "ru": "река",
+      "tj": "дарё"
+    },
+    {
+      "hanzi": "关系",
+      "pinyin": "guānxì",
+      "uz": "aloqa; munosabat",
+      "ru": "связь; отношение",
+      "tj": "алоқа; муносибат"
+    },
+    {
+      "hanzi": "养",
+      "pinyin": "yǎng",
+      "uz": "boqmoq; parvarish qilmoq",
+      "ru": "растить; содержать; кормить",
+      "tj": "парвариш кардан; нигоҳ доштан"
+    },
+    {
+      "hanzi": "西北",
+      "pinyin": "xīběi",
+      "uz": "shimoli-g‘arb",
+      "ru": "северо-запад",
+      "tj": "шимолу ғарб"
+    },
+    {
+      "hanzi": "经过",
+      "pinyin": "jīngguò",
+      "uz": "o‘tmoq; orqali o‘tish",
+      "ru": "проходить через; после",
+      "tj": "гузаштан аз; тавассути"
+    },
+    {
+      "hanzi": "草地",
+      "pinyin": "cǎodì",
+      "uz": "maysazor; o‘tloq",
+      "ru": "лужайка; травянистая местность",
+      "tj": "алафзор; сабзазор"
+    },
+    {
+      "hanzi": "遇见",
+      "pinyin": "yùjiàn",
+      "uz": "uchratmoq",
+      "ru": "встретить",
+      "tj": "вохӯрдан"
+    },
+    {
+      "hanzi": "南京",
+      "pinyin": "Nánjīng",
+      "uz": "Nanjing",
+      "ru": "Нанкин",
+      "tj": "Нанҷин"
+    },
+    {
+      "hanzi": "黄河",
+      "pinyin": "Huáng Hé",
+      "uz": "Sariq daryo (Huang He)",
+      "ru": "Хуанхэ (Жёлтая река)",
+      "tj": "Хуанхэ (Дарёи Зард)"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "介词“根据”",
+      "title_uz": "Predlog “根据” — “...ga ko‘ra / asosida”",
+      "title_ru": "Предлог “根据” — «согласно / на основании»",
+      "title_tj": "Пешоянди “根据” — «мувофиқи / дар асоси»",
+      "rule_uz": "“根据 + manba/talab/vaziyat” qaror yoki harakat nimaga asoslanganini ko‘rsatadi.",
+      "rule_ru": "“根据 + источник/требование/ситуация” показывает, на чём основано решение или действие.",
+      "rule_tj": "“根据 + манба/талаб/вазъ” нишон медиҳад, ки қарор ё амал ба чӣ асос ёфтааст.",
+      "examples": [
+        {
+          "hanzi": "这几年小区根据他们的需要，有了很多变化。",
+          "uz": "So‘nggi yillarda turar-joy majmuasi ularning ehtiyojlariga ko‘ra ancha o‘zgardi.",
+          "ru": "За последние годы жилой комплекс сильно изменился в соответствии с их потребностями.",
+          "tj": "Дар чанд соли охир маҷмааи истиқоматӣ мувофиқи ниёзҳои онҳо хеле тағйир ёфт."
+        },
+        {
+          "hanzi": "根据要求，我们必须参加明天的会议。",
+          "uz": "Talabga ko‘ra, ertangi yig‘ilishda qatnashishimiz shart.",
+          "ru": "Согласно требованиям, мы обязаны участвовать в завтрашнем совещании.",
+          "tj": "Мувофиқи талаб, мо бояд дар ҷаласаи фардо иштирок кунем."
+        },
+        {
+          "hanzi": "老师根据每个学生的兴趣，选择了不一样的书。",
+          "uz": "O‘qituvchi har bir o‘quvchining qiziqishiga ko‘ra turli kitoblar tanladi.",
+          "ru": "Учитель выбрал разные книги в соответствии с интересами каждого ученика.",
+          "tj": "Омӯзгор мувофиқи шавқи ҳар донишҷӯ китобҳои гуногун интихоб кард."
+        }
+      ]
+    },
+    {
+      "label": "数量重叠“数词+量词+数词+量词”",
+      "title_uz": "Miqdor takrori: “son+hisob so‘zi+son+hisob so‘zi”",
+      "title_ru": "Повтор количества: “числительное+счётное слово+числительное+счётное слово”",
+      "title_tj": "Такрори миқдор: “шумора+воҳиди ҳисоб+шумора+воҳиди ҳисоб”",
+      "rule_uz": "Miqdor birikmasining takrorlanishi “bittadan-bitta”, “kun sayin”, “ikkitadan” kabi ketma-ket yoki guruhma-guruh ma’noni beradi.",
+      "rule_ru": "Повтор количественного сочетания выражает постепенность или распределение: «понемногу», «день за днём», «по двое».",
+      "rule_tj": "Такрори таркиби миқдорӣ маънои тадриҷӣ ё гурӯҳӣ медиҳад: «каме-каме», «рӯз ба рӯз», «дуто-дуто».",
+      "examples": [
+        {
+          "hanzi": "我得一点儿一点儿给您讲。",
+          "uz": "Sizga asta-sekin, oz-ozdan tushuntirishim kerak.",
+          "ru": "Мне придётся объяснять вам понемногу, шаг за шагом.",
+          "tj": "Ман бояд ба шумо кам-кам шарҳ диҳам."
+        },
+        {
+          "hanzi": "学生们的汉语水平一天一天地提高了。",
+          "uz": "Talabalarning xitoy tili darajasi kun sayin yaxshilanmoqda.",
+          "ru": "Уровень китайского у студентов повышается день за днём.",
+          "tj": "Сатҳи забони чинии донишҷӯён рӯз ба рӯз беҳтар мешавад."
+        },
+        {
+          "hanzi": "他们两个两个地走进去了。",
+          "uz": "Ular ikkitadan bo‘lib ichkariga kirishdi.",
+          "ru": "Они заходили внутрь по двое.",
+          "tj": "Онҳо дуто-дуто ба дарун даромаданд."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“在……看来”",
+      "title_uz": "“在……看来” — kimning nazarida",
+      "title_ru": "“在……看来” — с точки зрения кого-либо",
+      "title_tj": "“在……看来” — аз назари касе",
+      "rule_uz": "“在 + shaxs/guruh + 看来” fikr yoki baho kimning nuqtai nazariga tegishli ekanini bildiradi: “mening nazarimda”, “xitoyliklar nazarida”.",
+      "rule_ru": "“在 + человек/группа + 看来” показывает, чья точка зрения или оценка выражается: «по моему мнению», «с точки зрения китайцев».",
+      "rule_tj": "“在 + шахс/гурӯҳ + 看来” нишон медиҳад, ки фикр ё баҳо аз нуқтаи назари кӣ гуфта мешавад: «ба назари ман», «ба назари чиниҳо».",
+      "examples": [
+        {
+          "hanzi": "在我们中国人看来，黄河像妈妈一样，养了我们几千年。",
+          "uz": "Biz xitoyliklar nazarida Sariq daryo ona kabi, bizni minglab yillardan beri boqib kelgan.",
+          "ru": "С точки зрения китайцев, Хуанхэ похожа на мать, которая кормила нас тысячи лет.",
+          "tj": "Ба назари мо, чиниҳо, Хуанхэ мисли модар аст ва моро ҳазорҳо сол парвариш кардааст."
+        },
+        {
+          "hanzi": "在同事们看来，她工作非常认真。",
+          "uz": "Hamkasblari nazarida u juda jiddiy ishlaydi.",
+          "ru": "По мнению коллег, она работает очень добросовестно.",
+          "tj": "Ба назари ҳамкорон, ӯ хеле ҷиддӣ кор мекунад."
+        },
+        {
+          "hanzi": "在我看来，每天读书是一种很好的习惯。",
+          "uz": "Mening nazarimda, har kuni kitob o‘qish juda yaxshi odat.",
+          "ru": "По-моему, читать каждый день — очень хорошая привычка.",
+          "tj": "Ба назари ман, ҳар рӯз китоб хондан одати хеле хуб аст."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“不一会儿”",
+      "title_uz": "“不一会儿” — ko‘p o‘tmay",
+      "title_ru": "“不一会儿” — вскоре, через некоторое время",
+      "title_tj": "“不一会儿” — дере нагузашта",
+      "rule_uz": "“不一会儿” juda qisqa vaqt o‘tganini bildiradi: “ko‘p o‘tmay / birozdan keyin”.",
+      "rule_ru": "“不一会儿” означает, что прошло совсем немного времени: «вскоре / через некоторое время».",
+      "rule_tj": "“不一会儿” гузаштани вақти хеле кӯтоҳро нишон медиҳад: «дере нагузашта / каме баъд».",
+      "examples": [
+        {
+          "hanzi": "难过的事情不一会儿就忘了。",
+          "uz": "Xafa qilgan voqeani ko‘p o‘tmay unutib yubordim.",
+          "ru": "Грустное событие вскоре забылось.",
+          "tj": "Ҳодисаи ғамангез дере нагузашта фаромӯш шуд."
+        },
+        {
+          "hanzi": "不一会儿，张校长就来了。",
+          "uz": "Ko‘p o‘tmay direktor Zhang keldi.",
+          "ru": "Вскоре пришёл директор Чжан.",
+          "tj": "Дере нагузашта директор Чжан омад."
+        },
+        {
+          "hanzi": "两个小时看起来长，但是不一会儿就过去了。",
+          "uz": "Ikki soat uzun ko‘rinadi, lekin ko‘p o‘tmay o‘tib ketadi.",
+          "ru": "Два часа кажутся долгими, но проходят очень быстро.",
+          "tj": "Ду соат дароз менамояд, аммо дере нагузашта мегузарад."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在办公室里，王一雪和杨同乐在聊天儿。",
+      "scene_uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+      "scene_ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+      "scene_tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "您搬到蓝天小区一段时间了，觉得怎么样？",
+          "uz": "Lantian turar-joy majmuasiga ko‘chganingizga bir muddat bo‘ldi, qanday?",
+          "ru": "Вы уже некоторое время живёте в жилом комплексе Ланьтянь. Как вам?",
+          "tj": "Муддате шуд ба маҷмааи Лантян кӯчидаед, чӣ хел аст?"
+        },
+        {
+          "hanzi": "小区环境挺好的，附近买东西也很方便，过马路就是超市。",
+          "uz": "Majmuaning muhiti yaxshi, yaqin atrofda xarid qilish ham qulay, yo‘lning narigi tomonida supermarket bor.",
+          "ru": "Обстановка хорошая, покупки рядом делать удобно, через дорогу супермаркет.",
+          "tj": "Муҳити маҷмаа хуб аст, харид дар наздикӣ ҳам қулай, аз роҳ гузарӣ супермаркет аст."
+        },
+        {
+          "hanzi": "平时孩子们在哪儿玩？",
+          "uz": "Odatda bolalar qayerda o‘ynaydi?",
+          "ru": "Где дети обычно играют?",
+          "tj": "Одатан кӯдакон дар куҷо бозӣ мекунанд?"
+        },
+        {
+          "hanzi": "小区里有很多树，孩子们放学后就在树下做游戏。你想买房子吗？",
+          "uz": "Majmuada daraxtlar ko‘p, bolalar darsdan keyin daraxt tagida o‘ynaydi. Uy sotib olmoqchimisan?",
+          "ru": "В комплексе много деревьев, после школы дети играют под ними. Ты хочешь купить жильё?",
+          "tj": "Дар маҷмаа дарахт зиёд аст, кӯдакон баъди дарс зери дарахт бозӣ мекунанд. Хона харидан мехоҳӣ?"
+        },
+        {
+          "hanzi": "是。我想买一个大房子，让我爸妈过来跟我一起住。",
+          "uz": "Ha. Katta uy olib, ota-onamni ham yonimga ko‘chirib kelmoqchiman.",
+          "ru": "Да. Хочу купить большой дом и перевезти родителей жить со мной.",
+          "tj": "Ҳа. Мехоҳам хонаи калон харида, падару модарамро назди худ биёрам."
+        },
+        {
+          "hanzi": "蓝天小区的老人挺多的，这几年小区根据他们的需要，有了很多变化。",
+          "uz": "Lantian majmuasida keksalar ancha ko‘p, so‘nggi yillarda ularning ehtiyojlariga ko‘ra ko‘p o‘zgarishlar qilindi.",
+          "ru": "В Ланьтяне довольно много пожилых, и в последние годы комплекс сильно изменился с учётом их потребностей.",
+          "tj": "Дар маҷмааи Лантян пиронсолон зиёданд ва чанд соли охир мувофиқи ниёзҳои онҳо тағйироти зиёд шудааст."
+        },
+        {
+          "hanzi": "真不错！过几天我去蓝天小区看看。",
+          "uz": "Juda yaxshi! Bir necha kundan keyin Lantian majmuasini ko‘rgani boraman.",
+          "ru": "Отлично! Через несколько дней съезжу посмотреть Ланьтянь.",
+          "tj": "Хеле хуб! Баъди чанд рӯз ба маҷмааи Лантян рафта мебинам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在办公室里，王一雪和杨同乐在聊天儿。",
+      "scene_uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+      "scene_ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+      "scene_tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "假期我想去南京旅游，但是我不太了解那里。",
+          "uz": "Ta’tilda Nanjingga sayohat qilmoqchiman, lekin u joyni yaxshi bilmayman.",
+          "ru": "На каникулах хочу поехать в Нанкин, но мало о нём знаю.",
+          "tj": "Дар таътил мехоҳам ба Нанҷин саёҳат равам, аммо он ҷоро хуб намешиносам."
+        },
+        {
+          "hanzi": "我虽然不是南京人，可是我是在南京上的大学，可以说是半个南京人。",
+          "uz": "Men Nanjinglik bo‘lmasam ham, universitetni Nanjingda o‘qiganman, o‘zimni yarim Nanjinglik desa bo‘ladi.",
+          "ru": "Я не уроженец Нанкина, но учился там в университете, так что можно сказать, что я наполовину нанкинец.",
+          "tj": "Гарчанде ман аз Нанҷин нестам, донишгоҳро дар Нанҷин хондаам, метавон гуфт ним Нанҷинӣ ҳастам."
+        },
+        {
+          "hanzi": "太好了！你快给我介绍一下南京吧。",
+          "uz": "Zo‘r! Tezroq menga Nanjingni tanishtirib ber.",
+          "ru": "Отлично! Расскажи мне скорее о Нанкине.",
+          "tj": "Олиҷаноб! Зуд ба ман Нанҷинро муаррифӣ кун."
+        },
+        {
+          "hanzi": "南京有两千年以上的历史，有老城、老街，还有很多有名的景点，每年去旅游的游客特别多。",
+          "uz": "Nanjingning ikki ming yildan ortiq tarixi bor, eski shahar va eski ko‘chalar, ko‘plab mashhur diqqatga sazovor joylari bor, har yili sayyohlar juda ko‘p keladi.",
+          "ru": "Истории Нанкина больше двух тысяч лет; там есть старый город, старые улицы и множество известных достопримечательностей, ежегодно приезжает много туристов.",
+          "tj": "Нанҷин зиёда аз ду ҳазор сол таърих дорад, шаҳри кӯҳна, кӯчаҳои кӯҳна ва бисёр ҷойҳои машҳури тамошобоб дорад, ҳар сол сайёҳони зиёд меоянд."
+        },
+        {
+          "hanzi": "除了这些以外，你再告诉我一些外地人不知道的地方。",
+          "uz": "Bulardan tashqari, menga tashqaridan kelganlar bilmaydigan joylarni ham ayt.",
+          "ru": "Кроме этого, расскажи ещё о местах, которые приезжие обычно не знают.",
+          "tj": "Ба ғайр аз инҳо, боз ҷойҳоеро бигӯ, ки одамони аз дигар ҷой омада намедонанд."
+        },
+        {
+          "hanzi": "那太多了，我得一点儿一点儿给您讲。",
+          "uz": "Bunday joylar juda ko‘p, sizga asta-sekin aytib berishim kerak.",
+          "ru": "Таких мест очень много, придётся рассказывать понемногу.",
+          "tj": "Ин гуна ҷойҳо хеле зиёданд, бояд кам-кам ба шумо нақл кунам."
+        },
+        {
+          "hanzi": "行，下班后我请你吃晚饭，咱们边吃边聊。",
+          "uz": "Mayli, ishdan keyin seni kechki ovqatga taklif qilaman, ovqatlanib turib gaplashamiz.",
+          "ru": "Хорошо, после работы угощу тебя ужином, будем есть и разговаривать.",
+          "tj": "Хуб, баъди кор туро ба хӯроки шом даъват мекунам, хӯрда истода суҳбат мекунем."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在家里，王一雪和刘小明在聊天儿。",
+      "scene_uz": "Uyda Wang Yixue va Liu Xiaoming suhbatlashmoqda.",
+      "scene_ru": "Дома Ван Исюэ и Лю Сяомин разговаривают.",
+      "scene_tj": "Дар хона Ван Исюэ ва Лю Сяомин суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "小明，中国有一条大河，它的名字跟颜色有关系，你知道是什么河吗？",
+          "uz": "Xiaoming, Xitoyda nomi rang bilan bog‘liq katta daryo bor, qaysi daryo ekanini bilasanmi?",
+          "ru": "Сяомин, в Китае есть большая река, название которой связано с цветом. Знаешь, какая?",
+          "tj": "Сяомин, дар Чин дарёи калоне ҳаст, ки номаш бо ранг вобаста аст. Медонӣ кадом дарё?"
+        },
+        {
+          "hanzi": "我知道，是黄河！",
+          "uz": "Bilaman, bu Sariq daryo!",
+          "ru": "Знаю — Хуанхэ!",
+          "tj": "Медонам, Хуанхэ!"
+        },
+        {
+          "hanzi": "你说对了。我再问问你，你知道它为什么叫黄河吗？",
+          "uz": "To‘g‘ri. Yana so‘ray, nega Sariq daryo deb atalishini bilasanmi?",
+          "ru": "Правильно. Ещё вопрос: знаешь, почему её называют Хуанхэ?",
+          "tj": "Дуруст. Боз мепурсам: медонӣ чаро онро Хуанхэ мегӯянд?"
+        },
+        {
+          "hanzi": "因为河水看起来是黄色的，所以叫这个名字。黄河是中国最长的河吗？",
+          "uz": "Chunki daryo suvi sariq ko‘rinadi, shuning uchun shunday nomlangan. Sariq daryo Xitoydagi eng uzun daryomi?",
+          "ru": "Потому что вода выглядит жёлтой, поэтому её так назвали. Хуанхэ — самая длинная река Китая?",
+          "tj": "Чунки оби дарё зард менамояд, барои ҳамин чунин ном дорад. Хуанхэ дарозтарин дарёи Чин аст?"
+        },
+        {
+          "hanzi": "不是。黄河虽然不是最长的河，可是在历史上很重要。",
+          "uz": "Yo‘q. Sariq daryo eng uzun bo‘lmasa ham, tarixda juda muhim.",
+          "ru": "Нет. Хуанхэ не самая длинная, но исторически она очень важна.",
+          "tj": "Не. Хуанхэ гарчанде дарозтарин дарё нест, дар таърих хеле муҳим аст."
+        },
+        {
+          "hanzi": "这个我知道。很久以前，很多中国人都住在黄河边上。",
+          "uz": "Buni bilaman. Qadimda ko‘p xitoyliklar Sariq daryo bo‘yida yashagan.",
+          "ru": "Это я знаю. Давным-давно многие китайцы жили у Хуанхэ.",
+          "tj": "Инро медонам. Замонҳои пеш бисёр чиниҳо дар соҳили Хуанхэ зиндагӣ мекарданд."
+        },
+        {
+          "hanzi": "对。在我们中国人看来，黄河像妈妈一样，养了我们几千年。",
+          "uz": "To‘g‘ri. Biz xitoyliklar nazarida Sariq daryo ona kabi, bizni minglab yillardan beri boqib kelgan.",
+          "ru": "Верно. Для китайцев Хуанхэ словно мать, которая кормила нас тысячи лет.",
+          "tj": "Дуруст. Ба назари мо, чиниҳо, Хуанхэ мисли модар аст ва моро ҳазорҳо сол парвариш кардааст."
+        }
+      ]
+    }
+  ]
+}
