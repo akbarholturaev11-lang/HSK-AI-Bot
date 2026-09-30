@@ -201,8 +201,17 @@ var GOALS=[
   {k:"study_china",g:"学",hd:{ru:"Учёба в Китае",uz:"Xitoyda o'qish",tj:"Таҳсил дар Чин"},
     s:{ru:"Упор на курс и словарный запас",uz:"Kursga va so'z boyligiga urg'u",tj:"Таъкид ба курс ва луғат"}}
 ];
-var step=0,sel="beginner",goalSel="hsk_exam",submitting=false;
+var step=0,track="hsk20",sel="beginner",goalSel="hsk_exam",submitting=false;
+var HSK30_STATUS=null;
 var INIT_DATA=(tg&&tg.initData)||"";
+try{
+  var savedTrack=localStorage.getItem("hsk_v3_onb_track");
+  var savedLevel=localStorage.getItem("hsk_v3_onb_level");
+  var savedGoal=localStorage.getItem("hsk_v3_onb_goal");
+  if(savedTrack==="hsk30"||savedTrack==="hsk20")track=savedTrack;
+  if(savedLevel)sel=savedLevel;
+  if(savedGoal&&GOALS.some(function(o){return o.k===savedGoal}))goalSel=savedGoal;
+}catch(e){}
 var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
 function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function postJson(url,body,signal){return fetch(url,{method:"POST",headers:apiHeaders(),body:JSON.stringify(body),keepalive:true,signal:signal})}
@@ -235,6 +244,56 @@ function onboardingPayload(){
     language:LANG,
     timezone_offset_minutes:-new Date().getTimezoneOffset()
   };
+}
+function hsk30TrackState(){
+  return HSK30_STATUS&&HSK30_STATUS.tracks&&HSK30_STATUS.tracks.hsk30?HSK30_STATUS.tracks.hsk30:null;
+}
+function hsk30Access(){
+  var row=hsk30TrackState();return row&&row.access?row.access:null;
+}
+function hsk30LiveLevels(){
+  var row=hsk30TrackState(),raw=row&&Array.isArray(row.live_levels)?row.live_levels:["nhsk1"];
+  var allowed=raw.filter(function(v){return /^nhsk[1-3]$/.test(String(v||""))});
+  return allowed.length?allowed:["nhsk1"];
+}
+function levelsForTrack(){
+  if(track!=="hsk30")return LV20;
+  var live=hsk30LiveLevels();
+  return LV30.filter(function(l){return live.indexOf(l.k)>=0});
+}
+function hsk30Price(){
+  var u=HSK30_STATUS&&HSK30_STATUS.hsk30_unlock||{};
+  var n=Number(u.price_tjs||10);return n>0?n:10;
+}
+function hsk30NeedsUnlock(){
+  var a=hsk30Access();return !!(track==="hsk30"&&(!a||!a.allowed));
+}
+function saveDraft(){
+  try{
+    localStorage.setItem("hsk_v3_onb_track",track);
+    localStorage.setItem("hsk_v3_onb_level",sel);
+    localStorage.setItem("hsk_v3_onb_goal",goalSel);
+  }catch(e){}
+}
+function openHsk30Checkout(){
+  saveDraft();
+  var q=new URLSearchParams();
+  q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");q.set("source","hsk30_onboarding");q.set("lang",LANG);
+  location.href="/subscription.html?"+q.toString();
+}
+function setTrack(next){
+  if(submitting)return;
+  next=next==="hsk30"?"hsk30":"hsk20";
+  if(next==="hsk30"){
+    var a=hsk30Access();
+    if(a&&a.feature_enabled===false){
+      var error=document.getElementById("error");error.textContent=L.hsk30Disabled;error.hidden=false;return;
+    }
+  }
+  track=next;
+  var choices=levelsForTrack();
+  if(!choices.some(function(l){return l.k===sel}))sel=choices.length?choices[0].k:(track==="hsk30"?"nhsk1":"beginner");
+  saveDraft();render();focusQuestion();
 }
 function trv(o){return typeof o==="string"?o:(o[LANG]||o.ru)}
 function levelTitle(level){return level.k==="beginner"?L.beginner:trv(level.hd)}
