@@ -32,7 +32,8 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         end = COURSE.index("\n}", start) + 2
         body = COURSE[start:end]
         self.assertNotIn('fetch("course_v3_data/memo.js', body)
-        self.assertIn('loadJsOnce("hsk-words.js', body)
+        self.assertIn("loadJsOnce(practiceWordsUrl())", body)
+        self.assertIn("loadJsOnce(lessonGateUrl())", body)
 
     def test_trial_status_is_lazy_single_flight_and_shared(self):
         self.assertIn(
