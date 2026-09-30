@@ -217,6 +217,8 @@ class AndroidCourseService(DesktopCourseService):
         hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(
             context.user
         )
+        hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
+        hsk30_access = hsk30_track.get("access") or {}
         await self.session.commit()
         return {
             "ok": True,
@@ -228,8 +230,16 @@ class AndroidCourseService(DesktopCourseService):
                 "start_mode": profile.start_mode,
                 "timezone_offset_minutes": profile.timezone_offset_minutes,
             },
-            "course_tracks": track_status,
-            "hsk30_unlock": hsk30_unlock,
+            "hsk30": {
+                "enabled": bool(hsk30_access.get("feature_enabled")),
+                "allowed": bool(hsk30_access.get("allowed")),
+                "paid_access": bool(hsk30_access.get("paid_access")),
+                "permanently_unlocked": bool(
+                    hsk30_access.get("permanently_unlocked")
+                ),
+                "live_levels": list(hsk30_track.get("live_levels") or []),
+                "price_tjs": int(hsk30_unlock.get("price_tjs") or 10),
+            },
         }
 
     async def complete_onboarding(
