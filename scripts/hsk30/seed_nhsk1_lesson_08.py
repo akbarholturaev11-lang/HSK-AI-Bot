@@ -133,7 +133,7 @@ LESSON = {
                 "examples": [
                     {"zh": "房间里有一只小猫。", "pinyin": "Fángjiān lǐ yǒu yì zhī xiǎomāo.", "uz": "Xona ichida kichik mushuk bor.", "ru": "В комнате есть котёнок.", "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."},
                     {"zh": "我们去书店外吧。", "pinyin": "Wǒmen qù shūdiàn wài ba.", "uz": "Kitob do‘koni tashqarisiga boraylik.", "ru": "Давай пойдём к книжному магазину снаружи.", "tj": "Биёед ба беруни мағозаи китоб равем."},
-                    {"zh": "小猫的手机在桌子上呢。", "pinyin": "Xiǎomāo de shǒujī zài zhuōzi shàng ne.", "uz": "Mushukning telefoni stol ustida.", "ru": "Телефон котёнка на столе.", "tj": "Телефони гурба рӯйи миз аст."},
+                    {"zh": "小雪的手机在桌子上呢。", "pinyin": "Xiǎoxuě de shǒujī zài zhuōzi shàng ne.", "uz": "Xiaoxuening telefoni stol ustida.", "ru": "Телефон Сяосюэ на столе.", "tj": "Телефони Сяосюэ рӯйи миз аст."},
                 ],
             },
             {
