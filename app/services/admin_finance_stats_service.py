@@ -25,8 +25,8 @@ from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
-from app.services.subscription_currency_service import (
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
+from app.services.subscription_currency_service import (
     DEFAULT_USD_CNY_RATE,
     DEFAULT_VISA_LOCAL_RATES,
 )
