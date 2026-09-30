@@ -49,3 +49,13 @@ Manba: [CTI original sample paketi](https://hsk.cn-bj.ufileos.com/3.0/HSK3.0-%E6
 - Yangi HSK 1–5 final score scale, pass threshold va skill weightlari ushbu ko‘rilgan yangi hujjatlarda topilmadi. Eski `120/200` yoki `180/300` avtomatik ko‘chirilmaydi.
 - Universal cutover sanasi va har bir markazdagi yangi format mavjudligi.
 - Pilotdan keyingi tuzatishlar.
+
+
+## Kontent ajratish holati (2026-09-30)
+
+- `新HSK教程1.pdf` manba sifatida qabul qilindi va sahifalar vizual tekshirildi.
+- N1 kurs xaritasi: 15 dars, TOC va grammatika mavzulari `scripts/hsk30/nhsk1_course_outline.json` ga ajratildi.
+- N1 1-dars `AI小语，你好！`: 12 asosiy so'z, 3 dialog blok, 10 dialog satri, `您` usage note ajratildi.
+- Kitobdagi dialoglar aynan manba matni/pinyin bilan saqlanadi; UZ/RU/TJ alohida tarjima qatlamida.
+- 1-dars uchun strukturaviy validator qo'shildi.
+- Keyingi navbat: N1 2-darsdan boshlab shu schema bo'yicha ketma-ket ajratish.
