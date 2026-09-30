@@ -62,6 +62,7 @@ import com.pomp.hskai.core.navigation.DeepLinkRefreshGate
 import com.pomp.hskai.core.navigation.DestinationRequest
 import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
+import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
 import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
@@ -836,16 +837,44 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (onboardingState.loading && !onboardingUnknown) {
+            if (checkoutVisible) {
+                SubscriptionCheckoutHost(
+                    repository = app.featureRepository,
+                    viewModelStoreOwner = sessionOwner,
+                    origin = checkoutOrigin,
+                    onClose = {
+                        checkoutVisible = false
+                        onboardingViewModel.loadStatus(showSplash = false)
+                        profileViewModel.load()
+                        courseViewModel.load()
+                        voiceViewModel.refreshStatusIfLoaded()
+                        practiceViewModel.onAccessChanged()
+                    },
+                )
+            } else if (onboardingState.loading && !onboardingUnknown) {
                 SplashScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
                 OnboardingScreen(
                     language = currentLanguage,
                     state = onboardingState.ui,
+                    onTrackSelected = onboardingViewModel::selectTrack,
                     onLevelSelected = onboardingViewModel::selectLevel,
                     onGoalSelected = onboardingViewModel::selectGoal,
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
+                    onUnlockHsk30 = {
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                            checkoutOrigin = "hsk30_onboarding"
+                            checkoutVisible = true
+                        } else {
+                            scope.launch {
+                                when (val result = app.featureRepository.subscriptionOpen()) {
+                                    is ApiResult.Success -> openExternal(context, result.value.botUrl)
+                                    is ApiResult.Failure -> Unit
+                                }
+                            }
+                        }
+                    },
                 )
             } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled) {
                 // Asked once, at the end of onboarding, for both kinds of
@@ -861,19 +890,6 @@ private fun AppRoot(
                     },
                     onSkip = {
                         scope.launch { app.appSettings.setNotificationPrimerSeen() }
-                    },
-                )
-            } else if (checkoutVisible) {
-                SubscriptionCheckoutHost(
-                    repository = app.featureRepository,
-                    viewModelStoreOwner = sessionOwner,
-                    origin = checkoutOrigin,
-                    onClose = {
-                        checkoutVisible = false
-                        profileViewModel.load()
-                        courseViewModel.load()
-                        voiceViewModel.refreshStatusIfLoaded()
-                        practiceViewModel.onAccessChanged()
                     },
                 )
             } else if (ratingChallengesOpen) {
