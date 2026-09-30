@@ -156,6 +156,10 @@ from app.services.course_ad_service import (
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
 from app.services.payment_notify_service import PaymentNotifyService
+from app.services.hsk30_unlock_service import (
+    HSK30_UNLOCK_PLAN_TYPE,
+    Hsk30UnlockService,
+)
 from app.services.portfolio_service import PortfolioService
 from app.services.required_channel_service import RequiredChannelService
 from app.services.subscription_service import (
@@ -1535,6 +1539,56 @@ async def _review_admin_payment(
     if action == "approve":
         if not await payment_repo.approve(payment, admin_comment="approved by admin mini app"):
             return {"ok": False, "error": "payment_already_reviewed"}, 409
+
+        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+        if not user:
+            await session.rollback()
+            return {"ok": False, "error": "user_not_found"}, 404
+
+        if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            granted = await Hsk30UnlockService(session).grant(
+                user=user,
+                payment=payment,
+            )
+            if not granted:
+                await session.rollback()
+                return {"ok": False, "error": "hsk30_unlock_failed"}, 400
+            await session.commit()
+            await ConversionFunnelService().record(
+                event_name="hsk30_unlock_approved",
+                user=user,
+                telegram_id=payment.user_telegram_id,
+                source="admin_miniapp_payment_approve",
+                payment_id=payment.id,
+                payload={
+                    "plan_type": payment.plan_type,
+                    "payment_method": payment.payment_method,
+                },
+            )
+            async with async_session_maker() as analytics_session:
+                course_event = await CourseMiniAppAnalyticsService(
+                    analytics_session
+                ).record_server_event(
+                    event_name="hsk30_unlock_approved",
+                    telegram_id=payment.user_telegram_id,
+                    user_id=getattr(user, "id", None),
+                    source="admin_miniapp_payment_approve",
+                    dedupe_key=f"hsk30-unlock-payment:{payment.id}",
+                    payload={
+                        "plan_type": payment.plan_type,
+                        "payment_method": payment.payment_method,
+                    },
+                )
+                if course_event.get("recorded"):
+                    await analytics_session.commit()
+            with contextlib.suppress(Exception):
+                await PaymentNotifyService(session).notify_hsk30_unlock_approved(
+                    bot=bot,
+                    user=user,
+                    payment=payment,
+                )
+            return {"ok": True, "status": "approved", "product": HSK30_UNLOCK_PLAN_TYPE}, 200
+
         activated = await SubscriptionService(session).activate_plan(
             telegram_id=payment.user_telegram_id,
             plan_type=payment.plan_type,
@@ -1544,8 +1598,9 @@ async def _review_admin_payment(
         if not activated:
             await session.rollback()
             return {"ok": False, "error": "subscription_activation_failed"}, 400
-        partner, commission_usd, unlocked_bonus = await PartnerService(session).record_approved_payment(payment)
-        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+        partner, commission_usd, unlocked_bonus = await PartnerService(
+            session
+        ).record_approved_payment(payment)
         await session.commit()
         await ConversionFunnelService().record(
             event_name="payment_approved",
@@ -1553,21 +1608,33 @@ async def _review_admin_payment(
             telegram_id=payment.user_telegram_id,
             source="admin_miniapp_payment_approve",
             payment_id=payment.id,
-            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+            payload={
+                "plan_type": payment.plan_type,
+                "payment_method": payment.payment_method,
+            },
         )
         async with async_session_maker() as analytics_session:
-            course_event = await CourseMiniAppAnalyticsService(analytics_session).record_server_event(
+            course_event = await CourseMiniAppAnalyticsService(
+                analytics_session
+            ).record_server_event(
                 event_name="subscription_approved",
                 telegram_id=payment.user_telegram_id,
                 user_id=getattr(user, "id", None),
                 source="admin_miniapp_payment_approve",
                 dedupe_key=f"payment:{payment.id}",
-                payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+                payload={
+                    "plan_type": payment.plan_type,
+                    "payment_method": payment.payment_method,
+                },
             )
             if course_event.get("recorded"):
                 await analytics_session.commit()
         with contextlib.suppress(Exception):
-            await PaymentNotifyService(session).notify_payment_approved(bot=bot, user=user, payment=payment)
+            await PaymentNotifyService(session).notify_payment_approved(
+                bot=bot,
+                user=user,
+                payment=payment,
+            )
         if partner:
             with contextlib.suppress(Exception):
                 await PartnerService(session).notify_partner(
@@ -1584,11 +1651,15 @@ async def _review_admin_payment(
         if not await payment_repo.reject(payment, admin_comment=comment):
             return {"ok": False, "error": "payment_already_reviewed"}, 409
         user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
-        if user:
+        if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
             await user_repo.set_selected_plan_type(user, None)
         await session.commit()
         await ConversionFunnelService().record(
-            event_name="payment_rejected",
+            event_name=(
+                "hsk30_unlock_rejected"
+                if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE
+                else "payment_rejected"
+            ),
             user=user,
             telegram_id=payment.user_telegram_id,
             source="admin_miniapp_payment_reject",
@@ -1596,13 +1667,21 @@ async def _review_admin_payment(
             payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
         )
         with contextlib.suppress(Exception):
-            await PaymentNotifyService(session).notify_payment_rejected(
-                bot=bot,
-                user=user,
-                reason=None,
-                plan_type=payment.plan_type,
-                payment=payment,
-            )
+            notifier = PaymentNotifyService(session)
+            if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+                await notifier.notify_hsk30_unlock_rejected(
+                    bot=bot,
+                    user=user,
+                    payment=payment,
+                )
+            else:
+                await notifier.notify_payment_rejected(
+                    bot=bot,
+                    user=user,
+                    reason=None,
+                    plan_type=payment.plan_type,
+                    payment=payment,
+                )
         return {"ok": True, "status": "rejected"}, 200
 
     return {"ok": False, "error": "invalid_action"}, 400
