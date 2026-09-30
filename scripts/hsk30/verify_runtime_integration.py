@@ -65,6 +65,7 @@ def check_course_ui() -> None:
         "showHsk30AccessGate()",
         "showHsk30TestSoon()",
         'if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel()))',
+        '"next_level_pending" in d',
     ):
         require(html, needle, "course-v3.html")
     forbid(html, '"nhsk3":"nhsk4"', "course-v3.html")
@@ -99,7 +100,9 @@ def check_access() -> None:
     require(main, '"hsk30-words.js": "application/javascript"', "main.py")
     require(lesson_start, "content_level(user.level)", "miniapp_entitlements.py")
     require(access, 'normalized_level.startswith("nhsk")', "lesson_access.py")
-    require(access, "CourseTrackService(self.session).hsk30_access(user)", "lesson_access.py")
+    require(access, "track_service = CourseTrackService(self.session)", "lesson_access.py")
+    require(access, "await track_service.hsk30_access(user)", "lesson_access.py")
+    require(access, "await track_service.hsk30_feature.is_level_live(normalized_level)", "lesson_access.py")
     require(levels, 'key="nhsk4"', "course_levels.py")
     require(levels, "if not candidate or not candidate.selectable:", "course_levels.py")
 
@@ -127,6 +130,15 @@ def check_practice() -> None:
             'function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):wordSource()}',
             name,
         )
+
+
+    memorize = read("app/static/course_v3_memorize.html")
+    require(memorize, "lesson_gate_hsk30.js", "course_v3_memorize.html")
+    require(memorize, "window.HSK30_CHAR_GATE", "course_v3_memorize.html")
+
+    test_center = read("app/static/course_v3_test.html")
+    require(test_center, "HSK30_SOON", "course_v3_test.html")
+    require(test_center, "showHsk30Soon()", "course_v3_test.html")
 
 
 def check_voice() -> None:
