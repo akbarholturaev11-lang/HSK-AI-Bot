@@ -107,6 +107,7 @@ def broadcast_panel_keyboard(
         rows = [
             [level_btn(None, "Hammasi"), level_btn("beginner", "Boshlang'ich"), level_btn("hsk1", "HSK1")],
             [level_btn("hsk2", "HSK2"), level_btn("hsk3", "HSK3"), level_btn("hsk4", "HSK4")],
+            [level_btn("nhsk1", "3.0 · 1"), level_btn("nhsk2", "3.0 · 2"), level_btn("nhsk3", "3.0 · 3")],
         ]
     elif section == "mode":
         rows = [[mode_btn(None, "Hammasi"), mode_btn("qa", "Savol-javob"), mode_btn("course", "Kurs")]]
