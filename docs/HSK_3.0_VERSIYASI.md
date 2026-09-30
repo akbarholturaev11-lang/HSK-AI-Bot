@@ -1,8 +1,9 @@
 # HSK 3.0 versiyasi — alohida kurs qo'shish rejasi
 
-Holat: 2026-09-29 — **reja to'liq tasdiqlandi, ochiq savol yo'q. Ish hali
-boshlanmagan, kod o'zgartirilmagan.** Ish egasi "boshla" deganda va rasmiy so'zlar ro'yxati
-kelgach 0-bosqichdan boshlanadi.
+Holat: 2026-09-30 — **reja to'liq tasdiqlandi, ochiq savol yo'q. Ish hali
+boshlanmagan, kod o'zgartirilmagan.** HSK 3.0 uchun 1–3-daraja darslik PDF'lari
+`HSK 3.0 PDF/` ichida Git LFS orqali `main` ga qo'shilgan. Ish egasi "boshla"
+deganda 0-bosqichdan boshlanadi.
 
 Research: `research/hsk-3.0/`.
 
@@ -13,7 +14,7 @@ Research: `research/hsk-3.0/`.
 | 1 | Kurs turi | HSK 3.0 — **to'liq alohida kurs**. Darslari eski HSK (2.0) bilan aralashmaydi |
 | 2 | Eski kurs | Qoladi, yangisi qo'shiladi. Onboardingda va sozlamalarda almashtirgich |
 | 3 | Darajalar | **HSK 3.0 · 1–4** |
-| 4 | Rasmiy so'zlar ro'yxati | Egasi o'zi beradi |
+| 4 | Kontent manbasi | HSK 3.0 darsliklari va rasmiy ro'yxatlar. 1–3-daraja PDF'lari repoda bor; 4-daraja manbasi alohida qo'shiladi |
 | 5 | Onboarding | User o'zi tanlaydi. **Default — HSK 2.0**, HSK 3.0 yonida narx yoziladi (13-qaror sababli o'zgardi; avval default HSK 3.0 edi) |
 | 6 | Obuna | Faol obuna HSK 3.0 ni ham ochadi. Obuna va to'lov logikasi o'zgarmaydi |
 | 7 | XP, streak, reyting | **Ikkala kurs uchun umumiy** |
@@ -22,13 +23,14 @@ Research: `research/hsk-3.0/`.
 | 10 | Test markazi (HSK 3.0 userlar) | Yangi format tayyor bo'lguncha **"Tez orada"** turadi |
 | 11 | Tarjimalar (uz/ru/tj) | **Claude** tayyorlaydi va tekshiradi |
 | 12 | Lug'at bo'limi | **Bitta umumiy lug'at**, faqat filtr qo'shiladi (versiya va daraja) |
-| 13 | HSK 3.0 ni ochish | **Bir martalik 10 somoni.** Obunasi yo'q har bir user to'laydi — yangi ham, eski ham |
-| 14 | Obunachilar | **10 somoni to'lamaydi** |
+| 13 | HSK 3.0 ni ochish | **Bir martalik 10 somoni.** Faol pullik obunasi yo'q user to'laydi. 10 somoni to'langach HSK 3.0 doimiy ochiladi |
+| 14 | Obunachilar | **Faol pullik obuna bor paytda 10 somoni so'ralmaydi.** HSK 3.0 obuna amal qilayotgan muddat davomida ochiq turadi |
 | 15 | Boshqa valyutalar | 10 somoni joriy kurs bo'yicha kerakli valyutaga o'giriladi |
 | 16 | Chegirmalar | Referal 20%, admin chegirmalari va partnyor komissiyasi **qo'llanmaydi** |
-| 17 | Obuna tugasa | 10 somoni to'lamagan obunachining obunasi tugasa, HSK 3.0 **yopiladi** (10 somoni yoki obunani yangilash taklif qilinadi). Progress saqlanadi, HSK 2.0 ga bepul qaytadi |
+| 17 | Obuna tugasa | Agar user 10 somonilik doimiy unlock'ni oldin olmagan bo'lsa, obuna tugashi bilan HSK 3.0 **yopiladi**. Userga ikki tanlov beriladi: **obunani davom ettirish** yoki **10 somoni bir marta to'lab HSK 3.0 ni doimiy ochish**. Progress saqlanadi; to'lov/yangilashgacha HSK 2.0 da bepul davom etadi |
 | 18 | Trial | 7 kunlik Pro trial, referal trial va vaqtinchalik bonus (`TRIAL`, `TEMPORARY_TRIAL`) **obuna hisoblanmaydi** — HSK 3.0 uchun 10 somoni kerak |
 | 19 | Alipay/WeChat | Shu summa uchun admin QR kod yuklamaguncha 10 somonilik ekranda **ko'rinmaydi** |
+| 20 | Darslik dialoglari | **Aynan darslikdagi dialoglar olinadi.** Egada ulardan foydalanish uchun ruxsat bor. Hanzi/pinyin saqlanadi, UZ/RU/TJ tarjimalar tayyorlanadi |
 
 ## Hozirgi holat (kodda tekshirilgan)
 
@@ -111,14 +113,18 @@ o'zgartirilmaydi.
 
 - **Kim to'laydi:** faol obunasi yo'q har bir user — yangi (onboardingda
   HSK 3.0 ni tanlasa) ham, eski (promo, sozlamalar yoki bot xabaridan) ham.
-- **Obunachi to'lamaydi.** Obunachi — `UserAccessState.PAID` (pullik obuna
-  va admin bergan cheksiz ruxsat). Trial va vaqtinchalik bonuslar obuna
+- **Faol obunachi to'lamaydi.** Obunachi — `UserAccessState.PAID` (pullik obuna
+  va admin bergan cheksiz ruxsat). Faol PAID holatida HSK 3.0 uchun 10 somoni
+  ekrani umuman ko'rsatilmaydi. Trial va vaqtinchalik bonuslar obuna
   hisoblanmaydi (18-qaror).
-- **Obuna tugasa** va 10 somoni to'lanmagan bo'lsa, HSK 3.0 yopiladi: 10
-  somoni yoki obunani yangilash taklif qilinadi, progress
-  `course_track_states` da saqlanadi, HSK 2.0 ga bepul qaytadi (17-qaror).
-- **Bir marta, umrbod.** 2.0 ga qaytib, yana 3.0 ga o'tganda qayta
-  to'lanmaydi.
+- **Obuna tugaganda aniq qoida:** agar `course_track_states.unlocked_at` yo'q
+  bo'lsa, HSK 3.0 darhol yopiladi. Progress o'chmaydi. Userga ikki yo'l
+  ko'rsatiladi: (1) obunani yangilash — HSK 3.0 yana faqat obuna faol turgan
+  muddatga ochiladi; yoki (2) 10 somoni bir marta to'lash — `unlocked_at`
+  yoziladi va HSK 3.0 keyingi obuna holatidan qat'i nazar doimiy ochiq qoladi.
+  Shu vaqtgacha user HSK 2.0 da bepul davom etadi.
+- **10 somoni — bir marta, doimiy unlock.** 2.0 ga qaytib, yana 3.0 ga
+  o'tganda qayta to'lanmaydi.
 - **To'lovdan keyin hammasi odatdagidek:** bepul rejim cheklovlari, bepul
   qismlar va obuna qoidalari o'zgarmaydi.
 - **Narx:** `bot_settings` da `hsk30_unlock_price_tjs`, default 10, admin
@@ -198,7 +204,7 @@ app/static/hsk-words.js         # umumiy lug'at, lv3 maydoni bilan
 scripts/hsk30/
   wordlist.json                 # rasmiy ro'yxatdan: hanzi, pinyin, daraja, so'z turkumi
   grammar.json, hanzi.json
-  seed_nhsk1_lesson_01.py …     # dars manbalari
+  seed_nhsk1_lesson_01.py …     # so'z + grammatika + kitob dialoglari + tarjimalar
   verify_hsk30_*.py             # tekshiruvlar
 ```
 
@@ -259,7 +265,11 @@ Eski user (HSK 2.0 da):
 
 Istalgan user:
   Sozlamalar → "Kurs versiyasi" → HSK 2.0 / HSK 3.0
-      → HSK 3.0 yopiq bo'lsa to'lov ekrani, aks holda tasdiq (progress saqlanadi) → xarita
+      → HSK 3.0 tanlanganda:
+          ├─ 10 somoni oldin to'langan → darhol ochiladi
+          ├─ faol PAID obuna bor → pul so'ralmaydi, obuna tugaguncha ochiladi
+          └─ ikkalasi ham yo'q → [Obunani davom ettirish / 10 somoni bir marta to'lash]
+      → progress har ikki trek uchun saqlanadi
 ```
 
 ## UI (koddan oldin maket egasiga ko'rsatiladi)
@@ -308,16 +318,29 @@ Istalgan user:
 
 ## Bosqichlar
 
-### 0-bosqich — Rasmiy manba (egasidan)
+### 0-bosqich — Kontent manbasini ajratish va normallashtirish
 
-- Egasi rasmiy syllabus PDF (yoki Excel/CSV) ni yuboradi.
-- PDF git'ga qo'shilmaydi (`research/hsk-3.0/.gitignore`). Undan faqat
-  1–4-daraja ro'yxatlari ajratiladi: `scripts/hsk30/wordlist.json`,
-  `grammar.json`, `hanzi.json`.
+- 1–3-daraja HSK 3.0 darsliklari allaqachon `HSK 3.0 PDF/` ichida
+  Git LFS orqali repoda turadi. 4-daraja manbasi kelganda xuddi shu oqimga
+  qo'shiladi.
+- Har bir darsdan tizimga kerak bo'lgan **xom manba ma'lumotlari** ajratiladi:
+  - dars nomi/mavzusi va maqsadi;
+  - yangi so'zlar: hanzi, pinyin, so'z turkumi;
+  - grammatika: qoida va kitobdagi misollar;
+  - **kitobdagi dialoglarning o'zi**: sahna, speaker A/B, hanzi, pinyin,
+    dialog tartibi;
+  - daraja va dars tartibi.
+- UZ/RU/TJ tarjimalar alohida qatlamda tayyorlanadi. Kitobdagi dialog matni
+  o'zgartirilmaydi; tarjima maydonlari qo'shiladi.
+- Tayyor mashqlarni PDF'dan ko'chirish majburiy emas. Generator source
+  vocabulary/grammar/dialogue asosida interaktiv mashqlarni o'zi yaratadi.
+- Normallashtirilgan chiqish:
+  `scripts/hsk30/wordlist.json`, `grammar.json`, `hanzi.json` va
+  dars/dialog source fayllari.
 - Tekshiruv: so'zlar 300/200/500/1000 (jami 2000), tanib o'qish hanzi
   246/125/284/441. Har yozuvda hanzi, pinyin va daraja bor. Takrorlar va
   ko'p o'qilishli belgilar qayd etiladi.
-- Mezon: `verify_hsk30_wordlist.py` toza o'tadi.
+- Mezon: source parser/validator va `verify_hsk30_wordlist.py` toza o'tadi.
 
 ### 1-bosqich — Poydevor (userga ko'rinmaydi)
 
@@ -352,10 +375,17 @@ Istalgan user:
 
 ### 2-bosqich — HSK 3.0 · 1-daraja kontenti
 
-- Dars rejasi: 300 so'z, syllabus mavzulari bo'yicha ~15 dars, grammatika
-  tartibi bilan.
-- Har dars: yangi so'zlar, grammatika, original dialog (kitobdan
-  ko'chirilmaydi — `research/hsk-3.0/USAGE_NOTES.md`), uz/ru/tj.
+- Dars rejasi: 300 so'z, darslik/syllabus mavzulari va grammatika tartibi
+  bo'yicha tuziladi.
+- Har dars uchun manbadan olinadi: **dars nomi/mavzusi, yangi so'zlar
+  (hanzi, pinyin, so'z turkumi), grammatika va misollar, aynan darslikdagi
+  dialoglar va ularning tartibi/sahnasi**.
+- Darslik dialoglari verbatim ishlatiladi (foydalanish ruxsati bor);
+  UZ/RU/TJ tarjimalar alohida tayyorlanadi va tekshiriladi.
+- Mashqlarni darslikdan ko'chirish shart emas: Course V3 generator
+  vocabulary + grammar + dialogue ma'lumotlaridan listening, pronunciation,
+  builder, gap-fill, dialog-cloze, grammar quiz, mixed review va checkpoint
+  kartalarini avtomatik yasaydi.
 - Tarjima: 9-qarordagi tartibda (Claude).
 - Generator orqali `nhsk1/lesson_NN.json` (~100 mini-dars), xarita,
   manifest va gate yasaladi.
@@ -455,7 +485,7 @@ Rasmiy namuna tuzilishi:
 | Kontent hajmi katta (2000 so'z, 3 til) | Darajama-daraja reliz, eski tarjimalarni qayta ishlatish |
 | Tarjimalarni odam tekshirmaydi | Eski tekshirilgan tarjimalar qayta ishlatiladi, avtomatik tekshiruvlar, reliz feedback orqali tuzatish |
 | Umumiy lug'atga yangi so'z qo'shilsa eski mashqlarga tushib qoladi | Mashq puli `lv` / `lv3` bo'yicha filtrlanadi, test bilan mixlanadi |
-| Kitob mualliflik huquqi | Faqat syllabus ro'yxati olinadi; dialog va mashqlar original yoziladi |
+| Darslik kontentidan foydalanish huquqi | Egada dialoglardan foydalanish ruxsati bor; source provenance saqlanadi. Mashqlar generator tomonidan yaratiladi |
 | Imtihon formati o'zgarishi (hali pilot) | Test markazi eng oxirida, "tayyorgarlik" deb nomlanadi |
 | Android offline hajmi oshadi | Lug'at asseti o'lchami reliz oldidan o'lchanadi |
 
@@ -463,6 +493,7 @@ Rasmiy namuna tuzilishi:
 
 Ochiq savol qolmadi. Ish egasi "boshla" deganda boshlanadi:
 
-1. Egasi rasmiy syllabus faylini yuboradi.
-2. 0-bosqich: ro'yxat ajratiladi va tekshiriladi.
+1. 0-bosqich: repodagi HSK 3.0 1–3 darsliklardan source ma'lumotlar
+   (so'z, grammatika, misol, **dialog**) ajratiladi va validator bilan tekshiriladi.
+2. 4-daraja manbasi kelganda shu pipeline orqali qo'shiladi.
 3. 1-bosqich: poydevor (flag o'chiq, userlar hech narsa sezmaydi).
