@@ -2037,6 +2037,8 @@ def main():
                     lesson = build_v3_part(level, part["flat"], les["src"], les,
                                            part, gassign, known_prior)
                     out_path = BASE / level / f"lesson_{part['flat']:02d}.json"
+                    if not args.dry:
+                        out_path.parent.mkdir(parents=True, exist_ok=True)
                     text = json.dumps(lesson, ensure_ascii=False, indent=2)
                     if args.dry:
                         print(f"--- {out_path} ---")
