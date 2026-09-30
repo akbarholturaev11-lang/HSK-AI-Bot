@@ -125,6 +125,7 @@ class AdminFinanceStatsService:
             telegram_ids={p.user_id for p in approved},
         )
         renewed_ever = await self._renewed_ever_count()
+        hsk30_unlock = await self._hsk30_unlock_summary()
 
         periods = []
         for key, title, note, since in (
@@ -153,6 +154,7 @@ class AdminFinanceStatsService:
             "generated_at": _dt(now),
             "tz": "Asia/Shanghai",
             "periods": periods,
+            "hsk30_unlock": hsk30_unlock,
         }
 
     # ---- ma'lumot yig'ish -------------------------------------------------
@@ -263,6 +265,28 @@ class AdminFinanceStatsService:
             .having(func.count() >= 2)
         ).subquery()
         return (await self.session.execute(select(func.count()).select_from(sub))).scalar() or 0
+
+    async def _hsk30_unlock_summary(self) -> dict:
+        row = (
+            await self.session.execute(
+                select(
+                    func.count(Payment.id).label("payments"),
+                    func.count(func.distinct(Payment.user_telegram_id)).label("users"),
+                    func.coalesce(func.sum(Payment.amount), 0).label("amount_tjs"),
+                ).where(
+                    Payment.payment_status == "approved",
+                    Payment.plan_type == HSK30_UNLOCK_PLAN_TYPE,
+                )
+            )
+        ).one()
+        return {
+            "label": "HSK 3.0 ochish",
+            "payments": int(row.payments or 0),
+            "users": int(row.users or 0),
+            "amount_tjs": int(row.amount_tjs or 0),
+            "amount_text": f"{int(row.amount_tjs or 0)} TJS",
+            "note": "Bir martalik doimiy HSK 3.0 kirish; obuna daromadiga qo'shilmaydi.",
+        }
 
     async def _ai_cost_usd(self, since: datetime | None) -> float:
         stmt = select(func.coalesce(func.sum(AIUsageEvent.cost_usd), 0.0))
