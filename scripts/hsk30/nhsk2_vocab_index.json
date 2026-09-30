@@ -1,0 +1,1935 @@
+{
+  "schema_version": 1,
+  "track": "hsk30",
+  "level": "nhsk2",
+  "source_book": "新HSK教程2",
+  "source_pdf_path": "HSK 3.0 PDF/新HSK2 教材.pdf",
+  "source_lfs_oid_sha256": "12a7ca82d9ede40e7bcdad36b4198e20db311d378d407b1f80dcc9b26b48f003",
+  "source_pdf_pages": {
+    "vocabulary_index": [
+      157,
+      158,
+      159,
+      160,
+      161,
+      162
+    ],
+    "proper_nouns": [
+      162
+    ]
+  },
+  "source_counts": {
+    "lesson_vocabulary_rows": 211,
+    "common_index_rows": 207,
+    "unique_common_spellings": 206,
+    "common_rows_marked_beyond_syllabus": 10,
+    "common_rows_in_syllabus": 197,
+    "proper_noun_rows": 3,
+    "syllabus_rows_including_proper_nouns": 200
+  },
+  "counting_note": "The book index contains 207 common-vocabulary rows. Ten rows are marked with * as beyond the syllabus. The remaining 197 common rows plus 3 proper-noun rows equal 200 syllabus rows. The spelling 过 appears twice as separate index rows: guò (lesson 6) and guo (lesson 4), so there are 206 unique common spellings.",
+  "beyond_syllabus": [
+    "爱情片",
+    "蛋糕",
+    "房子",
+    "更",
+    "好像",
+    "画笔",
+    "接",
+    "礼物",
+    "试",
+    "新年"
+  ],
+  "proper_nouns": [
+    {
+      "zh": "北京烤鸭",
+      "pinyin": "Běijīng Kǎoyā",
+      "lessons": [
+        1
+      ]
+    },
+    {
+      "zh": "北京大学",
+      "pinyin": "Běijīng Dàxué",
+      "lessons": [
+        2
+      ]
+    },
+    {
+      "zh": "颐和园",
+      "pinyin": "Yíhé Yuán",
+      "lessons": [
+        15
+      ]
+    }
+  ],
+  "common_index_rows": [
+    {
+      "row": 1,
+      "zh": "啊",
+      "pinyin": "a",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 2,
+      "zh": "爱好",
+      "pinyin": "àihào",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 3,
+      "zh": "爱情片",
+      "pinyin": "àiqíngpiàn",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 4,
+      "zh": "白色",
+      "pinyin": "báisè",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 5,
+      "zh": "班",
+      "pinyin": "bān",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 6,
+      "zh": "帮",
+      "pinyin": "bāng",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 7,
+      "zh": "帮忙",
+      "pinyin": "bāngmáng",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 8,
+      "zh": "包",
+      "pinyin": "bāo",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 9,
+      "zh": "本子",
+      "pinyin": "běnzi",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 10,
+      "zh": "比",
+      "pinyin": "bǐ",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 11,
+      "zh": "笔",
+      "pinyin": "bǐ",
+      "lessons": [
+        10,
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 12,
+      "zh": "别",
+      "pinyin": "bié",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 13,
+      "zh": "不错",
+      "pinyin": "búcuò",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 14,
+      "zh": "不好意思",
+      "pinyin": "bù hǎoyìsi",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 15,
+      "zh": "长",
+      "pinyin": "cháng",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 16,
+      "zh": "车站",
+      "pinyin": "chēzhàn",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 17,
+      "zh": "出国",
+      "pinyin": "chūguó",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 18,
+      "zh": "出门",
+      "pinyin": "chūmén",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 19,
+      "zh": "出去",
+      "pinyin": "chūqù",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 20,
+      "zh": "床",
+      "pinyin": "chuáng",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 21,
+      "zh": "词",
+      "pinyin": "cí",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 22,
+      "zh": "次",
+      "pinyin": "cì",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 23,
+      "zh": "从",
+      "pinyin": "cóng",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 24,
+      "zh": "从小",
+      "pinyin": "cóngxiǎo",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 25,
+      "zh": "错",
+      "pinyin": "cuò",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 26,
+      "zh": "打",
+      "pinyin": "dǎ",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 27,
+      "zh": "打车",
+      "pinyin": "dǎchē",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 28,
+      "zh": "打开",
+      "pinyin": "dǎkāi",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 29,
+      "zh": "但",
+      "pinyin": "dàn",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 30,
+      "zh": "但是",
+      "pinyin": "dànshì",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 31,
+      "zh": "蛋糕",
+      "pinyin": "dàngāo",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 32,
+      "zh": "地",
+      "pinyin": "de",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 33,
+      "zh": "得",
+      "pinyin": "de",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 34,
+      "zh": "等",
+      "pinyin": "děng",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 35,
+      "zh": "地铁",
+      "pinyin": "dìtiě",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 36,
+      "zh": "点",
+      "pinyin": "diǎn",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 37,
+      "zh": "懂",
+      "pinyin": "dǒng",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 38,
+      "zh": "动",
+      "pinyin": "dòng",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 39,
+      "zh": "饭馆",
+      "pinyin": "fànguǎn",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 40,
+      "zh": "房子",
+      "pinyin": "fángzi",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 41,
+      "zh": "飞",
+      "pinyin": "fēi",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 42,
+      "zh": "高",
+      "pinyin": "gāo",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 43,
+      "zh": "高中",
+      "pinyin": "gāozhōng",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 44,
+      "zh": "告诉",
+      "pinyin": "gàosu",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 45,
+      "zh": "个子",
+      "pinyin": "gèzi",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 46,
+      "zh": "给",
+      "pinyin": "gěi",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 47,
+      "zh": "跟",
+      "pinyin": "gēn",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 48,
+      "zh": "更",
+      "pinyin": "gèng",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 49,
+      "zh": "公交车",
+      "pinyin": "gōngjiāochē",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 50,
+      "zh": "过",
+      "pinyin": "guò",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 51,
+      "zh": "过来",
+      "pinyin": "guòlai",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 52,
+      "zh": "过年",
+      "pinyin": "guònián",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 53,
+      "zh": "过去",
+      "pinyin": "guòqu",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 54,
+      "zh": "过",
+      "pinyin": "guo",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 55,
+      "zh": "还是",
+      "pinyin": "háishi",
+      "lessons": [
+        2,
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 56,
+      "zh": "好",
+      "pinyin": "hǎo",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 57,
+      "zh": "好像",
+      "pinyin": "hǎoxiàng",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 58,
+      "zh": "黑色",
+      "pinyin": "hēisè",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 59,
+      "zh": "红色",
+      "pinyin": "hóngsè",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 60,
+      "zh": "后面",
+      "pinyin": "hòumian",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 61,
+      "zh": "花",
+      "pinyin": "huā",
+      "lessons": [
+        8,
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 62,
+      "zh": "画",
+      "pinyin": "huà",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 63,
+      "zh": "画笔",
+      "pinyin": "huàbǐ",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 64,
+      "zh": "坏",
+      "pinyin": "huài",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 65,
+      "zh": "回来",
+      "pinyin": "huílái",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 66,
+      "zh": "回去",
+      "pinyin": "huíqù",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 67,
+      "zh": "机场",
+      "pinyin": "jīchǎng",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 68,
+      "zh": "机票",
+      "pinyin": "jīpiào",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 69,
+      "zh": "记得",
+      "pinyin": "jìde",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 70,
+      "zh": "间",
+      "pinyin": "jiān",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 71,
+      "zh": "教",
+      "pinyin": "jiāo",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 72,
+      "zh": "教室",
+      "pinyin": "jiàoshì",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 73,
+      "zh": "接",
+      "pinyin": "jiē",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 74,
+      "zh": "介绍",
+      "pinyin": "jièshào",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 75,
+      "zh": "进",
+      "pinyin": "jìn",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 76,
+      "zh": "进来",
+      "pinyin": "jìnlái",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 77,
+      "zh": "进去",
+      "pinyin": "jìnqu",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 78,
+      "zh": "近",
+      "pinyin": "jìn",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 79,
+      "zh": "经常",
+      "pinyin": "jīngcháng",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 80,
+      "zh": "酒店",
+      "pinyin": "jiǔdiàn",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 81,
+      "zh": "就",
+      "pinyin": "jiù",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 82,
+      "zh": "咖啡",
+      "pinyin": "kāfēi",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 83,
+      "zh": "开始",
+      "pinyin": "kāishǐ",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 84,
+      "zh": "开学",
+      "pinyin": "kāixué",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 85,
+      "zh": "考",
+      "pinyin": "kǎo",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 86,
+      "zh": "考试",
+      "pinyin": "kǎoshì",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 87,
+      "zh": "可能",
+      "pinyin": "kěnéng",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 88,
+      "zh": "裤子",
+      "pinyin": "kùzi",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 89,
+      "zh": "快",
+      "pinyin": "kuài",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 90,
+      "zh": "快乐",
+      "pinyin": "kuàilè",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 91,
+      "zh": "快要",
+      "pinyin": "kuàiyào",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 92,
+      "zh": "篮球",
+      "pinyin": "lánqiú",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 93,
+      "zh": "累",
+      "pinyin": "lèi",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 94,
+      "zh": "离",
+      "pinyin": "lí",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 95,
+      "zh": "礼物",
+      "pinyin": "lǐwù",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 96,
+      "zh": "里面",
+      "pinyin": "lǐmian",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 97,
+      "zh": "楼",
+      "pinyin": "lóu",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 98,
+      "zh": "路",
+      "pinyin": "lù",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 99,
+      "zh": "路上",
+      "pinyin": "lùshang",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 100,
+      "zh": "旅游",
+      "pinyin": "lǚyóu",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 101,
+      "zh": "绿色",
+      "pinyin": "lǜsè",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 102,
+      "zh": "慢",
+      "pinyin": "màn",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 103,
+      "zh": "没意思",
+      "pinyin": "méi yìsi",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 104,
+      "zh": "每",
+      "pinyin": "měi",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 105,
+      "zh": "门",
+      "pinyin": "mén",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 106,
+      "zh": "门口",
+      "pinyin": "ménkǒu",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 107,
+      "zh": "门票",
+      "pinyin": "ménpiào",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 108,
+      "zh": "面",
+      "pinyin": "miàn",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 109,
+      "zh": "名",
+      "pinyin": "míng",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 110,
+      "zh": "拿",
+      "pinyin": "ná",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 111,
+      "zh": "那",
+      "pinyin": "nà",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 112,
+      "zh": "那么",
+      "pinyin": "nàme",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 113,
+      "zh": "那样",
+      "pinyin": "nàyàng",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 114,
+      "zh": "奶茶",
+      "pinyin": "nǎichá",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 115,
+      "zh": "奶奶",
+      "pinyin": "nǎinai",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 116,
+      "zh": "男孩儿",
+      "pinyin": "nánháir",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 117,
+      "zh": "鸟",
+      "pinyin": "niǎo",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 118,
+      "zh": "女孩儿",
+      "pinyin": "nǚháir",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 119,
+      "zh": "旁边",
+      "pinyin": "pángbian",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 120,
+      "zh": "跑",
+      "pinyin": "pǎo",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 121,
+      "zh": "跑步",
+      "pinyin": "pǎobù",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 122,
+      "zh": "票",
+      "pinyin": "piào",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 123,
+      "zh": "妻子",
+      "pinyin": "qīzi",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 124,
+      "zh": "前面",
+      "pinyin": "qiánmian",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 125,
+      "zh": "晴",
+      "pinyin": "qíng",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 126,
+      "zh": "球",
+      "pinyin": "qiú",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 127,
+      "zh": "让",
+      "pinyin": "ràng",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 128,
+      "zh": "肉",
+      "pinyin": "ròu",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 129,
+      "zh": "商场",
+      "pinyin": "shāngchǎng",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 130,
+      "zh": "上来",
+      "pinyin": "shànglái",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 131,
+      "zh": "上面",
+      "pinyin": "shàngmian",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 132,
+      "zh": "上去",
+      "pinyin": "shàngqù",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 133,
+      "zh": "上网",
+      "pinyin": "shàngwǎng",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 134,
+      "zh": "身体",
+      "pinyin": "shēntǐ",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 135,
+      "zh": "生日",
+      "pinyin": "shēngrì",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 136,
+      "zh": "时",
+      "pinyin": "shí",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 137,
+      "zh": "事情",
+      "pinyin": "shìqing",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 138,
+      "zh": "试",
+      "pinyin": "shì",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 139,
+      "zh": "手",
+      "pinyin": "shǒu",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 140,
+      "zh": "手表",
+      "pinyin": "shǒubiǎo",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 141,
+      "zh": "书包",
+      "pinyin": "shūbāo",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 142,
+      "zh": "舒服",
+      "pinyin": "shūfu",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 143,
+      "zh": "送",
+      "pinyin": "sòng",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 144,
+      "zh": "虽然",
+      "pinyin": "suīrán",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 145,
+      "zh": "所以",
+      "pinyin": "suǒyǐ",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 146,
+      "zh": "疼",
+      "pinyin": "téng",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 147,
+      "zh": "踢",
+      "pinyin": "tī",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 148,
+      "zh": "题",
+      "pinyin": "tí",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 149,
+      "zh": "条",
+      "pinyin": "tiáo",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 150,
+      "zh": "跳舞",
+      "pinyin": "tiàowǔ",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 151,
+      "zh": "头",
+      "pinyin": "tóu",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 152,
+      "zh": "外国",
+      "pinyin": "wàiguó",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 153,
+      "zh": "外面",
+      "pinyin": "wàimian",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 154,
+      "zh": "完",
+      "pinyin": "wán",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 155,
+      "zh": "万",
+      "pinyin": "wàn",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 156,
+      "zh": "网上",
+      "pinyin": "wǎngshang",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 157,
+      "zh": "往",
+      "pinyin": "wǎng",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 158,
+      "zh": "忘",
+      "pinyin": "wàng",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 159,
+      "zh": "为什么",
+      "pinyin": "wèishénme",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 160,
+      "zh": "位",
+      "pinyin": "wèi",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 161,
+      "zh": "希望",
+      "pinyin": "xīwàng",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 162,
+      "zh": "洗",
+      "pinyin": "xǐ",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 163,
+      "zh": "洗手间",
+      "pinyin": "xǐshǒujiān",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 164,
+      "zh": "下来",
+      "pinyin": "xiàlái",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 165,
+      "zh": "下面",
+      "pinyin": "xiàmian",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 166,
+      "zh": "下去",
+      "pinyin": "xiàqù",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 167,
+      "zh": "小孩儿",
+      "pinyin": "xiǎoháir",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 168,
+      "zh": "小时候",
+      "pinyin": "xiǎoshíhou",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 169,
+      "zh": "笑",
+      "pinyin": "xiào",
+      "lessons": [
+        10
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 170,
+      "zh": "新年",
+      "pinyin": "xīnnián",
+      "lessons": [
+        13
+      ],
+      "beyond_syllabus": true
+    },
+    {
+      "row": 171,
+      "zh": "姓",
+      "pinyin": "xìng",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 172,
+      "zh": "姓名",
+      "pinyin": "xìngmíng",
+      "lessons": [
+        15
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 173,
+      "zh": "颜色",
+      "pinyin": "yánsè",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 174,
+      "zh": "眼睛",
+      "pinyin": "yǎnjing",
+      "lessons": [
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 175,
+      "zh": "药",
+      "pinyin": "yào",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 176,
+      "zh": "药店",
+      "pinyin": "yàodiàn",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 177,
+      "zh": "爷爷",
+      "pinyin": "yéye",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 178,
+      "zh": "一会儿",
+      "pinyin": "yíhuìr",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 179,
+      "zh": "一起",
+      "pinyin": "yìqǐ",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 180,
+      "zh": "已经",
+      "pinyin": "yǐjīng",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 181,
+      "zh": "意思",
+      "pinyin": "yìsi",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 182,
+      "zh": "因为",
+      "pinyin": "yīnwèi",
+      "lessons": [
+        4
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 183,
+      "zh": "阴",
+      "pinyin": "yīn",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 184,
+      "zh": "游",
+      "pinyin": "yóu",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 185,
+      "zh": "游泳",
+      "pinyin": "yóuyǒng",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 186,
+      "zh": "有时",
+      "pinyin": "yǒushí",
+      "lessons": [
+        1
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 187,
+      "zh": "有意思",
+      "pinyin": "yǒu yìsi",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 188,
+      "zh": "右",
+      "pinyin": "yòu",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 189,
+      "zh": "右边",
+      "pinyin": "yòubian",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 190,
+      "zh": "鱼",
+      "pinyin": "yú",
+      "lessons": [
+        6
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 191,
+      "zh": "远",
+      "pinyin": "yuǎn",
+      "lessons": [
+        2
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 192,
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 193,
+      "zh": "站",
+      "pinyin": "zhàn",
+      "lessons": [
+        12,
+        14
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 194,
+      "zh": "丈夫",
+      "pinyin": "zhàngfu",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 195,
+      "zh": "这么",
+      "pinyin": "zhème",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 196,
+      "zh": "这样",
+      "pinyin": "zhèyàng",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 197,
+      "zh": "着",
+      "pinyin": "zhe",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 198,
+      "zh": "正",
+      "pinyin": "zhèng",
+      "lessons": [
+        12
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 199,
+      "zh": "周",
+      "pinyin": "zhōu",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 200,
+      "zh": "准备",
+      "pinyin": "zhǔnbèi",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 201,
+      "zh": "自己",
+      "pinyin": "zìjǐ",
+      "lessons": [
+        3
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 202,
+      "zh": "走",
+      "pinyin": "zǒu",
+      "lessons": [
+        5
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 203,
+      "zh": "走路",
+      "pinyin": "zǒulù",
+      "lessons": [
+        9
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 204,
+      "zh": "足球",
+      "pinyin": "zúqiú",
+      "lessons": [
+        7
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 205,
+      "zh": "最",
+      "pinyin": "zuì",
+      "lessons": [
+        11
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 206,
+      "zh": "左",
+      "pinyin": "zuǒ",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    },
+    {
+      "row": 207,
+      "zh": "左边",
+      "pinyin": "zuǒbian",
+      "lessons": [
+        8
+      ],
+      "beyond_syllabus": false
+    }
+  ]
+}
