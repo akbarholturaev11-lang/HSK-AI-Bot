@@ -13,7 +13,12 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
-from app.services.course_gamification_service import CourseGamificationService\nfrom app.services.course_levels import (\n    legacy_content_levels,\n    next_level as registry_next_level,\n    normalize_legacy_content_level,\n)
+from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_levels import (
+    legacy_content_levels,
+    next_level as registry_next_level,
+    normalize_legacy_content_level,
+)
 from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialError,
     CourseLessonMistakeMaterialService,
@@ -42,7 +47,11 @@ logger = logging.getLogger(__name__)
 
 COURSE_V3_LEVELS = frozenset(legacy_content_levels())
 COURSE_V3_LANGUAGES = frozenset({"uz", "ru", "tj"})
-COURSE_V3_NEXT_BAND = {\n    level: registry_next_level(level)\n    for level in COURSE_V3_LEVELS\n    if registry_next_level(level)\n}
+COURSE_V3_NEXT_BAND = {
+    level: registry_next_level(level)
+    for level in COURSE_V3_LEVELS
+    if registry_next_level(level)
+}
 COURSE_V3_DATA_ROOT = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
 DESKTOP_PREVIEW_COMPLETION_ERROR = "free_feature_limit_reached"
 
