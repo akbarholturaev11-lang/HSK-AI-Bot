@@ -1799,6 +1799,23 @@ def _course_v3_user_lang(user) -> str:
     return normalize_miniapp_lang(getattr(user, "language", None))
 
 
+async def _course_v3_next_level_release(session, level: str) -> tuple[str | None, str | None]:
+    """Return (live_next_level, pending_next_level).
+
+    HSK 2.0 keeps its established automatic band progression. HSK 3.0 is
+    rollout-gated: checked-in N2/N3 runtime must not become public merely
+    because N1 was completed.
+    """
+
+    next_band = _COURSE_V3_NEXT_BAND.get(_course_v3_level(level))
+    if not next_band:
+        return None, None
+    if str(level or "").strip().lower().startswith("nhsk"):
+        if not await Hsk30FeatureService(session).is_level_live(next_band):
+            return None, next_band
+    return next_band, None
+
+
 def _apply_course_v3_progress_marks(data: dict, *, completed: int) -> None:
     """Yulduzchalar — tugatilgan qismning belgisi.
 
@@ -2744,6 +2761,13 @@ async def v3_course_lesson_complete(request: Request):
         gamification = CourseGamificationService(session)
         if lesson_order <= completed:
             snapshot = await gamification.snapshot(user)
+            next_level = None
+            next_level_pending = None
+            if total_parts and lesson_order >= total_parts:
+                next_level, next_level_pending = await _course_v3_next_level_release(
+                    session,
+                    resolved_level,
+                )
             await session.commit()
             return JSONResponse(
                 content={
@@ -2751,6 +2775,8 @@ async def v3_course_lesson_complete(request: Request):
                     "duplicate": True,
                     "completed_lesson": lesson_order,
                     "completed_lessons_count": completed,
+                    "next_level": next_level,
+                    "next_level_pending": next_level_pending,
                     "gamification": snapshot,
                 }
             )
@@ -2777,13 +2803,17 @@ async def v3_course_lesson_complete(request: Request):
         # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
         has_next = bool(total_parts) and lesson_order < total_parts
         next_order = lesson_order + 1 if has_next else None
+        next_level = None
+        next_level_pending = None
         if total_parts and not has_next:
-            # Joriy band to'liq tugadi: keyingi HSK bandiga o'tamiz va user.level ni
-            # yangilaymiz, shunda QA rejim ham yangi bandda bo'ladi (sinxron qoladi).
-            # Progress keyingi map ochilganda yangi banddan noldan boshlanadi.
-            next_band = _COURSE_V3_NEXT_BAND.get(resolved_level)
-            if next_band:
-                user.level = next_band
+            # Joriy band to'liq tugadi. Legacy HSK odatdagidek keyingi bandga
+            # o'tadi; HSK 3.0 esa faqat serverda live qilingan bandga o'tadi.
+            next_level, next_level_pending = await _course_v3_next_level_release(
+                session,
+                resolved_level,
+            )
+            if next_level:
+                user.level = next_level
         if has_next:
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
@@ -2814,6 +2844,8 @@ async def v3_course_lesson_complete(request: Request):
                 "lesson_order": lesson_order,
                 "is_paid": is_paid,
                 "next_lesson": next_order,
+                "next_level": next_level,
+                "next_level_pending": next_level_pending,
             },
         )
         if lesson_mistakes:
@@ -2843,6 +2875,8 @@ async def v3_course_lesson_complete(request: Request):
                 "ok": True,
                 "completed_lesson": lesson_order,
                 "next_lesson": next_order,
+                "next_level": next_level,
+                "next_level_pending": next_level_pending,
                 "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
                 "gamification": snapshot,
             }
