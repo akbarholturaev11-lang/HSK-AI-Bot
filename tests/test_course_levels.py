@@ -36,6 +36,9 @@ class CourseLevelRegistryTests(unittest.TestCase):
 
     def test_hsk30_levels_are_registered_but_not_selectable_by_default(self):
         self.assertEqual(hsk30_content_levels(), ("nhsk1", "nhsk2", "nhsk3", "nhsk4"))
+        self.assertEqual(content_level("nbeginner"), "nhsk1")
+        self.assertNotIn("nbeginner", onboarding_levels())
+        self.assertIn("nbeginner", onboarding_levels(hsk30_enabled=True))
         for band in range(1, 5):
             key = f"nhsk{band}"
             spec = level_spec(key)
