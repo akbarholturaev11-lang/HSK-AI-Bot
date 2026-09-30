@@ -1,0 +1,387 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 5,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58
+    ]
+  },
+  "title": {
+    "hanzi": "这样的照片才好看",
+    "pinyin": "Zhèyàng de zhàopiàn cái hǎokàn"
+  },
+  "objectives": [
+    "能听懂并介绍自己喜爱的休闲生活。",
+    "能听懂并表达两个动作行为接连发生。",
+    "掌握存现句（3）的用法，能表达人物事物的出现或消失。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "总是",
+      "pinyin": "zǒngshì",
+      "part_of_speech": "adv.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "终于",
+      "pinyin": "zhōngyú",
+      "part_of_speech": "adv.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "爬",
+      "pinyin": "pá",
+      "part_of_speech": "v.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "山",
+      "pinyin": "shān",
+      "part_of_speech": "n.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "锻炼",
+      "pinyin": "duànliàn",
+      "part_of_speech": "v.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "照",
+      "pinyin": "zhào",
+      "part_of_speech": "v.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "鞋",
+      "pinyin": "xié",
+      "part_of_speech": "n.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "大衣",
+      "pinyin": "dàyī",
+      "part_of_speech": "n.",
+      "source_page": 51
+    },
+    {
+      "hanzi": "拍照",
+      "pinyin": "pāizhào",
+      "part_of_speech": "v.",
+      "source_page": 53
+    },
+    {
+      "hanzi": "感兴趣",
+      "pinyin": "gǎn xìngqù",
+      "part_of_speech": "",
+      "source_page": 53
+    },
+    {
+      "hanzi": "照相",
+      "pinyin": "zhàoxiàng",
+      "part_of_speech": "v.",
+      "source_page": 53
+    },
+    {
+      "hanzi": "难看",
+      "pinyin": "nánkàn",
+      "part_of_speech": "adj.",
+      "source_page": 53
+    },
+    {
+      "hanzi": "比较",
+      "pinyin": "bǐjiào",
+      "part_of_speech": "v./adv.",
+      "source_page": 53
+    },
+    {
+      "hanzi": "水平",
+      "pinyin": "shuǐpíng",
+      "part_of_speech": "n.",
+      "source_page": 53
+    },
+    {
+      "hanzi": "太阳",
+      "pinyin": "tàiyáng",
+      "part_of_speech": "n.",
+      "source_page": 54
+    },
+    {
+      "hanzi": "树",
+      "pinyin": "shù",
+      "part_of_speech": "n.",
+      "source_page": 54
+    },
+    {
+      "hanzi": "干",
+      "pinyin": "gàn",
+      "part_of_speech": "v.",
+      "source_page": 54
+    },
+    {
+      "hanzi": "电",
+      "pinyin": "diàn",
+      "part_of_speech": "n.",
+      "source_page": 54
+    },
+    {
+      "hanzi": "收到",
+      "pinyin": "shōudào",
+      "part_of_speech": "v.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "封",
+      "pinyin": "fēng",
+      "part_of_speech": "m.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "邮件",
+      "pinyin": "yóujiàn",
+      "part_of_speech": "n.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "难过",
+      "pinyin": "nánguò",
+      "part_of_speech": "adj.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "哈哈",
+      "pinyin": "hāhā",
+      "part_of_speech": "interj.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "音乐",
+      "pinyin": "yīnyuè",
+      "part_of_speech": "n.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "兴趣",
+      "pinyin": "xìngqù",
+      "part_of_speech": "n.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "会",
+      "pinyin": "huì",
+      "part_of_speech": "n.",
+      "source_page": 56
+    },
+    {
+      "hanzi": "结束",
+      "pinyin": "jiéshù",
+      "part_of_speech": "v.",
+      "source_page": 56
+    }
+  ],
+  "grammar": [
+    {
+      "label": "程度补语（2）",
+      "source_page": 52,
+      "examples": [
+        {
+          "hanzi": "现在天气好得很。",
+          "pinyin": "Xiànzài tiānqì hǎo de hěn."
+        },
+        {
+          "hanzi": "房间里面热得很。",
+          "pinyin": "Fángjiān lǐmian rè de hěn."
+        },
+        {
+          "hanzi": "我觉得爬山累得很。",
+          "pinyin": "Wǒ juéde páshān lèi de hěn."
+        }
+      ]
+    },
+    {
+      "label": "量词重叠",
+      "source_page": 53,
+      "examples": [
+        {
+          "hanzi": "这些照片张张都非常好看。",
+          "pinyin": "Zhèxiē zhàopiàn zhāngzhāng dōu fēicháng hǎokàn."
+        },
+        {
+          "hanzi": "这些苹果个个都很大。",
+          "pinyin": "Zhèxiē píngguǒ gègè dōu hěn dà."
+        },
+        {
+          "hanzi": "我想出去拍照，但是天天下雨。",
+          "pinyin": "Wǒ xiǎng chūqù pāizhào, dànshì tiāntiān xiàyǔ."
+        }
+      ]
+    },
+    {
+      "label": "存现句（3）",
+      "source_page": 55,
+      "examples": [
+        {
+          "hanzi": "后边走过去两个人。",
+          "pinyin": "Hòubian zǒu guòqu liǎng ge rén."
+        },
+        {
+          "hanzi": "前面开过来很多车。",
+          "pinyin": "Qiánmian kāi guòlái hěn duō chē."
+        },
+        {
+          "hanzi": "楼上下来几个人。",
+          "pinyin": "Lóushàng xiàlái jǐ ge rén."
+        }
+      ]
+    },
+    {
+      "label": "紧缩复句“……了……就……”",
+      "source_page": 56,
+      "examples": [
+        {
+          "hanzi": "你听完了音乐会就来我家吃饭。",
+          "pinyin": "Nǐ tīng wán le yīnyuèhuì jiù lái wǒ jiā chīfàn."
+        },
+        {
+          "hanzi": "我吃了早饭就去学校了。",
+          "pinyin": "Wǒ chī le zǎofàn jiù qù xuéxiào le."
+        },
+        {
+          "hanzi": "昨天我们下了课就回家了。",
+          "pinyin": "Zuótiān wǒmen xià le kè jiù huí jiā le."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在街上，白家月和李文边散步边聊天儿。",
+      "source_page": 51,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "这个星期总是阴天，今天终于晴了。",
+          "pinyin": "Zhège xīngqī zǒngshì yīntiān, jīntiān zhōngyú qíng le."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "现在天气好得很！我们去爬山怎么样？",
+          "pinyin": "Xiànzài tiānqì hǎo de hěn! Wǒmen qù páshān zěnmeyàng?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "好啊！又能锻炼身体，又能照好看的照片。",
+          "pinyin": "Hǎo a! Yòu néng duànliàn shēntǐ, yòu néng zhào hǎokàn de zhàopiàn."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "那我带点儿水和吃的，咱们现在就去？",
+          "pinyin": "Nà wǒ dài diǎnr shuǐ hé chī de, zánmen xiànzài jiù qù?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我回去穿上运动鞋，拿上大衣。要不要叫一雪姐一起去？",
+          "pinyin": "Wǒ huíqu chuān shàng yùndòngxié, ná shàng dàyī. Yào bú yào jiào Yīxuě jiě yìqǐ qù?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "好主意。给她打个电话吧。",
+          "pinyin": "Hǎo zhǔyi. Gěi tā dǎ ge diànhuà ba."
+        }
+      ]
+    },
+    {
+      "scene": "在出租车上，王一雪和白家月在聊天儿。",
+      "source_page": 53,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "这些照片是谁给您照的？张张都非常好看。",
+          "pinyin": "Zhèxiē zhàopiàn shì shéi gěi nín zhào de? Zhāngzhāng dōu fēicháng hǎokàn."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "一飞。她对拍照一直很感兴趣，经常给我照相。",
+          "pinyin": "Yīfēi. Tā duì pāizhào yìzhí hěn gǎn xìngqù, jīngcháng gěi wǒ zhàoxiàng."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我喜欢您大笑的这张，看起来很漂亮。",
+          "pinyin": "Wǒ xǐhuan nín dà xiào de zhè zhāng, kàn qǐlái hěn piàoliang."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我觉得这张有点儿难看，那时候我不知道她在给我照相。",
+          "pinyin": "Wǒ juéde zhè zhāng yǒudiǎnr nánkàn, nà shíhou wǒ bù zhīdào tā zài gěi wǒ zhàoxiàng."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "这样的照片才好看。我也喜欢拍照，爬山的时候我给您照几张照片吧。",
+          "pinyin": "Zhèyàng de zhàopiàn cái hǎokàn. Wǒ yě xǐhuan pāizhào, páshān de shíhou wǒ gěi nín zhào jǐ zhāng zhàopiàn ba."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "好，我可以比较一下你们两个谁的水平高。",
+          "pinyin": "Hǎo, wǒ kěyǐ bǐjiào yíxià nǐmen liǎng ge shéi de shuǐpíng gāo."
+        }
+      ]
+    },
+    {
+      "scene": "在山上，王一雪和白家月边走边聊。",
+      "source_page": 54,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "家月，这里挺漂亮的，咱们在这里拍照吧。",
+          "pinyin": "Jiāyuè, zhèlǐ tǐng piàoliang de, zánmen zài zhèlǐ pāizhào ba."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "这边没有太阳，咱们去那边吧。",
+          "pinyin": "Zhèbiān méiyǒu tàiyáng, zánmen qù nàbiān ba."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "好。你觉得我站在这些树中间怎么样？",
+          "pinyin": "Hǎo. Nǐ juéde wǒ zhàn zài zhèxiē shù zhōngjiān zěnmeyàng?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "挺好的。等一下，后边走过去两个人。",
+          "pinyin": "Tǐng hǎo de. Děng yíxià, hòubian zǒu guòqu liǎng ge rén."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我准备好了，你照的时候告诉我。",
+          "pinyin": "Wǒ zhǔnbèi hǎo le, nǐ zhào de shíhou gàosu wǒ."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "你不用看着我，想干什么都可以。",
+          "pinyin": "Nǐ búyòng kànzhe wǒ, xiǎng gàn shénme dōu kěyǐ."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "树上飞来了几只鸟，我就看它们吧。",
+          "pinyin": "Shù shàng fēi lái le jǐ zhī niǎo, wǒ jiù kàn tāmen ba."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "啊，手机没电了。",
+          "pinyin": "Ā, shǒujī méi diàn le."
+        }
+      ]
+    }
+  ]
+}
