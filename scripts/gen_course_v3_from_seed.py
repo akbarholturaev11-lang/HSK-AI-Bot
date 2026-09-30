@@ -1664,6 +1664,20 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
                     practice_cards = cand
                     total -= 1
 
+        # Retention-review cards are supplemental. In dense grammar parts the
+        # mandatory teach/check coverage can already fill the 18-card budget.
+        # Drop only review cards that are redundant for the current chunk's
+        # 4x coverage; never remove a grammar teach/drill or a required intro.
+        if total > PART_CARD_BUDGET and review_cards:
+            i = len(review_cards) - 1
+            while total > PART_CARD_BUDGET and i >= 0:
+                cand_review = review_cards[:i] + review_cards[i + 1:]
+                rest = intro_cards + grammar_cards + practice_cards + cand_review
+                if all(_hits(w.get("zh", ""), rest) >= 4 for w in chunk):
+                    review_cards = cand_review
+                    total -= 1
+                i -= 1
+
         if total > PART_CARD_BUDGET:
             raise ValueError(
                 f"{level} part {flat_n} exceeds {PART_CARD_BUDGET}-card budget: {total}"
