@@ -43,6 +43,7 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
 from app.services.course_v3_parts import total_parts
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.support_contact_service import get_admin_contact_url
 
 logger = logging.getLogger(__name__)
@@ -225,6 +226,15 @@ class DesktopCourseService:
             progress.level = level
         return progress
 
+    async def _next_level_release(self, level: str) -> tuple[str | None, str | None]:
+        next_band = COURSE_V3_NEXT_BAND.get(level)
+        if not next_band:
+            return None, None
+        if level.startswith("nhsk"):
+            if not await Hsk30FeatureService(self.session).is_level_live(next_band):
+                return None, next_band
+        return next_band, None
+
     @staticmethod
     def _completion_payload(
         *,
@@ -233,12 +243,16 @@ class DesktopCourseService:
         completed_lessons_count: int,
         gamification: dict[str, Any],
         duplicate: bool = False,
+        next_level: str | None = None,
+        next_level_pending: str | None = None,
     ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "ok": True,
             "completed_lesson": lesson_order,
             "next_lesson": next_lesson,
             "completed_lessons_count": completed_lessons_count,
+            "next_level": next_level,
+            "next_level_pending": next_level_pending,
             "gamification": gamification,
         }
         if duplicate:
@@ -547,12 +561,18 @@ class DesktopCourseService:
         if lesson_order <= completed:
             snapshot = await gamification_service.snapshot(user)
             await self.session.commit()
+            next_level = None
+            next_level_pending = None
+            if lesson_order >= total:
+                next_level, next_level_pending = await self._next_level_release(level)
             return self._completion_payload(
                 lesson_order=lesson_order,
                 next_lesson=lesson_order + 1 if lesson_order < total else None,
                 completed_lessons_count=completed,
                 gamification=snapshot,
                 duplicate=True,
+                next_level=next_level,
+                next_level_pending=next_level_pending,
             )
         if lesson_order != completed + 1:
             raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
@@ -584,10 +604,12 @@ class DesktopCourseService:
 
         has_next = lesson_order < total
         next_lesson = lesson_order + 1 if has_next else None
+        next_level = None
+        next_level_pending = None
         if not has_next:
-            next_band = COURSE_V3_NEXT_BAND.get(level)
-            if next_band:
-                user.level = next_band
+            next_level, next_level_pending = await self._next_level_release(level)
+            if next_level:
+                user.level = next_level
 
         await progress_repository.set_current_lesson_and_step(
             progress=progress, lesson_id=legacy_lesson_id,
@@ -601,6 +623,8 @@ class DesktopCourseService:
             next_lesson=next_lesson,
             completed_lessons_count=int(progress.completed_lessons_count or 0),
             gamification=snapshot,
+            next_level=next_level,
+            next_level_pending=next_level_pending,
         )
         analytics_result = await CourseMiniAppAnalyticsService(
             self.session
