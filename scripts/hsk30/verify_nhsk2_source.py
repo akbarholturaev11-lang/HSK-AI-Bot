@@ -5,11 +5,24 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+INDEX = ROOT / "nhsk2_vocab_index.json"
 
 EXPECTED = {
     1: {"vocab": 14, "dialogues": 4, "lines": 19, "grammar": 3},
     2: {"vocab": 16, "dialogues": 4, "lines": 19, "grammar": 3},
     3: {"vocab": 15, "dialogues": 4, "lines": 17, "grammar": 3},
+    4: {"vocab": 16, "dialogues": 4, "lines": 19, "grammar": 3},
+    5: {"vocab": 18, "dialogues": 4, "lines": 22, "grammar": 3},
+    6: {"vocab": 14, "dialogues": 4, "lines": 22, "grammar": 3},
+    7: {"vocab": 15, "dialogues": 4, "lines": 18, "grammar": 3},
+    8: {"vocab": 16, "dialogues": 4, "lines": 20, "grammar": 3},
+    9: {"vocab": 13, "dialogues": 4, "lines": 20, "grammar": 3},
+    10: {"vocab": 14, "dialogues": 4, "lines": 23, "grammar": 3},
+    11: {"vocab": 13, "dialogues": 4, "lines": 23, "grammar": 3},
+    12: {"vocab": 11, "dialogues": 4, "lines": 21, "grammar": 3},
+    13: {"vocab": 13, "dialogues": 4, "lines": 22, "grammar": 3},
+    14: {"vocab": 12, "dialogues": 4, "lines": 20, "grammar": 3},
+    15: {"vocab": 11, "dialogues": 4, "lines": 23, "grammar": 3},
 }
 
 
@@ -75,7 +88,7 @@ def verify_index() -> dict[str, int]:
     source_rows = index["common_index_rows"]
     source_words = {row["zh"] for row in source_rows}
     beyond = set(index["beyond_syllabus"])
-    proper = {row["zh"] for row in index["proper_nouns"]}
+    source_proper = {row["zh"] for row in index["proper_nouns"]}
 
     actual_occurrences: dict[str, set[int]] = {}
     proper_seen: set[str] = set()
@@ -92,13 +105,17 @@ def verify_index() -> dict[str, int]:
         f"index coverage mismatch missing={sorted(source_words-actual_words)} "
         f"extras={sorted(actual_words-source_words)}"
     )
-    assert proper <= proper_seen, f"missing proper nouns: {sorted(proper-proper_seen)}"
+    assert source_proper <= proper_seen, (
+        f"missing source proper nouns: {sorted(source_proper-proper_seen)}"
+    )
 
     for row in source_rows:
         if row["zh"] == "过":
             continue
         assert sorted(actual_occurrences[row["zh"]]) == row["lessons"], (
-            row["zh"], sorted(actual_occurrences[row["zh"]]), row["lessons"]
+            row["zh"],
+            sorted(actual_occurrences[row["zh"]]),
+            row["lessons"],
         )
 
     counts = index["source_counts"]
@@ -106,7 +123,7 @@ def verify_index() -> dict[str, int]:
     assert len(source_words) == counts["unique_common_spellings"] == 206
     assert len(beyond) == counts["common_rows_marked_beyond_syllabus"] == 10
     assert sum(not row["beyond_syllabus"] for row in source_rows) == 197
-    assert len(index["proper_nouns"]) == 3
+    assert len(index["proper_nouns"]) == counts["proper_noun_rows"] == 3
     assert 197 + 3 == counts["syllabus_rows_including_proper_nouns"] == 200
 
     guo_rows = [row for row in source_rows if row["zh"] == "过"]
@@ -128,7 +145,10 @@ def verify_index() -> dict[str, int]:
 def main() -> None:
     for order in sorted(EXPECTED):
         stats = verify(order)
-        print(f"OK lesson {order:02d}: " + " ".join(f"{k}={v}" for k, v in stats.items()))
+        print(
+            f"OK lesson {order:02d}: "
+            + " ".join(f"{k}={v}" for k, v in stats.items())
+        )
     audit = verify_index()
     print("OK N2 index: " + " ".join(f"{k}={v}" for k, v in audit.items()))
 
