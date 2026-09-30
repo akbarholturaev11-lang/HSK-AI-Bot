@@ -11,6 +11,7 @@ on:
       - "scripts/hsk30/nhsk3_adapter.py"
       - "scripts/hsk30/translations/nhsk3/**"
       - "scripts/hsk30/verify_nhsk3_enrichment.py"
+      - "scripts/gen_course_v3_from_seed.py"
   workflow_dispatch:
 
 permissions:
@@ -28,3 +29,4 @@ jobs:
           lfs: false
       - run: python scripts/hsk30/verify_nhsk3_normalized.py
       - run: python scripts/hsk30/verify_nhsk3_enrichment.py
+      - run: python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk3 --dry --no-maps
