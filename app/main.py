@@ -128,6 +128,7 @@ from app.services.desktop_release_manifest_service import (
 )
 from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
+from app.services.course_track_service import CourseTrackService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_lesson_mistake_material_service import (
@@ -1771,7 +1772,7 @@ async def course_data_file(level: str):
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
 _COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
-_COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
+_COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 
 
 def _course_v3_level(value: str | None) -> str:
@@ -1780,7 +1781,7 @@ def _course_v3_level(value: str | None) -> str:
 
 
 # Band tugaganda keyingi HSK bandiga avtomatik o'tish (user.level yangilanadi).
-_COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4"}
+_COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4", "nhsk1": "nhsk2", "nhsk2": "nhsk3"}
 
 # Darslar mini-qismlarga bo'lingandan keyin band chegarasi legacy
 # course_lessons jadvalidan emas, parts_manifest.json dan aniqlanadi.
@@ -2015,7 +2016,7 @@ async def course_v3_exam_file(filename: str):
 @app.get("/course_v3_data/{level}/{filename}")
 async def course_v3_lesson_file(level: str, filename: str):
     import re
-    if not re.fullmatch(r"hsk[1-4]", level):
+    if not re.fullmatch(r"(?:hsk[1-4]|nhsk[1-3])", level):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     if not re.fullmatch(r"lesson_\d+\.json", filename):
         return JSONResponse(status_code=404, content={"error": "not_found"})
@@ -2203,6 +2204,18 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         # shunday qilib QA rejim va Kurs rejim hech qachon bir-biridan farq qilmaydi.
         resolved_lang = _course_v3_user_lang(user)
         target_band = _course_v3_user_level(user)
+
+        if target_band.startswith("nhsk"):
+            hsk30_access = await CourseTrackService(session).hsk30_access(user)
+            if not hsk30_access.allowed:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "ok": False,
+                        "error": hsk30_access.reason,
+                        "hsk30_access": hsk30_access.payload(),
+                    },
+                )
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
@@ -2597,6 +2610,17 @@ async def v3_course_lesson_unlock(request: Request):
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         resolved_level = _course_v3_user_level(user)
+        if resolved_level.startswith("nhsk"):
+            hsk30_access = await CourseTrackService(session).hsk30_access(user)
+            if not hsk30_access.allowed:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "ok": False,
+                        "error": hsk30_access.reason,
+                        "hsk30_access": hsk30_access.payload(),
+                    },
+                )
         total_parts = _course_v3_total_parts(resolved_level)
         if total_parts and lesson_order > total_parts:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
