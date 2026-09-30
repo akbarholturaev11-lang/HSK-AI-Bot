@@ -1,0 +1,380 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 13,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135
+    ]
+  },
+  "title": {
+    "hanzi": "我的新邻居来自英国",
+    "pinyin": "Wǒ de xīn línjū láizì Yīngguó"
+  },
+  "objectives": [
+    "能听懂并谈论不同地区生活习惯的差异。",
+    "能听懂并使用感谢、祝福和夸赞等礼貌用语。",
+    "掌握“一边……，一边……”的用法，能描述同时进行的动作。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "请客",
+      "pinyin": "qǐngkè",
+      "part_of_speech": "v.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "南方",
+      "pinyin": "nánfāng",
+      "part_of_speech": "n.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "北方",
+      "pinyin": "běifāng",
+      "part_of_speech": "n.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "做法",
+      "pinyin": "zuòfǎ",
+      "part_of_speech": "n.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "不同",
+      "pinyin": "bù tóng",
+      "part_of_speech": "adj.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "加",
+      "pinyin": "jiā",
+      "part_of_speech": "v.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "的话",
+      "pinyin": "dehuà",
+      "part_of_speech": "part.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "做客",
+      "pinyin": "zuòkè",
+      "part_of_speech": "v.",
+      "source_page": 128
+    },
+    {
+      "hanzi": "邻居",
+      "pinyin": "línjū",
+      "part_of_speech": "n.",
+      "source_page": 130
+    },
+    {
+      "hanzi": "放心",
+      "pinyin": "fàngxīn",
+      "part_of_speech": "v.",
+      "source_page": 130
+    },
+    {
+      "hanzi": "酒",
+      "pinyin": "jiǔ",
+      "part_of_speech": "n.",
+      "source_page": 130
+    },
+    {
+      "hanzi": "放",
+      "pinyin": "fàng",
+      "part_of_speech": "v.",
+      "source_page": 130
+    },
+    {
+      "hanzi": "客人",
+      "pinyin": "kèrén",
+      "part_of_speech": "n.",
+      "source_page": 130
+    },
+    {
+      "hanzi": "晚会",
+      "pinyin": "wǎnhuì",
+      "part_of_speech": "n.",
+      "source_page": 132
+    },
+    {
+      "hanzi": "礼物",
+      "pinyin": "lǐwù",
+      "part_of_speech": "n.",
+      "source_page": 132
+    },
+    {
+      "hanzi": "画家",
+      "pinyin": "huàjiā",
+      "part_of_speech": "n.",
+      "source_page": 132
+    },
+    {
+      "hanzi": "盘子",
+      "pinyin": "pánzi",
+      "part_of_speech": "n.",
+      "source_page": 132
+    },
+    {
+      "hanzi": "一边",
+      "pinyin": "yìbiān",
+      "part_of_speech": "adv.",
+      "source_page": 132
+    },
+    {
+      "hanzi": "聊天儿",
+      "pinyin": "liáotiānr",
+      "part_of_speech": "v.",
+      "source_page": 132
+    },
+    {
+      "hanzi": "来自",
+      "pinyin": "láizì",
+      "part_of_speech": "v.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "夫妻",
+      "pinyin": "fūqī",
+      "part_of_speech": "n.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "直到",
+      "pinyin": "zhídào",
+      "part_of_speech": "v.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "地图",
+      "pinyin": "dìtú",
+      "part_of_speech": "n.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "点",
+      "pinyin": "diǎn",
+      "part_of_speech": "n.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "感到",
+      "pinyin": "gǎndào",
+      "part_of_speech": "v.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "东方",
+      "pinyin": "dōngfāng",
+      "part_of_speech": "n.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "文化",
+      "pinyin": "wénhuà",
+      "part_of_speech": "n.",
+      "source_page": 134
+    },
+    {
+      "hanzi": "英国",
+      "pinyin": "Yīngguó",
+      "part_of_speech": "proper noun",
+      "source_page": 134
+    }
+  ],
+  "grammar": [
+    {
+      "label": "假设复句“……的话，就……”",
+      "source_page": 129,
+      "examples": [
+        {
+          "hanzi": "你们有时间的话，就来我家做客。",
+          "pinyin": "Nǐmen yǒu shíjiān dehuà, jiù lái wǒ jiā zuòkè."
+        },
+        {
+          "hanzi": "你觉得满意的话，咱们就买。",
+          "pinyin": "Nǐ juéde mǎnyì dehuà, zánmen jiù mǎi."
+        },
+        {
+          "hanzi": "明天天气好的话，我就去爬山。",
+          "pinyin": "Míngtiān tiānqì hǎo dehuà, wǒ jiù qù páshān."
+        }
+      ]
+    },
+    {
+      "label": "“把”字句（4）",
+      "source_page": 130,
+      "examples": [
+        {
+          "hanzi": "你把声音开得太大了。",
+          "pinyin": "Nǐ bǎ shēngyīn kāi de tài dà le."
+        },
+        {
+          "hanzi": "他把球踢进去了吗？",
+          "pinyin": "Tā bǎ qiú tī jìnqu le ma?"
+        },
+        {
+          "hanzi": "你把字写得太小了，我看不清楚。",
+          "pinyin": "Nǐ bǎ zì xiě de tài xiǎo le, wǒ kàn bu qīngchu."
+        }
+      ]
+    },
+    {
+      "label": "并列复句“一边……，一边……”",
+      "source_page": 132,
+      "examples": [
+        {
+          "hanzi": "咱们一边吃蛋糕，一边聊天儿吧。",
+          "pinyin": "Zánmen yìbiān chī dàngāo, yìbiān liáotiānr ba."
+        },
+        {
+          "hanzi": "我喜欢一边跑步，一边听音乐。",
+          "pinyin": "Wǒ xǐhuan yìbiān pǎobù, yìbiān tīng yīnyuè."
+        },
+        {
+          "hanzi": "你不应该边开车边打电话。",
+          "pinyin": "Nǐ bù yīnggāi biān kāichē biān dǎ diànhuà."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在饭馆，杨同乐请同事吃饭。",
+      "source_page": 128,
+      "turns": [
+        {
+          "speaker": "杨同乐",
+          "hanzi": "今天我请客，你们想吃什么就点什么！",
+          "pinyin": "Jīntiān wǒ qǐngkè, nǐmen xiǎng chī shénme jiù diǎn shénme!"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那我就不客气了。听说这家饭馆的鱼做得很特别？",
+          "pinyin": "Nà wǒ jiù bú kèqi le. Tīngshuō zhè jiā fànguǎn de yú zuò de hěn tèbié?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "对，南方菜跟你们北方菜的做法不同。除了鱼，你们还想吃什么？",
+          "pinyin": "Duì, nánfāng cài gēn nǐmen běifāng cài de zuòfǎ bù tóng. Chúle yú, nǐmen hái xiǎng chī shénme?"
+        },
+        {
+          "speaker": "同事",
+          "hanzi": "我不常吃南方菜，还是你决定吧。",
+          "pinyin": "Wǒ bù cháng chī nánfāng cài, háishi nǐ juédìng ba."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "好，那再加一个鸡肉，一个……",
+          "pinyin": "Hǎo, nà zài jiā yí ge jīròu, yí ge..."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "咱们就三个人，别点那么多。",
+          "pinyin": "Zánmen jiù sān ge rén, bié diǎn nàme duō."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "好，那先来这几个菜。",
+          "pinyin": "Hǎo, nà xiān lái zhè jǐ ge cài."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "对了，下周我儿子过生日，你们有时间的话，就来我家做客，我给你们做北京菜。",
+          "pinyin": "Duì le, xià zhōu wǒ érzi guò shēngrì, nǐmen yǒu shíjiān dehuà, jiù lái wǒ jiā zuòkè, wǒ gěi nǐmen zuò Běijīng cài."
+        }
+      ]
+    },
+    {
+      "scene": "在家里，王一雪和刘明为生日会做准备。",
+      "source_page": 130,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "第一次请新邻居来做客，总是担心有什么没准备好。",
+          "pinyin": "Dì yí cì qǐng xīn línjū lái zuòkè, zǒngshì dānxīn yǒu shénme méi zhǔnbèi hǎo."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "放心吧，我帮你看了，都已经准备好了。",
+          "pinyin": "Fàngxīn ba, wǒ bāng nǐ kàn le, dōu yǐjīng zhǔnbèi hǎo le."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我记得刚才已经把饮料拿出来了，怎么不见了？",
+          "pinyin": "Wǒ jìde gāngcái yǐjīng bǎ yǐnliào ná chūlái le, zěnme bú jiàn le?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "我把饮料和酒都放进冰箱里了，客人来了再拿出来。",
+          "pinyin": "Wǒ bǎ yǐnliào hé jiǔ dōu fàng jìn bīngxiāng lǐ le, kèrén lái le zài ná chūlái."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "音乐的声音合适吗？",
+          "pinyin": "Yīnyuè de shēngyīn héshì ma?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "你把声音开得太大了，我去关小一点儿。",
+          "pinyin": "Nǐ bǎ shēngyīn kāi de tài dà le, wǒ qù guān xiǎo yìdiǎnr."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "好，那我们就等客人来吧。",
+          "pinyin": "Hǎo, nà wǒmen jiù děng kèrén lái ba."
+        }
+      ]
+    },
+    {
+      "scene": "在家里，王一雪和刘明办生日会。",
+      "source_page": 131,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "谢谢你们来参加我儿子的生日晚会，希望大家今晚玩得开心。",
+          "pinyin": "Xièxie nǐmen lái cānjiā wǒ érzi de shēngrì wǎnhuì, xīwàng dàjiā jīnwǎn wán de kāixīn."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "小明，生日快乐！我准备了一个小礼物，希望你喜欢！",
+          "pinyin": "Xiǎomíng, shēngrì kuàilè! Wǒ zhǔnbèi le yí ge xiǎo lǐwù, xīwàng nǐ xǐhuan!"
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "谢谢您，我可以打开吗？",
+          "pinyin": "Xièxie nín, wǒ kěyǐ dǎkāi ma?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "当然可以，你妈妈说你跟姐姐一样，都喜欢画画，对吗？",
+          "pinyin": "Dāngrán kěyǐ, nǐ māma shuō nǐ gēn jiějie yíyàng, dōu xǐhuan huàhuà, duì ma?"
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "对，我想做一名画家。啊！画板和画笔，这正是我需要的。我太喜欢了。",
+          "pinyin": "Duì, wǒ xiǎng zuò yì míng huàjiā. A! Huàbǎn hé huàbǐ, zhè zhèng shì wǒ xūyào de. Wǒ tài xǐhuan le."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我去把盘子拿过来，咱们一边吃蛋糕，一边聊天儿吧。",
+          "pinyin": "Wǒ qù bǎ pánzi ná guòlái, zánmen yìbiān chī dàngāo, yìbiān liáotiānr ba."
+        }
+      ]
+    }
+  ]
+}
