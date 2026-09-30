@@ -72,6 +72,18 @@ jobs:
                   level, len(map_data["units"]), expected_units
               )
 
+              runtime_manifest = json.loads(
+                  (base / level / "manifest.json").read_text(encoding="utf-8")
+              )
+              assert runtime_manifest["level"] == level
+              assert int(runtime_manifest["lesson_count"]) == total_parts, (
+                  level,
+                  runtime_manifest.get("lesson_count"),
+                  total_parts,
+              )
+              assert int(runtime_manifest["source_lesson_count"]) == expected_units
+              assert runtime_manifest["content_status"] == "runtime_ready"
+
               if level in {"nhsk2", "nhsk3"}:
                   lesson_files = sorted((base / level).glob("lesson_*.json"))
                   assert len(lesson_files) == total_parts, (
