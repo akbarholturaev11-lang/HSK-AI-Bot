@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "lesson": 16,
+  "source_title_hanzi": "我听说有的熊猫出国了",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Hayvonlarning tashqi ko‘rinishi, odatlari va yashash muhitini tasvirlash; hayvonlar haqidagi shaxsiy fikrni aytish; taqqoslash gapida miqdor yoki vaqt farqini aniq ifodalash; katta panda haqida asosiy ma’lumotlarni tushunish.",
+    "ru": "Описывать особенности животных, их повадки и среду обитания; выражать личное мнение о животных; точно указывать разницу в количестве или времени в сравнительных предложениях; знать основные сведения о большой панде.",
+    "tj": "Хусусият, одат ва муҳити зисти ҳайвонотро тавсиф кардан; фикри шахсиро дар бораи ҳайвонот баён кардан; дар ҷумлаи муқоисавӣ фарқи миқдор ё вақтро дақиқ нишон додан; маълумоти асосиро дар бораи пандаи калон фаҳмидан."
+  },
+  "intro_text": {
+    "uz": "Dars uy hayvonini parvarish qilish va hayvonot bog‘ida pandalarni kuzatish vaziyatlari orqali “一会儿……一会儿……”, “关于”, “一般来说” va taqqoslash gapining 11-turini o‘rgatadi.",
+    "ru": "Урок через уход за домашним животным и наблюдение за пандами в зоопарке вводит “一会儿……一会儿……”, “关于”, “一般来说” и сравнительное предложение типа 11.",
+    "tj": "Дарс тавассути нигоҳубини ҳайвони хонагӣ ва мушоҳидаи пандаҳо дар боғи ҳайвонот “一会儿……一会儿……”, “关于”, “一般来说” ва навъи 11-уми ҷумлаи муқоисавиро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "脏",
+      "pinyin": "zāng",
+      "uz": "iflos",
+      "ru": "грязный",
+      "tj": "ифлос"
+    },
+    {
+      "hanzi": "可爱",
+      "pinyin": "kě'ài",
+      "uz": "yoqimtoy; sevimli",
+      "ru": "милый; симпатичный",
+      "tj": "дилрабо; дӯстдоштании"
+    },
+    {
+      "hanzi": "一会儿",
+      "pinyin": "yíhuìr",
+      "uz": "bir oz vaqt; goh",
+      "ru": "немного времени; то... то...",
+      "tj": "каме вақт; гоҳ"
+    },
+    {
+      "hanzi": "脚",
+      "pinyin": "jiǎo",
+      "uz": "oyoq; panja",
+      "ru": "нога; ступня",
+      "tj": "пой; кафи пой"
+    },
+    {
+      "hanzi": "照顾",
+      "pinyin": "zhàogù",
+      "uz": "qaramoq; parvarish qilmoq",
+      "ru": "ухаживать; заботиться",
+      "tj": "нигоҳубин кардан"
+    },
+    {
+      "hanzi": "好像",
+      "pinyin": "hǎoxiàng",
+      "uz": "go‘yo; o‘xshaydi",
+      "ru": "кажется; похоже",
+      "tj": "гӯё; ба назар мерасад"
+    },
+    {
+      "hanzi": "认得",
+      "pinyin": "rènde",
+      "uz": "tanimoq; bilmoq",
+      "ru": "узнавать; знать в лицо",
+      "tj": "шинохтан"
+    },
+    {
+      "hanzi": "周末",
+      "pinyin": "zhōumò",
+      "uz": "hafta oxiri",
+      "ru": "выходные; конец недели",
+      "tj": "охири ҳафта"
+    },
+    {
+      "hanzi": "动物园",
+      "pinyin": "dòngwùyuán",
+      "uz": "hayvonot bog‘i",
+      "ru": "зоопарк",
+      "tj": "боғи ҳайвонот"
+    },
+    {
+      "hanzi": "动物",
+      "pinyin": "dòngwù",
+      "uz": "hayvon",
+      "ru": "животное",
+      "tj": "ҳайвон"
+    },
+    {
+      "hanzi": "大熊猫",
+      "pinyin": "dàxióngmāo",
+      "uz": "katta panda",
+      "ru": "большая панда",
+      "tj": "пандаи калон"
+    },
+    {
+      "hanzi": "奇怪",
+      "pinyin": "qíguài",
+      "uz": "g‘alati",
+      "ru": "странный",
+      "tj": "аҷиб"
+    },
+    {
+      "hanzi": "其实",
+      "pinyin": "qíshí",
+      "uz": "aslida",
+      "ru": "на самом деле",
+      "tj": "дар асл"
+    },
+    {
+      "hanzi": "竹子",
+      "pinyin": "zhúzi",
+      "uz": "bambuk",
+      "ru": "бамбук",
+      "tj": "бамбук"
+    },
+    {
+      "hanzi": "国宝",
+      "pinyin": "guóbǎo",
+      "uz": "milliy boylik; milliy ramz",
+      "ru": "национальное достояние",
+      "tj": "сарвати миллӣ"
+    },
+    {
+      "hanzi": "全",
+      "pinyin": "quán",
+      "uz": "butun; barcha",
+      "ru": "весь; целый",
+      "tj": "тамом; ҳама"
+    },
+    {
+      "hanzi": "野生",
+      "pinyin": "yěshēng",
+      "uz": "yovvoyi tabiatda yashaydigan",
+      "ru": "дикий; живущий в природе",
+      "tj": "ваҳшӣ; дар табиат зисткунанда"
+    },
+    {
+      "hanzi": "关于",
+      "pinyin": "guānyú",
+      "uz": "haqida; to‘g‘risida",
+      "ru": "о; относительно",
+      "tj": "дар бораи"
+    },
+    {
+      "hanzi": "饱",
+      "pinyin": "bǎo",
+      "uz": "to‘q",
+      "ru": "сытый",
+      "tj": "сер"
+    },
+    {
+      "hanzi": "张",
+      "pinyin": "zhāng",
+      "uz": "ochmoq; yoymoq",
+      "ru": "раскрывать; раздвигать",
+      "tj": "кушодан; боз кардан"
+    },
+    {
+      "hanzi": "嘴",
+      "pinyin": "zuǐ",
+      "uz": "og‘iz",
+      "ru": "рот",
+      "tj": "даҳон"
+    },
+    {
+      "hanzi": "身边",
+      "pinyin": "shēnbiān",
+      "uz": "yonida; atrofida",
+      "ru": "рядом; возле себя",
+      "tj": "дар паҳлӯ; наздик"
+    },
+    {
+      "hanzi": "半天",
+      "pinyin": "bàntiān",
+      "uz": "yarim kun; ancha vaqt",
+      "ru": "полдня; долгое время",
+      "tj": "ним рӯз; муддати зиёд"
+    },
+    {
+      "hanzi": "脸",
+      "pinyin": "liǎn",
+      "uz": "yuz",
+      "ru": "лицо",
+      "tj": "рӯй"
+    },
+    {
+      "hanzi": "大人",
+      "pinyin": "dàren",
+      "uz": "katta odam; voyaga yetgan",
+      "ru": "взрослый",
+      "tj": "калонсол"
+    },
+    {
+      "hanzi": "喜爱",
+      "pinyin": "xǐ'ài",
+      "uz": "juda yoqtirmoq; sevmoq",
+      "ru": "очень любить; нравиться",
+      "tj": "хеле дӯст доштан"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "并列复句“一会儿……，一会儿……”",
+      "title_uz": "Parallel gap “一会儿……一会儿……”",
+      "title_ru": "Параллельная конструкция “一会儿……一会儿……”",
+      "title_tj": "Сохтори ҳамоҳанги “一会儿……一会儿……”",
+      "rule_uz": "“一会儿A，一会儿B” bir holat yoki harakatning qisqa vaqt oralig‘ida navbatma-navbat o‘zgarib turishini bildiradi: goh A, goh B.",
+      "rule_ru": "“一会儿A，一会儿B” показывает, что действия или состояния попеременно сменяют друг друга за короткий период: то A, то B.",
+      "rule_tj": "“一会儿A，一会儿B” нишон медиҳад, ки амал ё ҳолат дар муддати кӯтоҳ навбат ба навбат иваз мешавад: гоҳ A, гоҳ B.",
+      "examples": [
+        {
+          "hanzi": "它一会儿在你脚边睡觉，一会儿在你身上爬。",
+          "uz": "U goh oyog‘ing yonida uxlaydi, goh ustingga chiqib yuradi.",
+          "ru": "Она то спит у твоих ног, то лазает по тебе.",
+          "tj": "Он гоҳ назди поят мехобад, гоҳ рӯйи ту мебарояд."
+        },
+        {
+          "hanzi": "他一会儿进来，一会儿出去，忙得很。",
+          "uz": "U goh kiradi, goh chiqadi, juda band.",
+          "ru": "Он то заходит, то выходит — очень занят.",
+          "tj": "Ӯ гоҳ медарояд, гоҳ мебарояд, хеле банд аст."
+        },
+        {
+          "hanzi": "最近天气变化很快，一会儿冷，一会儿热。",
+          "uz": "So‘nggi paytda havo tez o‘zgaradi: goh sovuq, goh issiq.",
+          "ru": "В последнее время погода быстро меняется: то холодно, то жарко.",
+          "tj": "Вақтҳои охир ҳаво зуд тағйир меёбад: гоҳ хунук, гоҳ гарм."
+        }
+      ]
+    },
+    {
+      "label": "介词“关于”",
+      "title_uz": "Predlog “关于” — “haqida”",
+      "title_ru": "Предлог “关于” — «о / относительно»",
+      "title_tj": "Пешоянди “关于” — «дар бораи»",
+      "rule_uz": "“关于 + mavzu” gapning qaysi masala yoki mavzu haqida ekanini ko‘rsatadi. Ko‘pincha gap boshida keladi.",
+      "rule_ru": "“关于 + тема” указывает, о каком вопросе или предмете идёт речь. Часто ставится в начале предложения.",
+      "rule_tj": "“关于 + мавзӯъ” нишон медиҳад, ки сухан дар бораи кадом масъала ё мавзӯъ меравад. Аксаран дар аввали ҷумла меояд.",
+      "examples": [
+        {
+          "hanzi": "关于这个问题，我得慢慢给你讲。",
+          "uz": "Bu masala haqida senga asta-sekin tushuntirishim kerak.",
+          "ru": "Об этом вопросе мне придётся рассказать тебе постепенно.",
+          "tj": "Дар бораи ин масъала бояд оҳиста-оҳиста ба ту шарҳ диҳам."
+        },
+        {
+          "hanzi": "关于他的要求，我们还要开会以后再决定。",
+          "uz": "Uning talabi haqida yig‘ilishdan keyin qaror qilamiz.",
+          "ru": "По поводу его требования мы решим после совещания.",
+          "tj": "Дар бораи талаби ӯ баъди ҷаласа қарор мекунем."
+        },
+        {
+          "hanzi": "关于比赛的时间，我明天一定告诉大家。",
+          "uz": "Musobaqa vaqti haqida ertaga hammaga albatta aytaman.",
+          "ru": "О времени соревнования я обязательно сообщу всем завтра.",
+          "tj": "Дар бораи вақти мусобиқа фардо ҳатман ба ҳама мегӯям."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“一般来说”",
+      "title_uz": "“一般来说” — umuman olganda",
+      "title_ru": "“一般来说” — вообще говоря",
+      "title_tj": "“一般来说” — умуман гӯем",
+      "rule_uz": "“一般来说” odatda umumiy qoida, odat yoki ko‘pchilik holatlarga tegishli xulosani kiritadi: “umuman olganda”.",
+      "rule_ru": "“一般来说” вводит общее правило, типичную ситуацию или обобщение: «вообще говоря / как правило».",
+      "rule_tj": "“一般来说” қоидаи умумӣ, ҳолати маъмул ё хулосаи умумиро оғоз мекунад: «умуман гӯем / одатан».",
+      "examples": [
+        {
+          "hanzi": "一般来说，熊猫每天要睡很多次觉。",
+          "uz": "Umuman olganda, pandalar kuniga ko‘p marta uxlaydi.",
+          "ru": "Как правило, панды спят много раз в день.",
+          "tj": "Умуман, пандаҳо ҳар рӯз чандин бор мехобанд."
+        },
+        {
+          "hanzi": "一般来说，这种树每年开一次花。",
+          "uz": "Odatda bu turdagi daraxt yiliga bir marta gullaydi.",
+          "ru": "Как правило, это дерево цветёт раз в год.",
+          "tj": "Одатан ин навъи дарахт соле як бор гул мекунад."
+        },
+        {
+          "hanzi": "一般来说，学习外语需要多练习。",
+          "uz": "Umuman olganda, chet tilini o‘rganishda ko‘p mashq qilish kerak.",
+          "ru": "Как правило, при изучении иностранного языка нужно много практиковаться.",
+          "tj": "Умуман, барои омӯхтани забони хориҷӣ бисёр машқ кардан лозим."
+        }
+      ]
+    },
+    {
+      "label": "比较句（11）",
+      "title_uz": "Taqqoslash gapi (11): vaqt yoki miqdordagi aniq farq",
+      "title_ru": "Сравнительное предложение (11): точная разница во времени или количестве",
+      "title_tj": "Ҷумлаи муқоисавӣ (11): фарқи дақиқи вақт ё миқдор",
+      "rule_uz": "“A 比 B + 早/晚/多/少 + miqdor” A va B orasidagi vaqt yoki son farqini aniq ko‘rsatadi. Miqdor farqni o‘lchaydi.",
+      "rule_ru": "Конструкция “A 比 B + 早/晚/多/少 + количество” точно показывает разницу во времени или количестве между A и B.",
+      "rule_tj": "Сохтори “A 比 B + 早/晚/多/少 + миқдор” фарқи дақиқи вақт ё миқдорро байни A ва B нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "冬天比夏天早关门一个小时。",
+          "uz": "Qishda yozdagidan bir soat ertaroq yopiladi.",
+          "ru": "Зимой закрываются на час раньше, чем летом.",
+          "tj": "Зимистон нисбат ба тобистон як соат барвақттар мебанданд."
+        },
+        {
+          "hanzi": "哥哥比弟弟多吃了三个饺子。",
+          "uz": "Aka ukasidan uchta jiaozi ko‘proq yedi.",
+          "ru": "Старший брат съел на три цзяоцзы больше младшего.",
+          "tj": "Ака аз додар се ҷяози бештар хӯрд."
+        },
+        {
+          "hanzi": "我比他晚到了十分钟。",
+          "uz": "Men undan o‘n daqiqa kechroq yetib keldim.",
+          "ru": "Я приехал на десять минут позже него.",
+          "tj": "Ман аз ӯ даҳ дақиқа дертар расидам."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在一家宠物领养店，王一雪和孩子们在看动物。",
+      "scene_uz": "Hayvon asrab olish markazida Wang Yixue va bolalar hayvonlarni ko‘rmoqda.",
+      "scene_ru": "В центре пристройства животных Ван Исюэ и дети смотрят животных.",
+      "scene_tj": "Дар маркази ба фарзандхонӣ додани ҳайвонот Ван Исюэ ва кӯдакон ҳайвонотро мебинанд.",
+      "turns": [
+        {
+          "hanzi": "这只小猫你们养了多久了？",
+          "uz": "Bu mushukchani qancha vaqtdan beri parvarish qilyapsizlar?",
+          "ru": "Как долго вы уже ухаживаете за этим котёнком?",
+          "tj": "Ин гурбачаро чанд вақт боз нигоҳубин мекунед?"
+        },
+        {
+          "hanzi": "已经一年多了。第一天看见它的时候，它又脏又小。",
+          "uz": "Bir yildan oshdi. Birinchi ko‘rganimizda u ham iflos, ham juda kichkina edi.",
+          "ru": "Уже больше года. Когда мы впервые её увидели, она была грязной и маленькой.",
+          "tj": "Зиёда аз як сол шуд. Рӯзи аввале ки дидем, ҳам ифлос буд, ҳам хурд."
+        },
+        {
+          "hanzi": "现在它变得又干净又漂亮了。",
+          "uz": "Hozir u ham toza, ham chiroyli bo‘lib qolibdi.",
+          "ru": "Теперь она стала чистой и красивой.",
+          "tj": "Ҳоло ҳам тоза ва ҳам зебо шудааст."
+        },
+        {
+          "hanzi": "是啊。它还特别可爱，一会儿在你脚边睡觉，一会儿在你身上爬。",
+          "uz": "Ha. Yana juda yoqimtoy: goh oyog‘ing yonida uxlaydi, goh ustingga chiqadi.",
+          "ru": "Да. Она ещё очень милая: то спит у ног, то лазает по тебе.",
+          "tj": "Ҳа. Хеле дилрабост: гоҳ назди поят мехобад, гоҳ рӯйи ту мебарояд."
+        },
+        {
+          "hanzi": "你们把它照顾得真好。",
+          "uz": "Sizlar uni juda yaxshi parvarish qilibsizlar.",
+          "ru": "Вы очень хорошо за ней ухаживаете.",
+          "tj": "Шумо онро хеле хуб нигоҳубин кардаед."
+        },
+        {
+          "hanzi": "它就好像我们的孩子，我们照顾它，它也认得我们了。",
+          "uz": "U xuddi farzandimizdek: biz unga qaraymiz, u ham bizni taniydi.",
+          "ru": "Она словно наш ребёнок: мы заботимся о ней, и она уже узнаёт нас.",
+          "tj": "Он мисли фарзанди мост: мо нигоҳубинаш мекунем ва ӯ ҳам моро мешиносад."
+        },
+        {
+          "hanzi": "妈妈，我们家也养一只小猫吧。",
+          "uz": "Oyi, biz ham uyda mushukcha boqaylik.",
+          "ru": "Мама, давай и мы заведём котёнка.",
+          "tj": "Оча, биё мо ҳам дар хона гурбача нигоҳ дорем."
+        },
+        {
+          "hanzi": "咱们没时间照顾，还是别养了，我周末带你们去北京动物园看动物吧。",
+          "uz": "Parvarish qilishga vaqtimiz yo‘q, yaxshisi boqmaylik. Dam olish kuni sizlarni Pekin hayvonot bog‘iga olib boraman.",
+          "ru": "У нас нет времени ухаживать, лучше не заводить. На выходных отвезу вас в Пекинский зоопарк.",
+          "tj": "Барои нигоҳубин вақт надорем, беҳтараш нагирем. Охири ҳафта шуморо ба боғи ҳайвоноти Пекин мебарам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在动物园，王一雪和孩子们边走边聊。",
+      "scene_uz": "Hayvonot bog‘ida Wang Yixue va bolalar yurib suhbatlashmoqda.",
+      "scene_ru": "В зоопарке Ван Исюэ и дети идут и разговаривают.",
+      "scene_tj": "Дар боғи ҳайвонот Ван Исюэ ва кӯдакон роҳравон суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "妈妈，大熊猫这个名字很奇怪，它们跟猫有什么关系？",
+          "uz": "Oyi, “katta panda” degan nom g‘alati, uning mushuk bilan qanday aloqasi bor?",
+          "ru": "Мама, название «большая панда» странное. Какое отношение она имеет к кошкам?",
+          "tj": "Оча, номи «пандаи калон» аҷиб аст, он бо гурба чӣ алоқа дорад?"
+        },
+        {
+          "hanzi": "这个问题问得好，它们跟猫没什么关系，其实应该叫大猫熊。",
+          "uz": "Yaxshi savol. Ularning mushuk bilan aloqasi yo‘q, aslida nomini “大猫熊” deyish kerak edi.",
+          "ru": "Хороший вопрос. К кошкам они отношения не имеют; вообще-то название следовало бы читать как «大猫熊».",
+          "tj": "Саволи хуб. Онҳо бо гурба алоқае надоранд, дар асл бояд «大猫熊» номида мешуданд."
+        },
+        {
+          "hanzi": "大熊猫为什么只吃竹子不吃肉？",
+          "uz": "Nega pandalar faqat bambuk yeydi, go‘sht yemaydi?",
+          "ru": "Почему большие панды едят только бамбук, а мясо не едят?",
+          "tj": "Чаро пандаҳо танҳо бамбук мехӯранд ва гӯшт намехӯранд?"
+        },
+        {
+          "hanzi": "它们跟人一样，也可以吃肉，但是对肉不感兴趣。",
+          "uz": "Ular ham odamlar kabi go‘sht yeya oladi, lekin go‘shtga qiziqmaydi.",
+          "ru": "Они, как люди, тоже могут есть мясо, но оно их не интересует.",
+          "tj": "Онҳо мисли одамон гӯшт хӯрда метавонанд, аммо ба гӯшт шавқ надоранд."
+        },
+        {
+          "hanzi": "大熊猫为什么是中国的国宝？",
+          "uz": "Nega katta panda Xitoyning milliy boyligi hisoblanadi?",
+          "ru": "Почему большая панда считается национальным достоянием Китая?",
+          "tj": "Чаро пандаи калон сарвати миллии Чин аст?"
+        },
+        {
+          "hanzi": "全世界只有中国有野生大熊猫，中国是大熊猫的家。",
+          "uz": "Butun dunyoda yovvoyi katta pandalar faqat Xitoyda bor, Xitoy — pandalarning vatani.",
+          "ru": "Во всём мире дикие большие панды есть только в Китае; Китай — их родина.",
+          "tj": "Дар тамоми ҷаҳон пандаҳои ваҳшии калон танҳо дар Чин ҳастанд; Чин ватани онҳост."
+        },
+        {
+          "hanzi": "我听说有的熊猫出国了，他们去哪儿了？",
+          "uz": "Eshitishimcha, ayrim pandalar chet elga ketgan, ular qayerga borgan?",
+          "ru": "Я слышал, некоторые панды уехали за границу. Куда они отправились?",
+          "tj": "Шунидам, баъзе пандаҳо ба хориҷ рафтаанд, онҳо ба куҷо рафтанд?"
+        },
+        {
+          "hanzi": "关于这个问题，我得慢慢给你讲。",
+          "uz": "Bu masala haqida senga asta-sekin tushuntirib berishim kerak.",
+          "ru": "Об этом вопросе придётся рассказать тебе постепенно.",
+          "tj": "Дар бораи ин масъала бояд оҳиста ба ту нақл кунам."
+        },
+        {
+          "hanzi": "弟弟，你真是“十万个为什么”。",
+          "uz": "Uka, sen haqiqiy “yuz mingta nega” ekansan.",
+          "ru": "Братишка, ты прямо «сто тысяч почему».",
+          "tj": "Додар, ту ҳақиқатан «сад ҳазор чаро» ҳастӣ."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在熊猫馆，王一雪和孩子们在看大熊猫。",
+      "scene_uz": "Panda pavilonida Wang Yixue va bolalar katta pandalarni tomosha qilmoqda.",
+      "scene_ru": "В павильоне панд Ван Исюэ и дети наблюдают за большими пандами.",
+      "scene_tj": "Дар павилиони пандаҳо Ван Исюэ ва кӯдакон пандаҳои калонро тамошо мекунанд.",
+      "turns": [
+        {
+          "hanzi": "这只大熊猫一会儿爬上去，一会儿跳下来，可爱极了！",
+          "uz": "Bu panda goh tepaga chiqadi, goh pastga sakraydi, juda yoqimtoy!",
+          "ru": "Эта панда то забирается наверх, то спрыгивает вниз — невероятно милая!",
+          "tj": "Ин панда гоҳ боло мебарояд, гоҳ поён меҷаҳад, ниҳоят дилрабост!"
+        },
+        {
+          "hanzi": "它好像还没吃饱，站起来张着嘴找吃的呢。",
+          "uz": "Shekilli hali to‘ymagan, turib og‘zini ochib yegulik qidiryapti.",
+          "ru": "Похоже, она ещё не наелась: встала и с открытым ртом ищет еду.",
+          "tj": "Ба назар ҳоло сер нашудааст, истода даҳонашро кушода хӯрок меҷӯяд."
+        },
+        {
+          "hanzi": "它身边那只熊猫半天没动，是不是在睡觉呢？",
+          "uz": "Yonidagi panda ancha vaqtdan beri qimirlamadi, uxlayaptimi?",
+          "ru": "Панда рядом уже долго не двигается. Она спит?",
+          "tj": "Пандаи паҳлӯяш муддати зиёд ҳаракат накардааст, хоб аст?"
+        },
+        {
+          "hanzi": "我看不见它的脸，可能是吧。一般来说，熊猫每天要睡很多次觉。",
+          "uz": "Yuzini ko‘rmayapman, balki uxlayotgandir. Odatda pandalar kuniga ko‘p marta uxlaydi.",
+          "ru": "Лица не видно, возможно, спит. Обычно панды спят много раз в день.",
+          "tj": "Рӯяш дида намешавад, шояд хоб бошад. Одатан пандаҳо ҳар рӯз чандин бор мехобанд."
+        },
+        {
+          "hanzi": "对，除了睡觉以外，很多时间都在吃东西。",
+          "uz": "Ha, uxlashdan tashqari ko‘p vaqtini ovqat yeyishga sarflaydi.",
+          "ru": "Да, кроме сна, большую часть времени они едят.",
+          "tj": "Ҳа, ба ғайр аз хоб вақти зиёдашонро ба хӯрдан мегузаронанд."
+        },
+        {
+          "hanzi": "大熊猫的生活真舒服啊！",
+          "uz": "Pandalarning hayoti rostdan ham mazza ekan!",
+          "ru": "Какая же комфортная жизнь у панд!",
+          "tj": "Зиндагии пандаҳо воқеан роҳат аст!"
+        },
+        {
+          "hanzi": "妈妈，您帮我和这两只大熊猫照一张照片吧。",
+          "uz": "Oyi, meni mana bu ikki panda bilan birga suratga olib qo‘ying.",
+          "ru": "Мама, сфотографируй меня с этими двумя пандами.",
+          "tj": "Оча, маро бо ҳамин ду панда як акс гиред."
+        }
+      ]
+    }
+  ]
+}
