@@ -71,7 +71,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="done" id="done"><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
 </div>
 <script defer src="hsk-words.js?v=20260905"></script>
+<script defer src="/course_v3_data/hsk30-words.js?v=20260930"></script>
 <script defer src="/course_v3_data/lesson_gate.js?v=20260905"></script>
+<script defer src="/course_v3_data/lesson_gate_hsk30.js?v=20260930"></script>
 <script defer src="/course_v3_data/ads.js?v=20260923-2"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20260929-1"></script>
 <script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
@@ -96,13 +98,13 @@ function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_p
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */
-function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
+function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3","nhsk1","nhsk2","nhsk3"].indexOf(v)>=0?v:""}
 var LV=normLv(params.get("level")),CUR=999;
 var LV_READY=(function(){var idt=(tg&&tg.initData)||"";if(!idt)return Promise.resolve();
   return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)}).catch(function(){})})();
-function lvNum(){return parseInt((LV||"hsk1").slice(3),10)||1}
+function lvNum(){var m=String(LV||"hsk1").match(/(\d+)$/);return m?parseInt(m[1],10):1}
 function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
-function wordGate(h){return (window.HSK_WORD_GATE||{})[h]}
+function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}\nfunction wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):wordSource()}\nfunction wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
@@ -188,7 +190,7 @@ function planReady(){if(!PLAN)PLAN=fetchPlan();return PLAN}
 function resetPlan(){PLAN=null}
 var BY_H=null;
 function wordByHanzi(h){
-  if(!BY_H){BY_H={};(typeof WORDS!=="undefined"?WORDS:[]).forEach(function(w){if(!BY_H[w.h])BY_H[w.h]=w})}
+  if(!BY_H){BY_H={};wordSource().forEach(function(w){if(!BY_H[w.h])BY_H[w.h]=w})}
   return BY_H[h];
 }
 /* Server ro'yxatini mashq ro'yxatiga aylantiradi: lug'atda yo'q so'z
@@ -329,7 +331,7 @@ function finish(){
 function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){
   // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
   // 2) yetmasa quyi levellar; 3) HSK1 boshida yaqin keyingi darslar; 4) fallback.
-  var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
+  var all=wordSource().filter(function(w){return Array.from(String(w.h)).length<=3});
   var n=lvNum();
   var pool=null;
   if(window.HSK_WORD_GATE){
