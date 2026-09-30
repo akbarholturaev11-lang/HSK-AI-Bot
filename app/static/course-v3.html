@@ -1265,9 +1265,9 @@ function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLev
 function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function practiceWordGate(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{})}
 var TRACK_UI={
-  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 faol HSK AI Pro obunasi bilan ishlaydi. Yoki 10 TJS ni bir marta to'lab doimiy ochishingiz mumkin.",subscribe:"HSK AI Pro olish",permanent:"{price} TJS · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda. Hozircha eski HSK testlari bu kurs uchun ishlatilmaydi.",close:"Yopish"},
-  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"HSK 3.0 доступен с активной подпиской HSK AI Pro. Либо можно один раз заплатить 10 TJS и открыть его навсегда.",subscribe:"Получить HSK AI Pro",permanent:"{price} TJS · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится. Старые HSK-тесты для этого курса не используются.",close:"Закрыть"},
-  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"HSK 3.0 бо обунаи фаъоли HSK AI Pro дастрас аст. Ё 10 TJS-ро як бор пардохт карда, ҳамеша кушода метавонед.",subscribe:"HSK AI Pro гирифтан",permanent:"{price} TJS · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад. Тестҳои кӯҳнаи HSK барои ин курс истифода намешаванд.",close:"Пӯшидан"}
+  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 faol HSK AI Pro obunasi bilan ishlaydi. Bir martalik doimiy access yoqilgan bo'lsa, uning joriy narxi pastda ko'rsatiladi.",subscribe:"HSK AI Pro olish",permanent:"{price} TJS · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda. Hozircha eski HSK testlari bu kurs uchun ishlatilmaydi.",close:"Yopish"},
+  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"HSK 3.0 доступен с активной подпиской HSK AI Pro. Если разовый постоянный доступ включён, его текущая цена показана ниже.",subscribe:"Получить HSK AI Pro",permanent:"{price} TJS · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится. Старые HSK-тесты для этого курса не используются.",close:"Закрыть"},
+  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"HSK 3.0 бо обунаи фаъоли HSK AI Pro дастрас аст. Агар дастрасии доимии якдафъаина фаъол бошад, нархи ҷорӣ дар поён нишон дода мешавад.",subscribe:"HSK AI Pro гирифтан",permanent:"{price} TJS · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад. Тестҳои кӯҳнаи HSK барои ин курс истифода намешаванд.",close:"Пӯшидан"}
 };
 function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
 function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
@@ -1290,7 +1290,7 @@ function openHsk30UnlockCheckout(){
 }
 function renderHsk30AccessGate(status){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  var unlock=status&&status.hsk30_unlock||{},price=Number(unlock.price_tjs||10)||10;
+  var unlock=status&&status.hsk30_unlock||{},price=Number(unlock.price_tjs||0)||0,paymentEnabled=unlock.payment_enabled!==false&&price>0;
   if(access&&access.feature_enabled===false){
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.disabled)+'</div></div><button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.close)+'</button>');
     return;
@@ -1298,9 +1298,12 @@ function renderHsk30AccessGate(status){
   var leave=currentCourseTrack()==="hsk30"
     ?'<button class="sec" style="width:100%;margin-top:8px" onclick="App.pickCourseTrack(\'hsk20\')">'+esc(t.backTo20)+'</button>'
     :'<button class="sec" style="width:100%;margin-top:8px" onclick="App.closeSheet()">'+esc(t.stay)+'</button>';
+  var permanentButton=paymentEnabled
+    ?'<button class="scta" style="width:100%" onclick="openHsk30UnlockCheckout()"><i class="ti ti-lock-open"></i> '+esc(t.permanent.replace("{price}",price))+'</button>'
+    :'';
   App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.hsk30Body)+'</div></div>'
-    +'<button class="scta" style="width:100%;margin-bottom:8px" onclick="App.goPay(\'hsk30_subscription\')"><i class="ti ti-star"></i> '+esc(t.subscribe)+'</button>'
-    +'<button class="scta" style="width:100%" onclick="openHsk30UnlockCheckout()"><i class="ti ti-lock-open"></i> '+esc(t.permanent.replace("{price}",price))+'</button>'+leave);
+    +'<button class="scta" style="width:100%;margin-bottom:'+(paymentEnabled?'8':'0')+'px" onclick="App.goPay(\'hsk30_subscription\')"><i class="ti ti-star"></i> '+esc(t.subscribe)+'</button>'
+    +permanentButton+leave);
 }
 function showHsk30AccessGate(){
   courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){
