@@ -1253,7 +1253,13 @@ var LEVELS=LEGACY_LEVELS.concat(HSK30_LEVELS);
 function normalizeLevel(v){v=String(v||"").toLowerCase();return LEVELS.indexOf(v)>=0?v:"hsk1"}
 function isHsk30Level(v){return /^nhsk[1-3]$/.test(normalizeLevel(v))}
 function levelBand(v){var m=normalizeLevel(v).match(/(\d+)$/);return m?parseInt(m[1],10):1}
-function trackLevels(v){return isHsk30Level(v)?HSK30_LEVELS:LEGACY_LEVELS}
+function hsk30LiveLevels(){
+  var raw=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.live_levels;
+  if(!Array.isArray(raw))return ["nhsk1"];
+  var out=raw.map(normalizeLevel).filter(function(lv){return HSK30_LEVELS.indexOf(lv)>=0});
+  return out.length?out:["nhsk1"];
+}
+function trackLevels(v){return isHsk30Level(v)?hsk30LiveLevels():LEGACY_LEVELS}
 function lessonGateUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/lesson_gate_hsk30.js?v=20260930":"/course_v3_data/lesson_gate.js?v=20260719"}
 function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/hsk30-words.js?v=20260930":"hsk-words.js?v=20260720"}
 function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
