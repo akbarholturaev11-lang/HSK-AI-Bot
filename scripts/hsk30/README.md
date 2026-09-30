@@ -43,3 +43,16 @@ The builder emits:
 - `scripts/hsk30/generated/nhsk1/proper_nouns.json`
 
 The generated bundle is derived only from the verified lesson seeds and the book-end vocabulary index audit.
+
+
+## N2 extraction
+
+Canonical source is the exact Git LFS object from `main`:
+
+- path: `HSK 3.0 PDF/新HSK2 教材.pdf`
+- SHA-256: `12a7ca82d9ede40e7bcdad36b4198e20db311d378d407b1f80dcc9b26b48f003`
+- size: `52681582` bytes
+- pages: 164 scanned pages
+- printed-page offset: PDF page = printed page + 16 for lesson content
+
+Current progress: course outline + lessons 1-2 verified from rendered pages.
