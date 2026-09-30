@@ -140,6 +140,7 @@ class DesktopSubscriptionService:
         attempt_id: str,
         entry_source: str | None = None,
     ) -> None:
+        mode = self._checkout_mode(entry_source=entry_source)
         await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=user,
@@ -147,7 +148,7 @@ class DesktopSubscriptionService:
             source=entry_source or self.source,
             payload={
                 "attempt_id": attempt_id,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
             },
         )
 
@@ -237,7 +238,7 @@ class DesktopSubscriptionService:
         result.update(
             {
                 "source": self.source,
-                "mode": mode,
+                "mode": DESKTOP_SUBSCRIPTION_MODE,
                 "access": self._access_payload(context.user),
             }
         )
@@ -274,7 +275,7 @@ class DesktopSubscriptionService:
         result.update(
             {
                 "source": self.source,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
                 "access": self._access_payload(context.user),
             }
         )
@@ -327,6 +328,7 @@ class DesktopSubscriptionService:
                 status_code=409,
             )
 
+        mode = self._checkout_mode(plan_type=plan_type)
         recorded = await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=context.user,
@@ -337,7 +339,7 @@ class DesktopSubscriptionService:
                 "stage": stage,
                 "plan_type": plan_type,
                 "payment_method": payment_method,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
             },
         )
         return {
