@@ -1,0 +1,449 @@
+{
+  "schema_version": 1,
+  "lesson": 9,
+  "source_title_hanzi": "打不好没关系",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Sport musobaqalari, sportchilar va natijalar haqida gaplashish; mumkinlik to‘ldiruvchisi bilan harakatning uddalanishi yoki uddalanmasligini aytish; “越A越B” bilan holatning o‘zgarishini ifodalash.",
+    "ru": "Говорить о спортивных соревнованиях, спортсменах и результатах; использовать дополнение возможности для выражения того, возможно ли выполнить действие; описывать изменение ситуации через “越A越B”.",
+    "tj": "Дар бораи мусобиқаҳои варзишӣ, варзишгарон ва натиҷаҳо суҳбат кардан; бо пуркунандаи имконият иҷро шудан ё нашудани амалро ифода кардан; бо “越A越B” тағйирёбии ҳолатро нишон додан."
+  },
+  "intro_text": {
+    "uz": "Dars sport musobaqasiga tayyorgarlik, badminton mashqi va futbol o‘yinini tomosha qilish vaziyatlari orqali “为了……”, mumkinlik to‘ldiruvchisi va “越A越B” tuzilishini o‘rgatadi.",
+    "ru": "Урок через подготовку к спортивному мероприятию, тренировку по бадминтону и просмотр футбольного матча вводит “为了……”, дополнение возможности и конструкцию “越A越B”.",
+    "tj": "Дарс тавассути омодагӣ ба чорабинии варзишӣ, машқи бадминтон ва тамошои бозии футбол “为了……”, пуркунандаи имконият ва сохтори “越A越B”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "校园",
+      "pinyin": "xiàoyuán",
+      "uz": "kampus; maktab hududi",
+      "ru": "кампус; территория учебного заведения",
+      "tj": "кампус; ҳудуди мактаб"
+    },
+    {
+      "hanzi": "卡",
+      "pinyin": "kǎ",
+      "uz": "karta",
+      "ru": "карта",
+      "tj": "корт"
+    },
+    {
+      "hanzi": "球场",
+      "pinyin": "qiúchǎng",
+      "uz": "sport maydoni; to‘p o‘ynash maydoni",
+      "ru": "спортивная площадка; поле",
+      "tj": "майдони варзишӣ"
+    },
+    {
+      "hanzi": "为了",
+      "pinyin": "wèile",
+      "uz": "... uchun; maqsadida",
+      "ru": "ради; для того чтобы",
+      "tj": "барои; ба хотири"
+    },
+    {
+      "hanzi": "运动会",
+      "pinyin": "yùndònghuì",
+      "uz": "sport musobaqalari; spartakiada",
+      "ru": "спортивные соревнования; спартакиада",
+      "tj": "мусобиқаҳои варзишӣ"
+    },
+    {
+      "hanzi": "男生",
+      "pinyin": "nánshēng",
+      "uz": "o‘g‘il talaba; yigit",
+      "ru": "студент; парень",
+      "tj": "донишҷӯи писар; ҷавон"
+    },
+    {
+      "hanzi": "练",
+      "pinyin": "liàn",
+      "uz": "mashq qilmoq",
+      "ru": "тренироваться",
+      "tj": "машқ кардан"
+    },
+    {
+      "hanzi": "参加",
+      "pinyin": "cānjiā",
+      "uz": "qatnashmoq",
+      "ru": "участвовать",
+      "tj": "иштирок кардан"
+    },
+    {
+      "hanzi": "网球",
+      "pinyin": "wǎngqiú",
+      "uz": "tennis",
+      "ru": "теннис",
+      "tj": "теннис"
+    },
+    {
+      "hanzi": "比赛",
+      "pinyin": "bǐsài",
+      "uz": "musobaqa; bellashmoq",
+      "ru": "соревнование; соревноваться",
+      "tj": "мусобиқа; рақобат кардан"
+    },
+    {
+      "hanzi": "练习",
+      "pinyin": "liànxí",
+      "uz": "mashq qilmoq; mashq",
+      "ru": "упражняться; упражнение",
+      "tj": "машқ кардан; машқ"
+    },
+    {
+      "hanzi": "好多",
+      "pinyin": "hǎoduō",
+      "uz": "juda ko‘p",
+      "ru": "очень много",
+      "tj": "хеле зиёд"
+    },
+    {
+      "hanzi": "几乎",
+      "pinyin": "jīhū",
+      "uz": "deyarli",
+      "ru": "почти",
+      "tj": "қариб"
+    },
+    {
+      "hanzi": "只是",
+      "pinyin": "zhǐshì",
+      "uz": "faqat; shunchaki",
+      "ru": "только; просто",
+      "tj": "фақат; танҳо"
+    },
+    {
+      "hanzi": "啤酒",
+      "pinyin": "píjiǔ",
+      "uz": "pivo",
+      "ru": "пиво",
+      "tj": "пиво"
+    },
+    {
+      "hanzi": "回",
+      "pinyin": "huí",
+      "uz": "marta; safar (hisob so‘zi)",
+      "ru": "раз (счётное слово для случаев)",
+      "tj": "бор; дафъа"
+    },
+    {
+      "hanzi": "紧张",
+      "pinyin": "jǐnzhāng",
+      "uz": "hayajonlangan; tarang",
+      "ru": "нервничать; напряжённый",
+      "tj": "асабӣ; ҳаяҷонзада"
+    },
+    {
+      "hanzi": "主要",
+      "pinyin": "zhǔyào",
+      "uz": "asosiy",
+      "ru": "основной; главный",
+      "tj": "асосӣ"
+    },
+    {
+      "hanzi": "受到",
+      "pinyin": "shòudào",
+      "uz": "ta’sir/qabul qilmoq; duchor bo‘lmoq",
+      "ru": "подвергаться; получать",
+      "tj": "таъсир гирифтан; дучор шудан"
+    },
+    {
+      "hanzi": "影响",
+      "pinyin": "yǐngxiǎng",
+      "uz": "ta’sir; ta’sir qilmoq",
+      "ru": "влияние; влиять",
+      "tj": "таъсир; таъсир расондан"
+    },
+    {
+      "hanzi": "得分",
+      "pinyin": "défēn",
+      "uz": "ochko olmoq; hisob",
+      "ru": "набирать очки; счёт",
+      "tj": "хол гирифтан; ҳисоб"
+    },
+    {
+      "hanzi": "体育",
+      "pinyin": "tǐyù",
+      "uz": "jismoniy tarbiya; sport",
+      "ru": "физкультура; спорт",
+      "tj": "тарбияи ҷисмонӣ; варзиш"
+    },
+    {
+      "hanzi": "世界",
+      "pinyin": "shìjiè",
+      "uz": "dunyo",
+      "ru": "мир",
+      "tj": "ҷаҳон"
+    },
+    {
+      "hanzi": "运动员",
+      "pinyin": "yùndòngyuán",
+      "uz": "sportchi",
+      "ru": "спортсмен",
+      "tj": "варзишгар"
+    },
+    {
+      "hanzi": "得到",
+      "pinyin": "dédào",
+      "uz": "olmoq; erishmoq",
+      "ru": "получать; добиваться",
+      "tj": "гирифтан; ба даст овардан"
+    },
+    {
+      "hanzi": "成绩",
+      "pinyin": "chéngjì",
+      "uz": "natija; baho",
+      "ru": "результат; успеваемость",
+      "tj": "натиҷа; баҳо"
+    },
+    {
+      "hanzi": "奥运会",
+      "pinyin": "Àoyùnhuì",
+      "uz": "Olimpiya o‘yinlari",
+      "ru": "Олимпийские игры",
+      "tj": "Бозиҳои олимпӣ"
+    },
+    {
+      "hanzi": "刘长春",
+      "pinyin": "Liú Chángchūn",
+      "uz": "Liu Changchun",
+      "ru": "Лю Чанчунь",
+      "tj": "Лю Чанчун"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "目的复句“为了……，……”",
+      "title_uz": "Maqsad qo‘shma gapi “为了……”",
+      "title_ru": "Целевое предложение “为了……”",
+      "title_tj": "Ҷумлаи мақсад “为了……”",
+      "rule_uz": "“为了 + maqsad” ish-harakatning nima uchun bajarilayotganini bildiradi. Maqsad qismi gap boshida yoki asosiy harakatdan oldin keladi.",
+      "rule_ru": "“为了 + цель” показывает, ради чего выполняется действие. Целевая часть обычно ставится перед основным действием.",
+      "rule_tj": "“为了 + мақсад” нишон медиҳад, ки амал барои чӣ иҷро мешавад. Қисми мақсад одатан пеш аз амали асосӣ меояд.",
+      "examples": [
+        {
+          "hanzi": "听说为了准备运动会，你们几个男生每天都练球。",
+          "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+          "ru": "Говорят, ради подготовки к соревнованиям вы, несколько парней, каждый день тренируетесь с мячом.",
+          "tj": "Шунидам, барои омодагӣ ба мусобиқаҳои варзишӣ шумо чанд писар ҳар рӯз тӯб машқ мекунед."
+        },
+        {
+          "hanzi": "为了考上大学，她每天努力学习。",
+          "uz": "Universitetga kirish uchun u har kuni astoydil o‘qiydi.",
+          "ru": "Чтобы поступить в университет, она каждый день усердно учится.",
+          "tj": "Барои дохил шудан ба донишгоҳ ӯ ҳар рӯз ҷиддӣ мехонад."
+        },
+        {
+          "hanzi": "为了早点儿到家，我打算坐飞机回去。",
+          "uz": "Uyga ertaroq yetish uchun samolyotda qaytishni rejalashtiryapman.",
+          "ru": "Чтобы пораньше добраться домой, я планирую лететь самолётом.",
+          "tj": "Барои барвақттар ба хона расидан, ният дорам бо ҳавопаймо баргардам."
+        }
+      ]
+    },
+    {
+      "label": "可能补语",
+      "title_uz": "Mumkinlik to‘ldiruvchisi",
+      "title_ru": "Дополнение возможности",
+      "title_tj": "Пуркунандаи имконият",
+      "rule_uz": "Fe’l bilan natija/yo‘nalish to‘ldiruvchisi orasiga “得” yoki “不” qo‘yilib, harakatni uddalash mumkin yoki mumkin emasligi ko‘rsatiladi: 看得懂 / 看不懂, 打得好 / 打不好.",
+      "rule_ru": "Между глаголом и результативным/направительным дополнением ставятся “得” или “不”, чтобы показать возможность или невозможность выполнить действие: 看得懂 / 看不懂.",
+      "rule_tj": "Миёни феъл ва пуркунандаи натиҷа/самт “得” ё “不” омада, имкон ё ғайриимкон будани иҷрои амалро нишон медиҳад: 看得懂 / 看不懂.",
+      "examples": [
+        {
+          "hanzi": "打不好没关系。",
+          "uz": "Yaxshi o‘ynay olmasang ham hechqisi yo‘q.",
+          "ru": "Ничего страшного, если не получится хорошо сыграть.",
+          "tj": "Агар хуб бозӣ карда натавонӣ ҳам, ҳеҷ гап нест."
+        },
+        {
+          "hanzi": "这本书你看得懂看不懂？",
+          "uz": "Bu kitobni tushunib o‘qiy olasanmi yoki yo‘qmi?",
+          "ru": "Ты сможешь понять эту книгу или нет?",
+          "tj": "Ин китобро фаҳмида хонда метавонӣ ё не?"
+        },
+        {
+          "hanzi": "你只有一个星期的时间，学得会游泳吗？",
+          "uz": "Senda faqat bir hafta vaqt bor, suzishni o‘rganib ulgurishing mumkinmi?",
+          "ru": "У тебя только неделя. Сможешь научиться плавать?",
+          "tj": "Танҳо як ҳафта вақт дорӣ, шиновариро омӯхта метавонӣ?"
+        }
+      ]
+    },
+    {
+      "label": "固定格式“越A越B”",
+      "title_uz": "“越A越B” — qancha A bo‘lsa, shuncha B",
+      "title_ru": "“越A越B” — чем больше A, тем больше B",
+      "title_tj": "“越A越B” — ҳар қадар A, ҳамон қадар B",
+      "rule_uz": "“越A越B” A o‘zgarishi bilan B ham kuchayib yoki o‘zgarib borishini bildiradi. Ikki qismning egasi bir xil yoki turli bo‘lishi mumkin.",
+      "rule_ru": "“越A越B” показывает, что по мере изменения A изменяется или усиливается B. Субъекты двух частей могут совпадать или различаться.",
+      "rule_tj": "“越A越B” нишон медиҳад, ки бо тағйири A, B ҳам тағйир ё қавитар мешавад. Мубтадоҳои ду қисм метавонанд якхела ё гуногун бошанд.",
+      "examples": [
+        {
+          "hanzi": "今天的足球比赛我越看越着急。",
+          "uz": "Bugungi futbolni qancha ko‘rsam, shuncha xavotirlanayapman.",
+          "ru": "Чем дольше смотрю сегодняшний футбольный матч, тем больше волнуюсь.",
+          "tj": "Бозии футболи имрӯзаро ҳар қадар бинам, ҳамон қадар хавотир мешавам."
+        },
+        {
+          "hanzi": "妈妈越说，他越不高兴。",
+          "uz": "Onasi qancha gapirsa, u shuncha norozi bo‘lyapti.",
+          "ru": "Чем больше мама говорит, тем сильнее он недоволен.",
+          "tj": "Модар ҳар қадар гап занад, ӯ ҳамон қадар нороҳат мешавад."
+        },
+        {
+          "hanzi": "我想认识中国朋友，越多越好。",
+          "uz": "Men xitoylik do‘stlar orttirmoqchiman, qancha ko‘p bo‘lsa, shuncha yaxshi.",
+          "ru": "Я хочу познакомиться с китайскими друзьями — чем больше, тем лучше.",
+          "tj": "Мехоҳам дӯстони чинӣ пайдо кунам, ҳар қадар зиёд бошад, ҳамон қадар беҳтар."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在图书馆门口，李文向白家月跑过去。",
+      "scene_uz": "Kutubxona oldida Li Wen Bai Jiayue tomon yugurib keldi.",
+      "scene_ru": "У входа в библиотеку Ли Вэнь подбегает к Бай Цзяюэ.",
+      "scene_tj": "Дар назди китобхона Ли Вэн ба тарафи Бай Ҷяюэ давида меояд.",
+      "turns": [
+        {
+          "hanzi": "家月，对不起，我昨天忘了还你校园卡了。",
+          "uz": "Jiayue, uzr, kecha kampus kartangni qaytarishni unutibman.",
+          "ru": "Цзяюэ, прости, я вчера забыл вернуть твою кампус-карту.",
+          "tj": "Ҷяюэ, бубахш, дирӯз корти кампусатро баргардонданро фаромӯш кардам."
+        },
+        {
+          "hanzi": "没关系。你怎么这么快就过来了？",
+          "uz": "Hechqisi yo‘q. Qanday qilib bunchalik tez kelib qolding?",
+          "ru": "Ничего. Как ты так быстро пришёл?",
+          "tj": "Ҳеҷ гап нест. Чӣ тавр ин қадар зуд омадӣ?"
+        },
+        {
+          "hanzi": "我正在球场打球呢，接了你的电话就跑过来了。",
+          "uz": "Men sport maydonida to‘p o‘ynayotgan edim, qo‘ng‘irog‘ingni olib darrov yugurib keldim.",
+          "ru": "Я играл на площадке; как только ответил на твой звонок, сразу прибежал.",
+          "tj": "Ман дар майдон тӯб бозӣ мекардам, зангатро гирифтаму фавран давида омадам."
+        },
+        {
+          "hanzi": "听说为了准备运动会，你们几个男生每天都练球。",
+          "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+          "ru": "Говорят, ради подготовки к соревнованиям вы каждый день тренируетесь.",
+          "tj": "Шунидам, барои омодагӣ ба мусобиқаҳо шумо ҳар рӯз машқи тӯб мекунед."
+        },
+        {
+          "hanzi": "是啊！你打算参加运动会吗？",
+          "uz": "Ha! Sen ham sport musobaqasida qatnashmoqchimisan?",
+          "ru": "Да! Ты собираешься участвовать в соревнованиях?",
+          "tj": "Ҳа! Ту ҳам дар мусобиқа иштирок карданӣ ҳастӣ?"
+        },
+        {
+          "hanzi": "我想参加网球比赛，最近一直在练习。",
+          "uz": "Tennis musobaqasida qatnashmoqchiman, so‘nggi paytlar doim mashq qilyapman.",
+          "ru": "Хочу участвовать в теннисном турнире, в последнее время постоянно тренируюсь.",
+          "tj": "Мехоҳам дар мусобиқаи теннис иштирок кунам, вақтҳои охир пайваста машқ мекунам."
+        },
+        {
+          "hanzi": "好，到时候我去看你的比赛。",
+          "uz": "Yaxshi, o‘sha payt musobaqangni ko‘rgani boraman.",
+          "ru": "Хорошо, тогда я приду посмотреть твой матч.",
+          "tj": "Хуб, он вақт мусобиқаатро дидан меоям."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在校园里，李文和白家月在聊天儿。",
+      "scene_uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+      "scene_ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+      "scene_tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "家月，你跟我们一起打羽毛球吧？",
+          "uz": "Jiayue, biz bilan badminton o‘ynaysanmi?",
+          "ru": "Цзяюэ, поиграешь с нами в бадминтон?",
+          "tj": "Ҷяюэ, бо мо бадминтон бозӣ мекунӣ?"
+        },
+        {
+          "hanzi": "我好多年没打羽毛球了，几乎忘了怎么打了。",
+          "uz": "Men ko‘p yildan beri badminton o‘ynamadim, qanday o‘ynashni deyarli unutdim.",
+          "ru": "Я много лет не играла в бадминтон и почти забыла как.",
+          "tj": "Ман солҳои зиёд бадминтон бозӣ накардаам ва қариб фаромӯш кардам чӣ тавр бозӣ мекунанд."
+        },
+        {
+          "hanzi": "不是比赛，打不好没关系。",
+          "uz": "Bu musobaqa emas, yaxshi o‘ynay olmasang ham hechqisi yo‘q.",
+          "ru": "Это не соревнование, ничего страшного, если сыграешь плохо.",
+          "tj": "Ин мусобиқа нест, агар хуб бозӣ карда натавонӣ ҳам, ҳеҷ гап нест."
+        },
+        {
+          "hanzi": "这么多同学一起打，如果总是接不住球，就太不好意思了。",
+          "uz": "Shuncha sinfdosh birga o‘ynasa, men doim to‘pni qaytara olmasam juda noqulay bo‘ladi.",
+          "ru": "Когда столько однокурсников играют вместе, будет неловко, если я всё время не смогу принять мяч.",
+          "tj": "Ин қадар ҳамсабақ якҷо бозӣ кунанд, агар ман ҳамеша тӯбро гирифта натавонам, хеле хиҷолат мешавад."
+        },
+        {
+          "hanzi": "你想得太多了！大家打球只是为了锻炼身体。",
+          "uz": "Juda ko‘p o‘ylayapsan! Hamma faqat badan chiniqtirish uchun o‘ynayapti.",
+          "ru": "Ты слишком много думаешь! Все играют просто ради физической нагрузки.",
+          "tj": "Ту аз ҳад зиёд фикр мекунӣ! Ҳама танҳо барои машқи бадан бозӣ мекунанд."
+        },
+        {
+          "hanzi": "我先自己练练吧，下周再跟你们一起打。",
+          "uz": "Avval o‘zim biroz mashq qilay, keyingi hafta sizlar bilan o‘ynayman.",
+          "ru": "Я сначала сама немного потренируюсь, а на следующей неделе сыграю с вами.",
+          "tj": "Аввал худам каме машқ мекунам, ҳафтаи оянда бо шумо бозӣ мекунам."
+        },
+        {
+          "hanzi": "我在教天中打羽毛球，你可以过来跟我们一起练。",
+          "uz": "Men Tianzhongga badminton o‘rgatyapman, kelib biz bilan birga mashq qilishing mumkin.",
+          "ru": "Я учу Тяньчжуна играть в бадминтон, можешь прийти и потренироваться с нами.",
+          "tj": "Ман ба Тянҷун бадминтон меомӯзонам, метавонӣ омада бо мо якҷо машқ кунӣ."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在李文家，李文、白家月和陈天中一起看电视。",
+      "scene_uz": "Li Wenning uyida Li Wen, Bai Jiayue va Chen Tianzhong birga televizor ko‘rmoqda.",
+      "scene_ru": "Дома у Ли Вэня Ли Вэнь, Бай Цзяюэ и Чэнь Тяньчжун вместе смотрят телевизор.",
+      "scene_tj": "Дар хонаи Ли Вэн, Ли Вэн, Бай Ҷяюэ ва Чэн Тянҷун якҷо телевизор мебинанд.",
+      "turns": [
+        {
+          "hanzi": "足球比赛已经开始了，快过来看吧！",
+          "uz": "Futbol o‘yini boshlanib bo‘ldi, tez kelib ko‘ringlar!",
+          "ru": "Футбольный матч уже начался, идите скорее смотреть!",
+          "tj": "Бозии футбол аллакай оғоз шуд, зуд биёед тамошо кунед!"
+        },
+        {
+          "hanzi": "你们先看，冰箱里有啤酒和饮料，我去拿一下。",
+          "uz": "Sizlar ko‘raveringlar, muzlatkichda ichimliklar bor, men olib kelaman.",
+          "ru": "Вы смотрите, в холодильнике есть напитки, я принесу.",
+          "tj": "Шумо тамошо кунед, дар яхдон нӯшокиҳо ҳастанд, ман меорам."
+        },
+        {
+          "hanzi": "今天怎么回事？总是踢不进去！",
+          "uz": "Bugun nima bo‘lyapti? To‘pni hech kirita olishmayapti!",
+          "ru": "Что сегодня происходит? Всё никак не могут забить!",
+          "tj": "Имрӯз чӣ гап? Ҳеҷ тӯбро дароварда наметавонанд!"
+        },
+        {
+          "hanzi": "几个老球员生病了，新球员第一次参加这么重要的比赛，太紧张了。",
+          "uz": "Bir nechta tajribali futbolchi kasal bo‘lib qoldi, yangi o‘yinchilar bunday muhim musobaqada birinchi marta qatnashyapti, juda hayajonlangan.",
+          "ru": "Несколько опытных игроков заболели, а новые впервые участвуют в таком важном матче и очень нервничают.",
+          "tj": "Чанд бозигари таҷрибадор бемор шуданд, бозигарони нав бори аввал дар чунин мусобиқаи муҳим иштирок мекунанд ва хеле асабӣ ҳастанд."
+        },
+        {
+          "hanzi": "是啊，主要的球员没参加比赛，所以大家也都受到影响了。",
+          "uz": "Ha, asosiy o‘yinchilar qatnashmadi, shuning uchun boshqalarga ham ta’sir qildi.",
+          "ru": "Да, ключевые игроки не участвуют, поэтому это повлияло и на остальных.",
+          "tj": "Ҳа, бозигарони асосӣ иштирок накарданд, барои ҳамин ба дигарон ҳам таъсир расид."
+        },
+        {
+          "hanzi": "越看越着急，我不看了，你们告诉我得分吧。",
+          "uz": "Ko‘rganim sari xavotirim oshyapti, boshqa ko‘rmayman, natijani keyin aytarsizlar.",
+          "ru": "Чем больше смотрю, тем сильнее нервничаю. Не буду смотреть, скажите потом счёт.",
+          "tj": "Ҳар қадар мебинам, ҳамон қадар хавотир мешавам. Дигар намебинам, баъд ҳисобро бигӯед."
+        }
+      ]
+    }
+  ]
+}
