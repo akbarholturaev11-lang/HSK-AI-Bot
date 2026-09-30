@@ -1,0 +1,53 @@
+[
+  {
+    "zh": "北京烤鸭",
+    "pinyin": "Běijīng Kǎoyā",
+    "lesson_orders": [
+      1
+    ],
+    "source_index": true,
+    "forms": [
+      {
+        "pinyin": "Běijīng Kǎoyā",
+        "en": "Peking Duck",
+        "uz": "Pekin o‘rdagi",
+        "ru": "пекинская утка",
+        "tj": "мурғиобии пекинӣ"
+      }
+    ]
+  },
+  {
+    "zh": "北京大学",
+    "pinyin": "Běijīng Dàxué",
+    "lesson_orders": [
+      2
+    ],
+    "source_index": true,
+    "forms": [
+      {
+        "pinyin": "Běijīng Dàxué",
+        "en": "Peking University",
+        "uz": "Pekin universiteti",
+        "ru": "Пекинский университет",
+        "tj": "Донишгоҳи Пекин"
+      }
+    ]
+  },
+  {
+    "zh": "颐和园",
+    "pinyin": "Yíhé Yuán",
+    "lesson_orders": [
+      15
+    ],
+    "source_index": true,
+    "forms": [
+      {
+        "pinyin": "Yíhé Yuán",
+        "en": "Summer Palace",
+        "uz": "Yiheyuan (Yozgi saroy)",
+        "ru": "Ихэюань (Летний дворец)",
+        "tj": "Ихэюан (Қасри тобистона)"
+      }
+    ]
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "track": "hsk30",
+  "level": "nhsk2",
+  "source_book": "新HSK教程2",
+  "source_pdf_path": "HSK 3.0 PDF/新HSK2 教材.pdf",
+  "source_lfs_oid_sha256": "12a7ca82d9ede40e7bcdad36b4198e20db311d378d407b1f80dcc9b26b48f003",
+  "lesson_count": 15,
+  "lesson_vocabulary_rows": 211,
+  "common_index_rows": 207,
+  "unique_common_spellings": 206,
+  "beyond_syllabus_rows": 10,
+  "in_syllabus_common_rows": 197,
+  "proper_noun_rows": 3,
+  "syllabus_rows": 200,
+  "grammar_points": 45,
+  "dialogue_blocks": 60,
+  "dialogue_lines": 308,
+  "derived_hanzi_count": 209,
+  "counting_note": "The book index contains 207 common-vocabulary rows. Ten rows are marked with * as beyond the syllabus. The remaining 197 common rows plus 3 proper-noun rows equal 200 syllabus rows. The spelling 过 appears twice as separate index rows: guò (lesson 6) and guo (lesson 4), so there are 206 unique common spellings."
+}

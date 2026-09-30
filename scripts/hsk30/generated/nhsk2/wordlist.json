@@ -1,0 +1,4796 @@
+[
+  {
+    "zh": "啊",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      1
+    ],
+    "senses": [
+      {
+        "pinyin": "a",
+        "pos": "part.",
+        "uz": "his-hayajon/ma’qullash yuklamasi",
+        "ru": "модальная частица эмоции/согласия",
+        "tj": "ҳиссачаи эҳсос/розигӣ",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "爱好",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      2
+    ],
+    "senses": [
+      {
+        "pinyin": "àihào",
+        "pos": "n./v.",
+        "uz": "qiziqish; yoqtirmoq",
+        "ru": "хобби; увлекаться",
+        "tj": "шавқ; дӯст доштан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "爱情片",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      3
+    ],
+    "senses": [
+      {
+        "pinyin": "àiqíngpiàn",
+        "pos": "n.",
+        "uz": "romantik film",
+        "ru": "романтический фильм",
+        "tj": "филми ошиқона",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "白色",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      4
+    ],
+    "senses": [
+      {
+        "pinyin": "báisè",
+        "pos": "n.",
+        "uz": "oq rang",
+        "ru": "белый цвет",
+        "tj": "ранги сафед",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "班",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      5
+    ],
+    "senses": [
+      {
+        "pinyin": "bān",
+        "pos": "n.",
+        "uz": "sinf; guruh",
+        "ru": "класс; группа",
+        "tj": "синф; гурӯҳ",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "帮",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      6
+    ],
+    "senses": [
+      {
+        "pinyin": "bāng",
+        "pos": "v.",
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "帮忙",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      7
+    ],
+    "senses": [
+      {
+        "pinyin": "bāngmáng",
+        "pos": "v.",
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "包",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      8
+    ],
+    "senses": [
+      {
+        "pinyin": "bāo",
+        "pos": "n./v./m.",
+        "uz": "sumka; o‘ram; o‘ramoq",
+        "ru": "сумка; пакет; заворачивать",
+        "tj": "халта; баста; бастан",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "本子",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      9
+    ],
+    "senses": [
+      {
+        "pinyin": "běnzi",
+        "pos": "n.",
+        "uz": "daftar",
+        "ru": "тетрадь",
+        "tj": "дафтар",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "比",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      10
+    ],
+    "senses": [
+      {
+        "pinyin": "bǐ",
+        "pos": "prep./v.",
+        "uz": "...dan; taqqoslamoq",
+        "ru": "чем; сравнивать",
+        "tj": "нисбат ба; муқоиса кардан",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "笔",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10,
+      13
+    ],
+    "source_index_rows": [
+      11
+    ],
+    "senses": [
+      {
+        "pinyin": "bǐ",
+        "pos": "n.",
+        "uz": "ruchka; qalam",
+        "ru": "ручка; карандаш",
+        "tj": "ручка; қалам",
+        "lesson_orders": [
+          10
+        ]
+      },
+      {
+        "pinyin": "bǐ",
+        "pos": "m.",
+        "uz": "chiziq (ieroglif zarbasi)",
+        "ru": "черта; штрих",
+        "tj": "хат; зарба",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "别",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      12
+    ],
+    "senses": [
+      {
+        "pinyin": "bié",
+        "pos": "adv.",
+        "uz": "qilmang; yaxshisi qilma",
+        "ru": "не; лучше не",
+        "tj": "накун; беҳтараш не",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "不错",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      13
+    ],
+    "senses": [
+      {
+        "pinyin": "búcuò",
+        "pos": "adj.",
+        "uz": "yomon emas; ancha yaxshi",
+        "ru": "неплохо; довольно хорошо",
+        "tj": "бад нест; хуб",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "不好意思",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      14
+    ],
+    "senses": [
+      {
+        "pinyin": "bù hǎoyìsi",
+        "pos": "phrase",
+        "uz": "noqulay his qilmoq; uzr",
+        "ru": "неловко; извините",
+        "tj": "хиҷолат; мебахшед",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "长",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      15
+    ],
+    "senses": [
+      {
+        "pinyin": "cháng",
+        "pos": "adj.",
+        "uz": "uzun",
+        "ru": "длинный",
+        "tj": "дароз",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "车站",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      16
+    ],
+    "senses": [
+      {
+        "pinyin": "chēzhàn",
+        "pos": "n.",
+        "uz": "bekat; stansiya",
+        "ru": "остановка; станция",
+        "tj": "истгоҳ",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "出国",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      17
+    ],
+    "senses": [
+      {
+        "pinyin": "chūguó",
+        "pos": "v.",
+        "uz": "chet elga chiqmoq",
+        "ru": "ехать за границу",
+        "tj": "ба хориҷ рафтан",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "出门",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      18
+    ],
+    "senses": [
+      {
+        "pinyin": "chūmén",
+        "pos": "v.",
+        "uz": "uydan chiqmoq",
+        "ru": "выходить из дома",
+        "tj": "аз хона баромадан",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "出去",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      19
+    ],
+    "senses": [
+      {
+        "pinyin": "chūqù",
+        "pos": "v.",
+        "uz": "tashqariga chiqmoq",
+        "ru": "выйти; пойти наружу",
+        "tj": "ба берун баромадан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "床",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      20
+    ],
+    "senses": [
+      {
+        "pinyin": "chuáng",
+        "pos": "n.",
+        "uz": "karavot",
+        "ru": "кровать",
+        "tj": "кат",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "词",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      21
+    ],
+    "senses": [
+      {
+        "pinyin": "cí",
+        "pos": "n.",
+        "uz": "so‘z",
+        "ru": "слово",
+        "tj": "калима",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "次",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      22
+    ],
+    "senses": [
+      {
+        "pinyin": "cì",
+        "pos": "m.",
+        "uz": "marta",
+        "ru": "раз; случай",
+        "tj": "бор",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "从",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      23
+    ],
+    "senses": [
+      {
+        "pinyin": "cóng",
+        "pos": "prep.",
+        "uz": "dan; ...dan boshlab",
+        "ru": "из; от",
+        "tj": "аз",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "从小",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      24
+    ],
+    "senses": [
+      {
+        "pinyin": "cóngxiǎo",
+        "pos": "adv.",
+        "uz": "bolalikdan",
+        "ru": "с детства",
+        "tj": "аз кӯдакӣ",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "错",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      25
+    ],
+    "senses": [
+      {
+        "pinyin": "cuò",
+        "pos": "adj.",
+        "uz": "xato; noto‘g‘ri",
+        "ru": "ошибочный; неправильный",
+        "tj": "хато; нодуруст",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "打",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      26
+    ],
+    "senses": [
+      {
+        "pinyin": "dǎ",
+        "pos": "v.",
+        "uz": "o‘ynamoq (sport); urmoq",
+        "ru": "играть; ударять",
+        "tj": "бозӣ кардан; задан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "打车",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      27
+    ],
+    "senses": [
+      {
+        "pinyin": "dǎchē",
+        "pos": "v.",
+        "uz": "taksi tutmoq/minmoq",
+        "ru": "взять такси",
+        "tj": "таксӣ гирифтан",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "打开",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      28
+    ],
+    "senses": [
+      {
+        "pinyin": "dǎkāi",
+        "pos": "v.",
+        "uz": "ochmoq",
+        "ru": "открывать",
+        "tj": "кушодан",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "但",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      29
+    ],
+    "senses": [
+      {
+        "pinyin": "dàn",
+        "pos": "conj.",
+        "uz": "ammo; lekin",
+        "ru": "но; однако",
+        "tj": "аммо; лекин",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "但是",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      30
+    ],
+    "senses": [
+      {
+        "pinyin": "dànshì",
+        "pos": "conj.",
+        "uz": "ammo; lekin",
+        "ru": "но; однако",
+        "tj": "аммо; лекин",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "蛋糕",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      31
+    ],
+    "senses": [
+      {
+        "pinyin": "dàngāo",
+        "pos": "n.",
+        "uz": "tort",
+        "ru": "торт",
+        "tj": "торт",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "地",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      32
+    ],
+    "senses": [
+      {
+        "pinyin": "de",
+        "pos": "part.",
+        "uz": "ravish yasovchi yuklama",
+        "ru": "частица наречного определения",
+        "tj": "ҳиссачаи ҳол/зарф",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "得",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      33
+    ],
+    "senses": [
+      {
+        "pinyin": "de",
+        "pos": "part.",
+        "uz": "fe’l/sifat bilan holat-daraja to‘ldiruvchisini bog‘lovchi yuklama",
+        "ru": "частица между глаголом/прилагательным и дополнением состояния/степени",
+        "tj": "ҳиссача байни феъл/сифат ва пуркунандаи ҳолат/дараҷа",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "等",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      34
+    ],
+    "senses": [
+      {
+        "pinyin": "děng",
+        "pos": "v.",
+        "uz": "kutmoq",
+        "ru": "ждать",
+        "tj": "интизор шудан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "地铁",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      35
+    ],
+    "senses": [
+      {
+        "pinyin": "dìtiě",
+        "pos": "n.",
+        "uz": "metro",
+        "ru": "метро",
+        "tj": "метро",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "点",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      36
+    ],
+    "senses": [
+      {
+        "pinyin": "diǎn",
+        "pos": "v.",
+        "uz": "tanlamoq; buyurtma bermoq",
+        "ru": "выбирать; заказывать",
+        "tj": "интихоб кардан; фармоиш додан",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "懂",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      37
+    ],
+    "senses": [
+      {
+        "pinyin": "dǒng",
+        "pos": "v.",
+        "uz": "tushunmoq; bilmoq",
+        "ru": "понимать; знать",
+        "tj": "фаҳмидан; донистан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "动",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      38
+    ],
+    "senses": [
+      {
+        "pinyin": "dòng",
+        "pos": "v.",
+        "uz": "qimirlamoq; harakatlanmoq",
+        "ru": "двигаться",
+        "tj": "ҳаракат кардан",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "饭馆",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      39
+    ],
+    "senses": [
+      {
+        "pinyin": "fànguǎn",
+        "pos": "n.",
+        "uz": "restoran; oshxona",
+        "ru": "ресторан; закусочная",
+        "tj": "тарабхона",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "房子",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      40
+    ],
+    "senses": [
+      {
+        "pinyin": "fángzi",
+        "pos": "n.",
+        "uz": "uy; xona-joy",
+        "ru": "дом; жильё",
+        "tj": "хона; манзил",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "飞",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      41
+    ],
+    "senses": [
+      {
+        "pinyin": "fēi",
+        "pos": "v.",
+        "uz": "uchmoq",
+        "ru": "лететь; летать",
+        "tj": "парвоз кардан",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "高",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      42
+    ],
+    "senses": [
+      {
+        "pinyin": "gāo",
+        "pos": "adj.",
+        "uz": "baland; bo‘yi uzun",
+        "ru": "высокий",
+        "tj": "баланд",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "高中",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      43
+    ],
+    "senses": [
+      {
+        "pinyin": "gāozhōng",
+        "pos": "n.",
+        "uz": "yuqori sinf; o‘rta maktabning yuqori bosqichi",
+        "ru": "старшая школа",
+        "tj": "мактаби миёнаи болоӣ",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "告诉",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      44
+    ],
+    "senses": [
+      {
+        "pinyin": "gàosu",
+        "pos": "v.",
+        "uz": "aytmoq; xabar bermoq",
+        "ru": "сказать; сообщить",
+        "tj": "гуфтан; хабар додан",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "个子",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      45
+    ],
+    "senses": [
+      {
+        "pinyin": "gèzi",
+        "pos": "n.",
+        "uz": "bo‘y",
+        "ru": "рост",
+        "tj": "қад",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "给",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      46
+    ],
+    "senses": [
+      {
+        "pinyin": "gěi",
+        "pos": "prep.",
+        "uz": "ga; uchun",
+        "ru": "кому; для",
+        "tj": "ба; барои",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "跟",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      47
+    ],
+    "senses": [
+      {
+        "pinyin": "gēn",
+        "pos": "prep./conj.",
+        "uz": "bilan",
+        "ru": "с; и",
+        "tj": "бо; ва",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "更",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      48
+    ],
+    "senses": [
+      {
+        "pinyin": "gèng",
+        "pos": "adv.",
+        "uz": "yanada; ko‘proq",
+        "ru": "ещё более",
+        "tj": "боз ҳам; бештар",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "公交车",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      49
+    ],
+    "senses": [
+      {
+        "pinyin": "gōngjiāochē",
+        "pos": "n.",
+        "uz": "avtobus",
+        "ru": "автобус",
+        "tj": "автобус",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "过",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4,
+      6
+    ],
+    "source_index_rows": [
+      50,
+      54
+    ],
+    "senses": [
+      {
+        "pinyin": "guo",
+        "pos": "part.",
+        "uz": "o‘tgan tajribani bildiruvchi yuklama",
+        "ru": "частица прошедшего опыта",
+        "tj": "ҳиссачаи таҷрибаи гузашта",
+        "lesson_orders": [
+          4
+        ]
+      },
+      {
+        "pinyin": "guò",
+        "pos": "v.",
+        "uz": "o‘tkazmoq (vaqt/bayram)",
+        "ru": "проводить (время/праздник)",
+        "tj": "гузарондан (вақт/ид)",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "过来",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      51
+    ],
+    "senses": [
+      {
+        "pinyin": "guòlai",
+        "pos": "v.",
+        "uz": "bu tomonga kelmoq",
+        "ru": "подойти; прийти сюда",
+        "tj": "ба ин тараф омадан",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "过年",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      52
+    ],
+    "senses": [
+      {
+        "pinyin": "guònián",
+        "pos": "v.",
+        "uz": "Bahor bayramini/Yangi yilni nishonlamoq",
+        "ru": "праздновать Китайский Новый год",
+        "tj": "Соли нави чиниро ҷашн гирифтан",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "过去",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      53
+    ],
+    "senses": [
+      {
+        "pinyin": "guòqu",
+        "pos": "v.",
+        "uz": "u tomonga o‘tmoq/bormoq",
+        "ru": "подойти; перейти туда",
+        "tj": "ба он тараф гузаштан/рафтан",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "还是",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2,
+      10
+    ],
+    "source_index_rows": [
+      55
+    ],
+    "senses": [
+      {
+        "pinyin": "háishi",
+        "pos": "adv.",
+        "uz": "yaxshisi; ma’quli",
+        "ru": "лучше; всё-таки",
+        "tj": "беҳтараш",
+        "lesson_orders": [
+          2
+        ]
+      },
+      {
+        "pinyin": "háishi",
+        "pos": "conj.",
+        "uz": "yoki (tanlov savolida)",
+        "ru": "или (в альтернативном вопросе)",
+        "tj": "ё (дар саволи интихобӣ)",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "好",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      56
+    ],
+    "senses": [
+      {
+        "pinyin": "hǎo",
+        "pos": "adv.",
+        "uz": "juda; ancha",
+        "ru": "очень; довольно",
+        "tj": "хеле; бисёр",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "好像",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      57
+    ],
+    "senses": [
+      {
+        "pinyin": "hǎoxiàng",
+        "pos": "v./adv.",
+        "uz": "o‘xshamoq; go‘yo",
+        "ru": "быть похожим; как будто",
+        "tj": "монанд будан; гӯё",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "黑色",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      58
+    ],
+    "senses": [
+      {
+        "pinyin": "hēisè",
+        "pos": "n.",
+        "uz": "qora rang",
+        "ru": "чёрный цвет",
+        "tj": "ранги сиёҳ",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "红色",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      59
+    ],
+    "senses": [
+      {
+        "pinyin": "hóngsè",
+        "pos": "n.",
+        "uz": "qizil rang",
+        "ru": "красный цвет",
+        "tj": "ранги сурх",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "后面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      60
+    ],
+    "senses": [
+      {
+        "pinyin": "hòumian",
+        "pos": "n.",
+        "uz": "orqa tomon",
+        "ru": "сзади; задняя сторона",
+        "tj": "қафо; тарафи қафо",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "花",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8,
+      13
+    ],
+    "source_index_rows": [
+      61
+    ],
+    "senses": [
+      {
+        "pinyin": "huā",
+        "pos": "v.",
+        "uz": "sarflamoq",
+        "ru": "тратить",
+        "tj": "сарф кардан",
+        "lesson_orders": [
+          8
+        ]
+      },
+      {
+        "pinyin": "huā",
+        "pos": "n.",
+        "uz": "gul",
+        "ru": "цветок",
+        "tj": "гул",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "画",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      62
+    ],
+    "senses": [
+      {
+        "pinyin": "huà",
+        "pos": "v./n.",
+        "uz": "chizmoq; rasm",
+        "ru": "рисовать; рисунок",
+        "tj": "расм кашидан; расм",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "画笔",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      63
+    ],
+    "senses": [
+      {
+        "pinyin": "huàbǐ",
+        "pos": "n.",
+        "uz": "rangli qalam/mo‘yqalam",
+        "ru": "карандаш/кисть для рисования",
+        "tj": "қалам/мӯқалам барои расм",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "坏",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      64
+    ],
+    "senses": [
+      {
+        "pinyin": "huài",
+        "pos": "adj.",
+        "uz": "yomon; buzilgan",
+        "ru": "плохой; испорченный",
+        "tj": "бад; вайрон",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "回来",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      65
+    ],
+    "senses": [
+      {
+        "pinyin": "huílái",
+        "pos": "v.",
+        "uz": "qaytib kelmoq",
+        "ru": "вернуться; прийти обратно",
+        "tj": "баргашта омадан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "回去",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      66
+    ],
+    "senses": [
+      {
+        "pinyin": "huíqù",
+        "pos": "v.",
+        "uz": "qaytib bormoq",
+        "ru": "вернуться туда",
+        "tj": "баргашта рафтан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "机场",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      67
+    ],
+    "senses": [
+      {
+        "pinyin": "jīchǎng",
+        "pos": "n.",
+        "uz": "aeroport",
+        "ru": "аэропорт",
+        "tj": "фурудгоҳ",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "机票",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      68
+    ],
+    "senses": [
+      {
+        "pinyin": "jīpiào",
+        "pos": "n.",
+        "uz": "aviachipta",
+        "ru": "авиабилет",
+        "tj": "чиптаи ҳавопаймо",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "记得",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      69
+    ],
+    "senses": [
+      {
+        "pinyin": "jìde",
+        "pos": "v.",
+        "uz": "eslamoq",
+        "ru": "помнить",
+        "tj": "дар хотир доштан",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "间",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      70
+    ],
+    "senses": [
+      {
+        "pinyin": "jiān",
+        "pos": "m.",
+        "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+        "ru": "счётное слово для комнат",
+        "tj": "воҳиди ҳисоб барои ҳуҷра",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "教",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      71
+    ],
+    "senses": [
+      {
+        "pinyin": "jiāo",
+        "pos": "v.",
+        "uz": "o‘qitmoq",
+        "ru": "учить; преподавать",
+        "tj": "дарс додан; омӯзондан",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "教室",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      72
+    ],
+    "senses": [
+      {
+        "pinyin": "jiàoshì",
+        "pos": "n.",
+        "uz": "sinfxona",
+        "ru": "аудитория; класс",
+        "tj": "синфхона",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "接",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      73
+    ],
+    "senses": [
+      {
+        "pinyin": "jiē",
+        "pos": "v.",
+        "uz": "kutib olmoq; qabul qilmoq",
+        "ru": "встречать; принимать",
+        "tj": "пешвоз гирифтан; қабул кардан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "介绍",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      74
+    ],
+    "senses": [
+      {
+        "pinyin": "jièshào",
+        "pos": "v.",
+        "uz": "tanishtirmoq; tanishtirib bermoq",
+        "ru": "представлять; знакомить",
+        "tj": "шинос кардан; муаррифӣ кардан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "进",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      75
+    ],
+    "senses": [
+      {
+        "pinyin": "jìn",
+        "pos": "v.",
+        "uz": "kirmoq",
+        "ru": "входить",
+        "tj": "даромадан",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "进来",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      76
+    ],
+    "senses": [
+      {
+        "pinyin": "jìnlái",
+        "pos": "v.",
+        "uz": "ichkariga kirib kelmoq",
+        "ru": "войти сюда",
+        "tj": "ба дарун омада даромадан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "进去",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      77
+    ],
+    "senses": [
+      {
+        "pinyin": "jìnqu",
+        "pos": "v.",
+        "uz": "ichkariga kirmoq",
+        "ru": "зайти внутрь",
+        "tj": "ба дарун даромадан",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "近",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      78
+    ],
+    "senses": [
+      {
+        "pinyin": "jìn",
+        "pos": "adj.",
+        "uz": "yaqin",
+        "ru": "близкий; рядом",
+        "tj": "наздик",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "经常",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      79
+    ],
+    "senses": [
+      {
+        "pinyin": "jīngcháng",
+        "pos": "adv.",
+        "uz": "tez-tez; ko‘pincha",
+        "ru": "часто",
+        "tj": "зуд-зуд; аксар вақт",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "酒店",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      80
+    ],
+    "senses": [
+      {
+        "pinyin": "jiǔdiàn",
+        "pos": "n.",
+        "uz": "mehmonxona",
+        "ru": "гостиница",
+        "tj": "меҳмонхона",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "就",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      81
+    ],
+    "senses": [
+      {
+        "pinyin": "jiù",
+        "pos": "adv.",
+        "uz": "aynan; xuddi",
+        "ru": "именно; как раз",
+        "tj": "маҳз; айнан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "咖啡",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      82
+    ],
+    "senses": [
+      {
+        "pinyin": "kāfēi",
+        "pos": "n.",
+        "uz": "qahva",
+        "ru": "кофе",
+        "tj": "қаҳва",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "开始",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      83
+    ],
+    "senses": [
+      {
+        "pinyin": "kāishǐ",
+        "pos": "v./n.",
+        "uz": "boshlamoq; boshlanish",
+        "ru": "начинать; начало",
+        "tj": "оғоз кардан; оғоз",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "开学",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      84
+    ],
+    "senses": [
+      {
+        "pinyin": "kāixué",
+        "pos": "v.",
+        "uz": "o‘qish/maktab boshlanmoq",
+        "ru": "начинаться (об учебном семестре)",
+        "tj": "оғоз шудани таҳсил",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "考",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      85
+    ],
+    "senses": [
+      {
+        "pinyin": "kǎo",
+        "pos": "v.",
+        "uz": "imtihon topshirmoq; tekshirmoq",
+        "ru": "сдавать экзамен; экзаменовать",
+        "tj": "имтиҳон супоридан; санҷидан",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "考试",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      86
+    ],
+    "senses": [
+      {
+        "pinyin": "kǎoshì",
+        "pos": "v./n.",
+        "uz": "imtihon topshirmoq; imtihon",
+        "ru": "сдавать экзамен; экзамен",
+        "tj": "имтиҳон супоридан; имтиҳон",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "可能",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      87
+    ],
+    "senses": [
+      {
+        "pinyin": "kěnéng",
+        "pos": "v./adv.",
+        "uz": "mumkin; ehtimol",
+        "ru": "возможно; мочь",
+        "tj": "мумкин; эҳтимол",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "裤子",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      88
+    ],
+    "senses": [
+      {
+        "pinyin": "kùzi",
+        "pos": "n.",
+        "uz": "shim",
+        "ru": "брюки",
+        "tj": "шим",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "快",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      89
+    ],
+    "senses": [
+      {
+        "pinyin": "kuài",
+        "pos": "adv./adj.",
+        "uz": "tez; shoshil",
+        "ru": "быстро; скорый",
+        "tj": "тез; зуд",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "快乐",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      90
+    ],
+    "senses": [
+      {
+        "pinyin": "kuàilè",
+        "pos": "adj.",
+        "uz": "xursand; baxtli",
+        "ru": "счастливый; радостный",
+        "tj": "хурсанд; хушҳол",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "快要",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      91
+    ],
+    "senses": [
+      {
+        "pinyin": "kuàiyào",
+        "pos": "adv.",
+        "uz": "sal qoldi; tez orada",
+        "ru": "вот-вот; скоро",
+        "tj": "қариб; ба зудӣ",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "篮球",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      92
+    ],
+    "senses": [
+      {
+        "pinyin": "lánqiú",
+        "pos": "n.",
+        "uz": "basketbol",
+        "ru": "баскетбол",
+        "tj": "баскетбол",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "累",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      93
+    ],
+    "senses": [
+      {
+        "pinyin": "lèi",
+        "pos": "adj.",
+        "uz": "charchagan",
+        "ru": "уставший",
+        "tj": "хаста",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "离",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      94
+    ],
+    "senses": [
+      {
+        "pinyin": "lí",
+        "pos": "v.",
+        "uz": "...dan masofada bo‘lmoq",
+        "ru": "находиться на расстоянии от",
+        "tj": "аз ... фосила доштан",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "礼物",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      95
+    ],
+    "senses": [
+      {
+        "pinyin": "lǐwù",
+        "pos": "n.",
+        "uz": "sovg‘a",
+        "ru": "подарок",
+        "tj": "тӯҳфа",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "里面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      96
+    ],
+    "senses": [
+      {
+        "pinyin": "lǐmian",
+        "pos": "n.",
+        "uz": "ichi; ichkarida",
+        "ru": "внутри",
+        "tj": "дарун; дохил",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "楼",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      97
+    ],
+    "senses": [
+      {
+        "pinyin": "lóu",
+        "pos": "n.",
+        "uz": "bino; qavatli uy",
+        "ru": "здание; этаж",
+        "tj": "бино; ошёна",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "路",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      98
+    ],
+    "senses": [
+      {
+        "pinyin": "lù",
+        "pos": "n.",
+        "uz": "yo‘l",
+        "ru": "дорога; путь",
+        "tj": "роҳ",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "路上",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      99
+    ],
+    "senses": [
+      {
+        "pinyin": "lùshang",
+        "pos": "n.",
+        "uz": "yo‘lda",
+        "ru": "в дороге; на дороге",
+        "tj": "дар роҳ",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "旅游",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      100
+    ],
+    "senses": [
+      {
+        "pinyin": "lǚyóu",
+        "pos": "v.",
+        "uz": "sayohat qilmoq",
+        "ru": "путешествовать",
+        "tj": "саёҳат кардан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "绿色",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      101
+    ],
+    "senses": [
+      {
+        "pinyin": "lǜsè",
+        "pos": "n.",
+        "uz": "yashil rang",
+        "ru": "зелёный цвет",
+        "tj": "ранги сабз",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "慢",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      102
+    ],
+    "senses": [
+      {
+        "pinyin": "màn",
+        "pos": "adj.",
+        "uz": "sekin",
+        "ru": "медленный",
+        "tj": "суст",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "没意思",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      103
+    ],
+    "senses": [
+      {
+        "pinyin": "méi yìsi",
+        "pos": "adj.",
+        "uz": "zerikarli; qiziq emas",
+        "ru": "скучно; неинтересно",
+        "tj": "дилгир; бе шавқ",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "每",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      104
+    ],
+    "senses": [
+      {
+        "pinyin": "měi",
+        "pos": "pron.",
+        "uz": "har; har bir",
+        "ru": "каждый",
+        "tj": "ҳар; ҳар як",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "门",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      105
+    ],
+    "senses": [
+      {
+        "pinyin": "mén",
+        "pos": "n.",
+        "uz": "eshik",
+        "ru": "дверь",
+        "tj": "дар",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "门口",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      106
+    ],
+    "senses": [
+      {
+        "pinyin": "ménkǒu",
+        "pos": "n.",
+        "uz": "eshik oldi; kirish joyi",
+        "ru": "вход; у двери",
+        "tj": "даромадгоҳ; назди дар",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "门票",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      107
+    ],
+    "senses": [
+      {
+        "pinyin": "ménpiào",
+        "pos": "n.",
+        "uz": "kirish chiptasi",
+        "ru": "входной билет",
+        "tj": "чиптаи даромад",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      108
+    ],
+    "senses": [
+      {
+        "pinyin": "miàn",
+        "pos": "suf.",
+        "uz": "joy otini yasovchi qo‘shimcha",
+        "ru": "суффикс для слов места",
+        "tj": "пасванд барои номи ҷой",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "名",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      109
+    ],
+    "senses": [
+      {
+        "pinyin": "míng",
+        "pos": "m./n.",
+        "uz": "odamlar uchun hisob so‘zi; o‘rin; nom",
+        "ru": "счётное слово для людей; место; имя",
+        "tj": "воҳиди ҳисоб барои одам; ҷой; ном",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "拿",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      110
+    ],
+    "senses": [
+      {
+        "pinyin": "ná",
+        "pos": "v.",
+        "uz": "olmoq; ushlamoq",
+        "ru": "брать; держать",
+        "tj": "гирифтан; доштан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "那",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      111
+    ],
+    "senses": [
+      {
+        "pinyin": "nà",
+        "pos": "conj.",
+        "uz": "unda; shunda",
+        "ru": "тогда",
+        "tj": "пас; он гоҳ",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "那么",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      112
+    ],
+    "senses": [
+      {
+        "pinyin": "nàme",
+        "pos": "pron.",
+        "uz": "unchalik; shunday",
+        "ru": "так; настолько",
+        "tj": "он қадар",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "那样",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      113
+    ],
+    "senses": [
+      {
+        "pinyin": "nàyàng",
+        "pos": "pron.",
+        "uz": "unday; shunday",
+        "ru": "так; таким образом",
+        "tj": "он тавр; чунин",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "奶茶",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      114
+    ],
+    "senses": [
+      {
+        "pinyin": "nǎichá",
+        "pos": "n.",
+        "uz": "sutli choy; milk tea",
+        "ru": "чай с молоком; milk tea",
+        "tj": "чойи ширӣ",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "奶奶",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      115
+    ],
+    "senses": [
+      {
+        "pinyin": "nǎinai",
+        "pos": "n.",
+        "uz": "buvi",
+        "ru": "бабушка",
+        "tj": "бибӣ",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "男孩儿",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      116
+    ],
+    "senses": [
+      {
+        "pinyin": "nánháir",
+        "pos": "n.",
+        "uz": "o‘g‘il bola",
+        "ru": "мальчик",
+        "tj": "писарбача",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "鸟",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      117
+    ],
+    "senses": [
+      {
+        "pinyin": "niǎo",
+        "pos": "n.",
+        "uz": "qush",
+        "ru": "птица",
+        "tj": "парранда",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "女孩儿",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      118
+    ],
+    "senses": [
+      {
+        "pinyin": "nǚháir",
+        "pos": "n.",
+        "uz": "qiz bola",
+        "ru": "девочка",
+        "tj": "духтар",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "旁边",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      119
+    ],
+    "senses": [
+      {
+        "pinyin": "pángbian",
+        "pos": "n.",
+        "uz": "yon; yon tomon",
+        "ru": "рядом; сбоку",
+        "tj": "паҳлӯ; наздик",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "跑",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      120
+    ],
+    "senses": [
+      {
+        "pinyin": "pǎo",
+        "pos": "v.",
+        "uz": "yugurmoq; chopmoq",
+        "ru": "бежать",
+        "tj": "давидан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "跑步",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      121
+    ],
+    "senses": [
+      {
+        "pinyin": "pǎobù",
+        "pos": "v.",
+        "uz": "yugurmoq",
+        "ru": "бегать",
+        "tj": "давидан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "票",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      122
+    ],
+    "senses": [
+      {
+        "pinyin": "piào",
+        "pos": "n.",
+        "uz": "chipta",
+        "ru": "билет",
+        "tj": "чипта",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "妻子",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      123
+    ],
+    "senses": [
+      {
+        "pinyin": "qīzi",
+        "pos": "n.",
+        "uz": "xotin; turmush o‘rtoq",
+        "ru": "жена",
+        "tj": "ҳамсар; зан",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "前面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      124
+    ],
+    "senses": [
+      {
+        "pinyin": "qiánmian",
+        "pos": "n.",
+        "uz": "old tomon",
+        "ru": "впереди; передняя сторона",
+        "tj": "пеш; тарафи пеш",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "晴",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      125
+    ],
+    "senses": [
+      {
+        "pinyin": "qíng",
+        "pos": "adj.",
+        "uz": "ochiq; quyoshli",
+        "ru": "ясный; солнечный",
+        "tj": "соф; офтобӣ",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "球",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      126
+    ],
+    "senses": [
+      {
+        "pinyin": "qiú",
+        "pos": "n.",
+        "uz": "to‘p",
+        "ru": "мяч",
+        "tj": "тӯб",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "让",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      127
+    ],
+    "senses": [
+      {
+        "pinyin": "ràng",
+        "pos": "v.",
+        "uz": "ruxsat bermoq; qildirmoq",
+        "ru": "позволять; велеть",
+        "tj": "иҷозат додан; водор кардан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "肉",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      128
+    ],
+    "senses": [
+      {
+        "pinyin": "ròu",
+        "pos": "n.",
+        "uz": "go‘sht",
+        "ru": "мясо",
+        "tj": "гӯшт",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "商场",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      129
+    ],
+    "senses": [
+      {
+        "pinyin": "shāngchǎng",
+        "pos": "n.",
+        "uz": "savdo markazi",
+        "ru": "торговый центр",
+        "tj": "маркази савдо",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "上来",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      130
+    ],
+    "senses": [
+      {
+        "pinyin": "shànglái",
+        "pos": "v.",
+        "uz": "yuqoriga chiqib kelmoq",
+        "ru": "подняться сюда",
+        "tj": "боло омада баромадан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "上面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      131
+    ],
+    "senses": [
+      {
+        "pinyin": "shàngmian",
+        "pos": "n.",
+        "uz": "usti; yuqori qismi",
+        "ru": "сверху; поверхность",
+        "tj": "боло; рӯйи чиз",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "上去",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      132
+    ],
+    "senses": [
+      {
+        "pinyin": "shàngqù",
+        "pos": "v.",
+        "uz": "yuqoriga chiqib bormoq",
+        "ru": "подняться туда",
+        "tj": "боло рафтан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "上网",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      133
+    ],
+    "senses": [
+      {
+        "pinyin": "shàngwǎng",
+        "pos": "v.",
+        "uz": "internetga kirmoq",
+        "ru": "выходить в интернет",
+        "tj": "ба интернет даромадан",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "身体",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      134
+    ],
+    "senses": [
+      {
+        "pinyin": "shēntǐ",
+        "pos": "n.",
+        "uz": "tana; salomatlik",
+        "ru": "тело; здоровье",
+        "tj": "бадан; саломатӣ",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "生日",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      135
+    ],
+    "senses": [
+      {
+        "pinyin": "shēngrì",
+        "pos": "n.",
+        "uz": "tug‘ilgan kun",
+        "ru": "день рождения",
+        "tj": "зодрӯз",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "时",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      136
+    ],
+    "senses": [
+      {
+        "pinyin": "shí",
+        "pos": "n.",
+        "uz": "vaqt; payt",
+        "ru": "время; период",
+        "tj": "вақт; ҳангом",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "事情",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      137
+    ],
+    "senses": [
+      {
+        "pinyin": "shìqing",
+        "pos": "n.",
+        "uz": "ish; voqea; masala",
+        "ru": "дело; событие",
+        "tj": "кор; ҳодиса; масъала",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "试",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      138
+    ],
+    "senses": [
+      {
+        "pinyin": "shì",
+        "pos": "v.",
+        "uz": "sinab ko‘rmoq",
+        "ru": "пробовать; примерять",
+        "tj": "санҷидан; пӯшида дидан",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "手",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      139
+    ],
+    "senses": [
+      {
+        "pinyin": "shǒu",
+        "pos": "n.",
+        "uz": "qo‘l",
+        "ru": "рука",
+        "tj": "даст",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "手表",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      140
+    ],
+    "senses": [
+      {
+        "pinyin": "shǒubiǎo",
+        "pos": "n.",
+        "uz": "qo‘l soati",
+        "ru": "наручные часы",
+        "tj": "соати дастӣ",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "书包",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      141
+    ],
+    "senses": [
+      {
+        "pinyin": "shūbāo",
+        "pos": "n.",
+        "uz": "maktab sumkasi; ryukzak",
+        "ru": "школьная сумка; рюкзак",
+        "tj": "ҷузвдони мактабӣ",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "舒服",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      142
+    ],
+    "senses": [
+      {
+        "pinyin": "shūfu",
+        "pos": "adj.",
+        "uz": "qulay; rohat",
+        "ru": "удобный; комфортный",
+        "tj": "роҳат; бароҳат",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "送",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      143
+    ],
+    "senses": [
+      {
+        "pinyin": "sòng",
+        "pos": "v.",
+        "uz": "kuzatib qo‘ymoq; yetkazmoq; sovg‘a qilmoq",
+        "ru": "провожать; доставлять; дарить",
+        "tj": "гусел кардан; расондан; тӯҳфа кардан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "虽然",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      144
+    ],
+    "senses": [
+      {
+        "pinyin": "suīrán",
+        "pos": "conj.",
+        "uz": "garchi; ... bo‘lsa-da",
+        "ru": "хотя",
+        "tj": "гарчанде",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "所以",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      145
+    ],
+    "senses": [
+      {
+        "pinyin": "suǒyǐ",
+        "pos": "conj.",
+        "uz": "shuning uchun",
+        "ru": "поэтому",
+        "tj": "бинобар ин",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "疼",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      146
+    ],
+    "senses": [
+      {
+        "pinyin": "téng",
+        "pos": "adj.",
+        "uz": "og‘rimoq; og‘riqli",
+        "ru": "болеть; больной",
+        "tj": "дард кардан",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "踢",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      147
+    ],
+    "senses": [
+      {
+        "pinyin": "tī",
+        "pos": "v.",
+        "uz": "tepmoq",
+        "ru": "пинать",
+        "tj": "лагад задан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "题",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      148
+    ],
+    "senses": [
+      {
+        "pinyin": "tí",
+        "pos": "n.",
+        "uz": "savol; masala",
+        "ru": "вопрос; задача",
+        "tj": "савол; масъала",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "条",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      149
+    ],
+    "senses": [
+      {
+        "pinyin": "tiáo",
+        "pos": "m.",
+        "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+        "ru": "счётное слово для длинных/узких предметов",
+        "tj": "воҳиди ҳисоб барои чизҳои дароз/борик",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "跳舞",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      150
+    ],
+    "senses": [
+      {
+        "pinyin": "tiàowǔ",
+        "pos": "v.",
+        "uz": "raqsga tushmoq",
+        "ru": "танцевать",
+        "tj": "рақсидан",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "头",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      151
+    ],
+    "senses": [
+      {
+        "pinyin": "tóu",
+        "pos": "n.",
+        "uz": "bosh",
+        "ru": "голова",
+        "tj": "сар",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "外国",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      152
+    ],
+    "senses": [
+      {
+        "pinyin": "wàiguó",
+        "pos": "n.",
+        "uz": "chet davlat",
+        "ru": "иностранное государство",
+        "tj": "кишвари хориҷӣ",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "外面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      153
+    ],
+    "senses": [
+      {
+        "pinyin": "wàimian",
+        "pos": "n.",
+        "uz": "tashqari; tashqarida",
+        "ru": "снаружи; на улице",
+        "tj": "берун",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "完",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      154
+    ],
+    "senses": [
+      {
+        "pinyin": "wán",
+        "pos": "v.",
+        "uz": "tugatmoq",
+        "ru": "закончить; завершить",
+        "tj": "тамом кардан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "万",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      155
+    ],
+    "senses": [
+      {
+        "pinyin": "wàn",
+        "pos": "num.",
+        "uz": "o‘n ming",
+        "ru": "десять тысяч",
+        "tj": "даҳ ҳазор",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "网上",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      156
+    ],
+    "senses": [
+      {
+        "pinyin": "wǎngshang",
+        "pos": "n.",
+        "uz": "internetda",
+        "ru": "в интернете",
+        "tj": "дар интернет",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "往",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      157
+    ],
+    "senses": [
+      {
+        "pinyin": "wǎng",
+        "pos": "prep./v.",
+        "uz": "tomon; ...ga qarab bormoq",
+        "ru": "в направлении; направляться",
+        "tj": "ба сӯи; рафтан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "忘",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      158
+    ],
+    "senses": [
+      {
+        "pinyin": "wàng",
+        "pos": "v.",
+        "uz": "unutmoq",
+        "ru": "забывать",
+        "tj": "фаромӯш кардан",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "为什么",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      159
+    ],
+    "senses": [
+      {
+        "pinyin": "wèishénme",
+        "pos": "pron.",
+        "uz": "nega; nima uchun",
+        "ru": "почему; зачем",
+        "tj": "чаро; барои чӣ",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "位",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      160
+    ],
+    "senses": [
+      {
+        "pinyin": "wèi",
+        "pos": "m.",
+        "uz": "odamlar uchun hurmat hisob so‘zi",
+        "ru": "уважительное счётное слово для людей",
+        "tj": "воҳиди эҳтиромии ҳисоб барои одам",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "希望",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      161
+    ],
+    "senses": [
+      {
+        "pinyin": "xīwàng",
+        "pos": "v.",
+        "uz": "umid qilmoq; tilamoq",
+        "ru": "надеяться; желать",
+        "tj": "умед кардан; орзу кардан",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "洗",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      162
+    ],
+    "senses": [
+      {
+        "pinyin": "xǐ",
+        "pos": "v.",
+        "uz": "yuvmoq",
+        "ru": "мыть",
+        "tj": "шустан",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "洗手间",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      163
+    ],
+    "senses": [
+      {
+        "pinyin": "xǐshǒujiān",
+        "pos": "n.",
+        "uz": "hojatxona; yuvinish xonasi",
+        "ru": "туалет; уборная",
+        "tj": "ҳоҷатхона",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "下来",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      164
+    ],
+    "senses": [
+      {
+        "pinyin": "xiàlái",
+        "pos": "v.",
+        "uz": "pastga tushib kelmoq",
+        "ru": "спуститься сюда",
+        "tj": "поён омада расидан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "下面",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      165
+    ],
+    "senses": [
+      {
+        "pinyin": "xiàmian",
+        "pos": "n.",
+        "uz": "past; pastki tomon",
+        "ru": "внизу",
+        "tj": "поён; қисми поён",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "下去",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      166
+    ],
+    "senses": [
+      {
+        "pinyin": "xiàqù",
+        "pos": "v.",
+        "uz": "pastga tushib bormoq",
+        "ru": "спуститься туда",
+        "tj": "поён рафтан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "小孩儿",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      167
+    ],
+    "senses": [
+      {
+        "pinyin": "xiǎoháir",
+        "pos": "n.",
+        "uz": "bola",
+        "ru": "ребёнок",
+        "tj": "кӯдак",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "小时候",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      168
+    ],
+    "senses": [
+      {
+        "pinyin": "xiǎoshíhou",
+        "pos": "n.",
+        "uz": "bolalik payti",
+        "ru": "в детстве",
+        "tj": "вақти кӯдакӣ",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "笑",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      10
+    ],
+    "source_index_rows": [
+      169
+    ],
+    "senses": [
+      {
+        "pinyin": "xiào",
+        "pos": "v.",
+        "uz": "kulmoq; jilmaymoq",
+        "ru": "смеяться; улыбаться",
+        "tj": "хандидан; табассум кардан",
+        "lesson_orders": [
+          10
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "新年",
+    "level": "N2",
+    "beyond_syllabus": true,
+    "lesson_orders": [
+      13
+    ],
+    "source_index_rows": [
+      170
+    ],
+    "senses": [
+      {
+        "pinyin": "xīnnián",
+        "pos": "n.",
+        "uz": "Yangi yil",
+        "ru": "Новый год",
+        "tj": "Соли нав",
+        "lesson_orders": [
+          13
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "姓",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      171
+    ],
+    "senses": [
+      {
+        "pinyin": "xìng",
+        "pos": "v.",
+        "uz": "familiyasi ... bo‘lmoq",
+        "ru": "носить фамилию",
+        "tj": "насаб доштан",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "姓名",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      15
+    ],
+    "source_index_rows": [
+      172
+    ],
+    "senses": [
+      {
+        "pinyin": "xìngmíng",
+        "pos": "n.",
+        "uz": "ism-familiya",
+        "ru": "имя и фамилия",
+        "tj": "ному насаб",
+        "lesson_orders": [
+          15
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "颜色",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      173
+    ],
+    "senses": [
+      {
+        "pinyin": "yánsè",
+        "pos": "n.",
+        "uz": "rang",
+        "ru": "цвет",
+        "tj": "ранг",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "眼睛",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      14
+    ],
+    "source_index_rows": [
+      174
+    ],
+    "senses": [
+      {
+        "pinyin": "yǎnjing",
+        "pos": "n.",
+        "uz": "ko‘z",
+        "ru": "глаза",
+        "tj": "чашм",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "药",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      175
+    ],
+    "senses": [
+      {
+        "pinyin": "yào",
+        "pos": "n.",
+        "uz": "dori",
+        "ru": "лекарство",
+        "tj": "дору",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "药店",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      176
+    ],
+    "senses": [
+      {
+        "pinyin": "yàodiàn",
+        "pos": "n.",
+        "uz": "dorixona",
+        "ru": "аптека",
+        "tj": "дорухона",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "爷爷",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      177
+    ],
+    "senses": [
+      {
+        "pinyin": "yéye",
+        "pos": "n.",
+        "uz": "bobo",
+        "ru": "дедушка",
+        "tj": "бобо",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "一会儿",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      178
+    ],
+    "senses": [
+      {
+        "pinyin": "yíhuìr",
+        "pos": "num.-m.",
+        "uz": "birozdan so‘ng; bir oz",
+        "ru": "через некоторое время; немного",
+        "tj": "каме баъд; андаке",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "一起",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      179
+    ],
+    "senses": [
+      {
+        "pinyin": "yìqǐ",
+        "pos": "adv.",
+        "uz": "birga",
+        "ru": "вместе",
+        "tj": "якҷо",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "已经",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      180
+    ],
+    "senses": [
+      {
+        "pinyin": "yǐjīng",
+        "pos": "adv.",
+        "uz": "allaqachon",
+        "ru": "уже",
+        "tj": "аллакай",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "意思",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      181
+    ],
+    "senses": [
+      {
+        "pinyin": "yìsi",
+        "pos": "n.",
+        "uz": "ma’no; fikr",
+        "ru": "значение; смысл",
+        "tj": "маъно; фикр",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "因为",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      4
+    ],
+    "source_index_rows": [
+      182
+    ],
+    "senses": [
+      {
+        "pinyin": "yīnwèi",
+        "pos": "conj.",
+        "uz": "chunki; sababli",
+        "ru": "потому что",
+        "tj": "зеро; барои он ки",
+        "lesson_orders": [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "阴",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      183
+    ],
+    "senses": [
+      {
+        "pinyin": "yīn",
+        "pos": "adj.",
+        "uz": "bulutli",
+        "ru": "пасмурный; облачный",
+        "tj": "абрнок",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "游",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      184
+    ],
+    "senses": [
+      {
+        "pinyin": "yóu",
+        "pos": "v.",
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "游泳",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      185
+    ],
+    "senses": [
+      {
+        "pinyin": "yóuyǒng",
+        "pos": "v.",
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "有时",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      1
+    ],
+    "source_index_rows": [
+      186
+    ],
+    "senses": [
+      {
+        "pinyin": "yǒushí",
+        "pos": "adv.",
+        "uz": "ba’zan",
+        "ru": "иногда",
+        "tj": "баъзан",
+        "lesson_orders": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "有意思",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      187
+    ],
+    "senses": [
+      {
+        "pinyin": "yǒu yìsi",
+        "pos": "adj.",
+        "uz": "qiziqarli",
+        "ru": "интересный",
+        "tj": "ҷолиб",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "右",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      188
+    ],
+    "senses": [
+      {
+        "pinyin": "yòu",
+        "pos": "n.",
+        "uz": "o‘ng",
+        "ru": "право; правый",
+        "tj": "рост",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "右边",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      189
+    ],
+    "senses": [
+      {
+        "pinyin": "yòubian",
+        "pos": "n.",
+        "uz": "o‘ng tomon",
+        "ru": "правая сторона",
+        "tj": "тарафи рост",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "鱼",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      6
+    ],
+    "source_index_rows": [
+      190
+    ],
+    "senses": [
+      {
+        "pinyin": "yú",
+        "pos": "n.",
+        "uz": "baliq",
+        "ru": "рыба",
+        "tj": "моҳӣ",
+        "lesson_orders": [
+          6
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "远",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      2
+    ],
+    "source_index_rows": [
+      191
+    ],
+    "senses": [
+      {
+        "pinyin": "yuǎn",
+        "pos": "adj.",
+        "uz": "uzoq",
+        "ru": "далёкий",
+        "tj": "дур",
+        "lesson_orders": [
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "运动",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      192
+    ],
+    "senses": [
+      {
+        "pinyin": "yùndòng",
+        "pos": "n./v.",
+        "uz": "sport; mashq qilmoq",
+        "ru": "спорт; заниматься",
+        "tj": "варзиш; машқ кардан",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "站",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12,
+      14
+    ],
+    "source_index_rows": [
+      193
+    ],
+    "senses": [
+      {
+        "pinyin": "zhàn",
+        "pos": "n.",
+        "uz": "bekat; stansiya",
+        "ru": "остановка; станция",
+        "tj": "истгоҳ",
+        "lesson_orders": [
+          12
+        ]
+      },
+      {
+        "pinyin": "zhàn",
+        "pos": "v.",
+        "uz": "turmoq",
+        "ru": "стоять",
+        "tj": "истодан",
+        "lesson_orders": [
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "丈夫",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      194
+    ],
+    "senses": [
+      {
+        "pinyin": "zhàngfu",
+        "pos": "n.",
+        "uz": "er; turmush o‘rtoq",
+        "ru": "муж",
+        "tj": "шавҳар",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "这么",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      195
+    ],
+    "senses": [
+      {
+        "pinyin": "zhème",
+        "pos": "pron.",
+        "uz": "shunchalik; bunaqa",
+        "ru": "так; настолько",
+        "tj": "ин қадар; ҳамин тавр",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "这样",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      196
+    ],
+    "senses": [
+      {
+        "pinyin": "zhèyàng",
+        "pos": "pron.",
+        "uz": "bunday; shunday",
+        "ru": "такой; так",
+        "tj": "чунин; ҳамин тавр",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "着",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      197
+    ],
+    "senses": [
+      {
+        "pinyin": "zhe",
+        "pos": "part.",
+        "uz": "davomiy holat/harakat yuklamasi",
+        "ru": "аспектная частица продолженности",
+        "tj": "ҳиссачаи давомнокии ҳолат/амал",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "正",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      12
+    ],
+    "source_index_rows": [
+      198
+    ],
+    "senses": [
+      {
+        "pinyin": "zhèng",
+        "pos": "adv.",
+        "uz": "aynan hozir; davom etayotgan",
+        "ru": "как раз; прямо сейчас",
+        "tj": "айни ҳозир; маҳз",
+        "lesson_orders": [
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "周",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      199
+    ],
+    "senses": [
+      {
+        "pinyin": "zhōu",
+        "pos": "n.",
+        "uz": "hafta",
+        "ru": "неделя",
+        "tj": "ҳафта",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "准备",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      200
+    ],
+    "senses": [
+      {
+        "pinyin": "zhǔnbèi",
+        "pos": "v.",
+        "uz": "tayyorlamoq",
+        "ru": "готовить; подготавливать",
+        "tj": "тайёр кардан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "自己",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      3
+    ],
+    "source_index_rows": [
+      201
+    ],
+    "senses": [
+      {
+        "pinyin": "zìjǐ",
+        "pos": "pron.",
+        "uz": "o‘zi; o‘zini",
+        "ru": "сам; себя",
+        "tj": "худ; худро",
+        "lesson_orders": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "走",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      5
+    ],
+    "source_index_rows": [
+      202
+    ],
+    "senses": [
+      {
+        "pinyin": "zǒu",
+        "pos": "v.",
+        "uz": "yurmoq; bormoq",
+        "ru": "идти пешком",
+        "tj": "пиёда рафтан",
+        "lesson_orders": [
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "走路",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      9
+    ],
+    "source_index_rows": [
+      203
+    ],
+    "senses": [
+      {
+        "pinyin": "zǒulù",
+        "pos": "v.",
+        "uz": "piyoda yurmoq",
+        "ru": "ходить пешком",
+        "tj": "пиёда рафтан",
+        "lesson_orders": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "足球",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      7
+    ],
+    "source_index_rows": [
+      204
+    ],
+    "senses": [
+      {
+        "pinyin": "zúqiú",
+        "pos": "n.",
+        "uz": "futbol",
+        "ru": "футбол",
+        "tj": "футбол",
+        "lesson_orders": [
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "最",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      11
+    ],
+    "source_index_rows": [
+      205
+    ],
+    "senses": [
+      {
+        "pinyin": "zuì",
+        "pos": "adv.",
+        "uz": "eng",
+        "ru": "самый; наиболее",
+        "tj": "аз ҳама; бештар",
+        "lesson_orders": [
+          11
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "左",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      206
+    ],
+    "senses": [
+      {
+        "pinyin": "zuǒ",
+        "pos": "n.",
+        "uz": "chap",
+        "ru": "лево; левый",
+        "tj": "чап",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "zh": "左边",
+    "level": "N2",
+    "beyond_syllabus": false,
+    "lesson_orders": [
+      8
+    ],
+    "source_index_rows": [
+      207
+    ],
+    "senses": [
+      {
+        "pinyin": "zuǒbian",
+        "pos": "n.",
+        "uz": "chap tomon",
+        "ru": "левая сторона",
+        "tj": "тарафи чап",
+        "lesson_orders": [
+          8
+        ]
+      }
+    ]
+  }
+]

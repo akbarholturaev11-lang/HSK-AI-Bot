@@ -1,0 +1,1288 @@
+[
+  {
+    "no": 1,
+    "title_zh": "语气助词“吧”（2）",
+    "title_uz": "Modal yuklama “吧” (2)",
+    "title_ru": "Модальная частица “吧” (2)",
+    "title_tj": "Ҳиссачаи модалии “吧” (2)",
+    "rule_zh": "“吧”位于疑问句句末，表示说话人的推测、估计。",
+    "rule_uz": "“吧” so‘roq gap oxirida kelib, gapiruvchining taxmini yoki gumonini bildiradi.",
+    "rule_ru": "“吧” в конце вопросительного предложения выражает предположение или оценку говорящего.",
+    "rule_tj": "“吧” дар охири ҷумлаи саволӣ омада, тахмин ё гумони гӯяндаро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "你们就是她的学生吧？",
+        "pinyin": "Nǐmen jiù shì tā de xuésheng ba?",
+        "uz": "Sizlar aynan uning talabalarisiz, shundaymi?",
+        "ru": "Вы как раз её студенты, верно?",
+        "tj": "Шумо ҳамон донишҷӯёни ӯ ҳастед, дуруст?"
+      },
+      {
+        "zh": "她唱歌很好听吧？",
+        "pinyin": "Tā chànggē hěn hǎotīng ba?",
+        "uz": "U juda yaxshi kuylaydi, shundaymi?",
+        "ru": "Она хорошо поёт, правда?",
+        "tj": "Ӯ хеле хуб месарояд, дуруст?"
+      },
+      {
+        "zh": "陈天中是泰国人吧？",
+        "pinyin": "Chén Tiānzhōng shì Tàiguó rén ba?",
+        "uz": "Chen Tianzhong tailandlik, shundaymi?",
+        "ru": "Чэнь Тяньчжун из Таиланда, верно?",
+        "tj": "Чэн Тянҷун таиландӣ аст, дуруст?"
+      }
+    ],
+    "lesson_order": 1,
+    "lesson_code": "NHSK2-L01"
+  },
+  {
+    "no": 2,
+    "title_zh": "“是……的”句",
+    "title_uz": "“是……的” gapi",
+    "title_ru": "Предложение “是……的”",
+    "title_tj": "Ҷумлаи “是……的”",
+    "rule_zh": "“是……的”用来强调已经发生事件的时间、地点、方式、实施者或目的等。肯定句和疑问句中的“是”有时可以省略，否定句中的“是”不能省略。",
+    "rule_uz": "“是……的” sodir bo‘lgan voqeaning vaqt, joy, usul, bajaruvchi yoki maqsadini ta’kidlaydi. Tasdiq va savolda “是” ba’zan tushishi mumkin, inkorda esa tushmaydi.",
+    "rule_ru": "“是……的” подчёркивает время, место, способ, исполнителя или цель уже произошедшего события. В утверждении и вопросе “是” иногда опускается, в отрицании — нет.",
+    "rule_tj": "“是……的” вақт, ҷой, тарз, иҷрокунанда ё мақсади воқеаи рӯйдодаро таъкид мекунад. Дар тасдиқ ва савол “是” баъзан ҳазф мешавад, дар инкор не.",
+    "examples": [
+      {
+        "zh": "我们是来旅游的。",
+        "pinyin": "Wǒmen shì lái lǚyóu de.",
+        "uz": "Biz sayohat qilish uchun keldik.",
+        "ru": "Мы приехали путешествовать.",
+        "tj": "Мо барои саёҳат омадем."
+      },
+      {
+        "zh": "苹果在哪儿买的？",
+        "pinyin": "Píngguǒ zài nǎr mǎi de?",
+        "uz": "Olmani qayerdan sotib olding?",
+        "ru": "Где купили яблоки?",
+        "tj": "Себро аз куҷо харидед?"
+      },
+      {
+        "zh": "我们不是坐出租车去的。",
+        "pinyin": "Wǒmen bú shì zuò chūzūchē qù de.",
+        "uz": "Biz taksida bormadik.",
+        "ru": "Мы поехали не на такси.",
+        "tj": "Мо бо таксӣ нарафтем."
+      }
+    ],
+    "lesson_order": 1,
+    "lesson_code": "NHSK2-L01"
+  },
+  {
+    "no": 3,
+    "title_zh": "兼语句",
+    "title_uz": "Pivotal gap",
+    "title_ru": "Pivotal-предложение",
+    "title_tj": "Ҷумлаи pivotal",
+    "rule_zh": "兼语句的谓语由两个动词性短语构成，前一动词的宾语又是后一动词的主语。用“请、让、叫”等动词时，可表示请某人、让某人做某事。",
+    "rule_uz": "Pivotal gapda ikki fe’lli birikma bo‘ladi: birinchi fe’lning obyekti keyingi fe’lning egasi vazifasini bajaradi. 请、让、叫 bilan birovdan bir ishni qilish so‘raladi yoki qildiriladi.",
+    "rule_ru": "В pivotal-предложении объект первого глагола одновременно является субъектом второго. С 请、让、叫 выражается просьба или побуждение кого-то сделать что-то.",
+    "rule_tj": "Дар ҷумлаи pivotal объекти феъли аввал ҳамзамон мубтадои феъли дуюм мешавад. Бо 请、让、叫 аз касе иҷрои амал дархост ё талаб мешавад.",
+    "examples": [
+      {
+        "zh": "我想请你帮个忙。",
+        "pinyin": "Wǒ xiǎng qǐng nǐ bāng ge máng.",
+        "uz": "Sendan bir yordam so‘ramoqchiman.",
+        "ru": "Я хочу попросить тебя помочь.",
+        "tj": "Мехоҳам аз ту як кӯмак пурсам."
+      },
+      {
+        "zh": "王老师让我们说中文。",
+        "pinyin": "Wáng lǎoshī ràng wǒmen shuō Zhōngwén.",
+        "uz": "Ustoz Wang bizga xitoycha gapirishni aytdi.",
+        "ru": "Преподаватель Ван велела нам говорить по-китайски.",
+        "tj": "Устод Ван аз мо хост бо чинӣ гап занем."
+      },
+      {
+        "zh": "妈妈叫孩子们回家。",
+        "pinyin": "Māma jiào háizimen huí jiā.",
+        "uz": "Onasi bolalarni uyga qaytishga chaqirdi.",
+        "ru": "Мама велела детям вернуться домой.",
+        "tj": "Модар ба кӯдакон гуфт ба хона баргарданд."
+      }
+    ],
+    "lesson_order": 1,
+    "lesson_code": "NHSK2-L01"
+  },
+  {
+    "no": 1,
+    "title_zh": "固定格式“还是……吧”",
+    "title_uz": "“还是……吧” qolipi",
+    "title_ru": "Конструкция “还是……吧”",
+    "title_tj": "Қолаби “还是……吧”",
+    "rule_zh": "“还是……吧”表示在几个可能的选择中，建议采用说话人认为更合适的一种。",
+    "rule_uz": "“还是……吧” bir necha variantdan gapiruvchi ma’qul deb hisoblagan variantni tavsiya qiladi.",
+    "rule_ru": "“还是……吧” советует выбрать из нескольких вариантов тот, который говорящий считает более подходящим.",
+    "rule_tj": "“还是……吧” аз чанд вариант онеро тавсия мекунад, ки гӯянда муносибтар мешуморад.",
+    "examples": [
+      {
+        "zh": "我们还是打车去吧。",
+        "pinyin": "Wǒmen háishi dǎchē qù ba.",
+        "uz": "Yaxshisi taksida boraylik.",
+        "ru": "Давай лучше поедем на такси.",
+        "tj": "Беҳтараш бо таксӣ равем."
+      },
+      {
+        "zh": "那件衣服很好看，还是买那件吧。",
+        "pinyin": "Nà jiàn yīfu hěn hǎokàn, háishi mǎi nà jiàn ba.",
+        "uz": "U kiyim chiroyli, yaxshisi o‘shanisini olaylik.",
+        "ru": "Та одежда красивая, лучше купить её.",
+        "tj": "Он либос зебост, беҳтараш ҳамонро бихарем."
+      },
+      {
+        "zh": "你第一次去北京，还是找个人接你吧。",
+        "pinyin": "Nǐ dì yī cì qù Běijīng, háishi zhǎo ge rén jiē nǐ ba.",
+        "uz": "Pekinga birinchi marta boryapsan, yaxshisi seni kutib oladigan odam top.",
+        "ru": "Ты впервые едешь в Пекин, лучше найди кого-нибудь, кто тебя встретит.",
+        "tj": "Бори аввал ба Пекин меравӣ, беҳтараш касеро ёб, ки пешвозат гирад."
+      }
+    ],
+    "lesson_order": 2,
+    "lesson_code": "NHSK2-L02"
+  },
+  {
+    "no": 2,
+    "title_zh": "用“多”表达概数",
+    "title_uz": "“多” bilan taxminiy son",
+    "title_ru": "Приблизительные числа с “多”",
+    "title_tj": "Шумораи тахминӣ бо “多”",
+    "rule_zh": "在数词或数量短语后加“多”，表示比这个数稍多。数词是十的整数倍时，“多”一般紧跟数词；不是十的整数倍时，“多”一般放在量词后。",
+    "rule_uz": "Son yoki miqdor birikmasidan keyin “多” qo‘shilib, shu sondan biroz ko‘proq miqdorni bildiradi. O‘nlik sonlarda “多” odatda sondan keyin, boshqa holatlarda o‘lchov so‘zidan keyin keladi.",
+    "rule_ru": "“多” после числительного или количественной группы означает немного больше указанного числа. После круглых десятков “多” обычно следует сразу за числом, в других случаях — после счётного слова.",
+    "rule_tj": "“多” пас аз шумора ё таркиби миқдорӣ миқдори каме зиёда аз он ададро нишон медиҳад. Бо даҳгонаҳои пурра “多” пас аз адад, дар ҳолатҳои дигар пас аз воҳиди ҳисоб меояд.",
+    "examples": [
+      {
+        "zh": "北京大学有四万多名学生呢！",
+        "pinyin": "Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!",
+        "uz": "Pekin universitetida qirq mingdan ortiq talaba bor!",
+        "ru": "В Пекинском университете больше сорока тысяч студентов!",
+        "tj": "Дар Донишгоҳи Пекин зиёда аз чил ҳазор донишҷӯ ҳаст!"
+      },
+      {
+        "zh": "教室里有二十多个学生。",
+        "pinyin": "Jiàoshì lǐ yǒu èrshí duō ge xuésheng.",
+        "uz": "Sinfda yigirmadan ortiq talaba bor.",
+        "ru": "В аудитории больше двадцати студентов.",
+        "tj": "Дар синф зиёда аз бист донишҷӯ ҳаст."
+      },
+      {
+        "zh": "这两个苹果五块多钱。",
+        "pinyin": "Zhè liǎng ge píngguǒ wǔ kuài duō qián.",
+        "uz": "Bu ikki olma besh yuandan sal ko‘proq turadi.",
+        "ru": "Эти два яблока стоят чуть больше пяти юаней.",
+        "tj": "Ин ду себ каме бештар аз панҷ юан меистад."
+      }
+    ],
+    "lesson_order": 2,
+    "lesson_code": "NHSK2-L02"
+  },
+  {
+    "no": 3,
+    "title_zh": "动词或动词性短语、主谓短语作定语",
+    "title_uz": "Fe’l/fe’lli va ega-kesimli birikmalarning aniqlovchi bo‘lishi",
+    "title_ru": "Глаголы, глагольные и субъектно-предикативные группы как определения",
+    "title_tj": "Феъл ва ибораҳои феълӣ/мубтадо-хабар ҳамчун муайянкунанда",
+    "rule_zh": "动词、动词性短语或主谓短语可以放在名词前作定语，说明名词的特征、状态或相关动作。",
+    "rule_uz": "Fe’l, fe’lli birikma yoki ega-kesim birikmasi ot oldidan kelib, uning belgisi, holati yoki unga bog‘liq harakatni ko‘rsatishi mumkin.",
+    "rule_ru": "Глагол, глагольная или субъектно-предикативная группа может стоять перед существительным как определение и описывать его признак, состояние или связанное действие.",
+    "rule_tj": "Феъл, ибораи феълӣ ё таркиби мубтадо-хабар пеш аз исм омада, хусусият, ҳолат ё амали вобастаи онро мефаҳмонад.",
+    "examples": [
+      {
+        "zh": "他们卖的电影票也很便宜。",
+        "pinyin": "Tāmen mài de diànyǐngpiào yě hěn piányi.",
+        "uz": "Ular sotadigan kino chiptalari ham arzon.",
+        "ru": "Билеты, которые они продают, тоже дешёвые.",
+        "tj": "Чиптаҳои киноие, ки онҳо мефурӯшанд, ҳам арзонанд."
+      },
+      {
+        "zh": "现在学中文的学生很多。",
+        "pinyin": "Xiànzài xué Zhōngwén de xuésheng hěn duō.",
+        "uz": "Hozir xitoy tilini o‘rganayotgan talabalar ko‘p.",
+        "ru": "Сейчас много студентов, изучающих китайский.",
+        "tj": "Ҳоло донишҷӯёне, ки чинӣ меомӯзанд, бисёранд."
+      },
+      {
+        "zh": "这是朋友给我的杯子。",
+        "pinyin": "Zhè shì péngyou gěi wǒ de bēizi.",
+        "uz": "Bu do‘stim menga bergan piyola.",
+        "ru": "Это чашка, которую мне подарил друг.",
+        "tj": "Ин пиёлаест, ки дӯстам ба ман додааст."
+      }
+    ],
+    "lesson_order": 2,
+    "lesson_code": "NHSK2-L02"
+  },
+  {
+    "no": 1,
+    "title_zh": "结果补语",
+    "title_uz": "Natija to‘ldiruvchisi",
+    "title_ru": "Результативное дополнение",
+    "title_tj": "Пуркунандаи натиҷа",
+    "rule_zh": "一些动词或者形容词用在动词后面，表示动作的结果。否定形式是在动词前加“没（有）”，同时去掉“了”。疑问可用“了吗”、“（了）没有”或“动词+没+动词+结果补语”。",
+    "rule_uz": "Ba’zi fe’l yoki sifatlar fe’ldan keyin kelib harakat natijasini bildiradi. Inkor uchun fe’l oldiga 没（有） qo‘yiladi va 了 olib tashlanadi. Savol 了吗、（了）没有 yoki V+没+V+natija shaklida tuziladi.",
+    "rule_ru": "Некоторые глаголы или прилагательные ставятся после глагола и выражают результат действия. В отрицании перед глаголом ставится 没（有）, а 了 убирается. Вопрос строится с 了吗, （了）没有 или V+没+V+результативное дополнение.",
+    "rule_tj": "Баъзе феъл ё сифатҳо баъди феъл омада, натиҷаи амалро нишон медиҳанд. Дар инкор пеш аз феъл 没（有） меояд ва 了 ҳазф мешавад. Савол бо 了吗、（了）没有 ё V+没+V+пуркунандаи натиҷа сохта мешавад.",
+    "examples": [
+      {
+        "zh": "菜都做好了。",
+        "pinyin": "Cài dōu zuòhǎo le.",
+        "uz": "Ovqatlar tayyor bo‘ldi.",
+        "ru": "Блюда уже приготовлены.",
+        "tj": "Хӯрокҳо тайёр шуданд."
+      },
+      {
+        "zh": "我吃完饭了。",
+        "pinyin": "Wǒ chīwán fàn le.",
+        "uz": "Men ovqatni yeb bo‘ldim.",
+        "ru": "Я закончил есть.",
+        "tj": "Ман хӯрокро хӯрда тамом кардам."
+      },
+      {
+        "zh": "小雪今天来晚了。",
+        "pinyin": "Xiǎoxuě jīntiān láiwǎn le.",
+        "uz": "Xiaoxue bugun kech keldi.",
+        "ru": "Сяосюэ сегодня пришла поздно.",
+        "tj": "Сяосюэ имрӯз дер омад."
+      },
+      {
+        "zh": "我没吃完饭。",
+        "pinyin": "Wǒ méi chīwán fàn.",
+        "uz": "Men ovqatni tugatmadim.",
+        "ru": "Я не закончил есть.",
+        "tj": "Ман хӯрокро тамом накардам."
+      },
+      {
+        "zh": "你吃完饭了吗？",
+        "pinyin": "Nǐ chīwán fàn le ma?",
+        "uz": "Ovqatni yeb bo‘ldingmi?",
+        "ru": "Ты закончил есть?",
+        "tj": "Хӯрокро хӯрда тамом кардӣ?"
+      }
+    ],
+    "lesson_order": 3,
+    "lesson_code": "NHSK2-L03"
+  },
+  {
+    "no": 2,
+    "title_zh": "动词重叠（1）",
+    "title_uz": "Fe’l takrorlanishi (1)",
+    "title_ru": "Редупликация глагола (1)",
+    "title_tj": "Такрори феъл (1)",
+    "rule_zh": "动作性比较强、能重复或持续的动词可以重叠使用，表示时间短、数量少、尝试等，语气比较轻松、随意，多用于口语。单音节动词常用“A（一）A”，双音节动词用“ABAB”，离合词用“AAB”。",
+    "rule_uz": "Takrorlana yoki davom eta oladigan harakat fe’llari qisqa harakat, oz miqdor yoki sinab ko‘rish ma’nosida takrorlanadi. Bir bo‘g‘inli fe’l A（一）A, ikki bo‘g‘inli fe’l ABAB, ajraluvchi so‘z AAB shaklida keladi.",
+    "rule_ru": "Динамические глаголы, которые можно повторять или продолжать, редуплицируются для краткого действия, небольшого количества или попытки. Односложные: A（一）A; двусложные: ABAB; разделяемые: AAB.",
+    "rule_tj": "Феълҳои амалие, ки такрор ё идома меёбанд, барои амали кӯтоҳ, миқдори кам ё кӯшиш такрор мешаванд. Феъли якҳиҷоӣ: A（一）A; дуҳиҷоӣ: ABAB; калимаи ҷудошаванда: AAB.",
+    "examples": [
+      {
+        "zh": "那你再想一想，你想好了，我来买票。",
+        "pinyin": "Nà nǐ zài xiǎng yì xiǎng, nǐ xiǎnghǎo le, wǒ lái mǎi piào.",
+        "uz": "Unda yana bir o‘ylab ko‘r, qaror qilsang chiptani men olaman.",
+        "ru": "Тогда ещё подумай; когда решишь, билеты куплю я.",
+        "tj": "Пас боз як бор фикр кун, вақте қарор кардӣ, чиптаро ман мехарам."
+      },
+      {
+        "zh": "我有点儿累，现在想休息休息。",
+        "pinyin": "Wǒ yǒudiǎnr lèi, xiànzài xiǎng xiūxi xiūxi.",
+        "uz": "Biroz charchadim, hozir sal dam olmoqchiman.",
+        "ru": "Я немного устал и хочу сейчас немного отдохнуть.",
+        "tj": "Каме хастаам, ҳоло мехоҳам каме истироҳат кунам."
+      },
+      {
+        "zh": "你能过来帮帮忙吗？",
+        "pinyin": "Nǐ néng guòlai bāngbang máng ma?",
+        "uz": "Kelib ozgina yordam bera olasanmi?",
+        "ru": "Можешь подойти и немного помочь?",
+        "tj": "Метавонӣ омада каме кӯмак кунӣ?"
+      }
+    ],
+    "lesson_order": 3,
+    "lesson_code": "NHSK2-L03"
+  },
+  {
+    "no": 3,
+    "title_zh": "动词重叠（2）",
+    "title_uz": "Fe’l takrorlanishi (2)",
+    "title_ru": "Редупликация глагола (2)",
+    "title_tj": "Такрори феъл (2)",
+    "rule_zh": "表达已经发生的情况时，单音节动词的重叠形式是“A了A”；双音节动词一般不能用重叠形式，只能用“AB了一下”；离合词的重叠形式是“A了AB”。",
+    "rule_uz": "Sodir bo‘lgan harakatni ifodalaganda bir bo‘g‘inli fe’l A了A shaklida keladi. Ikki bo‘g‘inli fe’l odatda takrorlanmaydi, AB了一下 ishlatiladi. Ajraluvchi so‘z A了AB shaklida keladi.",
+    "rule_ru": "Для уже произошедшего действия односложный глагол имеет форму A了A. Двусложный обычно не редуплицируется и употребляется как AB了一下. Разделяемое слово имеет форму A了AB.",
+    "rule_tj": "Барои амали аллакай рухдода феъли якҳиҷоӣ шакли A了A мегирад. Феъли дуҳиҷоӣ одатан такрор намешавад ва AB了一下 истифода мешавад. Калимаи ҷудошаванда A了AB мешавад.",
+    "examples": [
+      {
+        "zh": "我看了看网上的介绍。",
+        "pinyin": "Wǒ kànle kàn wǎngshang de jièshào.",
+        "uz": "Internetdagi ma’lumotlarni bir ko‘rib chiqdim.",
+        "ru": "Я немного посмотрел информацию в интернете.",
+        "tj": "Маълумоти интернетро як назар кардам."
+      },
+      {
+        "zh": "我休息了一下，现在觉得不累了。",
+        "pinyin": "Wǒ xiūxile yíxià, xiànzài juéde bú lèi le.",
+        "uz": "Biroz dam oldim, hozir charchoq yo‘q.",
+        "ru": "Я немного отдохнул и теперь не чувствую усталости.",
+        "tj": "Каме истироҳат кардам, ҳоло дигар хаста нестам."
+      },
+      {
+        "zh": "他昨天来帮了帮忙。",
+        "pinyin": "Tā zuótiān lái bāngle bāngmáng.",
+        "uz": "U kecha kelib biroz yordam berdi.",
+        "ru": "Он вчера пришёл и немного помог.",
+        "tj": "Ӯ дирӯз омада каме кӯмак кард."
+      }
+    ],
+    "lesson_order": 3,
+    "lesson_code": "NHSK2-L03"
+  },
+  {
+    "no": 1,
+    "title_zh": "动态助词“过”",
+    "title_uz": "Aspekt yuklamasi “过”",
+    "title_ru": "Аспектная частица “过”",
+    "title_tj": "Ҳиссачаи аспектии “过”",
+    "rule_zh": "动态助词“过”用在动词后面，表示动作曾在过去发生，但未持续到现在。基本结构：主语+动词+过+宾语。否定形式是在动词前面加“没（有）”。",
+    "rule_uz": "“过” fe’ldan keyin kelib, harakat o‘tmishda sodir bo‘lganini, lekin hozirgacha davom etmaganini bildiradi. Tuzilishi: ega+fe’l+过+obyekt. Inkor fe’l oldidan 没（有） bilan qilinadi.",
+    "rule_ru": "“过” ставится после глагола и показывает, что действие происходило в прошлом, но не продолжается сейчас. Схема: подлежащее+глагол+过+объект; отрицание — 没（有） перед глаголом.",
+    "rule_tj": "“过” баъди феъл омада, амале дар гузашта рух дода, то ҳозир идома наёфтанашро нишон медиҳад. Сохтор: мубтадо+феъл+过+объект; инкор бо 没（有） пеш аз феъл.",
+    "examples": [
+      {
+        "zh": "她去过中国。"
+      },
+      {
+        "zh": "我吃过饺子，很好吃。"
+      },
+      {
+        "zh": "她没去过中国。"
+      },
+      {
+        "zh": "我们来过这家商场吗？"
+      },
+      {
+        "zh": "陈天中吃过饺子没有？"
+      },
+      {
+        "zh": "你看没看过那个电影？"
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK2-L04"
+  },
+  {
+    "no": 2,
+    "title_zh": "因果复句“因为……，所以……”",
+    "title_uz": "Sabab-natija gapi “因为……，所以……”",
+    "title_ru": "Причинно-следственное предложение “因为……，所以……”",
+    "title_tj": "Ҷумлаи сабабу натиҷа “因为……，所以……”",
+    "rule_zh": "“因为……所以……”构成因果关系复句。“因为”和“所以”可以成对使用，也可以只用其中的一个。",
+    "rule_uz": "“因为……所以……” sabab-natija munosabatini bildiradi. 因为 va 所以 juft ishlatilishi ham, bittasi alohida ishlatilishi ham mumkin.",
+    "rule_ru": "“因为……所以……” образует причинно-следственное сложное предложение. 因为 и 所以 могут употребляться вместе или по отдельности.",
+    "rule_tj": "“因为……所以……” ҷумлаи сабабу натиҷаро месозад. 因为 ва 所以 метавонанд якҷо ё яке аз онҳо алоҳида истифода шаванд.",
+    "examples": [
+      {
+        "zh": "就是因为没穿过，所以要试试啊！"
+      },
+      {
+        "zh": "因为我生病了，今天没去上班。"
+      },
+      {
+        "zh": "我没去过他家，所以让他来车站接我。"
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK2-L04"
+  },
+  {
+    "no": 3,
+    "title_zh": "“的”字短语",
+    "title_uz": "“的” iborasi",
+    "title_ru": "Фраза с “的”",
+    "title_tj": "Ибораи “的”",
+    "rule_zh": "结构助词“的”用在名词、代词、动词、形容词等后面，组成“的”字短语，相当于名词性短语。",
+    "rule_uz": "“的” ot, olmosh, fe’l yoki sifatdan keyin kelib, ot vazifasidagi “的” iborasini hosil qiladi.",
+    "rule_ru": "Структурная частица “的” после существительного, местоимения, глагола, прилагательного и т. п. образует именную фразу.",
+    "rule_tj": "Ҳиссачаи “的” баъди исм, ҷонишин, феъл, сифат ва ғайра омада, ибораи исмӣ месозад.",
+    "examples": [
+      {
+        "zh": "红色的、绿色的、黑色的，你想买哪个？"
+      },
+      {
+        "zh": "这个面包是爸爸买的，妈妈买的在那儿。"
+      },
+      {
+        "zh": "这件衣服太贵了，还是买那件便宜的吧。"
+      }
+    ],
+    "lesson_order": 4,
+    "lesson_code": "NHSK2-L04"
+  },
+  {
+    "no": 1,
+    "title_zh": "简单趋向补语（1）",
+    "title_uz": "Oddiy yo‘nalish to‘ldiruvchisi (1)",
+    "title_ru": "Простое направительное дополнение (1)",
+    "title_tj": "Пуркунандаи самти содда (1)",
+    "rule_zh": "简单趋向补语的基本结构是“动词+来/去”。“来”表示动作朝着说话人的方向进行，“去”表示动作背离说话人的方向进行。常用动词有“上、下、进、出、回、过”。",
+    "rule_uz": "Asosiy tuzilma “fe’l+来/去”. 来 harakat gapiruvchi tomonga, 去 esa gapiruvchidan uzoqlashayotganini bildiradi. Ko‘p ishlatiladigan fe’llar: 上、下、进、出、回、过.",
+    "rule_ru": "Базовая схема: «глагол+来/去». 来 показывает движение к говорящему, 去 — от говорящего. Часто используются 上、下、进、出、回、过.",
+    "rule_tj": "Сохтори асосӣ «феъл+来/去» аст. 来 ҳаракат ба сӯи гӯянда, 去 аз гӯянда дур шуданро нишон медиҳад. Феълҳои маъмул: 上、下、进、出、回、过.",
+    "examples": [
+      {
+        "zh": "我不上去了，就在下面等你。"
+      },
+      {
+        "zh": "家月到下边了，你下去接她吧。"
+      },
+      {
+        "zh": "我在外边呢，你出来吧。"
+      },
+      {
+        "zh": "她拿来一本中文书。"
+      },
+      {
+        "zh": "你别过来拿了，我给你送去。"
+      },
+      {
+        "zh": "今天早上5点她就起来了。"
+      }
+    ],
+    "lesson_order": 5,
+    "lesson_code": "NHSK2-L05"
+  },
+  {
+    "no": 2,
+    "title_zh": "简单趋向补语（2）",
+    "title_uz": "Oddiy yo‘nalish to‘ldiruvchisi (2)",
+    "title_ru": "Простое направительное дополнение (2)",
+    "title_tj": "Пуркунандаи самти содда (2)",
+    "rule_zh": "动词带简单趋向补语又带宾语时，如果宾语是地点名词，放在“来/去”前面；宾语是事物名词，放在“来/去”前后都可以。动词“开、买、拿、请、送、要、找、走”等也可以加上“上、下、进、出、回、过”等简单趋向补语。",
+    "rule_uz": "Fe’l yo‘nalish to‘ldiruvchisi va obyekt bilan kelganda, joy oti bo‘lsa obyekt 来/去 dan oldin turadi; narsa oti bo‘lsa oldin ham, keyin ham kelishi mumkin. 开、买、拿、请、送、要、找、走 kabi fe’llar ham yo‘nalish elementlari bilan birikadi.",
+    "rule_ru": "Если при глаголе есть простое направительное дополнение и объект, топоним/место ставится перед 来/去; предметный объект может стоять и до, и после 来/去. Глаголы 开、买、拿、请、送、要、找、走 также сочетаются с 上、下、进、出、回、过.",
+    "rule_tj": "Агар феъл ҳам пуркунандаи самт ва ҳам объект дошта бошад, исми ҷой пеш аз 来/去 меояд; исми ашё метавонад пеш ё баъд аз 来/去 ояд. Феълҳои 开、买、拿、请、送、要、找、走 низ бо 上、下、进、出、回、过 меоянд.",
+    "examples": [
+      {
+        "zh": "你们太客气了，还拿这么多礼物来！"
+      },
+      {
+        "zh": "家月给我送来了一本书。"
+      },
+      {
+        "zh": "上课了，你们快进教室来吧。"
+      },
+      {
+        "zh": "爸爸今天买回了很多水果。"
+      },
+      {
+        "zh": "妈妈拿出了二十块钱，让小雪自己去买点儿吃的。"
+      }
+    ],
+    "lesson_order": 5,
+    "lesson_code": "NHSK2-L05"
+  },
+  {
+    "no": 3,
+    "title_zh": "固定格式“都……了”",
+    "title_uz": "“都……了” qolipi",
+    "title_ru": "Конструкция “都……了”",
+    "title_tj": "Қолаби “都……了”",
+    "rule_zh": "固定格式“都……了”表示已经、达到，一般含有强调或者不满的语气。",
+    "rule_uz": "“都……了” ‘allaqachon’ yoki ma’lum bosqichga yetganlikni bildiradi va odatda ta’kid yoki norozilik ohangiga ega.",
+    "rule_ru": "“都……了” выражает значение «уже, дошло до» и обычно несёт оттенок усиления или недовольства.",
+    "rule_tj": "“都……了” маънои «аллакай, то ин дараҷа расидааст»-ро медиҳад ва одатан таъкид ё норозигиро мефаҳмонад.",
+    "examples": [
+      {
+        "zh": "都12点了，我们吃饭吧。"
+      },
+      {
+        "zh": "都8点半了，你还不起床吗？"
+      },
+      {
+        "zh": "我都去过北京了，不想再去了。"
+      }
+    ],
+    "lesson_order": 5,
+    "lesson_code": "NHSK2-L05"
+  },
+  {
+    "no": 1,
+    "title_zh": "形容词重叠",
+    "title_uz": "Sifat takrorlanishi",
+    "title_ru": "Редупликация прилагательных",
+    "title_tj": "Такрори сифат",
+    "rule_zh": "单音节形容词“A”的重叠形式为“AA”，双音节形容词“AB”的重叠形式一般为“AABB”。形容词重叠表示程度深或者表达喜爱的情感。",
+    "rule_uz": "Bir bo‘g‘inli A sifat AA, ikki bo‘g‘inli AB sifat odatda AABB shaklida takrorlanadi. Takrorlanish darajani kuchaytiradi yoki yoqimlilik hissini bildiradi.",
+    "rule_ru": "Односложное A редуплицируется как AA, двусложное AB обычно как AABB. Редупликация усиливает степень признака или выражает симпатию.",
+    "rule_tj": "Сифати якҳиҷоии A ба шакли AA, дуҳиҷоии AB одатан ба AABB такрор мешавад. Такрор дараҷаро қавӣ ё ҳисси писандро ифода мекунад.",
+    "examples": [
+      {
+        "zh": "我再给她买个大大的生日蛋糕。"
+      },
+      {
+        "zh": "这只猫小小的，真让人喜欢。"
+      },
+      {
+        "zh": "一雪的女儿每天都漂漂亮亮的。"
+      }
+    ],
+    "lesson_order": 6,
+    "lesson_code": "NHSK2-L06"
+  },
+  {
+    "no": 2,
+    "title_zh": "固定短语“什么的”",
+    "title_uz": "“什么的” qolipi",
+    "title_ru": "Устойчивая фраза “什么的”",
+    "title_tj": "Ибораи собити “什么的”",
+    "rule_zh": "固定短语“什么的”表示“……之类”的意思。基本结构：……什么的。",
+    "rule_uz": "“什么的” ‘... va shunga o‘xshashlar / va hokazo’ ma’nosini beradi. Asosiy shakl: ...什么的.",
+    "rule_ru": "“什么的” означает «… и тому подобное / и так далее». Базовая схема: …什么的.",
+    "rule_tj": "“什么的” маънои «… ва монанди ин / ва ғайра»-ро медиҳад. Сохтор: …什么的.",
+    "examples": [
+      {
+        "zh": "画我们的家！有爸爸、妈妈、弟弟，还有黑色的狗、白色的猫什么的。"
+      },
+      {
+        "zh": "桌子上有电脑、杯子、书和画笔什么的。"
+      },
+      {
+        "zh": "她拿来了一些水、面包和苹果什么的。"
+      }
+    ],
+    "lesson_order": 6,
+    "lesson_code": "NHSK2-L06"
+  },
+  {
+    "no": 3,
+    "title_zh": "结构助词“地”",
+    "title_uz": "Struktur yuklama “地”",
+    "title_ru": "Структурная частица “地”",
+    "title_tj": "Ҳиссачаи сохтории “地”",
+    "rule_zh": "结构助词“地”一般用在形容词和动词中间，表示动作行为的状态或方式。",
+    "rule_uz": "“地” odatda sifat bilan fe’l orasida kelib, harakatning holati yoki usulini bildiradi.",
+    "rule_ru": "“地” обычно ставится между прилагательным и глаголом и обозначает способ или состояние выполнения действия.",
+    "rule_tj": "“地” одатан байни сифат ва феъл омада, ҳолат ё тарзи иҷрои амалро нишон медиҳад.",
+    "examples": [
+      {
+        "zh": "过生日就要吃好吃的，还要高高兴兴地玩。"
+      },
+      {
+        "zh": "老师早早地到了教室。"
+      },
+      {
+        "zh": "爸爸很快地吃完早饭，就去上班了。"
+      }
+    ],
+    "lesson_order": 6,
+    "lesson_code": "NHSK2-L06"
+  },
+  {
+    "no": 1,
+    "title_zh": "紧缩复句“一……就……”",
+    "title_uz": "“一……就……” ixcham qo‘shma gapi",
+    "title_ru": "Сжатое сложное предложение “一……就……”",
+    "title_tj": "Ҷумлаи фишурдаи “一……就……”",
+    "rule_zh": "紧缩复句“一……就……”表示后一动作紧跟着前一动作发生，也表示前一动作是条件和原因，后一动作是结果。主语相同时，主语在“一”或“就”前面；主语不同时，两个主语分别在“一”和“就”前面。",
+    "rule_uz": "“一……就……” ikkinchi harakat birinchidan darhol keyin sodir bo‘lishini yoki birinchi harakat shart/sabab, ikkinchisi natija ekanini bildiradi. Ega bir xil bo‘lsa ega 一 yoki 就 oldida; egalar turli bo‘lsa har biri 一 va 就 oldida keladi.",
+    "rule_ru": "“一……就……” показывает, что второе действие следует сразу за первым, либо первое является условием/причиной, а второе — результатом. При одном субъекте он ставится перед 一 или 就; при разных — каждый перед своей частью.",
+    "rule_tj": "“一……就……” нишон медиҳад, ки амали дуюм фавран пас аз якум рух медиҳад ё якум шарт/сабаб, дуюм натиҷа аст. Агар мубтадо як бошад, пеш аз 一 ё 就; агар гуногун бошад, ҳар мубтадо пеш аз қисми худ меояд.",
+    "examples": [
+      {
+        "zh": "你怎么一下课就往外跑？"
+      },
+      {
+        "zh": "我一到家，妈妈就打来电话了。"
+      },
+      {
+        "zh": "一到星期六，陈天中就跟同学去打篮球。"
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK2-L07"
+  },
+  {
+    "no": 2,
+    "title_zh": "状态补语（1）",
+    "title_uz": "Holat to‘ldiruvchisi (1)",
+    "title_ru": "Дополнение состояния (1)",
+    "title_tj": "Пуркунандаи ҳолат (1)",
+    "rule_zh": "状态补语是在动词后边补充说明动作进行的状态的。基本结构：动词+得+形容词性短语。否定形式是在形容词的前面加“不”。疑问形式有三种：句尾加“吗”；动词+得+形容词+不+形容词；动词+得+怎么样。",
+    "rule_uz": "Holat to‘ldiruvchisi fe’ldan keyin harakat qanday bajarilganini ko‘rsatadi. Asosiy shakl: fe’l+得+sifatli birikma. Inkor sifat oldidan 不 bilan. Savol: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+    "rule_ru": "Дополнение состояния после глагола уточняет, как выполняется действие. Схема: глагол+得+прилагательная группа. Отрицание — 不 перед прилагательным. Вопрос: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+    "rule_tj": "Пуркунандаи ҳолат пас аз феъл тарзи иҷрои амалро мефаҳмонад. Сохтор: феъл+得+ибораи сифатӣ. Инкор бо 不 пеш аз сифат. Савол: 吗; V+得+Adj+不+Adj; V+得+怎么样.",
+    "examples": [
+      {
+        "zh": "我踢得还可以。"
+      },
+      {
+        "zh": "他们玩得很高兴。"
+      },
+      {
+        "zh": "白家月跑得不快。"
+      },
+      {
+        "zh": "你跑得快吗？"
+      },
+      {
+        "zh": "他来得早不早？"
+      },
+      {
+        "zh": "他们玩得怎么样？"
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK2-L07"
+  },
+  {
+    "no": 3,
+    "title_zh": "状态补语（2）",
+    "title_uz": "Holat to‘ldiruvchisi (2)",
+    "title_ru": "Дополнение состояния (2)",
+    "title_tj": "Пуркунандаи ҳолат (2)",
+    "rule_zh": "带状态补语的句子中，如果动词是离合词，需要重复动词性语素。如果动词有宾语，可以把宾语提前，或者重复动词。",
+    "rule_uz": "Holat to‘ldiruvchili gapda fe’l ajraluvchi so‘z bo‘lsa, fe’l morfemasi takrorlanadi. Fe’l obyekt olsa, obyektni oldinga chiqarish yoki fe’lni takrorlash mumkin.",
+    "rule_ru": "Если глагол разделяемый, его глагольный морф повторяется. Если у глагола есть объект, объект можно вынести перед глаголом либо повторить глагол.",
+    "rule_tj": "Агар феъл ҷудошаванда бошад, морфемаи феъл такрор мешавад. Агар объект дошта бошад, объектро пеш овардан ё феълро такрор кардан мумкин.",
+    "examples": [
+      {
+        "zh": "我游泳游得不快。"
+      },
+      {
+        "zh": "你篮球打得怎么样？"
+      },
+      {
+        "zh": "白家月写汉字写得很好看。"
+      }
+    ],
+    "lesson_order": 7,
+    "lesson_code": "NHSK2-L07"
+  },
+  {
+    "no": 1,
+    "title_zh": "比较句（1）",
+    "title_uz": "Taqqoslash gapi (1)",
+    "title_ru": "Сравнительное предложение (1)",
+    "title_tj": "Ҷумлаи муқоисавӣ (1)",
+    "rule_zh": "本课学习用介词“比”来比较性质和状态差别的比较句。基本结构：A比B+形容词或形容词性短语。",
+    "rule_uz": "“比” sifat yoki holatdagi farqni taqqoslaydi. Asosiy tuzilma: A 比 B + sifat/sifatli birikma.",
+    "rule_ru": "“比” используется для сравнения различий в признаке или состоянии. Схема: A 比 B + прилагательное/прилагательная группа.",
+    "rule_tj": "“比” фарқи хусусият ё ҳолатро муқоиса мекунад. Сохтор: A 比 B + сифат/ибораи сифатӣ.",
+    "examples": [
+      {
+        "zh": "我也觉得左边的比右边的好看。"
+      },
+      {
+        "zh": "今天比昨天冷。"
+      },
+      {
+        "zh": "他觉得踢足球比打篮球有意思。"
+      }
+    ],
+    "lesson_order": 8,
+    "lesson_code": "NHSK2-L08"
+  },
+  {
+    "no": 2,
+    "title_zh": "比较句（2）",
+    "title_uz": "Taqqoslash gapi (2)",
+    "title_ru": "Сравнительное предложение (2)",
+    "title_tj": "Ҷумлаи муқоисавӣ (2)",
+    "rule_zh": "在用“比”的比较句中，形容词前不能用“很”“非常”等程度副词，可以用“还”和“更”表示程度加深。",
+    "rule_uz": "“比” taqqoslash gapida sifat oldidan 很 yoki 非常 ishlatilmaydi; darajani kuchaytirish uchun 还 yoki 更 ishlatiladi.",
+    "rule_ru": "В предложениях с 比 перед прилагательным нельзя ставить 很/非常; усиление выражается 还 или 更.",
+    "rule_tj": "Дар ҷумлаҳои бо 比 пеш аз сифат 很/非常 намеояд; барои қавитар кардани дараҷа 还 ё 更 истифода мешавад.",
+    "examples": [
+      {
+        "zh": "我看网上说这个电影比那个爱情片更有意思。"
+      },
+      {
+        "zh": "今天比昨天更热。"
+      },
+      {
+        "zh": "我觉得奶茶比牛奶还好喝。"
+      }
+    ],
+    "lesson_order": 8,
+    "lesson_code": "NHSK2-L08"
+  },
+  {
+    "no": 3,
+    "title_zh": "转折复句“虽然……，但是……”",
+    "title_uz": "Qarama-qarshi qo‘shma gap “虽然……，但是……”",
+    "title_ru": "Уступительно-противительное предложение “虽然……，但是……”",
+    "title_tj": "Ҷумлаи зиддиятии “虽然……，但是……”",
+    "rule_zh": "“虽然……，但是……”构成转折复句，“虽然”和“但是”可以成对使用，也可以只用其中一个。",
+    "rule_uz": "“虽然……但是……” qarama-qarshi ma’noli qo‘shma gap tuzadi. 虽然 va 但是 birga ham, bittasi alohida ham ishlatilishi mumkin.",
+    "rule_ru": "“虽然……但是……” образует уступительно-противительное сложное предложение; 虽然 и 但是 употребляются вместе или по отдельности.",
+    "rule_tj": "“虽然……但是……” ҷумлаи зиддиятӣ месозад; 虽然 ва 但是 метавонанд якҷо ё алоҳида истифода шаванд.",
+    "examples": [
+      {
+        "zh": "虽然你忘了，但是我记得。"
+      },
+      {
+        "zh": "外边下雪了，但是不太冷。"
+      },
+      {
+        "zh": "虽然觉得有点儿累，我还是走回家了。"
+      }
+    ],
+    "lesson_order": 8,
+    "lesson_code": "NHSK2-L08"
+  },
+  {
+    "no": 1,
+    "title_zh": "比较句（3）",
+    "title_uz": "Taqqoslash gapi (3)",
+    "title_ru": "Сравнительное предложение (3)",
+    "title_tj": "Ҷумлаи муқоисавӣ (3)",
+    "rule_zh": "本课学习用“没有”表示比较的比较句，意思是“不如”“不及”。基本结构：A没有B+形容词或形容词性短语。形容词前面可以加“这么”或者“那么”，表示B的程度更高。“没有”的肯定形式“有”常用在表示比较的疑问句中。",
+    "rule_uz": "“没有” taqqoslashda A B darajasiga yetmasligini bildiradi. Shakl: A 没有 B + sifat/sifatli birikma. Sifat oldidan 这么/那么 B ning darajasi yuqoriligini ko‘rsatadi. Tasdiq shakli 有 ko‘pincha taqqoslovchi savolda ishlatiladi.",
+    "rule_ru": "“没有” в сравнении означает «не такой, как / уступает». Схема: A 没有 B + прилагательное/группа. 这么/那么 перед прилагательным подчёркивают более высокую степень у B. Утвердительное 有 часто встречается в сравнительных вопросах.",
+    "rule_tj": "“没有” дар муқоиса маънои «ба B намерасад»-ро медиҳад. Сохтор: A 没有 B + сифат/ибораи сифатӣ. 这么/那么 дараҷаи баландтари B-ро нишон медиҳад. Шакли тасдиқии 有 аксаран дар саволҳои муқоисавӣ меояд.",
+    "examples": [
+      {
+        "zh": "儿子的个子没有他那么高。"
+      },
+      {
+        "zh": "昨天没有今天这么冷。"
+      },
+      {
+        "zh": "这块手表没有那块好看。"
+      },
+      {
+        "zh": "妹妹有姐姐高吗？"
+      },
+      {
+        "zh": "那件衣服有这件好看吗？"
+      }
+    ],
+    "lesson_order": 9,
+    "lesson_code": "NHSK2-L09"
+  },
+  {
+    "no": 2,
+    "title_zh": "动词“离”",
+    "title_uz": "“离” fe’li",
+    "title_ru": "Глагол “离”",
+    "title_tj": "Феъли “离”",
+    "rule_zh": "动词“离”表示处所、时间的距离。基本结构：A离B……。",
+    "rule_uz": "“离” makon yoki vaqt orasidagi masofani bildiradi. Asosiy shakl: A 离 B ...",
+    "rule_ru": "“离” обозначает пространственное или временное расстояние. Схема: A 离 B ...",
+    "rule_tj": "“离” фосилаи макон ё вақтро нишон медиҳад. Сохтор: A 离 B ...",
+    "examples": [
+      {
+        "zh": "咖啡店离这儿有点儿远。"
+      },
+      {
+        "zh": "学校离医院不远。"
+      },
+      {
+        "zh": "现在离我的生日还有三天。"
+      }
+    ],
+    "lesson_order": 9,
+    "lesson_code": "NHSK2-L09"
+  },
+  {
+    "no": 3,
+    "title_zh": "时量补语（1）",
+    "title_uz": "Vaqt davomiyligi to‘ldiruvchisi (1)",
+    "title_ru": "Дополнение длительности (1)",
+    "title_tj": "Пуркунандаи давомнокӣ (1)",
+    "rule_zh": "表示时间段的词语用在动词后面构成时量补语，说明动作或状态持续的时间。基本结构：主语+动词+时量补语。动词带宾语时，事物名词一般在时量补语后；称呼或代词一般在时量补语前。也可以重复动词后再加时量补语。离合词需要重复动词性语素。动词后有“了”且句尾还有语气助词“了”时，表示动作仍在进行。",
+    "rule_uz": "Vaqt oralig‘i ifodasi fe’ldan keyin kelib harakat/holat qancha davom etganini ko‘rsatadi: ega+fe’l+davomiylik. Obyekt narsa oti bo‘lsa odatda davomiylikdan keyin, murojaat/olmosh bo‘lsa oldin keladi. Fe’l takrorlanishi mumkin; ajraluvchi fe’lda fe’l morfemasi takrorlanadi. V dan keyin 了 va gap oxirida yana 了 bo‘lsa harakat hali davom etmoqda.",
+    "rule_ru": "Выражение периода после глагола показывает длительность действия/состояния: субъект+глагол+длительность. Предметный объект обычно после длительности, обращение/местоимение — перед ней. Глагол можно повторять; у разделяемого глагола повторяется глагольный морф. 了 после глагола и ещё 了 в конце означает продолжающееся действие.",
+    "rule_tj": "Ифодаи муддат пас аз феъл давомнокии амал/ҳолатро нишон медиҳад: мубтадо+феъл+муддат. Объекти ашёӣ одатан пас аз муддат, муроҷиат/ҷонишин пеш аз он меояд. Феълро такрор кардан мумкин; дар феъли ҷудошаванда морфемаи феъл такрор мешавад. 了 баъди феъл ва 了 дар охир давом доштани амалро нишон медиҳад.",
+    "examples": [
+      {
+        "zh": "走半个多小时就到了。"
+      },
+      {
+        "zh": "他们学了两年。"
+      },
+      {
+        "zh": "我们休息十分钟。"
+      },
+      {
+        "zh": "我看了一个晚上电视。"
+      },
+      {
+        "zh": "李文等了她一个小时。"
+      },
+      {
+        "zh": "我找了陈天中二十多分钟。"
+      },
+      {
+        "zh": "他们学中文学了两年。"
+      },
+      {
+        "zh": "李文等她等了一个小时。"
+      },
+      {
+        "zh": "安妮游泳游了一个下午。"
+      },
+      {
+        "zh": "陈天中跑步跑了两个小时。"
+      },
+      {
+        "zh": "他写了半个小时汉字了。"
+      },
+      {
+        "zh": "陈天中跑步跑了两个小时了。"
+      }
+    ],
+    "lesson_order": 9,
+    "lesson_code": "NHSK2-L09"
+  },
+  {
+    "no": 1,
+    "title_zh": "主谓谓语句",
+    "title_uz": "Ega-kesim birikmasi kesim bo‘lgan gap",
+    "title_ru": "Предложение с субъектно-предикативной группой в роли сказуемого",
+    "title_tj": "Ҷумла бо ибораи мубтадо-хабар ҳамчун хабар",
+    "rule_zh": "主谓短语可以作谓语，对主语加以说明或描写，构成主谓谓语句。一般来说，主谓短语中的主语是全句主语的一部分或跟它相关。基本结构：主语+主谓短语。",
+    "rule_uz": "Ega-kesim birikmasi butun gapning kesimi bo‘lib, asosiy egani tavsiflaydi yoki izohlaydi. Ichki ega odatda asosiy eganing qismi yoki unga aloqador bo‘ladi. Tuzilishi: ega + ega-kesim birikmasi.",
+    "rule_ru": "Субъектно-предикативная группа может быть сказуемым и описывать основное подлежащее. Внутренний субъект обычно является его частью или связан с ним. Схема: подлежащее + субъектно-предикативная группа.",
+    "rule_tj": "Ибораи мубтадо-хабар метавонад ҳамчун хабар омада, мубтадои асосиро шарҳ диҳад. Мубтадои дохилӣ одатан қисми мубтадои умумӣ ё бо он вобаста аст. Сохтор: мубтадо + ибораи мубтадо-хабар.",
+    "examples": [
+      {
+        "zh": "我的书包你看见了吗？"
+      },
+      {
+        "zh": "弟弟手很小。"
+      },
+      {
+        "zh": "这件事他知道。"
+      }
+    ],
+    "lesson_order": 10,
+    "lesson_code": "NHSK2-L10"
+  },
+  {
+    "no": 2,
+    "title_zh": "选择问句",
+    "title_uz": "Tanlov savoli",
+    "title_ru": "Альтернативный вопрос",
+    "title_tj": "Саволи интихобӣ",
+    "rule_zh": "连词“还是”用在疑问句中，表示选择。基本结构：（是）A还是B。",
+    "rule_uz": "“还是” so‘roq gapida variantlar orasidan tanlashni bildiradi. Asosiy shakl: （是）A 还是 B.",
+    "rule_ru": "Союз “还是” в вопросительном предложении обозначает выбор. Схема: （是）A 还是 B.",
+    "rule_tj": "Пайвандаки “还是” дар ҷумлаи саволӣ интихобро нишон медиҳад. Сохтор: （是）A 还是 B.",
+    "examples": [
+      {
+        "zh": "妈妈，是您准备考试还是我准备考试？"
+      },
+      {
+        "zh": "你更喜欢打篮球、踢足球还是游泳？"
+      },
+      {
+        "zh": "我们什么时候去看电影？今天还是明天？"
+      }
+    ],
+    "lesson_order": 10,
+    "lesson_code": "NHSK2-L10"
+  },
+  {
+    "no": 3,
+    "title_zh": "固定格式“要/快/快要/就要……了”",
+    "title_uz": "“要/快/快要/就要……了” qolipi",
+    "title_ru": "Конструкция “要/快/快要/就要……了”",
+    "title_tj": "Қолаби “要/快/快要/就要……了”",
+    "rule_zh": "固定格式“要/快/快要/就要……了”表示某事将要发生。如果句子中有时间状语，一般用“就要……了”。",
+    "rule_uz": "“要/快/快要/就要……了” biror hodisa tez orada sodir bo‘lishini bildiradi. Gapda vaqt holi bo‘lsa, odatda “就要……了” ishlatiladi.",
+    "rule_ru": "“要/快/快要/就要……了” показывает, что событие вот-вот произойдёт. Если в предложении есть обстоятельство времени, обычно употребляется “就要……了”.",
+    "rule_tj": "“要/快/快要/就要……了” наздик будани рӯйдодро нишон медиҳад. Агар дар ҷумла ҳоли вақт бошад, одатан “就要……了” истифода мешавад.",
+    "examples": [
+      {
+        "zh": "饭菜快要做好了。"
+      },
+      {
+        "zh": "火车快开了。"
+      },
+      {
+        "zh": "我们下星期就要考试了。"
+      }
+    ],
+    "lesson_order": 10,
+    "lesson_code": "NHSK2-L10"
+  },
+  {
+    "no": 1,
+    "title_zh": "动态助词“着”（1）",
+    "title_uz": "Aspekt yuklamasi “着” (1)",
+    "title_ru": "Аспектная частица “着” (1)",
+    "title_tj": "Ҳиссачаи аспектии “着” (1)",
+    "rule_zh": "动态助词“着”用在动词后面，表示动作或状态的持续，否定形式是在动词前面加“没（有）”。",
+    "rule_uz": "“着” fe’ldan keyin kelib, harakat yoki holatning davom etishini bildiradi. Inkor shakli fe’l oldiga 没（有） qo‘yish bilan tuziladi.",
+    "rule_ru": "“着” ставится после глагола и выражает продолжение действия или состояния. Отрицание образуется с 没（有） перед глаголом.",
+    "rule_tj": "“着” баъди феъл омада, давом ёфтани амал ё ҳолатро ифода мекунад. Инкор бо 没（有） пеш аз феъл сохта мешавад.",
+    "examples": [
+      {
+        "zh": "那你在这儿坐着。"
+      },
+      {
+        "zh": "教室的门开着。"
+      },
+      {
+        "zh": "教室的门没开着。"
+      }
+    ],
+    "lesson_order": 11,
+    "lesson_code": "NHSK2-L11"
+  },
+  {
+    "no": 2,
+    "title_zh": "动态助词“着”（2）",
+    "title_uz": "Aspekt yuklamasi “着” (2)",
+    "title_ru": "Аспектная частица “着” (2)",
+    "title_tj": "Ҳиссачаи аспектии “着” (2)",
+    "rule_zh": "表示动作或状态持续的句子中，宾语要在动态助词“着”的后面。疑问形式有三种：（1）在句尾加“吗”；（2）在句尾加“没有”；（3）动词+没+动词+着。",
+    "rule_uz": "Davom etayotgan harakat/holat gapida obyekt “着”dan keyin turadi. Savolning uch shakli bor: gap oxiriga 吗; gap oxiriga 没有; yoki V+没+V+着.",
+    "rule_ru": "В предложении с продолжающимся действием/состоянием объект ставится после “着”. Три вопросительные формы: 吗 в конце; 没有 в конце; либо V+没+V+着.",
+    "rule_tj": "Дар ҷумлаи амали/ҳолати давомдор объект пас аз “着” меояд. Се шакли савол: 吗 дар охир; 没有 дар охир; ё V+没+V+着.",
+    "examples": [
+      {
+        "zh": "现在路上车多，还下着雪，我开慢一点儿。"
+      },
+      {
+        "zh": "她穿着白色的裤子。"
+      },
+      {
+        "zh": "陈天中没拿着咖啡。"
+      },
+      {
+        "zh": "教室的门开着吗？"
+      },
+      {
+        "zh": "白家月坐着没有？"
+      },
+      {
+        "zh": "她拿没拿着手机？"
+      }
+    ],
+    "lesson_order": 11,
+    "lesson_code": "NHSK2-L11"
+  },
+  {
+    "no": 3,
+    "title_zh": "程度副词“最”",
+    "title_uz": "Daraja ravishi “最”",
+    "title_ru": "Наречие степени “最”",
+    "title_tj": "Зарфи дараҷаи “最”",
+    "rule_zh": "程度副词“最”用在形容词或心理动词前面，表示某种属性超过所有同类的人或事物。",
+    "rule_uz": "“最” sifat yoki psixologik fe’l oldidan kelib, ma’lum xususiyat bir xil turdagi hamma odam yoki narsadan yuqori ekanini bildiradi.",
+    "rule_ru": "“最” ставится перед прилагательным или психологическим глаголом и показывает высшую степень признака среди однородных людей или предметов.",
+    "rule_tj": "“最” пеш аз сифат ё феъли равонӣ омада, баландтарин дараҷаи хусусиятро миёни ашхос ё ашёи ҳамнавъ нишон медиҳад.",
+    "examples": [
+      {
+        "zh": "你最喜欢吃中国菜。"
+      },
+      {
+        "zh": "在我们家，爸爸最高。"
+      },
+      {
+        "zh": "你们班谁说中文说得最好？"
+      }
+    ],
+    "lesson_order": 11,
+    "lesson_code": "NHSK2-L11"
+  },
+  {
+    "no": 1,
+    "title_zh": "比较句（4）",
+    "title_uz": "Taqqoslash gapi (4)",
+    "title_ru": "Сравнительное предложение (4)",
+    "title_tj": "Ҷумлаи муқоисавӣ (4)",
+    "rule_zh": "用“比”表示的比较句中，“多了”或“得多”用在形容词后面，表示差别很大。基本结构：A比B+形容词+多了/得多。",
+    "rule_uz": "“比” gapida sifatdan keyin 多了 yoki 得多 kelib, farq juda katta ekanini bildiradi. Tuzilishi: A 比 B + sifat + 多了/得多.",
+    "rule_ru": "В сравнении с 比 после прилагательного 多了 или 得多 обозначает значительную разницу. Схема: A 比 B + прилагательное + 多了/得多.",
+    "rule_tj": "Дар ҷумлаи 比 пас аз сифат 多了 ё 得多 омада, фарқи калонро нишон медиҳад. Сохтор: A 比 B + сифат + 多了/得多.",
+    "examples": [
+      {
+        "zh": "我这里比北京冷多了。"
+      },
+      {
+        "zh": "坐飞机比坐火车快得多。"
+      },
+      {
+        "zh": "他觉得红茶比绿茶好喝得多。"
+      }
+    ],
+    "lesson_order": 12,
+    "lesson_code": "NHSK2-L12"
+  },
+  {
+    "no": 2,
+    "title_zh": "比较句（5）",
+    "title_uz": "Taqqoslash gapi (5)",
+    "title_ru": "Сравнительное предложение (5)",
+    "title_tj": "Ҷумлаи муқоисавӣ (5)",
+    "rule_zh": "用“比”表示的比较句中，如果动词带状态补语，“比”用在动词前后都可以。",
+    "rule_uz": "“比”li taqqoslashda fe’l holat to‘ldiruvchisi bilan kelsa, 比 fe’lning oldida ham, keyin ham kelishi mumkin.",
+    "rule_ru": "В сравнительном предложении с 比, если глагол имеет дополнение состояния, 比 может стоять как перед глаголом, так и после него.",
+    "rule_tj": "Дар ҷумлаи муқоисавӣ бо 比, агар феъл пуркунандаи ҳолат дошта бошад, 比 метавонад пеш ё пас аз феъл ояд.",
+    "examples": [
+      {
+        "zh": "昨天比今天下得大。"
+      },
+      {
+        "zh": "妈妈比我睡得晚。"
+      },
+      {
+        "zh": "李文跑得比白家月快。"
+      }
+    ],
+    "lesson_order": 12,
+    "lesson_code": "NHSK2-L12"
+  },
+  {
+    "no": 3,
+    "title_zh": "比较句（6）",
+    "title_uz": "Taqqoslash gapi (6)",
+    "title_ru": "Сравнительное предложение (6)",
+    "title_tj": "Ҷумлаи муқоисавӣ (6)",
+    "rule_zh": "用“比”表示的比较句中，如果动词既带宾语，又带状态补语，可以把宾语提前，或者重复动词。如果动词是离合词，需要重复动词性语素。",
+    "rule_uz": "“比” gapida fe’l ham obyekt, ham holat to‘ldiruvchisini olsa, obyektni oldinga chiqarish yoki fe’lni takrorlash mumkin. Ajraluvchi fe’lda fe’l morfemasi takrorlanadi.",
+    "rule_ru": "В сравнении с 比, если глагол имеет и объект, и дополнение состояния, объект можно вынести вперёд или повторить глагол. У разделяемого глагола повторяется глагольный морф.",
+    "rule_tj": "Дар ҷумлаи 比, агар феъл ҳам объект ва ҳам пуркунандаи ҳолат дошта бошад, объектро пеш овардан ё феълро такрор кардан мумкин. Дар феъли ҷудошаванда морфемаи феъл такрор мешавад.",
+    "examples": [
+      {
+        "zh": "你跑步跑得比我快。"
+      },
+      {
+        "zh": "白家月汉字写得比陈天中好。"
+      },
+      {
+        "zh": "他踢足球比我踢得好。"
+      }
+    ],
+    "lesson_order": 12,
+    "lesson_code": "NHSK2-L12"
+  },
+  {
+    "no": 1,
+    "title_zh": "双宾语句（2）",
+    "title_uz": "Ikki obyektli gap (2)",
+    "title_ru": "Предложение с двумя объектами (2)",
+    "title_tj": "Ҷумлаи дуобъектӣ (2)",
+    "rule_zh": "双宾语句是一个动词带两个宾语的句子，一般前一个宾语指人，后一个宾语指事物。本课学习动词“拿、送、卖”加“给”构成的双宾语句。",
+    "rule_uz": "Ikki obyektli gapda bir fe’l ikki obyekt oladi: odatda birinchisi odamni, ikkinchisi narsani bildiradi. Bu darsda 拿、送、卖 fe’llarining 给 bilan ikki obyektli qo‘llanilishi o‘rganiladi.",
+    "rule_ru": "В двуобъектном предложении глагол имеет два объекта: первый обычно обозначает человека, второй — предмет. Здесь изучаются конструкции с 拿、送、卖 + 给.",
+    "rule_tj": "Дар ҷумлаи дуобъектӣ як феъл ду объект мегирад: одатан якум шахс, дуюм ашё аст. Дар ин дарс сохторҳои 拿、送、卖 + 给 омӯхта мешаванд.",
+    "examples": [
+      {
+        "zh": "王老师喜欢花，就送给她花吧。"
+      },
+      {
+        "zh": "她拿给我一杯水。"
+      },
+      {
+        "zh": "他卖给我一本中文书。"
+      }
+    ],
+    "lesson_order": 13,
+    "lesson_code": "NHSK2-L13"
+  },
+  {
+    "no": 2,
+    "title_zh": "比较句（7）",
+    "title_uz": "Taqqoslash gapi (7)",
+    "title_ru": "Сравнительное предложение (7)",
+    "title_tj": "Ҷумлаи муқоисавӣ (7)",
+    "rule_zh": "用“比”表示的比较句中，数量短语放在形容词后面，表示具体差别。基本结构：A比B+形容词+数量短语。",
+    "rule_uz": "“比” gapida miqdor birikmasi sifatdan keyin kelib, aniq farqni bildiradi. Tuzilishi: A 比 B + sifat + miqdor birikmasi.",
+    "rule_ru": "В сравнительном предложении с 比 количественная группа ставится после прилагательного и показывает конкретную разницу. Схема: A 比 B + прилагательное + количественная группа.",
+    "rule_tj": "Дар ҷумлаи 比 таркиби миқдорӣ пас аз сифат омада, фарқи дақиқро нишон медиҳад. Сохтор: A 比 B + сифат + таркиби миқдорӣ.",
+    "examples": [
+      {
+        "zh": "今天的词比昨天多了十个。"
+      },
+      {
+        "zh": "姐姐比我大三岁。"
+      },
+      {
+        "zh": "坐飞机比坐火车快五个多小时。"
+      }
+    ],
+    "lesson_order": 13,
+    "lesson_code": "NHSK2-L13"
+  },
+  {
+    "no": 3,
+    "title_zh": "比较句（8）",
+    "title_uz": "Taqqoslash gapi (8)",
+    "title_ru": "Сравнительное предложение (8)",
+    "title_tj": "Ҷумлаи муқоисавӣ (8)",
+    "rule_zh": "用“比”表示的比较句中，“一点儿”或“一些”用在形容词后面，表示差别不大。基本结构：A比B+形容词+一点儿/一些。",
+    "rule_uz": "“比” gapida sifatdan keyin 一点儿 yoki 一些 kichik farqni bildiradi. Tuzilishi: A 比 B + sifat + 一点儿/一些.",
+    "rule_ru": "В сравнении с 比 一点儿 или 一些 после прилагательного обозначает небольшую разницу. Схема: A 比 B + прилагательное + 一点儿/一些.",
+    "rule_tj": "Дар ҷумлаи 比 一点儿 ё 一些 пас аз сифат фарқи хурдро нишон медиҳад. Сохтор: A 比 B + сифат + 一点儿/一些.",
+    "examples": [
+      {
+        "zh": "比我们一起买的那个本子贵一点儿。"
+      },
+      {
+        "zh": "姐姐比我高一点儿。"
+      },
+      {
+        "zh": "那间教室比这间大一些。"
+      }
+    ],
+    "lesson_order": 13,
+    "lesson_code": "NHSK2-L13"
+  },
+  {
+    "no": 1,
+    "title_zh": "存现句（2）",
+    "title_uz": "Mavjudlik gapi (2)",
+    "title_ru": "Экзистенциальное предложение (2)",
+    "title_tj": "Ҷумлаи мавҷудият (2)",
+    "rule_zh": "动态助词“着”用在动词后面可以构成存现句，动词前面是表示处所的短语，后面一般是不确指的人或事物。基本结构：处所+动词+着+人/事物。",
+    "rule_uz": "“着” fe’ldan keyin kelib mavjudlik gapini tuzishi mumkin. Fe’l oldidan joy ifodasi, keyin odatda noaniq odam yoki narsa keladi. Tuzilishi: joy + fe’l + 着 + odam/narsa.",
+    "rule_ru": "“着” после глагола может образовывать экзистенциальное предложение. Перед глаголом стоит место, после него обычно неопределённый человек или предмет. Схема: место + глагол + 着 + человек/предмет.",
+    "rule_tj": "“着” баъди феъл омада ҷумлаи мавҷудият месозад. Пеш аз феъл ҷой, баъди он одатан шахс ё ашёи номуайян меояд. Сохтор: ҷой + феъл + 着 + шахс/ашё.",
+    "examples": [
+      {
+        "zh": "你家楼下站着一个人。"
+      },
+      {
+        "zh": "爸爸手里拿着一杯咖啡。"
+      },
+      {
+        "zh": "那间教室里坐着不少学生。"
+      }
+    ],
+    "lesson_order": 14,
+    "lesson_code": "NHSK2-L14"
+  },
+  {
+    "no": 2,
+    "title_zh": "程度副词“多”",
+    "title_uz": "Daraja ravishi “多”",
+    "title_ru": "Наречие степени “多”",
+    "title_tj": "Зарфи дараҷаи “多”",
+    "rule_zh": "“多”用在感叹句中，表示程度很高。",
+    "rule_uz": "“多” undov gapida ishlatilib, darajaning juda yuqori ekanini bildiradi.",
+    "rule_ru": "“多” используется в восклицательных предложениях и выражает высокую степень признака.",
+    "rule_tj": "“多” дар ҷумлаи хитобӣ истифода шуда, дараҷаи хеле баландро нишон медиҳад.",
+    "examples": [
+      {
+        "zh": "你一个人在这儿多没意思啊！"
+      },
+      {
+        "zh": "我们一起去多好啊！"
+      },
+      {
+        "zh": "多好看呀！买这件吧。"
+      }
+    ],
+    "lesson_order": 14,
+    "lesson_code": "NHSK2-L14"
+  },
+  {
+    "no": 3,
+    "title_zh": "复合趋向补语",
+    "title_uz": "Qo‘shma yo‘nalish to‘ldiruvchisi",
+    "title_ru": "Составное направительное дополнение",
+    "title_tj": "Пуркунандаи мураккаби самт",
+    "rule_zh": "“上、下、进、出、回、过”加上“来/去”，以及“起来”，用在动词后，可以构成复合趋向补语，表示动作的方向。动词带宾语时，地点名词放在“来/去”前面；事物名词放在“来/去”前后都可以。",
+    "rule_uz": "“上、下、进、出、回、过” + “来/去” hamda “起来” fe’ldan keyin kelib qo‘shma yo‘nalish to‘ldiruvchisini tuzadi. Joy oti obyekt bo‘lsa 来/去 oldida; narsa oti esa oldida ham, keyin ham kelishi mumkin.",
+    "rule_ru": "“上、下、进、出、回、过” + “来/去”, а также “起来”, после глагола образуют составное направительное дополнение. Объект-место ставится перед 来/去; предметный объект может стоять до или после 来/去.",
+    "rule_tj": "“上、下、进、出、回、过” + “来/去” ва “起来” баъди феъл пуркунандаи мураккаби самт месозанд. Объекти ҷой пеш аз 来/去; объекти ашёӣ пеш ё пас аз 来/去 меояд.",
+    "examples": [
+      {
+        "zh": "她经常跑上来找我玩。"
+      },
+      {
+        "zh": "楼不高，我们走上去吧。"
+      },
+      {
+        "zh": "一听到老师叫他的名字，他就站起来了。"
+      },
+      {
+        "zh": "同学们都走出教室去了。"
+      },
+      {
+        "zh": "妈妈让我买回来一些菜来。"
+      },
+      {
+        "zh": "白家月从书包里找出来一个漂亮的本子。"
+      }
+    ],
+    "lesson_order": 14,
+    "lesson_code": "NHSK2-L14"
+  },
+  {
+    "no": 1,
+    "title_zh": "动量补语（1）",
+    "title_uz": "Takror soni to‘ldiruvchisi (1)",
+    "title_ru": "Дополнение кратности (1)",
+    "title_tj": "Пуркунандаи такрор (1)",
+    "rule_zh": "“数词+次”用在动词后面，构成动量补语，表示动作发生的次数。动词同时带宾语时，如果宾语是人名或地名，放在动量补语前后都可以。",
+    "rule_uz": "“son+次” fe’ldan keyin kelib, harakat necha marta sodir bo‘lganini bildiradi. Fe’l obyekt ham olsa, obyekt odam yoki joy nomi bo‘lsa frequency complement oldida ham, keyin ham kelishi mumkin.",
+    "rule_ru": "“числительное+次” после глагола образует дополнение кратности и показывает число повторений действия. Если объект — имя человека или место, он может стоять до или после дополнения.",
+    "rule_tj": "“шумора+次” баъди феъл омада, шумораи рух додани амалро нишон медиҳад. Агар объект номи шахс ё ҷой бошад, метавонад пеш ё пас аз пуркунандаи такрор ояд.",
+    "examples": [
+      {
+        "zh": "我想去中国，虽然去过一次，但是很想再去一次。"
+      },
+      {
+        "zh": "安妮去过一次北京。"
+      },
+      {
+        "zh": "李文见了杨同乐两次。"
+      }
+    ],
+    "lesson_order": 15,
+    "lesson_code": "NHSK2-L15"
+  },
+  {
+    "no": 2,
+    "title_zh": "动量补语（2）",
+    "title_uz": "Takror soni to‘ldiruvchisi (2)",
+    "title_ru": "Дополнение кратности (2)",
+    "title_tj": "Пуркунандаи такрор (2)",
+    "rule_zh": "动词既带动量补语，又带宾语时，如果宾语是事物名词，一般放在动量补语后面；如果宾语是代词，放在动量补语前面。",
+    "rule_uz": "Fe’l frequency complement va obyekt bilan kelganda, obyekt narsa oti bo‘lsa odatda frequency complementdan keyin; olmosh bo‘lsa uning oldidan keladi.",
+    "rule_ru": "Если у глагола есть и дополнение кратности, и объект: предметный объект обычно ставится после дополнения, а местоимение — перед ним.",
+    "rule_tj": "Агар феъл ҳам пуркунандаи такрор ва ҳам объект дошта бошад, объекти ашёӣ одатан пас аз пуркунанда, ҷонишин бошад пеш аз он меояд.",
+    "examples": [
+      {
+        "zh": "因为我想再吃一次烤鸭，再喝一次奶茶。"
+      },
+      {
+        "zh": "我想找他一次。"
+      },
+      {
+        "zh": "安妮来过这儿两次。"
+      }
+    ],
+    "lesson_order": 15,
+    "lesson_code": "NHSK2-L15"
+  },
+  {
+    "no": 3,
+    "title_zh": "“有”字句（2）",
+    "title_uz": "“有” gapi (2)",
+    "title_ru": "Предложение с “有” (2)",
+    "title_tj": "Ҷумлаи “有” (2)",
+    "rule_zh": "“有+数量短语”表示达到一定的数量。",
+    "rule_uz": "“有+miqdor birikmasi” ma’lum bir miqdorga yetganlikni bildiradi.",
+    "rule_ru": "“有+количественная группа” показывает достижение определённого количества.",
+    "rule_tj": "“有+таркиби миқдорӣ” расидан ба миқдори муайянро нишон медиҳад.",
+    "examples": [
+      {
+        "zh": "你有一年没回国了吧？"
+      },
+      {
+        "zh": "你女儿今年有10岁了吧？"
+      },
+      {
+        "zh": "我有一个月没给家里打电话了。"
+      }
+    ],
+    "lesson_order": 15,
+    "lesson_code": "NHSK2-L15"
+  }
+]
