@@ -8,6 +8,10 @@ from app.services.payment_notify_service import PaymentNotifyService
 from app.services.partner_service import PartnerService
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.hsk30_unlock_service import (
+    HSK30_UNLOCK_PLAN_TYPE,
+    Hsk30UnlockService,
+)
 from app.bot.keyboards.admin_review import admin_reject_reason_keyboard
 from app.config import settings
 
@@ -50,6 +54,56 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
     if not await payment_repo.approve(payment, admin_comment="approved by admin"):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
+    user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+    if not user:
+        await session.rollback()
+        await callback.answer("Foydalanuvchi topilmadi", show_alert=True)
+        return
+
+    if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+        granted = await Hsk30UnlockService(session).grant(
+            user=user,
+            payment=payment,
+        )
+        if not granted:
+            await session.rollback()
+            await callback.answer("HSK 3.0 ni ochib bo'lmadi", show_alert=True)
+            return
+        await session.commit()
+        await ConversionFunnelService().record(
+            event_name="hsk30_unlock_approved",
+            user=user,
+            telegram_id=payment.user_telegram_id,
+            source="admin_payment_approve",
+            payment_id=payment.id,
+            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+        )
+        course_event = await CourseMiniAppAnalyticsService(session).record_server_event(
+            event_name="hsk30_unlock_approved",
+            telegram_id=payment.user_telegram_id,
+            user_id=getattr(user, "id", None),
+            source="admin_payment_approve",
+            dedupe_key=f"hsk30-unlock-payment:{payment.id}",
+            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+        )
+        if course_event.get("recorded"):
+            await session.commit()
+        await callback.answer("✅ HSK 3.0 ochildi!", show_alert=True)
+        await callback.message.edit_reply_markup(reply_markup=None)
+        chat_id = payment.user_telegram_id
+        for msg_id in [payment.checkout_msg_id, payment.screenshot_msg_id, payment.waiting_msg_id]:
+            if msg_id:
+                try:
+                    await callback.bot.delete_message(chat_id=chat_id, message_id=msg_id)
+                except Exception:
+                    pass
+        await payment_notify_service.notify_hsk30_unlock_approved(
+            bot=callback.bot,
+            user=user,
+            payment=payment,
+        )
+        return
+
     activated = await subscription_service.activate_plan(
         telegram_id=payment.user_telegram_id,
         plan_type=payment.plan_type,
@@ -62,7 +116,6 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         return
     partner, commission_usd, unlocked_bonus = await PartnerService(session).record_approved_payment(payment)
 
-    user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     await session.commit()
     await ConversionFunnelService().record(
         event_name="payment_approved",
@@ -133,11 +186,15 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
-    if user:
+    if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
         await user_repo.set_selected_plan_type(user, None)
     await session.commit()
     await ConversionFunnelService().record(
-        event_name="payment_rejected",
+        event_name=(
+            "hsk30_unlock_rejected"
+            if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE
+            else "payment_rejected"
+        ),
         user=user,
         telegram_id=payment.user_telegram_id,
         source="admin_payment_reject",
@@ -148,13 +205,20 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
     await callback.answer("❌ Rad etildi", show_alert=True)
     await callback.message.edit_reply_markup(reply_markup=None)
 
-    await payment_notify_service.notify_payment_rejected(
-        bot=callback.bot,
-        user=user,
-        reason=None,
-        plan_type=payment.plan_type,
-        payment=payment,
-    )
+    if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+        await payment_notify_service.notify_hsk30_unlock_rejected(
+            bot=callback.bot,
+            user=user,
+            payment=payment,
+        )
+    else:
+        await payment_notify_service.notify_payment_rejected(
+            bot=callback.bot,
+            user=user,
+            reason=None,
+            plan_type=payment.plan_type,
+            payment=payment,
+        )
 
 
 @router.callback_query(F.data.startswith("admin_payment:reject_reason:"))
@@ -218,10 +282,18 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
     await callback.answer(f"❌ Rad etildi: {reason_label}", show_alert=True)
     await callback.message.edit_reply_markup(reply_markup=None)
 
-    await payment_notify_service.notify_payment_rejected(
-        bot=callback.bot,
-        user=user,
-        reason=reason_code,
-        plan_type=payment.plan_type,
-        payment=payment,
-    )
+    if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+        await payment_notify_service.notify_hsk30_unlock_rejected(
+            bot=callback.bot,
+            user=user,
+            reason=reason_code,
+            payment=payment,
+        )
+    else:
+        await payment_notify_service.notify_payment_rejected(
+            bot=callback.bot,
+            user=user,
+            reason=reason_code,
+            plan_type=payment.plan_type,
+            payment=payment,
+        )
