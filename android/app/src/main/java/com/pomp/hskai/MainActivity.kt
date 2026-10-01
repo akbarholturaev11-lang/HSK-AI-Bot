@@ -862,6 +862,7 @@ private fun AppRoot(
                     onGoalSelected = onboardingViewModel::selectGoal,
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
+                    onLaterHsk20 = onboardingViewModel::startWithHsk20,
                     onUnlockHsk30 = {
                         if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
                             checkoutOrigin =
