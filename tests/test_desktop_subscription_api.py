@@ -597,7 +597,7 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             source=payment.source,
         ))
 
-    async def test_android_hsk30_onboarding_checkout_uses_permanent_unlock_product(self):
+    async def test_android_hsk30_entry_points_use_permanent_unlock_product(self):
         async with self.sessions() as session:
             await Hsk30FeatureService(session).set_enabled(True)
             await BotSettingRepository(session).set(
@@ -607,21 +607,23 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         base = "/api/v3/android/subscription/checkout"
-        overview = await self.client.get(
-            base + "/overview?origin=hsk30_onboarding",
-            headers=self._headers(self.token_a),
-        )
+        for origin in ("hsk30_onboarding", "hsk30_settings"):
+            with self.subTest(origin=origin):
+                overview = await self.client.get(
+                    base + f"/overview?origin={origin}",
+                    headers=self._headers(self.token_a),
+                )
 
-        self.assertEqual(overview.status_code, 200, overview.text)
-        payload = overview.json()
-        self.assertEqual(payload["mode"], "hsk30_unlock")
-        self.assertEqual(payload["source"], "android_subscription")
-        self.assertTrue(payload["checkout_allowed"])
-        self.assertIn(HSK30_UNLOCK_PLAN_TYPE, payload["prices"]["visa"])
-        self.assertEqual(
-            set(payload["prices"]["visa"]),
-            {HSK30_UNLOCK_PLAN_TYPE},
-        )
+                self.assertEqual(overview.status_code, 200, overview.text)
+                payload = overview.json()
+                self.assertEqual(payload["mode"], "hsk30_unlock")
+                self.assertEqual(payload["source"], "android_subscription")
+                self.assertTrue(payload["checkout_allowed"])
+                self.assertIn(HSK30_UNLOCK_PLAN_TYPE, payload["prices"]["visa"])
+                self.assertEqual(
+                    set(payload["prices"]["visa"]),
+                    {HSK30_UNLOCK_PLAN_TYPE},
+                )
 
         quote = await self.client.post(
             base + "/quote",
@@ -640,16 +642,18 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(quote_payload["quote"]["final_currency"], "TJS")
 
         async with self.sessions() as session:
-            entry = (
+            entries = (
                 await session.execute(
                     select(SubscriptionEntryEvent)
                     .where(SubscriptionEntryEvent.telegram_id == 1001)
-                    .order_by(SubscriptionEntryEvent.created_at.desc())
-                    .limit(1)
+                    .order_by(SubscriptionEntryEvent.created_at.asc())
                 )
-            ).scalar_one()
-        self.assertEqual(entry.source, "android_hsk30_onboarding")
-        self.assertEqual(entry.mode, "hsk30_unlock")
+            ).scalars().all()
+        hsk30_entries = [entry for entry in entries if entry.mode == "hsk30_unlock"]
+        self.assertEqual(
+            [entry.source for entry in hsk30_entries[-2:]],
+            ["android_hsk30_onboarding", "android_hsk30_settings"],
+        )
 
     async def test_android_card_quote_uses_the_chosen_bank_requisites(self):
         async with self.sessions() as session:
