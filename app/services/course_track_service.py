@@ -174,6 +174,78 @@ class CourseTrackService:
                 completed_lessons_count=completed,
             )
 
+    async def change_level(self, user, requested_level: str) -> dict:
+        """Change band inside the active course track.
+
+        Track switching is a separate operation. A level change resets the
+        current track progress to the beginning of the selected band and keeps
+        the saved track state in sync, so switching away and back restores the
+        same band instead of an older one.
+        """
+
+        current_track = self.track_for_level(getattr(user, "level", None))
+        target_level = self._validate_level_for_track(
+            requested_level,
+            current_track,
+        )
+        target_track = self.track_for_level(target_level)
+        if target_track != current_track:
+            raise CourseTrackError("course_track_switch_required", status_code=409)
+
+        if current_track == TRACK_HSK30:
+            access = await self.hsk30_access(user)
+            if not access.allowed:
+                raise CourseTrackError(access.reason, status_code=403)
+            live_levels = await self.hsk30_feature.live_levels()
+            if target_level not in live_levels:
+                raise CourseTrackError("hsk30_level_not_live", status_code=403)
+
+        current_level = self._validate_level_for_track(
+            getattr(user, "level", None),
+            current_track,
+        )
+        if target_level == current_level:
+            return await self.status(user)
+
+        progress = await self.progress_repo.get_by_user_id(
+            int(user.id),
+            for_update=True,
+        )
+        if progress is None:
+            progress = await self.progress_repo.create(
+                user_id=int(user.id),
+                level=target_level,
+                current_lesson_id=None,
+            )
+
+        user.level = target_level
+        progress.level = target_level
+        progress.completed_lessons_count = 0
+        progress.current_lesson_id = None
+        progress.current_step = "intro"
+        progress.waiting_for = "none"
+        progress.homework_status = "none"
+        progress.needs_review_prompt = False
+        progress.last_opened_at = datetime.now(timezone.utc)
+
+        row = await self._state(int(user.id), current_track, for_update=True)
+        if row is None:
+            await self.state_repo.create(
+                user_id=int(user.id),
+                track=current_track,
+                level=target_level,
+                completed_lessons_count=0,
+            )
+        else:
+            await self.state_repo.save_progress(
+                row,
+                level=target_level,
+                completed_lessons_count=0,
+            )
+
+        await self.session.flush()
+        return await self.status(user)
+
     async def switch(
         self,
         user,
