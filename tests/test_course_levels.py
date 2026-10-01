@@ -2,6 +2,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
+from app.services.ai_service import AIService
 from app.services.course_levels import (
     TRACK_HSK20,
     TRACK_HSK30,
@@ -79,6 +80,14 @@ class CourseLevelRegistryTests(unittest.TestCase):
             ai_level_context("hsk3"),
             "HSK 2.0, 3-daraja (HSK 3)",
         )
+
+    def test_qa_system_prompt_receives_hsk30_curriculum_context(self):
+        service = AIService.__new__(AIService)
+        service.prompt_path = __import__("pathlib").Path("app/prompts/qa_system.txt")
+        prompt = service._build_system_prompt("uz", "nhsk2")
+
+        self.assertIn("Current level key: nhsk2", prompt)
+        self.assertIn("HSK 3.0, 2-daraja (N2), jami ~500 so'z", prompt)
 
     def test_unknown_legacy_level_fails_back_exactly_as_before(self):
         self.assertEqual(normalize_legacy_content_level(None), "hsk1")
