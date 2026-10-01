@@ -21,6 +21,17 @@ interface AndroidCourseApi {
         @Query("tz") timezoneOffsetMinutes: Int,
     ): Response<CourseMapDto>
 
+    @POST("api/v3/android/course/tracks/switch")
+    suspend fun switchCourseTrack(
+        @Header("Authorization") authorization: String,
+        @Body body: CourseTrackSwitchRequest,
+    ): Response<OkResponse>
+
+    @POST("api/v3/android/course/hsk30/promo-shown")
+    suspend fun markHsk30PromoShown(
+        @Header("Authorization") authorization: String,
+    ): Response<Hsk30PromoMarkResponse>
+
     @GET("api/v3/android/course/lesson/{lessonOrder}")
     suspend fun lesson(
         @Header("Authorization") authorization: String,
