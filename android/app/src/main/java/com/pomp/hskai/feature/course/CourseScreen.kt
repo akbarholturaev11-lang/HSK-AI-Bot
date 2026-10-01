@@ -364,14 +364,34 @@ private fun CourseTrackBar(
                         }
                     },
             ) {
-                Text(
-                    text = label,
-                    color = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 10.dp),
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = label,
+                        color = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary,
+                        fontSize = 13.sp,
+                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                    )
+                    if (track == "hsk30" && hsk30.newBadge.isNew) {
+                        Spacer(Modifier.width(5.dp))
+                        Text(
+                            text = "NEW",
+                            color = PompColors.CinnabarDark,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .background(
+                                    PompColors.Cinnabar.copy(alpha = 0.12f),
+                                    RoundedCornerShape(5.dp),
+                                )
+                                .padding(horizontal = 4.dp, vertical = 1.dp),
+                        )
+                    }
+                }
             }
         }
     }
