@@ -1031,6 +1031,9 @@ private fun AppRoot(
                     ),
                 )
                 val dictionaryState by dictionaryViewModel.state.collectAsStateWithLifecycle()
+                LaunchedEffect(dictionaryViewModel, currentLevel) {
+                    dictionaryViewModel.setActiveCourseLevel(currentLevel)
+                }
                 DictionaryScreen(
                     state = dictionaryState,
                     actions = DictionaryActions(
