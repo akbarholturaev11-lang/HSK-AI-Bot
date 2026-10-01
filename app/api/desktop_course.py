@@ -40,7 +40,7 @@ DesktopCourseMaterialRef = Annotated[
         min_length=20,
         max_length=160,
         pattern=(
-            r"^lesson:(?:hsk1|hsk2|hsk3|hsk4):[1-9][0-9]*:"
+            r"^lesson:(?:hsk1|hsk2|hsk3|hsk4|nhsk1|nhsk2|nhsk3):[1-9][0-9]*:"
             r"section:[1-9][0-9]*:card:[1-9][0-9]*$"
         ),
     ),
@@ -79,6 +79,16 @@ class DesktopCourseCompleteRequest(BaseModel):
     mistakes: list[DesktopCourseMistakeRequest] = Field(
         default_factory=list,
         max_length=50,
+    )
+
+
+class DesktopCourseTrackSwitchRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    target_track: Literal["hsk20", "hsk30"]
+    level: str | None = Field(
+        default=None,
+        pattern=r"^(?:hsk1|hsk2|hsk3|hsk4|nhsk1|nhsk2|nhsk3)$",
     )
 
 
@@ -227,6 +237,53 @@ def create_desktop_course_router(
                     "desktop_course_unavailable",
                     status_code=503,
                 )
+            )
+
+    @router.post("/api/v3/desktop/course/tracks/switch")
+    async def desktop_course_track_switch(request: Request):
+        try:
+            payload = await _validated_payload(
+                request,
+                DesktopCourseTrackSwitchRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(
+                    session,
+                    settings_obj,
+                ).switch_course_track(
+                    _access_token(request),
+                    target_track=payload.target_track,
+                    level=payload.level,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop course track switch failed")
+            return _error_response(
+                DesktopCourseError("desktop_course_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/desktop/course/hsk30/promo-shown")
+    async def desktop_hsk30_promo_shown(request: Request):
+        try:
+            if request.query_params or await request.body():
+                raise DesktopCourseError(
+                    "desktop_course_request_invalid",
+                    status_code=422,
+                )
+            async with session_factory() as session:
+                result = await service_factory(
+                    session,
+                    settings_obj,
+                ).mark_hsk30_promo_shown(_access_token(request))
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop HSK 3.0 promo mark failed")
+            return _error_response(
+                DesktopCourseError("desktop_course_unavailable", status_code=503)
             )
 
     @router.get("/api/v3/desktop/sync")
