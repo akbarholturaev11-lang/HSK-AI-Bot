@@ -136,6 +136,15 @@ private class DictionaryApi(
         timezoneOffsetMinutes: Int,
     ): Response<CourseMapDto> = throw NotImplementedError()
 
+    override suspend fun switchCourseTrack(
+        authorization: String,
+        body: com.pomp.hskai.data.api.CourseTrackSwitchRequest,
+    ): Response<com.pomp.hskai.data.api.OkResponse> = throw NotImplementedError()
+
+    override suspend fun markHsk30PromoShown(
+        authorization: String,
+    ): Response<com.pomp.hskai.data.api.Hsk30PromoMarkResponse> = throw NotImplementedError()
+
     override suspend fun lesson(
         authorization: String,
         lessonOrder: Int,
