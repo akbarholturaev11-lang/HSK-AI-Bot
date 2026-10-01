@@ -70,8 +70,9 @@ class AdminNotifyService:
             "10_days": "10 kunlik",
             "1_month": "1 oylik",
             "3_months": "3 oylik",
-            "hsk30_unlock": "HSK 3.0 ochish",
         }.get(plan_type, plan_type)
+        if plan_type == "hsk30_unlock":
+            plan_label = f"HSK 3.0 ochish · {amount} {currency}"
         origin = {
             "android": "Android ilova",
             "miniapp": "Telegram Mini App",
@@ -88,7 +89,11 @@ class AdminNotifyService:
             f"💳 Yangi to'lov so'rovi",
             f"",
             f"👤 {full_name} ({telegram_id})",
-            f"📦 Tarif: {plan_label} — {amount} {currency}",
+            (
+                f"📦 Mahsulot: {plan_label}"
+                if plan_type == "hsk30_unlock"
+                else f"📦 Tarif: {plan_label} — {amount} {currency}"
+            ),
             f"🏦 To'lov turi: {method_labels.get(payment_method, payment_method or '-')}",
             f"🆔 To'lov ID: #{payment_id}",
             f"📱 Manba: {origin}",
