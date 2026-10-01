@@ -461,6 +461,55 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(wrong_content_type.status_code, 415)
 
+    async def test_desktop_hsk30_unlock_mode_uses_special_product(self):
+        async with self.sessions() as session:
+            await Hsk30FeatureService(session).set_enabled(True)
+            await BotSettingRepository(session).set(
+                PAYMENT_DETAILS_KEY,
+                "DC 4713380023849546",
+            )
+            await session.commit()
+
+        overview = await self.client.get(
+            "/api/v3/desktop/subscription/overview?mode=hsk30_unlock",
+            headers=self._headers(self.token_a),
+        )
+        self.assertEqual(overview.status_code, 200, overview.text)
+        payload = overview.json()
+        self.assertEqual(payload["mode"], "hsk30_unlock")
+        self.assertTrue(payload["checkout_allowed"])
+        self.assertEqual(
+            set(payload["prices"]["visa"]),
+            {HSK30_UNLOCK_PLAN_TYPE},
+        )
+
+        quote = await self.client.post(
+            "/api/v3/desktop/subscription/quote",
+            headers=self._headers(self.token_a),
+            json={
+                "plan_type": HSK30_UNLOCK_PLAN_TYPE,
+                "payment_method": "visa",
+                "card_country": "tj",
+                "card_bank": "dc_city",
+            },
+        )
+        self.assertEqual(quote.status_code, 200, quote.text)
+        self.assertEqual(quote.json()["mode"], "hsk30_unlock")
+        self.assertEqual(quote.json()["quote"]["final_amount"], 10)
+        self.assertEqual(quote.json()["quote"]["final_currency"], "TJS")
+
+        async with self.sessions() as session:
+            entry = (
+                await session.execute(
+                    select(SubscriptionEntryEvent)
+                    .where(SubscriptionEntryEvent.telegram_id == 1001)
+                    .order_by(SubscriptionEntryEvent.created_at.desc())
+                    .limit(1)
+                )
+            ).scalar_one()
+        self.assertEqual(entry.source, "desktop_hsk30_onboarding")
+        self.assertEqual(entry.mode, "hsk30_unlock")
+
     async def test_android_receipt_uses_canonical_checkout_and_marks_admin_origin(self):
         base = "/api/v3/android/subscription/checkout"
         missing = await self.client.get(base + "/overview")
