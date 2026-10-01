@@ -105,6 +105,32 @@ data class CourseFoundation(
  * Server-owned progressive-personalization state.
  * `pending` becomes true only after the learner has completed at least one part.
  */
+data class CourseHsk30Access(
+    val featureEnabled: Boolean,
+    val paidAccess: Boolean,
+    val permanentlyUnlocked: Boolean,
+    val allowed: Boolean,
+    val reason: String,
+)
+
+data class CourseHsk30Promo(
+    val eligible: Boolean,
+    val reason: String,
+    val recommendedLevel: String,
+    val shownCount: Int,
+    val maxShows: Int,
+)
+
+data class CourseHsk30(
+    val activeTrack: String,
+    val activeLevel: String,
+    val access: CourseHsk30Access,
+    val liveLevels: List<String>,
+    val paymentEnabled: Boolean,
+    val priceTjs: Int,
+    val promo: CourseHsk30Promo,
+)
+
 data class CourseStudySetup(
     val goal: String,
     val goalChosen: Boolean,
@@ -163,6 +189,7 @@ data class CourseMap(
     val studySetup: CourseStudySetup? = null,
     val today: CourseToday? = null,
     val foundation: CourseFoundation? = null,
+    val hsk30: CourseHsk30? = null,
     /**
      * Small explanation blocks the server chose for this learner.
      *
