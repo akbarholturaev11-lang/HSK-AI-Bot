@@ -82,6 +82,10 @@ class DesktopCourseCompleteRequest(BaseModel):
     )
 
 
+class DesktopCourseEmptyRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
 class DesktopCourseTrackSwitchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -267,11 +271,12 @@ def create_desktop_course_router(
     @router.post("/api/v3/desktop/course/hsk30/promo-shown")
     async def desktop_hsk30_promo_shown(request: Request):
         try:
-            if request.query_params or await request.body():
+            if request.query_params:
                 raise DesktopCourseError(
                     "desktop_course_request_invalid",
                     status_code=422,
                 )
+            await _validated_payload(request, DesktopCourseEmptyRequest)
             async with session_factory() as session:
                 result = await service_factory(
                     session,
