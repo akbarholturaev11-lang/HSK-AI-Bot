@@ -17,7 +17,11 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import retrofit2.Response
 
-class AssistantFailure(val code: String) : Exception(code)
+class AssistantFailure(
+    val code: String,
+    val limitText: String = "",
+    val resetAt: String = "",
+) : Exception(code)
 
 class AssistantRepository(
     private val api: AssistantApi,
@@ -30,10 +34,14 @@ class AssistantRepository(
         val response = block("Bearer $auth")
         if (response.code() == 401) expired()
         if (!response.isSuccessful) {
-            val code = runCatching {
-                json.decodeFromString<AssistantEnvelope>(response.errorBody()?.string().orEmpty()).error
-            }.getOrNull().orEmpty()
-            throw AssistantFailure(code.ifBlank { "assistant_unavailable" })
+            val envelope = runCatching {
+                json.decodeFromString<AssistantEnvelope>(response.errorBody()?.string().orEmpty())
+            }.getOrNull()
+            throw AssistantFailure(
+                envelope?.error?.takeIf { it.isNotBlank() } ?: "assistant_unavailable",
+                envelope?.limitText.orEmpty(),
+                envelope?.resetAt.orEmpty(),
+            )
         }
         return response.body() ?: throw AssistantFailure("assistant_unavailable")
     }
@@ -48,6 +56,11 @@ class AssistantRepository(
 
 data class AssistantState(
     val enabled: Boolean = false,
+    val statusReady: Boolean = false,
+    val statusLoading: Boolean = false,
+    val statusError: String = "",
+    val statusLimitText: String = "",
+    val statusResetAt: String = "",
     val loading: Boolean = false,
     val busy: Boolean = false,
     val conversationId: String = "",
@@ -57,6 +70,8 @@ data class AssistantState(
     val media: String = "",
     val mediaKind: String = "text",
     val error: String = "",
+    val errorLimitText: String = "",
+    val errorResetAt: String = "",
     val nextCursor: String = "",
     val limits: String = "",
     /** A question the server never confirmed. It blocks a new send until it resolves. */
@@ -111,6 +126,7 @@ class AssistantController(
     private var pending: AssistantInput? = null
     private var job: Job? = null
     private var refreshJob: Job? = null
+    private var statusJob: Job? = null
     private var initialized = false
     private val persistMutex = Mutex()
     private val history = mutableMapOf<String, List<AssistantTurn>>()
@@ -123,6 +139,7 @@ class AssistantController(
         pending = null
         job = null
         refreshJob = null
+        statusJob = null
         history.clear()
         refreshedAt = 0L
         mutable.value = AssistantState()
@@ -153,11 +170,45 @@ class AssistantController(
                     )
                 }
             }
+            refreshStatus()
+        }
+    }
+
+    /** Loads AI availability separately from cached chat history so a temporary
+     * network failure can be shown and retried without losing the conversation. */
+    fun refreshStatus(force: Boolean = false) {
+        if (statusJob?.isActive == true || (!force && mutable.value.statusReady)) return
+        val requestEpoch = epoch
+        mutable.update { it.copy(statusReady = false, statusLoading = true, statusError = "") }
+        statusJob = scope.launch {
             try {
                 val status = repository.status()
-                mutable.update { it.copy(enabled = status.enabled, limits = status.entitlements?.toString().orEmpty()) }
+                if (epoch != requestEpoch) return@launch
+                mutable.update {
+                    it.copy(
+                        enabled = status.enabled,
+                        limits = status.entitlements?.toString().orEmpty(),
+                        statusReady = true,
+                        statusLoading = false,
+                        statusError = "",
+                        statusLimitText = "",
+                        statusResetAt = "",
+                    )
+                }
             } catch (cancel: CancellationException) { throw cancel }
-            catch (_: Exception) { initialized = false }
+            catch (error: Exception) {
+                if (epoch != requestEpoch) return@launch
+                mutable.update {
+                    it.copy(
+                        enabled = false,
+                        statusReady = true,
+                        statusLoading = false,
+                        statusError = (error as? AssistantFailure)?.code ?: "assistant_network",
+                        statusLimitText = (error as? AssistantFailure)?.limitText.orEmpty(),
+                        statusResetAt = (error as? AssistantFailure)?.resetAt.orEmpty(),
+                    )
+                }
+            }
         }
     }
 
@@ -203,6 +254,7 @@ class AssistantController(
     }
 
     fun open() {
+        refreshStatus(force = !mutable.value.enabled && mutable.value.statusError.isNotBlank())
         if (job?.isActive == true) return
         job = scope.launch {
             val cachedId = mutable.value.conversationId
@@ -398,6 +450,13 @@ class AssistantController(
         if (id.isNotBlank()) history[id] = mutable.value.turns
     }
     private fun report(error: Exception) {
-        mutable.update { it.copy(error = (error as? AssistantFailure)?.code ?: "assistant_network") }
+        val failure = error as? AssistantFailure
+        mutable.update {
+            it.copy(
+                error = failure?.code ?: "assistant_network",
+                errorLimitText = failure?.limitText.orEmpty(),
+                errorResetAt = failure?.resetAt.orEmpty(),
+            )
+        }
     }
 }

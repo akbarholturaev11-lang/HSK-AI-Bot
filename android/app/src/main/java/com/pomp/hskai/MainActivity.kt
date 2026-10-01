@@ -1163,6 +1163,7 @@ private fun AppRoot(
                                     voiceViewModel.swapPartner(role, currentLevel, currentLanguage)
                                 },
                                 onReset = voiceViewModel::reset,
+                                onRetryStatus = voiceViewModel::loadStatus,
                                 modifier = contentModifier,
                             )
 
@@ -1225,6 +1226,12 @@ private fun AppRoot(
                                 onIdentitiesBrowserOpened = identitiesViewModel::browserUrlOpened,
                                 onSaveProfile = profileViewModel::saveProfile,
                                 profileSaving = profileState.profileSaving,
+                                onOpenSubscription = { renewal ->
+                                    checkoutOrigin = if (renewal) "profile_renewal" else "profile_subscription"
+                                    checkoutVisible = true
+                                },
+                                onStartTrial = profileViewModel::startTrial,
+                                subscriptionCheckoutAvailable = BuildConfig.FLAVOR == "direct",
                             )
                         }
                     }

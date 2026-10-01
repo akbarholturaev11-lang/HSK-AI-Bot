@@ -19,9 +19,9 @@ class SubscriptionCheckoutFlowTest {
     }
 
     @Test
-    fun `only Tajikistan and China ask for a payment type`() {
-        val withMethod = listOf(CheckoutStep.REGION, CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
-        val direct = listOf(CheckoutStep.REGION, CheckoutStep.PLANS, CheckoutStep.PAY)
+    fun `plans come first and only Tajikistan and China ask for a payment type`() {
+        val withMethod = listOf(CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
+        val direct = listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
         assertEquals(withMethod, checkoutFlow("tj"))
         assertEquals(withMethod, checkoutFlow("cn"))
         assertEquals(direct, checkoutFlow("ru"))

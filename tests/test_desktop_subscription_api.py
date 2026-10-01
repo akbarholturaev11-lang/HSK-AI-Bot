@@ -546,6 +546,37 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             source=payment.source,
         ))
 
+    async def test_android_profile_renewal_allows_active_paid_checkout(self):
+        expires_at = datetime.now(timezone.utc) + timedelta(days=12)
+        async with self.sessions() as session:
+            user = await session.get(User, 2)
+            user.status = "active"
+            user.payment_status = "approved"
+            user.start_date = datetime.now(timezone.utc) - timedelta(days=18)
+            user.end_date = expires_at
+            await session.commit()
+
+        base = "/api/v3/android/subscription/checkout"
+        overview = await self.client.get(
+            base + "/overview?origin=profile_renewal",
+            headers=self._headers(self.token_b),
+        )
+        quote = await self.client.post(
+            base + "/quote",
+            headers=self._headers(self.token_b),
+            json={
+                "plan_type": "1_month",
+                "payment_method": "alipay",
+                "card_country": None,
+            },
+        )
+
+        self.assertEqual(200, overview.status_code)
+        self.assertTrue(overview.json()["access"]["is_paid"])
+        self.assertTrue(overview.json()["checkout_allowed"])
+        self.assertEqual(200, quote.status_code)
+        self.assertEqual(66, quote.json()["quote"]["final_amount"])
+
     async def test_android_card_quote_uses_the_chosen_bank_requisites(self):
         async with self.sessions() as session:
             await BotSettingRepository(session).set(PAYMENT_DETAILS_KEY, "DC 4713380023849546")

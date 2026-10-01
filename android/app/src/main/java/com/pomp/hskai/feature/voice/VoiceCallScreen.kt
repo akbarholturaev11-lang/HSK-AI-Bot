@@ -12,6 +12,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +45,8 @@ import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -56,13 +60,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -111,6 +119,7 @@ internal fun VoiceCallScreen(
     var partnerSheetOpen by remember { mutableStateOf(false) }
     var hintsOpen by remember { mutableStateOf(false) }
     var keyboardOpen by remember { mutableStateOf(false) }
+    var transcriptVisible by rememberSaveable(state.sessionId) { mutableStateOf(true) }
     var draft by remember { mutableStateOf("") }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -135,42 +144,83 @@ internal fun VoiceCallScreen(
                 state.maxDialogs,
             ),
             onClose = onEndSession,
+            transcriptVisible = transcriptVisible,
+            onToggleTranscript = { transcriptVisible = !transcriptVisible },
             onOpenSettings = { settingsOpen = true },
             settingsEnabled = state.canAnswer,
         )
 
-        // The stage: the partner, and one line saying what is happening.
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(130.dp))
+        val status = when {
+            state.isStarting -> stringResource(R.string.voice_status_connecting)
+            state.isRecording -> stringResource(R.string.voice_status_listening)
+            state.isSending -> stringResource(R.string.voice_status_analyzing)
+            else -> stringResource(R.string.voice_status_speaking)
         }
-        Text(
-            text = when {
-                state.isStarting -> stringResource(R.string.voice_status_connecting)
-                state.isRecording -> stringResource(R.string.voice_status_listening)
-                state.isSending -> stringResource(R.string.voice_status_analyzing)
-                else -> stringResource(R.string.voice_status_speaking)
-            },
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-            color = PompColors.InkSecondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp),
-        )
-
-        CallChat(
-            state = state,
-            subtitlesOn = subtitlesOn,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-        )
+        if (transcriptVisible) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(194.dp)
+                    .padding(horizontal = 14.dp)
+                    .clip(RoundedCornerShape(22.dp)),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.voice_room_background),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                Box(Modifier.fillMaxSize().background(PompColors.Paper.copy(alpha = 0.12f)))
+                CoursePandaMascot(
+                    mood = PandaMood.Talk,
+                    modifier = Modifier.align(Alignment.Center).size(132.dp),
+                )
+            }
+            Text(
+                text = status,
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 6.dp),
+            )
+            CallChat(
+                state = state,
+                subtitlesOn = subtitlesOn,
+                modifier = Modifier.fillMaxWidth().weight(1f),
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
+                    .clip(RoundedCornerShape(24.dp)),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.voice_room_background),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                Box(Modifier.fillMaxSize().background(PompColors.Paper.copy(alpha = 0.08f)))
+                CoursePandaMascot(
+                    mood = PandaMood.Talk,
+                    modifier = Modifier.align(Alignment.Center).size(260.dp),
+                )
+                Surface(
+                    color = PompColors.Paper.copy(alpha = 0.86f),
+                    shape = RoundedCornerShape(999.dp),
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
+                ) {
+                    Text(
+                        text = status,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                        color = PompColors.InkSecondary,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                    )
+                }
+            }
+        }
 
         CallDock(
             state = state,
@@ -246,6 +296,8 @@ private fun CallTopBar(
     title: String,
     subtitle: String,
     onClose: () -> Unit,
+    transcriptVisible: Boolean,
+    onToggleTranscript: () -> Unit,
     onOpenSettings: () -> Unit,
     settingsEnabled: Boolean,
 ) {
@@ -279,6 +331,13 @@ private fun CallTopBar(
                 color = PompColors.InkSecondary,
             )
         }
+        RoundIconButton(
+            icon = if (transcriptVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+            contentDescription = stringResource(
+                if (transcriptVisible) R.string.voice_hide_chat else R.string.voice_show_chat,
+            ),
+            onClick = onToggleTranscript,
+        )
         RoundIconButton(
             icon = Icons.Filled.Settings,
             contentDescription = stringResource(R.string.voice_partner),

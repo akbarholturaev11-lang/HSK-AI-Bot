@@ -17,6 +17,8 @@ class User(Base):
     username: Mapped[Optional[str]] = mapped_column(String(64), index=True, nullable=True)
 
     payment_method = Column(String, nullable=True)
+    # User-selected subscription price display currency; independent of payment method.
+    subscription_currency: Mapped[Optional[str]] = mapped_column(String(3), nullable=True)
 
     language: Mapped[str] = mapped_column(String(8), default="tj", nullable=False)
     level: Mapped[str] = mapped_column(String(32), default="beginner", nullable=False)

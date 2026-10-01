@@ -276,6 +276,7 @@ class HskAiApplication : Application() {
             checkoutReceiptApi = assistantRetrofit.create(AndroidFeatureApi::class.java),
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
+            appSettings = appSettings,
         )
     }
 
@@ -297,6 +298,7 @@ class HskAiApplication : Application() {
         appSettings.clearDictionaryHistory()
         appSettings.clearAdsUnlockedAfterLimit()
         appSettings.clearPaymentRegion()
+        appSettings.clearSubscriptionDisplayCurrency()
         // Dictionary rows are public release data, not account data. Keeping
         // them across logout preserves the version that the ETag stamp refers to
         // and avoids replacing a newer server copy with the bundled APK seed.

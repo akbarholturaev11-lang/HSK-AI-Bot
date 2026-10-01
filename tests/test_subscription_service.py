@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 from app.services.subscription_service import (
     MANUAL_SUBSCRIPTION_MAX_DAYS,
@@ -160,17 +161,49 @@ class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
         service.user_repo = _UserRepo(None)
         self.assertIsNone(await service.grant_manual_paid_access(999, 30))
 
-    async def test_fixed_payment_plan_activation_keeps_existing_reset_semantics(self):
+    async def test_paid_plan_activation_extends_existing_expiry(self):
+        original_start = datetime.now(timezone.utc) - timedelta(days=2)
+        original_end = datetime.now(timezone.utc) + timedelta(days=50)
         user = self._user(
             status="active",
             payment_status="approved",
-            start_date=datetime.now(timezone.utc) - timedelta(days=2),
-            end_date=datetime.now(timezone.utc) + timedelta(days=50),
+            start_date=original_start,
+            end_date=original_end,
         )
-        service, _, _ = self._service(user)
+        service, _, repo = self._service(user)
 
         self.assertTrue(await service.activate_plan(123, "10_days"))
-        self.assertEqual(user.end_date - user.start_date, timedelta(days=10))
+        self.assertEqual(user.start_date, original_start)
+        self.assertEqual(user.end_date, original_end + timedelta(days=10))
+        self.assertEqual(repo.locked_lookups, 1)
+
+    async def test_paid_payment_schedules_ai_budget_after_current_period(self):
+        original_start = datetime.now(timezone.utc) - timedelta(days=2)
+        original_end = datetime.now(timezone.utc) + timedelta(days=20)
+        user = self._user(
+            status="active",
+            payment_status="approved",
+            start_date=original_start,
+            end_date=original_end,
+        )
+        service, session, _ = self._service(user)
+        payment = SimpleNamespace(id=77)
+        with (
+            patch("app.services.subscription_service.AIUsageBudgetService") as budget_service,
+            patch("app.services.subscription_service.PortfolioService") as portfolio_service,
+        ):
+            budget_service.return_value.create_for_payment = AsyncMock()
+            portfolio_service.return_value.record_subscription_profit = AsyncMock()
+
+            self.assertTrue(await service.activate_plan(123, "1_month", payment=payment))
+
+        budget_service.return_value.create_for_payment.assert_awaited_once_with(
+            payment=payment,
+            starts_at=original_end,
+            ends_at=original_end + timedelta(days=30),
+            preserve_existing=True,
+        )
+        self.assertEqual(user.end_date, original_end + timedelta(days=30))
 
 
 if __name__ == "__main__":

@@ -51,7 +51,10 @@ class SubscriptionService:
         discount_source: Optional[str] = None,
         payment=None,
     ) -> bool:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        # Admin approval may process two different payments for the same
+        # learner at nearly the same time. Lock the account so both renewals
+        # extend the latest expiry instead of overwriting one another.
+        user = await self.user_repo.get_by_telegram_id_for_update(telegram_id)
         if not user:
             return False
 
@@ -60,15 +63,29 @@ class SubscriptionService:
             return False
 
         now = datetime.now(timezone.utc)
+        current_end = user.end_date
+        if current_end is not None:
+            if current_end.tzinfo is None:
+                current_end = current_end.replace(tzinfo=timezone.utc)
+            else:
+                current_end = current_end.astimezone(timezone.utc)
+        extends_paid_term = bool(
+            user.payment_status == "approved"
+            and current_end is not None
+            and current_end > now
+        )
+        period_starts_at = current_end if extends_paid_term else now
+        period_ends_at = period_starts_at + timedelta(days=duration_days)
         # Trial → to'lov konversiyasi voronkaning yagona muhim nisbati.
         # Bayroq YOZUVDAN OLDIN olinadi: `status`/`end_date` o'zgargach
         # foydalanuvchi allaqachon PRO_ACTIVE bo'lib qoladi.
-        came_from_trial = bool(getattr(user, "trial_used", False))
+        came_from_trial = bool(getattr(user, "trial_used", False) and not extends_paid_term)
 
         user.status = "active"
         user.payment_status = "approved"
-        user.start_date = now
-        user.end_date = now + timedelta(days=duration_days)
+        if not extends_paid_term or user.start_date is None:
+            user.start_date = now
+        user.end_date = period_ends_at
         user.selected_plan_type = None
         user.expiry_reminder_sent_at = None
         await SubscriptionChurnService(self.session).reset_after_paid_activation(user)
@@ -83,8 +100,9 @@ class SubscriptionService:
         if payment is not None:
             await AIUsageBudgetService(self.session).create_for_payment(
                 payment=payment,
-                starts_at=user.start_date,
-                ends_at=user.end_date,
+                starts_at=period_starts_at,
+                ends_at=period_ends_at,
+                preserve_existing=extends_paid_term,
             )
             await PortfolioService(self.session).record_subscription_profit(payment)
 

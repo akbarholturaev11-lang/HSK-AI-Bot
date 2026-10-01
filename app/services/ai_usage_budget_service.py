@@ -90,7 +90,14 @@ class AIUsageBudgetService:
             return None
         return max((revenue_usd * (1 - PROFIT_MARGIN)) - RAILWAY_SHARE_USD, 0.0)
 
-    async def create_for_payment(self, payment, starts_at: datetime, ends_at: datetime) -> Optional[AIUsageBudget]:
+    async def create_for_payment(
+        self,
+        payment,
+        starts_at: datetime,
+        ends_at: datetime,
+        *,
+        preserve_existing: bool = False,
+    ) -> Optional[AIUsageBudget]:
         rates = await self._live_or_manual_usd_rates()
         total_budget = self._ai_budget_usd(payment.amount, payment.currency, rates)
         budget_amount = payment.amount
@@ -102,7 +109,11 @@ class AIUsageBudgetService:
         if total_budget is None:
             return None
 
-        await self.expire_active_budgets(payment.user_telegram_id)
+        # A paid renewal is scheduled after the current subscription period.
+        # Keep its budget alive until its own end date; the new payment gets a
+        # separate budget row for the next period.
+        if not preserve_existing:
+            await self.expire_active_budgets(payment.user_telegram_id)
 
         now = datetime.now(timezone.utc)
         segment_budget = total_budget / SEGMENT_COUNT
@@ -227,20 +238,26 @@ class AIUsageBudgetService:
     async def get_active_budget(self, telegram_id: int) -> Optional[AIUsageBudget]:
         now = datetime.now(timezone.utc)
         budgets = await self._list_active_budgets(telegram_id)
-        active = None
+        eligible: list[AIUsageBudget] = []
         changed = False
         for budget in budgets:
-            if self._as_utc(budget.ends_at) <= now:
+            starts_at = self._as_utc(budget.starts_at)
+            ends_at = self._as_utc(budget.ends_at)
+            if ends_at <= now:
                 budget.status = "expired"
                 budget.updated_at = now
                 changed = True
                 continue
-            if active is None:
-                active = budget
-            else:
-                budget.status = "expired"
-                budget.updated_at = now
-                changed = True
+            # Renewals create a future budget. It must not displace the
+            # current one before the paid period rolls over.
+            if starts_at <= now:
+                eligible.append(budget)
+
+        active = eligible[0] if eligible else None
+        for duplicate in eligible[1:]:
+            duplicate.status = "expired"
+            duplicate.updated_at = now
+            changed = True
         if changed:
             await self.session.flush()
         return active

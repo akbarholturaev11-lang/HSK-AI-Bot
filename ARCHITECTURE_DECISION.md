@@ -404,7 +404,6 @@ har bosqich oxirida ilova ishlaydigan holatda.
 - Real tekshiruv: ilova haqiqatan ishlayotganini ko'rsatish
 - `graphify update .`
 - `PROJECT_MEMORY.md` yangilash (AI_RULES formatida)
-- Release feedback draft (AGENTS.md qoidasi — user ko'radigan katta update)
 - **Faqat shundan keyin** `main` haqida gap boradi
 
 ### PUSH QOIDASI (2026-09-05, foydalanuvchi ko'rsatmasi)

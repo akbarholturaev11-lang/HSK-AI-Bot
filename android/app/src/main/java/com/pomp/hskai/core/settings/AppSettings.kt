@@ -17,6 +17,11 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
     name = "pomp_settings",
 )
 
+private val subscriptionDisplayCurrencies = setOf("TJS", "UZS", "RUB", "CNY", "USD")
+
+private fun normalizeSubscriptionDisplayCurrency(value: String?): String? =
+    value?.trim()?.uppercase()?.takeIf { it in subscriptionDisplayCurrencies }
+
 /**
  * How much pinyin the learner wants to see, mirroring the Course v3 setting
  * stored as `hsk_v3_pinyin` in the Mini App.
@@ -103,6 +108,10 @@ class AppSettings(context: Context) : LessonResumeStore {
     val dailyGoal: Flow<Int> = appContext.settingsDataStore.data
         .map { DailyGoal.sanitize(it[DAILY_GOAL_KEY]) }
 
+    /** Cached server-owned price display preference; payment routing remains server controlled. */
+    val subscriptionDisplayCurrency: Flow<String?> = appContext.settingsDataStore.data
+        .map { normalizeSubscriptionDisplayCurrency(it[SUBSCRIPTION_DISPLAY_CURRENCY_KEY]) }
+
     /**
      * Mini App parity for `hsk_v3_setup_asked`.
      *
@@ -180,6 +189,21 @@ class AppSettings(context: Context) : LessonResumeStore {
 
     suspend fun clearPaymentRegion() {
         appContext.settingsDataStore.edit { it.remove(PAYMENT_REGION_KEY) }
+    }
+
+    suspend fun setSubscriptionDisplayCurrency(value: String?) {
+        val normalized = normalizeSubscriptionDisplayCurrency(value)
+        appContext.settingsDataStore.edit { preferences ->
+            if (normalized == null) {
+                preferences.remove(SUBSCRIPTION_DISPLAY_CURRENCY_KEY)
+            } else {
+                preferences[SUBSCRIPTION_DISPLAY_CURRENCY_KEY] = normalized
+            }
+        }
+    }
+
+    suspend fun clearSubscriptionDisplayCurrency() {
+        appContext.settingsDataStore.edit { it.remove(SUBSCRIPTION_DISPLAY_CURRENCY_KEY) }
     }
 
     suspend fun setVoiceSubtitles(value: Boolean) {
@@ -302,6 +326,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
         val ADS_UNLOCKED_AFTER_LIMIT_KEY = booleanPreferencesKey("ads_unlocked_after_limit:v1")
         val PAYMENT_REGION_KEY = stringPreferencesKey("payment_region:v1")
+        val SUBSCRIPTION_DISPLAY_CURRENCY_KEY = stringPreferencesKey("subscription_display_currency:v1")
         val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")
 
         /** A dictionary entry never contains a line break. */

@@ -4,6 +4,7 @@ import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
+import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.data.api.AndroidAdListResponse
 import com.pomp.hskai.data.api.AndroidTrialStartResponse
 import com.pomp.hskai.data.api.AndroidTrialStatusResponse
@@ -14,6 +15,8 @@ import com.pomp.hskai.data.api.AndroidHintDismissRequest
 import com.pomp.hskai.data.api.AndroidHintDismissResponse
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
+import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceRequest
+import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
@@ -99,6 +102,7 @@ class FeatureRepository(
     private val timezoneOffsetMinutes: () -> Int = {
         TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000
     },
+    private val appSettings: AppSettings? = null,
 ) {
 
     suspend fun profile(): ApiResult<AndroidProfileResponse> = authorized {
@@ -119,8 +123,36 @@ class FeatureRepository(
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
         authorized { api.subscriptionOverview(it) }
 
-    suspend fun checkoutOverview(origin: String): ApiResult<SubscriptionCheckoutOverviewDto> =
-        authorized { api.checkoutOverview(it, origin) }
+    suspend fun checkoutOverview(origin: String): ApiResult<SubscriptionCheckoutOverviewDto> {
+        val result = authorized { api.checkoutOverview(it, origin) }
+        if (result is ApiResult.Success) {
+            appSettings?.setSubscriptionDisplayCurrency(result.value.preferredCurrency)
+        }
+        return result
+    }
+
+    suspend fun subscriptionCurrencyPreference(): ApiResult<AndroidSubscriptionCurrencyPreferenceResponse> {
+        val result = authorized { api.subscriptionCurrencyPreference(it) }
+        if (result is ApiResult.Success) {
+            appSettings?.setSubscriptionDisplayCurrency(result.value.currency)
+        }
+        return result
+    }
+
+    suspend fun updateSubscriptionCurrencyPreference(
+        currency: String,
+    ): ApiResult<AndroidSubscriptionCurrencyPreferenceResponse> {
+        val result = authorized {
+            api.updateSubscriptionCurrencyPreference(
+                it,
+                AndroidSubscriptionCurrencyPreferenceRequest(currency),
+            )
+        }
+        if (result is ApiResult.Success) {
+            appSettings?.setSubscriptionDisplayCurrency(result.value.currency)
+        }
+        return result
+    }
 
     suspend fun checkoutDiscountStart(): ApiResult<SubscriptionDiscountStartResponse> =
         authorized { api.checkoutDiscountStart(it) }

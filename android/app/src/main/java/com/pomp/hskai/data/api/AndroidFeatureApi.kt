@@ -4,9 +4,10 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.POST
 import retrofit2.http.PATCH
 import retrofit2.http.Path
+import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 interface AndroidFeatureApi {
@@ -32,6 +33,17 @@ interface AndroidFeatureApi {
         @Header("Authorization") authorization: String,
         @Query("origin") origin: String,
     ): Response<SubscriptionCheckoutOverviewDto>
+
+    @GET("api/v3/android/subscription/currency-preference")
+    suspend fun subscriptionCurrencyPreference(
+        @Header("Authorization") authorization: String,
+    ): Response<AndroidSubscriptionCurrencyPreferenceResponse>
+
+    @PUT("api/v3/android/subscription/currency-preference")
+    suspend fun updateSubscriptionCurrencyPreference(
+        @Header("Authorization") authorization: String,
+        @Body body: AndroidSubscriptionCurrencyPreferenceRequest,
+    ): Response<AndroidSubscriptionCurrencyPreferenceResponse>
 
     @POST("api/v3/android/subscription/checkout/discount-start")
     suspend fun checkoutDiscountStart(

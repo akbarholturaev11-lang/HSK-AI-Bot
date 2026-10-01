@@ -11,6 +11,8 @@ import com.pomp.hskai.data.api.AndroidAdViewResponse
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
+import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceRequest
+import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
@@ -271,6 +273,15 @@ private class FakeFeatureApi(
         authorization: String,
         origin: String,
     ): Response<SubscriptionCheckoutOverviewDto> = error("unexpected call")
+
+    override suspend fun subscriptionCurrencyPreference(
+        authorization: String,
+    ): Response<AndroidSubscriptionCurrencyPreferenceResponse> = error("unexpected call")
+
+    override suspend fun updateSubscriptionCurrencyPreference(
+        authorization: String,
+        body: AndroidSubscriptionCurrencyPreferenceRequest,
+    ): Response<AndroidSubscriptionCurrencyPreferenceResponse> = error("unexpected call")
 
     override suspend fun checkoutDiscountStart(
         authorization: String,

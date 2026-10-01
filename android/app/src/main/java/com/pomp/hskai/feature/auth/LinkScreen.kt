@@ -27,7 +27,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -212,36 +220,66 @@ private fun LanguageSwitch(
     language: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
 ) {
-    Surface(
-        shape = CircleShape,
-        color = if (PompColors.IsDark) PompColors.PaperRaised else Color.White,
-        shadowElevation = 3.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(start = 10.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    Box {
+        Surface(
+            onClick = { expanded = true },
+            shape = CircleShape,
+            color = if (PompColors.IsDark) PompColors.PaperRaised else Color.White,
+            shadowElevation = 3.dp,
         ) {
-            Icon(
-                imageVector = Icons.Filled.Language,
-                contentDescription = stringResource(R.string.cd_language_switch),
-                tint = PompColors.InkSecondary,
-                modifier = Modifier.size(16.dp),
-            )
-            Spacer(Modifier.size(6.dp))
+            Row(
+                modifier = Modifier.padding(start = 11.dp, end = 10.dp, top = 9.dp, bottom = 9.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Language,
+                    contentDescription = stringResource(R.string.cd_language_switch),
+                    tint = PompColors.InkSecondary,
+                    modifier = Modifier.size(17.dp),
+                )
+                Spacer(Modifier.size(6.dp))
+                Text(
+                    text = stringResource(languageCodeRes(language)),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = PompColors.Ink,
+                )
+                Icon(
+                    imageVector = Icons.Filled.ExpandMore,
+                    contentDescription = null,
+                    tint = PompColors.InkSecondary,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
             AppLanguage.entries.forEach { entry ->
                 val selected = entry == language
-                Text(
-                    text = stringResource(languageCodeRes(entry)),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (selected) PompColors.Paper else PompColors.InkSecondary,
-                    modifier = Modifier
-                        .padding(vertical = 4.dp, horizontal = 2.dp)
-                        .clip(CircleShape)
-                        .background(if (selected) PompColors.Cinnabar else Color.Transparent)
-                        .clickable(enabled = !selected) { onLanguageSelected(entry) }
-                        .widthIn(min = 34.dp)
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-                    textAlign = TextAlign.Center,
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(languageCodeRes(entry)),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = PompColors.CinnabarDark,
+                            )
+                            Spacer(Modifier.size(12.dp))
+                            Text(
+                                text = stringResource(languageNameRes(entry)),
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    },
+                    trailingIcon = if (selected) {
+                        { Icon(Icons.Filled.Check, contentDescription = null, tint = PompColors.Cinnabar) }
+                    } else null,
+                    onClick = {
+                        expanded = false
+                        if (!selected) onLanguageSelected(entry)
+                    },
                 )
             }
         }
@@ -252,6 +290,12 @@ private fun languageCodeRes(language: AppLanguage): Int = when (language) {
     AppLanguage.UZBEK -> R.string.language_code_uz
     AppLanguage.RUSSIAN -> R.string.language_code_ru
     AppLanguage.TAJIK -> R.string.language_code_tj
+}
+
+private fun languageNameRes(language: AppLanguage): Int = when (language) {
+    AppLanguage.UZBEK -> R.string.language_uz
+    AppLanguage.RUSSIAN -> R.string.language_ru
+    AppLanguage.TAJIK -> R.string.language_tj
 }
 
 /**
