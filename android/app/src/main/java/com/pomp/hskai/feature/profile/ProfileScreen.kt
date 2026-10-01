@@ -120,6 +120,7 @@ fun ProfileScreen(
     courseTrack: String = "hsk20",
     hsk30Enabled: Boolean = false,
     hsk30Allowed: Boolean = false,
+    hsk30IsNew: Boolean = false,
     hsk30PaymentEnabled: Boolean = false,
     hsk30PriceTjs: Int = 0,
     hsk30LiveLevels: List<String> = listOf("nhsk1"),
@@ -302,6 +303,7 @@ fun ProfileScreen(
         CourseVersionPickerSheet(
             currentTrack = courseTrack,
             hsk30Allowed = hsk30Allowed,
+            hsk30IsNew = hsk30IsNew,
             hsk30PaymentEnabled = hsk30PaymentEnabled,
             hsk30PriceTjs = hsk30PriceTjs,
             hsk30LiveLevels = hsk30LiveLevels,
@@ -751,6 +753,7 @@ private fun ProfileSettingsSheet(
 private fun CourseVersionPickerSheet(
     currentTrack: String,
     hsk30Allowed: Boolean,
+    hsk30IsNew: Boolean,
     hsk30PaymentEnabled: Boolean,
     hsk30PriceTjs: Int,
     hsk30LiveLevels: List<String>,
@@ -881,6 +884,21 @@ private fun CourseVersionPickerSheet(
                             },
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (hsk30IsNew) {
+                                    Text(
+                                        "NEW",
+                                        color = PompColors.CinnabarDark,
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier
+                                            .background(
+                                                PompColors.Cinnabar.copy(alpha = 0.12f),
+                                                RoundedCornerShape(5.dp),
+                                            )
+                                            .padding(horizontal = 4.dp, vertical = 1.dp),
+                                    )
+                                    Spacer(Modifier.width(6.dp))
+                                }
                                 when {
                                     currentTrack == "hsk30" ->
                                         Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
