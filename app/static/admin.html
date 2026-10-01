@@ -1868,6 +1868,13 @@
           <p>Бу глобал kill switch. Ўчирилса HSK 3.0 барча user учун ёпилади.</p>
           <label class="ncsw"><input type="checkbox" id="hsk30Enabled" ${courseOn?"checked":""}> HSK 3.0 курс ёқилган</label>
           <div class="tags" style="margin-top:10px">${tag(courseOn?"курс фаол":"курс ўчиқ",courseOn?"green":"red")}${live.map(x=>tag(String(x).toUpperCase(),"blue")).join("")}</div>
+          <div class="frow" style="margin-top:12px">
+            <label>Live даражалар</label>
+            <div class="row">
+              ${["nhsk1","nhsk2","nhsk3"].map((lv,idx)=>`<label class="ncsw"><input type="checkbox" data-hsk30-live value="${lv}" ${live.includes(lv)?"checked":""}> N${idx+1}</label>`).join("")}
+            </div>
+          </div>
+          <div class="ncnote">Runtime файл борлиги даражани автоматик очмайди. Фақат шу ерда белгиланган даражалар userларга кўринади.</div>
         </div>
         <div class="mcard">
           <h3>Бир марталик HSK 3.0 тўлови</h3>
@@ -2553,10 +2560,12 @@
         const price=Number(($("hsk30Price")&&$("hsk30Price").value)||0);
         if(!Number.isSafeInteger(price)||price<1||price>10000){ toast("HSK 3.0 нархи 1–10000 TJS оралиғида бутун сон бўлиши керак"); return; }
         el.disabled=true;
+        const liveLevels=[...document.querySelectorAll("[data-hsk30-live]:checked")].map(x=>x.value);
         return apiPost("/api/admin-miniapp/hsk30/settings",{
           enabled:!!($("hsk30Enabled")&&$("hsk30Enabled").checked),
           unlock_payment_enabled:!!($("hsk30PaymentEnabled")&&$("hsk30PaymentEnabled").checked),
-          unlock_price_tjs:price
+          unlock_price_tjs:price,
+          live_levels:liveLevels
         }).then(()=>afterModule("HSK 3.0 созламалари сақланди")).catch(x=>{toast(apiErr(x,"HSK 3.0 созламалари сақланмади"));el.disabled=false;});
       }
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
