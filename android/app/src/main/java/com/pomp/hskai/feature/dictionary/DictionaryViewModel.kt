@@ -121,6 +121,26 @@ class DictionaryViewModel(
         }
     }
 
+    fun setActiveCourseLevel(level: String) {
+        val normalized = level.trim().lowercase()
+        val version = if (normalized.startsWith("nhsk")) "hsk30" else "hsk20"
+        val levelFilter = when {
+            normalized.startsWith("nhsk") -> {
+                val band = normalized.filter(Char::isDigit).toIntOrNull()?.coerceIn(1, 3) ?: 1
+                "nhsk$band"
+            }
+            normalized.startsWith("hsk") -> {
+                val band = normalized.filter(Char::isDigit).toIntOrNull()?.coerceIn(1, 4) ?: 1
+                "hsk$band"
+            }
+            else -> "hsk1"
+        }
+        val current = _state.value
+        if (current.versionFilter == version && current.levelFilter == levelFilter) return
+        _state.update { it.copy(versionFilter = version, levelFilter = levelFilter) }
+        viewModelScope.launch { runSearch(_state.value.query) }
+    }
+
     fun selectVersionFilter(filter: String) {
         if (filter !in VERSION_FILTERS) return
         val current = _state.value
