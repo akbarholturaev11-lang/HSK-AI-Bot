@@ -121,11 +121,18 @@ data class CourseHsk30Promo(
     val maxShows: Int,
 )
 
+data class CourseHsk30NewBadge(
+    val isNew: Boolean,
+    val enabledAt: String?,
+    val newUntil: String?,
+)
+
 data class CourseHsk30(
     val activeTrack: String,
     val activeLevel: String,
     val access: CourseHsk30Access,
     val liveLevels: List<String>,
+    val newBadge: CourseHsk30NewBadge,
     val paymentEnabled: Boolean,
     val priceTjs: Int,
     val promo: CourseHsk30Promo,
