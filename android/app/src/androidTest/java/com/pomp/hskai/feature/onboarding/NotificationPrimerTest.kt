@@ -3,10 +3,12 @@ package com.pomp.hskai.feature.onboarding
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pomp.hskai.core.design.PompHskAiTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,13 +43,28 @@ class NotificationPrimerTest {
     }
 
     @Test
-    fun itNamesBothKindsOfNotification() {
+    fun itKeepsTheAskBrief() {
         show()
 
         compose.onNodeWithText("Bildirishnomalarni yoqing").assertIsDisplayed()
-        compose.onNodeWithText("Kechqurun darsni eslatib turamiz").assertIsDisplayed()
+        compose.onNodeWithText("Kechqurun darsni eslatib turamiz").assertDoesNotExist()
         compose.onNodeWithText("Yangi versiya chiqqanda bir marta xabar beramiz")
-            .assertIsDisplayed()
+            .assertDoesNotExist()
+        compose.onNodeWithText("To‘lov tasdiqlansa yoki rad etilsa xabar beramiz")
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun bothAnswersStayAtTheBottom() {
+        show()
+
+        val screen = compose.onRoot().fetchSemanticsNode().boundsInRoot
+        val allow = compose.onNodeWithText("Yoqish").fetchSemanticsNode().boundsInRoot
+        val later = compose.onNodeWithText("Keyinroq").fetchSemanticsNode().boundsInRoot
+
+        assertTrue(allow.top > screen.top + screen.height * 0.75f)
+        assertTrue(later.top > allow.bottom)
+        compose.onNodeWithText("Keyinroq").assertIsDisplayed()
     }
 
     @Test
@@ -76,5 +93,15 @@ class NotificationPrimerTest {
 
         compose.onNodeWithText("Включите уведомления").assertIsDisplayed()
         compose.onNodeWithText("Включить").assertIsDisplayed()
+    }
+
+    @Test
+    fun theTajikAskHasNoExplanation() {
+        show(language = "tj")
+
+        compose.onNodeWithText("Огоҳиномаҳоро фаъол кунед").assertIsDisplayed()
+        compose.onNodeWithText("Фаъол кардан").assertIsDisplayed()
+        compose.onNodeWithText("Баъдтар").assertIsDisplayed()
+        compose.onNodeWithText("Бегоҳӣ дарсро ёдрас мекунем").assertDoesNotExist()
     }
 }
