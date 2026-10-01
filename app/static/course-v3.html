@@ -1392,11 +1392,14 @@ function requestCourseTrackSwitch(target){
 function openCourseTrackPicker(){
   var t=trackUi(),cur=currentCourseTrack();
   courseTrackStatus(false).catch(function(){return null}).then(function(status){
-    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+    var h30=status&&status.tracks&&status.tracks.hsk30||{},access=h30.access;
     var h30sub=access&&access.feature_enabled===false?t.disabled:(access&&access.allowed?t.current:t.hsk30Title);
+    var newTag=h30.new_badge&&h30.new_badge.is_new
+      ?'<span style="display:inline-block;margin-left:6px;padding:2px 5px;border-radius:6px;background:var(--cinbg);color:var(--cin2);font-size:9px;font-weight:800">NEW</span>'
+      :"";
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.courseVersion)+'</div></div>'
       +'<button class="opt-row'+(cur==="hsk20"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk20\')"><span class="han" style="font-size:20px;width:42px">2.0</span><span style="flex:1"><b>'+esc(t.hsk20)+'</b><small>'+esc(cur==="hsk20"?t.current:"")+'</small></span></button>'
-      +'<button class="opt-row'+(cur==="hsk30"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk30\')"><span class="han" style="font-size:20px;width:42px">3.0</span><span style="flex:1"><b>'+esc(t.hsk30)+'</b><small>'+esc(cur==="hsk30"?t.current:h30sub)+'</small></span></button>');
+      +'<button class="opt-row'+(cur==="hsk30"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk30\')"><span class="han" style="font-size:20px;width:42px">3.0</span><span style="flex:1"><b>'+esc(t.hsk30)+'</b>'+newTag+'<small>'+esc(cur==="hsk30"?t.current:h30sub)+'</small></span></button>');
   });
 }
 function showHsk30TestSoon(){
