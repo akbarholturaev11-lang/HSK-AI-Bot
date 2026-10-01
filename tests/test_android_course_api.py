@@ -98,6 +98,25 @@ class AndroidCourseNamespaceTests(unittest.TestCase):
         self.assertEqual("desktop", DesktopCourseService.CLIENT_NAMESPACE)
 
 
+    def test_onboarding_result_autostarts_the_server_selected_lesson(self):
+        main = Path(
+            "android/app/src/main/java/com/pomp/hskai/MainActivity.kt"
+        ).read_text(encoding="utf-8")
+        foundation = Path(
+            "android/app/src/main/java/com/pomp/hskai/feature/foundation/FoundationActivity.kt"
+        ).read_text(encoding="utf-8")
+        self.assertIn("onboardingAutoStartHandled", main)
+        self.assertIn("onboardingLaunch.lesson?.takeIf", main)
+        self.assertIn("launchLesson(candidate)", main)
+        self.assertIn("widgetOfferHandled", main)
+        self.assertIn("widgetPlacedNotice", main)
+        self.assertIn("FoundationActivity::class.java", main)
+        self.assertIn(
+            "DeepLinkRouter.uriFor(AppDestination.CurrentLesson)",
+            foundation,
+        )
+
+
 class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.engine = create_async_engine(
