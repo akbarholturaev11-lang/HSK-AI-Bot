@@ -48,6 +48,7 @@ from app.services.course_miniapp_profile_service import CourseMiniAppProfileServ
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
+from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.desktop_course_service import (
     DesktopCourseError,
     DesktopCourseService,
@@ -182,6 +183,21 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertNotIn("locked_premium", lessons[index])
             self.assertNotIn("preview_half", lessons[index])
+
+    async def test_hsk30_new_badge_reaches_map_and_onboarding(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            feature = Hsk30FeatureService(session)
+            await feature.set_enabled(True)
+            await session.commit()
+
+            service = AndroidCourseService(session, _settings())
+            course_map = await service.course_map(token)
+            onboarding = await service.onboarding_status(token)
+
+        self.assertTrue(course_map["hsk30"]["new_badge"]["is_new"])
+        self.assertTrue(onboarding["hsk30"]["new_badge"]["is_new"])
+        self.assertIsNotNone(course_map["hsk30"]["new_badge"]["new_until"])
 
     async def test_a_spent_allowance_locks_the_current_lesson_only(self):
         """Qulf endi darajaga emas, adminning chegarasiga bog'liq.
