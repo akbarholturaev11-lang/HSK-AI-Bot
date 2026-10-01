@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 
 from app.services.ai_provider import AIProviderChain
+from app.services.course_levels import ai_level_context
 
 # Both transcription providers hand the prompt back as if it were speech when
 # the audio is short, quiet or unclear, usually wrapped in a context marker of
@@ -75,6 +76,7 @@ class AIService:
         return template.format(
             user_language=self._language_name(user_language),
             user_level=user_level,
+            level_context=ai_level_context(user_level),
         )
 
     def _usage_value(self, usage, *names: str) -> int:
