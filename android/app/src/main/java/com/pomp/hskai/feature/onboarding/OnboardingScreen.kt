@@ -83,7 +83,8 @@ data class OnboardingUiState(
     val hsk30Enabled: Boolean = false,
     val hsk30Allowed: Boolean = false,
     val hsk30LiveLevels: List<String> = listOf("nhsk1"),
-    val hsk30PriceTjs: Int = 10,
+    val hsk30PaymentEnabled: Boolean = false,
+    val hsk30PriceTjs: Int = 0,
     val submitting: Boolean = false,
     val error: Boolean = false,
 ) {
@@ -116,8 +117,10 @@ data class OnboardingCopy(
     val hsk20: String,
     val hsk30: String,
     val hsk30Locked: String,
+    val hsk30LockedPro: String,
     val hsk30Disabled: String,
     val unlockHsk30: String,
+    val getPro: String,
     val notifyTitle: String,
     val notifyLessons: String,
     val notifyUpdates: String,
@@ -151,8 +154,10 @@ data class OnboardingCopy(
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
                 hsk30Locked = "HSK 3.0 Pro bilan yoki %d TJS bir martalik to'lov bilan ochiladi.",
+                hsk30LockedPro = "HSK 3.0 faol HSK AI Pro bilan ochiladi.",
                 hsk30Disabled = "HSK 3.0 hozircha yopiq.",
                 unlockHsk30 = "HSK 3.0 ni ochish",
+                getPro = "HSK AI Pro olish",
                 notifyTitle = "Bildirishnomalarni yoqing",
                 notifyLessons = "Kechqurun darsni eslatib turamiz",
                 notifyUpdates = "Yangi versiya chiqqanda bir marta xabar beramiz",
@@ -184,8 +189,10 @@ data class OnboardingCopy(
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
                 hsk30Locked = "HSK 3.0 бо Pro ё бо пардохти якбораи %d TJS кушода мешавад.",
+                hsk30LockedPro = "HSK 3.0 бо HSK AI Pro-и фаъол кушода мешавад.",
                 hsk30Disabled = "HSK 3.0 ҳоло баста аст.",
                 unlockHsk30 = "Кушодани HSK 3.0",
+                getPro = "HSK AI Pro гирифтан",
                 notifyTitle = "Огоҳиномаҳоро фаъол кунед",
                 notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
                 notifyUpdates = "Вақте версияи нав барояд, як бор хабар медиҳем",
@@ -217,8 +224,10 @@ data class OnboardingCopy(
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
                 hsk30Locked = "HSK 3.0 доступен с Pro или за %d TJS навсегда.",
+                hsk30LockedPro = "HSK 3.0 доступен с активным HSK AI Pro.",
                 hsk30Disabled = "HSK 3.0 пока закрыт.",
                 unlockHsk30 = "Открыть HSK 3.0",
+                getPro = "Получить HSK AI Pro",
                 notifyTitle = "Включите уведомления",
                 notifyLessons = "Вечером напомним про занятие",
                 notifyUpdates = "Один раз сообщим, когда выйдет новая версия",
@@ -397,8 +406,11 @@ fun OnboardingScreen(
                                 if (state.selectedTrack == "hsk30") {
                                     Text(
                                         if (!state.hsk30Enabled) copy.hsk30Disabled
-                                        else if (!state.hsk30Allowed) copy.hsk30Locked.format(state.hsk30PriceTjs)
-                                        else copy.hsk30,
+                                        else if (!state.hsk30Allowed && state.hsk30PaymentEnabled && state.hsk30PriceTjs > 0) {
+                                            copy.hsk30Locked.format(state.hsk30PriceTjs)
+                                        } else if (!state.hsk30Allowed) {
+                                            copy.hsk30LockedPro
+                                        } else copy.hsk30,
                                         color = if (state.hsk30Allowed) PompColors.InkSecondary else PompColors.CinnabarDark,
                                         fontSize = 12.sp,
                                         lineHeight = 18.sp,
@@ -995,7 +1007,8 @@ private fun OnboardingFooter(
         state.error -> copy.retry
         state.step == 0 -> copy.start
         state.step == 1 -> copy.continueLabel
-        state.needsHsk30Unlock -> copy.unlockHsk30
+        state.needsHsk30Unlock ->
+            if (state.hsk30PaymentEnabled && state.hsk30PriceTjs > 0) copy.unlockHsk30 else copy.getPro
         else -> copy.firstLesson
     }
     val interactionSource = remember { MutableInteractionSource() }
