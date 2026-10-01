@@ -119,6 +119,27 @@ class OnboardingViewModel(
         submit()
     }
 
+    fun startWithHsk20() {
+        val current = _state.value.ui
+        if (current.submitting || current.step < 2 || !current.needsHsk30Unlock) return
+        val fallbackLevel = when (current.selectedLevel) {
+            "nhsk1" -> "hsk2"
+            "nhsk2" -> "hsk3"
+            "nhsk3" -> "hsk4"
+            else -> "hsk1"
+        }
+        _state.update {
+            it.copy(
+                ui = it.ui.copy(
+                    selectedTrack = "hsk20",
+                    selectedLevel = fallbackLevel,
+                    error = false,
+                ),
+            )
+        }
+        submit()
+    }
+
     private fun submit() {
         val current = _state.value.ui
         _state.update { it.copy(error = null, ui = current.copy(submitting = true, error = false)) }
