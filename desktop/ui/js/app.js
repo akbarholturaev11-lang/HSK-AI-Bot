@@ -2131,7 +2131,9 @@ function renderCourseTrackControl(map) {
     ["hsk20", "HSK 2.0"],
     ["hsk30", "HSK 3.0"],
   ].forEach(([track, label]) => {
-    const button = element("button", "payment-method", label);
+    const displayLabel =
+      track === "hsk30" && hsk30.new_badge?.is_new ? `${label} · NEW` : label;
+    const button = element("button", "payment-method", displayLabel);
     button.type = "button";
     const selected = String(hsk30.active_track || "hsk20") === track;
     button.classList.toggle("is-active", selected);
@@ -4393,7 +4395,10 @@ function renderProfile() {
     const versionSelect = selectControl(
       [
         { value: "hsk20", label: "HSK 2.0" },
-        { value: "hsk30", label: "HSK 3.0" },
+        {
+          value: "hsk30",
+          label: hsk30Settings.new_badge?.is_new ? "HSK 3.0 · NEW" : "HSK 3.0",
+        },
       ],
       activeTrack,
       (targetTrack) => {
