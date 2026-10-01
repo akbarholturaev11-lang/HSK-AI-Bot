@@ -111,9 +111,9 @@ button:disabled{cursor:default}
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={
-  ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 2 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 доступен с Pro или за {price} TJS навсегда.",hsk30Disabled:"HSK 3.0 пока закрыт.",unlockHsk30:"Открыть HSK 3.0"},
-  uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"2 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 Pro bilan yoki {price} TJS bir martalik to'lov bilan ochiladi.",hsk30Disabled:"HSK 3.0 hozircha yopiq.",unlockHsk30:"HSK 3.0 ni ochish"},
-  tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 2 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 бо Pro ё бо пардохти якбораи {price} TJS кушода мешавад.",hsk30Disabled:"HSK 3.0 ҳоло баста аст.",unlockHsk30:"Кушодани HSK 3.0"}
+  ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 2 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 доступен с Pro или за {price} TJS навсегда.",hsk30LockedPro:"HSK 3.0 доступен с активным HSK AI Pro.",hsk30Disabled:"HSK 3.0 пока закрыт.",unlockHsk30:"Открыть HSK 3.0",getPro:"Получить HSK AI Pro"},
+  uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"2 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 Pro bilan yoki {price} TJS bir martalik to'lov bilan ochiladi.",hsk30LockedPro:"HSK 3.0 faol HSK AI Pro bilan ochiladi.",hsk30Disabled:"HSK 3.0 hozircha yopiq.",unlockHsk30:"HSK 3.0 ni ochish",getPro:"HSK AI Pro olish"},
+  tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 2 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 бо Pro ё бо пардохти якбораи {price} TJS кушода мешавад.",hsk30LockedPro:"HSK 3.0 бо HSK AI Pro-и фаъол кушода мешавад.",hsk30Disabled:"HSK 3.0 ҳоло баста аст.",unlockHsk30:"Кушодани HSK 3.0",getPro:"HSK AI Pro гирифтан"}
 }[LANG];
 document.documentElement.lang=LANG==="tj"?"tg":LANG;
 var tg=window.Telegram&&window.Telegram.WebApp;
@@ -263,7 +263,11 @@ function levelsForTrack(){
 }
 function hsk30Price(){
   var u=HSK30_STATUS&&HSK30_STATUS.hsk30_unlock||{};
-  var n=Number(u.price_tjs||10);return n>0?n:10;
+  var n=Number(u.price_tjs||0);return n>0?n:0;
+}
+function hsk30PaymentEnabled(){
+  var u=HSK30_STATUS&&HSK30_STATUS.hsk30_unlock||{};
+  return u.payment_enabled!==false&&hsk30Price()>0;
 }
 function hsk30NeedsUnlock(){
   var a=hsk30Access();return !!(track==="hsk30"&&(!a||!a.allowed));
@@ -278,7 +282,12 @@ function saveDraft(){
 function openHsk30Checkout(){
   saveDraft();
   var q=new URLSearchParams();
-  q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");q.set("source","hsk30_onboarding");q.set("lang",LANG);
+  if(hsk30PaymentEnabled()){
+    q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");
+  }else{
+    q.set("mode","subscription");
+  }
+  q.set("source","hsk30_onboarding");q.set("lang",LANG);
   location.href="/subscription.html?"+q.toString();
 }
 function setTrack(next){
@@ -328,7 +337,7 @@ function render(){
         +'<button type="button" class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+'</button></div>';
       var trackNote="";
       if(track==="hsk30"&&access&&access.feature_enabled===false)trackNote='<p class="track-note">'+L.hsk30Disabled+'</p>';
-      else if(track==="hsk30"&&(!access||!access.allowed))trackNote='<p class="track-note"><b>'+L.hsk30Locked.replace("{price}",hsk30Price())+'</b></p>';
+      else if(track==="hsk30"&&(!access||!access.allowed))trackNote='<p class="track-note"><b>'+(hsk30PaymentEnabled()?L.hsk30Locked.replace("{price}",hsk30Price()):L.hsk30LockedPro)+'</b></p>';
       rows=switcher+trackNote+levelChoices.map(function(l,index){return optionRow(l.k,levelTitle(l),l.k==="beginner"?L.beginnerSub:trv(l.s),levelGlyph(index),sel===l.k,"pick")}).join("");
     }else{
       var allLevels=LV20.concat(LV30);
@@ -338,7 +347,7 @@ function render(){
     }
     st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub"><h1 id="question" tabindex="-1">'+(step===1?L.ask:L.askGoal)+'</h1></div></div>'
       +'<div class="body"><p class="helper">'+(step===1?L.levelHint:L.goalHint)+'</p>'+summary+'<div class="choices" role="group" aria-labelledby="question">'+rows+'</div></div>';
-    cta.innerHTML=(step===2&&hsk30NeedsUnlock()?L.unlockHsk30:(step===1?L.cont:L.first))+icon("arrow");
+    cta.innerHTML=(step===2&&hsk30NeedsUnlock()?(hsk30PaymentEnabled()?L.unlockHsk30:L.getPro):(step===1?L.cont:L.first))+icon("arrow");
   }
   st.scrollTop=0;
   st.classList.remove("stage-enter");void st.offsetWidth;st.classList.add("stage-enter");
