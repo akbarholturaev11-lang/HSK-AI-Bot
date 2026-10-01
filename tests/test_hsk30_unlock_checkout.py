@@ -15,6 +15,7 @@ from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY
 from app.services.hsk30_unlock_service import (
+    HSK30_UNLOCK_PAYMENT_ENABLED_KEY,
     HSK30_UNLOCK_PLAN_TYPE,
     HSK30_UNLOCK_PRICE_KEY,
 )
@@ -90,6 +91,7 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
             session.add(_user(5001))
             settings = BotSettingRepository(session)
             await settings.set_bool(HSK30_ENABLED_SETTINGS_KEY, True)
+            await settings.set_bool(HSK30_UNLOCK_PAYMENT_ENABLED_KEY, True)
             await settings.set(HSK30_UNLOCK_PRICE_KEY, "10")
             await settings.set(PAYMENT_DETAILS_KEY, "4713380023849546\nTEST HOLDER")
             await session.commit()
@@ -97,7 +99,11 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.engine.dispose()
 
-    async def test_quote_is_fixed_ten_tjs_and_never_discounted(self):
+    async def test_quote_uses_admin_price_and_never_discounted(self):
+        async with self.sessions() as session:
+            await BotSettingRepository(session).set(HSK30_UNLOCK_PRICE_KEY, "17")
+            await session.commit()
+
         async with self.sessions() as session:
             result = await SubscriptionMiniAppService(session).quote(
                 telegram_id=5001,
@@ -110,12 +116,34 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(result["ok"], result)
         quote = result["quote"]
-        self.assertEqual(quote["base_amount"], 10)
-        self.assertEqual(quote["final_amount"], 10)
+        self.assertEqual(quote["base_amount"], 17)
+        self.assertEqual(quote["final_amount"], 17)
         self.assertEqual(quote["base_currency"], "TJS")
         self.assertFalse(quote["discount_applied"])
         self.assertEqual(quote["discount_percent"], 0)
         self.assertEqual(quote["discount_source"], "none")
+
+    async def test_admin_can_disable_one_time_unlock_checkout(self):
+        async with self.sessions() as session:
+            await BotSettingRepository(session).set_bool(
+                HSK30_UNLOCK_PAYMENT_ENABLED_KEY,
+                False,
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            result = await SubscriptionMiniAppService(session).quote(
+                telegram_id=5001,
+                plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                payment_method="visa",
+                card_country="tj",
+                card_bank="dc_city",
+            )
+
+        self.assertEqual(
+            result,
+            {"ok": False, "error": "hsk30_unlock_payment_disabled"},
+        )
 
     async def test_trial_is_not_treated_as_paid_subscription(self):
         async with self.sessions() as session:
