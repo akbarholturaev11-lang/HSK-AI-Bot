@@ -58,6 +58,7 @@ class OnboardingViewModel(
                                 hsk30Allowed = status.hsk30.allowed,
                                 hsk30LiveLevels = status.hsk30.liveLevels.filter { level -> level in HSK30_LEVELS }
                                     .ifEmpty { listOf("nhsk1") },
+                                hsk30IsNew = status.hsk30.newBadge.isNew,
                                 hsk30PaymentEnabled = status.hsk30.paymentEnabled,
                                 hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(0),
                             ),
