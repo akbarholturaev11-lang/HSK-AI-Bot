@@ -349,6 +349,7 @@ class DesktopCourseService:
             "active_level": track_status.get("active_level") or level,
             "access": hsk30_track.get("access") or {},
             "live_levels": list(hsk30_track.get("live_levels") or []),
+            "new_badge": hsk30_track.get("new_badge") or {},
             "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
             "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
             "promo": await Hsk30PromoService(self.session).state(user),
