@@ -725,8 +725,12 @@ private fun AppRoot(
                     return@LaunchedEffect
                 }
 
-                onboardingAutoStartHandled = true
+                if (onboardingLaunch.placement || onboardingLaunch.reviewOnly) {
+                    onboardingAutoStartHandled = true
+                    return@LaunchedEffect
+                }
                 if (onboardingLaunch.foundationRequired || map.foundation?.mustComeFirst == true) {
+                    onboardingAutoStartHandled = true
                     context.startActivity(Intent(context, FoundationActivity::class.java))
                     return@LaunchedEffect
                 }
@@ -735,11 +739,12 @@ private fun AppRoot(
                     ?: map.currentLesson?.order
                 val candidate = requestedOrder?.let { order ->
                     map.lessons.firstOrNull { it.order == order }
-                } ?: map.currentLesson
+                } ?: map.currentLesson ?: return@LaunchedEffect
                 if (
-                    candidate?.access == LessonAccess.Open ||
-                    candidate?.access == LessonAccess.HalfPreview
+                    candidate.access == LessonAccess.Open ||
+                    candidate.access == LessonAccess.HalfPreview
                 ) {
+                    onboardingAutoStartHandled = true
                     launchLesson(candidate)
                 }
             }
