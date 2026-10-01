@@ -338,11 +338,58 @@ private val EXAM_ENTRIES = listOf(
 private fun levelNumber(level: String): Int = Regex("hsk([1-4])").find(level.lowercase())?.groupValues?.get(1)?.toIntOrNull() ?: 0
 
 private fun LazyListScope.testCentre(level: String, enabled: Boolean, onPlacement: () -> Unit, onExam: (String) -> Unit) {
+    if (level.lowercase().startsWith("nhsk")) {
+        item { Hsk30TestSoonCard() }
+        return
+    }
     item { PlacementCard(enabled, onPlacement) }
     item { GroupLabel(stringResource(R.string.test_center_exams_head)) }
     val mine = levelNumber(level)
     items(EXAM_ENTRIES.sortedByDescending { it.level == mine }, key = { it.level }) { entry ->
         ExamRow(entry, entry.level == mine, enabled) { onExam("hsk${entry.level}") }
+    }
+}
+
+@Composable
+private fun Hsk30TestSoonCard() {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 6.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Surface(
+                color = PompColors.CinnabarSoft,
+                shape = CircleShape,
+                modifier = Modifier.size(54.dp),
+            ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Icon(
+                        Icons.Filled.WorkspacePremium,
+                        contentDescription = null,
+                        tint = PompColors.CinnabarDark,
+                        modifier = Modifier.size(27.dp),
+                    )
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.hsk30_test_soon_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                stringResource(R.string.hsk30_test_soon_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 
