@@ -84,6 +84,13 @@ class AndroidOnboardingRequest(BaseModel):
     activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
 
 
+class AndroidCourseTrackSwitchRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    target_track: Literal["hsk20", "hsk30"]
+    level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"] | None = None
+
+
 class AndroidStudyPreferencesRequest(BaseModel):
     """One progressive-personalization answer, matching Mini App preferences."""
 
@@ -354,6 +361,45 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android onboarding completion failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/tracks/switch")
+    async def android_course_track_switch(request: Request):
+        try:
+            payload = await validated_course_payload(
+                request,
+                AndroidCourseTrackSwitchRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).switch_course_track(
+                    bearer_access_token(request),
+                    target_track=payload.target_track,
+                    level=payload.level,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android course track switch failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/hsk30/promo-shown")
+    async def android_hsk30_promo_shown(request: Request):
+        try:
+            if request.query_params or await request.body():
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(
+                    session,
+                    settings_obj,
+                ).mark_hsk30_promo_shown(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android HSK 3.0 promo mark failed")
             return _unavailable()
 
     @router.get("/api/v3/android/course/foundation")
