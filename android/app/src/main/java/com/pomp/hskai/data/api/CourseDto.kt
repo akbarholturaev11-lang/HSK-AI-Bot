@@ -81,11 +81,19 @@ data class CourseHsk30PromoDto(
 )
 
 @Serializable
+data class CourseHsk30NewBadgeDto(
+    @SerialName("is_new") val isNew: Boolean = false,
+    @SerialName("enabled_at") val enabledAt: String? = null,
+    @SerialName("new_until") val newUntil: String? = null,
+)
+
+@Serializable
 data class CourseHsk30Dto(
     @SerialName("active_track") val activeTrack: String = "hsk20",
     @SerialName("active_level") val activeLevel: String = "",
     @SerialName("access") val access: CourseHsk30AccessDto = CourseHsk30AccessDto(),
     @SerialName("live_levels") val liveLevels: List<String> = listOf("nhsk1"),
+    @SerialName("new_badge") val newBadge: CourseHsk30NewBadgeDto = CourseHsk30NewBadgeDto(),
     @SerialName("payment_enabled") val paymentEnabled: Boolean = false,
     @SerialName("price_tjs") val priceTjs: Int = 0,
     @SerialName("promo") val promo: CourseHsk30PromoDto = CourseHsk30PromoDto(),
