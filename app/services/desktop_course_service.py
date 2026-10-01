@@ -426,8 +426,10 @@ class DesktopCourseService:
         context = await self._context(access_token)
         user = await self._locked_context_user(context)
         service = CourseTrackService(self.session)
+        before_track = service.track_for_level(getattr(user, "level", None))
+        before_level = str(getattr(user, "level", "") or "")
         try:
-            current_track = service.track_for_level(getattr(user, "level", None))
+            current_track = before_track
             if target_track == current_track and level:
                 status = await service.change_level(user, level)
             else:
@@ -438,6 +440,22 @@ class DesktopCourseService:
                 )
         except CourseTrackError as exc:
             raise DesktopCourseError(exc.code, status_code=exc.status_code) from exc
+        after_level = str(getattr(user, "level", "") or "")
+        after_track = service.track_for_level(after_level)
+        if before_track != after_track or before_level != after_level:
+            await CourseMiniAppAnalyticsService(self.session).record_server_event(
+                event_name="course_track_switched",
+                user=user,
+                telegram_id=int(user.telegram_id),
+                source="desktop_course_track",
+                level=after_level,
+                payload={
+                    "from_track": before_track,
+                    "to_track": after_track,
+                    "from_level": before_level,
+                    "to_level": after_level,
+                },
+            )
         await self.session.commit()
         return {"ok": True, **status}
 
@@ -448,6 +466,15 @@ class DesktopCourseService:
         context = await self._context(access_token)
         user = await self._locked_context_user(context)
         result = await Hsk30PromoService(self.session).mark_shown(user)
+        if result.get("recorded"):
+            await CourseMiniAppAnalyticsService(self.session).record_server_event(
+                event_name="hsk30_promo_shown",
+                user=user,
+                telegram_id=int(user.telegram_id),
+                source="desktop_course_track",
+                level=str(getattr(user, "level", "") or ""),
+                payload={"shown_count": int(result.get("shown_count") or 0)},
+            )
         await self.session.commit()
         return {"ok": True, **result}
 
