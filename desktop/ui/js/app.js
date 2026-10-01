@@ -2145,7 +2145,7 @@ function renderCourseTrackControl(map) {
       const level = track === "hsk30"
         ? String(hsk30.live_levels?.[0] || "nhsk1")
         : null;
-      void switchCourseTrack(track, level);
+      openCourseVersionConfirm(track, level);
     });
     row.append(button);
   });
