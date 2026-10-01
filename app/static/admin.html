@@ -1862,7 +1862,18 @@
       const price=Math.max(1,Number(h.unlock_price_tjs||0)||1);
       const live=Array.isArray(h.live_levels)?h.live_levels:[];
       const qr=h.qr||{};
+      const stats=h.stats||{};
       openDrawer("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
+        <div class="mcard">
+          <h3>Rollout статистикаси</h3>
+          <div class="tags">
+            ${tag("HSK 3.0 да ҳозир "+Number(stats.active_users||0),"blue")}
+            ${tag("Трекни очган "+Number(stats.track_users||0),"blue")}
+            ${tag("Доимий unlock "+Number(stats.permanent_unlock_users||0),"green")}
+            ${tag("Promo user "+Number(stats.promo_users||0),"gold")}
+            ${tag("Promo кўрсатиш "+Number(stats.promo_impressions||0),"gold")}
+          </div>
+        </div>
         <div class="mcard">
           <h3>HSK 3.0 курс</h3>
           <p>Бу глобал kill switch. Ўчирилса HSK 3.0 барча user учун ёпилади.</p>
