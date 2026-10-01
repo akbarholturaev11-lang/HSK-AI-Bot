@@ -4019,6 +4019,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
         live_levels = await feature.live_levels()
         unlock_payment_enabled = await unlock.payment_enabled()
         price = await unlock.price_tjs()
+        new_badge = await feature.new_badge()
 
     return JSONResponse(
         content={
@@ -4026,7 +4027,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
             "hsk30": {
                 "enabled": enabled,
                 "live_levels": list(live_levels),
-                "new_badge": await Hsk30FeatureService(session).new_badge(),
+                "new_badge": new_badge,
                 "unlock_payment_enabled": unlock_payment_enabled,
                 "unlock_price_tjs": price,
                 "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
