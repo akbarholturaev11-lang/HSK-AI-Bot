@@ -627,6 +627,19 @@ test("a listening question is heard, never printed with its answer", async () =>
   }
 });
 
+test("HSK 3.0 Desktop UI exposes live course switching and locked price", async () => {
+  const app = await source("desktop/ui/js/app.js");
+  const i18n = await source("desktop/ui/js/i18n.js");
+  assert.match(app, /function renderCourseTrackControl\(map\)/);
+  assert.match(app, /hsk30TrackSwitch/);
+  assert.match(app, /hsk30Settings\.active_track === "hsk30"/);
+  assert.match(app, /hsk30PromoPrice/);
+  assert.match(app, /openSubscriptionMode\("hsk30_unlock"\)/);
+  assert.match(app, /vocabulary\.setCourseLevel\(state\.map\?\.level/);
+  assert.match(i18n, /hsk30TrackSwitchBody/);
+  assert.match(i18n, /hsk30PromoPrice/);
+});
+
 test("the dictionary is a full offline word bank", async () => {
   const vocabulary = await source("desktop/ui/js/vocabulary.js");
   const dataModule = await source("desktop/ui/data/vocabulary.js");
