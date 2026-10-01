@@ -17,6 +17,9 @@ from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
+from app.services.course_levels import TRACK_HSK30, level_spec
+from app.services.course_track_service import CourseTrackError, CourseTrackService
+from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
 from app.bot.keyboards.main_menu import main_menu_keyboard
@@ -556,8 +559,13 @@ async def command_language_callback_handler(callback: CallbackQuery, session):
 
 
 
-def command_level_keyboard(lang: str):
-    kb = level_keyboard(lang)
+async def command_level_keyboard(user, session, lang: str):
+    track = CourseTrackService.track_for_level(getattr(user, "level", None))
+    if track == TRACK_HSK30:
+        levels = list(await Hsk30FeatureService(session).live_levels())
+    else:
+        levels = ["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
+    kb = level_keyboard(lang, levels=levels)
     for row in kb.inline_keyboard:
         for btn in row:
             if btn.callback_data and btn.callback_data.startswith("level:"):
@@ -573,7 +581,7 @@ async def level_command_handler(message: Message, state: FSMContext, session):
 
     await message.answer(
         t("choose_level", lang),
-        reply_markup=command_level_keyboard(lang),
+        reply_markup=await command_level_keyboard(user, session, lang),
     )
 
 
@@ -587,10 +595,19 @@ async def command_level_callback_handler(callback: CallbackQuery, session):
         await callback.answer()
         return
 
-    user.level = level
-    await session.commit()
-
     lang = getattr(user, "language", None) or "ru"
+    try:
+        await CourseTrackService(session).change_level(user, level)
+        await session.commit()
+    except CourseTrackError as exc:
+        await session.rollback()
+        messages = {
+            "uz": "Bu darajani hozir tanlab bo'lmaydi. Kurs versiyasini Mini App ichidan almashtiring.",
+            "tj": "Ин сатҳро ҳоло интихоб кардан намешавад. Версияи курсро дар Mini App иваз кунед.",
+            "ru": "Этот уровень сейчас нельзя выбрать. Смените версию курса в Mini App.",
+        }
+        await callback.answer(messages.get(lang, messages["ru"]), show_alert=True)
+        return
 
     await callback.answer()
     try:
@@ -598,7 +615,12 @@ async def command_level_callback_handler(callback: CallbackQuery, session):
     except Exception:
         pass
 
-    level_label = level.upper() if level.startswith("hsk") else level
+    spec = level_spec(level)
+    level_label = (
+        f"HSK 3.0 · N{spec.band}"
+        if spec and spec.track == TRACK_HSK30
+        else (f"HSK {spec.band}" if spec else level)
+    )
 
     if lang == "tj":
         msg = f"✅ Дараҷа нав шуд: {level_label}"
@@ -1025,7 +1047,7 @@ async def profile_menu_level(callback: CallbackQuery, state: FSMContext, session
     await callback.answer()
     await callback.message.answer(
         t("choose_level", lang),
-        reply_markup=command_level_keyboard(lang),
+        reply_markup=await command_level_keyboard(user, session, lang),
     )
 
 @router.callback_query(F.data == "profile_menu:course")
