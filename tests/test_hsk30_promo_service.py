@@ -8,7 +8,8 @@ from app.db.base import Base
 from app.db.models.course_track_state import CourseTrackState
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
-from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY, Hsk30FeatureService
 from app.services.hsk30_promo_service import Hsk30PromoService
 
 
@@ -48,6 +49,10 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
         async with self.sessions() as session:
             session.add(_user())
+            await session.flush()
+            profile = await CourseMiniAppProfileService(session).get_or_create(1)
+            profile.onboarding_completed_at = datetime.now(timezone.utc) - timedelta(days=30)
+            await session.flush()
             await BotSettingRepository(session).set_bool(
                 HSK30_ENABLED_SETTINGS_KEY,
                 True,
@@ -103,6 +108,19 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertFalse(state["eligible"])
             self.assertEqual(state["reason"], "show_cap_reached")
+
+    async def test_user_onboarded_after_hsk30_release_does_not_get_legacy_promo(self):
+        async with self.sessions() as session:
+            release_at = await Hsk30FeatureService(session).enabled_at()
+            profile = await CourseMiniAppProfileService(session).get_or_create(1)
+            profile.onboarding_completed_at = release_at + timedelta(seconds=1)
+            await session.commit()
+
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            state = await Hsk30PromoService(session).state(user)
+            self.assertFalse(state["eligible"])
+            self.assertEqual(state["reason"], "new_user_after_release")
 
     async def test_feature_off_hides_promo(self):
         async with self.sessions() as session:
