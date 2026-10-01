@@ -1697,6 +1697,57 @@ function openSubscriptionMode(mode) {
   closeRail();
 }
 
+function openCourseVersionConfirm(targetTrack, level = null) {
+  const normalized = targetTrack === "hsk30" ? "hsk30" : "hsk20";
+  const targetLabel = normalized === "hsk30" ? "HSK 3.0" : "HSK 2.0";
+  document.querySelector(".course-version-confirm-layer")?.remove();
+
+  const layer = element("div", "referral-layer course-version-confirm-layer");
+  const shell = element("section", "referral-shell course-version-confirm-shell");
+  shell.setAttribute("role", "dialog");
+  shell.setAttribute("aria-modal", "true");
+  shell.setAttribute("aria-label", t("courseVersionConfirmTitle", { version: targetLabel }));
+
+  const hero = element("header", "referral-hero");
+  const copy = element("div");
+  copy.append(
+    element("p", "eyebrow", t("hsk30TrackSwitch")),
+    element("h2", "", t("courseVersionConfirmTitle", { version: targetLabel })),
+    element("p", "muted", t("courseVersionConfirmBody")),
+  );
+  hero.append(copy);
+
+  const actions = element("div", "payment-methods");
+  const confirm = element("button", "btn primary-button", t("courseVersionConfirmAction"));
+  const cancel = element("button", "secondary-button", t("courseVersionConfirmCancel"));
+  confirm.type = "button";
+  cancel.type = "button";
+
+  const close = (rerender = true) => {
+    globalThis.removeEventListener("keydown", onKeyDown);
+    layer.remove();
+    if (rerender && state.view === "profile") renderProfile();
+  };
+  const onKeyDown = (event) => {
+    if (event.key === "Escape") close();
+  };
+  cancel.addEventListener("click", () => close());
+  layer.addEventListener("click", (event) => {
+    if (event.target === layer) close();
+  });
+  confirm.addEventListener("click", () => {
+    close(false);
+    void switchCourseTrack(normalized, level);
+  });
+  globalThis.addEventListener("keydown", onKeyDown);
+
+  actions.append(confirm, cancel);
+  shell.append(hero, actions);
+  layer.append(shell);
+  document.body.append(layer);
+  confirm.focus();
+}
+
 async function switchCourseTrack(targetTrack, level = null) {
   if (state.hsk30Switching) return;
   state.hsk30Switching = true;
@@ -4356,7 +4407,7 @@ function renderProfile() {
           targetTrack === "hsk30"
             ? String(hsk30Settings.live_levels?.[0] || "nhsk1")
             : null;
-        void switchCourseTrack(targetTrack, level);
+        openCourseVersionConfirm(targetTrack, level);
       },
     );
     versionSelect.dataset.role = "course-version";
