@@ -2115,6 +2115,15 @@ function renderHsk30Promo(map) {
     element("h3", "", t("hsk30PromoTitle")),
     element("p", "muted small", t("hsk30PromoBody")),
   );
+  if (!hsk30.access?.allowed && hsk30.payment_enabled && Number(hsk30.price_tjs || 0) > 0) {
+    card.append(
+      element(
+        "p",
+        "tag red",
+        t("hsk30PromoPrice", { price: Number(hsk30.price_tjs || 0) }),
+      ),
+    );
+  }
   const actions = element("div", "payment-methods");
   const primary = element("button", "btn primary-button", t("hsk30PromoAction"));
   primary.type = "button";
@@ -4317,13 +4326,51 @@ function renderProfile() {
   const reopen = element("button", "secondary-button", t("onboardingReset"));
   reopen.type = "button";
   reopen.addEventListener("click", () => openOnboarding());
+
   studyCard.append(
     settingRow(
       t("interfaceLanguage"),
       t("interfaceLanguageBody"),
       languageSelect,
     ),
-    // The level is decided by the server, so the demo select is inert here.
+  );
+
+  const hsk30Settings = map.hsk30;
+  if (hsk30Settings?.access?.feature_enabled) {
+    const activeTrack = String(hsk30Settings.active_track || "hsk20");
+    const versionSelect = selectControl(
+      [
+        { value: "hsk20", label: "HSK 2.0" },
+        { value: "hsk30", label: "HSK 3.0" },
+      ],
+      activeTrack,
+      (targetTrack) => {
+        if (targetTrack === activeTrack || state.hsk30Switching) return;
+        if (targetTrack === "hsk30" && !hsk30Settings.access?.allowed) {
+          if (hsk30Settings.payment_enabled) openSubscriptionMode("hsk30_unlock");
+          else routeTo("subscription");
+          return;
+        }
+        const level =
+          targetTrack === "hsk30"
+            ? String(hsk30Settings.live_levels?.[0] || "nhsk1")
+            : null;
+        void switchCourseTrack(targetTrack, level);
+      },
+    );
+    versionSelect.dataset.role = "course-version";
+    studyCard.append(
+      settingRow(
+        t("hsk30TrackSwitch"),
+        t("hsk30TrackSwitchBody"),
+        versionSelect,
+      ),
+    );
+  }
+
+  studyCard.append(
+    // The band select still has no direct desktop mutation endpoint; course
+    // version is live above, while band changes remain release-gated.
     comingSoonSettingRow(
       t("courseLevelTitle"),
       t("courseLevelBody"),
