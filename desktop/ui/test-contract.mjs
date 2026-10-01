@@ -27,6 +27,8 @@ const expectedCommands = [
   "desktop_bootstrap",
   "desktop_logout",
   "desktop_course_map",
+  "desktop_course_track_switch",
+  "desktop_hsk30_promo_shown",
   "desktop_lesson_data",
   "desktop_lesson_complete",
   "desktop_set_language",
@@ -137,6 +139,21 @@ test("preview responses follow production response casing", async () => {
   assert.equal(typeof map.notify.enabled, "boolean");
   assert.ok(Array.isArray(map.notifications));
   assert.equal(typeof map.notifications[0].title, "string");
+  assert.equal(map.hsk30.active_track, "hsk20");
+  assert.deepEqual(map.hsk30.live_levels, ["nhsk1"]);
+
+  const switched = await previewInvoke("desktop_course_track_switch", {
+    targetTrack: "hsk30",
+    level: "nhsk1",
+  });
+  assert.equal(switched.active_track, "hsk30");
+  const hsk30Map = await previewInvoke("desktop_course_map");
+  assert.equal(hsk30Map.level, "nhsk1");
+  assert.equal(hsk30Map.hsk30.active_track, "hsk30");
+  await previewInvoke("desktop_course_track_switch", {
+    targetTrack: "hsk20",
+    level: null,
+  });
 
   const lesson = await previewInvoke("desktop_lesson_data", {
     lessonOrder: 2,
@@ -160,6 +177,15 @@ test("preview responses follow production response casing", async () => {
   assert.equal(overview.mode, "subscription");
   assert.equal(overview.access.state, "free");
   assert.equal(typeof overview.prices.visa["1_month"].final_amount, "number");
+
+  const hsk30Overview = await previewInvoke("desktop_subscription_overview", {
+    mode: "hsk30_unlock",
+  });
+  assert.equal(hsk30Overview.mode, "hsk30_unlock");
+  assert.equal(
+    typeof hsk30Overview.prices.visa.hsk30_unlock.final_amount,
+    "number",
+  );
 
   const quote = await previewInvoke("desktop_subscription_quote", {
     plan: "1_month",
@@ -279,7 +305,7 @@ test("local AI composer supports media controls without hidden network egress", 
 
 test("renderer covers every checked-in Course v3 card type", async () => {
   const levels = (await readdir(lessonRoot, { withFileTypes: true })).filter(
-    (entry) => entry.isDirectory() && /^hsk[1-4]$/.test(entry.name),
+    (entry) => entry.isDirectory() && /^(?:hsk[1-4]|nhsk[1-3])$/.test(entry.name),
   );
   const discovered = new Set();
 
