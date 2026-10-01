@@ -315,6 +315,7 @@
     <string name="limit_unlock_unavailable">Amalni bajarib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
     <string name="limit_voice_reason">Bugungi bepul AI Voice suhbatlaringiz tugadi.</string>
     <string name="profile_language">Til</string>
+    <string name="profile_course_version">Kurs versiyasi</string>
     <string name="profile_language_picker_title">Tilni tanlang</string>
     <string name="profile_notifications">Bildirishnomalar</string>
     <string name="profile_help">Yordam</string>
