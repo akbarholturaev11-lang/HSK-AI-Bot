@@ -1860,7 +1860,7 @@
       const paymentOn=h.unlock_payment_enabled!==false;
       const courseOn=h.enabled===true;
       const newBadge=h.new_badge||{};
-      const newUntil=newBadge.new_until?fmtDate(newBadge.new_until):"";
+      const newUntil=newBadge.new_until?courseAccessUntilText(newBadge.new_until):"";
       const price=Math.max(1,Number(h.unlock_price_tjs||0)||1);
       const live=Array.isArray(h.live_levels)?h.live_levels:[];
       const qr=h.qr||{};
