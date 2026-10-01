@@ -31,7 +31,8 @@ button:disabled{cursor:default}
 .body{padding:0 24px 16px}
 .helper{font-size:13px;line-height:1.5;color:var(--ink2);margin:0 0 17px}
 .track-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--line);border-radius:13px;margin:0 0 14px}
-.track-switch button{min-height:42px;border:0;border-radius:10px;background:transparent;color:var(--ink2);font-size:13px;font-weight:650}
+.track-switch button{min-height:42px;border:0;border-radius:10px;background:transparent;color:var(--ink2);font-size:13px;font-weight:650;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.track-switch button small{display:block;font-size:10px;line-height:1.1;margin-top:2px;font-weight:650;opacity:.78}
 .track-switch button.sel{background:var(--card);color:var(--cin2);box-shadow:0 1px 4px rgba(33,29,23,.08)}
 .track-note{font-size:12px;line-height:1.45;color:var(--ink2);margin:-6px 0 14px}
 .track-note b{color:var(--cin2);font-weight:650}
@@ -342,9 +343,10 @@ function render(){
       var levelChoices=levelsForTrack();
       var access=hsk30Access();
       var h30Ready=!INIT_DATA||(HSK30_STATUS&&hsk30Access()&&hsk30Access().feature_enabled!==false);
+      var h30PriceLabel=(access&&!access.allowed&&hsk30PaymentEnabled())?('<small>'+hsk30Price()+' TJS</small>'):"";
       var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
         +'<button type="button" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
-        +'<button type="button" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+'</button></div>';
+        +'<button type="button" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
       var trackNote="";
       if(track==="hsk30"&&access&&access.feature_enabled===false)trackNote='<p class="track-note">'+L.hsk30Disabled+'</p>';
       else if(track==="hsk30"&&(!access||!access.allowed))trackNote='<p class="track-note"><b>'+(hsk30PaymentEnabled()?L.hsk30Locked.replace("{price}",hsk30Price()):L.hsk30LockedPro)+'</b></p>';
