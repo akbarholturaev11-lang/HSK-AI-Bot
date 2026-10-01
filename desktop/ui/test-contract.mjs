@@ -637,6 +637,8 @@ test("HSK 3.0 Desktop UI exposes live course switching and locked price", async 
   assert.match(app, /openSubscriptionMode\("hsk30_unlock"\)/);
   assert.match(app, /function openCourseVersionConfirm\(targetTrack/);
   assert.match(app, /courseVersionConfirmBody/);
+  assert.match(app, /new_badge\?\.is_new/);
+  assert.match(app, /HSK 3\.0 · NEW/);
   assert.match(app, /vocabulary\.setCourseLevel\(state\.map\?\.level/);
   assert.match(i18n, /hsk30TrackSwitchBody/);
   assert.match(i18n, /courseVersionConfirmTitle/);
