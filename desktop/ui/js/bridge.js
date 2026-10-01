@@ -13,6 +13,8 @@ const COMMANDS = Object.freeze({
   bootstrap: "desktop_bootstrap",
   logout: "desktop_logout",
   courseMap: "desktop_course_map",
+  courseTrackSwitch: "desktop_course_track_switch",
+  hsk30PromoShown: "desktop_hsk30_promo_shown",
   syncState: "desktop_sync",
   lessonData: "desktop_lesson_data",
   lessonComplete: "desktop_lesson_complete",
@@ -267,6 +269,23 @@ function assertExternalUrl(value) {
     }
   }
   throw new DesktopBridgeError("desktop_external_url_invalid");
+}
+
+function assertCourseTrack(value) {
+  const track = String(value || "").trim().toLowerCase();
+  if (!["hsk20", "hsk30"].includes(track)) {
+    throw new DesktopBridgeError("desktop_course_track_invalid");
+  }
+  return track;
+}
+
+function assertCourseLevel(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const level = String(value).trim().toLowerCase();
+  if (!["hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"].includes(level)) {
+    throw new DesktopBridgeError("desktop_course_level_invalid");
+  }
+  return level;
 }
 
 function assertLessonOrder(value) {
@@ -705,6 +724,17 @@ export const desktopBridge = Object.freeze({
       );
     }
     return invokeCommand(COMMANDS.courseMap, { timezoneOffsetMinutes });
+  },
+
+  courseTrackSwitch(targetTrack, level = null) {
+    return invokeCommand(COMMANDS.courseTrackSwitch, {
+      targetTrack: assertCourseTrack(targetTrack),
+      level: assertCourseLevel(level),
+    });
+  },
+
+  hsk30PromoShown() {
+    return invokeCommand(COMMANDS.hsk30PromoShown);
   },
 
   syncState() {
