@@ -116,6 +116,31 @@ def render_level(value: str | None, lesson_order: int | None = None) -> str:
     return normalized
 
 
+_AI_LEVEL_TOTAL_WORDS = {
+    ("hsk30", 1): 300,
+    ("hsk30", 2): 500,
+    ("hsk30", 3): 1000,
+    ("hsk30", 4): 2000,
+}
+
+
+def ai_level_context(value: str | None) -> str:
+    """Human-readable curriculum context for AI prompts.
+
+    Access/progress code keeps canonical hsk*/nhsk* keys while the AI sees
+    which curriculum version and band the learner is actually studying.
+    """
+
+    spec = level_spec(value)
+    if not spec:
+        raw = str(value or "").strip() or "hsk1"
+        return f"HSK darajasi: {raw}"
+    if spec.track == TRACK_HSK30:
+        total = _AI_LEVEL_TOTAL_WORDS.get((spec.track, spec.band))
+        words = f", jami ~{total} so'z" if total else ""
+        return f"HSK 3.0, {spec.band}-daraja (N{spec.band}){words}"
+    return f"HSK 2.0, {spec.band}-daraja (HSK {spec.band})"
+
 def next_level(value: str | None) -> str | None:
     spec = level_spec(value)
     if not spec or spec.entry_alias or spec.band >= 4:
