@@ -78,6 +78,7 @@ import com.pomp.hskai.feature.course.StudySetupViewModel
 import com.pomp.hskai.feature.dictionary.DictionaryActions
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
+import com.pomp.hskai.feature.foundation.FoundationActivity
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
@@ -672,6 +673,7 @@ private fun AppRoot(
             }
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
+            var onboardingAutoStartHandled by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
@@ -691,6 +693,52 @@ private fun AppRoot(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
                 )
+            }
+
+            // Mini App autostarts the onboarding result. Android waits until its
+            // one-time notification/widget prompts are finished, then opens the
+            // same server-selected lesson instead of stopping on the course map.
+            // Beginner onboarding enters Starter 0 first; FoundationActivity
+            // returns through the canonical current-lesson deep link.
+            LaunchedEffect(
+                onboardingState.launch,
+                courseState.map,
+                offline,
+                notificationPrimerSeen,
+                widgetSession.reminderEnabled,
+                widgetOfferHandled,
+                widgetSetupOpen,
+            ) {
+                val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
+                if (onboardingAutoStartHandled || offline) return@LaunchedEffect
+                if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
+                    return@LaunchedEffect
+                }
+                if (!widgetOfferHandled || widgetSetupOpen) return@LaunchedEffect
+
+                val map = courseState.map ?: return@LaunchedEffect
+                val launchLevel = onboardingLaunch.level.trim().lowercase()
+                if (launchLevel.isNotBlank() && map.level.trim().lowercase() != launchLevel) {
+                    return@LaunchedEffect
+                }
+
+                onboardingAutoStartHandled = true
+                if (onboardingLaunch.foundationRequired || map.foundation?.mustComeFirst == true) {
+                    context.startActivity(Intent(context, FoundationActivity::class.java))
+                    return@LaunchedEffect
+                }
+
+                val requestedOrder = onboardingLaunch.lesson?.takeIf { it > 0 }
+                    ?: map.currentLesson?.order
+                val candidate = requestedOrder?.let { order ->
+                    map.lessons.firstOrNull { it.order == order }
+                } ?: map.currentLesson
+                if (
+                    candidate?.access == LessonAccess.Open ||
+                    candidate?.access == LessonAccess.HalfPreview
+                ) {
+                    launchLesson(candidate)
+                }
             }
 
             // Which locked lesson the skip test is running for, if any.
