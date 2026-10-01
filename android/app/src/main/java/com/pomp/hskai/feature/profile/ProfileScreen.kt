@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
@@ -37,6 +38,9 @@ import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -90,6 +94,11 @@ import com.pomp.hskai.feature.course.GoalRing
 import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.widget.WidgetScheduler
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /**
  * Android profile follows the Mini App profile surface. The Settings entry is
@@ -134,6 +143,9 @@ fun ProfileScreen(
     onIdentitiesBrowserOpened: () -> Unit = {},
     onSaveProfile: (String, String) -> Unit = { _, _ -> },
     profileSaving: Boolean = false,
+    onOpenSubscription: (renewal: Boolean) -> Unit = {},
+    onStartTrial: () -> Unit = {},
+    subscriptionCheckoutAvailable: Boolean = BuildConfig.FLAVOR == "direct",
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true)
     var settingsOpen by remember { mutableStateOf(false) }
@@ -153,6 +165,10 @@ fun ProfileScreen(
         runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName)) }
         Unit
     }
+    val openSettings = {
+        widgetInstalled = WidgetScheduler.hasWidgets(context)
+        settingsOpen = true
+    }
 
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -160,13 +176,13 @@ fun ProfileScreen(
             contentPadding = PaddingValues(
                 start = 16.dp,
                 end = 16.dp,
-                top = 16.dp,
+                top = 6.dp,
                 // The tab bar floats over the list; logout must stay reachable.
                 bottom = 16.dp + LocalMainBottomInset.current,
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item { ProfilePill() }
+            item { ProfileToolbar(onOpenSettings = openSettings) }
 
             if (hints.isNotEmpty()) {
                 item {
@@ -183,6 +199,15 @@ fun ProfileScreen(
                         identitiesOpen = true
                         onLoadIdentities()
                     },
+                )
+            }
+            item {
+                ProfileSubscriptionCard(
+                    accountIsPaid = account.isPaid,
+                    state = state,
+                    checkoutAvailable = subscriptionCheckoutAvailable,
+                    onOpenSubscription = onOpenSubscription,
+                    onStartTrial = onStartTrial,
                 )
             }
             item {
@@ -236,14 +261,6 @@ fun ProfileScreen(
             // Compiled only into the `direct` build; the Play flavour has a
             // no-op here, because Play updates the app itself.
             item { AppUpdateCard() }
-            item {
-                SettingsEntryCard(
-                    onClick = {
-                        widgetInstalled = WidgetScheduler.hasWidgets(context)
-                        settingsOpen = true
-                    }
-                )
-            }
             // `onOpenSupport` is the screen's "open this URL outside the app"
             // callback (MainActivity wires it to openExternal); the social row
             // needs exactly that and nothing support-specific.
@@ -383,17 +400,187 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfilePill() {
-    Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(20.dp)) {
-        Row(
-            modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+private fun ProfileToolbar(onOpenSettings: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.nav_profile),
+            style = MaterialTheme.typography.headlineMedium,
+            color = PompColors.Ink,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f),
+        )
+        Surface(
+            onClick = onOpenSettings,
+            color = PompColors.PaperRaised,
+            shape = CircleShape,
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.size(44.dp),
         ) {
-            Icon(Icons.Filled.PersonOutline, contentDescription = null, tint = PompColors.Paper, modifier = Modifier.size(17.dp))
-            Text(stringResource(R.string.nav_profile), color = PompColors.Paper, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = stringResource(R.string.profile_mini_settings),
+                    tint = PompColors.InkSecondary,
+                    modifier = Modifier.size(21.dp),
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun ProfileSubscriptionCard(
+    accountIsPaid: Boolean,
+    state: ProfileUiState,
+    checkoutAvailable: Boolean,
+    onOpenSubscription: (renewal: Boolean) -> Unit,
+    onStartTrial: () -> Unit,
+) {
+    val subscription = state.profile?.subscription
+    val isPaid = subscription?.isPaid == true || accountIsPaid
+    val trial = state.trial
+    val trialActive = trial?.active == true
+    val isTemporary = !isPaid && subscription?.status == "temporary_trial"
+    val isExpired = !isPaid && !trialActive && subscription?.status == "expired"
+    val statusRes = when {
+        isPaid -> R.string.profile_subscription_status_paid
+        subscription == null && state.isLoading -> R.string.state_loading
+        subscription == null -> R.string.profile_subscription_status_unavailable
+        trialActive -> R.string.profile_subscription_status_trial
+        isTemporary -> R.string.profile_subscription_status_temporary
+        isExpired -> R.string.profile_subscription_status_expired
+        else -> R.string.profile_subscription_status_free
+    }
+    val expiry = when {
+        isPaid || isTemporary -> subscription?.until
+        trialActive -> trial?.endsAt
+        else -> null
+    }
+    val mayStartTrial = !isPaid && !trialActive && trial?.eligible == true
+
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        shadowElevation = 8.dp,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.profile_subscription_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Ink,
+                    modifier = Modifier.weight(1f),
+                )
+                Surface(
+                    color = if (isPaid || trialActive) PompColors.JadeSoft else PompColors.PaperRaised,
+                    shape = RoundedCornerShape(999.dp),
+                    border = BorderStroke(
+                        1.dp,
+                        if (isPaid || trialActive) PompColors.Jade else PompColors.Divider,
+                    ),
+                ) {
+                    Text(
+                        stringResource(statusRes),
+                        color = if (isPaid || trialActive) PompColors.Jade else PompColors.InkSecondary,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    )
+                }
+            }
+            expiry?.let {
+                Text(
+                    stringResource(R.string.profile_subscription_until, profileExpiryText(it)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+            }
+            if (trialActive) {
+                Text(
+                    stringResource(R.string.profile_trial_active_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.InkSecondary,
+                )
+            } else if (isTemporary) {
+                Text(
+                    stringResource(R.string.profile_subscription_temporary_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.InkSecondary,
+                )
+            } else if (subscription != null && !isPaid) {
+                Text(
+                    stringResource(R.string.profile_subscription_free_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.InkSecondary,
+                )
+            }
+
+            if (checkoutAvailable && subscription != null) {
+                Button(
+                    onClick = { onOpenSubscription(isPaid) },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar),
+                ) {
+                    Text(
+                        stringResource(
+                            when {
+                                isPaid -> R.string.profile_subscription_renew
+                                isExpired -> R.string.profile_subscription_restore
+                                else -> R.string.profile_subscription_buy
+                            }
+                        ),
+                        color = PompColors.Paper,
+                    )
+                }
+                if (mayStartTrial) {
+                    OutlinedButton(
+                        onClick = onStartTrial,
+                        enabled = !state.trialStarting,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 46.dp),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        if (state.trialStarting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp,
+                                color = PompColors.Cinnabar,
+                            )
+                        } else {
+                            Text(stringResource(R.string.profile_trial_cta), color = PompColors.CinnabarDark)
+                        }
+                    }
+                }
+                if (state.trialError.isNotBlank()) {
+                    Text(
+                        stringResource(R.string.profile_trial_failed),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = PompColors.Flame,
+                    )
+                }
+            } else if (!checkoutAvailable && subscription != null && !isPaid) {
+                Text(
+                    stringResource(R.string.profile_subscription_play_blocked),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.InkSecondary,
+                )
+            }
+        }
+    }
+}
+
+private fun profileExpiryText(raw: String): String {
+    val instant = runCatching { Instant.parse(raw) }
+        .recoverCatching { OffsetDateTime.parse(raw).toInstant() }
+        .getOrNull()
+        ?: return raw.take(10)
+    val formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.getDefault())
+    return formatter.withZone(ZoneId.systemDefault()).format(instant)
 }
 
 @Composable
@@ -588,18 +775,6 @@ private fun LevelLeaguePill(level: String, league: String) {
     Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(999.dp)) {
         Text(if (league.isBlank()) level else "$level · $league", style = MaterialTheme.typography.labelLarge, color = PompColors.CinnabarDark, modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp))
     }
-}
-
-@Composable
-private fun SettingsEntryCard(onClick: () -> Unit) {
-    ProfileActionCard(
-        icon = Icons.Filled.Settings,
-        iconBackground = PompColors.CinnabarSoft,
-        iconTint = PompColors.Cinnabar,
-        title = stringResource(R.string.profile_mini_settings),
-        subtitle = null,
-        onClick = onClick,
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

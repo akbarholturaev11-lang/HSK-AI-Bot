@@ -448,7 +448,7 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
     LaunchedEffect(state.turns.lastOrNull(), state.busy, history) {
         if (!history && state.turns.isNotEmpty()) list.animateScrollToItem(maxOf(0, list.layoutInfo.totalItemsCount - 1))
     }
-    val canSend = !state.busy && !state.loading && !recording && !preparing && (state.draft.isNotBlank() || state.media.isNotBlank())
+    val canSend = state.statusReady && state.enabled && !state.busy && !state.loading && !recording && !preparing && (state.draft.isNotBlank() || state.media.isNotBlank())
     ModalBottomSheet(
         onDismissRequest = onClose,
         // Full screen must still stop below the clock and the camera cutout.
@@ -486,6 +486,43 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                 }
                 IconButton(onClick = onClose) {
                     Icon(Icons.Default.Close, stringResource(R.string.assistant_close), tint = PompColors.InkSecondary)
+                }
+            }
+            when {
+                state.statusLoading && !state.statusReady -> Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    CircularProgressIndicator(Modifier.size(16.dp), color = PompColors.Cinnabar, strokeWidth = 2.dp)
+                    Text(stringResource(R.string.assistant_status_loading), style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
+                }
+                state.statusError.isNotBlank() -> Surface(
+                    color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                ) {
+                    Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(assistantError(state.statusError), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+                            if (state.statusLimitText.isNotBlank()) Text(
+                                state.statusLimitText, style = MaterialTheme.typography.labelSmall, color = PompColors.CinnabarDark,
+                            )
+                            if (state.statusResetAt.isNotBlank()) Text(
+                                stringResource(R.string.assistant_reset_at, state.statusResetAt),
+                                style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary,
+                            )
+                        }
+                        TextButton(onClick = { app.assistant.refreshStatus(force = true) }, enabled = !state.statusLoading) {
+                            Text(stringResource(R.string.assistant_retry_status), color = PompColors.Cinnabar)
+                        }
+                    }
+                }
+                state.statusReady && !state.enabled -> Surface(
+                    color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                ) {
+                    Text(stringResource(R.string.assistant_disabled), Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
                 }
             }
             if (!history) {
@@ -592,7 +629,16 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
             ) {
                 Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(assistantError(state.error), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(assistantError(state.error), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+                        if (state.errorLimitText.isNotBlank()) Text(
+                            state.errorLimitText, style = MaterialTheme.typography.labelSmall, color = PompColors.CinnabarDark,
+                        )
+                        if (state.errorResetAt.isNotBlank()) Text(
+                            stringResource(R.string.assistant_reset_at, state.errorResetAt),
+                            style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary,
+                        )
+                    }
                     // A queued question that never resolves must not lock the chat.
                     if (state.queued) TextButton(onClick = app.assistant::discard, enabled = !state.busy) {
                         Text(stringResource(R.string.assistant_cancel), color = PompColors.InkSecondary)
@@ -931,6 +977,14 @@ private fun AssistantConversations(
     "assistant_no_speech" -> R.string.assistant_no_speech
     "assistant_media_invalid" -> R.string.assistant_bad_photo
     "assistant_timeout" -> R.string.assistant_timeout
-    "free_feature_limit_reached", "daily_limit_reached", "ai_budget_exhausted", "subscription_required" -> R.string.assistant_limit
+    "assistant_disabled" -> R.string.assistant_disabled
+    "access_blocked" -> R.string.assistant_access_blocked
+    "access_payment_pending_review" -> R.string.assistant_payment_pending
+    "session_expired" -> R.string.assistant_session_expired
+    "assistant_unavailable" -> R.string.assistant_network
+    "free_feature_limit_reached", "daily_limit_reached", "subscription_required" -> R.string.assistant_limit
+    "ai_budget_exhausted", "ai_budget_depleted" -> R.string.assistant_budget_depleted
+    "ai_cooldown", "ai_budget_cooldown" -> R.string.assistant_cooldown
+    "course_access_blocked" -> R.string.assistant_access_blocked
     else -> R.string.assistant_network
 })

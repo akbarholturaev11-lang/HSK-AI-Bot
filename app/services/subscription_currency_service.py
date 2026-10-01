@@ -35,6 +35,21 @@ LOCAL_RATE_LABELS = {
     "rub": "RUB",
     "usd": "USD",
 }
+DISPLAY_CURRENCY_ALIASES = {
+    "$": "usd",
+    "us$": "usd",
+    "tjs": "tjs",
+    "somoni": "tjs",
+    "сомони": "tjs",
+    "uzs": "uzs",
+    "rub": "rub",
+    "cny": "cny",
+    "rmb": "cny",
+    "yuan": "cny",
+    "人民币": "cny",
+    "¥": "cny",
+    "usd": "usd",
+}
 CARD_COUNTRY_CURRENCY = {
     "tj": "tjs",
     "uz": "uzs",
@@ -72,6 +87,10 @@ def normalize_visa_price(amount: int, currency: str) -> tuple[int, str]:
 class SubscriptionCurrencyService:
     def __init__(self, session):
         self.setting_repo = BotSettingRepository(session)
+
+    @staticmethod
+    def normalize_display_currency(value: str | None) -> str | None:
+        return DISPLAY_CURRENCY_ALIASES.get((value or "").strip().lower())
 
     async def get_rate(self, currency_code: str) -> Decimal:
         default = DEFAULT_SUBSCRIPTION_USD_RATES[currency_code]
@@ -195,6 +214,41 @@ class SubscriptionCurrencyService:
                 )
             )
         return quotes
+
+    async def quote_display_amounts(
+        self,
+        tjs_amounts: list[int],
+        currency_code: str,
+        *,
+        source_currency: str = "TJS",
+        preloaded_rates: tuple[dict[str, Decimal], str] | None = None,
+    ) -> list[tuple[str, str]]:
+        """Convert plan prices for display without selecting a payment route."""
+
+        currency = self.normalize_display_currency(currency_code)
+        source = self.normalize_display_currency(source_currency)
+        if currency is None or source is None:
+            raise ValueError("unsupported subscription display currency")
+        if currency == source:
+            return [(str(int(amount)), self.rate_label(currency)) for amount in tjs_amounts]
+
+        rates, _rate_source = preloaded_rates or await self.effective_rates()
+        decimals = 0 if currency in {"tjs", "uzs", "cny"} else 2
+        quoted: list[tuple[str, str]] = []
+        for amount in tjs_amounts:
+            usd_amount = (
+                Decimal(int(amount))
+                if source == "usd"
+                else Decimal(int(amount)) / rates[source]
+            )
+            local_amount = usd_amount if currency == "usd" else usd_amount * rates[currency]
+            quoted.append(
+                (
+                    self._format_amount(local_amount, decimals),
+                    self.rate_label(currency),
+                )
+            )
+        return quoted
 
     async def format_local_equivalents(self, usd_amount: int) -> str:
         rates = await self.all_rates()

@@ -64,6 +64,7 @@ _FEATURE_LABELS = {
     "course": "Kurs rejimi",
     "profile": "Profil",
     "subscription": "Obuna/Chegirma",
+    "android_subscription": "Android ilovadagi obuna",
 }
 _MAX_COMMENT_TEXT = 1000
 _COURSE_MINIAPP_V2_RELEASE_TITLE = "Course Mini App v2: quiz va mustahkamlash"
@@ -544,6 +545,25 @@ async def _route_try_feature(callback: CallbackQuery, state: FSMContext, session
             await build_subscription_main_text_for_user(session, user, lang),
             reply_markup=subscription_miniapp_keyboard(lang, source="release_feedback_try", mode="subscription"),
             parse_mode="HTML",
+        )
+        return
+
+    if feature_key == "android_subscription":
+        await callback.message.answer(
+            {
+                "uz": (
+                    "Sinash uchun HSK AI Android ilovasini oching → Profil → Obuna. "
+                    "Tarifda valyutani yuqoridagi tugma orqali almashtiring."
+                ),
+                "ru": (
+                    "Чтобы проверить обновление, откройте приложение HSK AI для Android → "
+                    "Профиль → Подписка. Валюту тарифа можно изменить кнопкой над тарифами."
+                ),
+                "tj": (
+                    "Барои санҷидан барномаи HSK AI-и Android-ро кушоед → Профил → Обуна. "
+                    "Асъори тарифро бо тугмаи болои тарифҳо иваз кунед."
+                ),
+            }.get(lang, "Откройте приложение HSK AI для Android → Профиль → Подписка."),
         )
         return
 

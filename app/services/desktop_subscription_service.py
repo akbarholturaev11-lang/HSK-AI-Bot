@@ -44,15 +44,24 @@ class DesktopSubscriptionService:
     Prices, discounts, QR payloads, payment creation and admin delivery remain
     owned by ``SubscriptionMiniAppService``. This adapter only binds those
     operations to the user from a verified desktop session and applies the
-    desktop-specific read-only policy for active paid accounts.
+    per-client read-only policy for active paid accounts.
     """
 
-    def __init__(self, session, settings_obj, *, bot: Bot, source: str = DESKTOP_SUBSCRIPTION_SOURCE):
+    def __init__(
+        self,
+        session,
+        settings_obj,
+        *,
+        bot: Bot,
+        source: str = DESKTOP_SUBSCRIPTION_SOURCE,
+        allow_active_paid: bool = False,
+    ):
         self.session = session
         self.settings = settings_obj
         self.bot = bot
         self.checkout = SubscriptionMiniAppService(session)
         self.source = source
+        self.allow_active_paid = allow_active_paid
 
     async def _context(self, access_token: str):
         return await DesktopAuthService(
@@ -85,20 +94,24 @@ class DesktopSubscriptionService:
         }
 
     @classmethod
-    def _checkout_restriction(cls, user) -> tuple[str, int] | None:
+    def _checkout_restriction(
+        cls,
+        user,
+        *,
+        allow_active_paid: bool = False,
+    ) -> tuple[str, int] | None:
         state = UserAccessStateService.classify(user)
-        if state == UserAccessState.PAID:
-            # The existing activation flow starts a fresh period instead of
-            # extending the remaining one. Keep active subscriptions read-only
-            # until renewal semantics are changed centrally and tested.
+        if state == UserAccessState.PAID and not allow_active_paid:
             return "desktop_subscription_active", 409
         if state == UserAccessState.BLOCKED:
             return "desktop_subscription_blocked", 403
         return None
 
-    @classmethod
-    def _ensure_checkout_allowed(cls, user) -> None:
-        restriction = cls._checkout_restriction(user)
+    def _ensure_checkout_allowed(self, user) -> None:
+        restriction = self._checkout_restriction(
+            user,
+            allow_active_paid=self.allow_active_paid,
+        )
         if restriction:
             code, status_code = restriction
             raise DesktopSubscriptionError(code, status_code=status_code)
@@ -183,7 +196,10 @@ class DesktopSubscriptionService:
             )
         )
         access = self._access_payload(context.user)
-        restriction = self._checkout_restriction(context.user)
+        restriction = self._checkout_restriction(
+            context.user,
+            allow_active_paid=self.allow_active_paid,
+        )
         pending = result.get("pending_payment") is not None
         read_only_reason = restriction[0] if restriction else None
         if not read_only_reason and pending:

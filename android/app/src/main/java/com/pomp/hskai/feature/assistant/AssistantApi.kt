@@ -47,6 +47,8 @@ data class AssistantInput(
     val ok: Boolean = false,
     val enabled: Boolean = false,
     val error: String = "",
+    @SerialName("limit_text") val limitText: String = "",
+    @SerialName("reset_at") val resetAt: String = "",
     val entitlements: JsonObject? = null,
     val conversation: AssistantConversation? = null,
     val conversations: List<AssistantConversation> = emptyList(),

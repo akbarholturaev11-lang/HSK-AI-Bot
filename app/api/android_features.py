@@ -125,6 +125,8 @@ ANDROID_CHECKOUT_ORIGIN_SOURCES = {
     "recognition_limit": "android_recognition_limit",
     "pronunciation_limit": "android_pronunciation_limit",
     "voice_limit": "android_voice_limit",
+    "profile_subscription": "android_profile_subscription",
+    "profile_renewal": "android_profile_renewal",
 }
 
 # Reklama turlaridan Android nimani ko'rsatishi mumkin.
@@ -275,6 +277,12 @@ class AndroidHintDismissRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     hint: str = Field(min_length=1, max_length=48)
+
+
+class AndroidSubscriptionCurrencyRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    currency: Literal["TJS", "UZS", "RUB", "CNY", "USD"]
 
 
 class AndroidDrillGateRequest(BaseModel):
@@ -518,41 +526,60 @@ def _bot_url(settings_obj) -> str:
     return f"https://t.me/{username}" if username else ""
 
 
-async def _localize_android_checkout_prices(session, result: dict[str, Any]) -> dict[str, Any]:
-    """Attach language-default display prices without changing canonical amounts."""
+async def _localize_android_checkout_prices(
+    session,
+    result: dict[str, Any],
+    *,
+    currency: str,
+) -> dict[str, Any]:
+    """Attach display prices without changing canonical or payment amounts."""
 
     prices = result.get("prices")
-    visa_prices = prices.get("visa") if isinstance(prices, dict) else None
-    if not isinstance(visa_prices, dict) or not visa_prices:
+    if not isinstance(prices, dict) or not prices:
         return result
 
-    language = str(result.get("language") or "").strip().lower()
-    country = "ru" if language == "ru" else "tj" if language in {"tj", "tg", "tg-cyrl"} else "uz"
-
-    rows: list[tuple[dict[str, Any], int, int]] = []
-    amounts: list[int] = []
-    for price in visa_prices.values():
-        if not isinstance(price, dict):
+    rows_by_source: dict[str, list[tuple[dict[str, Any], int, int]]] = {}
+    needs_conversion = False
+    for method_prices in prices.values():
+        if not isinstance(method_prices, dict):
             continue
-        try:
-            base_amount = int(price.get("base_amount") or 0)
-            final_amount = int(price.get("final_amount") or 0)
-        except (TypeError, ValueError):
-            continue
-        rows.append((price, base_amount, final_amount))
-        amounts.extend((base_amount, final_amount))
+        for price in method_prices.values():
+            if not isinstance(price, dict):
+                continue
+            try:
+                base_amount = int(price.get("base_amount") or 0)
+                final_amount = int(price.get("final_amount") or 0)
+            except (TypeError, ValueError):
+                continue
+            source_currency = str(price.get("currency") or "TJS")
+            rows_by_source.setdefault(source_currency, []).append(
+                (price, base_amount, final_amount)
+            )
+            needs_conversion = needs_conversion or (
+                SubscriptionCurrencyService.normalize_display_currency(source_currency)
+                != SubscriptionCurrencyService.normalize_display_currency(currency)
+            )
 
-    if not rows:
+    if not rows_by_source:
         return result
 
-    quotes = await SubscriptionCurrencyService(session).quote_card_amounts(amounts, country)
-    quote_iter = iter(quotes)
-    for price, _base_amount, _final_amount in rows:
-        base_quote = next(quote_iter)
-        final_quote = next(quote_iter)
-        price["display_base_amount"] = base_quote.amount
-        price["display_final_amount"] = final_quote.amount
-        price["display_currency"] = final_quote.currency
+    currency_service = SubscriptionCurrencyService(session)
+    rates = await currency_service.effective_rates() if needs_conversion else None
+    for source_currency, rows in rows_by_source.items():
+        amounts = [amount for _price, base, final in rows for amount in (base, final)]
+        quotes = await currency_service.quote_display_amounts(
+            amounts,
+            currency,
+            source_currency=source_currency,
+            preloaded_rates=rates,
+        )
+        quote_iter = iter(quotes)
+        for price, _base_amount, _final_amount in rows:
+            base_amount, display_currency = next(quote_iter)
+            final_amount, _ = next(quote_iter)
+            price["display_base_amount"] = base_amount
+            price["display_final_amount"] = final_amount
+            price["display_currency"] = display_currency
 
     return result
 
@@ -967,7 +994,11 @@ def create_android_features_router(
         if bot is None:
             raise AndroidFeatureError("android_subscription_unavailable", status_code=503)
         return DesktopSubscriptionService(
-            session, settings_obj, bot=bot, source="android_subscription"
+            session,
+            settings_obj,
+            bot=bot,
+            source="android_subscription",
+            allow_active_paid=True,
         )
 
     @router.get("/api/v3/android/subscription/checkout/overview")
@@ -981,17 +1012,114 @@ def create_android_features_router(
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
             entry_source = ANDROID_CHECKOUT_ORIGIN_SOURCES.get(origin)
             async with session_factory() as session:
+                user = await _user(session, request)
                 result = await (await _android_checkout(session, request)).overview(
                     _access_token(request),
                     entry_source=entry_source,
                 )
-                result = await _localize_android_checkout_prices(session, result)
+                language = str(result.get("language") or "").strip().lower()
+                default_currency = (
+                    "RUB"
+                    if language == "ru"
+                    else "TJS"
+                    if language in {"tj", "tg", "tg-cyrl"}
+                    else "UZS"
+                )
+                result["preferred_currency"] = user.subscription_currency
+                result["display_currency"] = user.subscription_currency or default_currency
+                result = await _localize_android_checkout_prices(
+                    session,
+                    result,
+                    currency=result["display_currency"],
+                )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopSubscriptionError, AndroidFeatureError) as exc:
             return _error_response(exc)
         except Exception:
             logger.exception("Android checkout overview failed")
             return _error_response(AndroidFeatureError("android_subscription_unavailable", status_code=503))
+
+    @router.get("/api/v3/android/subscription/currency-preference")
+    async def android_subscription_currency_preference(request: Request):
+        try:
+            if request.query_params or await request.body():
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                result = {"ok": True, "currency": user.subscription_currency}
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android subscription currency preference read failed")
+            return _error_response(
+                AndroidFeatureError("android_subscription_unavailable", status_code=503)
+            )
+
+    @router.put("/api/v3/android/subscription/currency-preference")
+    async def android_subscription_currency_preference_update(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            payload = await _validated_payload(
+                request,
+                AndroidSubscriptionCurrencyRequest,
+            )
+            async with session_factory() as session:
+                user = await _user(session, request)
+                await UserRepository(session).set_subscription_currency(
+                    user,
+                    payload.currency,
+                )
+                if bot is None:
+                    raise AndroidFeatureError(
+                        "android_subscription_unavailable",
+                        status_code=503,
+                    )
+                checkout = DesktopSubscriptionService(
+                    session,
+                    settings_obj,
+                    bot=bot,
+                    source="android_subscription",
+                    allow_active_paid=True,
+                )
+                if checkout._checkout_restriction(user, allow_active_paid=True):
+                    raise AndroidFeatureError(
+                        "android_subscription_unavailable",
+                        status_code=409,
+                    )
+                price_overview = await checkout.checkout.overview(
+                    user.telegram_id,
+                    bot=bot,
+                    mode="subscription",
+                )
+                if price_overview.get("pending_payment") is not None:
+                    raise AndroidFeatureError(
+                        "android_subscription_pending",
+                        status_code=409,
+                    )
+                price_overview = await _localize_android_checkout_prices(
+                    session,
+                    price_overview,
+                    currency=payload.currency,
+                )
+                await session.commit()
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "currency": payload.currency,
+                    "display_currency": payload.currency,
+                    "prices": price_overview.get("prices") or {},
+                },
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android subscription currency preference update failed")
+            return _error_response(
+                AndroidFeatureError("android_subscription_unavailable", status_code=503)
+            )
 
     @router.post("/api/v3/android/subscription/checkout/discount-start")
     async def android_checkout_discount_start(request: Request):

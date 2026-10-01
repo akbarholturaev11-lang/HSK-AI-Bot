@@ -97,6 +97,7 @@ def release_feedback_feature_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text="💳 Obuna/Chegirma", callback_data="rf:feature:subscription"),
                 InlineKeyboardButton(text="🧭 Umumiy", callback_data="rf:feature:general"),
             ],
+            [InlineKeyboardButton(text="📱 Android ilova obunasi", callback_data="rf:feature:android_subscription")],
             [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="rf:cancel")],
         ]
     )

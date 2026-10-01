@@ -234,6 +234,20 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-10-01 — Android tarifida valyuta tanlovi akkaunt bo'yicha ishlaydi
+
+- `users.subscription_currency` nullable maydoni va 0095 migratsiya qo'shildi.
+- Bearer-auth Android endpoint tanlovni o'qiydi/saqlaydi; checkout overview
+  valyuta preference va Visa/Alipay/WeChat uchun unga mos display narxni
+  qaytaradi. Display valyuta to'lov usuli, bank yoki yakuniy quote summasini
+  almashtirmaydi.
+- Direct APK tariflari birinchi ochiladi; saqlangan tanlov bo'lmasa markaziy
+  valyuta dialogi chiqadi. Karta/hamyon yo'li tarif ichida ixtiyoriy tanlanadi.
+- Release Feedback adminida Android obuna uchun alohida sinash yo'li qo'shildi;
+  tugma Android ilovasidagi Profil → Obuna yo'lini aniq ko'rsatadi.
+- Android API va DataStore cache shu kontraktni ishlatadi; logout cache'ni
+  tozalaydi. Debug buildlar tekshirildi; migratsiya hali deploy qilinmagan.
+
 ### 2026-09-29 — Obuna va limit xabarlari: avval Android ilova, keyin Telegram
 
 Changed:
@@ -10466,3 +10480,19 @@ Boundaries:
 Files touched:
 - `app/main.py`, `app/api/public_site.py`, `app/public_site/render.py`,
   `app/static/desktop-download.html`, `app/static/public-site.css`, testlar.
+### 2026-10-01 — Android Profile va obuna uzaytirish
+
+- Native Profile endi to'liq ekran: sarlavha yuqorida, sozlamalar ikonka
+  orqali; obuna holati, tugash sanasi va checkout/uzaytirish shu yerda.
+- Direct Android'da faol paid renewal ochiq; Play'da tashqi checkout CTA
+  yo'q. Checkout yangilangan davr amaldagi expiry'dan keyin boshlanishini
+  tushuntiradi.
+- Renewalda avvalgi paid expiry saqlanib, yangi tarif kunlari unga qo'shiladi;
+  joriy AI budgeti muddati tugamaguncha saqlanadi, keyingi budget keyin
+  faollashadi. Buning uchun Android origin va currency preference API,
+  additive `subscription_currency` migratsiyasi ham qo'shildi.
+- Tekshiruv: direct/play debug build, ikkala flavor unit testlari, test-source
+  compile va flavor parity o'tdi. Emulatorda APK ochildi, lekin login sabab
+  Profile UI'ga kira olmadik. Backend unit testlar lokal Python muhitida
+  `pytest`, SQLAlchemy va FastAPI yo'qligi sabab yugurmadi. Migratsiya deploy
+  qilinmagan.

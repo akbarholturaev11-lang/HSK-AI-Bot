@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -28,6 +29,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
@@ -55,6 +58,7 @@ import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.data.api.VoiceTranscriptDto
 import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
@@ -84,6 +88,7 @@ fun VoiceScreen(
     onEndSession: () -> Unit,
     onSwapPartner: (String) -> Unit,
     onReset: () -> Unit,
+    onRetryStatus: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     // A running call hides the tab bar and puts its own dock there instead,
@@ -93,6 +98,7 @@ fun VoiceScreen(
         voiceAssistantContext(state, level),
         bottomBar = !callActive,
         bottomInset = if (callActive) VOICE_DOCK_HEIGHT else 0.dp,
+        showButton = false,
     )
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {
@@ -118,6 +124,7 @@ fun VoiceScreen(
                 onDismissHint = onDismissHint,
                 onSelectRole = onSelectRole,
                 onStartSession = onStartSession,
+                onRetryStatus = onRetryStatus,
             )
         }
 
@@ -168,6 +175,7 @@ private fun VoiceHome(
     onDismissHint: (String) -> Unit,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
+    onRetryStatus: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -209,6 +217,27 @@ private fun VoiceHome(
             SectionHint(hints = hints, section = "voice", onDismiss = onDismissHint)
           }
         }
+        if (state.status == null && state.isLoading) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = PompColors.Cinnabar,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.voice_status_loading),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = PompColors.InkSecondary,
+                    )
+                }
+            }
+        }
         item {
             VoiceBox(
                 isStarting = state.isStarting,
@@ -221,6 +250,15 @@ private fun VoiceHome(
             state.error?.let {
                 Spacer(Modifier.height(10.dp))
                 ErrorPill(stringResource(it.messageRes))
+                if (state.status == null && !state.isLoading) {
+                    OutlinedButton(
+                        onClick = onRetryStatus,
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        Text(stringResource(R.string.voice_retry_status), color = PompColors.CinnabarDark)
+                    }
+                }
             }
         }
     }
@@ -483,42 +521,110 @@ private fun VoiceResult(
     onDone: () -> Unit,
 ) {
     val result = state.result ?: return
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-            .padding(bottom = 20.dp + LocalMainBottomInset.current),
+    val mistakes = result.transcript.filter { !it.correction.isNullOrBlank() }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            start = 20.dp,
+            end = 20.dp,
+            top = 16.dp,
+            bottom = 20.dp + LocalMainBottomInset.current,
+        ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        Text(
-            text = stringResource(R.string.voice_result_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Ink,
-        )
-        Spacer(Modifier.height(10.dp))
-        Text(
-            text = stringResource(
-                R.string.voice_result_body,
-                result.messageCount,
-                result.goodCount,
-                result.mistakeCount,
-            ),
-            style = MaterialTheme.typography.bodyLarge,
-            color = PompColors.InkSecondary,
-        )
-        result.scenario?.title?.takeIf { it.isNotBlank() }?.let { title ->
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.voice_scenario_practiced, title),
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
+        item {
+            HskGlassSurface(
+                modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp),
+                shape = RoundedCornerShape(22.dp),
+                shadowElevation = 8.dp,
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.voice_result_title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = PompColors.Ink,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.voice_result_body,
+                            result.messageCount,
+                            result.goodCount,
+                            result.mistakeCount,
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = PompColors.InkSecondary,
+                        textAlign = TextAlign.Center,
+                    )
+                    result.scenario?.title?.takeIf { it.isNotBlank() }?.let { title ->
+                        Text(
+                            text = stringResource(R.string.voice_scenario_practiced, title),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = PompColors.InkSecondary,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
+        }
+        if (mistakes.isEmpty()) {
+            item {
+                Text(
+                    text = stringResource(R.string.voice_result_no_mistakes),
+                    modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp).padding(top = 12.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.Jade,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+            item {
+                Text(
+                    text = stringResource(R.string.voice_result_mistakes_title),
+                    modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp).padding(top = 12.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Ink,
+                )
+            }
+            items(mistakes) { item -> VoiceMistakeReview(item) }
+        }
+        item {
+            HskPrimaryButton(
+                text = stringResource(R.string.voice_again),
+                onClick = onDone,
+                modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp).padding(top = 12.dp),
             )
         }
-        Spacer(Modifier.height(18.dp))
-        HskPrimaryButton(
-            text = stringResource(R.string.voice_again),
-            onClick = onDone,
-            modifier = Modifier.fillMaxWidth(),
-        )
+    }
+}
+
+@Composable
+private fun VoiceMistakeReview(item: VoiceTranscriptDto) {
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp),
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 4.dp,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.voice_result_user_said, item.user),
+                style = MaterialTheme.typography.bodyLarge,
+                color = PompColors.Flame,
+            )
+            Text(
+                text = stringResource(R.string.voice_result_correction, item.correction.orEmpty()),
+                style = PompTextStyles.hanziMedium,
+                color = PompColors.Jade,
+            )
+        }
     }
 }
 

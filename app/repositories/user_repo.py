@@ -115,6 +115,10 @@ class UserRepository:
         user.voice_mode = mode
         await self.session.flush()
 
+    async def set_subscription_currency(self, user: User, currency: str) -> None:
+        user.subscription_currency = currency
+        await self.session.flush()
+
     async def set_referred_by(
         self,
         user: User,

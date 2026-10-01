@@ -1,16 +1,16 @@
-# Graph Report - HSK AI bot  (2026-10-01)
+# Graph Report - hsk-local-ai-push  (2026-10-01)
 
 ## Corpus Check
-- 3029 files · ~7,283,992 words
+- 3033 files · ~7,293,413 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 14762 nodes · 44345 edges · 591 communities (469 shown, 122 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 6228 edges (avg confidence: 0.61)
+- 14822 nodes · 44523 edges · 580 communities (476 shown, 104 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 6276 edges (avg confidence: 0.61)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f2b716ff`
+- Built from commit: `fc925aad`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -454,7 +454,6 @@
 - [[_COMMUNITY_Community 542|Community 542]]
 - [[_COMMUNITY_Community 544|Community 544]]
 - [[_COMMUNITY_Community 545|Community 545]]
-- [[_COMMUNITY_Community 546|Community 546]]
 - [[_COMMUNITY_Community 547|Community 547]]
 - [[_COMMUNITY_Community 548|Community 548]]
 - [[_COMMUNITY_Community 549|Community 549]]
@@ -462,91 +461,81 @@
 - [[_COMMUNITY_Community 551|Community 551]]
 - [[_COMMUNITY_Community 552|Community 552]]
 - [[_COMMUNITY_Community 553|Community 553]]
-- [[_COMMUNITY_Community 554|Community 554]]
 - [[_COMMUNITY_Community 555|Community 555]]
 - [[_COMMUNITY_Community 556|Community 556]]
 - [[_COMMUNITY_Community 557|Community 557]]
 - [[_COMMUNITY_Community 558|Community 558]]
 - [[_COMMUNITY_Community 559|Community 559]]
-- [[_COMMUNITY_Community 560|Community 560]]
 - [[_COMMUNITY_Community 561|Community 561]]
-- [[_COMMUNITY_Community 564|Community 564]]
 - [[_COMMUNITY_Community 567|Community 567]]
 - [[_COMMUNITY_Community 568|Community 568]]
 - [[_COMMUNITY_Community 570|Community 570]]
 - [[_COMMUNITY_Community 571|Community 571]]
 - [[_COMMUNITY_Community 572|Community 572]]
 - [[_COMMUNITY_Community 573|Community 573]]
-- [[_COMMUNITY_Community 574|Community 574]]
 - [[_COMMUNITY_Community 575|Community 575]]
 - [[_COMMUNITY_Community 577|Community 577]]
-- [[_COMMUNITY_Community 578|Community 578]]
-- [[_COMMUNITY_Community 579|Community 579]]
 - [[_COMMUNITY_Community 580|Community 580]]
 - [[_COMMUNITY_Community 581|Community 581]]
 - [[_COMMUNITY_Community 582|Community 582]]
-- [[_COMMUNITY_Community 588|Community 588]]
-- [[_COMMUNITY_Community 589|Community 589]]
-- [[_COMMUNITY_Community 595|Community 595]]
 - [[_COMMUNITY_Community 597|Community 597]]
-- [[_COMMUNITY_Community 598|Community 598]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `UserRepository` - 446 edges
+1. `UserRepository` - 448 edges
 2. `User` - 442 edges
 3. `Base` - 373 edges
 4. `$()` - 302 edges
-5. `10. Recent Important Changes` - 265 edges
+5. `10. Recent Important Changes` - 266 edges
 6. `t()` - 261 edges
-7. `DesktopAuthService` - 260 edges
+7. `DesktopAuthService` - 261 edges
 8. `Message` - 225 edges
 9. `CourseMiniAppEvent` - 202 edges
-10. `CourseMiniAppAccessService` - 163 edges
+10. `CourseMiniAppAccessService` - 164 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `DesktopAuthBotManualEntryTests` --uses--> `DesktopLinkStartRequest`  [INFERRED]
-  tests/test_desktop_auth_service.py → app/api/desktop_auth.py
-- `DesktopAuthProviderFlowGuardTests` --uses--> `DesktopLinkStartRequest`  [INFERRED]
-  tests/test_desktop_auth_service.py → app/api/desktop_auth.py
-- `DesktopAuthServiceTests` --uses--> `DesktopLinkStartRequest`  [INFERRED]
-  tests/test_desktop_auth_service.py → app/api/desktop_auth.py
-- `_FakeDesktopLinkMessage` --uses--> `DesktopLinkStartRequest`  [INFERRED]
-  tests/test_desktop_auth_service.py → app/api/desktop_auth.py
-- `_FakeDesktopLinkState` --uses--> `DesktopLinkStartRequest`  [INFERRED]
-  tests/test_desktop_auth_service.py → app/api/desktop_auth.py
+- `AndroidAuthServiceTests` --uses--> `AndroidLinkStartRequest`  [INFERRED]
+  tests/test_android_auth_api.py → app/api/android_auth.py
+- `AndroidAuthServiceTests` --uses--> `DesktopLinkStartRequest`  [INFERRED]
+  tests/test_android_auth_api.py → app/api/desktop_auth.py
+- `DesktopCourseApiTests` --uses--> `DesktopCourseCompleteRequest`  [INFERRED]
+  tests/test_desktop_course_api.py → app/api/desktop_course.py
+- `DesktopCourseApiTests` --uses--> `DesktopNativeEventRequest`  [INFERRED]
+  tests/test_desktop_course_api.py → app/api/desktop_course.py
+- `AdminGuardTests` --uses--> `AdminAndroidStates`  [INFERRED]
+  tests/test_android_apk_download.py → app/bot/fsm/admin_android.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (591 total, 122 thin omitted)
+## Communities (580 total, 104 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.01
-Nodes (265): 10. Recent Important Changes, 2026-05-24 — Block grammar de-duplication, 2026-05-24 — Course block AI context, 2026-05-24 — Course level completion upgrade flow, 2026-05-24 — Dynamic course dialogue audio admin, 2026-05-24 — HSK3 block lesson completion, 2026-05-24 — HSK4 upper lesson localization quality, 2026-05-24 — HSK4 上 first 3 lessons block format (+257 more)
+Nodes (266): 10. Recent Important Changes, 2026-05-24 — Block grammar de-duplication, 2026-05-24 — Course block AI context, 2026-05-24 — Course level completion upgrade flow, 2026-05-24 — Dynamic course dialogue audio admin, 2026-05-24 — HSK3 block lesson completion, 2026-05-24 — HSK4 upper lesson localization quality, 2026-05-24 — HSK4 上 first 3 lessons block format (+258 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.06
-Nodes (72): Boolean, rememberExitGuard(), FocusRows(), forLanguage(), GoalRows(), SetupOption, SetupRow(), SetupRows() (+64 more)
+Cohesion: 0.05
+Nodes (72): HskBubbleText(), AppLanguage, JsonElement, JsonObject, Lesson, AudioAction(), CardPrompt(), CardTitle() (+64 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.05
-Nodes (31): _access_label(), AdminMiniAppService, _ago(), _amount_to_usd(), _as_utc(), _bot_block_filter(), _bot_not_blocked_filter(), _currency_total() (+23 more)
+Cohesion: 0.03
+Nodes (63): admin_stats_callback(), admin_stats_handler(), CoursePilotEventRepository, _access_label(), _activation_funnel(), admin_miniapp_today_start(), AdminMiniAppService, _ago() (+55 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.04
-Nodes (33): ChallengeActionResponse, DrillMistakeDto, DrillResultDto, VoiceMessageRequest, VoiceMessageResponse, ApiError, AccessToken, Authenticated (+25 more)
+Nodes (37): SubscriptionCheckoutHost(), ChallengeActionResponse, ChallengeAnswerDto, DrillMistakeDto, DrillResultDto, ApiError, AccountCache, CachedAccountDto (+29 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.02
-Nodes (82): Base, datetime, Base, DeclarativeBase, build_entitlement_block(), checkout_allowed_for(), _iso(), Bitta foydalanuvchi uchun to'liq entitlement bloki. (+74 more)
+Cohesion: 0.03
+Nodes (49): datetime, Base, DeclarativeBase, AdCampaign, AdCampaignDelivery, ConversionFunnelEvent, CourseAdView, CourseMistakeTarget (+41 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.04
-Nodes (37): DrillWordDto, HskBrandLoader(), DictionaryEntryTest, ActionRow(), CharacterCard(), CharacterSwitcher(), DictionaryActions, DictionaryDetail() (+29 more)
+Cohesion: 0.03
+Nodes (45): AnnotatedString, DrillWordDto, ReferralItemDto, dictionaryAssistantContext(), ColorScheme, pompColorScheme(), PompHskAiTheme(), DictionaryEntryTest (+37 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.13
-Nodes (9): CourseTrackState, CourseTrackStateRepository, Return the canonical onboarding state for the authenticated learner., CourseTrackAccess, CourseTrackError, CourseTrackService, Change band inside the active course track.          Track switching is a separa, Persist and restore the active HSK 2.0 and HSK 3.0 course states.      users.lev (+1 more)
+Cohesion: 0.08
+Nodes (9): CourseTrackStateRepository, CourseTrackAccess, CourseTrackError, CourseTrackService, Change band inside the active course track.          Track switching is a separa, Persist and restore the active HSK 2.0 and HSK 3.0 course states.      users.lev, CourseTrackServiceTests, _FakeState (+1 more)
 
 ### Community 8 - "Community 8"
 Cohesion: 0.13
@@ -554,39 +543,39 @@ Nodes (47): _append_basic_grammar_item(), _append_hsk4_grammar_item(), _append_t
 
 ### Community 9 - "Community 9"
 Cohesion: 0.05
-Nodes (90): _admin_access_left(), admin_back_keyboard(), admin_broadcast_handler(), admin_broadcast_info(), admin_channel_add_callback(), admin_channel_delete_callback(), admin_channel_toggle_callback(), admin_channels_callback() (+82 more)
+Nodes (111): _admin_access_left(), admin_audio_list_handler(), admin_back_keyboard(), admin_broadcast_info(), admin_channel_add_callback(), admin_channel_add_message(), admin_channel_delete_callback(), admin_channel_toggle_callback() (+103 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.05
-Nodes (60): AdContent(), AdScreen(), AdVideo(), SectionLimitBlock(), SectionLimitBlock(), AppUpdateBanner(), AppUpdateCard(), MistakeReviewCompleteResponse (+52 more)
+Nodes (53): SectionLimitBlock(), SectionLimitBlock(), AppUpdateBanner(), AppUpdateCard(), HskContentSkeleton(), HskListSkeletonRow(), SkeletonBlock(), AudioButton() (+45 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.07
-Nodes (16): CourseMiniAppAccessService, Server-side Course Mini App entitlements without changing payment rules., Kunlik limit MAHALLIY vaqt bilan qaysi soatda yangilanadi., O'quvchining vaqt mintaqasi (daqiqada), Mini App profilidan.          Profil bo', Joriy 'limit kuni'ning boshlanishi, UTC da.          Mintaqa 0 va reset soati 0, Kunlik limit keyingi marta qachon ochilishi (UTC).          Klient buni o'z vaqt, Kunlik hisob kalitini tekshiradi.          ``allow_unknown`` faqat chaqiruvchi l, Validate a client-generated opaque retry key.          The value is deliberately (+8 more)
+Cohesion: 0.21
+Nodes (6): Kunlik limit MAHALLIY vaqt bilan qaysi soatda yangilanadi., Joriy 'limit kuni'ning boshlanishi, UTC da.          Mintaqa 0 va reset soati 0, Kunlik limit keyingi marta qachon ochilishi (UTC).          Klient buni o'z vaqt, _at(), DailyResetWindowTests, The Course daily-limit window as the access service exposes it.  The pure window
 
 ### Community 13 - "Community 13"
 Cohesion: 0.07
-Nodes (67): _actual_user_languages(), bc_activity_filter(), bc_button_action(), bc_button_none(), bc_button_text_default(), bc_button_text_message(), bc_button_url_message(), bc_cancel() (+59 more)
+Nodes (69): _actual_user_languages(), bc_activity_filter(), bc_button_action(), bc_button_none(), bc_button_text_default(), bc_button_text_message(), bc_button_url_message(), bc_cancel() (+61 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.08
-Nodes (29): CourseMistakeDto, LessonCharacterStage(), CelebrationScene, CompletionScene(), completionSubtitle(), completionTitle(), formatElapsed(), LessonCompletionCelebration() (+21 more)
+Nodes (26): CourseMistakeDto, CelebrationScene, CompletionScene(), completionSubtitle(), completionTitle(), formatElapsed(), LessonCompletionCelebration(), LessonRankUp (+18 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.06
-Nodes (43): _android_stroke_char(), _android_stroke_file(), _android_tts_file(), _android_tts_text(), AndroidCourseCompleteRequest, AndroidCourseTrackSwitchRequest, AndroidFoundationCompleteRequest, AndroidLessonUnlockRequest (+35 more)
+Cohesion: 0.03
+Nodes (71): _android_stroke_char(), _android_stroke_file(), _android_tts_file(), _android_tts_text(), AndroidCourseCompleteRequest, AndroidCourseTrackSwitchRequest, AndroidFoundationCompleteRequest, AndroidLessonUnlockRequest (+63 more)
 
 ### Community 16 - "Community 16"
-Cohesion: 0.09
-Nodes (21): DailyPlanService, plan_key(), Kunlik reja — sof funksiya: signallar + ruxsat -> 1-4 ta vazifa.  Reja DB da SAQ, Muzlatilgan reja kaliti: sxema versiyasi + band + mahalliy sana., Bir xil ballda tartib tasodifiy emas, DETERMINISTIK bo'lsin.          Seed kun v, Zaiflik + aytilgan fokus (so'nuvchi prior) -> 0..N ball., Eng zaif o'lchov uchun mashq skili — bank uni qoplay olsagina., Bugungi vazifalar (faqat IDENTITY). Sof funksiya. (+13 more)
+Cohesion: 0.08
+Nodes (22): Map javobiga qo'shiladigan `today` bloki. Xato bo'lsa None., DailyPlanService, plan_key(), Kunlik reja — sof funksiya: signallar + ruxsat -> 1-4 ta vazifa.  Reja DB da SAQ, Muzlatilgan reja kaliti: sxema versiyasi + band + mahalliy sana., Bir xil ballda tartib tasodifiy emas, DETERMINISTIK bo'lsin.          Seed kun v, Zaiflik + aytilgan fokus (so'nuvchi prior) -> 0..N ball., Eng zaif o'lchov uchun mashq skili — bank uni qoplay olsagina. (+14 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.09
-Nodes (66): accuracyTrendCard(), activeDaysThisWeek(), activeViewLabel(), allLessons(), chartCard(), comingSoonSettingRow(), comingSoonStatCard(), currentLesson() (+58 more)
+Nodes (68): accuracyTrendCard(), activeDaysThisWeek(), activeViewLabel(), allLessons(), chartCard(), closeReferralModal(), comingSoonSettingRow(), comingSoonStatCard() (+60 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.04
-Nodes (113): CallbackQuery, admin_commission_mode_keyboard(), admin_deadline_keyboard(), admin_partner_approve(), admin_partner_back_keyboard(), admin_partner_block(), admin_partner_commission_mode(), admin_partner_commission_mode_select() (+105 more)
+Cohesion: 0.08
+Nodes (73): FSMContext, _actual_user_languages(), _confirm_text(), _content_preview(), _course_miniapp_v2_template_state(), _edit_callback_panel(), _edit_stored_panel(), _edit_user_feedback_message() (+65 more)
 
 ### Community 19 - "Community 19"
 Cohesion: 0.05
@@ -602,103 +591,99 @@ Nodes (6): _fake_db_session(), `start_session` endi DB ga o'zi murojaat qiladi. 
 
 ### Community 22 - "Community 22"
 Cohesion: 0.11
-Nodes (12): BotFeedbackService, _CampaignUserRepo, DiscountAudienceTest, _feedback(), FeedbackPromptTest, _FeedbackRepo, FeedbackRetryTest, FeedbackRewardTest (+4 more)
+Nodes (13): feedback_prompt_for(), Obunachiga chegirma emas, "obuna arzidimi?" savoli beriladi., _CampaignUserRepo, DiscountAudienceTest, _feedback(), FeedbackPromptTest, _FeedbackRepo, FeedbackRetryTest (+5 more)
 
 ### Community 23 - "Community 23"
 Cohesion: 0.07
-Nodes (8): _uploaded_qr_file_id(), PaymentQrCodeRepository, PaymentQrCodeService, Karta tariflari UZS/RUB/USD da — tarif ekrani uchun.          To'lanadigan summa, Karta to'lovi qaysi bank rekvizitiga borishi.          Bankni faqat Telegram Min, SubscriptionMiniAppService, Hsk30UnlockCheckoutTests, CardBankRequisitesTests
+Nodes (9): _uploaded_qr_file_id(), PaymentQrCode, PaymentQrCodeRepository, PaymentQrCodeService, Karta tariflari UZS/RUB/USD da — tarif ekrani uchun.          To'lanadigan summa, Karta to'lovi qaysi bank rekvizitiga borishi.          Bankni faqat Telegram Min, SubscriptionMiniAppService, Hsk30UnlockCheckoutTests (+1 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.03
-Nodes (22): AndroidLinkStartRequest, DesktopLinkStartRequest, DesktopLinkStates, Referral, ReferralRepository, Count an Android invite only after native Telegram account linking., AndroidAuthApiTests, AndroidAuthServiceTests (+14 more)
+Cohesion: 0.17
+Nodes (4): AndroidAuthServiceTests, Opening the link reserves it; only that chat may approve or cancel., _settings(), _user()
 
 ### Community 25 - "Community 25"
 Cohesion: 0.07
 Nodes (41): Column, _add_column_if_missing(), downgrade(), _drop_column_if_exists(), _has_column(), upgrade(), _add_column_if_missing(), downgrade() (+33 more)
 
-### Community 26 - "Community 26"
-Cohesion: 0.06
-Nodes (14): MistakeReviewQuestionDto, MistakeReviewSessionDto, ReferralItemDto, ColorScheme, pompColorScheme(), PompHskAiTheme(), onAllNodesWithContentDescriptionMatchingClose(), SectionHintTest (+6 more)
-
 ### Community 27 - "Community 27"
 Cohesion: 0.07
-Nodes (22): AndroidRelease, AndroidReleaseError, _as_int(), format_size(), _https_apk_url(), parse_version_text(), The Android APK that the bot hands out.  Distribution is Telegram-only for now —, An update URL the app is allowed to download from, or nothing.      Validated on (+14 more)
+Nodes (23): AndroidRelease, AndroidReleaseError, _as_int(), format_size(), _https_apk_url(), The Android APK that the bot hands out.  Distribution is Telegram-only for now —, An update URL the app is allowed to download from, or nothing.      Validated on, What the bot and the update check actually hand out.      One shape for both sou (+15 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.03
-Nodes (110): AnnotatedString, ChallengeDto, ChallengeQuestionDto, RatingEntryDto, VoiceSuggestionDto, VoiceWordDto, challengeAssistantContext(), courseAssistantContext() (+102 more)
+Cohesion: 0.04
+Nodes (96): ChallengeDto, RatingEntryDto, challengeAssistantContext(), courseAssistantContext(), lessonAssistantContext(), profileAssistantContext(), ratingAssistantContext(), ratingChallengesAssistantContext() (+88 more)
 
 ### Community 43 - "Community 43"
 Cohesion: 0.05
-Nodes (25): apply_hsk4_lower_pdf_materials(), apply_hsk4_upper_pdf_materials(), _exercise_payload(), _grammar_by_no(), _grammar_title(), _homework_payload(), _j(), _localize_materials() (+17 more)
+Nodes (24): apply_hsk4_lower_pdf_materials(), apply_hsk4_upper_pdf_materials(), _exercise_payload(), _grammar_by_no(), _grammar_title(), _homework_payload(), _j(), _localize_materials() (+16 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.06
-Nodes (20): ApiErrorBody, BootstrapDevice, BootstrapResponse, BootstrapUser, LinkStartRequest, LinkStartResponse, LinkStatusResponse, RefreshRequest (+12 more)
+Cohesion: 0.10
+Nodes (9): RefreshRequest, AuthRepositoryTest, failure(), FakeAuthApi, FakeCredentialStore, success(), SwitchableApi, RefreshResponse (+1 more)
 
 ### Community 45 - "Community 45"
-Cohesion: 0.03
-Nodes (54): _service_response(), admin_miniapp_course_ads_upload(), CourseAdCreative, CourseAdService, Reklama tilini normallashtiradi: uz/ru/tj yoki "all" (barchasi)., Media turi: "video" yoki "photo". Eski yozuvlarda NULL/bo'sh — video., Yuklangan faylni tur va kengaytmaga ajratadi.          `(media_type, ext)` qayta, Reklama sloti: "lesson_end" (dars yakuni) yoki "practice". (+46 more)
+Cohesion: 0.02
+Nodes (62): AbstractAsyncContextManager, admin_miniapp_course_ads_upload(), CourseAdCreative, normalize_placements(), placements_of(), Vergul bilan ajratilgan to'plamni tozalaydi.      Bo'sh yoki tanib bo'lmaydigan, _as_utc(), CourseLessonAccessPolicy (+54 more)
 
 ### Community 56 - "Community 56"
-Cohesion: 0.03
-Nodes (33): AbstractAsyncContextManager, _status_payload(), Course v3 adapter for the native Android client.  Android shares every course ru, Return the checked-in Starter 0 payload used by the Mini App., Persist Starter 0 completion through the Mini App event contract., Persist the same progressive-personalization answers as Mini App., Return Course v3 plus the same server-owned Starter 0 state as Mini App., _as_utc() (+25 more)
+Cohesion: 0.07
+Nodes (37): CourseLesson, apply_hsk3_pdf_materials(), _context_grammar_note(), _dialogue_lines(), _ensure_context_grammar_notes(), _grammar_by_no(), _line_matches(), _meaning() (+29 more)
 
 ### Community 57 - "Community 57"
-Cohesion: 0.13
-Nodes (6): _send_subscription_expired_offer(), SubscriptionChurnService, _Result, _Scalars, _Session, SubscriptionChurnServiceTests
+Cohesion: 0.03
+Nodes (37): CommandObject, handle_invite_button(), cmd_start(), Send the APK only after this Telegram account has the invite owner., _send_android_referral_apk(), subscription_referral_discount_handler(), BotFeedback, OnboardingTipEvent (+29 more)
 
 ### Community 58 - "Community 58"
 Cohesion: 0.18
 Nodes (17): build_active_words(), build_exit_ticket(), build_foundation(), build_retention_review(), _distinct_pad(), _grammar_gap_fill(), make_word_listen_card(), mc_hanzi() (+9 more)
 
 ### Community 60 - "Community 60"
-Cohesion: 0.19
-Nodes (27): _combine_liked(), _edit_message(), _edit_stored_message(), _extract_dislike_detail(), feedback_callback_handler(), feedback_dislike_detail_handler(), feedback_other_non_text_handler(), feedback_other_text_handler() (+19 more)
+Cohesion: 0.08
+Nodes (44): FeedbackStates, admin_feedback_reply_cancel(), admin_feedback_reply_start(), _combine_liked(), _edit_message(), _edit_stored_message(), _extract_dislike_detail(), feedback_callback_handler() (+36 more)
 
 ### Community 61 - "Community 61"
-Cohesion: 0.14
-Nodes (14): CourseUserNotification, clean_notification_text(), CourseNotificationService, local_day_dedupe(), _localized_copy(), notification_copy(), notification_title(), Render a stored notification in the language the reader is using now.      The r (+6 more)
+Cohesion: 0.29
+Nodes (4): NotificationLanguageTests, The in-app feed must speak the language the learner is reading in now.  Notifica, Stand-in for CourseUserNotification: the service only reads attributes., _Row
 
 ### Community 62 - "Community 62"
-Cohesion: 0.11
+Cohesion: 0.13
 Nodes (5): DesktopAnalyticsService, Read-only desktop product analytics over the existing Mini App event table., DesktopAnalyticsServiceTests, _row(), _totals()
 
 ### Community 63 - "Community 63"
-Cohesion: 0.08
-Nodes (26): Mijoz boshqaradigan mashqlarning natijasini SERVER TEKSHIRUVI bilan yozish.  Min, Darajadagi jami mini-darslar (qismlar) soni; manifest bo'lmasa 0., total_parts(), Darajaga mos so'zlar. Fayl topilmasa quyi darajaga tushadi., words_for_level(), _index(), index_size(), level_number() (+18 more)
+Cohesion: 0.09
+Nodes (23): Darajadagi jami mini-darslar (qismlar) soni; manifest bo'lmasa 0., total_parts(), _index(), index_size(), level_number(), normalize_level(), So'z -> qaysi bandda va qaysi qismda O'RGATILGAN degan indeks.  Legacy HSK 2.0 v, Diagnostika uchun: berilgan track indeksidagi so'zlar soni. (+15 more)
 
 ### Community 64 - "Community 64"
 Cohesion: 0.09
 Nodes (49): appDayKey(), appLimitStorageKey(), appMarkSeen(), appSeenToday(), closeCenterAd(), _closeLimit(), closeOverlay(), contText() (+41 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.06
-Nodes (22): ChatMemberUpdated, Track explicit private-chat bot block/unblock transitions from Telegram., track_private_bot_membership(), gemini_active(), Gemini hozir asosiy provaydermi? (Railway env'da `GEMINI_API_KEY` bor-yo'qligi.), BotBlockStatusService, Tracks whether Telegram can currently deliver bot messages to a user.      `bot_, Legacy diagnostics only.          Production block/unblock state is now driven b (+14 more)
+Cohesion: 0.50
+Nodes (3): ChatMemberUpdated, Track explicit private-chat bot block/unblock transitions from Telegram., track_private_bot_membership()
 
 ### Community 66 - "Community 66"
-Cohesion: 0.10
-Nodes (13): DesktopDownloadStartedRequest, DesktopDownloadService, _https_url(), DesktopDownloadApiContractTests, DesktopDownloadServiceTests, Deploy eski userni darrov qayta reklama bilan bezovta qilmasin., Chip o'chirilsa tugma ham yo'qoladi — ikkala tomonda ham.          Klient `platf, Faqat Android nashr qilingan holat: desktop relizi ham, uning         kaliti ham (+5 more)
+Cohesion: 0.07
+Nodes (23): create_desktop_download_router(), DesktopDownloadRequest, DesktopDownloadStartedRequest, _error_response(), Read desktop download JSON through a strict application body bound., _validated_payload(), DesktopDownloadError, DesktopDownloadService (+15 more)
 
 ### Community 67 - "Community 67"
-Cohesion: 0.07
-Nodes (54): miniapp_event(), get_course_keyboard_for_step(), _lesson_selection_markup(), _send_miniapp_result_message(), InlineKeyboardButton, InlineKeyboardMarkup, admin_payment_review_keyboard(), course_homework_keyboard() (+46 more)
+Cohesion: 0.11
+Nodes (41): admin_stats_keyboard(), get_course_keyboard_for_step(), _keyboard_for_step(), Har qanday step uchun to'g'ri klaviaturani qaytaradi (V1 + V2)., InlineKeyboardButton, course_homework_keyboard(), course_level_upgrade_keyboard(), course_next_lesson_keyboard() (+33 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.06
-Nodes (29): AI integratsiya rejimi, Asosiy ish usuli, Bug fix standarti, Codex roli, Critical rules, Davom ettirish qoidasi, Fayllar, FINAL LAW (+21 more)
+Cohesion: 0.07
+Nodes (28): AI integratsiya rejimi, Asosiy ish usuli, Bug fix standarti, Codex roli, Critical rules, Davom ettirish qoidasi, Fayllar, FINAL LAW (+20 more)
 
 ### Community 69 - "Community 69"
-Cohesion: 0.03
-Nodes (99): Char, HskCelebrationStage(), HskRayBurst(), HskStreakCelebration(), streakCopy(), StreakDay(), WeekGoalCard(), bezier() (+91 more)
+Cohesion: 0.04
+Nodes (93): Char, HskCelebrationStage(), HskRayBurst(), HskStreakCelebration(), streakCopy(), StreakDay(), WeekGoalCard(), bezier() (+85 more)
 
 ### Community 70 - "Community 70"
 Cohesion: 0.05
-Nodes (162): buildString(), firebaseOption(), signingValue(), Entry, F, state, Option, Result (+154 more)
+Nodes (164): buildString(), firebaseOption(), signingValue(), Entry, F, state, AskChip(), ReadyAnswer() (+156 more)
 
 ### Community 71 - "Community 71"
-Cohesion: 0.05
-Nodes (115): AndroidAdViewRequest, AndroidChallengeAnswer, AndroidChallengeCreateRequest, AndroidChallengeRespondRequest, AndroidChallengeSubmitRequest, AndroidDrillGateRequest, AndroidDrillMistakeEntry, AndroidDrillReportRequest (+107 more)
+Cohesion: 0.06
+Nodes (112): AndroidAdViewRequest, AndroidChallengeAnswer, AndroidChallengeCreateRequest, AndroidChallengeRespondRequest, AndroidChallengeSubmitRequest, AndroidDrillGateRequest, AndroidDrillMistakeEntry, AndroidDrillReportRequest (+104 more)
 
 ### Community 72 - "Community 72"
 Cohesion: 0.12
@@ -709,104 +694,108 @@ Cohesion: 0.05
 Nodes (37): app, security, windows, withGlobalTauri, build, frontendDist, bundle, active (+29 more)
 
 ### Community 74 - "Community 74"
-Cohesion: 0.03
-Nodes (55): CourseMiniAppProfile, CourseMistake, CourseXpEvent, VoicePracticeSession, day_start(), local_day_key(), next_day_reset(), normalize_offset_minutes() (+47 more)
+Cohesion: 0.21
+Nodes (3): CourseTodayServiceTests, mistake(), Bepul dars chegarasini admin sozlamasi orqali qo'yadi.          Reja endi `acces
 
 ### Community 75 - "Community 75"
 Cohesion: 0.11
 Nodes (73): admin_discount_panel(), _build_discount_qr_items(), _cancel_keyboard_for(), _clear_edit_mode(), _clear_payment_qr_data(), _delete_admin_input(), discount_cancel(), discount_confirm() (+65 more)
 
 ### Community 76 - "Community 76"
-Cohesion: 0.06
-Nodes (14): LessonAudioPlayer, AndroidVoiceRecorder, VoiceRecorder, VoiceRecording, PronunciationScorer, FakeLessonApi, FakeLessonAudioPlayer, FakeResumeStore (+6 more)
+Cohesion: 0.24
+Nodes (4): AndroidVoiceRecorder, VoiceRecorder, VoiceRecording, MediaRecorder
 
 ### Community 77 - "Community 77"
-Cohesion: 0.08
-Nodes (19): errorResponse(), Class, Factory, Factory, Factory, Factory, Factory, Factory (+11 more)
+Cohesion: 0.02
+Nodes (47): AdUiState, AdViewModel, Factory, ChallengeQuestionDto, errorResponse(), Class, CourseUiState, CourseViewModel (+39 more)
 
 ### Community 78 - "Community 78"
-Cohesion: 0.08
-Nodes (3): Partner, PartnerRepository, Update
+Cohesion: 0.07
+Nodes (5): Partner, PartnerPayout, PartnerRepository, PartnerBalance, Update
 
 ### Community 79 - "Community 79"
-Cohesion: 0.08
-Nodes (13): _as_utc(), _utcnow(), _as_utc(), _iso(), normalize_client_platform(), Unifies Mini App presence with the existing authoritative native registry., UserDeviceInventoryService, _utcnow() (+5 more)
+Cohesion: 0.06
+Nodes (42): AdContent(), AdScreen(), AdVideo(), MistakeReviewQuestionDto, MistakeSummaryDto, MistakeTargetDto, HskBrandLoader(), HskGlassButton() (+34 more)
 
 ### Community 80 - "Community 80"
-Cohesion: 0.10
-Nodes (13): OnboardingStates, Send the APK only after this Telegram account has the invite owner., _send_android_referral_apk(), can_attach_start_referral(), onboarding_stage(), OnboardingService, discount_platform_from_payload(), normalize_referral_code() (+5 more)
+Cohesion: 0.05
+Nodes (15): OnboardingService, SimpleNamespace, AdminNotifyServiceTests, RecordTests, CourseGamificationCalendarTests, _user(), CourseMiniAppOnboardingFlowTests, CourseMiniAppPracticeTests (+7 more)
 
 ### Community 81 - "Community 81"
 Cohesion: 0.06
 Nodes (16): BlockedUserApiMiddlewareTest, BlockedUserGuardCacheTest, BlockedUserMiddlewareTest, _collect(), _FakeEvent, _FakeRepo, _FakeScalarResult, _FakeSession (+8 more)
 
 ### Community 82 - "Community 82"
-Cohesion: 0.10
-Nodes (4): CourseLesson, is_course_pilot_lesson(), CourseMiniAppLessonService, CourseMiniAppLessonServiceQuizTests
+Cohesion: 0.12
+Nodes (3): CourseLesson, CourseMiniAppLessonService, CourseMiniAppLessonServiceQuizTests
+
+### Community 83 - "Community 83"
+Cohesion: 0.11
+Nodes (53): CallbackQuery, admin_commission_mode_keyboard(), admin_deadline_keyboard(), admin_partner_approve(), admin_partner_back_keyboard(), admin_partner_block(), admin_partner_bonus_value(), admin_partner_cny_rate_value() (+45 more)
 
 ### Community 84 - "Community 84"
-Cohesion: 0.08
-Nodes (12): AndroidAdaptiveDrillTests, AndroidChallengeRouteTests, AndroidExamRouteTests, AndroidVoiceTypedTurnTests, Both clients must practise the SAME words.      The Mini App asks the mastery se, An ad the practice slot can actually offer this learner., The app shows the closed door itself; Telegram stays quiet.          Owner decis, Reklama yo'qligi endi bepul kirish EMAS.          Ilgari bu yerda "ko'rsatadigan (+4 more)
+Cohesion: 0.09
+Nodes (15): DesktopLinkRequest, _Base, IdentityManagementTests, OAuthAssertTests, OAuthCallbackTests, OAuthStartTests, ProviderAvailabilityTests, Transport-level contract for the Google / Apple sign-in endpoints.  The two prop (+7 more)
 
 ### Community 85 - "Community 85"
-Cohesion: 0.07
-Nodes (18): AIProviderChain, _default_gemini_model(), get_active_gemini_model(), AI provayder zanjiri: Gemini asosiy, OpenAI zaxira.  Ish mantig'i (foydalanuvchi, Gemini (asosiy) -> OpenAI (zaxira) tartibida AI chaqiruvlarini bajaradi., (kind, client) juftliklari: Gemini avval, OpenAI keyin., Chat javobini oladi. Qaytaradi: (response, model_used).          `openai_model`, Ovozni matnga o'giradi. Qaytaradi: (text, usage_dict, model_used).          Gemi (+10 more)
+Cohesion: 0.10
+Nodes (14): AIProviderChain, _default_gemini_model(), get_active_gemini_model(), AI provayder zanjiri: Gemini asosiy, OpenAI zaxira.  Ish mantig'i (foydalanuvchi, Gemini (asosiy) -> OpenAI (zaxira) tartibida AI chaqiruvlarini bajaradi., (kind, client) juftliklari: Gemini avval, OpenAI keyin., Chat javobini oladi. Qaytaradi: (response, model_used).          `openai_model`, Ovozni matnga o'giradi. Qaytaradi: (text, usage_dict, model_used).          Gemi (+6 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.09
 Nodes (21): 0. Asosiy qaror — AI = AVTOMATIK (offline), 10. Saqlash (storage), 11. Qarorlar (tasdiqlangan), 1. Learning formula, 2. DATA SXEMA (per-iyeroglif) — modulning "format"i, 3. Bloklar kutubxonasi, 4.1 Mastery score (har iyeroglif, localStorage), 4.2 Xato turlari (+13 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.04
-Nodes (69): CourseLesson, apply_hsk1_block_metadata(), _grammar_by_no(), _meaning(), _mini_homework(), _mini_quiz(), _options(), _parse() (+61 more)
+Cohesion: 0.08
+Nodes (25): apply_hsk2_block_metadata(), _dialogue_text(), _grammar_by_no(), _grammar_keys(), _infer_grammar_nos(), _infer_word_nos(), _meaning(), _mini_homework() (+17 more)
 
 ### Community 88 - "Community 88"
 Cohesion: 0.06
-Nodes (68): _body(), _bearer_token(), _access_token(), _access_token(), _auth_user_id(), _access_token(), _access_token(), _access_token() (+60 more)
+Nodes (43): _auth_user_id(), bot_username_value(), _checkout_attempt_id(), _checkout_text(), _course_v3_user_lang(), miniapp_access(), miniapp_challenge_create(), miniapp_challenge_respond() (+35 more)
 
 ### Community 89 - "Community 89"
-Cohesion: 0.16
-Nodes (9): AndroidReleaseService, Keep what Telegram gave back, so the next learner waits for nothing., Stop handing out the APK without losing what was published.          The row is, DatabaseBackedTest, DownloadRedirectTests, What an installed Android app is told about newer builds.  Android cannot update, The one that would be silently wrong., SettingTheUpdateUrlTests (+1 more)
+Cohesion: 0.11
+Nodes (11): create_android_update_router(), What an installed Android app asks before it offers to update itself.  Only the, AndroidReleaseService, Keep what Telegram gave back, so the next learner waits for nothing., Stop handing out the APK without losing what was published.          The row is, PublishingTests, DatabaseBackedTest, DownloadRedirectTests (+3 more)
 
 ### Community 90 - "Community 90"
-Cohesion: 0.04
-Nodes (16): Hsk30ReleaseControlTests, MiniAppAdvertisingLivesInOneSectionTests, NoStaleCopyTests, Admin panelda ishlamaydigan boshqaruv turmasin.  Foydalanuvchi buni aniq aytdi:, Panelda ko'rinmagan chegara — jimgina o'zgaradigan chegara.      `save_config` p, Mini App reklamasi to'rt joyga bo'linib ketgan edi.      Foydalanuvchi buni aniq, Botdagi reklama xabari Mini App reklamasi EMAS.          Boshqa jadval, boshqa k, Tanlangan turga aloqasi yo'q maydon ko'rinmasin.      Forma barcha kataklarni bi (+8 more)
+Cohesion: 0.25
+Nodes (3): MiniAppAdvertisingLivesInOneSectionTests, Mini App reklamasi to'rt joyga bo'linib ketgan edi.      Foydalanuvchi buni aniq, Botdagi reklama xabari Mini App reklamasi EMAS.          Boshqa jadval, boshqa k
 
 ### Community 92 - "Community 92"
 Cohesion: 0.07
 Nodes (26): 11. Known Problems, 12. Next Planned Work, 13. Required Environment Variables, 1. Project Identity, 2. Core Architecture, 3. Important Project Rules, 4. Memory Update Policy, 5. Key Files and Folders (+18 more)
 
 ### Community 93 - "Community 93"
-Cohesion: 0.12
-Nodes (12): Send the published APK, or explain why there is nothing to send.      Returns wh, send_android_app(), DatabaseBackedTest, FakeBot, HandingItToALearnerTests, ManifestHandoutTests, PublishingTests, These two events are the only measurement this channel has. (+4 more)
+Cohesion: 0.14
+Nodes (13): Send the published APK, or explain why there is nothing to send.      Returns wh, send_android_app(), AppPromoState, Server-authoritative automatic app-promo cooldown per target platform., DatabaseBackedTest, FakeBot, HandingItToALearnerTests, ManifestHandoutTests (+5 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.12
-Nodes (33): aiInstallIsActive(), aiIsReady(), aiPromptSuggestion(), boundedAiText(), buildAiScreenContext(), cancelAiInstall(), cancelAiRecording(), clearAiAttachments() (+25 more)
+Cohesion: 0.06
+Nodes (14): _level_guidance(), Tozalashning o'zi ham mashqni yiqitmasligi kerak.          Signal yozuvlari "hec, Talaffuz natijasini interval takroriga yozadi.          `target` mijozdan keladi, Yiqilgan talaffuz urinishini Xatolarim bo'limiga yozadi.          Baholash tugag, Suhbat o'lchovlari — QO'SHIMCHA AI chaqiruvisiz.          Bularning hammasi saql, Sessiya boshida muzlatiladigan moslashuv rejasi.          Ilovaning qolgan qismi, Joriy limit kunining boshlanishi, o'quvchining mintaqasida.          Oyna Course, O'quvchining vaqt mintaqasi (daqiqada), Mini App profilidan.          Profil bo' (+6 more)
 
 ### Community 95 - "Community 95"
 Cohesion: 0.09
-Nodes (16): AndroidReleaseManifest, AndroidReleaseManifestError, AndroidReleaseManifestService, _CacheEntry, parse_android_release_manifest(), Fetch and cache the single stable Android release manifest., What may never change once a version is published., _strict_int() (+8 more)
+Nodes (17): AndroidReleaseManifest, AndroidReleaseManifestError, AndroidReleaseManifestService, _CacheEntry, parse_android_release_manifest(), The one stable file that says which Android build is current.  This is the Andro, Fetch and cache the single stable Android release manifest., What may never change once a version is published. (+9 more)
 
 ### Community 96 - "Community 96"
-Cohesion: 0.03
-Nodes (103): $(), addAiAttachmentFromFile(), addAiFiles(), AI_RECORDER_TYPES, aiAttachmentKind(), aiAttachmentLabel(), aiAttachmentLimit(), appendAiMessageAttachments() (+95 more)
+Cohesion: 0.04
+Nodes (110): $(), addAiAttachmentFromFile(), addAiFiles(), AI_RECORDER_TYPES, aiAttachmentKind(), aiAttachmentLabel(), aiAttachmentLimit(), aiInstallIsActive() (+102 more)
 
 ### Community 97 - "Community 97"
-Cohesion: 0.12
-Nodes (12): DesktopDownloadRequest, _error_response(), Read desktop download JSON through a strict application body bound., _validated_payload(), AppPromoDecisionService, Platform-aware automatic app promo authority.      Profile/manual download entry, DesktopAppPromoSettings, DesktopDownloadError (+4 more)
+Cohesion: 0.15
+Nodes (9): MockTransport, _b64url(), _claims(), _Jwks, _Key, OidcVerifierTests, Negative-weighted tests for OIDC ID token verification.  Every case here is a fo, Provider lifetimes are ~1h; a captured token must not stay usable. (+1 more)
 
 ### Community 98 - "Community 98"
 Cohesion: 0.05
 Nodes (40): 1. Qaror: nima quriladi, 2. Daily Plan qoidalari (o'zgarmas), 2c dagi rejadan chekinish (sabab bilan), 3. Weighting formulasi, 4. `course_xp_events` chegarasi, 5. Hozir QURILMAYDI, 6. Implementatsiya ketma-ketligi, 7. Qabul qilingan qarorlar (2026-09-05) (+32 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.03
-Nodes (39): date, CourseProgress, User, CourseProgressRepository, Foydalanuvchini admin tomonidan bloklaydi yoki blokdan chiqaradi.          Blokd, CourseGamificationService, _as_utc(), _button() (+31 more)
+Cohesion: 0.04
+Nodes (26): date, CourseXpEvent, local_day_dedupe(), _as_utc(), _button(), _canonical_band(), _d1_recovery_arm(), _d1_recovery_states() (+18 more)
 
 ### Community 100 - "Community 100"
-Cohesion: 0.10
-Nodes (53): _error(), Free-plan gating and 'no questions' come back as ok=false, not as 500., _service_response(), Kirish rad etilgani 500 emas — u ham normal javob., _service_response(), _unavailable(), _admin_auth_error(), admin_miniapp_ai_model_save() (+45 more)
+Cohesion: 0.09
+Nodes (68): _body(), _bearer_token(), _error(), _access_token(), _access_token(), _access_token(), _access_token(), _access_token() (+60 more)
 
 ### Community 101 - "Community 101"
 Cohesion: 0.12
@@ -822,43 +811,43 @@ Nodes (10): availableMethods(), availablePlans(), DesktopSubscriptionController,
 
 ### Community 104 - "Community 104"
 Cohesion: 0.02
-Nodes (93): AndroidAdViewRequest, AndroidHintDismissRequest, AndroidProfileUpdateRequest, AndroidFeatureApi, AndroidAdDto, AndroidAdListResponse, AndroidAdViewRequest, AndroidAdViewResponse (+85 more)
+Nodes (104): AndroidAdViewRequest, AndroidHintDismissRequest, AndroidProfileUpdateRequest, AndroidFeatureApi, AndroidAdDto, AndroidAdListResponse, AndroidAdViewRequest, AndroidAdViewResponse (+96 more)
 
 ### Community 105 - "Community 105"
-Cohesion: 0.05
-Nodes (38): Any, _localize_android_checkout_prices(), Attach language-default display prices without changing canonical amounts., AppErrorContextService, CourseHskExamService, Compact the persisted result while keeping the immediate response rich., Load, issue and grade one immutable HSK exam attempt., Load and strictly canonicalize the checked-in legacy JSON file. (+30 more)
+Cohesion: 0.10
+Nodes (36): Any, CourseHskExamService, Server-authoritative HSK 1-4 exam sessions backed by static material., Keep the exact issued grading material, without bulky translations., Compact the persisted result while keeping the immediate response rich., Load, issue and grade one immutable HSK exam attempt., Load and strictly canonicalize the checked-in legacy JSON file., _bounded_int() (+28 more)
 
 ### Community 107 - "Community 107"
-Cohesion: 0.10
-Nodes (15): HSK30_WORDS, STROKES, EXAMPLES, WORDS, ALL_WORDS, briefText(), DesktopVocabularyController, FILTERS (+7 more)
+Cohesion: 0.09
+Nodes (18): HSK30_WORDS, STROKES, EXAMPLES, WORDS, hydrateStaticMascots(), createPandaMascot(), hydratePandaMascot(), ALL_WORDS (+10 more)
 
 ### Community 108 - "Community 108"
 Cohesion: 0.10
 Nodes (12): AndroidFoundationApi, CourseFoundationDto, FoundationCompleteRequest, FoundationCompleteResponse, FoundationPayloadDto, FoundationResponseDto, CourseRepositoryTest, FakeCourseApi (+4 more)
 
 ### Community 109 - "Community 109"
-Cohesion: 0.11
-Nodes (29): drawLine(), NotificationPrimerScreen(), PrimerLine(), NotificationPrimerTest, MiniAppBubbleTail(), goalIconKind(), MiniAppOnboardingIcon(), OnboardingIconKind (+21 more)
+Cohesion: 0.04
+Nodes (71): VoiceSuggestionDto, VoiceTranscriptDto, VoiceWordDto, voiceAssistantContext(), Boolean, FocusRows(), forLanguage(), GoalRows() (+63 more)
 
 ### Community 110 - "Community 110"
 Cohesion: 0.04
 Nodes (13): CourseV3StaticMapTests, DesktopPromoCooldownIsPerPlacementTests, ImmutableScriptsCarryTheirVersionTests, `?v=` ko'tarilmasa, o'zgarish foydalanuvchiga YETIB BORMAYDI.      `ads.js` va `, New Duolingo-style cards (sentence_builder, listening_choice,         dialog_clo, Starter 0 is top-level so existing section material refs stay stable., Visible examples/options only use material introduced by that point., Chap chetdan swipe, Telegram BackButton va Android back — uchalasi         ham b (+5 more)
 
 ### Community 111 - "Community 111"
-Cohesion: 0.15
-Nodes (11): Change Summary Format, Desktop Coming Soon Activation Rule, Desktop DMG/EXE Parity Rule, Do Not Do, E2E Smoke Test Rule, Git Push And Main Branch Rule, Main Rules, Memory Discipline Rule (+3 more)
+Cohesion: 0.17
+Nodes (10): Change Summary Format, Desktop Coming Soon Activation Rule, Desktop DMG/EXE Parity Rule, Do Not Do, E2E Smoke Test Rule, Git Push And Main Branch Rule, Main Rules, Memory Discipline Rule (+2 more)
 
 ### Community 112 - "Community 112"
 Cohesion: 0.05
 Nodes (120): admin_finance_payload(), admin_payload(), app_url(), json_response(), _map_with_today(), mock_course_map(), mock_desktop_release_status(), _mock_drill_environment() (+112 more)
 
 ### Community 113 - "Community 113"
-Cohesion: 0.05
-Nodes (97): CourseProgress, _block_if_course_disabled(), _bot_from_respond(), course_audio_dialogue_handler(), course_audio_dialogue_n_handler(), course_audio_vocab_handler(), course_back_to_qa_handler(), course_cancel_reminder_setup_handler() (+89 more)
+Cohesion: 0.07
+Nodes (74): _block_if_course_disabled(), _bot_from_respond(), course_audio_dialogue_handler(), course_audio_dialogue_n_handler(), course_audio_vocab_handler(), course_back_to_qa_handler(), course_cancel_reminder_setup_handler(), course_command_handler() (+66 more)
 
 ### Community 114 - "Community 114"
-Cohesion: 0.12
-Nodes (11): AccessSnapshot, EntitlementEngine, Read the same account-wide counter on every client and in its configured window., Hech narsa yozmasdan qaror. Paywallni oldindan ko'rsatish uchun., Bitta slotni band qiladi. Limit tugagan bo'lsa yozmaydi., Limitga urilish — voronkaning eng muhim nuqtasi.          Kuniga har action uchu, Bir nechta harakat uchun qaror — bitta snapshot bilan., Foydalanuvchining kirish holati — bir marta hisoblanadi, ko'p marta ishlatiladi. (+3 more)
+Cohesion: 0.23
+Nodes (4): EntitlementEngine, Limitga urilish — voronkaning eng muhim nuqtasi.          Kuniga har action uchu, _config_with(), EngineLimitTests
 
 ### Community 115 - "Community 115"
 Cohesion: 0.25
@@ -866,19 +855,19 @@ Nodes (4): l(), N, O(), u()
 
 ### Community 116 - "Community 116"
 Cohesion: 0.05
-Nodes (68): androidx, ContinuousCourseTrail(), CourseNodeIconKind, MiniAppLessonNodeIcon(), MiniAppNodeIcon(), CourseHeader(), courseLevelLabel(), courseNodeLabel() (+60 more)
+Nodes (66): androidx, ContinuousCourseTrail(), CourseNodeIconKind, MiniAppLessonNodeIcon(), MiniAppNodeIcon(), CourseHeader(), courseLevelLabel(), courseNodeLabel() (+58 more)
 
 ### Community 117 - "Community 117"
 Cohesion: 0.22
 Nodes (5): audio(), local_security(), Personal loopback-only text-to-speech studio., Speech, status()
 
 ### Community 118 - "Community 118"
-Cohesion: 0.06
-Nodes (82): explanation_translation(), extract_cjk_sentence(), _filled_gap(), find_pool_sentence(), has_cjk(), level_words(), lexicon(), _localized() (+74 more)
+Cohesion: 0.11
+Nodes (50): answer_key(), _authored_gap(), available_questions(), build_question(), _builder(), builder_tokens(), _choice(), client_supports() (+42 more)
 
 ### Community 119 - "Community 119"
-Cohesion: 0.07
-Nodes (23): AccountNoticeDelivery, One subscription/limit notice sent to Android first, Telegram second.      The A, AndroidPushService, AndroidPushTarget, Owns Android FCM token lifecycle and generic data-only delivery., DailyResetService, ExpiryReminderService, _as_utc() (+15 more)
+Cohesion: 0.03
+Nodes (75): create_android_push_router(), _background_scheduler(), AccountNoticeDelivery, One subscription/limit notice sent to Android first, Telegram second.      The A, AndroidPushToken, One FCM token and its push preferences per authenticated Android install., CourseUserNotification, gemini_active() (+67 more)
 
 ### Community 120 - "Community 120"
 Cohesion: 0.67
@@ -890,19 +879,19 @@ Nodes (5): downgrade(), _find_duplicate_open_payout(), _has_column(), _has_index
 
 ### Community 123 - "Community 123"
 Cohesion: 0.04
-Nodes (21): AdWatch, UpdatePushHandler, SkipTestUiState, SkipTestViewModel, Flow, Int, LessonOptionStateTest, AccountNoticeMonitor (+13 more)
+Nodes (25): AdWatch, UpdatePushHandler, CourseUnlockTransitionTest, findNewlyUnlockedLesson(), SkipTestOfferTest, SkipTestUiState, SkipTestViewModel, Flow (+17 more)
 
 ### Community 124 - "Community 124"
-Cohesion: 0.39
-Nodes (8): copyReferralLink(), openExternalUrl(), referralShareMessage(), referralShareText(), shareReferralToTelegram(), shareReferralToWhatsapp(), shareReferralWithSystem(), writeClipboardText()
+Cohesion: 0.14
+Nodes (22): closeOnboarding(), confirmOnboarding(), copyAuthCode(), copyReferralLink(), desktopNotificationPermission(), notificationPlugin(), openExternalUrl(), openLesson() (+14 more)
 
 ### Community 125 - "Community 125"
 Cohesion: 0.10
 Nodes (66): _actual_user_languages(), _ad_button_prompt_text(), _ad_button_text_prompt(), admin_ads_panel(), _admin_ids(), ads_active_policy(), ads_button_action(), ads_button_none() (+58 more)
 
 ### Community 126 - "Community 126"
-Cohesion: 0.07
-Nodes (24): ActionLimit, _clean_plan(), _clean_rule(), _clean_trial(), config_from_payload(), default_config(), _default_limit(), _defaults_as_rules() (+16 more)
+Cohesion: 0.12
+Nodes (16): _clean_plan(), _clean_rule(), _clean_trial(), _default_limit(), _defaults_as_rules(), _iso(), LimitConfig, _parse_dt() (+8 more)
 
 ### Community 127 - "Community 127"
 Cohesion: 0.40
@@ -917,32 +906,32 @@ Cohesion: 0.50
 Nodes (3): Communication Rule (STRICT), Language and Mini App Change Rules, Mandatory Project Guidance First
 
 ### Community 130 - "Community 130"
-Cohesion: 0.04
-Nodes (54): _apple_form(), create_native_oauth_router(), IdentityLinkStartRequest, IdentityLinkStatusRequest, IdentityUnlinkRequest, _oauth_error(), OAuthAssertRequest, OAuthStartRequest (+46 more)
+Cohesion: 0.09
+Nodes (29): _apple_form(), create_native_oauth_router(), IdentityLinkStartRequest, IdentityLinkStatusRequest, IdentityUnlinkRequest, _oauth_error(), OAuthAssertRequest, OAuthStartRequest (+21 more)
 
 ### Community 131 - "Community 131"
-Cohesion: 0.10
+Cohesion: 0.12
 Nodes (4): _RecordSession, _RowsResult, _StatsSession, SubscriptionEntryAnalyticsServiceTests
 
 ### Community 132 - "Community 132"
-Cohesion: 0.18
-Nodes (24): android_panel(), android_panel_command(), ask_for_apk(), ask_for_update_url(), _back_keyboard(), _cancel_keyboard(), clear_update_url(), _is_admin() (+16 more)
+Cohesion: 0.12
+Nodes (32): android_panel(), android_panel_command(), ask_for_apk(), ask_for_update_url(), _back_keyboard(), _cancel_keyboard(), clear_update_url(), _confirm_keyboard() (+24 more)
 
 ### Community 133 - "Community 133"
 Cohesion: 0.15
 Nodes (12): description, devDependencies, @tauri-apps/cli, name, private, scripts, build, dev (+4 more)
 
 ### Community 134 - "Community 134"
-Cohesion: 0.06
-Nodes (39): Cheklanadigan harakatlar ro'yxati.  Bugun har bo'lim o'z kalitini o'zi nomlaydi:, Shu harakat uchun paywall sirti., surface_for(), Klientlarga beriladigan `entitlements` bloki — bitta shakl, to'rtta klient.  Bug, Markaziy limit dvigateli.  Bu dvigatel YANGI hisoblagich yaratmaydi. U bugungi j, Markaziy entitlement/limit dvigateli.  Bu paket "bu foydalanuvchi nima qila olad, Shared course start reservations and map access for all clients.  A lesson is on, access_expires_at() (+31 more)
+Cohesion: 0.04
+Nodes (34): has_active_pro_trial(), has_full_access(), Kontent qulfi uchun yagona predikat., 7 kunlik Pro triali hozir faolmi.      Ustunlar 4-bosqichda qo'shiladi (`0077_us, Foydalanuvchining hozirgi entitlement holati.      Tartib ataylab shunday: BLOCK, resolve_state(), Kontent ochiqmi — markaziy dvigatel javobi.          Otziv uchun beriladigan 30, O'quvchining vaqt mintaqasi (daqiqada), Mini App profilidan.          Profil bo' (+26 more)
 
 ### Community 139 - "Community 139"
 Cohesion: 0.83
 Nodes (3): downgrade(), _has_table(), upgrade()
 
 ### Community 140 - "Community 140"
-Cohesion: 0.08
-Nodes (48): applyStaticText(), boot(), browserSpeakChinese(), changeLanguage(), checkForUpdates(), closeOnboarding(), confirmOnboarding(), copyAuthCode() (+40 more)
+Cohesion: 0.09
+Nodes (48): applyStaticText(), boot(), browserSpeakChinese(), changeLanguage(), clearAuthTimers(), desktopSyncAllowed(), disposeCourseTrack(), ensureGoalState() (+40 more)
 
 ### Community 141 - "Community 141"
 Cohesion: 0.83
@@ -957,8 +946,8 @@ Cohesion: 0.83
 Nodes (3): downgrade(), _has_table(), upgrade()
 
 ### Community 146 - "Community 146"
-Cohesion: 0.06
-Nodes (14): LimitConfigService, _as_utc(), 7 kunlik Pro trial — emailsiz, foydalanuvchining o'zi boshlaydi.  Email tasdiqla, Bu odam trial ola oladimi va olmasa nima uchun., BotBlockStatusServiceTests, CourseTrialLifecycleTests, _PaymentRepo, _Session (+6 more)
+Cohesion: 0.01
+Nodes (116): Cheklanadigan harakatlar ro'yxati.  Bugun har bo'lim o'z kalitini o'zi nomlaydi:, Shu harakat uchun paywall sirti., surface_for(), build_entitlement_block(), checkout_allowed_for(), _iso(), Klientlarga beriladigan `entitlements` bloki — bitta shakl, to'rtta klient.  Bug, Bitta foydalanuvchi uchun to'liq entitlement bloki. (+108 more)
 
 ### Community 174 - "Community 174"
 Cohesion: 0.11
@@ -970,75 +959,75 @@ Nodes (14): challenge_callback(), _lang(), _text(), CourseChallenge, CourseChall
 
 ### Community 176 - "Community 176"
 Cohesion: 0.05
-Nodes (71): _page(), _absolute_download_seo_urls(), _admin_access_label(), _admin_access_meta(), _admin_aware_dt(), admin_control_miniapp(), _admin_dt_close(), _admin_miniapp_management_payload() (+63 more)
+Nodes (73): _absolute_download_seo_urls(), _admin_access_label(), _admin_access_meta(), _admin_aware_dt(), admin_control_miniapp(), _admin_dt_close(), _admin_miniapp_management_payload(), _admin_referral_meta() (+65 more)
 
 ### Community 177 - "Community 177"
-Cohesion: 0.12
-Nodes (13): active_assessment(), AssistantError, AssistantService, decode_media(), localized(), parse_answer(), process_request(), Context-aware native chat. Model output never changes learning state. (+5 more)
+Cohesion: 0.10
+Nodes (21): AssistantAssessment, AssistantConversation, AssistantRequest, Native assistant history, retry identity and assessment lifecycle., active_assessment(), AssistantError, AssistantInput, AssistantService (+13 more)
 
 ### Community 178 - "Community 178"
 Cohesion: 0.12
 Nodes (10): OneProductOneNameTests, Bitta mahsulot — bitta nom.  Foydalanuvchi buni jonli ilovada ko'rib aytdi: ayni, Izoh mavjud bo'lmagan tugmani ko'rsatmasin.      Foydalanuvchi buni jonli ilovad, Yalang'och "Pro" — bu ham boshqa mahsulotdek o'qiladi., Limitga urilganda asosiy tugma bitta va u Pro ni taklif qiladi., Reklama tugmasi butunlay yo'q — u hech narsani ochmaydi., Matn "reklama ko'ring" deb turgani — eng chalg'ituvchi ziddiyat:         tugma y, TheCopyMatchesTheButtonItNamesTests (+2 more)
 
 ### Community 179 - "Community 179"
-Cohesion: 0.11
-Nodes (17): SubscriptionPriceDto, Map, Pair, SubscriptionCheckoutFlowTest, availableRegions(), cardBankFor(), checkoutFlow(), CheckoutStep (+9 more)
+Cohesion: 0.08
+Nodes (23): apply_hsk1_block_metadata(), _grammar_by_no(), _meaning(), _mini_homework(), _mini_quiz(), _options(), _parse(), _word_by_no() (+15 more)
 
-### Community 180 - "Community 180"
-Cohesion: 0.16
-Nodes (4): `hint:<kalit>:<kun>`.          Kun ATAYLAB kalit ichida. Sababi: yopilish `cours, Blokchani yopilgan deb belgilaydi.          Kalitni SERVER quradi, klient emas:, HintServiceTests, Qayta chiqqan blokchani yopish YANGI yozuv bo'lishi kerak.          Bu bir marta
+### Community 182 - "Community 182"
+Cohesion: 0.06
+Nodes (8): MessageRepository, AccessService, Bugun (UTC) yuborilgan ovozli xabarlar soni (QA ovoz + tarjimon ovoz)., AppErrorContextService, ImageQAService, QAService, ConfiguredAiLimitTests, AI chegaralari endi provayderga emas, admin sozlamasiga bog'liq.      Ilgari bu
 
 ### Community 183 - "Community 183"
 Cohesion: 0.18
 Nodes (4): StudySetupStage, StudySetupUiState, StudySetupViewModel, StudySetupViewModelTest
 
+### Community 184 - "Community 184"
+Cohesion: 0.09
+Nodes (9): Decimal, PartnerService, CardCurrencyQuote, Convert the same TJS prices for several card countries.          The Mini App sh, Convert several TJS prices with one rate lookup.          Checkout overview rend, Convert plan prices for display without selecting a payment route., downgrade(), _has_table() (+1 more)
+
 ### Community 185 - "Community 185"
-Cohesion: 0.16
-Nodes (21): ask(), AssistantFailure, AssistantRepository, AssistantSeed, AssistantState, AssistantStore, attach(), conversations() (+13 more)
+Cohesion: 0.15
+Nodes (22): ask(), AssistantFailure, AssistantRepository, AssistantSeed, AssistantState, AssistantStore, attach(), conversations() (+14 more)
 
 ### Community 186 - "Community 186"
-Cohesion: 0.12
-Nodes (13): create_miniapp_ads_router(), Reklama endpointlari — aynan ikkita joy uchun.  Ilgari bu yerda uchta narsa bor, AdPlacementService, normalize_placement(), O'quvchining vaqt mintaqasi — kun chegarasi shunga qarab olinadi., Bugun shu joyda nechta reklama ko'rilgan — QURILMADAN qat'i nazar., Shu joyda chiqishi mumkin bo'lgan faol reklamalar.          `CourseAdService.lis, Shu joyda ko'rsatiladigan reklama, yoki `None`.          `None` qaytishi — kutil (+5 more)
+Cohesion: 0.10
+Nodes (21): create_miniapp_ads_router(), Reklama endpointlari — aynan ikkita joy uchun.  Ilgari bu yerda uchta narsa bor, AdPlacementService, AdPlacementSettings, _clean_rule(), _default_rule(), default_settings(), _has_full_access() (+13 more)
 
 ### Community 187 - "Community 187"
 Cohesion: 0.17
 Nodes (11): 1–5 baholash matni, Admin checklist, Aynan nima yangilandi, Feedback mukofoti — oldindan ko‘rsatiladigan matn, Foydalanuvchiga qisqa matn, Mukofot berilgandan keyingi matn, Qayerda sinash kerak, Release feedback draft — limits_v1 (+3 more)
 
 ### Community 188 - "Community 188"
-Cohesion: 0.17
-Nodes (30): AdminAudioStates, admin_audio_entry(), admin_audio_from_panel(), _after_upload_keyboard(), ask_for_audio_file(), audio_stats(), _audio_status_for_lesson(), _audio_type_label() (+22 more)
+Cohesion: 0.11
+Nodes (39): AdminAudioStates, admin_audio_entry(), admin_audio_from_panel(), _after_upload_keyboard(), ask_for_audio_file(), audio_stats(), _audio_status_for_lesson(), _audio_type_label() (+31 more)
 
 ### Community 189 - "Community 189"
 Cohesion: 0.04
-Nodes (55): AIUsageEvent, BotOutboundEvent, BotReachabilityEvent, CourseMiniAppEvent, Payment, PortfolioTransaction, SubscriptionEntryEvent, audit() (+47 more)
+Nodes (52): Base, AIUsageEvent, BotOutboundEvent, BotReachabilityEvent, Payment, PortfolioTransaction, SubscriptionEntryEvent, audit() (+44 more)
 
 ### Community 190 - "Community 190"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (6): AndroidAdChannelTests, AndroidSubscriptionHandoffApiTests, Which ads each distribution channel is allowed to receive.      This is a policy, Play buildiga obuna CTA si bo'lgan reklama tushmasligi kerak.          Ilgari bu, Mashq sessiyalaridagi reklama olib tashlandi.          Do'kondagi eski build hal, Reklama ko'rib kirish ochish OLIB TASHLANDI.          Ilgari to'liq ko'rilgan re
 
 ### Community 191 - "Community 191"
-Cohesion: 0.14
-Nodes (34): build_subscription_main_text_for_user(), _card_main_plan_line(), _card_main_price(), _card_main_text(), _card_plan_label(), _card_texts(), checkout_change_plan_handler(), _compact_plan_line() (+26 more)
+Cohesion: 0.11
+Nodes (38): command_language_callback_handler(), _is_night(), payment_screenshot_handler(), _waiting_message(), build_subscription_main_text_for_user(), _card_main_plan_line(), _card_main_price(), _card_main_text() (+30 more)
 
 ### Community 192 - "Community 192"
 Cohesion: 0.22
 Nodes (6): _as_utc(), Mukofot chiqquncha aktivatsiya qiladi, nechtasi ketganini qaytaradi.          0, AMALDAGI holat: konstanta 5 deydi, mukofot esa 6-aktivatsiyada keladi., Taklif qiluvchi + `invited_count` ta taklif qilingan odam.          Har bir takl, ReferralTrialContractTests, _user()
 
-### Community 193 - "Community 193"
-Cohesion: 0.12
-Nodes (15): Server-authoritative HSK 1-4 exam sessions backed by static material., Keep the exact issued grading material, without bulky translations., canonical_material_digest(), public_question_projection(), public_questions_projection(), Return render material without the server-only grading fields., Fingerprint the immutable grading-relevant portion of an exam., shuffle_exam_questions() (+7 more)
-
 ### Community 197 - "Community 197"
-Cohesion: 0.14
-Nodes (7): hydrateStaticMascots(), createPandaMascot(), hydratePandaMascot(), briefText(), DesktopPracticeController, DRILLS, node()
+Cohesion: 0.19
+Nodes (4): briefText(), DesktopPracticeController, DRILLS, node()
 
 ### Community 198 - "Community 198"
-Cohesion: 0.05
-Nodes (35): Activity, AndroidAuthApi, LinkStatusRequest, NativeOAuthApi, IdentitiesResponse, IdentityDto, IdentityLinkStatusRequest, IdentityLinkStatusResponse (+27 more)
+Cohesion: 0.04
+Nodes (46): Activity, AndroidAuthApi, ApiErrorBody, BootstrapDevice, BootstrapResponse, BootstrapUser, LinkStartRequest, LinkStartResponse (+38 more)
 
 ### Community 199 - "Community 199"
-Cohesion: 0.07
-Nodes (14): Kamida bitta AI provayder (Gemini yoki OpenAI) sozlangan bo'lsa True., Settings, BaseSettings, Local SEO preview without production DB, Telegram bot or background jobs.  Run:, test_billing_tier_config_rejects_typo(), DayKeyTests, DayStartTests, NextResetTests (+6 more)
+Cohesion: 0.17
+Nodes (6): DayKeyTests, DayStartTests, NextResetTests, OffsetNormalizationTests, Kunlik limit oynasi o'quvchining vaqt mintaqasida.  Bu oyna hamma klientning bep, _utc()
 
 ### Community 200 - "Community 200"
 Cohesion: 0.50
@@ -1046,23 +1035,19 @@ Nodes (4): main(), hsk-data.js ni ikkiga bo'ladi: hsk-words.js + hsk-extra.js.  
 
 ### Community 202 - "Community 202"
 Cohesion: 0.05
-Nodes (38): android, rememberLimitGate(), rememberLimitGate(), SubscriptionCheckoutHost(), ComponentActivity, FoundationActivity, FoundationActivityContent(), DrillLaunchTest (+30 more)
+Nodes (41): android, rememberLimitGate(), rememberLimitGate(), ComponentActivity, Composable, FoundationActivity, FoundationActivityContent(), AdRequest (+33 more)
 
 ### Community 205 - "Community 205"
 Cohesion: 0.50
 Nodes (3): EXAMPLES, HSK4_GRAMMAR, STROKES
-
-### Community 208 - "Community 208"
-Cohesion: 0.08
-Nodes (39): LinkedAccount, ApiErrorMappingTest, IdentitiesSheet(), IdentityNotice(), openProviderTab(), profileAvatarDrawable(), ProviderAccountRow(), ReadOnlyField() (+31 more)
 
 ### Community 211 - "Community 211"
 Cohesion: 0.21
 Nodes (4): E, et, g(), run()
 
 ### Community 212 - "Community 212"
-Cohesion: 0.16
-Nodes (5): AIUsageBudget, AIUsageResult, AIUsageBudgetService, BudgetAccessResult, BudgetRecordResult
+Cohesion: 0.13
+Nodes (6): AIUsageBudget, AIUsageResult, AIUsageBudgetService, BudgetAccessResult, RenewalBudgetTests, _Session
 
 ### Community 213 - "Community 213"
 Cohesion: 0.18
@@ -1081,12 +1066,12 @@ Cohesion: 0.22
 Nodes (8): Desktop 1.3 result, Development and verification, Download and account flow, HSK AI Desktop, Local preview, Release status, Runtime boundary, Shared backend APIs
 
 ### Community 217 - "Community 217"
-Cohesion: 0.09
-Nodes (13): AnswerForwardingTests, AuthTests, build_client(), DrillReportTests, DrillResultsTests, DrillWordsTests, GateOwnershipTests, practice_service() (+5 more)
+Cohesion: 0.11
+Nodes (12): AnswerForwardingTests, AuthTests, build_client(), DrillReportTests, DrillResultsTests, GateOwnershipTests, practice_service(), Mini App mashq adapteri.  Adapterda biznes mantiq yo'q — u Telegram initData'ni (+4 more)
 
 ### Community 218 - "Community 218"
-Cohesion: 0.10
-Nodes (15): _as_utc(), CourseSalesExperimentService, CourseSalesExperimentSettings, _iso(), _json_object(), _parse_datetime(), Server-owned sales experiment assignment and trusted event context., Resolve the map contract and reserve an ITT assignment when active. (+7 more)
+Cohesion: 0.06
+Nodes (22): AndroidNoticeAckRequest, AndroidPushPreferencesRequest, AndroidPushRegisterRequest, Authenticated FCM token lifecycle, preferences, notices and payment fallback., _timezone_name(), PaymentRepository, _as_utc(), CourseSalesExperimentService (+14 more)
 
 ### Community 219 - "Community 219"
 Cohesion: 0.33
@@ -1094,19 +1079,23 @@ Nodes (5): description, identifier, permissions, $schema, windows
 
 ### Community 220 - "Community 220"
 Cohesion: 0.05
-Nodes (40): 14. AI Assistant Instructions, 2026-09-07 — Isolated local voice studio, 2026-09-09 — One limit authority: the admin panel, 2026-09-10 — Lesson start limit reservation and completion retry, 2026-09-10 — Practice gate latency guard, 2026-09-11 — Native Android limit overlay and panda reactions, 2026-09-11 — Native Android Smart Widget, 2026-09-13 — Native Android context-aware AI assistant (+32 more)
+Nodes (41): 14. AI Assistant Instructions, 2026-09-07 — Isolated local voice studio, 2026-09-09 — One limit authority: the admin panel, 2026-09-10 — Lesson start limit reservation and completion retry, 2026-09-10 — Practice gate latency guard, 2026-09-11 — Native Android limit overlay and panda reactions, 2026-09-11 — Native Android Smart Widget, 2026-09-13 — Native Android context-aware AI assistant (+33 more)
 
 ### Community 224 - "Community 224"
-Cohesion: 0.20
-Nodes (7): AccountNoticeAckRequest, AccountNoticeResponse, AndroidPushApi, PaymentDecisionStatusResponse, PushOkResponse, PushPreferencesRequest, PushTokenRequest
+Cohesion: 0.16
+Nodes (8): AccountNoticeAckRequest, AccountNoticeResponse, AndroidPushApi, PaymentDecisionStatusResponse, PushOkResponse, PushPreferencesRequest, PushTokenRequest, AccountNoticeMonitor
 
 ### Community 225 - "Community 225"
-Cohesion: 0.20
-Nodes (5): CourseTutorService, V2: n-chi dialog bloki (grammar_notes inline)., V2: birinchi 8 ta so'z., V2/block: n-chi dialog bloki va unga tegishli yangi so'z/grammatika., str
+Cohesion: 0.15
+Nodes (11): course_review_yes_handler(), course_satisfied_yes_handler(), course_show_homework_handler(), _format_homework_text(), course_homework_miniapp_keyboard(), CourseTutorService, V2: n-chi dialog bloki (grammar_notes inline)., V2: birinchi 8 ta so'z. (+3 more)
 
 ### Community 227 - "Community 227"
-Cohesion: 0.12
-Nodes (15): create_desktop_download_router(), create_desktop_update_router(), _error_response(), DesktopReleaseManifestService, Fetch and cache the single stable desktop release manifest.      A configured bu, resolve_desktop_latest_versions(), DesktopUpdateError, _Clock (+7 more)
+Cohesion: 0.09
+Nodes (26): create_desktop_update_router(), ManifestFetcher, _bounded_number(), DesktopReleaseManifest, DesktopReleaseManifestError, DesktopReleaseManifestService, DesktopReleasePlatform, _ManifestCacheEntry (+18 more)
+
+### Community 228 - "Community 228"
+Cohesion: 0.11
+Nodes (9): _complete_response(), ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse, encode_languages(), ReleaseFeedbackRepository, ReleaseFeedbackStats, ReleaseFeedbackSendResult (+1 more)
 
 ### Community 229 - "Community 229"
 Cohesion: 0.04
@@ -1117,20 +1106,20 @@ Cohesion: 0.11
 Nodes (7): DrillBankTests, DrillFormatTests, LexiconWideTests, Xatolarim v3: savol yasovchi va universal tekshirgich.  Asosiy kafolat: lug'atda, Lug'at bo'ylab xususiyat testi., sentence(), word()
 
 ### Community 231 - "Community 231"
-Cohesion: 0.06
-Nodes (12): SimpleNamespace, RecordTests, CourseMiniAppPracticeTests, StartedWindowIsReusedOnCompleteTests, question(), CourseMistakeServiceTests, mistake(), Jonli chiqqan holat: ikkala variant ham bir xil ko'rinardi.          Ekranda "Са (+4 more)
+Cohesion: 0.10
+Nodes (5): CourseMistakeServiceTests, mistake(), Jonli chiqqan holat: ikkala variant ham bir xil ko'rinardi.          Ekranda "Са, Savol matni javobning o'zi bo'lsa — bu savol emas, ko'chirish.          `sentenc, word_target_row()
 
 ### Community 232 - "Community 232"
-Cohesion: 0.09
-Nodes (20): create_public_site_router(), indexnow_key(), indexnow_payload(), Unauthenticated marketing routes. No DB, bot startup or learner mutations., HTMLParser, attribution(), public_origin(), HTML rendering with escaped copy and a single canonical URL inventory. (+12 more)
+Cohesion: 0.16
+Nodes (16): create_public_site_router(), indexnow_key(), indexnow_payload(), Unauthenticated marketing routes. No DB, bot startup or learner mutations., attribution(), public_origin(), HTML rendering with escaped copy and a single canonical URL inventory., Render the public Google Sign-In notice without landing-page analytics. (+8 more)
 
 ### Community 233 - "Community 233"
 Cohesion: 0.15
 Nodes (4): CourseCardContractTests, _is_localized(), _lesson_files(), Guards the lesson-card shapes the native clients parse.  The Android renderer ha
 
 ### Community 235 - "Community 235"
-Cohesion: 0.15
-Nodes (10): _as_utc(), build_foundation_metrics(), CourseMiniAppAdminAnalyticsService, _int(), _is_checkpoint_paywall_source(), LessonDropoffRow, _payload(), Build Starter 0 cohort metrics from the existing event stream.      Tuple shape: (+2 more)
+Cohesion: 0.46
+Nodes (7): _as_utc(), build_foundation_metrics(), _int(), _is_checkpoint_paywall_source(), _payload(), Build Starter 0 cohort metrics from the existing event stream.      Tuple shape:, _text()
 
 ### Community 236 - "Community 236"
 Cohesion: 0.17
@@ -1141,20 +1130,20 @@ Cohesion: 0.10
 Nodes (20): _DownloadPageHandler, _page(), test_macos_download_keeps_default_action_and_opens_accessible_uz_guide(), test_mobile_share_uses_public_platform_link_and_copy_fallback(), test_referral_uses_detected_android_and_registers_before_download(), test_referral_uses_ios_bot_flow_and_does_not_trust_platform_query(), test_windows_guide_tracks_ru_and_tj_localisation(), _wait_until_download_ready() (+12 more)
 
 ### Community 238 - "Community 238"
-Cohesion: 0.13
+Cohesion: 0.14
 Nodes (7): CourseLessonMistakeMaterialError, CourseLessonMistakeMaterialService, Server-authoritative material for Course v3 lesson mistakes.  The lesson UI repo, `dialog_cloze` qatorlarini o'qiladigan matnga aylantiradi.          Bo'sh (`blan, Raised when the canonical lesson source itself cannot be loaded., Return only verified wrong answers from the canonical lesson JSON.          Inva, CourseLessonMistakeMaterialServiceTests
 
 ### Community 240 - "Community 240"
-Cohesion: 0.11
-Nodes (16): AndroidCourseService, Complete onboarding through the exact service used by the Mini App., Open the exact same server-owned chest the Mini App opens., Return the current leaderboard rank without breaking completion UX.          Ran, AndroidCourseServiceTests, AndroidLessonAdGateTests, Bepul dars chegarasi — admin panelidagi sozlama.          Xarita endi "shu daraj, Qulf endi darajaga emas, adminning chegarasiga bog'liq.          Ilgari bu yerda (+8 more)
+Cohesion: 0.05
+Nodes (36): AndroidCourseService, Return the checked-in Starter 0 payload used by the Mini App., Persist Starter 0 completion through the Mini App event contract., Complete onboarding through the exact service used by the Mini App., Persist the same progressive-personalization answers as Mini App., Open the exact same server-owned chest the Mini App opens., Return the current leaderboard rank without breaking completion UX.          Ran, dictionary_for_language() (+28 more)
 
 ### Community 241 - "Community 241"
-Cohesion: 0.11
-Nodes (14): CourseMistakeService, Return render fields only; grading data stays in the server snapshot., Rebuild an already-issued v1 question exactly for in-flight sessions., Klient ko'rsata oladigan mashq turlari. Ro'yxat yo'q — eski klient., Sessiya snapshot'i uchun ixcham savol (baholash maydonlari bilan)., Bitta nishonning mashqlari ketma-ket kelmasin: t1f1, t2f1, ..., t1f2, ..., Commit one exact interaction answer before revealing feedback., Serverga Tekshirish'da yozilgan javoblar (savol id -> tanlov). (+6 more)
+Cohesion: 0.05
+Nodes (32): CourseMistake, CourseMistakeService, Compact one issued question for the immutable event snapshot., Return render fields only; grading data stays in the server snapshot., Rebuild an already-issued v1 question exactly for in-flight sessions., Klient ko'rsata oladigan mashq turlari. Ro'yxat yo'q — eski klient., Sessiya snapshot'i uchun ixcham savol (baholash maydonlari bilan)., Bitta nishonning mashqlari ketma-ket kelmasin: t1f1, t2f1, ..., t1f2, ... (+24 more)
 
 ### Community 243 - "Community 243"
-Cohesion: 0.07
-Nodes (24): DesktopDevice, AndroidAnalyticsService, Read-only Android client statistics for the admin Mini App.  Two sources are rea, Every Android device row.          One row per installed-and-linked phone, so th, Counts straight off the device table — installs, not estimates., Real opens from devices that are still linked.          Historical open events f, Version split of the phones that reached the server in 30 days., Android product analytics over the device registry and the event log.      Readi (+16 more)
+Cohesion: 0.03
+Nodes (54): CourseMiniAppEvent, DesktopDevice, AndroidAnalyticsService, Read-only Android client statistics for the admin Mini App.  Two sources are rea, Every Android device row.          One row per installed-and-linked phone, so th, Counts straight off the device table — installs, not estimates., Real opens from devices that are still linked.          Historical open events f, Version split of the phones that reached the server in 30 days. (+46 more)
 
 ### Community 244 - "Community 244"
 Cohesion: 0.14
@@ -1189,56 +1178,60 @@ Cohesion: 0.37
 Nodes (15): crane(), dragon(), eyes(), info(), loadingBook(), monkey(), mount(), mouth() (+7 more)
 
 ### Community 254 - "Community 254"
-Cohesion: 0.22
-Nodes (3): Mijoz aytgan ieroglifllarni server lug'atidan qayta quradi.          Serverda to, BuildItemsTests, Mijoz boshqaradigan mashqlarning xatosi server lug'atidan qayta quriladi.  "Iero
+Cohesion: 0.10
+Nodes (14): Yozilgan xatolar sonini qaytaradi. Yozuv mashqni hech qachon yiqitmaydi., Shu daraja va undan quyi darajalardagi barcha so'zlar.          Mashq quyi daraj, Mijoz aytgan ieroglifllarni server lug'atidan qayta quradi.          Serverda to, _is_proper_name(), level_word_counts(), _load(), _normalize_level(), Course v3 dars fayllaridagi `active_words` o'quvchisi.  `app/static/course_v3_da (+6 more)
 
 ### Community 256 - "Community 256"
-Cohesion: 0.06
-Nodes (108): FSMContext, admin_channel_add_message(), admin_deleteuser_handler(), admin_deleteuser_waiting_id_handler(), admin_payment_details_handler(), admin_portfolio_amount_handler(), admin_portfolio_expense_handler(), admin_portfolio_profit_handler() (+100 more)
+Cohesion: 0.09
+Nodes (56): admin_broadcast_handler(), _extract_channel_input(), _fill_channel_invite_link(), rich_test_command(), begin_desktop_link(), _begin_manual_code_entry(), receive_desktop_link_non_text(), _register_invalid_attempt() (+48 more)
 
 ### Community 257 - "Community 257"
-Cohesion: 0.04
-Nodes (64): AbandonInput, AndroidLinkStatusRequest, AndroidRefreshRequest, AndroidRevokeRequest, Bearer-authenticated device-link adapter for the native Android client.  This mo, _unavailable(), AndroidEventRequest, create_android_events_router() (+56 more)
+Cohesion: 0.03
+Nodes (69): AbandonInput, AndroidLinkStartRequest, AndroidLinkStatusRequest, AndroidRefreshRequest, AndroidRevokeRequest, Bearer-authenticated device-link adapter for the native Android client.  This mo, _unavailable(), AndroidEventRequest (+61 more)
 
 ### Community 258 - "Community 258"
-Cohesion: 0.10
-Nodes (13): allow(), _iso(), limit_text(), LimitDecision, paywall_for(), PaywallHint, Bitta limit qarori — barcha klient uchun bitta shakl.  Bugun bir xil savolga uch, Klientga yuboriladigan shakl.          `is_paid` — eski maydon: klientlar hozir (+5 more)
+Cohesion: 0.15
+Nodes (5): paywall_for(), PaywallHint, Paywall uchun kerak bo'ladigan hamma narsa.      Matn SERVERDA renderlanadi. Sab, Tayyor matn. Kalit topilmasa `t()` kalitning o'zini qaytaradi., PaywallCopyTests
 
 ### Community 259 - "Community 259"
-Cohesion: 0.22
-Nodes (5): DesktopSemVer, parse_desktop_semver(), DesktopUpdateRelease, DesktopUpdateService, Build a public Tauri manifest from fail-closed release settings.
+Cohesion: 0.16
+Nodes (8): _error_response(), DesktopSemVer, parse_desktop_semver(), DesktopUpdateError, DesktopUpdateRelease, DesktopUpdateService, Build a public Tauri manifest from fail-closed release settings., ValueError
 
 ### Community 260 - "Community 260"
-Cohesion: 0.17
-Nodes (14): AppDestination, Course, CurrentLesson, DeepLinkRouter, Lesson, Practice, PracticeTool, Profile (+6 more)
+Cohesion: 0.23
+Nodes (13): AppDestination, Course, CurrentLesson, DeepLinkRouter, Lesson, Practice, PracticeTool, Profile (+5 more)
 
 ### Community 261 - "Community 261"
-Cohesion: 0.12
-Nodes (24): _adhoc_word(), _answer_key(), _choice_block(), _explanation_parts(), _looks_like_pinyin(), Xatodan "nishon"ni ajratish: o'quvchi aynan nimani bilmadi.  Bitta xato 6 xil ma, AI tuzatishidan to'g'ri gapni ajratadi.      Tuzatish erkin matn: "我是学生。", "应该说：, Muallif variantlari (bo'sh joy/dialog uchun): gap, variantlar, javob. (+16 more)
+Cohesion: 0.13
+Nodes (22): _adhoc_word(), _answer_key(), _choice_block(), _explanation_parts(), _looks_like_pinyin(), Xatodan "nishon"ni ajratish: o'quvchi aynan nimani bilmadi.  Bitta xato 6 xil ma, AI tuzatishidan to'g'ri gapni ajratadi.      Tuzatish erkin matn: "我是学生。", "应该说：, Muallif variantlari (bo'sh joy/dialog uchun): gap, variantlar, javob. (+14 more)
 
 ### Community 262 - "Community 262"
 Cohesion: 0.20
 Nodes (9): answer(), celebrate(), finish(), finishFor(), hasPack(), idle(), reactionFor(), say() (+1 more)
 
 ### Community 263 - "Community 263"
-Cohesion: 0.16
-Nodes (24): _android_confirmation_keyboard(), _android_language(), _android_language_for(), _android_language_keyboard(), begin_android_link(), cancel_android_link(), cancel_desktop_link(), choose_android_link_language() (+16 more)
+Cohesion: 0.17
+Nodes (22): _android_confirmation_keyboard(), _android_language(), _android_language_for(), _android_language_keyboard(), begin_android_link(), cancel_android_link(), cancel_desktop_link(), choose_android_link_language() (+14 more)
 
 ### Community 264 - "Community 264"
-Cohesion: 0.08
-Nodes (17): CourseWordMastery, O'quvchining bitta so'zni bitta ko'nikma bo'yicha o'zlashtirishi.      Nega aloh, local_today(), normalize_skill(), Shu ko'nikma bo'yicha barcha yozuvlar. Lug'at hajmi bilan         chegaralangan, Interval takrori qoidasi.          To'g'ri javob so'zni faqat MUDDATI KELGAN bo', Mashq natijasini yozadi. Yozilgan so'zlar sonini qaytaradi.          Bu HECH QAC, Mashq uchun so'zlar + kontekst. Xato bo'lsa bo'sh ro'yxat.          Bo'sh ro'yxa (+9 more)
+Cohesion: 0.05
+Nodes (18): CourseWordMastery, O'quvchining bitta so'zni bitta ko'nikma bo'yicha o'zlashtirishi.      Nega aloh, BlockedUserGuardCacheCoalescingTest, _FakeScalarResult, _FakeSession, _load_guard_with_dependency_stubs(), _session_maker(), GuardTests (+10 more)
 
 ### Community 265 - "Community 265"
-Cohesion: 0.03
-Nodes (116): CommandObject, profile_menu_qa(), _course_locked_offer_text(), _ensure_active_course_access(), _keyboard_for_step(), mode_free_qa_handler(), mode_qa_handler(), Har qanday step uchun to'g'ri klaviaturani qaytaradi (V1 + V2). (+108 more)
+Cohesion: 0.05
+Nodes (80): profile_menu_qa(), _course_locked_offer_text(), course_set_reminder_time_handler(), _ensure_active_course_access(), mode_qa_handler(), _send_course_access_offer(), handle_subscription_button(), _ai_draft_preview() (+72 more)
+
+### Community 266 - "Community 266"
+Cohesion: 0.10
+Nodes (32): explanation_translation(), extract_cjk_sentence(), _filled_gap(), find_pool_sentence(), has_cjk(), level_words(), lexicon(), _localized() (+24 more)
 
 ### Community 267 - "Community 267"
 Cohesion: 0.03
-Nodes (123): AndroidHintDto, MistakeSummaryDto, MistakeTargetDto, PracticeQuestionDto, PracticeSessionDto, CourseEnergyDto, CourseGamificationDto, HskCharacter (+115 more)
+Nodes (101): AndroidHintDto, MistakeReviewSessionDto, PracticeQuestionDto, PracticeSessionDto, practiceAssistantContext(), wordDrillAssistantContext(), HskCharacter, HskCharacterMood (+93 more)
 
 ### Community 268 - "Community 268"
-Cohesion: 0.07
-Nodes (34): AppLanguage, JsonElement, JsonObject, Lesson, LessonCharacterParityTest, lessonCharacterFor(), lessonCoachLine(), lessonReactionFor() (+26 more)
+Cohesion: 0.15
+Nodes (11): BundledDictionaryInsights, DictionaryInsightsParser, Examples, ExamplesDto, Parts, PartsDto, PartsEntryDto, CharacterBreakdown (+3 more)
 
 ### Community 269 - "Community 269"
 Cohesion: 0.18
@@ -1249,24 +1242,24 @@ Cohesion: 0.12
 Nodes (26): build_sales_outcome(), build_split_plan(), build_word_pinyin_index(), chunk_words(), level_band(), level_label(), load_seed_lesson(), loadjson() (+18 more)
 
 ### Community 272 - "Community 272"
-Cohesion: 0.16
-Nodes (7): DiscountCampaign, DiscountCampaignRepository, DiscountNotificationResult, DiscountNotificationService, Telegram text; ``for_phone`` is the Android body under the headline.          Th, DiscountChoice, DiscountService
+Cohesion: 0.05
+Nodes (14): DiscountCampaign, Referral, DiscountCampaignRepository, ReferralRepository, DiscountChoice, DiscountService, _BotStub, _CheckoutCase (+6 more)
 
 ### Community 273 - "Community 273"
-Cohesion: 0.06
-Nodes (43): Lock, MockTransport, authorize_url(), client_secret(), exchange_code(), is_configured(), merge_first_authorization_name(), Sign in with Apple verification and code exchange.  Apple differs from Google in (+35 more)
+Cohesion: 0.10
+Nodes (36): AsyncBaseTransport, Lock, authorize_url(), client_secret(), exchange_code(), is_configured(), merge_first_authorization_name(), Sign in with Apple verification and code exchange.  Apple differs from Google in (+28 more)
 
 ### Community 274 - "Community 274"
-Cohesion: 0.09
-Nodes (13): Mashq darvozasi uchun shadow solishtiruvi — Mini App va Android uchun bitta.  Ik, EntitlementShadowService, _int_or_none(), LegacyOutcome, Dvigatelni eski qaror bilan yonma-yon solishtirish.  Ko'chirishning butun mohiya, Shu harakat uchun dvigatel qaror qabul qiladimi yoki faqat kuzatadimi., Ikki qarorni solishtiradi va farqni yozadi. Mos kelsa True.          Hech qachon, Har `(action, client)` uchun namuna va nomuvofiqlik soni. (+5 more)
+Cohesion: 0.08
+Nodes (13): Mashq darvozasi uchun shadow solishtiruvi — Mini App va Android uchun bitta.  Ik, EntitlementShadowService, _int_or_none(), LegacyOutcome, Shu harakat uchun dvigatel qaror qabul qiladimi yoki faqat kuzatadimi., Ikki qarorni solishtiradi va farqni yozadi. Mos kelsa True.          Hech qachon, Har `(action, client)` uchun namuna va nomuvofiqlik soni., Nomuvofiqlik misollari — adminga nima farq qilganini ko'rsatish uchun. (+5 more)
 
 ### Community 275 - "Community 275"
 Cohesion: 0.18
 Nodes (10): Build and test, Configuration, Cutting a release, Distribution flavours, Distribution: the bot hands out the APK, In-app updates, and why only one flavour has them, Localisation, One-time bootstrap: the Gradle wrapper (+2 more)
 
 ### Community 277 - "Community 277"
-Cohesion: 0.13
-Nodes (12): create_app_downloads_router(), One status for every installable client.  Read by the download page's JavaScript, app_download_status(), _date(), _empty(), What can be downloaded right now, for every platform at once.  The desktop insta, Just the day. A release is dated, not timed, to whoever reads this., One payload describing every client a learner can install. (+4 more)
+Cohesion: 0.16
+Nodes (10): create_app_downloads_router(), One status for every installable client.  Read by the download page's JavaScript, app_download_status(), _date(), _empty(), What can be downloaded right now, for every platform at once.  The desktop insta, Just the day. A release is dated, not timed, to whoever reads this., One payload describing every client a learner can install. (+2 more)
 
 ### Community 279 - "Community 279"
 Cohesion: 0.40
@@ -1289,28 +1282,28 @@ Cohesion: 0.25
 Nodes (7): Feedback and reward, Metrics, Release feedback draft — Android Telegram account flow, Release name, Target, Try it, User message
 
 ### Community 285 - "Community 285"
-Cohesion: 0.27
-Nodes (3): AndroidPushResult, _Bot, DeliveryTests
+Cohesion: 0.12
+Nodes (16): BaseMiddleware, create_bot(), main(), AdminPartnerStates, PartnerApplicationStates, PartnerPayoutStates, BlockedUserMiddleware, Bloklangan foydalanuvchi uchun global to'siq.  Admin panelda `status="blocked"` (+8 more)
 
 ### Community 286 - "Community 286"
-Cohesion: 0.15
-Nodes (17): AsyncBaseTransport, ManifestFetcher, The one stable file that says which Android build is current.  This is the Andro, _bounded_number(), DesktopReleaseManifest, DesktopReleaseManifestError, DesktopReleasePlatform, _ManifestCacheEntry (+9 more)
+Cohesion: 0.13
+Nodes (7): config_from_payload(), default_config(), Saqlangan JSON dan konfiguratsiya. Yaroqsiz qismlar defaultga tushadi., BrokenConfigFallsBackTests, DefaultLimitTests, Limit konfiguratsiyasi — ma'lumot sifatida.  Ikki xil xatti-harakat ataylab farq, TrialSettingsTests
 
 ### Community 287 - "Community 287"
-Cohesion: 0.11
-Nodes (17): _desktop_auth_retention_scheduler(), lifespan(), Run all lesson seed scripts in the background after startup., Remove expired native-auth rows without blocking the bot scheduler., _seed_lessons(), BaseMiddleware, create_bot(), main() (+9 more)
+Cohesion: 0.18
+Nodes (10): _desktop_auth_retention_scheduler(), lifespan(), Run all lesson seed scripts in the background after startup., Remove expired native-auth rows without blocking the bot scheduler., _seed_lessons(), _ensure_bootstrap_columns(), _ensure_bootstrap_indexes(), init_db() (+2 more)
 
 ### Community 288 - "Community 288"
-Cohesion: 0.19
-Nodes (22): _newcombe_difference_ci(), 95% Wilson score interval as proportions (0..1)., Newcombe/Wilson 95% CI for treatment-control proportion difference., Two-arm Pearson chi-square SRM check (df=1, p<0.01 warning)., Evaluate sales_value_v1 as a global, seven-day matured ITT cohort.      Course r, _sales_payload(), _sales_srm(), _sales_value_card() (+14 more)
+Cohesion: 0.20
+Nodes (21): _newcombe_difference_ci(), 95% Wilson score interval as proportions (0..1)., Newcombe/Wilson 95% CI for treatment-control proportion difference., Two-arm Pearson chi-square SRM check (df=1, p<0.01 warning)., Evaluate sales_value_v1 as a global, seven-day matured ITT cohort.      Course r, _sales_payload(), _sales_srm(), _sales_value_experiment() (+13 more)
 
 ### Community 289 - "Community 289"
 Cohesion: 0.16
 Nodes (13): _answers_json(), build_lesson(), _dialogue_json(), _exercise_json(), _flatten_dialogue_lines(), _grammar_json(), _homework_json(), _localized_title() (+5 more)
 
 ### Community 290 - "Community 290"
-Cohesion: 0.19
-Nodes (6): IdentityLinkServiceTests, The takeover this whole design exists to prevent., A borrowed, signed-in device is not consent to attach an identity., Parity with the bot flow, which a blocked user can never reach.          Blocked, The guard must key off the canonical classifier, not any status., _verified()
+Cohesion: 0.10
+Nodes (15): UserIdentity, mask_email(), Show enough to recognise the account, not enough to harvest it., IdentityLinkServiceTests, IdentityUnlinkPhaseTwoTests, MaskEmailTests, The account-resolution rules that keep a provider login from taking over an acco, The takeover this whole design exists to prevent. (+7 more)
 
 ### Community 291 - "Community 291"
 Cohesion: 0.35
@@ -1325,8 +1318,8 @@ Cohesion: 0.22
 Nodes (5): Remove the STT prompt from a transcript that echoed it back.      The echo can l, _strip_prompt_echo(), The STT prompt must never reach the tutor as if the learner had said it.  Both t, StripPromptEchoTests, TranscribeVoiceTests
 
 ### Community 294 - "Community 294"
-Cohesion: 0.13
-Nodes (6): _is_night(), payment_screenshot_handler(), _waiting_message(), subscription_plan_handler(), PaymentRepository, PaymentService
+Cohesion: 0.17
+Nodes (21): command_level_keyboard(), profile_menu_level(), _course_level_candidates(), daily_practice_complete(), daily_practice_course(), _lesson_choice_text(), _mode_choice_text(), process_language() (+13 more)
 
 ### Community 295 - "Community 295"
 Cohesion: 0.29
@@ -1340,10 +1333,6 @@ Nodes (10): ApiError, fromCode(), LimitReached, Offline, ProviderCancelled, Prov
 Cohesion: 0.25
 Nodes (3): TrialReminderService, _BotSpy, TrialReminderTests
 
-### Community 298 - "Community 298"
-Cohesion: 0.15
-Nodes (5): DataStore, AndroidWidgetEvent, WidgetStore, MemoryPreferences, WidgetStoreTest
-
 ### Community 299 - "Community 299"
 Cohesion: 0.10
 Nodes (13): DictionaryDao, DictionaryMetaEntity, DictionaryWordEntity, AssetBundledDictionarySource, BundledDictionary, BundledDictionarySource, SeedWord, Source (+5 more)
@@ -1354,23 +1343,31 @@ Nodes (12): _android_api(), _android_profile_view_model(), AndroidOffersTheSameT
 
 ### Community 301 - "Community 301"
 Cohesion: 0.07
-Nodes (4): AsyncSession, CourseAttempt, CourseAttemptRepository, CoursePilotEventRepository
+Nodes (5): AsyncSession, CourseAttempt, RequiredChannel, CourseAttemptRepository, RequiredChannelRepository
 
 ### Community 302 - "Community 302"
 Cohesion: 0.09
 Nodes (11): HanziWriting, WritingMiss, WritingStage, WritingUiState, Actions(), HanziWritingScreen(), stageTitle(), StatusLine() (+3 more)
+
+### Community 303 - "Community 303"
+Cohesion: 0.20
+Nodes (15): V2 dars uchun V1 step nomini V2 ekvivalentiga o'zgartiradi., _v2_remap(), _lesson(), verify(), _answer_options(), _flatten_expected_answers(), get_lesson_blocks(), get_step_order() (+7 more)
 
 ### Community 304 - "Community 304"
 Cohesion: 0.15
 Nodes (23): all_dictionary_words(), authored_examples(), authored_parts(), build(), build_examples(), build_parts(), course_sentences(), dictionary_words() (+15 more)
 
 ### Community 306 - "Community 306"
-Cohesion: 0.19
-Nodes (4): DrillReportIntegrationTests, IntervalReviewIntegrationTests, Mashq -> natija -> keyingi mashq halqasi, haqiqiy baza ustida., signed_init_data()
+Cohesion: 0.12
+Nodes (9): _as_utc(), Pro trial anti-abuse risk engine.  The engine uses only privacy-safe signals alr, Build a fail-open risk snapshot without changing entitlement state., Deterministically score one snapshot.          Account age is deliberately weak:, Admin uchun hashlarni oshkor qilmaydigan anti-abuse hisoboti., Persist the snapshot inside a savepoint; failure is fail-open., TrialRiskDecision, TrialRiskSnapshot (+1 more)
 
 ### Community 307 - "Community 307"
 Cohesion: 0.03
-Nodes (39): BotSetting, BotSettingRepository, AdPlacementSettings, _clean_rule(), _default_rule(), default_settings(), _has_full_access(), normalize_placements() (+31 more)
+Nodes (16): BotSetting, BotSettingRepository, DesktopCourseApiTests, Bepul dars chegarasi — adminning sozlamasi, yagona manba., DesktopSubscriptionApiTests, _user(), _BotStub, RegionFlowCopyTests (+8 more)
+
+### Community 311 - "Community 311"
+Cohesion: 0.09
+Nodes (16): BrandHeader(), brandWordmark(), HeroPanda(), languageCodeRes(), languageNameRes(), LanguageSwitch(), LinkScreen(), openCustomTab() (+8 more)
 
 ### Community 312 - "Community 312"
 Cohesion: 0.13
@@ -1385,8 +1382,8 @@ Cohesion: 0.15
 Nodes (5): GateApiTests, _init_data(), Eski klient 404 ni "server buzildi" deb ko'rsatardi.          403 esa u allaqach, Aynan shu bayroq tufayli klientlar "Reklama bilan davom etish"         tugmasini, Telegram imzolaydigan initData ning haqiqiy shakli.
 
 ### Community 315 - "Community 315"
-Cohesion: 0.28
-Nodes (11): admin_miniapp_desktop_promo_media_clear(), admin_miniapp_desktop_promo_media_upload(), _bool_map(), _bounded_daily_limit(), desktop_app_promo_media_available(), desktop_app_promo_media_full_path(), desktop_app_promo_media_url(), get_desktop_app_promo_settings() (+3 more)
+Cohesion: 0.30
+Nodes (8): _bool_map(), _bounded_daily_limit(), desktop_app_promo_media_available(), desktop_app_promo_media_full_path(), desktop_app_promo_media_url(), DesktopAppPromoSettings, _safe_media_path(), _safe_media_type()
 
 ### Community 318 - "Community 318"
 Cohesion: 0.25
@@ -1405,8 +1402,8 @@ Cohesion: 0.08
 Nodes (17): AdAudienceIsTheServersDecisionTests, _code_only(), CourseAdsModuleTests, _declared_names(), EveryNameUsedInsideTheModuleExistsTests, _exported_names(), `ads.js` moduli haqiqatan o'rnatiladimi.  Bu testning sababi aniq va u bir marta, Modul ichida e'lon qilingan HAR QANDAY nom. (+9 more)
 
 ### Community 322 - "Community 322"
-Cohesion: 0.15
-Nodes (6): do_run_migrations(), ensure_version_column_width(), run_async_migrations(), run_migrations_online(), Connection, Payment-decision wrapper around the shared Android FCM transport.  The database
+Cohesion: 0.43
+Nodes (5): do_run_migrations(), ensure_version_column_width(), run_async_migrations(), run_migrations_online(), Connection
 
 ### Community 323 - "Community 323"
 Cohesion: 0.23
@@ -1417,8 +1414,8 @@ Cohesion: 0.10
 Nodes (19): beyond_syllabus_rows, common_index_rows, counting_note, derived_hanzi_count, dialogue_blocks, dialogue_lines, grammar_points, in_syllabus_common_rows (+11 more)
 
 ### Community 325 - "Community 325"
-Cohesion: 0.12
-Nodes (7): AndroidPaymentPushService, AndroidRealtimePushService, Stable 0..29 minute bucket to avoid a local-20:00 thundering herd., study_push_minute(), PaymentNotifyService, _translate_reason(), AndroidPushTests
+Cohesion: 0.15
+Nodes (8): AndroidOnboardingApi, AndroidHsk30OnboardingDto, AndroidOnboardingCompleteDto, AndroidOnboardingProfileDto, AndroidOnboardingRequestDto, AndroidOnboardingStatusDto, OnboardingRepository, OnboardingRepositoryTest
 
 ### Community 326 - "Community 326"
 Cohesion: 0.17
@@ -1428,6 +1425,10 @@ Nodes (11): Aynan nima yangilandi, Baholash matni (1-5), Release feedback draft 
 Cohesion: 0.13
 Nodes (14): A. Audit before implementation, B. Implementation files, C. Public URLs, D. Page title and description, E. robots.txt, Existing Mini App browser follow-up, F. sitemap.xml, Final validation results (2026-09-20) (+6 more)
 
+### Community 328 - "Community 328"
+Cohesion: 0.10
+Nodes (19): 1A — Akkaunt bo'yicha currency preference, 1B — Tarif birinchi, valyuta aniq, 2 — To'liq Profil ekrani va obuna boshqaruvi, 3 — AI jim ishlamay qolishini tuzatish — bajarildi, 4A — Renewalni xavfsiz qilish — bajarildi, 4B — Uzaytirishni foydalanuvchiga ochish — bajarildi, 5 — UI va chiqarish, Android foydalanuvchi feedbackini tuzatish rejasi (+11 more)
+
 ### Community 329 - "Community 329"
 Cohesion: 0.20
 Nodes (7): mistake_service_patch(), PronunciationMasteryTests, PronunciationMistakeTests, PronunciationTrustTests, Yiqilgan talaffuz urinishi Xatolarim bo'limiga tushishi.  Talaffuz mashqi ilgari, Talaffuz natijasi interval takroriga ham yoziladi.      Ball SERVERDA hisoblanad, service()
@@ -1436,21 +1437,25 @@ Nodes (7): mistake_service_patch(), PronunciationMasteryTests, PronunciationMist
 Cohesion: 0.08
 Nodes (9): NoopSkipDao, NoopDao, CourseMapCacheEntity, CourseMapDao, HskAiDatabase, DatabaseUpgradeTest, LessonCacheDao, LessonCacheEntity (+1 more)
 
+### Community 334 - "Community 334"
+Cohesion: 0.09
+Nodes (11): ConversionFunnelService, Record a funnel event only if the same scoped event is absent.          This use, get_block_no_from_step(), CourseMiniAppResultService, CourseTrialService, Qaysi dars shu o'quvchining birinchisi ekanini eslab qoladi.          Hech narsa, CourseTrialValueService, course_miniapp_lesson_id() (+3 more)
+
 ### Community 335 - "Community 335"
 Cohesion: 0.20
 Nodes (9): 1–5 baholash matni, Kuzatiladigan metrikalar, Nima yangilandi, Qayerda va qanday sinash, Qisqa e'lon, Release feedback draft — HSK AI bilan ilk qadam, Release nomi, Reward tasdig'i (+1 more)
 
 ### Community 336 - "Community 336"
 Cohesion: 0.19
-Nodes (6): 7 kunlik Pro trial holati.      Ustunlar 4-bosqichda qo'shiladi; ungacha `getatt, trial_block(), TrialBlockTests, _user(), FunnelWiringTests, Voronka hodisalari haqiqatan yozilyaptimi.  Yangi event nomlarini ro'yxatga qo's
+Nodes (6): 7 kunlik Pro trial holati.      Ustunlar 4-bosqichda qo'shiladi; ungacha `getatt, trial_block(), SubscriptionService, TrialBlockTests, _user(), FunnelWiringTests
 
 ### Community 337 - "Community 337"
-Cohesion: 0.07
-Nodes (16): _(), a(), at, d(), dt, ht, it(), lt (+8 more)
+Cohesion: 0.06
+Nodes (18): _(), a(), _animationFrame(), at, d(), destroy(), dt, gt (+10 more)
 
 ### Community 338 - "Community 338"
-Cohesion: 0.12
-Nodes (21): AdminAndroidStates, Publishing the APK the bot hands out., _confirm_keyboard(), _confirm_text(), receive_apk(), receive_version(), AppPromoState, Server-authoritative automatic app-promo cooldown per target platform. (+13 more)
+Cohesion: 0.17
+Nodes (11): AdminAndroidStates, Publishing the APK the bot hands out., receive_apk(), AdminPublishingFlowTests, _document(), FakeAnswerTarget, FakeCallback, FakeManifest (+3 more)
 
 ### Community 339 - "Community 339"
 Cohesion: 0.29
@@ -1468,13 +1473,17 @@ Nodes (5): _budget(), Referral triali byudjeti foydalanuvchi oynasiga qanday bog
 Cohesion: 0.29
 Nodes (7): Daraja qamrovi, HSK 3 — materiallar, Imtihon va material tayyorlash yo‘nalishi, Kitoblar, Manba va kelib chiqish, Syllabus bo‘limlarini topish, Tayyor lokal fayllar
 
+### Community 344 - "Community 344"
+Cohesion: 0.18
+Nodes (9): AbandonAssessment, AssistantAction, AssistantApi, AssistantConversation, AssistantEnvelope, AssistantInput, AssistantSource, AssistantTurn (+1 more)
+
 ### Community 345 - "Community 345"
 Cohesion: 0.18
 Nodes (10): 1–5 baholash matni, Deploy oldidan, Kuzatiladigan metrikalar, Nima yangilandi, Qayerda va qanday sinash, Qisqa e'lon, Release feedback draft — AI Voice sizga moslashadi, Release nomi (+2 more)
 
 ### Community 346 - "Community 346"
-Cohesion: 0.08
-Nodes (20): AdCampaignStates, BroadcastStates, DiscountStates, AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates, AdminPortfolioStates (+12 more)
+Cohesion: 0.10
+Nodes (15): AdCampaignStates, BroadcastStates, DiscountStates, AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates, AdminPortfolioStates (+7 more)
 
 ### Community 348 - "Community 348"
 Cohesion: 0.20
@@ -1489,12 +1498,12 @@ Cohesion: 0.29
 Nodes (7): Daraja qamrovi, HSK 5 — materiallar, Imtihon va material tayyorlash yo‘nalishi, Kitoblar, Manba va kelib chiqish, Syllabus bo‘limlarini topish, Tayyor lokal fayllar
 
 ### Community 352 - "Community 352"
-Cohesion: 0.15
-Nodes (20): ai_level_context(), content_level(), CourseLevelSpec, hsk30_content_levels(), is_hsk30_level(), legacy_content_levels(), level_spec(), next_level() (+12 more)
+Cohesion: 0.24
+Nodes (12): command_level_callback_handler(), content_level(), CourseLevelSpec, hsk30_content_levels(), is_hsk30_level(), legacy_content_levels(), level_spec(), next_level() (+4 more)
 
 ### Community 353 - "Community 353"
-Cohesion: 0.24
-Nodes (6): ensure_admin_active(), is_admin_user(), Adminlarni doim cheksiz 'active' obuna holatida ushlab turish yordamchisi.  Admi, Admin foydalanuvchini cheksiz 'active' holatga keltiradi.      O'zgarish bo'lsa, FeedbackRewardWriterTests, _free_user()
+Cohesion: 0.22
+Nodes (8): ensure_admin_active(), is_admin_user(), Adminlarni doim cheksiz 'active' obuna holatida ushlab turish yordamchisi.  Admi, Admin foydalanuvchini cheksiz 'active' holatga keltiradi.      O'zgarish bo'lsa, AdminAccessWriterTests, FeedbackRewardWriterTests, _free_user(), Kim `users` qatoriga vaqtinchalik yoki doimiy kirish yozadi.  `SubscriptionServi
 
 ### Community 354 - "Community 354"
 Cohesion: 0.40
@@ -1503,6 +1512,14 @@ Nodes (3): DateTimeFormatter, ResetTime, ZoneId
 ### Community 356 - "Community 356"
 Cohesion: 0.39
 Nodes (7): _condition(), downgrade(), _existing_check_names(), widen the conversion funnel event names  Voronka jadvalidagi `event_name` CHECK, Jadvaldagi CHECK cheklovlarining HAQIQIY nomlari., _replace_constraint(), upgrade()
+
+### Community 357 - "Community 357"
+Cohesion: 0.18
+Nodes (4): HTMLParser, allowed(), PublicSiteTests, Tags
+
+### Community 359 - "Community 359"
+Cohesion: 0.28
+Nodes (3): LearningSignalsTests, mistake(), xp_event()
 
 ### Community 362 - "Community 362"
 Cohesion: 0.36
@@ -1517,20 +1534,20 @@ Cohesion: 0.29
 Nodes (6): Boshqa kompyuterga o‘rnatish, Hozirgi Mac’da ochish, Litsenziya va cheklov, Ovoz — lokal matndan ovoz studiyasi, Tekshiruvlar, Tuzilishi
 
 ### Community 370 - "Community 370"
-Cohesion: 0.19
-Nodes (5): CourseUnlockTransitionTest, CourseUiState, CourseViewModel, findNewlyUnlockedLesson(), LessonStatus
+Cohesion: 0.14
+Nodes (6): Kamida bitta AI provayder (Gemini yoki OpenAI) sozlangan bo'lsa True., Settings, BaseSettings, Local SEO preview without production DB, Telegram bot or background jobs.  Run:, test_billing_tier_config_rejects_typo(), ResetHourSettingTests
 
 ### Community 371 - "Community 371"
-Cohesion: 0.14
-Nodes (14): CourseMistakeTarget, Xatolarim bo'limidagi takror birligi.      Nega alohida jadval: `course_mistakes, aware(), CourseMistakeTargetStore, drill_target(), _dumps(), _loads(), merge_payload() (+6 more)
+Cohesion: 0.15
+Nodes (6): Quiz Result Rich Message — expandable blockquote bilan., News Rich Message — expandable blockquote bilan., Rich Message yuborishga harakat qiladi, xatolik bo'lsa fallback xabar yuboradi., Vocabulary Rich Message — expandable blockquote bilan., Grammar Rich Message — expandable blockquote bilan., RichMessageService
 
 ### Community 374 - "Community 374"
-Cohesion: 0.05
-Nodes (26): AppUpdateBanner(), AppUpdateCard(), UpdatePushHandler, MiniAppPaletteTest, File, Long, countdownText(), leagueGlyph() (+18 more)
+Cohesion: 0.06
+Nodes (23): AppUpdateBanner(), AppUpdateCard(), UpdatePushHandler, MiniAppPaletteTest, File, Long, SharedPreferences, AppUpdate (+15 more)
 
 ### Community 375 - "Community 375"
 Cohesion: 0.18
-Nodes (7): AdCampaign, AdCampaignRepository, decode_languages(), encode_languages(), AdCampaignService, AdSendResult, send_ad_payload()
+Nodes (7): normalize_skill(), Shu ko'nikma bo'yicha barcha yozuvlar. Lug'at hajmi bilan         chegaralangan, Interval takrori qoidasi.          To'g'ri javob so'zni faqat MUDDATI KELGAN bo', Mashq natijasini yozadi. Yozilgan so'zlar sonini qaytaradi.          Bu HECH QAC, Mashq uchun so'zlar + kontekst. Xato bo'lsa bo'sh ro'yxat.          Bo'sh ro'yxa, Natijalarni yozadi, mintaqani o'zi aniqlab., `(band, joriy qism, mintaqa siljishi)` — endpointlar uchun.          Router yupq
 
 ### Community 378 - "Community 378"
 Cohesion: 0.22
@@ -1541,16 +1558,16 @@ Cohesion: 0.12
 Nodes (7): DailyLimitRaceWindowTests, _NestedTransaction, _RaceResult, _RaceSession, Ikkinchi so'rov shu slotni egallab ulgurgan sessiya.      `flush()` `IntegrityEr, Poyga yo'lidagi qayta sanash ham o'quvchining kunida bo'lishi kerak.      Ilgari, Bitta `execute()` javobi: qulflangan user yoki bo'sh natija.
 
 ### Community 380 - "Community 380"
-Cohesion: 0.20
-Nodes (4): LessonAccessService, AdminLimitAuthorityTests, Onboarding — bu tanlov, dars emas.          `ensure_trial_lesson` ilgari faqat ", signed()
+Cohesion: 0.25
+Nodes (3): AdminLimitAuthorityTests, Onboarding — bu tanlov, dars emas.          `ensure_trial_lesson` ilgari faqat ", signed()
 
 ### Community 381 - "Community 381"
 Cohesion: 0.33
 Nodes (6): Davom ettirish uchun kerak, FLTRP dars fayllari va audiolar, HSK 1–3 kitoblarining o‘ziga kirish, Ochiq sample bo‘yicha aniqlangan cheklov, Raqamli workbooklar, Rasmiy to‘liq raqamli darsliklar topildi
 
 ### Community 382 - "Community 382"
-Cohesion: 0.16
-Nodes (13): admin_audio_list_handler(), admin_upload_audio_handler(), Yuklangan audio fayllar ro'yxati: /audio_list hsk1 1, Audio yuklash — voice, audio yoki mp3/ogg fayl sifatida yuboring.      Caption (, CourseAudio, Telegram file_id orqali saqlangan kurs audio fayllari.      audio_type qiymatlar, CourseAudioRepository, file_id ni qaytaradi, yo'q bo'lsa None. (+5 more)
+Cohesion: 0.27
+Nodes (4): DataStore, Preferences, MemoryPreferences, WidgetStoreTest
 
 ### Community 383 - "Community 383"
 Cohesion: 0.33
@@ -1561,12 +1578,12 @@ Cohesion: 0.25
 Nodes (8): 28 ta rasm va deterministik tanlov, Android Smart Widget, Change points, Mahalliy vaqt bo‘yicha holatlar, Operational contract, Panda qachon nima deydi, QA commands, Ustuvorlik
 
 ### Community 385 - "Community 385"
-Cohesion: 0.21
-Nodes (3): CardCurrencyQuote, Convert the same TJS prices for several card countries.          The Mini App sh, Convert several TJS prices with one rate lookup.          Checkout overview rend
+Cohesion: 0.33
+Nodes (11): draft_test_handler(), finish_draft_if_needed(), MessageDraftState, _normalize_draft_id(), _preview_text(), send_draft_or_fallback(), _send_library_draft(), _send_message_draft() (+3 more)
 
 ### Community 386 - "Community 386"
-Cohesion: 0.24
-Nodes (8): _background_scheduler(), _count_json_items(), CourseProgressSummaryService, _level_candidates(), CourseReminderService, Return the rendered reminder and the arguments that produced it.          The ar, _reminder_keyboard(), reminder_tz_offset()
+Cohesion: 0.21
+Nodes (6): CourseProgress, CourseProgress, _count_json_items(), CourseProgressSummaryService, _level_candidates(), Return the rendered reminder and the arguments that produced it.          The ar
 
 ### Community 387 - "Community 387"
 Cohesion: 0.20
@@ -1579,6 +1596,10 @@ Nodes (6): Fayllar, Lokal materiallar reyestri, Original arxiv dalili, Original 
 ### Community 389 - "Community 389"
 Cohesion: 0.33
 Nodes (5): Hali tekshirilishi kerak, HSK 1–5: rasmiy holat, Imtihon joriy etilishi, Imtihon tuzilishi — yangi rasmiy sample hujjati, Uch xil manba
+
+### Community 390 - "Community 390"
+Cohesion: 0.23
+Nodes (5): Yuklangan faylni tur va kengaytmaga ajratadi.          `(media_type, ext)` qayta, CourseAdUploadClassificationTests, Yuklangan fayl surat/video sifatida to'g'ri ajratilishi., Telegram WebView ba'zan content_type yubormaydi., HEIC kabi kengaytma tanilmasa ham content_type surat desa qabul         qilinadi
 
 ### Community 391 - "Community 391"
 Cohesion: 0.29
@@ -1593,12 +1614,12 @@ Cohesion: 0.33
 Nodes (5): begin_account_deletion(), confirm_account_deletion(), Receive a verified account-deletion request without deleting shared data in chat, AccountDeletionRequestTests, callback()
 
 ### Community 394 - "Community 394"
-Cohesion: 0.19
-Nodes (6): CourseTrackRequestError, CourseTrackSwitchRequest, create_course_tracks_router(), _payload(), Hsk30UnlockService, ScreenshotPayload
+Cohesion: 0.10
+Nodes (12): CourseTrackRequestError, CourseTrackSwitchRequest, create_course_tracks_router(), _payload(), _status_payload(), Course v3 adapter for the native Android client.  Android shares every course ru, Return the canonical onboarding state for the authenticated learner., Return Course v3 plus the same server-owned Starter 0 state as Mini App. (+4 more)
 
 ### Community 396 - "Community 396"
-Cohesion: 0.22
-Nodes (4): Compact one issued question for the immutable event snapshot., Ikki javob KO'RINISHDA bir xilmi.          Bosh harf, ortiqcha bo'shliq va tinis, mistake(), MistakeReviewContractTests
+Cohesion: 0.27
+Nodes (3): MiniAppLinkTests, The Telegram Mini App attaches a provider with initData, not a token.      It is, The anonymous sign-in endpoint must refuse the platform outright.
 
 ### Community 397 - "Community 397"
 Cohesion: 0.25
@@ -1613,8 +1634,8 @@ Cohesion: 0.17
 Nodes (11): Aynan nima yangilandi, Baholash matni, Release feedback draft — Android HSK AI yordamchi, Release nomi, Reward — oldindan aytiladi, `Sinab ko'rish` tugmasi, Statsda kuzatiladigan metrikalar, Target segment (+3 more)
 
 ### Community 404 - "Community 404"
-Cohesion: 0.31
-Nodes (4): retrofit2, AndroidEventsApi, EventResponse, WidgetCoordinator
+Cohesion: 0.26
+Nodes (5): retrofit2, AndroidEventsApi, EventResponse, WidgetCoordinator, AndroidWidgetEvent
 
 ### Community 405 - "Community 405"
 Cohesion: 0.50
@@ -1625,68 +1646,84 @@ Cohesion: 0.50
 Nodes (4): Asosiy qarorlar, HSK AI — yangi HSK 1–5 materiallar bazasi, Qayerdan boshlash, Saqlash tartibi
 
 ### Community 407 - "Community 407"
-Cohesion: 0.22
-Nodes (5): SubscriptionPrice, SubscriptionPriceRepository, normalize_visa_price(), SubscriptionPriceService, SubscriptionPriceValue
+Cohesion: 0.24
+Nodes (5): _plan_price(), SubscriptionPriceRepository, normalize_visa_price(), SubscriptionPriceService, SubscriptionPriceValue
 
 ### Community 408 - "Community 408"
-Cohesion: 0.16
-Nodes (6): CourseMiniAppOnboardingService, Starter 0 remains the legacy beginner prerequisite only., Hsk30CourseManifest, Hsk30ManifestService, CourseMiniAppOnboardingFlowTests, CourseMiniAppOnboardingValidationTests
+Cohesion: 0.23
+Nodes (5): CourseMiniAppOnboardingService, Starter 0 remains the legacy beginner prerequisite only., Hsk30CourseManifest, Hsk30ManifestService, CourseMiniAppOnboardingValidationTests
 
 ### Community 409 - "Community 409"
-Cohesion: 0.24
-Nodes (4): _CheckoutCase, ExpiredDiscountLinkTests, Chatdagi eski chegirma tugmasi muddat tugagach bosilsa., RegularCheckoutAdminDiscountTests
-
-### Community 410 - "Community 410"
-Cohesion: 0.12
-Nodes (7): Factory, HintsViewModel, WordDrillViewModel, Factory, ProfileSettingsViewModel, StateFlow, ViewModel
+Cohesion: 0.22
+Nodes (10): closeRail(), lessonAccessible(), openRail(), openSubscriptionMode(), renderLessonNode(), renderRailLesson(), routeTo(), runNotificationAction() (+2 more)
 
 ### Community 411 - "Community 411"
-Cohesion: 0.06
-Nodes (23): _profile_payload(), normalize(), Noma'lum kalitni xavfsiz holga keltiradi.      Noma'lum action `ValueError` tash, Bo'sh/berilmagan qiymat -> None ("hali so'ralmagan"). Noma'lum -> xato., Kunlik rejadagi task soni. Noma'lum qiymat -> 10 daqiqalik default., Kunlik XP maqsadi: foydalanuvchi tanlagani, bo'lmasa daqiqadan avto.          Il, Kunlik reja sozlamalari va "hali so'ralmagan savol bormi" bayrog'i.          Kun, None -> avto rejimga qaytarish; son -> qisilgan holda saqlash. (+15 more)
+Cohesion: 0.05
+Nodes (24): _profile_payload(), normalize(), Noma'lum kalitni xavfsiz holga keltiradi.      Noma'lum action `ValueError` tash, Bo'sh/berilmagan qiymat -> None ("hali so'ralmagan"). Noma'lum -> xato., Kunlik rejadagi task soni. Noma'lum qiymat -> 10 daqiqalik default., Kunlik XP maqsadi: foydalanuvchi tanlagani, bo'lmasa daqiqadan avto.          Il, Kunlik reja sozlamalari va "hali so'ralmagan savol bormi" bayrog'i.          Kun, None -> avto rejimga qaytarish; son -> qisilgan holda saqlash. (+16 more)
 
 ### Community 415 - "Community 415"
 Cohesion: 0.21
 Nodes (14): build_dialogues(), build_grammar(), build_grammar_section(), build_v3_part(), l3(), make_grammar_meaning_card(), parse_title(), A sentence-level comprehension check: show a translation, pick the real     Chin (+6 more)
 
 ### Community 416 - "Community 416"
+Cohesion: 0.15
+Nodes (10): admin_payment_approve_handler(), admin_payment_reject_handler(), admin_payment_reject_reason_select_handler(), admin_payment_reject_with_reason_handler(), _is_admin(), admin_reject_reason_keyboard(), PaymentNotifyService, _translate_reason() (+2 more)
+
+### Community 417 - "Community 417"
 Cohesion: 0.24
-Nodes (8): admin_payment_approve_handler(), admin_payment_reject_handler(), admin_payment_reject_reason_select_handler(), admin_payment_reject_with_reason_handler(), _is_admin(), admin_reject_reason_keyboard(), _callback(), Hsk30AdminPaymentFlowTests
+Nodes (3): nt, p(), pt
 
 ### Community 421 - "Community 421"
-Cohesion: 0.38
-Nodes (4): NotificationTemplate, Admin-editable motivational reminder templates.      One row per reminder ``key`, NotificationTemplateService, Resolve text + media for sending. Returns None when disabled.
+Cohesion: 0.23
+Nodes (6): NotificationTemplate, Admin-editable motivational reminder templates.      One row per reminder ``key`, default_text(), NotificationTemplateService, Return the motivation templates merged with defaults for the admin editor., Resolve text + media for sending. Returns None when disabled.
 
 ### Community 422 - "Community 422"
 Cohesion: 0.03
-Nodes (53): SubscriptionCheckoutHost(), UpdateWatch, UpdateWatch, AccountNoticeDto, AppWidgetManager, Bitmap, BroadcastReceiver, Color (+45 more)
+Nodes (74): SubscriptionCheckoutHost(), UpdateWatch, UpdateWatch, SubscriptionPriceDto, AccountNoticeDto, AppWidgetManager, Bitmap, BroadcastReceiver (+66 more)
+
+### Community 425 - "Community 425"
+Cohesion: 0.22
+Nodes (4): ActiveGeminiModelTests, An unpriced model is billed as $0, so the budget guard never trips.          Thi, The 2.5 family is gone.          `gemini-2.5-flash-lite` and `gemini-2.5-pro` an, Old usage rows still name the retired models; dropping their price         would
 
 ### Community 426 - "Community 426"
-Cohesion: 0.16
+Cohesion: 0.18
 Nodes (4): Hsk30FeatureService, Server-owned HSK 3.0 rollout controls.      hsk30_enabled is the global kill swi, Persist only a real on/off transition.          The setting row's updated_at is, Hsk30FeatureServiceTests
 
+### Community 429 - "Community 429"
+Cohesion: 0.36
+Nodes (6): GlanceAppWidget, GlanceId, HskAiSmartWidget, WidgetContent(), WidgetCopy, WidgetAccess
+
 ### Community 430 - "Community 430"
-Cohesion: 0.17
-Nodes (6): _course_photo_responder(), _course_promo_photo_path(), _send_course_miniapp_entry_block(), _CourseEntryMessage, CourseMiniAppEntryMediaTests, CourseModeEntryKeyboardTests
+Cohesion: 0.07
+Nodes (15): _course_photo_responder(), _course_promo_photo_path(), _MessageEditResponder, mode_free_qa_handler(), _send_course_miniapp_entry_block(), show_free_qa_level_choice(), _show_required_channel_for_pending_action(), force_sub_check() (+7 more)
+
+### Community 432 - "Community 432"
+Cohesion: 0.52
+Nodes (3): _service_response(), AndroidLimitPassthroughTests, The client shows WHEN the limit reopens, so the instant must survive.
+
+### Community 434 - "Community 434"
+Cohesion: 0.29
+Nodes (3): Live API and browser smoke test. Run with the studio server running., time, Open an existing studio or start one; works on macOS and Windows.
 
 ### Community 435 - "Community 435"
 Cohesion: 0.50
 Nodes (3): Android direct APK checkout — handoff, Implemented, Verification still required on a development machine
 
 ### Community 436 - "Community 436"
-Cohesion: 0.15
-Nodes (5): _animationFrame(), destroy(), gt, mt, render()
+Cohesion: 0.29
+Nodes (3): CentreAdFlowTests, Ilgari bu yerda `screen_center_ad` ga tushadigan tarmoq bor edi.          U `if(, Nomi `desktop-download.js` e'lon qilgan global bilan bir xil.          Bu yerda
 
 ### Community 437 - "Community 437"
-Cohesion: 0.10
-Nodes (12): BlockedUserApiMiddleware, _cached(), _init_data_header(), is_blocked_telegram_id(), Bloklangan foydalanuvchi uchun Mini App API to'sig'i.  `app/main.py` ichida 40 d, Toza ASGI middleware.      `BaseHTTPMiddleware` ishlatilmaydi: u har bir javobni, _store(), BlockedUserGuardCacheCoalescingTest (+4 more)
+Cohesion: 0.29
+Nodes (7): BlockedUserApiMiddleware, _cached(), _init_data_header(), is_blocked_telegram_id(), Bloklangan foydalanuvchi uchun Mini App API to'sig'i.  `app/main.py` ichida 40 d, Toza ASGI middleware.      `BaseHTTPMiddleware` ishlatilmaydi: u har bir javobni, _store()
 
 ### Community 438 - "Community 438"
-Cohesion: 0.09
-Nodes (22): _activation_funnel(), _cohort_retention(), _d1_recovery_experiment(), _lesson_attempt_durations(), _payment_attempt_funnel(), normalize_manual_subscription_days(), Admin grant: userni paid-active qiladi va mavjud paid muddatni saqlaydi., Admin qo'lda beradigan obuna muddatini xavfsiz kun soniga aylantiradi. (+14 more)
+Cohesion: 0.16
+Nodes (6): normalize_manual_subscription_days(), Admin qo'lda beradigan obuna muddatini xavfsiz kun soniga aylantiradi., ManualSubscriptionDurationTests, _Session, SubscriptionServiceManualGrantTests, _UserRepo
 
 ### Community 439 - "Community 439"
-Cohesion: 0.36
-Nodes (3): AndroidLessonAudioPlayer, BundledWordAudioTest, MediaPlayer
+Cohesion: 0.47
+Nodes (3): HttpUrl, Interceptor, OriginGuardInterceptor
 
 ### Community 441 - "Community 441"
 Cohesion: 0.20
@@ -1713,12 +1750,12 @@ Cohesion: 0.44
 Nodes (3): WidgetArt, WidgetAsset, WidgetVisualState
 
 ### Community 452 - "Community 452"
-Cohesion: 0.22
+Cohesion: 0.24
 Nodes (6): WidgetSnapshot, WidgetStateResolver, WidgetSpecialKind, WidgetSpecialState, WidgetVisualResolver, ZonedDateTime
 
 ### Community 453 - "Community 453"
-Cohesion: 0.05
-Nodes (65): admin_stats_handler(), apps_button(), apps_menu_keyboard(), command_language_callback_handler(), command_language_keyboard(), command_level_callback_handler(), command_level_keyboard(), draft_test_handler() (+57 more)
+Cohesion: 0.08
+Nodes (48): apps_button(), apps_menu_keyboard(), _clear_voice_mode(), command_language_keyboard(), help_command_handler(), invite_command_handler(), _lang(), language_command_handler() (+40 more)
 
 ### Community 454 - "Community 454"
 Cohesion: 0.20
@@ -1730,30 +1767,30 @@ Nodes (5): Sessiya boshlanganda yozilgan `max_part` — savol to'plami aynan    
 
 ### Community 474 - "Community 474"
 Cohesion: 0.04
-Nodes (24): AndroidOnboardingApi, AndroidStudyPreferencesApi, StudyPreferencesRequestDto, StudyPreferencesResponseDto, AndroidHsk30OnboardingDto, AndroidOnboardingCompleteDto, AndroidOnboardingProfileDto, AndroidOnboardingRequestDto (+16 more)
-
-### Community 476 - "Community 476"
-Cohesion: 0.18
-Nodes (4): _FetchResult, _QueuedSession, _ScalarsResult, TopReferrersTests
+Nodes (20): AndroidStudyPreferencesApi, StudyPreferencesRequestDto, StudyPreferencesResponseDto, Application, DiskTtsCacheTest, AndroidLessonAudioPlayer, LessonAudioPlayer, DiskTtsCache (+12 more)
 
 ### Community 479 - "Community 479"
 Cohesion: 0.17
 Nodes (12): build_dialog_quizzes(), build_dialog_section(), make_char_gap_card(), make_cloze_card(), make_listen_card(), pron_sentence_card(), quick_quiz cards whose options are the REAL lines of the first dialogue     bloc, Fully interactive dialogue section (no passive text dump): hear a line     and p (+4 more)
 
 ### Community 480 - "Community 480"
-Cohesion: 0.29
-Nodes (4): Factory, SubscriptionHandoffState, SubscriptionHandoffViewModel, TelegramHandoff
+Cohesion: 0.33
+Nodes (4): Free-plan gating and 'no questions' come back as ok=false, not as 500., _service_response(), Kirish rad etilgani 500 emas — u ham normal javob., _service_response()
 
 ### Community 481 - "Community 481"
-Cohesion: 0.17
-Nodes (12): GlanceAppWidget, GlanceId, TextView, View, HskAiSmartWidget, WidgetContent(), WidgetCopy, HomeScreenSlice() (+4 more)
+Cohesion: 0.36
+Nodes (3): TextView, View, WidgetLayoutTest
 
 ### Community 483 - "Community 483"
-Cohesion: 0.06
-Nodes (18): _review_admin_payment(), ConversionFunnelEvent, ConversionFunnelService, Record a funnel event only if the same scoped event is absent.          This use, ProTrialService, Faol AI byudjeti bormi.          `create_fixed_budget` avval hamma faol byudjetn, Trial start qarorini bitta user qatori bo'yicha atomik qiladi.          `trial_u, Trialni boshlaydi. Qaytadi: `{ok, error?, ends_at?, days?}`. (+10 more)
+Cohesion: 0.08
+Nodes (12): 7 kunlik bepul Pro taklif qilinadimi., Trialni boshlaydi. Qaror va cheklovlar SERVERDA — klient faqat         so'raydi, ProTrialService, Faol AI byudjeti bormi.          `create_fixed_budget` avval hamma faol byudjetn, Trial start qarorini bitta user qatori bo'yicha atomik qiladi.          `trial_u, Muddati o'tgan triallarni yopadi.          Hech qanday progress, XP yoki tarix q, Adminning qo'lda yopishi (masalan suiiste'mol aniqlansa)., ProTrialServiceTests (+4 more)
+
+### Community 484 - "Community 484"
+Cohesion: 0.83
+Nodes (3): dump(), load_seed(), main()
 
 ### Community 485 - "Community 485"
-Cohesion: 0.17
+Cohesion: 0.18
 Nodes (4): The bot's own entry point is one Mini App button now.          The APK is still, `/android` and the old chip keep working after the rename., Walk the real dispatcher in real order and see who claims each one.          Rou, WiringTests
 
 ### Community 486 - "Community 486"
@@ -1769,20 +1806,20 @@ Cohesion: 0.25
 Nodes (7): Branch discipline, Local validation, Mistake review replay contract fix, Problem, Regression tests, Required code change, Root cause
 
 ### Community 489 - "Community 489"
-Cohesion: 0.03
-Nodes (27): load_seed(), main(), Json, apply_hsk3_pdf_materials(), _context_grammar_note(), _dialogue_lines(), _ensure_context_grammar_notes(), _grammar_by_no() (+19 more)
+Cohesion: 0.04
+Nodes (16): dump(), load_seed(), main(), load_seed(), main(), verify(), load_seed(), main() (+8 more)
 
 ### Community 490 - "Community 490"
-Cohesion: 0.13
-Nodes (9): lesson_stage(), lesson_warning_threshold(), Bepul darslar tugayotganini yoki tugaganini bildiradi.          Har daraja uchun, Ogohlantirish uchun nechta bepul qism tugagan bo'lishi kerak.      Bepul qism 2, Qaysi xabar tegishli: ``spent``, ``warning`` yoki hech qaysi., LessonStageTests, LessonWarningThresholdTests, When the learner is told their limit is running out, and when they are not.  Two (+1 more)
+Cohesion: 0.08
+Nodes (14): lesson_stage(), lesson_warning_threshold(), LimitNotificationService, Lentaga yozadi va yangi bo'lsa Telegram'ga yuboradi.          Lentaga yozish tak, Bepul darslar tugayotganini yoki tugaganini bildiradi.          Har daraja uchun, Kunlik bepul limit tugaganini bildiradi (kuniga bir marta).          Umrbod limi, Ogohlantirish uchun nechta bepul qism tugagan bo'lishi kerak.      Bepul qism 2, Qaysi xabar tegishli: ``spent``, ``warning`` yoki hech qaysi. (+6 more)
 
 ### Community 491 - "Community 491"
 Cohesion: 0.03
-Nodes (57): create_admin_entitlements_router(), Admin Mini App uchun entitlement boshqaruvi.  Ikkita narsani boshqaradi:  * **Li, `admin_guard(request) -> (telegram_id, error_response)`., create_android_assistant_router(), Authenticated Android chat API; media is transient and never logged., create_android_auth_router(), create_android_course_router(), _access_token() (+49 more)
+Nodes (59): create_admin_entitlements_router(), Admin Mini App uchun entitlement boshqaruvi.  Ikkita narsani boshqaradi:  * **Li, `admin_guard(request) -> (telegram_id, error_response)`., create_android_assistant_router(), Authenticated Android chat API; media is transient and never logged., create_android_auth_router(), create_android_course_router(), _access_token() (+51 more)
 
 ### Community 492 - "Community 492"
 Cohesion: 0.03
-Nodes (49): AndroidCourseApi, CourseCompleteRequest, CourseCompleteResponse, CourseHsk30AccessDto, CourseHsk30Dto, CourseHsk30NewBadgeDto, CourseHsk30PromoDto, CourseLessonDto (+41 more)
+Nodes (47): AndroidCourseApi, CourseCompleteRequest, CourseCompleteResponse, CourseHsk30AccessDto, CourseHsk30Dto, CourseHsk30NewBadgeDto, CourseHsk30PromoDto, CourseLessonDto (+39 more)
 
 ### Community 494 - "Community 494"
 Cohesion: 0.25
@@ -1829,16 +1866,16 @@ Cohesion: 0.83
 Nodes (3): main(), _parse(), verify_lesson()
 
 ### Community 517 - "Community 517"
-Cohesion: 0.22
-Nodes (3): AdminStatsServiceTests, _ScalarResult, _Session
+Cohesion: 0.67
+Nodes (3): Bounded, offline-only speech worker; killed on timeout by server., split_text(), synthesize()
 
 ### Community 518 - "Community 518"
 Cohesion: 0.22
 Nodes (11): build_checkpoint_sections(), build_part_intro(), build_part_practice(), make_reverse_builder_card(), mc_match(), pron_card(), Qism introsi (Duolingo interleaving): 3-4 yangi so'zning HAR BIRI uchun     flas, Qism mini-mashqi: yangi so'zlar endi GAP ICHIDA ishlatiladi ("qayerda va     qan (+3 more)
 
 ### Community 519 - "Community 519"
-Cohesion: 0.38
-Nodes (4): _clean(), parse_broadcast_filters(), Mini App payloadidan xavfsiz filtr lug'atini quradi., AdminBroadcastHskTrackTests
+Cohesion: 0.17
+Nodes (7): _announce_free_access_policy(), Vaqtincha free rejim yoqilganini userlarga e'lon qiladi.      Matn: qancha kun o, AdminBroadcastService, _clean(), parse_broadcast_filters(), Mini App payloadidan xavfsiz filtr lug'atini quradi., AdminBroadcastHskTrackTests
 
 ### Community 522 - "Community 522"
 Cohesion: 0.20
@@ -1847,10 +1884,6 @@ Nodes (9): Confirmation after reward, Feedback and reward, Metrics, Release feed
 ### Community 541 - "Community 541"
 Cohesion: 0.80
 Nodes (4): fail(), load_json(), main(), require()
-
-### Community 542 - "Community 542"
-Cohesion: 0.29
-Nodes (4): AdUiState, AdViewModel, Factory, Job
 
 ### Community 545 - "Community 545"
 Cohesion: 0.27
@@ -1865,8 +1898,8 @@ Cohesion: 0.22
 Nodes (8): lesson_count, level, schema_version, track, content_status, first_lesson_order, source_lesson_count, version
 
 ### Community 550 - "Community 550"
-Cohesion: 0.07
-Nodes (10): AIService, Umumiy chat chaqiruvi — Gemini asosiy, OpenAI zaxira (provayder zanjiri orqali)., DiscountTranslationService, ImageExplainerService, ImageQAService, PaymentScreenshotAIService, _level_guidance(), _prompt_for() (+2 more)
+Cohesion: 0.08
+Nodes (10): AIService, Umumiy chat chaqiruvi — Gemini asosiy, OpenAI zaxira (provayder zanjiri orqali)., ai_level_context(), Human-readable curriculum context for AI prompts.      Access/progress code keep, DiscountTranslationService, ImageExplainerService, PaymentScreenshotAIService, _prompt_for() (+2 more)
 
 ### Community 551 - "Community 551"
 Cohesion: 0.22
@@ -1877,8 +1910,8 @@ Cohesion: 0.22
 Nodes (8): content_status, first_lesson_order, lesson_count, level, schema_version, source_lesson_count, track, version
 
 ### Community 553 - "Community 553"
-Cohesion: 0.22
-Nodes (4): Limit konfiguratsiyasi — ma'lumot sifatida.  Ikki xil xatti-harakat ataylab farq, _Repo, SaveConfigTests, _service()
+Cohesion: 0.24
+Nodes (3): _Repo, SaveConfigTests, _service()
 
 ### Community 555 - "Community 555"
 Cohesion: 0.25
@@ -1891,10 +1924,6 @@ Nodes (7): Baho va mukofot, Nima yangilandi va qayerda sinash, Release feedback 
 ### Community 561 - "Community 561"
 Cohesion: 0.25
 Nodes (8): assign_grammar(), gate_dialogue_blocks(), make_builder_card(), Grammatika qoidalarini so'z-qismlarga taqsimlash. Qoida ENG ERTA shu     qismga, Greedy longest-match a Chinese sentence into known vocabulary words.      Punctu, Keep only dialogue lines fully covered by words taught in this part.      The fu, sentence_builder: rebuild a real sentence from shuffled word tiles., segment_zh()
-
-### Community 564 - "Community 564"
-Cohesion: 0.32
-Nodes (3): ChallengeAnswerDto, ChallengeRunViewModel, Factory
 
 ### Community 568 - "Community 568"
 Cohesion: 0.80
@@ -1913,44 +1942,32 @@ Cohesion: 0.80
 Nodes (4): load_seed(), main(), verify(), verify_index()
 
 ### Community 575 - "Community 575"
-Cohesion: 0.36
-Nodes (7): _level_data(), _manifest(), part_meta(), parts_manifest.json o'quvchisi — Course v3 darslari mini-qismlarga bo'lingan.  H, Flat qism raqami -> asl HSK darsligi darsi raqami (1-based).      Legacy tizimla, Flat qism raqami -> {src, part, part_count, checkpoint}.      src — asl HSK dars, source_lesson_for_part()
+Cohesion: 0.27
+Nodes (9): current_part(), _level_data(), _manifest(), part_meta(), parts_manifest.json o'quvchisi — Course v3 darslari mini-qismlarga bo'lingan.  H, Flat qism raqami -> asl HSK darsligi darsi raqami (1-based).      Legacy tizimla, Flat qism raqami -> {src, part, part_count, checkpoint}.      src — asl HSK dars, Foydalanuvchining JORIY qismi = tugatilgan qismlar + 1, darajadagi jami     qism (+1 more)
 
 ### Community 577 - "Community 577"
 Cohesion: 0.43
 Nodes (7): _abstract_suspend_funs(), _balanced_block(), interface_members(), main(), Returns the {...} block starting at open_at, braces balanced., The suspend funs a fake must override: the ones with no body.      An interface, Maps interface name -> the suspend fun names a fake has to implement.
 
-### Community 578 - "Community 578"
-Cohesion: 0.83
-Nodes (3): downgrade(), _has_table(), upgrade()
-
-### Community 597 - "Community 597"
-Cohesion: 0.13
-Nodes (10): dictionary_for_language(), dictionary_size(), dictionary_version(), _load(), _normalize_language(), HSK AI lug'ati manbasi.  Mini App lug'ati legacy HSK 2.0 so'zlarini hsk-words.js, Ikkala dictionary assetning umumiy qisqa barmoq izi., Bitta tildagi lug'at; m qiymati bitta tarjima satri. (+2 more)
-
-### Community 598 - "Community 598"
-Cohesion: 0.83
-Nodes (3): load_seed(), main(), verify()
-
 ## Knowledge Gaps
-- **1068 isolated node(s):** `CheckoutColors`, `WORDS`, `PendingLink`, `PompTextStyles`, `PracticeTool` (+1063 more)
+- **1083 isolated node(s):** `CheckoutColors`, `WORDS`, `PendingLink`, `PompTextStyles`, `PracticeTool` (+1078 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **122 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **104 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `$()` connect `Community 96` to `Community 320`, `Community 229`, `Community 197`, `Community 102`, `Community 70`, `Community 103`, `Community 72`, `Community 107`, `Community 140`, `Community 17`, `Community 124`, `Community 94`?**
-  _High betweenness centrality (0.066) - this node is a cross-community bridge._
+- **Why does `$()` connect `Community 96` to `Community 320`, `Community 229`, `Community 102`, `Community 70`, `Community 197`, `Community 103`, `Community 72`, `Community 107`, `Community 140`, `Community 17`, `Community 409`, `Community 124`?**
+  _High betweenness centrality (0.067) - this node is a cross-community bridge._
 - **Why does `state` connect `Community 70` to `Community 96`?**
-  _High betweenness centrality (0.064) - this node is a cross-community bridge._
-- **Why does `User` connect `Community 99` to `Community 2`, `Community 4`, `Community 9`, `Community 11`, `Community 13`, `Community 15`, `Community 22`, `Community 23`, `Community 24`, `Community 27`, `Community 545`, `Community 554`, `Community 45`, `Community 56`, `Community 57`, `Community 59`, `Community 60`, `Community 61`, `Community 65`, `Community 66`, `Community 71`, `Community 74`, `Community 79`, `Community 80`, `Community 83`, `Community 84`, `Community 93`, `Community 113`, `Community 114`, `Community 119`, `Community 130`, `Community 134`, `Community 146`, `Community 174`, `Community 175`, `Community 176`, `Community 177`, `Community 182`, `Community 184`, `Community 186`, `Community 189`, `Community 190`, `Community 192`, `Community 218`, `Community 228`, `Community 240`, `Community 241`, `Community 243`, `Community 257`, `Community 264`, `Community 265`, `Community 282`, `Community 285`, `Community 290`, `Community 294`, `Community 297`, `Community 306`, `Community 307`, `Community 314`, `Community 322`, `Community 325`, `Community 328`, `Community 336`, `Community 338`, `Community 357`, `Community 371`, `Community 380`, `Community 386`, `Community 401`, `Community 409`, `Community 416`, `Community 425`, `Community 437`, `Community 441`, `Community 453`, `Community 483`, `Community 485`, `Community 491`?**
-  _High betweenness centrality (0.057) - this node is a cross-community bridge._
-- **Are the 145 inferred relationships involving `UserRepository` (e.g. with `AbandonInput` and `AndroidCourseCompleteRequest`) actually correct?**
-  _`UserRepository` has 145 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+- **Why does `User` connect `Community 57` to `Community 257`, `Community 2`, `Community 130`, `Community 4`, `Community 132`, `Community 264`, `Community 9`, `Community 265`, `Community 394`, `Community 396`, `Community 15`, `Community 272`, `Community 401`, `Community 146`, `Community 22`, `Community 23`, `Community 24`, `Community 282`, `Community 27`, `Community 416`, `Community 545`, `Community 290`, `Community 297`, `Community 45`, `Community 174`, `Community 175`, `Community 176`, `Community 177`, `Community 432`, `Community 307`, `Community 306`, `Community 437`, `Community 182`, `Community 184`, `Community 441`, `Community 186`, `Community 59`, `Community 314`, `Community 189`, `Community 190`, `Community 191`, `Community 192`, `Community 322`, `Community 66`, `Community 453`, `Community 71`, `Community 74`, `Community 78`, `Community 80`, `Community 336`, `Community 338`, `Community 84`, `Community 89`, `Community 218`, `Community 93`, `Community 99`, `Community 483`, `Community 485`, `Community 359`, `Community 491`, `Community 240`, `Community 241`, `Community 114`, `Community 243`, `Community 119`, `Community 380`?**
+  _High betweenness centrality (0.059) - this node is a cross-community bridge._
+- **Are the 146 inferred relationships involving `UserRepository` (e.g. with `AbandonInput` and `AndroidCourseCompleteRequest`) actually correct?**
+  _`UserRepository` has 146 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 231 inferred relationships involving `User` (e.g. with `CourseAdVideoError` and `LessonAccessService`) actually correct?**
   _`User` has 231 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 267 inferred relationships involving `Base` (e.g. with `Telegram file_id orqali saqlangan kurs audio fayllari.      audio_type qiymatlar` and `AccountNoticeDelivery`) actually correct?**
   _`Base` has 267 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `course mini app: preferensiya fokusi va kunlik reja holati  Daily Plan uchun to'`, `so'z darajasidagi o'zlashtirish — interval takrori uchun  Mashq bo'limlari (Iero`, `widen the conversion funnel event names  Voronka jadvalidagi `event_name` CHECK` to the rest of the system?**
-  _2029 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2044 weakly-connected nodes found - possible documentation gaps or missing edges._

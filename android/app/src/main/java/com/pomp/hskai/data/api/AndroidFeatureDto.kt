@@ -122,6 +122,22 @@ data class SubscriptionCheckoutOverviewDto(
     @SerialName("support_url") val supportUrl: String = "",
     @SerialName("attempt_id") val attemptId: String? = null,
     @SerialName("access") val access: AndroidSubscriptionAccessDto = AndroidSubscriptionAccessDto(),
+    @SerialName("preferred_currency") val preferredCurrency: String? = null,
+    @SerialName("display_currency") val displayCurrency: String = "",
+)
+
+@Serializable
+data class AndroidSubscriptionCurrencyPreferenceResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("currency") val currency: String? = null,
+    @SerialName("display_currency") val displayCurrency: String = "",
+    @SerialName("prices") val prices: Map<String, Map<String, SubscriptionPriceDto>> = emptyMap(),
+    @SerialName("error") val error: String = "",
+)
+
+@Serializable
+data class AndroidSubscriptionCurrencyPreferenceRequest(
+    @SerialName("currency") val currency: String,
 )
 
 @Serializable
