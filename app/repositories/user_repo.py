@@ -2,7 +2,7 @@ from datetime import datetime, timezone, timedelta, date
 from typing import Optional
 import secrets
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.user import User
@@ -252,6 +252,7 @@ class UserRepository:
         language: Optional[str] = None,
         languages: Optional[list[str]] = None,
         status: Optional[str] = None,
+        course_track: Optional[str] = None,
         level: Optional[str] = None,
         learning_mode: Optional[str] = None,
         payment_status: Optional[str] = None,
@@ -268,6 +269,15 @@ class UserRepository:
             query = query.where(User.language == language)
         if status:
             query = query.where(User.status == status)
+        if course_track == "hsk30":
+            query = query.where(User.level.like("nhsk%"))
+        elif course_track == "hsk20":
+            query = query.where(
+                or_(
+                    User.level.is_(None),
+                    ~User.level.like("nhsk%"),
+                )
+            )
         if level:
             query = query.where(User.level == level)
         if learning_mode:
