@@ -279,6 +279,8 @@
     <string name="limit_voice_reason">Бесплатные разговоры с AI Voice на сегодня закончились.</string>
     <string name="profile_language">Язык</string>
     <string name="profile_course_version">Версия курса</string>
+    <string name="profile_course_version_confirm_title">Перейти на %1$s?</string>
+    <string name="profile_course_version_confirm_body">Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.</string>
     <string name="profile_language_picker_title">Выберите язык</string>
     <string name="profile_notifications">Уведомления</string>
     <string name="profile_help">Помощь</string>
