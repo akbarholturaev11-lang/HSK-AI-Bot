@@ -1121,6 +1121,26 @@ private fun AppRoot(
                                 onOpenChest = courseViewModel::openRewardChest,
                                 onChestRewardConsumed = courseViewModel::consumeChestReward,
                                 onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
+                                onSwitchTrack = courseViewModel::switchCourseTrack,
+                                onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
+                                onUnlockHsk30 = {
+                                    val hsk30 = courseState.map?.hsk30
+                                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                                        checkoutOrigin = if (hsk30?.paymentEnabled == true) {
+                                            "hsk30_onboarding"
+                                        } else {
+                                            "course_limit"
+                                        }
+                                        checkoutVisible = true
+                                    } else {
+                                        scope.launch {
+                                            when (val result = app.featureRepository.subscriptionOpen()) {
+                                                is ApiResult.Success -> openExternal(context, result.value.botUrl)
+                                                is ApiResult.Failure -> Unit
+                                            }
+                                        }
+                                    }
+                                },
                                 onRetry = courseViewModel::load,
                                 modifier = contentModifier,
                             )
