@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock
 from app.services.course_levels import (
     TRACK_HSK20,
     TRACK_HSK30,
+    ai_level_context,
     content_level,
     hsk30_content_levels,
     is_hsk30_level,
@@ -60,6 +61,24 @@ class CourseLevelRegistryTests(unittest.TestCase):
         self.assertEqual(next_level("nhsk1"), "nhsk2")
         self.assertIsNone(next_level("nhsk3"))
         self.assertIsNone(next_level("nhsk4"))
+
+    def test_ai_context_distinguishes_hsk30_from_legacy(self):
+        self.assertEqual(
+            ai_level_context("nhsk1"),
+            "HSK 3.0, 1-daraja (N1), jami ~300 so'z",
+        )
+        self.assertEqual(
+            ai_level_context("nhsk2"),
+            "HSK 3.0, 2-daraja (N2), jami ~500 so'z",
+        )
+        self.assertEqual(
+            ai_level_context("nhsk3"),
+            "HSK 3.0, 3-daraja (N3), jami ~1000 so'z",
+        )
+        self.assertEqual(
+            ai_level_context("hsk3"),
+            "HSK 2.0, 3-daraja (HSK 3)",
+        )
 
     def test_unknown_legacy_level_fails_back_exactly_as_before(self):
         self.assertEqual(normalize_legacy_content_level(None), "hsk1")
