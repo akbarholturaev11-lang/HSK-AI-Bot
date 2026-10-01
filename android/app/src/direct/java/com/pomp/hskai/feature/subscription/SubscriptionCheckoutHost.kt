@@ -452,7 +452,10 @@ private fun PayContent(
         }
     }
     Spacer(Modifier.height(14.dp))
-    SummaryRow(copy.getString(R.string.sub_row_plan), copy.getString(planLabelId(state.plan)))
+    SummaryRow(
+        copy.getString(R.string.sub_row_plan),
+        if (state.plan == "hsk30_unlock") "HSK 3.0" else copy.getString(planLabelId(state.plan)),
+    )
     if (state.method == "visa") {
         SummaryRow(copy.getString(R.string.sub_row_bank), BANK_NAMES[state.cardBank.orEmpty()].orEmpty())
         if (state.country != "tj" && quote.exchangeRate.isNotBlank()) {
