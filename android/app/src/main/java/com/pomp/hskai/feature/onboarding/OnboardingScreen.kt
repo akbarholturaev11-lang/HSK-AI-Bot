@@ -749,13 +749,8 @@ private fun CourseVersionSwitch(
             ) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     val textColor = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary
-                    if (
-                        track == "hsk30" &&
-                        !state.hsk30Allowed &&
-                        state.hsk30PaymentEnabled &&
-                        state.hsk30PriceTjs > 0
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 label,
                                 color = textColor,
@@ -763,6 +758,28 @@ private fun CourseVersionSwitch(
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 14.sp,
                             )
+                            if (track == "hsk30" && state.hsk30IsNew) {
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    "NEW",
+                                    color = PompColors.CinnabarDark,
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                        .background(
+                                            PompColors.Cinnabar.copy(alpha = 0.12f),
+                                            RoundedCornerShape(5.dp),
+                                        )
+                                        .padding(horizontal = 4.dp, vertical = 1.dp),
+                                )
+                            }
+                        }
+                        if (
+                            track == "hsk30" &&
+                            !state.hsk30Allowed &&
+                            state.hsk30PaymentEnabled &&
+                            state.hsk30PriceTjs > 0
+                        ) {
                             Text(
                                 "${state.hsk30PriceTjs} TJS",
                                 color = textColor.copy(alpha = 0.78f),
@@ -771,13 +788,6 @@ private fun CourseVersionSwitch(
                                 lineHeight = 11.sp,
                             )
                         }
-                    } else {
-                        Text(
-                            label,
-                            color = textColor,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        )
                     }
                 }
             }
