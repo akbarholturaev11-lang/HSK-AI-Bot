@@ -126,11 +126,11 @@ class DictionaryViewModel(
         val version = if (normalized.startsWith("nhsk")) "hsk30" else "hsk20"
         val levelFilter = when {
             normalized.startsWith("nhsk") -> {
-                val band = normalized.filter(Char::isDigit).toIntOrNull()?.coerceIn(1, 3) ?: 1
+                val band = normalized.filter { it.isDigit() }.toIntOrNull()?.coerceIn(1, 3) ?: 1
                 "nhsk$band"
             }
             normalized.startsWith("hsk") -> {
-                val band = normalized.filter(Char::isDigit).toIntOrNull()?.coerceIn(1, 4) ?: 1
+                val band = normalized.filter { it.isDigit() }.toIntOrNull()?.coerceIn(1, 4) ?: 1
                 "hsk$band"
             }
             else -> "hsk1"
