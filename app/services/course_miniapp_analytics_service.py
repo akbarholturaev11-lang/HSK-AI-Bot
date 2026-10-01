@@ -136,8 +136,10 @@ class CourseMiniAppAnalyticsService:
 
     async def _record_safely(self, **kwargs) -> dict:
         try:
-            return await self._record(**kwargs)
+            # Analytics is best-effort. Isolate it in a savepoint so a telemetry
+            # failure can never roll back the caller's course/payment mutation.
+            async with self.session.begin_nested():
+                return await self._record(**kwargs)
         except Exception:
             logger.exception("Failed to record Course Mini App event: %s", kwargs.get("event_name"))
-            await self.session.rollback()
             return {"ok": False, "recorded": False, "error": "course_event_write_failed"}
