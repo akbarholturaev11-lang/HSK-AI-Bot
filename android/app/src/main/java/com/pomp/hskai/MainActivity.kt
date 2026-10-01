@@ -708,13 +708,16 @@ private fun AppRoot(
                 widgetSession.reminderEnabled,
                 widgetOfferHandled,
                 widgetSetupOpen,
+                widgetPlacedNotice,
             ) {
                 val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
                 if (onboardingAutoStartHandled || offline) return@LaunchedEffect
                 if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
                     return@LaunchedEffect
                 }
-                if (!widgetOfferHandled || widgetSetupOpen) return@LaunchedEffect
+                if (!widgetOfferHandled || widgetSetupOpen || widgetPlacedNotice) {
+                    return@LaunchedEffect
+                }
 
                 val map = courseState.map ?: return@LaunchedEffect
                 val launchLevel = onboardingLaunch.level.trim().lowercase()
