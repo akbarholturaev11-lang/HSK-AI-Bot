@@ -280,6 +280,8 @@
     <string name="limit_voice_reason">Сӯҳбатҳои ройгони AI Voice барои имрӯз тамом шуданд.</string>
     <string name="profile_language">Забон</string>
     <string name="profile_course_version">Версияи курс</string>
+    <string name="profile_course_version_confirm_title">Ба %1$s гузаред?</string>
+    <string name="profile_course_version_confirm_body">Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.</string>
     <string name="profile_language_picker_title">Забонро интихоб кунед</string>
     <string name="profile_notifications">Огоҳиҳо</string>
     <string name="profile_help">Кӯмак</string>
