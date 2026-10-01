@@ -117,6 +117,14 @@ fun ProfileScreen(
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
+    courseTrack: String = "hsk20",
+    hsk30Enabled: Boolean = false,
+    hsk30Allowed: Boolean = false,
+    hsk30PaymentEnabled: Boolean = false,
+    hsk30PriceTjs: Int = 0,
+    hsk30LiveLevels: List<String> = listOf("nhsk1"),
+    onSwitchCourseTrack: (String, String?) -> Unit = { _, _ -> },
+    onUnlockHsk30: () -> Unit = {},
     modifier: Modifier = Modifier,
     identities: IdentitiesUiState = IdentitiesUiState(),
     onLoadIdentities: () -> Unit = {},
@@ -128,6 +136,7 @@ fun ProfileScreen(
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true)
     var settingsOpen by remember { mutableStateOf(false) }
+    var courseVersionPickerOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
     var identitiesOpen by remember { mutableStateOf(false) }
     var notificationsOpen by remember { mutableStateOf(false) }
@@ -260,8 +269,14 @@ fun ProfileScreen(
             themeMode = themeMode,
             dailyGoal = dailyGoal,
             notificationsEnabled = notificationsEnabled,
+            courseTrack = courseTrack,
+            showCourseVersion = hsk30Enabled || courseTrack == "hsk30",
             onDismiss = { settingsOpen = false },
             onOpenLanguage = { settingsOpen = false; onOpenLanguage() },
+            onOpenCourseVersion = {
+                settingsOpen = false
+                courseVersionPickerOpen = true
+            },
             onOpenAppearance = { settingsOpen = false; appearancePickerOpen = true },
             onOpenNotifications = { settingsOpen = false; notificationsOpen = true },
             widgetInstalled = widgetInstalled,
@@ -280,6 +295,19 @@ fun ProfileScreen(
             onOpenPrivacy = { settingsOpen = false; privacyOpen = true },
             onLogout = { settingsOpen = false; onLogout() },
             onUnlinkDevice = { settingsOpen = false; onUnlinkDevice() },
+        )
+    }
+
+    if (courseVersionPickerOpen) {
+        CourseVersionPickerSheet(
+            currentTrack = courseTrack,
+            hsk30Allowed = hsk30Allowed,
+            hsk30PaymentEnabled = hsk30PaymentEnabled,
+            hsk30PriceTjs = hsk30PriceTjs,
+            hsk30LiveLevels = hsk30LiveLevels,
+            onSwitch = onSwitchCourseTrack,
+            onUnlockHsk30 = onUnlockHsk30,
+            onDismiss = { courseVersionPickerOpen = false },
         )
     }
 
@@ -581,8 +609,11 @@ private fun ProfileSettingsSheet(
     themeMode: AppThemeMode,
     dailyGoal: Int,
     notificationsEnabled: Boolean,
+    courseTrack: String,
+    showCourseVersion: Boolean,
     onDismiss: () -> Unit,
     onOpenLanguage: () -> Unit,
+    onOpenCourseVersion: () -> Unit,
     onOpenAppearance: () -> Unit,
     onOpenNotifications: () -> Unit,
     widgetInstalled: Boolean,
@@ -616,6 +647,24 @@ private fun ProfileSettingsSheet(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(account.language.backendCode.uppercase(), color = PompColors.InkDisabled, fontSize = 13.sp)
                             Spacer(Modifier.width(4.dp)); SettingsChevron()
+                        }
+                    }
+                    if (showCourseVersion) {
+                        SettingsDivider()
+                        MiniSettingsRow(
+                            Icons.Filled.TrackChanges,
+                            stringResource(R.string.profile_course_version),
+                            true,
+                            onOpenCourseVersion,
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
+                                    color = PompColors.InkDisabled,
+                                    fontSize = 13.sp,
+                                )
+                                Spacer(Modifier.width(4.dp)); SettingsChevron()
+                            }
                         }
                     }
                     SettingsDivider()
@@ -692,6 +741,101 @@ private fun ProfileSettingsSheet(
             Spacer(Modifier.height(10.dp))
             OutlinedButton(onClick = onUnlinkDevice, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
                 Text(stringResource(R.string.profile_unlink_device), color = PompColors.Flame)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CourseVersionPickerSheet(
+    currentTrack: String,
+    hsk30Allowed: Boolean,
+    hsk30PaymentEnabled: Boolean,
+    hsk30PriceTjs: Int,
+    hsk30LiveLevels: List<String>,
+    onSwitch: (String, String?) -> Unit,
+    onUnlockHsk30: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.Paper,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+                .padding(bottom = 28.dp),
+        ) {
+            Text(
+                stringResource(R.string.profile_course_version),
+                color = PompColors.Ink,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.hsk30_promo_body),
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
+            )
+            Surface(
+                color = PompColors.PaperRaised,
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column {
+                    MiniSettingsRow(
+                        Icons.Filled.TrackChanges,
+                        "HSK 2.0",
+                        true,
+                        {
+                            if (currentTrack != "hsk20") onSwitch("hsk20", null)
+                            onDismiss()
+                        },
+                    ) {
+                        if (currentTrack == "hsk20") {
+                            Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
+                        } else {
+                            SettingsChevron()
+                        }
+                    }
+                    SettingsDivider()
+                    MiniSettingsRow(
+                        Icons.Filled.TrackChanges,
+                        "HSK 3.0",
+                        true,
+                        {
+                            when {
+                                currentTrack == "hsk30" -> onDismiss()
+                                hsk30Allowed -> {
+                                    onSwitch("hsk30", hsk30LiveLevels.firstOrNull() ?: "nhsk1")
+                                    onDismiss()
+                                }
+                                else -> {
+                                    onDismiss()
+                                    onUnlockHsk30()
+                                }
+                            }
+                        },
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            when {
+                                currentTrack == "hsk30" ->
+                                    Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
+                                !hsk30Allowed && hsk30PaymentEnabled && hsk30PriceTjs > 0 ->
+                                    Text("$hsk30PriceTjs TJS", color = PompColors.CinnabarDark, fontSize = 12.sp)
+                                !hsk30Allowed ->
+                                    Text("Pro", color = PompColors.CinnabarDark, fontSize = 12.sp)
+                                else -> SettingsChevron()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
