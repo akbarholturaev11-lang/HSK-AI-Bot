@@ -465,4 +465,8 @@
     <string name="notify_payment_rejected_body">Бахши обунаро кушоед, пардохтро санҷед ва дубора фиристед.</string>
     <string name="notify_payment_private_title">Хабари обунаи HSK AI</string>
     <string name="notify_payment_private_body">Барои дидани тафсилот барномаро кушоед.</string>
+    <string name="hsk30_promo_title">HSK 3.0-и нав</string>
+    <string name="hsk30_promo_body">Стандарти нав ҳамчун курси алоҳида илова шуд. Пешрафти HSK 2.0 нигоҳ дошта мешавад ва ҳар вақт баргашта метавонед.</string>
+    <string name="hsk30_promo_price">Дастрасии якдафъаина: %1$d TJS</string>
+    <string name="hsk30_promo_switch">Гузаштан ба HSK 3.0</string>
 </resources>
