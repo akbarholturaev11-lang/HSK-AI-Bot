@@ -106,13 +106,19 @@ function previewPrices() {
   };
 }
 
-function subscriptionOverview() {
+function subscriptionOverview(mode = "subscription") {
   const access = subscriptionAccess();
   const pending = previewState.subscription === "pending";
+  const hsk30Unlock = mode === "hsk30_unlock";
+  const hsk30Prices = {
+    visa: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+    alipay: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+    wechat: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+  };
   return {
     ok: true,
     source: "desktop_subscription",
-    mode: "subscription",
+    mode: hsk30Unlock ? "hsk30_unlock" : "subscription",
     language: previewState.language,
     access,
     checkout_allowed: !access.is_paid && !pending,
@@ -132,7 +138,7 @@ function subscriptionOverview() {
           submitted_at: "2026-08-02T08:00:00Z",
         }
       : null,
-    prices: access.is_paid || pending ? {} : previewPrices(),
+    prices: access.is_paid || pending ? {} : (hsk30Unlock ? hsk30Prices : previewPrices()),
     payment_details: access.is_paid || pending ? "" : "HSK AI · 0000 0000 0000 0000",
     payment_details_configured: !access.is_paid && !pending,
     card_countries: ["tj", "uz", "ru", "other"],
@@ -140,8 +146,15 @@ function subscriptionOverview() {
 }
 
 function subscriptionQuote(args) {
-  const prices = previewPrices();
   const plan = String(args.plan || "");
+  const hsk30Unlock = plan === "hsk30_unlock";
+  const prices = hsk30Unlock
+    ? {
+        visa: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+        alipay: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+        wechat: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+      }
+    : previewPrices();
   const method = String(args.method || "");
   const price = prices[method]?.[plan];
   if (!price || previewState.subscription !== "free") {
@@ -171,7 +184,7 @@ function subscriptionQuote(args) {
   return {
     ok: true,
     source: "desktop_subscription",
-    mode: "subscription",
+    mode: hsk30Unlock ? "hsk30_unlock" : "subscription",
     access: subscriptionAccess(),
     quote,
   };
@@ -540,7 +553,7 @@ export async function previewInvoke(command, args = {}) {
         notify: { enabled: previewState.notificationsEnabled },
       };
     case "desktop_subscription_overview":
-      return subscriptionOverview();
+      return subscriptionOverview(String(args.mode || "subscription"));
     case "desktop_subscription_quote":
       return subscriptionQuote(args);
     case "desktop_subscription_submit":
@@ -554,7 +567,7 @@ export async function previewInvoke(command, args = {}) {
         payment_id: 1001,
         already_pending: false,
         source: "desktop_subscription",
-        mode: "subscription",
+        mode: String(args.plan || "") === "hsk30_unlock" ? "hsk30_unlock" : "subscription",
         access: subscriptionAccess(),
       };
     case "desktop_vocabulary_state":
