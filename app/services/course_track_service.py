@@ -119,6 +119,7 @@ class CourseTrackService:
         }
         access = await self.hsk30_access(user)
         live_levels = await self.hsk30_feature.live_levels()
+        new_badge = await self.hsk30_feature.new_badge()
 
         def state_payload(track: str) -> dict:
             row = states.get(track)
@@ -147,6 +148,7 @@ class CourseTrackService:
                     **state_payload(TRACK_HSK30),
                     "access": access.payload(),
                     "live_levels": list(live_levels),
+                    "new_badge": new_badge,
                 },
             },
         }
