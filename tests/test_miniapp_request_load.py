@@ -65,8 +65,10 @@ class MiniAppRequestLoadTests(unittest.TestCase):
             "if(internalNavigationActive()||EXIT_PINGED||!INIT_DATA)return",
             COURSE,
         )
+        self.assertIn("openDict:function(){", COURSE)
+        self.assertIn("beginInternalNavigation();", COURSE)
         self.assertIn(
-            'beginInternalNavigation();location.href="/hsk-lugat.html',
+            'location.href="/hsk-lugat.html?"+q.toString()',
             COURSE,
         )
         self.assertIn(
