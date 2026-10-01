@@ -93,11 +93,14 @@ def check_checkout() -> None:
 
 def check_access() -> None:
     main = read("app/main.py")
+    dictionary = read("app/static/hsk-lugat.html")
     lesson_start = read("app/api/miniapp_entitlements.py")
     access = read("app/services/entitlements/lesson_access.py")
     levels = read("app/services/course_levels.py")
     require(main, '"lesson_gate_hsk30.js": "application/javascript"', "main.py")
     require(main, '"hsk30-words.js": "application/javascript"', "main.py")
+    require(main, '"hsk30-dictionary-examples.js": "application/javascript"', "main.py")
+    require(dictionary, "hsk30-dictionary-examples.js", "hsk-lugat.html")
     require(lesson_start, "content_level(user.level)", "miniapp_entitlements.py")
     require(access, 'normalized_level.startswith("nhsk")', "lesson_access.py")
     require(access, "track_service = CourseTrackService(self.session)", "lesson_access.py")

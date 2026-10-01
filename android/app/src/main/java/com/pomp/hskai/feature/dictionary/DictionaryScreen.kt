@@ -107,9 +107,9 @@ data class DictionaryActions(
 )
 
 /**
- * The HSK 1–4 dictionary. Everything it shows — words, writing order,
- * examples, breakdowns and pronunciation — ships inside the APK, so it works
- * the same with no connection.
+ * The HSK 2.0 and 3.0 dictionary. Word lists, examples and authored component
+ * cues ship inside the APK. Missing stroke outlines use the repository's
+ * existing server fallback when the device is online.
  */
 @Composable
 fun DictionaryScreen(
@@ -376,6 +376,11 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
             if (state.breakdowns.isNotEmpty()) {
                 item(key = "parts") { PartsSection(state.breakdowns, showCharacter = isPhrase) }
             }
+            val explained = state.breakdowns.mapTo(mutableSetOf()) { it.character }
+            val missingMemoryCues = state.characters.filterNot(explained::contains)
+            if (!state.isInsightsLoading && missingMemoryCues.isNotEmpty()) {
+                item(key = "memory-prompt") { MemoryPromptSection(missingMemoryCues) }
+            }
             if (state.examples.isNotEmpty()) {
                 item(key = "examples") { ExamplesSection(state.examples, word.hanzi) }
             }
@@ -385,6 +390,20 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
             next = state.nextWord,
             onPrevious = actions.onPreviousWord,
             onNext = actions.onNextWord,
+        )
+    }
+}
+
+/** A useful recall action when this character has no authored component cue. */
+@Composable
+private fun MemoryPromptSection(characters: List<String>) {
+    Column(Modifier.fillMaxWidth()) {
+        SectionTitle(stringResource(R.string.dictionary_memory_hint_title))
+        Text(
+            stringResource(R.string.dictionary_memory_hint_body, characters.joinToString(" ")),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.InkSecondary,
+            modifier = Modifier.padding(horizontal = 4.dp),
         )
     }
 }

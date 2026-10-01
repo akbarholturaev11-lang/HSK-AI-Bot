@@ -298,7 +298,7 @@
     <string name="notify_goal_body_2">То ҳадаф каме мондааст — панда то охир бо шумост.</string>
     <string name="notify_goal_body_3">Танҳо як қисм мондааст. Ҳадафи имрӯзаро пӯшем?</string>
     <string name="practice_dictionary_title">Луғати иероглиф</string>
-    <string name="practice_dictionary_body">HSK 1–4 · навишт, пинйин, маъно</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · навишт, пинйин, маъно</string>
     <string name="dictionary_search_hint">Иероглиф, пинйин ё маъно</string>
     <string name="dictionary_recent_title">Ҷустуҷӯҳои охирин</string>
     <string name="dictionary_all_words">Ҳамаи калимаҳо</string>
@@ -314,6 +314,8 @@
     <string name="dictionary_action_write">Навиштан</string>
     <string name="dictionary_parts_title">Аз чӣ иборат аст</string>
     <string name="dictionary_examples_title">Мисолҳо</string>
+    <string name="dictionary_memory_hint_title">Ишораи ёдгирӣ</string>
+    <string name="dictionary_memory_hint_body">Аломатҳои %1$s-ро нависед ва шакли онҳоро бо маънои калима пайваст кунед.</string>
     <string name="writing_stage_demo">Тартиби навиштанро бинед</string>
     <string name="writing_stage_trace">Аз рӯи хат нависед</string>
     <string name="writing_stage_hint">Бо ишора нависед</string>

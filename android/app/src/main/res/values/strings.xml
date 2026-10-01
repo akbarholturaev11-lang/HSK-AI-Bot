@@ -334,7 +334,7 @@
     <string name="notify_goal_body_2">Maqsadga oz qoldi — panda oxirigacha birga boradi.</string>
     <string name="notify_goal_body_3">Bir qism qoldi, xolos. Bugungi maqsadni yopamizmi?</string>
     <string name="practice_dictionary_title">Ieroglif lug‘ati</string>
-    <string name="practice_dictionary_body">HSK 1–4 · yozilishi, pinyin, ma’no</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · yozilishi, pinyin, ma’no</string>
     <string name="dictionary_search_hint">Ieroglif, pinyin yoki ma’no</string>
     <string name="dictionary_recent_title">Oxirgi qidiruvlar</string>
     <string name="dictionary_all_words">Barcha so‘zlar</string>
@@ -350,6 +350,8 @@
     <string name="dictionary_action_write">Yozish</string>
     <string name="dictionary_parts_title">Qismlari</string>
     <string name="dictionary_examples_title">Misollar</string>
+    <string name="dictionary_memory_hint_title">Yodlash ishorasi</string>
+    <string name="dictionary_memory_hint_body">%1$s belgilarini yozib ko‘ring va shaklini so‘z ma’nosi bilan bog‘lab eslab qoling.</string>
     <string name="writing_stage_demo">Yozish tartibini kuzating</string>
     <string name="writing_stage_trace">Iz bo‘ylab yozing</string>
     <string name="writing_stage_hint">Ishora bilan yozing</string>

@@ -11,7 +11,10 @@ HSK AI: yangi HSK 3.0 kursi — N1
 
 ## Userga yuboriladigan qisqa matn
 
-HSK AI'ga yangi HSK 3.0 alohida kurs sifatida qo'shildi. HSK 2.0 dagi
+HSK AI'ga yangi HSK 3.0 alohida kurs sifatida qo'shildi. Yangi versiya
+lug'atidagi so'zlarda pinyin, uch tildagi misol va yodlash eslatmalarini ham
+ko'rishingiz mumkin; chiziq tartibi animatsiyasi uchun internet kerak bo'lishi
+mumkin. HSK 2.0 dagi
 progressingiz o'chmaydi: kurs versiyasini almashtirib, istalgan payt eski
 kursingizga qaytishingiz mumkin. Hozir HSK 3.0 N1 ochiq; keyingi N2 va N3
 darajalari kontenti tayyor, lekin bosqichma-bosqich ochiladi.
@@ -27,6 +30,15 @@ obuna chegirmasi beriladi.
 - HSK 3.0 N1 Course V3 darslari, mashqlar, recognition, pronunciation,
   memorize, voice context va xatolarni takrorlash.
 - HSK 3.0 lug'ati Mini App, Android va Desktop'da bir xil manbadan.
+- HSK 3.0 lug'atining 970/970 so'zida o'zbekcha, ruscha va tojikcha misol
+  mavjud. Qo'shimcha misollarda pinyin ham ko'rsatiladi; Android ilovasida
+  misollar internet bo'lmasa ham APK'dan ochiladi.
+- Mavjud belgi kartalarida yodlash eslatmalari ko'rsatiladi; tarkibiy izohi
+  bo'lmagan belgilar uchun Mini App va Android'da faol eslash ishorasi chiqadi.
+- Desktop va planshetda lug'at keng ekranga moslanadi; telefonda bir ustunli
+  ko'rinish saqlanadi.
+- Mahalliy chiziq ma'lumoti bo'lmagan belgilar uchun onlayn yozilish tartibi
+  yuklanadi; yuklanmasa tugmalar o'chadi va sabab ko'rsatiladi.
 - Android, Mini App va Desktop'da kurs versiyasini almashtirish.
 - Eski foydalanuvchiga HSK 3.0 promosi maksimum 2 marta, server cooldown bilan.
 - Faol Pro foydalanuvchi qo'shimcha pul to'lamaydi.
@@ -52,13 +64,17 @@ Tekshiruv:
 2. HSK 3.0 N1'ga o'tib bir necha dars bajaring.
 3. HSK 2.0 ga qayting — eski progress o'z joyida qolishi kerak.
 4. Yana HSK 3.0 ga o'ting — N1 progressi ham o'z joyida qolishi kerak.
-5. Lug'at va Xatolar bo'limida HSK 3.0 materiallari eski track bilan
-   aralashmasligini tekshiring.
+5. Lug'atda HSK 3.0 filtrini tanlab, yangi so'z kartasida pinyin, misol
+   tarjimasi va yodlash ishorasini ko'ring; bir nechta belgili so'zda chiziq
+   tartibini ishga tushiring. Android'da internetni o'chirib, HSK 3.0
+   misollarini yana ochib ko'ring.
+6. Xatolar bo'limida HSK 3.0 materiallari eski track bilan aralashmasligini
+   tekshiring.
 
 ## “Sinab ko'rish” tugmasi
 
 Mavjud promo/release feedback tugmasida course action ishlatilsin. U Kurs
-bo'limini ochadi; xabar ichida “Kurs versiyasi → HSK 3.0” instruktsiyasi
+bo'limini ochadi; xabar ichida “Kurs versiyasi → HSK 3.0 → Lug'at” yo'li
 aniq yozilsin. Alohida tashqi URL yoki yangi deep link shart emas.
 
 ## 1–5 baholash
@@ -103,6 +119,8 @@ versiyasini tanlaydi.
 - hsk30_unlock checkout opened → screenshot submitted → approved/rejected.
 - HSK 3.0 bir martalik unlock: payment soni, user soni va TJS tushumi
   subscription revenue'dan alohida.
+- Lug'at sinov feedbacki: misolning tabiiyligi/tarjima aniqligi, yodlash
+  eslatmasining foydasi va chiziq animatsiyasi ishlashi bo'yicha javoblar.
 - Promo → HSK 3.0 o'tish va promo → checkout konversiyasi.
 - 1–5 baholar, matnli feedback va 20% reward ishlatilishi.
 

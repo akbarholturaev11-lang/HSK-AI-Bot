@@ -72,6 +72,7 @@ def main() -> int:
             problems.append(f"HSK 3.0 dictionary asset cannot be parsed: {exc}")
 
     words = sorted({str(w.get("h") or "").strip() for w in insights.dictionary_words()} - {""})
+    all_words = sorted({str(w.get("h") or "").strip() for w in insights.all_dictionary_words()} - {""})
     silent = [word for word in words if not (AUDIO_DIR / audio_name(word)).is_file()]
     if silent:
         problems.append(
@@ -84,10 +85,10 @@ def main() -> int:
     covered = json.loads(examples)["words"]
     explained = json.loads(parts)["chars"]
     chars = {ch for word in words for ch in word if insights.HANZI.match(ch)}
-    if unexampled := [word for word in words if word not in covered]:
+    if unexampled := [word for word in all_words if word not in covered]:
         problems.append(
             f"{len(unexampled)} word(s) have no example sentence, e.g. {', '.join(unexampled[:5])} "
-            "— add them to android/tools/dictionary_insights/examples*.json"
+            "— add or restore their course/manual examples"
         )
     if unexplained := sorted(chars - set(explained)):
         problems.append(
@@ -102,7 +103,7 @@ def main() -> int:
 
     print(
         f"dictionary assets are current: {len(words)} words with audio, "
-        f"examples for {len(covered)}, breakdowns for {len(explained)}/{len(chars)} characters, "
+        f"examples for {len(all_words)}, breakdowns for {len(explained)}/{len(chars)} legacy characters, "
         f"HSK 3.0 offline asset synced"
     )
     return 0

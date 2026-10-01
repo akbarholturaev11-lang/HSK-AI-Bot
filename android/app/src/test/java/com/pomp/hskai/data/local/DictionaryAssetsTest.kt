@@ -53,11 +53,11 @@ class DictionaryAssetsTest {
     }
 
     @Test
-    fun `every word and every character in the apk has its material`() {
+    fun `all dictionary words have examples and legacy characters have breakdowns`() {
         val examples = DictionaryInsightsParser.examples(File(assets, "hsk-examples.json").readText(), json)!!
         val parts = DictionaryInsightsParser.parts(File(assets, "hanzi-parts.json").readText(), json)!!
 
-        val noExample = dictionaryWords().filter { examples.find(it, AppLanguage.TAJIK).isEmpty() }
+        val noExample = allDictionaryWords().filter { examples.find(it, AppLanguage.TAJIK).isEmpty() }
         val noBreakdown = dictionaryWords()
             .flatMap { word -> word.filter { it in '一'..'鿿' }.map(Char::toString) }
             .distinct()
@@ -94,6 +94,20 @@ class DictionaryAssetsTest {
     private fun dictionaryWords(): List<String> {
         val raw = File(assets, "hsk-words.js").readText()
         return json.parseToJsonElement(raw.substring(raw.indexOf('['), raw.lastIndexOf(']') + 1))
+            .jsonArray
+            .map { it.jsonObject.getValue("h").jsonPrimitive.content.trim() }
+            .filter { it.isNotEmpty() }
+            .distinct()
+    }
+
+    private fun allDictionaryWords(): List<String> =
+        (dictionaryWords() + hsk30DictionaryWords()).distinct()
+
+    private fun hsk30DictionaryWords(): List<String> {
+        val raw = File(assets, "hsk30-words.js").readText()
+        val marker = Regex("window\\.HSK30_WORDS\\s*=\\s*").find(raw)
+            ?: error("HSK 3.0 word list is missing")
+        return json.parseToJsonElement(raw.substring(marker.range.last + 1, raw.lastIndexOf(';')))
             .jsonArray
             .map { it.jsonObject.getValue("h").jsonPrimitive.content.trim() }
             .filter { it.isNotEmpty() }

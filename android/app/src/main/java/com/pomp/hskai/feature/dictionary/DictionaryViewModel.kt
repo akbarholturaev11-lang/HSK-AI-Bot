@@ -46,6 +46,7 @@ data class DictionaryUiState(
     val examples: List<ExampleSentence> = emptyList(),
     /** What each character of the selected word is made of, in order. */
     val breakdowns: List<CharacterBreakdown> = emptyList(),
+    val isInsightsLoading: Boolean = false,
     /** The handwriting practice, while it is open. */
     val writing: WritingUiState? = null,
     /** Entries last opened from a search, newest first; shown when the search box is focused. */
@@ -218,6 +219,7 @@ class DictionaryViewModel(
                 visibleStrokeCount = null,
                 examples = emptyList(),
                 breakdowns = emptyList(),
+                isInsightsLoading = insights != null,
                 writing = null,
                 isAudioLoading = false,
             )
@@ -251,6 +253,7 @@ class DictionaryViewModel(
                 isAudioLoading = false,
                 examples = emptyList(),
                 breakdowns = emptyList(),
+                isInsightsLoading = false,
                 writing = null,
             )
         }
@@ -308,7 +311,11 @@ class DictionaryViewModel(
             val breakdowns = characters.distinct().mapNotNull { source.breakdown(it, language) }
             _state.update {
                 if (it.selectedWord?.hanzi != word.hanzi) it
-                else it.copy(examples = examples, breakdowns = breakdowns)
+                else it.copy(
+                    examples = examples,
+                    breakdowns = breakdowns,
+                    isInsightsLoading = false,
+                )
             }
         }
     }

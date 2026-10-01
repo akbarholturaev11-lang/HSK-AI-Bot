@@ -1,0 +1,623 @@
+[
+  {
+    "word": "卖",
+    "prefer": true,
+    "zh": "我想卖这本书。",
+    "p": "Wǒ xiǎng mài zhè běn shū.",
+    "m": {
+      "uz": "Men bu kitobni sotmoqchiman.",
+      "ru": "Я хочу продать эту книгу.",
+      "tj": "Ман мехоҳам ин китобро фурӯшам."
+    }
+  },
+  {
+    "word": "凉快",
+    "zh": "今天很凉快。",
+    "p": "Jīntiān hěn liángkuai.",
+    "m": {
+      "uz": "Bugun havo salqin.",
+      "ru": "Сегодня прохладно.",
+      "tj": "Имрӯз ҳаво салқин аст."
+    }
+  },
+  {
+    "word": "发展",
+    "zh": "中国发展得很快。",
+    "p": "Zhōngguó fāzhǎn de hěn kuài.",
+    "m": {
+      "uz": "Xitoy tez rivojlanmoqda.",
+      "ru": "Китай быстро развивается.",
+      "tj": "Чин босуръат рушд мекунад."
+    }
+  },
+  {
+    "word": "受到",
+    "zh": "他受到大家的欢迎。",
+    "p": "Tā shòudào dàjiā de huānyíng.",
+    "m": {
+      "uz": "Uni hamma xush ko‘radi.",
+      "ru": "Его все радушно принимают.",
+      "tj": "Ҳама ӯро хуш пазируфтанд."
+    }
+  },
+  {
+    "word": "售货员",
+    "zh": "售货员正在给我介绍这件衣服。",
+    "p": "Shòuhuòyuán zhèngzài gěi wǒ jièshào zhè jiàn yīfu.",
+    "m": {
+      "uz": "Sotuvchi menga bu kiyimni tushuntiryapti.",
+      "ru": "Продавец рассказывает мне об этой одежде.",
+      "tj": "Фурӯшанда ин либосро ба ман муаррифӣ мекунад."
+    }
+  },
+  {
+    "word": "地点",
+    "zh": "请告诉我见面的地点。",
+    "p": "Qǐng gàosu wǒ jiànmiàn de dìdiǎn.",
+    "m": {
+      "uz": "Iltimos, uchrashadigan joyni ayting.",
+      "ru": "Пожалуйста, скажите, где мы встречаемся.",
+      "tj": "Лутфан, ҷои вохӯриро бигӯед."
+    }
+  },
+  {
+    "word": "方向",
+    "zh": "请往这个方向走。",
+    "p": "Qǐng wǎng zhège fāngxiàng zǒu.",
+    "m": {
+      "uz": "Iltimos, shu tomonga yuring.",
+      "ru": "Пожалуйста, идите в эту сторону.",
+      "tj": "Лутфан, ба ҳамин самт равед."
+    }
+  },
+  {
+    "word": "一块儿",
+    "zh": "我们一块儿去公园吧。",
+    "p": "Wǒmen yíkuàir qù gōngyuán ba.",
+    "m": {
+      "uz": "Keling, parkka birga boramiz.",
+      "ru": "Давай вместе пойдём в парк.",
+      "tj": "Биёед якҷоя ба боғ равем."
+    }
+  },
+  {
+    "word": "不同",
+    "zh": "这两个颜色不同。",
+    "p": "Zhè liǎng ge yánsè bùtóng.",
+    "m": {
+      "uz": "Bu ikki rang bir xil emas.",
+      "ru": "Эти два цвета разные.",
+      "tj": "Ин ду ранг аз ҳам фарқ мекунанд."
+    }
+  },
+  {
+    "word": "东方",
+    "zh": "太阳从东方升起。",
+    "p": "Tàiyáng cóng dōngfāng shēngqǐ.",
+    "m": {
+      "uz": "Quyosh sharqdan chiqadi.",
+      "ru": "Солнце встаёт на востоке.",
+      "tj": "Офтоб аз шарқ мебарояд."
+    }
+  },
+  {
+    "word": "以上",
+    "zh": "三个人以上可以买团体票。",
+    "p": "Sān ge rén yǐshàng kěyǐ mǎi tuántǐ piào.",
+    "m": {
+      "uz": "Uch va undan ortiq kishi guruh chiptasini olishi mumkin.",
+      "ru": "Групповой билет могут купить три человека и более.",
+      "tj": "Се нафар ва зиёда метавонанд чиптаи гурӯҳӣ харанд."
+    }
+  },
+  {
+    "word": "做法",
+    "zh": "这种做法很简单。",
+    "p": "Zhè zhǒng zuòfǎ hěn jiǎndān.",
+    "m": {
+      "uz": "Bu usul juda oddiy.",
+      "ru": "Этот способ очень простой.",
+      "tj": "Ин усул хеле одӣ аст."
+    }
+  },
+  {
+    "word": "关注",
+    "zh": "我很关注这个问题。",
+    "p": "Wǒ hěn guānzhù zhège wèntí.",
+    "m": {
+      "uz": "Men bu masalaga katta e’tibor beraman.",
+      "ru": "Я уделяю этому вопросу большое внимание.",
+      "tj": "Ман ба ин масъала диққати зиёд медиҳам."
+    }
+  },
+  {
+    "word": "刘长春",
+    "zh": "运动员刘长春参加了奥运会。",
+    "p": "Yùndòngyuán Liú Chángchūn cānjiā le Àoyùnhuì.",
+    "m": {
+      "uz": "Sportchi Liu Changchun Olimpiya o‘yinlarida qatnashgan.",
+      "ru": "Спортсмен Лю Чанчунь участвовал в Олимпийских играх.",
+      "tj": "Варзишгар Лю Чанчун дар Бозиҳои олимпӣ иштирок кард."
+    }
+  },
+  {
+    "word": "初中",
+    "zh": "她在初中学习英语。",
+    "p": "Tā zài chūzhōng xuéxí Yīngyǔ.",
+    "m": {
+      "uz": "U o‘rta maktabda ingliz tilini o‘rganadi.",
+      "ru": "Она изучает английский в средней школе.",
+      "tj": "Ӯ дар мактаби миёна забони англисӣ меомӯзад."
+    }
+  },
+  {
+    "word": "动物园",
+    "zh": "周末我们去动物园看熊猫。",
+    "p": "Zhōumò wǒmen qù dòngwùyuán kàn xióngmāo.",
+    "m": {
+      "uz": "Dam olish kuni hayvonot bog‘iga pandalarni ko‘rgani boramiz.",
+      "ru": "В выходные мы пойдём в зоопарк посмотреть на панд.",
+      "tj": "Рӯзи истироҳат ба боғи ҳайвонот барои тамошои пандаҳо меравем."
+    }
+  },
+  {
+    "word": "北京南站",
+    "zh": "我们在北京南站见面吧。",
+    "p": "Wǒmen zài Běijīng Nánzhàn jiànmiàn ba.",
+    "m": {
+      "uz": "Pekin janubiy vokzalida uchrashamiz.",
+      "ru": "Давай встретимся на Южном вокзале Пекина.",
+      "tj": "Биёед дар истгоҳи ҷанубии Пекин вохӯрем."
+    }
+  },
+  {
+    "word": "后年",
+    "zh": "后年我会去中国学习。",
+    "p": "Hòunián wǒ huì qù Zhōngguó xuéxí.",
+    "m": {
+      "uz": "Kelasi yildan keyingi yili Xitoyga o‘qishga boraman.",
+      "ru": "Через два года я поеду учиться в Китай.",
+      "tj": "Пас аз ду сол барои таҳсил ба Чин меравам."
+    }
+  },
+  {
+    "word": "哈哈",
+    "zh": "哈哈，你说得真有意思！",
+    "p": "Hāhā, nǐ shuō de zhēn yǒuyìsi!",
+    "m": {
+      "uz": "Ha-ha, gaping juda qiziq ekan!",
+      "ru": "Ха-ха, ты так интересно говоришь!",
+      "tj": "Ҳа-ҳа, гапат хеле шавқовар аст!"
+    }
+  },
+  {
+    "word": "哪些",
+    "zh": "你喜欢哪些水果？",
+    "p": "Nǐ xǐhuan nǎxiē shuǐguǒ?",
+    "m": {
+      "uz": "Qaysi mevalarni yoqtirasan?",
+      "ru": "Какие фрукты тебе нравятся?",
+      "tj": "Кадом меваҳоро дӯст медорӣ?"
+    }
+  },
+  {
+    "word": "喜爱",
+    "zh": "我很喜爱中国文化。",
+    "p": "Wǒ hěn xǐ'ài Zhōngguó wénhuà.",
+    "m": {
+      "uz": "Men Xitoy madaniyatini juda yaxshi ko‘raman.",
+      "ru": "Я очень люблю китайскую культуру.",
+      "tj": "Ман фарҳанги Чинро хеле дӯст медорам."
+    }
+  },
+  {
+    "word": "大人",
+    "zh": "这个公园里，大人和孩子都能玩。",
+    "p": "Zhège gōngyuán lǐ, dàren hé háizi dōu néng wán.",
+    "m": {
+      "uz": "Bu parkda kattalar ham, bolalar ham o‘ynay oladi.",
+      "ru": "В этом парке могут играть и взрослые, и дети.",
+      "tj": "Дар ин боғ ҳам калонсолон ва ҳам кӯдакон бозӣ карда метавонанд."
+    }
+  },
+  {
+    "word": "夫妻",
+    "zh": "这对夫妻每天一起散步。",
+    "p": "Zhè duì fūqī měitiān yìqǐ sànbù.",
+    "m": {
+      "uz": "Bu er-xotin har kuni birga sayr qiladi.",
+      "ru": "Эти супруги каждый день гуляют вместе.",
+      "tj": "Ин зану шавҳар ҳар рӯз якҷоя сайр мекунанд."
+    }
+  },
+  {
+    "word": "奥运会",
+    "zh": "运动员刘长春参加了奥运会。",
+    "p": "Yùndòngyuán Liú Chángchūn cānjiā le Àoyùnhuì.",
+    "m": {
+      "uz": "Sportchi Liu Changchun Olimpiya o‘yinlarida qatnashgan.",
+      "ru": "Спортсмен Лю Чанчунь участвовал в Олимпийских играх.",
+      "tj": "Варзишгар Лю Чанчун дар Бозиҳои олимпӣ иштирок кард."
+    }
+  },
+  {
+    "word": "姓名",
+    "zh": "请告诉我您的姓名。",
+    "p": "Qǐng gàosu wǒ nín de xìngmíng.",
+    "m": {
+      "uz": "Iltimos, ism-familiyangizni ayting.",
+      "ru": "Пожалуйста, назовите ваши имя и фамилию.",
+      "tj": "Лутфан, ному насаби худро гӯед."
+    }
+  },
+  {
+    "word": "封",
+    "zh": "我给朋友写了一封信。",
+    "p": "Wǒ gěi péngyou xiě le yì fēng xìn.",
+    "m": {
+      "uz": "Do‘stimga bitta xat yozdim.",
+      "ru": "Я написал другу одно письмо.",
+      "tj": "Ман ба дӯстам як нома навиштам."
+    }
+  },
+  {
+    "word": "小时候",
+    "zh": "我小时候住在上海。",
+    "p": "Wǒ xiǎoshíhou zhù zài Shànghǎi.",
+    "m": {
+      "uz": "Bolaligimda Shanxayda yashaganman.",
+      "ru": "В детстве я жил в Шанхае.",
+      "tj": "Ман дар кӯдакӣ дар Шанхай зиндагӣ мекардам."
+    }
+  },
+  {
+    "word": "屋子",
+    "zh": "屋子里有一张桌子。",
+    "p": "Wūzi lǐ yǒu yì zhāng zhuōzi.",
+    "m": {
+      "uz": "Xonada bitta stol bor.",
+      "ru": "В комнате стоит один стол.",
+      "tj": "Дар хона як миз ҳаст."
+    }
+  },
+  {
+    "word": "得到",
+    "zh": "认真学习就能得到好成绩。",
+    "p": "Rènzhēn xuéxí jiù néng dédào hǎo chéngjì.",
+    "m": {
+      "uz": "Qunt bilan o‘qisang, yaxshi natijaga erishasan.",
+      "ru": "Если стараться в учёбе, можно добиться хороших результатов.",
+      "tj": "Агар боғайратона таҳсил кунӣ, натиҷаи хуб ба даст меорӣ."
+    }
+  },
+  {
+    "word": "心里",
+    "zh": "她心里很高兴。",
+    "p": "Tā xīnlǐ hěn gāoxìng.",
+    "m": {
+      "uz": "Uning ko‘ngli juda xursand.",
+      "ru": "Она очень рада.",
+      "tj": "Ӯ дар дилаш хеле хурсанд аст."
+    }
+  },
+  {
+    "word": "怎么办",
+    "zh": "明天要考试，我还没准备好，怎么办？",
+    "p": "Míngtiān yào kǎoshì, wǒ hái méi zhǔnbèi hǎo, zěnmebàn?",
+    "m": {
+      "uz": "Ertaga imtihon, men hali tayyor emasman. Endi nima qilaman?",
+      "ru": "Завтра экзамен, а я ещё не готов. Что же делать?",
+      "tj": "Фардо имтиҳон асту ман ҳоло тайёр нестам. Акнун чӣ кор кунам?"
+    }
+  },
+  {
+    "word": "感到",
+    "zh": "听到这个消息，我感到很高兴。",
+    "p": "Tīngdào zhège xiāoxi, wǒ gǎndào hěn gāoxìng.",
+    "m": {
+      "uz": "Bu xabarni eshitib, juda xursand bo‘ldim.",
+      "ru": "Услышав эту новость, я очень обрадовался.",
+      "tj": "Ин хабарро шунида, хеле хурсанд шудам."
+    }
+  },
+  {
+    "word": "懂得",
+    "zh": "他懂得尊重别人。",
+    "p": "Tā dǒngde zūnzhòng biérén.",
+    "m": {
+      "uz": "U boshqalarni hurmat qilishni biladi.",
+      "ru": "Он умеет уважать других.",
+      "tj": "Ӯ эҳтиром кардани дигаронро медонад."
+    }
+  },
+  {
+    "word": "收到",
+    "zh": "我昨天收到了你的信。",
+    "p": "Wǒ zuótiān shōudào le nǐ de xìn.",
+    "m": {
+      "uz": "Kecha xatingni oldim.",
+      "ru": "Вчера я получил твоё письмо.",
+      "tj": "Ман дирӯз номаи туро гирифтам."
+    }
+  },
+  {
+    "word": "放假",
+    "zh": "学校下周开始放假。",
+    "p": "Xuéxiào xià zhōu kāishǐ fàngjià.",
+    "m": {
+      "uz": "Maktabda kelasi haftadan ta’til boshlanadi.",
+      "ru": "В школе каникулы начнутся на следующей неделе.",
+      "tj": "Дар мактаб таътил аз ҳафтаи оянда сар мешавад."
+    }
+  },
+  {
+    "word": "放学",
+    "zh": "放学后我们一起回家。",
+    "p": "Fàngxué hòu wǒmen yìqǐ huíjiā.",
+    "m": {
+      "uz": "Darsdan keyin birga uyga qaytamiz.",
+      "ru": "После занятий мы вместе пойдём домой.",
+      "tj": "Баъди дарс якҷоя ба хона меравем."
+    }
+  },
+  {
+    "word": "方便面",
+    "zh": "晚上我吃了一碗方便面。",
+    "p": "Wǎnshang wǒ chī le yì wǎn fāngbiànmiàn.",
+    "m": {
+      "uz": "Kechqurun bir kosa tez tayyor bo‘ladigan ugra yedim.",
+      "ru": "Вечером я съел тарелку лапши быстрого приготовления.",
+      "tj": "Бегоҳ як коса угрои тезтайёр хӯрдам."
+    }
+  },
+  {
+    "word": "春天",
+    "zh": "春天来了，天气暖和了。",
+    "p": "Chūntiān lái le, tiānqì nuǎnhuo le.",
+    "m": {
+      "uz": "Bahor keldi, havo ilidi.",
+      "ru": "Пришла весна, стало тепло.",
+      "tj": "Баҳор омад, ҳаво гарм шуд."
+    }
+  },
+  {
+    "word": "景点",
+    "zh": "这个景点每天有很多游客。",
+    "p": "Zhège jǐngdiǎn měitiān yǒu hěn duō yóukè.",
+    "m": {
+      "uz": "Bu diqqatga sazovor joyga har kuni ko‘p sayyoh keladi.",
+      "ru": "В это место каждый день приезжает много туристов.",
+      "tj": "Ҳар рӯз ба ин макони тамошобоб сайёҳони зиёд меоянд."
+    }
+  },
+  {
+    "word": "有些",
+    "zh": "有些人喜欢喝茶。",
+    "p": "Yǒuxiē rén xǐhuan hē chá.",
+    "m": {
+      "uz": "Ba’zi odamlar choy ichishni yoqtiradi.",
+      "ru": "Некоторые люди любят пить чай.",
+      "tj": "Баъзе одамон чой нӯшиданро дӯст медоранд."
+    }
+  },
+  {
+    "word": "没意思",
+    "zh": "这部电影没意思。",
+    "p": "Zhè bù diànyǐng méi yìsi.",
+    "m": {
+      "uz": "Bu film zerikarli.",
+      "ru": "Этот фильм скучный.",
+      "tj": "Ин филм дилгиркунанда аст."
+    }
+  },
+  {
+    "word": "游客",
+    "zh": "这个景点每天有很多游客。",
+    "p": "Zhège jǐngdiǎn měitiān yǒu hěn duō yóukè.",
+    "m": {
+      "uz": "Bu diqqatga sazovor joyga har kuni ko‘p sayyoh keladi.",
+      "ru": "В это место каждый день приезжает много туристов.",
+      "tj": "Ҳар рӯз ба ин макони тамошобоб сайёҳони зиёд меоянд."
+    }
+  },
+  {
+    "word": "班级",
+    "zh": "我们班级有二十个学生。",
+    "p": "Wǒmen bānjí yǒu èrshí ge xuésheng.",
+    "m": {
+      "uz": "Sinfimizda yigirma nafar o‘quvchi bor.",
+      "ru": "В нашем классе двадцать учеников.",
+      "tj": "Дар синфи мо бист хонанда ҳаст."
+    }
+  },
+  {
+    "word": "画家",
+    "zh": "这位画家喜欢画山水。",
+    "p": "Zhè wèi huàjiā xǐhuan huà shānshuǐ.",
+    "m": {
+      "uz": "Bu rassom manzaralar chizishni yoqtiradi.",
+      "ru": "Этот художник любит писать пейзажи.",
+      "tj": "Ин рассом расмҳои манзаравиро дӯст медорад."
+    }
+  },
+  {
+    "word": "留学生",
+    "zh": "她是来中国的留学生。",
+    "p": "Tā shì lái Zhōngguó de liúxuéshēng.",
+    "m": {
+      "uz": "U Xitoyga kelgan xorijlik talaba.",
+      "ru": "Она иностранная студентка, приехавшая в Китай.",
+      "tj": "Ӯ донишҷӯи хориҷиест, ки ба Чин омадааст."
+    }
+  },
+  {
+    "word": "目标",
+    "zh": "我的目标是每天学十个新词。",
+    "p": "Wǒ de mùbiāo shì měitiān xué shí ge xīn cí.",
+    "m": {
+      "uz": "Maqsadim har kuni o‘nta yangi so‘z o‘rganish.",
+      "ru": "Моя цель — каждый день учить десять новых слов.",
+      "tj": "Ҳадафи ман ҳар рӯз омӯхтани даҳ калимаи нав аст."
+    }
+  },
+  {
+    "word": "直到",
+    "zh": "他直到晚上才回家。",
+    "p": "Tā zhídào wǎnshang cái huíjiā.",
+    "m": {
+      "uz": "U faqat kechqurun uyga qaytdi.",
+      "ru": "Он вернулся домой только вечером.",
+      "tj": "Ӯ танҳо бегоҳ ба хона баргашт."
+    }
+  },
+  {
+    "word": "秋天",
+    "zh": "秋天的天气很凉快。",
+    "p": "Qiūtiān de tiānqì hěn liángkuai.",
+    "m": {
+      "uz": "Kuzda havo juda salqin bo‘ladi.",
+      "ru": "Осенью погода прохладная.",
+      "tj": "Тирамоҳ ҳаво салқин мешавад."
+    }
+  },
+  {
+    "word": "老人",
+    "zh": "公园里有很多老人在散步。",
+    "p": "Gōngyuán lǐ yǒu hěn duō lǎorén zài sànbù.",
+    "m": {
+      "uz": "Parkda ko‘p keksalar sayr qilib yuribdi.",
+      "ru": "В парке гуляет много пожилых людей.",
+      "tj": "Дар боғ пиронсолони зиёд сайр мекунанд."
+    }
+  },
+  {
+    "word": "联欢",
+    "zh": "我们班周五举行联欢。",
+    "p": "Wǒmen bān zhōuwǔ jǔxíng liánhuān.",
+    "m": {
+      "uz": "Sinfimiz juma kuni bayram tadbiri o‘tkazadi.",
+      "ru": "В пятницу наш класс проведёт праздничный вечер.",
+      "tj": "Рӯзи ҷумъа синфи мо маҳфили идона мегузаронад."
+    }
+  },
+  {
+    "word": "英国",
+    "zh": "她在英国学习汉语。",
+    "p": "Tā zài Yīngguó xuéxí Hànyǔ.",
+    "m": {
+      "uz": "U Buyuk Britaniyada xitoy tilini o‘rganadi.",
+      "ru": "Она изучает китайский язык в Великобритании.",
+      "tj": "Ӯ дар Британияи Кабир забони чиниро меомӯзад."
+    }
+  },
+  {
+    "word": "草地",
+    "zh": "孩子们在草地上踢足球。",
+    "p": "Háizimen zài cǎodì shàng tī zúqiú.",
+    "m": {
+      "uz": "Bolalar maysazorda futbol o‘ynayapti.",
+      "ru": "Дети играют в футбол на лужайке.",
+      "tj": "Кӯдакон дар майсазор футбол бозӣ мекунанд."
+    }
+  },
+  {
+    "word": "药店",
+    "zh": "药店在医院旁边。",
+    "p": "Yàodiàn zài yīyuàn pángbiān.",
+    "m": {
+      "uz": "Dorixona shifoxona yonida.",
+      "ru": "Аптека находится рядом с больницей.",
+      "tj": "Дорухона дар паҳлуи беморхона аст."
+    }
+  },
+  {
+    "word": "西北",
+    "zh": "我家在城市的西北边。",
+    "p": "Wǒ jiā zài chéngshì de xīběi biān.",
+    "m": {
+      "uz": "Uyimiz shaharning shimoli-g‘arbida.",
+      "ru": "Мой дом находится на северо-западе города.",
+      "tj": "Хонаи мо дар шимолу ғарби шаҳр аст."
+    }
+  },
+  {
+    "word": "运动员",
+    "zh": "运动员刘长春参加了奥运会。",
+    "p": "Yùndòngyuán Liú Chángchūn cānjiā le Àoyùnhuì.",
+    "m": {
+      "uz": "Sportchi Liu Changchun Olimpiya o‘yinlarida qatnashgan.",
+      "ru": "Спортсмен Лю Чанчунь участвовал в Олимпийских играх.",
+      "tj": "Варзишгар Лю Чанчун дар Бозиҳои олимпӣ иштирок кард."
+    }
+  },
+  {
+    "word": "遇见",
+    "zh": "昨天我在路上遇见了老师。",
+    "p": "Zuótiān wǒ zài lùshang yùjiàn le lǎoshī.",
+    "m": {
+      "uz": "Kecha yo‘lda ustozimni uchratdim.",
+      "ru": "Вчера я встретил преподавателя по дороге.",
+      "tj": "Ман дирӯз дар роҳ устодро вохӯрдам."
+    }
+  },
+  {
+    "word": "邮箱",
+    "zh": "请把邮件发到我的邮箱。",
+    "p": "Qǐng bǎ yóujiàn fā dào wǒ de yóuxiāng.",
+    "m": {
+      "uz": "Iltimos, xatni elektron pochtamga yuboring.",
+      "ru": "Пожалуйста, отправьте письмо на мою электронную почту.",
+      "tj": "Лутфан, номаро ба почтаи электронии ман фиристед."
+    }
+  },
+  {
+    "word": "酒店",
+    "zh": "这家酒店离车站很近。",
+    "p": "Zhè jiā jiǔdiàn lí chēzhàn hěn jìn.",
+    "m": {
+      "uz": "Bu mehmonxona bekatga juda yaqin.",
+      "ru": "Этот отель находится очень близко к станции.",
+      "tj": "Ин меҳмонхона ба истгоҳ хеле наздик аст."
+    }
+  },
+  {
+    "word": "难看",
+    "zh": "这件衣服的颜色太难看了。",
+    "p": "Zhè jiàn yīfu de yánsè tài nánkàn le.",
+    "m": {
+      "uz": "Bu kiyimning rangi juda xunuk.",
+      "ru": "Цвет этой одежды очень некрасивый.",
+      "tj": "Ранги ин либос хеле бад аст."
+    }
+  },
+  {
+    "word": "难题",
+    "zh": "这道难题我终于做出来了。",
+    "p": "Zhè dào nántí wǒ zhōngyú zuò chūlái le.",
+    "m": {
+      "uz": "Nihoyat, bu murakkab masalani yechdim.",
+      "ru": "Наконец я решил эту трудную задачу.",
+      "tj": "Ниҳоят ин масъалаи душворро ҳал кардам."
+    }
+  },
+  {
+    "word": "面前",
+    "zh": "她面前放着一杯茶。",
+    "p": "Tā miànqián fàngzhe yì bēi chá.",
+    "m": {
+      "uz": "Uning oldida bir piyola choy turibdi.",
+      "ru": "Перед ней стоит чашка чая.",
+      "tj": "Дар пеши ӯ як пиёла чой гузошта шудааст."
+    }
+  },
+  {
+    "word": "马路",
+    "zh": "过马路时请小心。",
+    "p": "Guò mǎlù shí qǐng xiǎoxīn.",
+    "m": {
+      "uz": "Yo‘lni kesib o‘tayotganda ehtiyot bo‘ling.",
+      "ru": "Переходя дорогу, будьте осторожны.",
+      "tj": "Ҳангоми гузаштан аз роҳ эҳтиёт кунед."
+    }
+  }
+]

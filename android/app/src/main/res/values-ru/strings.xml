@@ -297,7 +297,7 @@
     <string name="notify_goal_body_2">До цели совсем немного — панда дойдёт с вами до конца.</string>
     <string name="notify_goal_body_3">Осталась одна часть. Закроем сегодняшнюю цель?</string>
     <string name="practice_dictionary_title">Словарь иероглифов</string>
-    <string name="practice_dictionary_body">HSK 1–4 · написание, пиньинь, значение</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · написание, пиньинь, значение</string>
     <string name="dictionary_search_hint">Иероглиф, пиньинь или значение</string>
     <string name="dictionary_recent_title">Недавние поиски</string>
     <string name="dictionary_all_words">Все слова</string>
@@ -313,6 +313,8 @@
     <string name="dictionary_action_write">Писать</string>
     <string name="dictionary_parts_title">Из чего состоит</string>
     <string name="dictionary_examples_title">Примеры</string>
+    <string name="dictionary_memory_hint_title">Подсказка для запоминания</string>
+    <string name="dictionary_memory_hint_body">Попробуйте написать знаки %1$s и связать их форму со значением слова.</string>
     <string name="writing_stage_demo">Посмотрите порядок черт</string>
     <string name="writing_stage_trace">Обведите по контуру</string>
     <string name="writing_stage_hint">Пишите с подсказкой</string>

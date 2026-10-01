@@ -8344,6 +8344,29 @@ Priority 3:
 - HSK 3.0 onboarding, track switch, eski user promo (maksimum 2 marta,
   3 kun cooldown), dictionary filter, recognition/pronunciation/memorize,
   mistake/review isolation va AI curriculum context tayyor.
+- Mini App lug'atidagi 970 noyob HSK 3.0 so'zning barchasida endi uch tilli
+  misol bor. 397 ta qo'shimcha misol pinyin bilan beriladi: 341 tasi tarjima
+  qilingan kurs darslaridan, 56 tasi qo'lda tuzilgan.
+  scripts/hsk30/dictionary_examples_manual.json dan yig'iladi.
+  scripts/hsk30/build_dictionary_assets.py chiqargan
+  hsk30-dictionary-examples.js ni app route whitelist va lug'at sahifasiga
+  birga ulash kerak.
+- Android native lug'ati HSK 2.0 va HSK 3.0 so'zlarini APK ichidagi
+  `hsk-words.js` va `hsk30-words.js` dan birlashtiradi.
+  `android/tools/build_dictionary_insights.py` HSK 3.0 darslari va manual
+  misollarni `hsk-examples.json` ga yig'adi; u 970/970 HSK 3.0 so'zni offline
+  qoplaydi. `check_dictionary_assets.py` va `DictionaryAssetsTest` bu
+  qamrovni majburiy tekshiradi.
+- HSK 3.0 lug'at so'zlari uchun yodlash fallback'i mavjud belgi kartalaridan
+  tarkibiy eslatma ko'rsatadi; chiziq ma'lumoti lokal bo'lmasa HanziWriter
+  CDN'dan yuklanadi, yuklanmasa boshqaruvlar o'chadi. CDN ishlamagan/offline
+  paytda shu kam uchraydigan belgilar animatsiyasiz qoladi. Android native
+  sahifasida qo'lda tuzilgan tarkibiy izoh bo'lmagan belgilar uchun yodlash
+  prompti chiqadi; 21 ta HSK 3.0 belgisi stroke assetida yo'q va yozish uchun
+  Android backend stroke fallback'i yoki Mini App CDN fallback'i talab qilinadi.
+- `hsk-lugat.html` desktop/tablet'da 2 ustunli, keng ekranli lug'at ko'rinishiga
+  o'tadi; telefon layouti o'z holicha qoladi. Oddiy Android WebView/Chrome
+  o'lchami bo'yicha desktop/mobile breakpointlar tekshirilgan.
 - Test markazi ataylab `Tez orada`: yangi HSK 3.0 exam source/formati
   tayyor bo'lmaguncha eski HSK 2.0 testlari yangi trackka aralashtirilmaydi.
 - Admin: HSK 3.0 enable, live N1/N2/N3, permanent-payment toggle, narx/QR,

@@ -90,6 +90,7 @@ button:active{transform:scale(.96)}
 .writer-controls{display:flex;align-items:center;gap:16px;margin-top:16px}
 .ctrl-btn{width:48px;height:48px;border-radius:50%;background:var(--ink-dim);color:var(--ink);font-size:17px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(214,69,58,.34)}
 .ctrl-btn.ctrl-main{width:60px;height:60px;font-size:20px;background:var(--ink);color:#fff;border-color:var(--ink)}
+.ctrl-btn:disabled{opacity:.42;cursor:not-allowed}
 .ctrl-btn:active{transform:scale(.94)}
 .next-word-btn{margin-top:14px;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:14px;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;transition:background .14s}
 .next-word-btn:active{background:var(--bg3)}
@@ -119,6 +120,8 @@ button:active{transform:scale(.96)}
 .example.hidden{display:none}
 .example-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .example-zh{font-family:var(--cjk);font-size:16px;font-weight:600;color:var(--text);line-height:1.4}
+.example-pinyin{margin-top:4px;font-size:12px;font-weight:700;color:var(--accent);line-height:1.45;overflow-wrap:anywhere}
+.example-pinyin.hidden{display:none}
 .example-uz{margin-top:6px;font-size:12.5px;color:var(--text2);line-height:1.5}
 .usage-pos{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);padding:4px 10px;border-radius:8px;margin-bottom:10px}
 .usage-pos.hidden{display:none}
@@ -188,6 +191,23 @@ html.theme-light .hero{padding-bottom:10px;}
 .fw-hint{margin-top:12px;font-size:11.5px;color:var(--text2);text-align:center;line-height:1.4}
 .fw-back{margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-family:inherit;font-size:15px;font-weight:700}
 .fw-back:active{opacity:.88}
+.detail-primary,.detail-secondary{display:contents}
+@media (min-width:760px){
+  #app{max-width:1120px;height:100dvh;border-inline:1px solid var(--border);box-shadow:0 0 48px rgba(0,0,0,.16)}
+  .hero{width:min(100%,980px);margin-inline:auto;padding:24px 28px 18px}
+  .list{width:min(100%,980px);margin-inline:auto;padding-bottom:32px}
+  .row{padding-inline:20px}
+  .detail-header{width:min(100%,1060px);margin-inline:auto;padding:20px 28px 12px}
+  .detail-body{width:min(100%,1060px);margin-inline:auto;display:grid;grid-template-columns:minmax(250px,360px) minmax(320px,520px);justify-content:center;align-content:start;align-items:start;gap:12px 36px;padding:12px 28px 40px}
+  .detail-primary{grid-column:1;grid-row:1;min-width:0;display:block}
+  .detail-secondary{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:stretch;gap:14px;min-width:0}
+  .writer-card{max-width:340px;position:static}
+  .practice-block,.pinyin-row,.meaning,.memo-wrap,.example,.grammar-card{margin-top:0}
+  .practice-block{max-width:none}
+  .meaning{max-width:none;padding:0;text-align:left}
+  .memo-wrap,.example,.grammar-card{max-width:none}
+  .char-box-lg{width:min(280px,100%);height:auto;aspect-ratio:1}
+}
 </style>
 </head>
 <body>
@@ -224,67 +244,72 @@ html.theme-light .hero{padding-bottom:10px;}
       <span class="detail-level" id="detail-level"></span>
     </div>
     <div class="detail-body">
-      <div class="writer-card">
-        <div class="writer-toolbar">
-          <button class="nav-arrow" id="char-prev" aria-label="Oldingi belgi">‹</button>
-          <div class="writer-info">
-            <div class="writer-pos hidden" id="writer-pos"></div>
-            <div class="writer-strokes" id="writer-strokes"></div>
+      <div class="detail-primary">
+        <div class="writer-card">
+          <div class="writer-toolbar">
+            <button class="nav-arrow" id="char-prev" aria-label="Oldingi belgi">‹</button>
+            <div class="writer-info">
+              <div class="writer-pos hidden" id="writer-pos"></div>
+              <div class="writer-strokes" id="writer-strokes"></div>
+            </div>
+            <button class="nav-arrow" id="char-next" aria-label="Keyingi belgi">›</button>
           </div>
-          <button class="nav-arrow" id="char-next" aria-label="Keyingi belgi">›</button>
+          <div class="char-box-lg" id="char-box-lg"></div>
+          <div class="writer-controls">
+            <button class="ctrl-btn" id="ctrl-restart" aria-label="Bir chiziq orqaga">«</button>
+            <button class="ctrl-btn ctrl-main" id="ctrl-playpause" aria-label="Pauza / Davom">▶</button>
+            <button class="ctrl-btn" id="ctrl-skip" aria-label="Bir chiziq oldinga">»</button>
+          </div>
+          <div class="next-word-btn hidden" id="next-word-btn"></div>
         </div>
-        <div class="char-box-lg" id="char-box-lg"></div>
-        <div class="writer-controls">
-          <button class="ctrl-btn" id="ctrl-restart" aria-label="Bir chiziq orqaga">«</button>
-          <button class="ctrl-btn ctrl-main" id="ctrl-playpause" aria-label="Pauza / Davom">▶</button>
-          <button class="ctrl-btn" id="ctrl-skip" aria-label="Bir chiziq oldinga">»</button>
+      </div>
+      <div class="detail-secondary">
+        <div class="pinyin-row">
+          <div class="pinyin" id="detail-pinyin"></div>
+          <button class="audio-btn" id="audio-btn" aria-label="Tinglash">🔊</button>
         </div>
-        <div class="next-word-btn hidden" id="next-word-btn"></div>
-      </div>
-      <div class="pinyin-row">
-        <div class="pinyin" id="detail-pinyin"></div>
-        <button class="audio-btn" id="audio-btn" aria-label="Tinglash">🔊</button>
-      </div>
-      <div class="meaning" id="detail-meaning"></div>
-      <div class="memo-wrap" id="memo-block"></div>
-      <div class="example hidden" id="example-block">
-        <div class="usage-pos" id="usage-pos"></div>
-        <div class="example-row">
-          <span class="example-zh" id="example-zh"></span>
-          <button class="audio-btn small" id="example-audio-btn" aria-label="Tinglash">🔊</button>
-        </div>
-        <div class="example-uz" id="example-uz"></div>
-      </div>
-      <div class="grammar-card hidden" id="grammar-block">
-        <div class="usage-pos" id="grammar-label"></div>
-        <div class="grammar-title" id="grammar-title"></div>
-        <div class="grammar-formula" id="grammar-formula"></div>
-        <div class="grammar-rule" id="grammar-rule"></div>
-        <div class="grammar-example hidden" id="grammar-example">
+        <div class="meaning" id="detail-meaning"></div>
+        <div class="memo-wrap" id="memo-block"></div>
+        <div class="example hidden" id="example-block">
+          <div class="usage-pos" id="usage-pos"></div>
           <div class="example-row">
-            <span class="example-zh" id="grammar-example-zh"></span>
-            <button class="audio-btn small" id="grammar-audio-btn" aria-label="Tinglash">🔊</button>
+            <span class="example-zh" id="example-zh"></span>
+            <button class="audio-btn small" id="example-audio-btn" aria-label="Tinglash">🔊</button>
           </div>
-          <div class="example-uz" id="grammar-example-text"></div>
+          <div class="example-pinyin hidden" id="example-pinyin"></div>
+          <div class="example-uz" id="example-uz"></div>
         </div>
-      </div>
-      <div class="practice-block" id="practice-block">
-        <div class="pb-head" id="practice-head">Mashqlar</div>
-        <button class="practice-btn" id="pr-pron" type="button">
-          <span class="pb-ic">🎙️</span>
-          <span class="pb-tx"><span class="pb-t" id="pr-pron-t"></span><span class="pb-s" id="pr-pron-s"></span></span>
-          <span class="pb-arr">›</span>
-        </button>
-        <button class="practice-btn" id="pr-recog" type="button">
-          <span class="pb-ic">🔍</span>
-          <span class="pb-tx"><span class="pb-t" id="pr-recog-t"></span><span class="pb-s" id="pr-recog-s"></span></span>
-          <span class="pb-arr">›</span>
-        </button>
-        <button class="practice-btn" id="pr-mem" type="button">
-          <span class="pb-ic">⚡</span>
-          <span class="pb-tx"><span class="pb-t" id="pr-mem-t"></span><span class="pb-s" id="pr-mem-s"></span></span>
-          <span class="pb-arr">›</span>
-        </button>
+        <div class="grammar-card hidden" id="grammar-block">
+          <div class="usage-pos" id="grammar-label"></div>
+          <div class="grammar-title" id="grammar-title"></div>
+          <div class="grammar-formula" id="grammar-formula"></div>
+          <div class="grammar-rule" id="grammar-rule"></div>
+          <div class="grammar-example hidden" id="grammar-example">
+            <div class="example-row">
+              <span class="example-zh" id="grammar-example-zh"></span>
+              <button class="audio-btn small" id="grammar-audio-btn" aria-label="Tinglash">🔊</button>
+            </div>
+            <div class="example-uz" id="grammar-example-text"></div>
+          </div>
+        </div>
+        <div class="practice-block" id="practice-block">
+          <div class="pb-head" id="practice-head">Mashqlar</div>
+          <button class="practice-btn" id="pr-pron" type="button">
+            <span class="pb-ic">🎙️</span>
+            <span class="pb-tx"><span class="pb-t" id="pr-pron-t"></span><span class="pb-s" id="pr-pron-s"></span></span>
+            <span class="pb-arr">›</span>
+          </button>
+          <button class="practice-btn" id="pr-recog" type="button">
+            <span class="pb-ic">🔍</span>
+            <span class="pb-tx"><span class="pb-t" id="pr-recog-t"></span><span class="pb-s" id="pr-recog-s"></span></span>
+            <span class="pb-arr">›</span>
+          </button>
+          <button class="practice-btn" id="pr-mem" type="button">
+            <span class="pb-ic">⚡</span>
+            <span class="pb-tx"><span class="pb-t" id="pr-mem-t"></span><span class="pb-s" id="pr-mem-s"></span></span>
+            <span class="pb-arr">›</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -304,6 +329,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   if(!window.HSK_FAST_WRITER){
     document.write('<script src="hsk-words.js?v=20260720"><\/script>');
     document.write('<script src="/course_v3_data/hsk30-words.js?v=20260930"><\/script>');
+    document.write('<script src="/course_v3_data/hsk30-dictionary-examples.js?v=20261001"><\/script>');
     document.write('<script src="hsk-extra.js?v=20260720"><\/script>');
   }
 })();
@@ -676,6 +702,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var exampleBlock = document.getElementById('example-block');
   var usagePos = document.getElementById('usage-pos');
   var exampleZh = document.getElementById('example-zh');
+  var examplePinyin = document.getElementById('example-pinyin');
   var exampleUz = document.getElementById('example-uz');
   var exampleAudioBtn = document.getElementById('example-audio-btn');
   var grammarBlock = document.getElementById('grammar-block');
@@ -701,6 +728,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var currentChars = [];
   var currentCharIdx = 0;
   var currentWriter = null;
+  var strokeDataReady = false;
+  var strokeLoadToken = 0;
   var isPlaying = false;
   var isFinished = false;
   var currentStrokeShown = 0;
@@ -735,8 +764,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
 
   function updateStepBtns(){
-    document.getElementById('ctrl-restart').disabled = (!currentWriter || currentStrokeShown <= 0 || isReshowing);
-    document.getElementById('ctrl-skip').disabled = (!currentWriter || currentStrokeShown >= totalStrokes || isPlaying || isReshowing);
+    ctrlPlayPause.disabled = (!strokeDataReady || !currentWriter);
+    ctrlRestart.disabled = (!strokeDataReady || !currentWriter || currentStrokeShown <= 0 || isReshowing);
+    ctrlSkip.disabled = (!strokeDataReady || !currentWriter || currentStrokeShown >= totalStrokes || isPlaying || isReshowing);
   }
 
   function stepForward(){
@@ -988,6 +1018,63 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       '</svg><div class="writer-target"></div>';
   }
 
+  function writerStatus(kind){
+    var messages = {
+      uz:{loading:'Yozilish tartibi yuklanmoqda…', failed:'Yozilish tartibi yuklanmadi. Internetni tekshirib, qayta urinib ko‘ring.'},
+      ru:{loading:'Загружается порядок черт…', failed:'Не удалось загрузить порядок черт. Проверьте интернет и попробуйте снова.'},
+      tj:{loading:'Тартиби навиш бор шуда истодааст…', failed:'Тартиби навиш бор нашуд. Интернетро санҷида, дубора кӯшиш кунед.'}
+    };
+    var language = messages[currentLang] || messages.uz;
+    return language[kind];
+  }
+
+  function loadStrokeData(ch, onComplete, onError, token){
+    var local = (typeof STROKES !== 'undefined' && STROKES[ch]) ? STROKES[ch] : null;
+    var finished = false;
+    function fail(error){
+      if(finished) return;
+      finished = true;
+      if(token === strokeLoadToken){
+        strokeDataReady = false;
+        currentWriter = null;
+        writerStrokes.textContent = writerStatus('failed');
+        charBoxLg.innerHTML = '<div class="plain-char">'+escapeHtml(ch)+'</div>';
+        updateStepBtns();
+      }
+      if(typeof onError === 'function') onError(error);
+    }
+    function succeed(data){
+      if(finished) return;
+      if(!data || !Array.isArray(data.strokes) || !data.strokes.length){
+        fail(new Error('Invalid HanziWriter character data'));
+        return;
+      }
+      finished = true;
+      if(token === strokeLoadToken){
+        strokeDataReady = true;
+        totalStrokes = data.strokes.length;
+        writerStrokes.textContent = (UI[currentLang] || UI.uz).strokes(totalStrokes);
+        updateStepBtns();
+      }
+      onComplete(data);
+    }
+    if(local){ succeed(local); return; }
+
+    var xhr = new XMLHttpRequest();
+    xhr.overrideMimeType && xhr.overrideMimeType('application/json');
+    xhr.open('GET','https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/'+encodeURIComponent(ch)+'.json',true);
+    xhr.timeout = 3500;
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState !== 4) return;
+      if(xhr.status !== 200){ fail(xhr); return; }
+      try{ succeed(JSON.parse(xhr.responseText)); }
+      catch(error){ fail(error); }
+    };
+    xhr.onerror = function(){ fail(xhr); };
+    xhr.ontimeout = function(){ fail(xhr); };
+    xhr.send();
+  }
+
   function playCurrent(){
     if(!currentWriter) return;
     currentStrokeShown = 0;
@@ -1008,6 +1095,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     currentCharIdx = idx;
     var ch = currentChars[idx];
     currentWriter = null;
+    strokeDataReady = false;
+    var loadToken = ++strokeLoadToken;
     isPlaying = false; isFinished = false; isReshowing = false;
     currentStrokeShown = 0; totalStrokes = 0;
     hideNextWordBtn();
@@ -1021,37 +1110,31 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     charPrevBtn.disabled = (idx === 0);
     charNextBtn.disabled = (idx === currentChars.length - 1);
 
-    var data = STROKES[ch];
-    if(data){
-      totalStrokes = data.strokes.length;
-      currentStrokeShown = 0;
-      writerStrokes.textContent = (UI[currentLang] || UI.uz).strokes(totalStrokes);
-      charBoxLg.innerHTML = gridSvg();
-      var target = charBoxLg.querySelector('.writer-target');
-      currentWriter = HanziWriter.create(target, ch, {
-        width: 236, height: 236, padding: 12,
-        showOutline: true,
-        showCharacter: false,
-        outlineColor: isLight ? 'rgba(33,29,23,.14)' : 'rgba(255,255,255,.16)',
-        strokeColor: '#d6453a',
-        strokeAnimationSpeed: 1,
-        delayBetweenStrokes: 280,
-        charDataLoader: function(c, onComplete){
-          if(STROKES[c]) onComplete(STROKES[c]);
-        }
-      });
-      updateStepBtns();
-    } else {
-      writerStrokes.textContent = '';
-      charBoxLg.innerHTML = '<div class="plain-char">'+ch+'</div>';
-    }
+    var data = (typeof STROKES !== 'undefined' && STROKES[ch]) ? STROKES[ch] : null;
+    totalStrokes = data && Array.isArray(data.strokes) ? data.strokes.length : 0;
+    writerStrokes.textContent = data ? (UI[currentLang] || UI.uz).strokes(totalStrokes) : writerStatus('loading');
+    charBoxLg.innerHTML = gridSvg();
+    var target = charBoxLg.querySelector('.writer-target');
+    currentWriter = HanziWriter.create(target, ch, {
+      width: 236, height: 236, padding: 12,
+      showOutline: true,
+      showCharacter: false,
+      outlineColor: isLight ? 'rgba(33,29,23,.14)' : 'rgba(255,255,255,.16)',
+      strokeColor: '#d6453a',
+      strokeAnimationSpeed: 1,
+      delayBetweenStrokes: 280,
+      charDataLoader: function(c, onComplete, onError){
+        loadStrokeData(c, onComplete, onError, loadToken);
+      }
+    });
+    updateStepBtns();
     // Show "next word" right away (it self-hides when there is no next word) so the
     // button does not depend on finishing the stroke animation first.
     showNextWordBtn();
   }
 
   ctrlPlayPause.addEventListener('click', function(){
-    if(!currentWriter) return;
+    if(!currentWriter || !strokeDataReady) return;
     if(isPlaying){
       currentWriter.pauseAnimation();
       isPlaying = false; setPlayIcon(); updateStepBtns();
@@ -1089,6 +1172,45 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     });
     return memoLoadPromise;
   }
+
+  function hsk30MemoryFallback(word){
+    if(!word || !String(word.lv || '').split('|').some(function(level){ return /^N[123]$/.test(level); })) return '';
+    var characters = Array.from(String(word.h || '')).filter(function(ch){ return /[\u3400-\u9fff]/.test(ch); });
+    var seen = {};
+    var cues = characters.filter(function(ch){
+      if(seen[ch]) return false;
+      seen[ch] = true;
+      return window.MEMO_DATA && window.MEMO_DATA[ch];
+    });
+    var disclosure = {
+      uz:'Quyidagi bog‘lanishlar so‘zni tashkil etgan belgilarni eslashga yordam beradi; ular so‘zning kelib chiqishi haqida da’vo emas.',
+      ru:'Эти ассоциации помогают запомнить знаки в составе слова и не описывают происхождение самого слова.',
+      tj:'Ин пайвандҳо барои дар хотир нигоҳ доштани аломатҳои калимаанд; онҳо пайдоиши худи калимаро шарҳ намедиҳанд.'
+    };
+    if(cues.length){
+      var rows = cues.map(function(ch){
+        var D = window.MEMO_DATA[ch] || {};
+        var meaning = memoText(D.note);
+        var hook = Array.isArray(D.hooks) && D.hooks.length ? memoText(D.hooks[0].t) : '';
+        var detail = [meaning, hook].filter(Boolean).join(' — ');
+        if(!detail) return '';
+        return '<div class="memo-word"><span class="mw-w">'+escapeHtml(ch)+'</span><span class="mw-m">'+escapeHtml(detail)+'</span></div>';
+      }).filter(Boolean).join('');
+      if(rows){
+        return '<div class="memo-sec"><div class="ms-h">'+escapeHtml((memoLabels[currentLang] || memoLabels.uz).eslab)+'</div>'+
+          '<div class="memo-signal">'+escapeHtml(disclosure[currentLang] || disclosure.uz)+'</div>'+
+          '<div class="memo-words">'+rows+'</div></div>';
+      }
+    }
+    var recall = {
+      uz:'Pinyinni ovoz chiqarib ayting, so‘zni yopib ma’nosini eslang, keyin ma’nodan xitoycha so‘zni qayta toping.',
+      ru:'Произнесите пиньинь, вспомните значение с закрытым словом, затем восстановите слово по значению.',
+      tj:'Пинйинро бо овоз гӯед, калимаро пӯшонда маънояшро ба ёд оред, сипас аз рӯйи маъно калимаи чиниро ёбед.'
+    };
+    return '<div class="memo-sec"><div class="ms-h">'+escapeHtml((memoLabels[currentLang] || memoLabels.uz).eslab)+'</div>'+
+      '<div class="memo-signal">'+escapeHtml(recall[currentLang] || recall.uz)+'</div></div>';
+  }
+
   // Structured "fast memorization" sections — optional, only when memo data exists for the char.
   function renderMemo(word){
     var memoBlock = document.getElementById('memo-block');
@@ -1098,7 +1220,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       loadMemoData().then(function(){ if(currentWord === word) renderMemo(word); });
       return;
     }
-    if(!D){ memoBlock.innerHTML = ''; return; }
+    if(!D){ memoBlock.innerHTML = hsk30MemoryFallback(word); return; }
     var L = memoLabels[currentLang] || memoLabels.uz;
     var html = '';
     // 4 — Tarkibi (component breakdown)
@@ -1146,16 +1268,24 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
 
   function renderExample(word){
-    var ex = (typeof EXAMPLES !== 'undefined') ? EXAMPLES[word.h] : null;
+    var levels = String(word.lv || '').split('|');
+    var isHsk30 = levels.some(function(level){ return /^N[123]$/.test(level); });
+    var ex = isHsk30 && window.HSK30_DICTIONARY_EXAMPLES ?
+      (window.HSK30_DICTIONARY_EXAMPLES[word.h] || null) : null;
+    if(!ex && typeof EXAMPLES !== 'undefined') ex = EXAMPLES[word.h] || null;
     if(ex && ex.zh){
       exampleBlock.classList.remove('hidden');
       usagePos.textContent = ex.pos || '';
       usagePos.classList.toggle('hidden', !ex.pos);
       exampleZh.textContent = ex.zh || '';
+      examplePinyin.textContent = ex.p || '';
+      examplePinyin.classList.toggle('hidden', !ex.p);
       exampleUz.textContent = localizedExample(ex);
       exampleAudioBtn.onclick = function(){ speak(ex.zh); };
     } else {
       exampleBlock.classList.add('hidden');
+      examplePinyin.textContent = '';
+      examplePinyin.classList.add('hidden');
     }
   }
 

@@ -135,7 +135,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         onboarding = Path("app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
 
-        self.assertIn('var step=0,sel="beginner"', onboarding)
+        self.assertIn('var step=0,track="hsk20",sel="beginner"', onboarding)
         self.assertLess(onboarding.index('{k:"beginner"'), onboarding.index('{k:"hsk1"'))
         self.assertIn('localStorage.removeItem("hsk_v3_start_mode")', onboarding)
         self.assertNotIn('startMode=localStorage.getItem("hsk_v3_start_mode")', onboarding)
