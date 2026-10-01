@@ -1265,9 +1265,9 @@ function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLev
 function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function practiceWordGate(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{})}
 var TRACK_UI={
-  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 faol HSK AI Pro obunasi bilan ishlaydi. Bir martalik doimiy access yoqilgan bo'lsa, uning joriy narxi pastda ko'rsatiladi.",subscribe:"HSK AI Pro olish",permanent:"{price} TJS · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda. Hozircha eski HSK testlari bu kurs uchun ishlatilmaydi.",close:"Yopish"},
-  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"HSK 3.0 доступен с активной подпиской HSK AI Pro. Если разовый постоянный доступ включён, его текущая цена показана ниже.",subscribe:"Получить HSK AI Pro",permanent:"{price} TJS · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится. Старые HSK-тесты для этого курса не используются.",close:"Закрыть"},
-  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"HSK 3.0 бо обунаи фаъоли HSK AI Pro дастрас аст. Агар дастрасии доимии якдафъаина фаъол бошад, нархи ҷорӣ дар поён нишон дода мешавад.",subscribe:"HSK AI Pro гирифтан",permanent:"{price} TJS · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад. Тестҳои кӯҳнаи HSK барои ин курс истифода намешаванд.",close:"Пӯшидан"}
+  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 faol HSK AI Pro obunasi bilan ishlaydi. Bir martalik doimiy access yoqilgan bo'lsa, uning joriy narxi pastda ko'rsatiladi.",subscribe:"HSK AI Pro olish",permanent:"{price} TJS · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda. Hozircha eski HSK testlari bu kurs uchun ishlatilmaydi.",promoTitle:"Yangi HSK 3.0",promoBody:"Yangi standart alohida kurs sifatida qo'shildi. Eski HSK 2.0 progress'ingiz saqlanadi va istalgan payt qaytishingiz mumkin.",promoSwitch:"HSK 3.0 ga o'tish",promoLater:"Keyinroq",promoRecommended:"Tavsiya",close:"Yopish"},
+  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"HSK 3.0 доступен с активной подпиской HSK AI Pro. Если разовый постоянный доступ включён, его текущая цена показана ниже.",subscribe:"Получить HSK AI Pro",permanent:"{price} TJS · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится. Старые HSK-тесты для этого курса не используются.",promoTitle:"Новый HSK 3.0",promoBody:"Новый стандарт добавлен как отдельный курс. Ваш прогресс HSK 2.0 сохранится, и к нему можно вернуться в любое время.",promoSwitch:"Перейти на HSK 3.0",promoLater:"Позже",promoRecommended:"Рекомендуем",close:"Закрыть"},
+  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"HSK 3.0 бо обунаи фаъоли HSK AI Pro дастрас аст. Агар дастрасии доимии якдафъаина фаъол бошад, нархи ҷорӣ дар поён нишон дода мешавад.",subscribe:"HSK AI Pro гирифтан",permanent:"{price} TJS · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад. Тестҳои кӯҳнаи HSK барои ин курс истифода намешаванд.",promoTitle:"HSK 3.0-и нав",promoBody:"Стандарти нав ҳамчун курси алоҳида илова шуд. Пешрафти HSK 2.0 нигоҳ дошта мешавад ва ҳар вақт баргашта метавонед.",promoSwitch:"Гузаштан ба HSK 3.0",promoLater:"Баъдтар",promoRecommended:"Тавсия",close:"Пӯшидан"}
 };
 function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
 function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
@@ -1311,15 +1311,18 @@ function showHsk30AccessGate(){
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>');
   });
 }
-function switchCourseTrack(target){
+function switchCourseTrack(target,requestedLevel){
   target=target==="hsk30"?"hsk30":"hsk20";
+  requestedLevel=requestedLevel?normalizeLevel(requestedLevel):"";
   if(target===currentCourseTrack()){App.closeSheet();return}
   var t=trackUi();
   courseTrackStatus(true).then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
     if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
     App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
-    return _apiPost("/api/v3/course-tracks/switch",{target_track:target}).then(function(r){
+    var switchPayload={target_track:target};
+    if(requestedLevel)switchPayload.level=requestedLevel;
+    return _apiPost("/api/v3/course-tracks/switch",switchPayload).then(function(r){
       return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d});
     }).then(function(d){
       COURSE_TRACK_STATE=d;App.closeSheet();
@@ -1330,6 +1333,43 @@ function switchCourseTrack(target){
     if(target==="hsk30"){showHsk30AccessGate();return}
     App.closeSheet();
   });
+}
+var HSK30_PROMO_CHECKED=false;
+function openHsk30PromoLevelPicker(recommended){
+  var t=trackUi(),levels=hsk30LiveLevels();
+  if(!levels.length){showHsk30LevelSoon("nhsk1");return}
+  recommended=normalizeLevel(recommended||levels[0]);
+  if(levels.indexOf(recommended)<0)recommended=levels[0];
+  var rows=levels.map(function(lv){
+    var rec=lv===recommended?'<small>'+esc(t.promoRecommended)+'</small>':"";
+    return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="switchCourseTrack(\'hsk30\',\''+esc(lv)+'\')"><span class="han" style="font-size:20px;width:42px">N'+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
+  }).join("");
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div></div>'+rows);
+}
+function renderHsk30Promo(status,promo){
+  var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+  var unlock=status&&status.hsk30_unlock||{},price=Number(unlock.price_tjs||0)||0;
+  var paymentEnabled=unlock.payment_enabled!==false&&price>0;
+  var priceLine=(!access||!access.paid_access)&&paymentEnabled
+    ?'<div class="tr" style="margin-top:8px"><b>'+esc(t.permanent.replace("{price}",price))+'</b></div>'
+    :"";
+  var recommended=(promo&&promo.recommended_level)||"nhsk1";
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.promoTitle)+'</div><div class="tr">'+esc(t.promoBody)+'</div>'+priceLine+'</div>'
+    +'<button class="scta" style="width:100%;margin-bottom:8px" onclick="openHsk30PromoLevelPicker(\''+esc(recommended)+'\')">'+esc(t.promoSwitch)+'</button>'
+    +'<button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.promoLater)+'</button>');
+}
+function maybeShowHsk30Promo(){
+  if(HSK30_PROMO_CHECKED||currentCourseTrack()!=="hsk20")return;
+  HSK30_PROMO_CHECKED=true;
+  courseTrackStatus(false).then(function(status){
+    var promo=status&&status.hsk30_promo;
+    if(!promo||!promo.eligible)return null;
+    return _apiPost("/api/v3/course-tracks/hsk30/promo-shown",{}).then(function(r){
+      return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"promo_failed");return d});
+    }).then(function(marked){
+      if(marked&&marked.recorded)renderHsk30Promo(status,marked);
+    });
+  }).catch(function(){});
 }
 function openCourseTrackPicker(){
   var t=trackUi(),cur=currentCourseTrack();
@@ -7191,6 +7231,9 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
        allaqachon beradi. Faqat onboardingdan qaytishda tanlov uchun darhol kerak. */
     if(bootParams.get("onboarded")==="1"){
       trialFetchStatus().then(function(){try{renderProfile()}catch(e){}maybeShowPlanChoice()});
+    }
+    else if(!(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())){
+      setTimeout(maybeShowHsk30Promo,900);
     }
     /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
