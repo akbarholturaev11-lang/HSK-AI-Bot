@@ -210,6 +210,46 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(int(first_open_events or 0), 0)
             self.assertEqual(progress.reminder_tz_offset, 5)
 
+    async def test_native_desktop_can_switch_to_live_hsk30_track(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
+            await BotSettingRepository(session).set_bool(
+                HSK30_ENABLED_SETTINGS_KEY,
+                True,
+            )
+            await session.commit()
+
+        switched = await self.client.post(
+            "/api/v3/desktop/course/tracks/switch",
+            headers={**self.auth_headers, "Content-Type": "application/json"},
+            json={"target_track": "hsk30", "level": "nhsk1"},
+        )
+        self.assertEqual(switched.status_code, 200, switched.text)
+        self.assertEqual(switched.json()["active_track"], "hsk30")
+        self.assertEqual(switched.json()["active_level"], "nhsk1")
+
+        course_map = await self.client.get(
+            "/api/v3/desktop/course/map?tz=300",
+            headers=self.auth_headers,
+        )
+        self.assertEqual(course_map.status_code, 200, course_map.text)
+        payload = course_map.json()
+        self.assertEqual(payload["level"], "nhsk1")
+        self.assertEqual(payload["hsk30"]["active_track"], "hsk30")
+        self.assertTrue(payload["hsk30"]["access"]["allowed"])
+        self.assertEqual(payload["hsk30"]["live_levels"], ["nhsk1"])
+
+        promo = await self.client.post(
+            "/api/v3/desktop/course/hsk30/promo-shown",
+            headers={**self.auth_headers, "Content-Type": "application/json"},
+            json={},
+        )
+        self.assertEqual(promo.status_code, 200, promo.text)
+        self.assertTrue(promo.json()["ok"])
+
     async def test_hsk30_map_preserves_native_level_when_permanently_unlocked(self):
         async with self.sessions() as session:
             user = await session.get(User, 1)
