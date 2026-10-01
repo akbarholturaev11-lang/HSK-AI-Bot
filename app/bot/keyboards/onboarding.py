@@ -36,20 +36,30 @@ def course_mode_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
-def level_keyboard(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=t("level_beginner", lang), callback_data="level:beginner")],
-            [
-                InlineKeyboardButton(text="HSK 1", callback_data="level:hsk1"),
-                InlineKeyboardButton(text="HSK 2", callback_data="level:hsk2"),
-            ],
-            [
-                InlineKeyboardButton(text="HSK 3", callback_data="level:hsk3"),
-                InlineKeyboardButton(text="HSK 4", callback_data="level:hsk4"),
-            ],
-        ]
-    )
+def level_keyboard(
+    lang: str,
+    levels: list[str] | tuple[str, ...] | None = None,
+) -> InlineKeyboardMarkup:
+    keys = list(levels or ("beginner", "hsk1", "hsk2", "hsk3", "hsk4"))
+
+    def label(level: str) -> str:
+        if level == "beginner":
+            return t("level_beginner", lang)
+        if level.startswith("nhsk") and level[-1:].isdigit():
+            return f"HSK 3.0 · N{level[-1]}"
+        if level.startswith("hsk") and level[3:].isdigit():
+            return f"HSK {level[3:]}"
+        return level.upper()
+
+    buttons = [
+        InlineKeyboardButton(
+            text=label(level),
+            callback_data=f"level:{level}",
+        )
+        for level in keys
+    ]
+    rows = [buttons[index : index + 2] for index in range(0, len(buttons), 2)]
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 
