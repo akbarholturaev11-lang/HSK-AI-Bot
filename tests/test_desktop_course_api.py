@@ -241,6 +241,8 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["hsk30"]["active_track"], "hsk30")
         self.assertTrue(payload["hsk30"]["access"]["allowed"])
         self.assertEqual(payload["hsk30"]["live_levels"], ["nhsk1"])
+        self.assertTrue(payload["hsk30"]["new_badge"]["is_new"])
+        self.assertIsNotNone(payload["hsk30"]["new_badge"]["new_until"])
 
         promo = await self.client.post(
             "/api/v3/desktop/course/hsk30/promo-shown",
