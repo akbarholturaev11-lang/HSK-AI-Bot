@@ -35,6 +35,8 @@ Research: `research/hsk-3.0/`.
 | 18 | Trial | 7 kunlik Pro trial, referal trial va vaqtinchalik bonus (`TRIAL`, `TEMPORARY_TRIAL`) **obuna hisoblanmaydi** — HSK 3.0 uchun 10 somoni kerak |
 | 19 | Alipay/WeChat | Shu summa uchun admin QR kod yuklamaguncha 10 somonilik ekranda **ko'rinmaydi** |
 | 20 | Darslik dialoglari | **Aynan darslikdagi dialoglar olinadi.** Egada ulardan foydalanish uchun ruxsat bor. Hanzi/pinyin saqlanadi, UZ/RU/TJ tarjimalar tayyorlanadi |
+| 21 | HSK 3.0 release boshqaruvi | **Faqat admin paneldagi HSK 3.0 switch orqali yoqiladi/o‘chiriladi.** Deploy kursni avtomatik yoqmaydi |
+| 22 | NEW belgisi | HSK 3.0 admin paneldan OFF → ON qilingan vaqtdan boshlab **aniq 3 kun** `NEW` ko‘rinadi; narx yoki live-level sozlamasini saqlash bu muddatni qayta boshlamaydi |
 
 ## Ish boshlanishidagi holat (2026-09-30 baseline)
 
