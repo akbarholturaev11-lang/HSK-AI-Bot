@@ -58,7 +58,8 @@ class OnboardingViewModel(
                                 hsk30Allowed = status.hsk30.allowed,
                                 hsk30LiveLevels = status.hsk30.liveLevels.filter { level -> level in HSK30_LEVELS }
                                     .ifEmpty { listOf("nhsk1") },
-                                hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(1),
+                                hsk30PaymentEnabled = status.hsk30.paymentEnabled,
+                                hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(0),
                             ),
                             error = if (status.ok) null else ApiError.Unknown,
                         )
