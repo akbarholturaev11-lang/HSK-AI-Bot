@@ -9,9 +9,26 @@
  */
 
 import { EXAMPLES, WORDS } from "../data/vocabulary.js";
+import { HSK30_WORDS } from "../data/hsk30-vocabulary.js";
 import { createPandaMascot } from "./mascot.js";
 
-const LEVELS = ["HSK1", "HSK2", "HSK3", "HSK4"];
+const HSK20_LEVELS = ["HSK1", "HSK2", "HSK3", "HSK4"];
+const HSK30_LEVELS = ["N1", "N2", "N3"];
+const ALL_WORDS = (() => {
+  const merged = new Map();
+  WORDS.forEach((word) => {
+    merged.set(word.h, { ...word, lv20: String(word.lv || ""), lv30: "" });
+  });
+  HSK30_WORDS.forEach((word) => {
+    const existing = merged.get(word.h);
+    if (existing) {
+      existing.lv30 = String(word.lv || "");
+    } else {
+      merged.set(word.h, { ...word, lv20: "", lv30: String(word.lv || "") });
+    }
+  });
+  return [...merged.values()];
+})();
 const FILTERS = ["all", "saved", "review"];
 const PAGE_SIZE = 60;
 
@@ -89,7 +106,9 @@ export class DesktopVocabularyController {
 
     this.query = "";
     this.filter = "all";
+    this.version = "hsk20";
     this.level = "";
+    this.courseLevel = "";
     this.selected = "";
     this.detailOpen = false;
     this.saved = new Set();
@@ -102,6 +121,40 @@ export class DesktopVocabularyController {
 
   setLanguage(language) {
     this.language = language;
+  }
+
+  setCourseLevel(level) {
+    const normalizedLevel = String(level || "").trim().toLowerCase();
+    if (!normalizedLevel || normalizedLevel === this.courseLevel) return;
+    this.courseLevel = normalizedLevel;
+    if (normalizedLevel.startsWith("nhsk")) {
+      this.version = "hsk30";
+      const band = Number(normalizedLevel.replace(/\D/g, "")) || 1;
+      this.level = `N${Math.min(3, Math.max(1, band))}`;
+    } else {
+      this.version = "hsk20";
+      const match = normalizedLevel.match(/^hsk([1-4])/);
+      this.level = `HSK${match ? match[1] : "1"}`;
+    }
+    this.selected = "";
+    this.limit = PAGE_SIZE;
+  }
+
+  sourceWords() {
+    if (this.version === "hsk30") return HSK30_WORDS;
+    if (this.version === "all") return ALL_WORDS;
+    return WORDS;
+  }
+
+  levelLabel(word) {
+    if (this.version === "all") {
+      return [word?.lv20, word?.lv30].filter(Boolean).join(" · ");
+    }
+    return String(word?.lv || "");
+  }
+
+  wordByHanzi(headword) {
+    return this.sourceWords().find((item) => item.h === headword) || null;
   }
 
   dispose() {
@@ -128,9 +181,10 @@ export class DesktopVocabularyController {
   }
 
   aiContext() {
-    const word = WORDS.find((item) => item.h === this.selected) || null;
+    const word = this.wordByHanzi(this.selected);
     const promptLines = [
       `Vocabulary filter: ${this.filter}`,
+      `Vocabulary version: ${this.version}`,
       `Vocabulary level: ${this.level || "all"}`,
       this.query ? `Vocabulary search: ${briefText(this.query, 80)}` : "",
     ].filter(Boolean);
@@ -149,7 +203,7 @@ export class DesktopVocabularyController {
       `Selected word: ${briefText(word.h, 80)}`,
       `Pinyin: ${briefText(word.p, 120)}`,
       `Translation: ${briefText(translation, 180)}`,
-      `Level: ${briefText(word.lv, 40)}`,
+      `Level: ${briefText(this.levelLabel(word), 40)}`,
     );
     if (exampleLine) {
       promptLines.push(`Example: ${briefText(exampleLine, 260)}`);
@@ -158,7 +212,7 @@ export class DesktopVocabularyController {
       word: word.h,
       pinyin: word.p,
       translation,
-      level: word.lv,
+      level: this.levelLabel(word),
       example: exampleLine,
       detailOpen: this.detailOpen,
       promptLines,
@@ -195,7 +249,14 @@ export class DesktopVocabularyController {
   }
 
   matches(word) {
-    if (this.level && String(word.lv || "") !== this.level) return false;
+    if (this.level) {
+      if (this.version === "all") {
+        const field = this.level.startsWith("N") ? word.lv30 : word.lv20;
+        if (String(field || "") !== this.level) return false;
+      } else if (String(word.lv || "") !== this.level) {
+        return false;
+      }
+    }
     if (this.filter === "saved" && !this.saved.has(word.h)) return false;
     if (this.filter === "review" && !this.review.has(word.h)) return false;
     if (!this.query) return true;
@@ -208,7 +269,7 @@ export class DesktopVocabularyController {
   }
 
   results() {
-    return WORDS.filter((word) => this.matches(word));
+    return this.sourceWords().filter((word) => this.matches(word));
   }
 
   // ---------------------------------------------------------------- rendering
@@ -294,14 +355,44 @@ export class DesktopVocabularyController {
     });
     bar.append(filters);
 
-    const levels = node("div", "vocabulary-filters");
-    [["", this.t("vocabularyAllLevels")], ...LEVELS.map((l) => [l, l])].forEach(
-      ([value, label]) => {
+    const versions = node("div", "vocabulary-filters");
+    [
+      ["all", this.t("vocabularyFilterAll")],
+      ["hsk20", "HSK 2.0"],
+      ["hsk30", "HSK 3.0"],
+    ].forEach(([value, label]) => {
       const button = node(
         "button",
-        `filterBtn${this.level === value ? " active" : ""}`,
+        `filterBtn${this.version === value ? " active" : ""}`,
         label,
       );
+      button.type = "button";
+      button.setAttribute("aria-pressed", this.version === value ? "true" : "false");
+      button.addEventListener("click", () => {
+        this.version = value;
+        this.level = "";
+        this.limit = PAGE_SIZE;
+        this.selected = "";
+        this.render();
+      });
+      versions.append(button);
+    });
+    bar.append(versions);
+
+    const availableLevels =
+      this.version === "hsk30"
+        ? HSK30_LEVELS
+        : this.version === "hsk20"
+          ? HSK20_LEVELS
+          : [...HSK20_LEVELS, ...HSK30_LEVELS];
+    const levels = node("div", "vocabulary-filters");
+    [["", this.t("vocabularyAllLevels")], ...availableLevels.map((l) => [l, l])].forEach(
+      ([value, label]) => {
+        const button = node(
+          "button",
+          `filterBtn${this.level === value ? " active" : ""}`,
+          label,
+        );
         button.type = "button";
         button.setAttribute("aria-pressed", this.level === value ? "true" : "false");
         button.addEventListener("click", () => {
@@ -335,7 +426,7 @@ export class DesktopVocabularyController {
         node("strong", "zh hanzi", word.h),
         node("span", "py pinyin", word.p),
         node("small", "translation", this.meaning(word)),
-        node("span", "tag vocabulary-level", String(word.lv || "")),
+        node("span", "tag vocabulary-level", this.levelLabel(word)),
       );
       if (this.saved.has(word.h)) {
         row.append(node("span", "vocabulary-flag", "★"));
@@ -379,7 +470,7 @@ export class DesktopVocabularyController {
     box.append(note);
 
     const list = node("div", "savedList");
-    const savedWords = WORDS.filter((word) => this.saved.has(word.h)).slice(0, 12);
+    const savedWords = this.sourceWords().filter((word) => this.saved.has(word.h)).slice(0, 12);
     if (!savedWords.length) {
       list.append(node("p", "muted small", this.t("vocabularyNoSaved")));
     } else {
@@ -419,7 +510,7 @@ export class DesktopVocabularyController {
   }
 
   renderDetailScreen() {
-    const word = WORDS.find((item) => item.h === this.selected);
+    const word = this.wordByHanzi(this.selected);
     if (!word) {
       this.detailOpen = false;
       return this.renderList(this.results());
@@ -440,7 +531,7 @@ export class DesktopVocabularyController {
       node("h2", "", this.t("vocabularyDetailTitle")),
       node("p", "", this.t("vocabularyDetailSubtitle")),
     );
-    head.append(back, title, node("span", "tag", String(word.lv || "")));
+    head.append(back, title, node("span", "tag", this.levelLabel(word)));
     fragment.append(head);
 
     const grid = node("div", "wordDetailGrid");
@@ -584,7 +675,7 @@ export class DesktopVocabularyController {
 
   renderDetail() {
     const detail = node("aside", "vocabulary-detail card-panel");
-    const word = WORDS.find((item) => item.h === this.selected);
+    const word = this.wordByHanzi(this.selected);
     if (!word) {
       detail.append(node("p", "muted", this.t("vocabularyPickWord")));
       return detail;
@@ -594,7 +685,7 @@ export class DesktopVocabularyController {
     const top = node("div", "vocabulary-detail-top");
     const copy = node("div");
     copy.append(
-      node("p", "eyebrow", example?.pos || String(word.lv || "")),
+      node("p", "eyebrow", example?.pos || this.levelLabel(word)),
       node("strong", "vocabulary-detail-zh hanzi", word.h),
       node("span", "vocabulary-detail-pinyin pinyin", word.p),
       node("p", "vocabulary-detail-translation translation", this.meaning(word)),
