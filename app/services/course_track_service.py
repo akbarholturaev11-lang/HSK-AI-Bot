@@ -119,7 +119,12 @@ class CourseTrackService:
         }
         access = await self.hsk30_access(user)
         live_levels = await self.hsk30_feature.live_levels()
-        new_badge = await self.hsk30_feature.new_badge()
+        new_badge_reader = getattr(self.hsk30_feature, "new_badge", None)
+        new_badge = (
+            await new_badge_reader()
+            if callable(new_badge_reader)
+            else {"is_new": False, "enabled_at": None, "new_until": None}
+        )
 
         def state_payload(track: str) -> dict:
             row = states.get(track)
