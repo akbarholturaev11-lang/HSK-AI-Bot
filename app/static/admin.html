@@ -1859,6 +1859,8 @@
       const h=d.hsk30||{};
       const paymentOn=h.unlock_payment_enabled!==false;
       const courseOn=h.enabled===true;
+      const newBadge=h.new_badge||{};
+      const newUntil=newBadge.new_until?fmtDate(newBadge.new_until):"";
       const price=Math.max(1,Number(h.unlock_price_tjs||0)||1);
       const live=Array.isArray(h.live_levels)?h.live_levels:[];
       const qr=h.qr||{};
@@ -1878,7 +1880,8 @@
           <h3>HSK 3.0 курс</h3>
           <p>Бу глобал kill switch. Ўчирилса HSK 3.0 барча user учун ёпилади.</p>
           <label class="ncsw"><input type="checkbox" id="hsk30Enabled" ${courseOn?"checked":""}> HSK 3.0 курс ёқилган</label>
-          <div class="tags" style="margin-top:10px">${tag(courseOn?"курс фаол":"курс ўчиқ",courseOn?"green":"red")}${live.map(x=>tag(String(x).toUpperCase(),"blue")).join("")}</div>
+          <div class="tags" style="margin-top:10px">${tag(courseOn?"курс фаол":"курс ўчиқ",courseOn?"green":"red")}${newBadge.is_new?tag("NEW · 3 кунлик белги фаол","gold"):""}${live.map(x=>tag(String(x).toUpperCase(),"blue")).join("")}</div>
+          <div class="ncnote">${newBadge.is_new&&newUntil?`NEW белгиси ${newUntil} гача кўринади. `:""}Курс OFF → ON қилинганда NEW белгиси автоматик 3 кунга ёқилади. Нарх ёки live даражаларни сақлаш бу 3 кунлик ҳисобни қайта бошламайди.</div>
           <div class="frow" style="margin-top:12px">
             <label>Live даражалар</label>
             <div class="row">
