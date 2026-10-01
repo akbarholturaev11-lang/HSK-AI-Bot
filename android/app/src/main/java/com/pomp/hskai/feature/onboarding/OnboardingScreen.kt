@@ -747,12 +747,37 @@ private fun CourseVersionSwitch(
                     ) { onSelected(track) },
             ) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        label,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
+                    val textColor = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary
+                    if (
+                        track == "hsk30" &&
+                        !state.hsk30Allowed &&
+                        state.hsk30PaymentEnabled &&
+                        state.hsk30PriceTjs > 0
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                label,
+                                color = textColor,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 14.sp,
+                            )
+                            Text(
+                                "${state.hsk30PriceTjs} TJS",
+                                color = textColor.copy(alpha = 0.78f),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 11.sp,
+                            )
+                        }
+                    } else {
+                        Text(
+                            label,
+                            color = textColor,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
             }
         }
