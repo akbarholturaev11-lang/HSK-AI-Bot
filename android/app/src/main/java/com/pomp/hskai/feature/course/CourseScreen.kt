@@ -134,6 +134,7 @@ fun CourseScreen(
     val map = state.map
     var hsk30PromoOpen by remember { mutableStateOf(false) }
     var hsk30PromoHandled by remember { mutableStateOf(false) }
+    var pendingTrackSwitch by remember { mutableStateOf<Pair<String, String?>?>(null) }
     val hsk30PromoEligible = map?.hsk30?.promo?.eligible == true
     LaunchedEffect(hsk30PromoEligible) {
         if (hsk30PromoEligible && !hsk30PromoHandled) {
@@ -200,7 +201,9 @@ fun CourseScreen(
                             CourseTrackBar(
                                 map = map,
                                 isSwitching = state.isSwitchingTrack,
-                                onSwitchTrack = onSwitchTrack,
+                                onSwitchTrack = { track, level ->
+                                    pendingTrackSwitch = track to level
+                                },
                                 onUnlockHsk30 = onUnlockHsk30,
                             )
                         }
@@ -284,6 +287,45 @@ fun CourseScreen(
                         onUnlockHsk30()
                     }
                 },
+            )
+        }
+
+        pendingTrackSwitch?.let { (targetTrack, targetLevel) ->
+            val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
+            AlertDialog(
+                onDismissRequest = { pendingTrackSwitch = null },
+                title = {
+                    Text(
+                        stringResource(R.string.profile_course_version_confirm_title, targetLabel),
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
+                text = {
+                    Text(
+                        stringResource(R.string.profile_course_version_confirm_body),
+                        color = PompColors.InkSecondary,
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            pendingTrackSwitch = null
+                            onSwitchTrack(targetTrack, targetLevel)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PompColors.Cinnabar,
+                            contentColor = Color.White,
+                        ),
+                    ) {
+                        Text(stringResource(R.string.action_continue))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { pendingTrackSwitch = null }) {
+                        Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
+                    }
+                },
+                containerColor = PompColors.PaperRaised,
             )
         }
     }
