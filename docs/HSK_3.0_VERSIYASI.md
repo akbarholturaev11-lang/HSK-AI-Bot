@@ -354,7 +354,8 @@ Istalgan user:
 - **To'lov qismi** (4-qaror bo'yicha):
   - `plan_type = "hsk30_unlock"`, `Hsk30UnlockService.grant`;
   - admin tasdig'i va rad etishda alohida tarmoq (`activate_plan` chaqirilmaydi);
-  - `hsk30_unlock_price_tjs` sozlamasi va valyuta o'girish;
+  - `hsk30_unlock_payment_enabled` kaliti bilan bir martalik to'lovni admin yoqadi/o'chiradi;
+  - `hsk30_unlock_price_tjs` admin o'zgartiradigan narx va valyuta o'girish;
   - statistika va partnyor hisobida `plan_type` filtri;
   - 3 tilda tasdiq/rad xabarlari.
 - Onboarding: `nhsk*` uchun legacy `course_lessons` ga bog'liqlik olib
@@ -365,8 +366,10 @@ Istalgan user:
 - Testlar:
   - reestr va trek almashish (saqlash, tiklash, ikki marta almashish);
   - izolyatsiya (nhsk XP ref, xatolar filtri);
-  - **10 somoni tasdig'i obuna maydonlarini o'zgartirmaydi**; obuna
-    tasdig'i avvalgidek ishlaydi; obunachi to'lovsiz o'tadi; to'lamagan
+  - **bir martalik HSK 3.0 to'lovi tasdig'i obuna maydonlarini o'zgartirmaydi**;
+    narx admin paneldagi joriy `hsk30_unlock_price_tjs` qiymatidan olinadi;
+    bir martalik to'lov o'chirilgan bo'lsa bu variant user UI'da ko'rsatilmaydi;
+    obuna tasdig'i avvalgidek ishlaydi; obunachi to'lovsiz o'tadi; to'lamagan
     obunasiz user o'ta olmaydi; chegirma va komissiya qo'llanmaydi;
   - eski xulq regressiyasi.
 - Mezon: flag o'chiq holatda eski userlar uchun hech narsa o'zgarmaydi.
@@ -426,8 +429,8 @@ Istalgan user:
   `_course_level_label` yorliqlari reestrdan olinadi.
 - Legacy bot kursi (`app/bot/handlers/course.py`) nhsk userlarni Mini App'ga
   yo'naltiradi, ularni legacy oqimga kiritmaydi.
-- Admin: to'lov kartasida mahsulot nomi ("HSK 3.0 ochish · 10 TJS"),
-  narx sozlamasi, statistikada alohida qator.
+- Admin: to'lov kartasida mahsulot nomi ("HSK 3.0 ochish · {joriy narx} TJS"),
+  bir martalik to'lovni yoqish/o'chirish kaliti, narx sozlamasi va statistikada alohida qator.
 - Admin broadcast: segment filtriga trek va HSK 3.0 darajalari; bot xabari
   shabloni (uz/ru/tj) va Mini App'ga olib boradigan tugma.
 - Reklama darajalariga HSK 3.0 qo'shiladi.
@@ -448,7 +451,9 @@ Istalgan user:
 ### 7-bosqich — 2, 3, 4-darajalar
 
 Har daraja 2-bosqich tartibida, alohida reliz sifatida, flag orqali ochiladi.
-10 somoni butun HSK 3.0 ni ochadi — keyingi darajalar uchun qayta to'lov yo'q.
+Bir martalik unlock yoqilgan bo'lsa, admin paneldagi joriy narx butun HSK 3.0 ni
+ochadi — keyingi darajalar uchun qayta to'lov yo'q. Bir martalik unlock o'chirilsa,
+HSK 3.0 faqat faol HSK AI Pro yoki avval olingan permanent unlock bilan ishlaydi.
 
 | Daraja | Yangi so'z | Taxminiy mini-dars |
 |---|---:|---:|
