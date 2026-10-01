@@ -144,7 +144,6 @@ fun ProfileScreen(
     onSaveProfile: (String, String) -> Unit = { _, _ -> },
     profileSaving: Boolean = false,
     onOpenSubscription: (renewal: Boolean) -> Unit = {},
-    onStartTrial: () -> Unit = {},
     subscriptionCheckoutAvailable: Boolean = BuildConfig.FLAVOR == "direct",
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true)
@@ -207,7 +206,6 @@ fun ProfileScreen(
                     state = state,
                     checkoutAvailable = subscriptionCheckoutAvailable,
                     onOpenSubscription = onOpenSubscription,
-                    onStartTrial = onStartTrial,
                 )
             }
             item {
@@ -437,7 +435,6 @@ private fun ProfileSubscriptionCard(
     state: ProfileUiState,
     checkoutAvailable: Boolean,
     onOpenSubscription: (renewal: Boolean) -> Unit,
-    onStartTrial: () -> Unit,
 ) {
     val subscription = state.profile?.subscription
     val isPaid = subscription?.isPaid == true || accountIsPaid
@@ -459,8 +456,6 @@ private fun ProfileSubscriptionCard(
         trialActive -> trial?.endsAt
         else -> null
     }
-    val mayStartTrial = !isPaid && !trialActive && trial?.eligible == true
-
     HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -536,31 +531,6 @@ private fun ProfileSubscriptionCard(
                             }
                         ),
                         color = PompColors.Paper,
-                    )
-                }
-                if (mayStartTrial) {
-                    OutlinedButton(
-                        onClick = onStartTrial,
-                        enabled = !state.trialStarting,
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 46.dp),
-                        shape = RoundedCornerShape(14.dp),
-                    ) {
-                        if (state.trialStarting) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                strokeWidth = 2.dp,
-                                color = PompColors.Cinnabar,
-                            )
-                        } else {
-                            Text(stringResource(R.string.profile_trial_cta), color = PompColors.CinnabarDark)
-                        }
-                    }
-                }
-                if (state.trialError.isNotBlank()) {
-                    Text(
-                        stringResource(R.string.profile_trial_failed),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = PompColors.Flame,
                     )
                 }
             } else if (!checkoutAvailable && subscription != null && !isPaid) {
