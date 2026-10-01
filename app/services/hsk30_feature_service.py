@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import timezone
+from datetime import datetime, timedelta, timezone
 
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_levels import hsk30_content_levels, level_spec
@@ -9,6 +9,7 @@ from app.services.course_levels import hsk30_content_levels, level_spec
 HSK30_ENABLED_SETTINGS_KEY = "hsk30_enabled"
 HSK30_LIVE_LEVELS_SETTINGS_KEY = "hsk30_live_levels"
 DEFAULT_HSK30_LIVE_LEVELS = ("nhsk1",)
+HSK30_NEW_BADGE_WINDOW = timedelta(days=3)
 
 
 class Hsk30FeatureService:
@@ -42,10 +43,39 @@ class Hsk30FeatureService:
         return value.astimezone(timezone.utc) if value is not None else None
 
     async def set_enabled(self, enabled: bool):
+        """Persist only a real on/off transition.
+
+        The setting row's updated_at is the public-release timestamp used by
+        the three-day NEW badge. Saving price/live-level settings while the
+        course is already enabled must not restart that clock.
+        """
+        target = bool(enabled)
+        record = await self.setting_repo.get_record(HSK30_ENABLED_SETTINGS_KEY)
+        if record is not None:
+            current = str(record.value or "").strip().lower() in {"1", "true", "yes", "on"}
+            if current == target:
+                return record
+        elif not target:
+            return None
         return await self.setting_repo.set_bool(
             HSK30_ENABLED_SETTINGS_KEY,
-            bool(enabled),
+            target,
         )
+
+    async def new_badge(self, *, now: datetime | None = None) -> dict:
+        enabled_at = await self.enabled_at()
+        current = now or datetime.now(timezone.utc)
+        if current.tzinfo is None:
+            current = current.replace(tzinfo=timezone.utc)
+        else:
+            current = current.astimezone(timezone.utc)
+        new_until = enabled_at + HSK30_NEW_BADGE_WINDOW if enabled_at else None
+        is_new = bool(enabled_at and new_until and current < new_until)
+        return {
+            "is_new": is_new,
+            "enabled_at": enabled_at.isoformat() if enabled_at else None,
+            "new_until": new_until.isoformat() if new_until else None,
+        }
 
     @staticmethod
     def _normalize_live_levels(value: str | None) -> tuple[str, ...]:
