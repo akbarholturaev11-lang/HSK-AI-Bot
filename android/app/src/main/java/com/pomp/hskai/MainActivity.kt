@@ -1268,6 +1268,7 @@ private fun AppRoot(
                                     ?: if (currentLevel.startsWith("nhsk")) "hsk30" else "hsk20",
                                 hsk30Enabled = courseState.map?.hsk30?.access?.featureEnabled == true,
                                 hsk30Allowed = courseState.map?.hsk30?.access?.allowed == true,
+                                hsk30IsNew = courseState.map?.hsk30?.newBadge?.isNew == true,
                                 hsk30PaymentEnabled = courseState.map?.hsk30?.paymentEnabled == true,
                                 hsk30PriceTjs = courseState.map?.hsk30?.priceTjs ?: 0,
                                 hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
