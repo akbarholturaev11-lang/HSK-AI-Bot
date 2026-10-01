@@ -62,6 +62,9 @@ button:disabled{cursor:default}
 .cta{width:100%;min-height:54px;padding:14px 16px;background:var(--cin);color:#fff;border:none;border-radius:13px;font-family:var(--display);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 0 var(--cin2);transition:transform .15s,box-shadow .15s}
 .cta:active:not(:disabled){transform:translateY(2px);box-shadow:none}
 .cta:disabled{opacity:.65;box-shadow:0 2px 0 var(--cin2)}
+.later-cta{width:100%;min-height:46px;margin-top:10px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--ink2);font-size:14px;font-weight:600}
+.later-cta:active:not(:disabled){background:var(--line)}
+.later-cta:disabled{opacity:.55}
 .error{font-size:13px;line-height:1.45;color:var(--cin2);text-align:center;margin:0 0 12px}
 .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 30px 28px;min-height:420px}
 .welcome .hello{flex:none;padding:14px 22px;margin-bottom:27px;font-family:var(--display);font-size:17px;font-weight:500;line-height:1.5}
@@ -105,15 +108,16 @@ button:disabled{cursor:default}
     <p class="footer-note" id="footer-note"></p>
     <p class="error" id="error" role="alert" hidden></p>
     <button class="cta" id="cta" type="button" onclick="nextBtn()">Boshlash</button>
+    <button class="later-cta" id="later-cta" type="button" onclick="startWithHsk20()" hidden></button>
   </footer>
 </div>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={
-  ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 2 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 доступен с Pro или за {price} TJS навсегда.",hsk30LockedPro:"HSK 3.0 доступен с активным HSK AI Pro.",hsk30Disabled:"HSK 3.0 пока закрыт.",unlockHsk30:"Открыть HSK 3.0",getPro:"Получить HSK AI Pro"},
-  uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"2 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 Pro bilan yoki {price} TJS bir martalik to'lov bilan ochiladi.",hsk30LockedPro:"HSK 3.0 faol HSK AI Pro bilan ochiladi.",hsk30Disabled:"HSK 3.0 hozircha yopiq.",unlockHsk30:"HSK 3.0 ni ochish",getPro:"HSK AI Pro olish"},
-  tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 2 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 бо Pro ё бо пардохти якбораи {price} TJS кушода мешавад.",hsk30LockedPro:"HSK 3.0 бо HSK AI Pro-и фаъол кушода мешавад.",hsk30Disabled:"HSK 3.0 ҳоло баста аст.",unlockHsk30:"Кушодани HSK 3.0",getPro:"HSK AI Pro гирифтан"}
+  ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 2 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 доступен с Pro или за {price} TJS навсегда.",hsk30LockedPro:"HSK 3.0 доступен с активным HSK AI Pro.",hsk30Disabled:"HSK 3.0 пока закрыт.",unlockHsk30:"Открыть HSK 3.0",getPro:"Получить HSK AI Pro",laterHsk20:"Позже — начать с HSK 2.0"},
+  uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"2 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 Pro bilan yoki {price} TJS bir martalik to'lov bilan ochiladi.",hsk30LockedPro:"HSK 3.0 faol HSK AI Pro bilan ochiladi.",hsk30Disabled:"HSK 3.0 hozircha yopiq.",unlockHsk30:"HSK 3.0 ni ochish",getPro:"HSK AI Pro olish",laterHsk20:"Keyinroq — HSK 2.0 da boshlash"},
+  tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 2 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 бо Pro ё бо пардохти якбораи {price} TJS кушода мешавад.",hsk30LockedPro:"HSK 3.0 бо HSK AI Pro-и фаъол кушода мешавад.",hsk30Disabled:"HSK 3.0 ҳоло баста аст.",unlockHsk30:"Кушодани HSK 3.0",getPro:"HSK AI Pro гирифтан",laterHsk20:"Баъдтар — аз HSK 2.0 оғоз кардан"}
 }[LANG];
 document.documentElement.lang=LANG==="tj"?"tg":LANG;
 var tg=window.Telegram&&window.Telegram.WebApp;
@@ -314,12 +318,14 @@ function optionRow(key,title,subtitle,glyph,selected,handler){
     +'<span class="glyph" aria-hidden="true">'+glyph+'</span><span class="ot"><span class="hd">'+title+'</span><small>'+subtitle+'</small></span><span class="chk">'+icon("check")+'</span></button>';
 }
 function render(){
-  var st=document.getElementById("stage"),cta=document.getElementById("cta"),backButton=document.getElementById("back");
+  var st=document.getElementById("stage"),cta=document.getElementById("cta"),later=document.getElementById("later-cta"),backButton=document.getElementById("back");
   document.getElementById("top").style.display=step===0?"none":"flex";
   document.getElementById("error").hidden=true;
   backButton.innerHTML=icon("back");backButton.setAttribute("aria-label",L.back);
   document.getElementById("footer-note").textContent=L.welcomeNote;
   document.getElementById("footer-note").hidden=step!==0;
+  later.hidden=!(step===2&&hsk30NeedsUnlock());
+  later.textContent=L.laterHsk20;
   if(step===0){
     st.innerHTML='<div class="welcome"><div class="bub hello">'+L.hello+'</div><div class="big">'+panda("happy")+'</div><h1 id="question" tabindex="-1">HSK AI</h1><p>'+L.boot+'</p></div>';
     cta.textContent=L.start;
@@ -364,9 +370,17 @@ function pickGoal(k){if(submitting||!GOALS.some(function(o){return o.k===k}))ret
 function focusQuestion(){var question=document.getElementById("question");if(question)question.focus({preventScroll:true})}
 function nextBtn(){if(submitting)return;if(step<2){step++;render();focusQuestion()}else{finish()}}
 function back(){if(submitting)return;if(step>0){step--;render();focusQuestion()}}
+function startWithHsk20(){
+  if(submitting||step!==2||!hsk30NeedsUnlock())return;
+  var fallback={nhsk1:"hsk2",nhsk2:"hsk3",nhsk3:"hsk4"};
+  sel=fallback[sel]||"hsk1";
+  track="hsk20";
+  saveDraft();
+  finish();
+}
 function setSubmitting(value){
   submitting=value;
-  document.querySelectorAll(".lv,#back,#cta").forEach(function(button){button.disabled=value});
+  document.querySelectorAll(".lv,#back,#cta,#later-cta").forEach(function(button){button.disabled=value});
   document.getElementById("stage").setAttribute("aria-busy",String(value));
 }
 function finish(){
