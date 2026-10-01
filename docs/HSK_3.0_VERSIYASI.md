@@ -250,7 +250,7 @@ flowchart TD
 
 ```
 Yangi user:
-  Onboarding → [HSK 2.0 | HSK 3.0 · 10 somoni] (default HSK 2.0)
+  Onboarding → [HSK 2.0 | HSK 3.0 · {admin narxi}] (default HSK 2.0)
       ├─ HSK 2.0 → daraja → maqsad → 1-dars (hozirgidek)
       └─ HSK 3.0 → daraja → maqsad → to'lov ekrani
                       ├─ to'ladi → "tekshirilmoqda" → tasdiq → HSK 3.0 · 1-dars
@@ -260,7 +260,7 @@ Eski user (HSK 2.0 da):
   Reliz kuni bot xabari (1 marta) ──┐
   Ilova ochiladi → "Yangi HSK 3.0" ekrani (jami 2 marta, orasi ≥ 3 kun)
       ├─ [HSK 3.0 ga o'tish] → obuna bor / ochilgan? → daraja tanlash → tasdiq → yangi xarita
-      │                        yo'q → to'lov ekrani (10 somoni)
+      │                        yo'q → bir martalik to'lov yoqilgan bo'lsa joriy admin narxi; aks holda Pro ekrani
       └─ [Keyinroq]          → eski kurs davom etadi
 
 Istalgan user:
@@ -268,7 +268,7 @@ Istalgan user:
       → HSK 3.0 tanlanganda:
           ├─ 10 somoni oldin to'langan → darhol ochiladi
           ├─ faol PAID obuna bor → pul so'ralmaydi, obuna tugaguncha ochiladi
-          └─ ikkalasi ham yo'q → [Obunani davom ettirish / 10 somoni bir marta to'lash]
+          └─ ikkalasi ham yo'q → [Obunani davom ettirish / agar yoqilgan bo'lsa joriy admin narxida bir marta to'lash]
       → progress har ikki trek uchun saqlanadi
 ```
 
