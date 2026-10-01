@@ -132,10 +132,14 @@ data class CourseHsk30(
     val activeLevel: String,
     val access: CourseHsk30Access,
     val liveLevels: List<String>,
-    val newBadge: CourseHsk30NewBadge,
     val paymentEnabled: Boolean,
     val priceTjs: Int,
     val promo: CourseHsk30Promo,
+    val newBadge: CourseHsk30NewBadge = CourseHsk30NewBadge(
+        isNew = false,
+        enabledAt = null,
+        newUntil = null,
+    ),
 )
 
 data class CourseStudySetup(
