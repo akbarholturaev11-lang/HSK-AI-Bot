@@ -1141,6 +1141,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "hsk30": {
             "enabled": await Hsk30FeatureService(session).is_enabled(),
             "live_levels": list(await Hsk30FeatureService(session).live_levels()),
+            "new_badge": await Hsk30FeatureService(session).new_badge(),
             "unlock_payment_enabled": await hsk30_unlock_service.payment_enabled(),
             "unlock_price_tjs": hsk30_unlock_price,
             "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
@@ -4025,6 +4026,7 @@ async def admin_miniapp_hsk30_settings(request: Request):
             "hsk30": {
                 "enabled": enabled,
                 "live_levels": list(live_levels),
+                "new_badge": await Hsk30FeatureService(session).new_badge(),
                 "unlock_payment_enabled": unlock_payment_enabled,
                 "unlock_price_tjs": price,
                 "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
