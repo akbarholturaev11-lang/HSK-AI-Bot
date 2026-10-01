@@ -27,6 +27,7 @@ from app.services.support_contact_service import get_admin_contact_url
 # Mini App filtri TG panelidagi segmentlar bilan bir xil bo'lsin.
 BROADCAST_FILTER_OPTIONS = {
     "status": ["free", "trial", "active", "expired", "blocked"],
+    "track": ["hsk20", "hsk30"],
     "level": ["beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"],
     "mode": ["qa", "course"],
     "payment_status": ["none", "pending", "approved", "rejected"],
@@ -52,6 +53,7 @@ def parse_broadcast_filters(payload: dict) -> dict:
     return {
         "languages": languages or None,
         "status": _clean(payload.get("status"), BROADCAST_FILTER_OPTIONS["status"]),
+        "track": _clean(payload.get("track"), BROADCAST_FILTER_OPTIONS["track"]),
         "level": _clean(payload.get("level"), BROADCAST_FILTER_OPTIONS["level"]),
         "mode": _clean(payload.get("mode"), BROADCAST_FILTER_OPTIONS["mode"]),
         "payment_status": _clean(payload.get("payment_status"), BROADCAST_FILTER_OPTIONS["payment_status"]),
@@ -87,6 +89,7 @@ class AdminBroadcastService:
         return await repo.get_filtered_users(
             languages=filters.get("languages"),
             status=filters.get("status"),
+            course_track=filters.get("track"),
             level=filters.get("level"),
             learning_mode=filters.get("mode"),
             payment_status=filters.get("payment_status"),
