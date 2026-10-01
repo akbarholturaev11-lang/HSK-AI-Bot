@@ -1260,6 +1260,32 @@ private fun AppRoot(
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
+                                courseTrack = courseState.map?.hsk30?.activeTrack
+                                    ?: if (currentLevel.startsWith("nhsk")) "hsk30" else "hsk20",
+                                hsk30Enabled = courseState.map?.hsk30?.access?.featureEnabled == true,
+                                hsk30Allowed = courseState.map?.hsk30?.access?.allowed == true,
+                                hsk30PaymentEnabled = courseState.map?.hsk30?.paymentEnabled == true,
+                                hsk30PriceTjs = courseState.map?.hsk30?.priceTjs ?: 0,
+                                hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
+                                onSwitchCourseTrack = courseViewModel::switchCourseTrack,
+                                onUnlockHsk30 = {
+                                    val hsk30 = courseState.map?.hsk30
+                                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                                        checkoutOrigin = if (hsk30?.paymentEnabled == true) {
+                                            "hsk30_settings"
+                                        } else {
+                                            "course_limit"
+                                        }
+                                        checkoutVisible = true
+                                    } else {
+                                        scope.launch {
+                                            when (val result = app.featureRepository.subscriptionOpen()) {
+                                                is ApiResult.Success -> openExternal(context, result.value.botUrl)
+                                                is ApiResult.Failure -> Unit
+                                            }
+                                        }
+                                    }
+                                },
                                 modifier = contentModifier,
                                 identities = identitiesState,
                                 onLoadIdentities = identitiesViewModel::refresh,
