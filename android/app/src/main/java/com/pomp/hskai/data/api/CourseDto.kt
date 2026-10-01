@@ -43,6 +43,7 @@ data class CourseMapDto(
     @SerialName("study_setup") val studySetup: CourseStudySetupDto? = null,
     @SerialName("today") val today: CourseTodayDto? = null,
     @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+    @SerialName("hsk30") val hsk30: CourseHsk30Dto? = null,
     /**
      * What the server says about today's free lesson allowance.
      *
@@ -59,6 +60,48 @@ data class CourseMapDto(
      * one closed here stays closed in the Mini App and on the desktop.
      */
     @SerialName("hints") val hints: List<AndroidHintDto> = emptyList(),
+)
+
+@Serializable
+data class CourseHsk30AccessDto(
+    @SerialName("feature_enabled") val featureEnabled: Boolean = false,
+    @SerialName("paid_access") val paidAccess: Boolean = false,
+    @SerialName("permanently_unlocked") val permanentlyUnlocked: Boolean = false,
+    @SerialName("allowed") val allowed: Boolean = false,
+    @SerialName("reason") val reason: String = "",
+)
+
+@Serializable
+data class CourseHsk30PromoDto(
+    @SerialName("eligible") val eligible: Boolean = false,
+    @SerialName("reason") val reason: String = "",
+    @SerialName("recommended_level") val recommendedLevel: String = "nhsk1",
+    @SerialName("shown_count") val shownCount: Int = 0,
+    @SerialName("max_shows") val maxShows: Int = 2,
+)
+
+@Serializable
+data class CourseHsk30Dto(
+    @SerialName("active_track") val activeTrack: String = "hsk20",
+    @SerialName("active_level") val activeLevel: String = "",
+    @SerialName("access") val access: CourseHsk30AccessDto = CourseHsk30AccessDto(),
+    @SerialName("live_levels") val liveLevels: List<String> = listOf("nhsk1"),
+    @SerialName("payment_enabled") val paymentEnabled: Boolean = false,
+    @SerialName("price_tjs") val priceTjs: Int = 0,
+    @SerialName("promo") val promo: CourseHsk30PromoDto = CourseHsk30PromoDto(),
+)
+
+@Serializable
+data class CourseTrackSwitchRequest(
+    @SerialName("target_track") val targetTrack: String,
+    @SerialName("level") val level: String? = null,
+)
+
+@Serializable
+data class Hsk30PromoMarkResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("recorded") val recorded: Boolean = false,
+    @SerialName("recommended_level") val recommendedLevel: String = "nhsk1",
 )
 
 @Serializable
