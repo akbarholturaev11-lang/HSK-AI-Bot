@@ -1,0 +1,32 @@
+name: Desktop UI contract
+
+on:
+  pull_request:
+    paths:
+      - "desktop/ui/**"
+      - "desktop/src-tauri/**"
+      - "desktop/package.json"
+      - "desktop/package-lock.json"
+      - ".github/workflows/desktop-ui-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ui-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm ci --ignore-scripts
+      - name: Run offline UI contract
+        working-directory: desktop
+        run: npm run test:ui
