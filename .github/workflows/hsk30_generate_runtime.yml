@@ -35,6 +35,8 @@ on:
       - "app/bot/keyboards/admin_broadcast.py"
       - "app/bot/handlers/admin_broadcast.py"
       - "app/services/admin_broadcast_service.py"
+      - "tests/test_admin_broadcast_hsk_track.py"
+      - "app/repositories/user_repo.py"
       - "app/bot/handlers/course.py"
       - "app/bot/keyboards/onboarding.py"
       - "app/bot/handlers/commands.py"
@@ -126,6 +128,7 @@ jobs:
             app/services/hsk30_unlock_service.py \
             app/services/desktop_subscription_service.py \
             app/services/admin_miniapp_service.py \
+            app/repositories/user_repo.py \
             app/bot/handlers/commands.py \
             app/bot/keyboards/onboarding.py \
             app/services/voice_practice_service.py
@@ -247,7 +250,8 @@ jobs:
             tests.test_desktop_course_api \
             tests.test_course_v3_dictionary \
             tests.test_course_mistake_service \
-            tests.test_course_mistake_targets_flow
+            tests.test_course_mistake_targets_flow \
+            tests.test_admin_broadcast_hsk_track
 
       - name: Check Alembic has exactly one head
         run: |
