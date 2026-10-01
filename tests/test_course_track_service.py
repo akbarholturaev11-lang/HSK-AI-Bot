@@ -112,6 +112,116 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             "course_track_level_change_use_level_flow",
         )
 
+    async def test_change_level_resets_progress_and_updates_saved_hsk20_state(self):
+        state = _FakeState(track=TRACK_HSK20, level="hsk2", completed=11)
+
+        async def save_state(row, *, level, completed_lessons_count):
+            row.level = level
+            row.completed_lessons_count = completed_lessons_count
+            return row
+
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=False),
+            live_levels=AsyncMock(return_value=("nhsk1",)),
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(
+                side_effect=lambda user_id, track, for_update=False: (
+                    state if track == TRACK_HSK20 else None
+                )
+            ),
+            create=AsyncMock(),
+            save_progress=AsyncMock(side_effect=save_state),
+            list_for_user=AsyncMock(return_value=[state]),
+        )
+        self.service.progress_repo = SimpleNamespace(
+            get_by_user_id=AsyncMock(return_value=self.progress),
+        )
+        self.service.session = SimpleNamespace(flush=AsyncMock())
+
+        result = await self.service.change_level(self.user, "hsk3")
+
+        self.assertEqual(self.user.level, "hsk3")
+        self.assertEqual(self.progress.level, "hsk3")
+        self.assertEqual(self.progress.completed_lessons_count, 0)
+        self.assertIsNone(self.progress.current_lesson_id)
+        self.assertEqual(self.progress.current_step, "intro")
+        self.assertEqual(self.progress.waiting_for, "none")
+        self.assertEqual(self.progress.homework_status, "none")
+        self.assertFalse(self.progress.needs_review_prompt)
+        self.assertEqual(state.level, "hsk3")
+        self.assertEqual(state.completed_lessons_count, 0)
+        self.assertEqual(result["active_track"], TRACK_HSK20)
+        self.service.state_repo.save_progress.assert_awaited_once_with(
+            state,
+            level="hsk3",
+            completed_lessons_count=0,
+        )
+
+    async def test_change_level_rejects_cross_track_level(self):
+        with self.assertRaises(CourseTrackError) as ctx:
+            await self.service.change_level(self.user, "nhsk1")
+
+        self.assertEqual(ctx.exception.code, "invalid_course_track_level")
+
+    async def test_change_level_rejects_unreleased_hsk30_band(self):
+        self.user.level = "nhsk1"
+        self.user.status = "active"
+        self.user.payment_status = "approved"
+        self.user.end_date = datetime.now(timezone.utc) + timedelta(days=5)
+        state = _FakeState(track=TRACK_HSK30, level="nhsk1", completed=5)
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True),
+            live_levels=AsyncMock(return_value=("nhsk1",)),
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=state),
+        )
+
+        with self.assertRaises(CourseTrackError) as ctx:
+            await self.service.change_level(self.user, "nhsk2")
+
+        self.assertEqual(ctx.exception.code, "hsk30_level_not_live")
+
+    async def test_change_level_moves_paid_hsk30_user_to_live_band(self):
+        self.user.level = "nhsk1"
+        self.user.status = "active"
+        self.user.payment_status = "approved"
+        self.user.end_date = datetime.now(timezone.utc) + timedelta(days=5)
+        self.progress.level = "nhsk1"
+        self.progress.completed_lessons_count = 7
+        state = _FakeState(track=TRACK_HSK30, level="nhsk1", completed=7)
+
+        async def save_state(row, *, level, completed_lessons_count):
+            row.level = level
+            row.completed_lessons_count = completed_lessons_count
+            return row
+
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True),
+            live_levels=AsyncMock(return_value=("nhsk1", "nhsk2")),
+        )
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(return_value=state),
+            create=AsyncMock(),
+            save_progress=AsyncMock(side_effect=save_state),
+            list_for_user=AsyncMock(return_value=[state]),
+        )
+        self.service.progress_repo = SimpleNamespace(
+            get_by_user_id=AsyncMock(return_value=self.progress),
+        )
+        self.service.session = SimpleNamespace(flush=AsyncMock())
+
+        result = await self.service.change_level(self.user, "nhsk2")
+
+        self.assertEqual(self.user.level, "nhsk2")
+        self.assertEqual(self.progress.level, "nhsk2")
+        self.assertEqual(self.progress.completed_lessons_count, 0)
+        self.assertEqual(state.level, "nhsk2")
+        self.assertEqual(state.completed_lessons_count, 0)
+        self.assertEqual(result["active_track"], TRACK_HSK30)
+        self.assertEqual(result["active_level"], "nhsk2")
+
     async def test_nhsk2_cannot_be_selected_before_it_is_live(self):
         self.user.status = "active"
         self.user.payment_status = "approved"
