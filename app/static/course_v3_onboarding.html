@@ -299,7 +299,10 @@ function setTrack(next){
   next=next==="hsk30"?"hsk30":"hsk20";
   if(next==="hsk30"){
     var a=hsk30Access();
-    if(a&&a.feature_enabled===false){
+    /* Real Mini App must fail closed until the server has returned the HSK 3.0
+       feature state. A stale localStorage draft must never reveal a disabled track. */
+    if(INIT_DATA&&!HSK30_STATUS)return;
+    if(!a||a.feature_enabled===false){
       var error=document.getElementById("error");error.textContent=L.hsk30Disabled;error.hidden=false;return;
     }
   }
@@ -338,9 +341,10 @@ function render(){
     if(step===1){
       var levelChoices=levelsForTrack();
       var access=hsk30Access();
+      var h30Ready=!INIT_DATA||(HSK30_STATUS&&hsk30Access()&&hsk30Access().feature_enabled!==false);
       var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
         +'<button type="button" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
-        +'<button type="button" class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+'</button></div>';
+        +'<button type="button" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+'</button></div>';
       var trackNote="";
       if(track==="hsk30"&&access&&access.feature_enabled===false)trackNote='<p class="track-note">'+L.hsk30Disabled+'</p>';
       else if(track==="hsk30"&&(!access||!access.allowed))trackNote='<p class="track-note"><b>'+(hsk30PaymentEnabled()?L.hsk30Locked.replace("{price}",hsk30Price()):L.hsk30LockedPro)+'</b></p>';
@@ -419,8 +423,15 @@ if(INIT_DATA){
       if(!d||!d.ok)return;
       HSK30_STATUS=d;
       if(track==="hsk30"){
-        var choices=levelsForTrack();
-        if(!choices.some(function(l){return l.k===sel}))sel=choices.length?choices[0].k:"nhsk1";
+        var access=hsk30Access();
+        if(!access||access.feature_enabled===false){
+          track="hsk20";
+          sel="beginner";
+          saveDraft();
+        }else{
+          var choices=levelsForTrack();
+          if(!choices.some(function(l){return l.k===sel}))sel=choices.length?choices[0].k:"nhsk1";
+        }
       }
       render();
     })
