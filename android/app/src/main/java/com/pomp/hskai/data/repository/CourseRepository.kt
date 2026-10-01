@@ -17,6 +17,8 @@ import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.LessonUnlockRequest
 import com.pomp.hskai.data.api.LessonUnlockResponse
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.data.api.CourseTrackSwitchRequest
+import com.pomp.hskai.data.api.Hsk30PromoMarkResponse
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.FoundationCompleteRequest
 import com.pomp.hskai.data.api.FoundationCompleteResponse
@@ -143,6 +145,40 @@ class CourseRepository(
                 }
             }
         }
+    }
+
+    suspend fun switchCourseTrack(
+        targetTrack: String,
+        level: String? = null,
+    ): ApiResult<OkResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall {
+            api.switchCourseTrack(
+                "Bearer $token",
+                CourseTrackSwitchRequest(
+                    targetTrack = targetTrack,
+                    level = level,
+                ),
+            )
+        }
+        if (result is ApiResult.Success) clearCache()
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        return result
+    }
+
+    suspend fun markHsk30PromoShown(): ApiResult<Hsk30PromoMarkResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall {
+            api.markHsk30PromoShown("Bearer $token")
+        }
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        return result
     }
 
     suspend fun foundation(): ApiResult<FoundationResponseDto> {
