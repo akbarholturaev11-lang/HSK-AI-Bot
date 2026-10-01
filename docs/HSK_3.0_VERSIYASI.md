@@ -1,9 +1,13 @@
 # HSK 3.0 versiyasi — alohida kurs qo'shish rejasi
 
-Holat: 2026-09-30 — **reja to'liq tasdiqlandi, ochiq savol yo'q. Ish hali
-boshlanmagan, kod o'zgartirilmagan.** HSK 3.0 uchun 1–3-daraja darslik PDF'lari
-`HSK 3.0 PDF/` ichida Git LFS orqali `main` ga qo'shilgan. Ish egasi "boshla"
-deganda 0-bosqichdan boshlanadi.
+Holat: 2026-10-01 — **implementation yakunlangan va rollout-safe holatda.**
+N1/N2/N3 runtime tayyor; production launchda faqat N1 live qilinadi. N4
+rasmiy source alohida kelmaguncha selectable emas. Yangi HSK 3.0 imtihon
+formati tayyor bo'lmaguncha Test markazi ataylab “Tez orada” turadi.
+
+Release cheklovi: `hsk30_enabled` deploy bilan avtomatik yoqilmaydi;
+`hsk30_live_levels` default faqat `nhsk1`. N2/N3 runtime mavjudligi ularni
+avtomatik ochmaydi. Release feedback draft: `RELEASE_FEEDBACK_HSK30.md`.
 
 Research: `research/hsk-3.0/`.
 
@@ -32,7 +36,7 @@ Research: `research/hsk-3.0/`.
 | 19 | Alipay/WeChat | Shu summa uchun admin QR kod yuklamaguncha 10 somonilik ekranda **ko'rinmaydi** |
 | 20 | Darslik dialoglari | **Aynan darslikdagi dialoglar olinadi.** Egada ulardan foydalanish uchun ruxsat bor. Hanzi/pinyin saqlanadi, UZ/RU/TJ tarjimalar tayyorlanadi |
 
-## Hozirgi holat (kodda tekshirilgan)
+## Ish boshlanishidagi holat (2026-09-30 baseline)
 
 - Daraja kalitlari: `beginner`, `hsk1`–`hsk4`. `{"hsk1","hsk2","hsk3","hsk4"}`
   to'plamlari 40 dan ortiq backend, 8 ta Mini App, 9 ta Android va 4 ta
