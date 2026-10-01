@@ -1034,6 +1034,8 @@ private fun AppRoot(
                     state = dictionaryState,
                     actions = DictionaryActions(
                         onQueryChange = dictionaryViewModel::onQueryChange,
+                        onVersionFilter = dictionaryViewModel::selectVersionFilter,
+                        onLevelFilter = dictionaryViewModel::selectLevelFilter,
                         onRetry = dictionaryViewModel::load,
                         onOpenWord = dictionaryViewModel::openWord,
                         onOpenRecent = dictionaryViewModel::openRecent,
