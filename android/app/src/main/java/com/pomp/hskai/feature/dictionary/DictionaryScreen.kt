@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.dictionary
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -80,6 +82,8 @@ import com.pomp.hskai.feature.assistant.dictionaryAssistantContext
 /** Everything the dictionary screen can be asked to do. */
 data class DictionaryActions(
     val onQueryChange: (String) -> Unit,
+    val onVersionFilter: (String) -> Unit = {},
+    val onLevelFilter: (String) -> Unit = {},
     val onRetry: () -> Unit,
     val onOpenWord: (DictionaryWord) -> Unit,
     val onOpenRecent: (DictionaryWord) -> Unit,
@@ -150,6 +154,8 @@ fun DictionaryScreen(
             else -> DictionaryList(
                 state = state,
                 onQueryChange = actions.onQueryChange,
+                onVersionFilter = actions.onVersionFilter,
+                onLevelFilter = actions.onLevelFilter,
                 onRetry = actions.onRetry,
                 onOpenWord = actions.onOpenWord,
                 onOpenRecent = actions.onOpenRecent,
@@ -163,6 +169,8 @@ fun DictionaryScreen(
 private fun DictionaryList(
     state: DictionaryUiState,
     onQueryChange: (String) -> Unit,
+    onVersionFilter: (String) -> Unit,
+    onLevelFilter: (String) -> Unit,
     onRetry: () -> Unit,
     onOpenWord: (DictionaryWord) -> Unit,
     onOpenRecent: (DictionaryWord) -> Unit,
@@ -206,6 +214,12 @@ private fun DictionaryList(
                 .padding(horizontal = 20.dp, vertical = 10.dp)
                 .onFocusChanged { searchFocused = it.isFocused },
         )
+        DictionaryFilters(
+            version = state.versionFilter,
+            level = state.levelFilter,
+            onVersion = onVersionFilter,
+            onLevel = onLevelFilter,
+        )
         when {
             state.isLoading && state.words.isEmpty() -> DictionarySkeleton()
             state.isUnavailable -> DictionaryMessage(
@@ -235,6 +249,81 @@ private fun DictionaryList(
                 items(state.words, key = { it.hanzi }) { word -> WordRow(word) { onOpenWord(word) } }
             }
         }
+    }
+}
+
+@Composable
+private fun DictionaryFilters(
+    version: String,
+    level: String,
+    onVersion: (String) -> Unit,
+    onLevel: (String) -> Unit,
+) {
+    val versions = listOf("all", "hsk20", "hsk30")
+    val levels = when (version) {
+        "hsk20" -> listOf("all", "hsk1", "hsk2", "hsk3", "hsk4")
+        "hsk30" -> listOf("all", "nhsk1", "nhsk2", "nhsk3")
+        else -> listOf("all", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            items(versions, key = { "version-$it" }) { key ->
+                DictionaryFilterPill(
+                    text = when (key) {
+                        "hsk20" -> "HSK 2.0"
+                        "hsk30" -> "HSK 3.0"
+                        else -> stringResource(R.string.dictionary_all_words)
+                    },
+                    selected = version == key,
+                    onClick = { onVersion(key) },
+                )
+            }
+        }
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            items(levels, key = { "level-$it" }) { key ->
+                val label = when {
+                    key == "all" -> stringResource(R.string.dictionary_all_words)
+                    key.startsWith("nhsk") -> "N" + key.takeLast(1)
+                    else -> "HSK " + key.takeLast(1)
+                }
+                DictionaryFilterPill(
+                    text = label,
+                    selected = level == key,
+                    onClick = { onLevel(key) },
+                )
+            }
+        }
+    }
+    Spacer(Modifier.height(4.dp))
+}
+
+@Composable
+private fun DictionaryFilterPill(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+        shape = RoundedCornerShape(11.dp),
+        border = BorderStroke(
+            1.dp,
+            if (selected) PompColors.Cinnabar else PompColors.Divider,
+        ),
+        modifier = Modifier.clickable(onClick = onClick),
+    ) {
+        Text(
+            text = text,
+            color = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+        )
     }
 }
 
