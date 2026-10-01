@@ -316,6 +316,8 @@
     <string name="limit_voice_reason">Bugungi bepul AI Voice suhbatlaringiz tugadi.</string>
     <string name="profile_language">Til</string>
     <string name="profile_course_version">Kurs versiyasi</string>
+    <string name="profile_course_version_confirm_title">%1$s ga o‘tish?</string>
+    <string name="profile_course_version_confirm_body">Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qaytishingiz mumkin.</string>
     <string name="profile_language_picker_title">Tilni tanlang</string>
     <string name="profile_notifications">Bildirishnomalar</string>
     <string name="profile_help">Yordam</string>
