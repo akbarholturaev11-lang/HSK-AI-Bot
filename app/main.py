@@ -993,6 +993,8 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "rounds_sent": int(item.rounds_sent or 0),
             "send_count_total": int(item.send_count_total or 0),
             "languages": decode_ad_languages(item.target_languages),
+            "track": getattr(item, "target_track", None) or "",
+            "level": getattr(item, "target_level", None) or "",
             "starts_at": _mini_dt(item.starts_at),
             "ends_at": _mini_dt(item.ends_at),
         })
@@ -4301,6 +4303,8 @@ async def admin_miniapp_campaign_create(request: Request):
                 ends_at=now + timedelta(hours=hours),
                 send_count_total=rounds,
                 target_languages=filters.get("languages"),
+                target_track=filters.get("track"),
+                target_level=filters.get("level"),
                 include_active_subscribers=bool(payload.get("include_active_subscribers")),
                 button_config=button_config,
                 created_by_telegram_id=telegram_id,
