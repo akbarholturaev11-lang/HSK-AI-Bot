@@ -630,13 +630,19 @@ test("a listening question is heard, never printed with its answer", async () =>
 test("the dictionary is a full offline word bank", async () => {
   const vocabulary = await source("desktop/ui/js/vocabulary.js");
   const dataModule = await source("desktop/ui/data/vocabulary.js");
+  const hsk30DataModule = await source("desktop/ui/data/hsk30-vocabulary.js");
   const strokeModule = await source("desktop/ui/data/strokes.js");
   const writer = await source("desktop/ui/vendor/hanzi-writer.js");
 
-  // Words, sentences and stroke paths ship with the app; the strict CSP allows
-  // no network from the webview and stroke order must not hit a CDN.
+  // Both course standards, sentences and stroke paths ship with the app; the
+  // strict CSP allows no network from the webview and stroke order must never
+  // hit a CDN.
   assert.match(dataModule, /export const WORDS = \[/);
   assert.match(dataModule, /export const EXAMPLES = \{/);
+  assert.match(hsk30DataModule, /export const HSK30_WORDS = \[/);
+  assert.match(vocabulary, /HSK30_LEVELS = \["N1", "N2", "N3"\]/);
+  assert.match(vocabulary, /this\.version === "hsk30"/);
+  assert.match(vocabulary, /setCourseLevel\(level\)/);
   assert.match(strokeModule, /export const STROKES = \{/);
   assert.match(vocabulary, /charDataLoader: \(_char, onLoad\) => onLoad\(data\)/);
   assert.doesNotMatch(vocabulary, /cdn\./);
@@ -663,6 +669,26 @@ test("the dictionary is a full offline word bank", async () => {
   assert.deepEqual(saved.saved, ["计划"]);
   const reread = await previewInvoke("desktop_vocabulary_state");
   assert.deepEqual(reread.review, ["周末"]);
+});
+
+test("HSK 3.0 desktop vocabulary ships N1-N3 offline", async () => {
+  const { HSK30_WORDS } = await import("../ui/data/hsk30-vocabulary.js");
+  assert.equal(HSK30_WORDS.length, 1000);
+  assert.deepEqual(
+    [...new Set(HSK30_WORDS.map((word) => word.lv))].sort(),
+    ["N1", "N2", "N3"],
+  );
+  assert.ok(
+    HSK30_WORDS.every(
+      (word) =>
+        String(word.h || "").trim() &&
+        String(word.p || "").trim() &&
+        String(word.m?.uz || "").trim() &&
+        String(word.m?.ru || "").trim() &&
+        String(word.m?.tj || "").trim(),
+    ),
+    "HSK 3.0 desktop dictionary must keep all three translations",
+  );
 });
 
 test("every bundled example sentence exists in all three languages", async () => {
