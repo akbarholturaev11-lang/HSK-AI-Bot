@@ -114,6 +114,7 @@ class DesktopSubscriptionService:
             "qr_not_ready": 503,
             "admin_notification_failed": 503,
             "hsk30_disabled": 403,
+            "hsk30_unlock_payment_disabled": 403,
             "hsk30_already_unlocked": 409,
             "hsk30_subscription_active": 409,
             "payment_pending_other_product": 409,
