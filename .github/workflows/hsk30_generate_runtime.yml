@@ -42,6 +42,10 @@ on:
       - "tests/test_course_mistake_service.py"
       - "tests/test_course_v3_dictionary.py"
       - "app/services/hsk30_feature_service.py"
+      - "app/static/admin.html"
+      - "app/services/admin_miniapp_service.py"
+      - "app/services/desktop_subscription_service.py"
+      - "app/services/hsk30_unlock_service.py"
       - "app/services/course_mistake_target_store.py"
       - "app/services/course_mistake_service.py"
       - "app/services/course_v3_dictionary.py"
@@ -117,6 +121,9 @@ jobs:
             app/services/course_mistake_service.py \
             app/services/course_mistake_target_store.py \
             app/services/hsk30_feature_service.py \
+            app/services/hsk30_unlock_service.py \
+            app/services/desktop_subscription_service.py \
+            app/services/admin_miniapp_service.py \
             app/services/voice_practice_service.py
 
       - name: Syntax-check Mini App JavaScript
@@ -135,6 +142,7 @@ jobs:
               "app/static/course_v3_test.html",
               "app/static/course_v3_onboarding.html",
               "app/static/hsk-lugat.html",
+              "app/static/admin.html",
           ]
           for filename in files:
               text = Path(filename).read_text(encoding="utf-8")
@@ -143,7 +151,7 @@ jobs:
               target.write_text("\n".join(blocks), encoding="utf-8")
               print(target)
           PY
-          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js /tmp/course_v3_memorize.js /tmp/course_v3_test.js /tmp/course_v3_onboarding.js /tmp/hsk_lugat.js; do
+          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js /tmp/course_v3_memorize.js /tmp/course_v3_test.js /tmp/course_v3_onboarding.js /tmp/hsk_lugat.js /tmp/admin.js; do
             node --check "$f"
           done
 
