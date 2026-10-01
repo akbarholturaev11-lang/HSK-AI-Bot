@@ -45,7 +45,7 @@ def _load() -> dict:
     if _cache is not None:
         return _cache
 
-    words: list[dict] = []
+    words_by_hanzi: dict[str, dict] = {}
     version_hasher = hashlib.sha256()
     any_source = False
 
@@ -80,18 +80,28 @@ def _load() -> dict:
                 continue
             if not all(str(meaning.get(key) or "").strip() for key in _LANGUAGES):
                 continue
-            words.append(
-                {
-                    "h": hanzi,
-                    "p": pinyin,
-                    "m": {key: str(meaning[key]).strip() for key in _LANGUAGES},
-                    "lv": level,
-                }
-            )
+            normalized = {
+                "h": hanzi,
+                "p": pinyin,
+                "m": {key: str(meaning[key]).strip() for key in _LANGUAGES},
+                "lv": level,
+            }
+            existing = words_by_hanzi.get(hanzi)
+            if existing is None:
+                words_by_hanzi[hanzi] = normalized
+                continue
+            levels = [
+                item
+                for item in str(existing.get("lv") or "").split("|")
+                if item
+            ]
+            if level and level not in levels:
+                levels.append(level)
+            existing["lv"] = "|".join(levels)
 
     _cache = {
         "version": version_hasher.hexdigest()[:16] if any_source else "",
-        "words": words,
+        "words": list(words_by_hanzi.values()),
     }
     return _cache
 
