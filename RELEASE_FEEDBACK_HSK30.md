@@ -1,0 +1,115 @@
+# Release feedback draft — HSK 3.0 alohida kurs
+
+Holat: DRAFT. Userlarga avtomatik yuborilmaydi. Kod productionga chiqqach,
+HSK 3.0 global flag va faqat N1 live ekanligi admin panelda tekshiriladi.
+Shundan keyin admin mavjud Release feedback moduli orqali qo'lda tasdiqlasa
+yuboriladi.
+
+## Release nomi
+
+HSK AI: yangi HSK 3.0 kursi — N1
+
+## Userga yuboriladigan qisqa matn
+
+HSK AI'ga yangi HSK 3.0 alohida kurs sifatida qo'shildi. HSK 2.0 dagi
+progressingiz o'chmaydi: kurs versiyasini almashtirib, istalgan payt eski
+kursingizga qaytishingiz mumkin. Hozir HSK 3.0 N1 ochiq; keyingi N2 va N3
+darajalari kontenti tayyor, lekin bosqichma-bosqich ochiladi.
+
+Faol HSK AI Pro obunangiz bo'lsa HSK 3.0 uchun qo'shimcha to'lov yo'q. Pro
+bo'lmasa, admin paneldagi joriy narx bilan bir martalik doimiy access olish
+mumkin. Fikr qoldirsangiz va faol obunangiz bo'lmasa, sizga 24 soatlik 20%
+obuna chegirmasi beriladi.
+
+## Nima yangilandi
+
+- HSK 2.0 va HSK 3.0 alohida track: progresslar bir-birini bosmaydi.
+- HSK 3.0 N1 Course V3 darslari, mashqlar, recognition, pronunciation,
+  memorize, voice context va xatolarni takrorlash.
+- HSK 3.0 lug'ati Mini App, Android va Desktop'da bir xil manbadan.
+- Android, Mini App va Desktop'da kurs versiyasini almashtirish.
+- Eski foydalanuvchiga HSK 3.0 promosi maksimum 2 marta, server cooldown bilan.
+- Faol Pro foydalanuvchi qo'shimcha pul to'lamaydi.
+- Pro bo'lmagan foydalanuvchida bir martalik HSK 3.0 unlock checkout ishlaydi;
+  bu Pro obunasining muddatini o'zgartirmaydi.
+- N1 tugaganda N2 hali live bo'lmasa progress saqlanadi va “Tez orada”
+  ko'rsatiladi; yashirin N2/N3'ga o'tib ketilmaydi.
+- HSK 3.0 imtihon formati hali release qilinmaganligi uchun Test markazi
+  “Tez orada” holatida; eski HSK 2.0 testi yangi trackka aralashtirilmaydi.
+
+## Qayerda va qanday sinash
+
+Mini App: Kurs → Kurs versiyasi → HSK 3.0 → N1.
+
+Android: ilovani yangi buildga yangilang → Kurs → kurs versiyasi →
+HSK 3.0. Direct APK'da kerak bo'lsa bir martalik checkout ilova ichida
+ochiladi; Play build tashqi checkout'ni ilova ichida ko'rsatmaydi.
+
+Desktop: Kurs ekranidagi Kurs versiyasi kartasi → HSK 3.0.
+
+Tekshiruv:
+1. HSK 2.0 dagi joriy darsni eslab qoling.
+2. HSK 3.0 N1'ga o'tib bir necha dars bajaring.
+3. HSK 2.0 ga qayting — eski progress o'z joyida qolishi kerak.
+4. Yana HSK 3.0 ga o'ting — N1 progressi ham o'z joyida qolishi kerak.
+5. Lug'at va Xatolar bo'limida HSK 3.0 materiallari eski track bilan
+   aralashmasligini tekshiring.
+
+## “Sinab ko'rish” tugmasi
+
+Mavjud promo/release feedback tugmasida course action ishlatilsin. U Kurs
+bo'limini ochadi; xabar ichida “Kurs versiyasi → HSK 3.0” instruktsiyasi
+aniq yozilsin. Alohida tashqi URL yoki yangi deep link shart emas.
+
+## 1–5 baholash
+
+“HSK 3.0 ga o'tish, eski progressni saqlash va yangi N1 darslarini boshlash
+qanchalik tushunarli bo'ldi?”
+
+1 — juda chalkash, 5 — juda tushunarli.
+
+Qo'shimcha savol: “Qaysi joyda xato, tarjima yoki tushunarsiz qadam ko'rdingiz?”
+
+## Mukofot matni
+
+Oldindan:
+“Baho va qisqa fikr qoldirsangiz, faol obunangiz bo'lmasa, obuna uchun
+24 soatlik 20% chegirma beriladi.”
+
+Mukofot berilgach:
+“Rahmat! Aytganimizdek, sizga obuna uchun 24 soatlik 20% chegirma berildi.”
+
+Faol Pro obunachiga qo'shimcha chegirma va'da qilinmaydi; mavjud Release
+feedback modulidagi oddiy rahmat oqimi ishlatiladi.
+
+## Target segment
+
+Birinchi bosqich:
+- onboarding'ni release sanasidan oldin tugatgan faol HSK 2.0 userlar;
+- dastlab N1 uchun HSK1–HSK2 segment ustuvor;
+- Android/Desktop/Mini App klientlari bir xil server access qoidasidan
+  foydalanadi.
+
+Yangi userlar promo bilan bezovta qilinmaydi: ular onboarding ichida kurs
+versiyasini tanlaydi.
+
+## Kuzatiladigan metrikalar
+
+- HSK 3.0 promo shown count va cooldown/cap.
+- HSK 2.0 → HSK 3.0 o'tgan userlar soni (User.level=nhsk* va track state).
+- N1 lesson started/completed va N1 completion.
+- HSK 3.0 → HSK 2.0 qaytishlar: progress yo'qolishi haqidagi feedback alohida
+  tekshirilsin.
+- hsk30_unlock checkout opened → screenshot submitted → approved/rejected.
+- HSK 3.0 bir martalik unlock: payment soni, user soni va TJS tushumi
+  subscription revenue'dan alohida.
+- Promo → HSK 3.0 o'tish va promo → checkout konversiyasi.
+- 1–5 baholar, matnli feedback va 20% reward ishlatilishi.
+
+## Release xavfsizlik cheklovlari
+
+- Global hsk30_enabled flag deploy bilan avtomatik yoqilmaydi.
+- Launchda hsk30_live_levels = nhsk1; N2/N3 runtime borligi ularni live
+  qilmaydi.
+- N4 rasmiy source tayyor bo'lmaguncha selectable/live qilinmaydi.
+- Yangi HSK 3.0 imtihon formati tayyor bo'lmaguncha Test markazi “Tez orada”.
