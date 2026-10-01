@@ -23,6 +23,8 @@ const previewState = {
   voiceSessionId: "",
   voiceTurns: 0,
   notificationsEnabled: true,
+  courseTrack: "hsk20",
+  hsk30PromoShown: 0,
 };
 
 const localized = (uz, ru, tj) => ({ uz, ru, tj });
@@ -197,11 +199,34 @@ function bootstrap() {
 }
 
 function courseMap() {
+  const hsk30 = previewState.courseTrack === "hsk30";
+  const level = hsk30 ? "nhsk1" : "hsk1";
   return {
     ok: true,
     authenticated: true,
-    level: "hsk1",
-    label: "HSK 1",
+    level,
+    label: hsk30 ? "HSK 3.0 · N1" : "HSK 1",
+    hsk30: {
+      active_track: previewState.courseTrack,
+      active_level: level,
+      access: {
+        feature_enabled: true,
+        paid_access: false,
+        permanently_unlocked: true,
+        allowed: true,
+        reason: "permanent_unlock",
+      },
+      live_levels: ["nhsk1"],
+      payment_enabled: true,
+      price_tjs: 10,
+      promo: {
+        eligible: previewState.courseTrack === "hsk20" && previewState.hsk30PromoShown < 2,
+        reason: "eligible",
+        recommended_level: "nhsk1",
+        shown_count: previewState.hsk30PromoShown,
+        max_shows: 2,
+      },
+    },
     user: bootstrap().user,
     progress: {
       completed: previewState.completed,
@@ -228,7 +253,7 @@ function courseMap() {
           ),
         ),
         action: "course",
-        level: "hsk1",
+        level,
         lesson_order: 1,
         created_at: "2026-08-11T10:00:00+00:00",
       },
@@ -460,6 +485,17 @@ export async function previewInvoke(command, args = {}) {
       return { ok: true };
     case "desktop_course_map":
       return courseMap();
+    case "desktop_course_track_switch":
+      previewState.courseTrack = String(args.targetTrack || "hsk20");
+      previewState.completed = 0;
+      return {
+        ok: true,
+        active_track: previewState.courseTrack,
+        active_level: previewState.courseTrack === "hsk30" ? "nhsk1" : "hsk1",
+      };
+    case "desktop_hsk30_promo_shown":
+      previewState.hsk30PromoShown += 1;
+      return { ok: true, recorded: true, shown_count: previewState.hsk30PromoShown };
     case "desktop_sync": {
       const map = courseMap();
       return {
