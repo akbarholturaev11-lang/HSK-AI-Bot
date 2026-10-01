@@ -343,7 +343,10 @@ function render(){
       var levelChoices=levelsForTrack();
       var access=hsk30Access();
       var h30Ready=!INIT_DATA||(HSK30_STATUS&&hsk30Access()&&hsk30Access().feature_enabled!==false);
-      var h30PriceLabel=(access&&!access.allowed&&hsk30PaymentEnabled())?('<small>'+hsk30Price()+' TJS</small>'):"";
+      var h30Track=hsk30TrackState(),h30Meta=[];
+      if(h30Track&&h30Track.new_badge&&h30Track.new_badge.is_new)h30Meta.push("NEW");
+      if(access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price()+" TJS");
+      var h30PriceLabel=h30Meta.length?('<small>'+h30Meta.join(' · ')+'</small>'):"";
       var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
         +'<button type="button" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
         +'<button type="button" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
