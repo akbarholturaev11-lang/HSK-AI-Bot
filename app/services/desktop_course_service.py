@@ -41,9 +41,12 @@ from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
+from app.services.course_track_service import CourseTrackError, CourseTrackService
 from app.services.course_v3_parts import total_parts
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.hsk30_feature_service import Hsk30FeatureService
+from app.services.hsk30_promo_service import Hsk30PromoService
+from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.support_contact_service import get_admin_contact_url
 
 logger = logging.getLogger(__name__)
@@ -338,6 +341,18 @@ class DesktopCourseService:
             profile,
             completed_parts=completed,
         )
+        track_status = await CourseTrackService(self.session).status(user)
+        hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
+        hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(user)
+        data["hsk30"] = {
+            "active_track": track_status.get("active_track") or "hsk20",
+            "active_level": track_status.get("active_level") or level,
+            "access": hsk30_track.get("access") or {},
+            "live_levels": list(hsk30_track.get("live_levels") or []),
+            "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
+            "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
+            "promo": await Hsk30PromoService(self.session).state(user),
+        }
         # Mini App bilan AYNI blok. Native klientlar uni hozircha chizmaydi,
         # lekin ma'lumot bir joydan kelgani uchun ikkinchi personalizatsiya
         # tizimi qurilmaydi (ARCHITECTURE_DECISION.md).
@@ -400,6 +415,41 @@ class DesktopCourseService:
                 ),
             },
         }
+
+    async def switch_course_track(
+        self,
+        access_token: str,
+        *,
+        target_track: str,
+        level: str | None = None,
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        user = await self._locked_context_user(context)
+        service = CourseTrackService(self.session)
+        try:
+            current_track = service.track_for_level(getattr(user, "level", None))
+            if target_track == current_track and level:
+                status = await service.change_level(user, level)
+            else:
+                status = await service.switch(
+                    user,
+                    target_track=target_track,
+                    requested_level=level,
+                )
+        except CourseTrackError as exc:
+            raise DesktopCourseError(exc.code, status_code=exc.status_code) from exc
+        await self.session.commit()
+        return {"ok": True, **status}
+
+    async def mark_hsk30_promo_shown(
+        self,
+        access_token: str,
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        user = await self._locked_context_user(context)
+        result = await Hsk30PromoService(self.session).mark_shown(user)
+        await self.session.commit()
+        return {"ok": True, **result}
 
     async def lesson(
         self,
