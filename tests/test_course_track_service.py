@@ -162,7 +162,7 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(CourseTrackError) as ctx:
             await self.service.change_level(self.user, "nhsk1")
 
-        self.assertEqual(ctx.exception.code, "invalid_course_track_level")
+        self.assertEqual(ctx.exception.code, "course_track_switch_required")
 
     async def test_change_level_rejects_unreleased_hsk30_band(self):
         self.user.level = "nhsk1"
