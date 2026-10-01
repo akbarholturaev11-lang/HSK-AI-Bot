@@ -19,6 +19,7 @@ def broadcast_panel_keyboard(
     course_promo_filter: Optional[str] = None,
     activity_filter: Optional[str] = None,
     section: str = "main",
+    track_filter: Optional[str] = None,
 ) -> InlineKeyboardMarkup:
     def section_btn(key: str, label: str) -> InlineKeyboardButton:
         return InlineKeyboardButton(text=label, callback_data=f"bc:section:{key}")
@@ -44,6 +45,12 @@ def broadcast_panel_keyboard(
         return InlineKeyboardButton(
             text=f"{_mark(level_filter == val)}{label}",
             callback_data=f"bc:level:{val or 'all'}",
+        )
+
+    def track_btn(val: Optional[str], label: str) -> InlineKeyboardButton:
+        return InlineKeyboardButton(
+            text=f"{_mark(track_filter == val)}{label}",
+            callback_data=f"bc:track:{val or 'all'}",
         )
 
     def mode_btn(val: Optional[str], label: str) -> InlineKeyboardButton:
@@ -103,6 +110,8 @@ def broadcast_panel_keyboard(
             [status_btn(None, "Hammasi"), status_btn("active", "Faol"), status_btn("trial", "Sinov")],
             [status_btn("free", "Bepul"), status_btn("expired", "Tugagan"), status_btn("blocked", "Blok")],
         ]
+    elif section == "track":
+        rows = [[track_btn(None, "Hammasi"), track_btn("hsk20", "HSK 2.0"), track_btn("hsk30", "HSK 3.0")]]
     elif section == "level":
         rows = [
             [level_btn(None, "Hammasi"), level_btn("beginner", "Boshlang'ich"), level_btn("hsk1", "HSK1")],
@@ -133,7 +142,8 @@ def broadcast_panel_keyboard(
     else:
         return InlineKeyboardMarkup(inline_keyboard=[
             [section_btn("lang", "🌐 Til"), section_btn("status", "👤 Holat")],
-            [section_btn("level", "📚 Daraja"), section_btn("mode", "🎯 Rejim")],
+            [section_btn("track", "🧭 Kurs versiyasi"), section_btn("level", "📚 Daraja")],
+            [section_btn("mode", "🎯 Rejim")],
             [section_btn("payment", "💳 To'lov"), section_btn("discount", "🎁 Chegirma")],
             [section_btn("activity", "⚡ Aktivlik")],
             [InlineKeyboardButton(text="✏️ Xabar tayyorlash", callback_data="bc:enter_text")],
