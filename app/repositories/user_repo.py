@@ -314,11 +314,24 @@ class UserRepository:
         self,
         *,
         languages: Optional[list[str]] = None,
+        course_track: Optional[str] = None,
+        level: Optional[str] = None,
         include_active_subscribers: bool = False,
     ) -> list[User]:
         query = select(User).where(User.status != "blocked")
         if languages:
             query = query.where(User.language.in_(languages))
+        if course_track == "hsk30":
+            query = query.where(User.level.like("nhsk%"))
+        elif course_track == "hsk20":
+            query = query.where(
+                or_(
+                    User.level.is_(None),
+                    ~User.level.like("nhsk%"),
+                )
+            )
+        if level:
+            query = query.where(User.level == level)
         if not include_active_subscribers:
             query = query.where(User.status != "active")
         result = await self.session.execute(query.order_by(User.id.asc()))
