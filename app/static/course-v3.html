@@ -2047,7 +2047,12 @@ var App={
   openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
-  openSettings:function(){SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml())},
+  openSettings:function(){
+    SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml());
+    if(!COURSE_TRACK_STATE){
+      courseTrackStatus(false).then(function(){if(SETTINGS_SHEET)App.openSheet(settingsSheetHtml())}).catch(function(){});
+    }
+  },
   openSocial:function(id){
     var item=null;
     for(var i=0;i<SOCIAL_LINKS.length;i++){if(SOCIAL_LINKS[i].id===id){item=SOCIAL_LINKS[i];break}}
@@ -5626,11 +5631,20 @@ function socialLinksHtml(){
    ketmasin va Android'dagi kabi bitta kirish nuqtasi bo'lsin. */
 var SETTINGS_SHEET=false;
 
+function courseVersionSettingsRowHtml(){
+  var status=COURSE_TRACK_STATE;
+  var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+  if(!access||access.feature_enabled!==true)return "";
+  var t=trackUi(),track=currentCourseTrack();
+  return '<button class="srow" onclick="App.courseTrackPicker()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
+    +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
+}
 function settingsSheetHtml(){
   var t=T(),p=pl();
   return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(p.settings)+'</div></div>'
     +'<div class="set" style="margin:0">'
     +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+t.lang+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
+    +courseVersionSettingsRowHtml()
     +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
     +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
@@ -7230,7 +7244,10 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     /* Oddiy startup trial eligibility'ni so'ramaydi: map joriy access holatini
        allaqachon beradi. Faqat onboardingdan qaytishda tanlov uchun darhol kerak. */
     if(bootParams.get("onboarded")==="1"){
-      trialFetchStatus().then(function(){try{renderProfile()}catch(e){}maybeShowPlanChoice()});
+      /* Onboardingdan keyin Pro/trial taklifi chiqmaydi. Limit birinchi marta
+         haqiqatan tugagach mavjud limit oqimi taklifni ko'rsatadi. Bu yerda
+         trial holati faqat profil kartasini to'g'ri chizish uchun olinadi. */
+      trialFetchStatus().then(function(){try{renderProfile()}catch(e){}});
     }
     else if(!(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())){
       setTimeout(maybeShowHsk30Promo,900);
