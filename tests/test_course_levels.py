@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
@@ -111,12 +112,42 @@ class Hsk30FeatureServiceTests(unittest.IsolatedAsyncioTestCase):
         service = Hsk30FeatureService(SimpleNamespace())
         setting = object()
         service.setting_repo = SimpleNamespace(
+            get_record=AsyncMock(return_value=SimpleNamespace(value="0")),
             set_bool=AsyncMock(return_value=setting),
         )
         self.assertIs(await service.set_enabled(True), setting)
         service.setting_repo.set_bool.assert_awaited_once_with(
             HSK30_ENABLED_SETTINGS_KEY,
             True,
+        )
+
+    async def test_saving_same_enabled_value_does_not_restart_release_clock(self):
+        service = Hsk30FeatureService(SimpleNamespace())
+        record = SimpleNamespace(value="1")
+        service.setting_repo = SimpleNamespace(
+            get_record=AsyncMock(return_value=record),
+            set_bool=AsyncMock(),
+        )
+        self.assertIs(await service.set_enabled(True), record)
+        service.setting_repo.set_bool.assert_not_awaited()
+
+    async def test_new_badge_is_server_timed_for_exactly_three_days(self):
+        service = Hsk30FeatureService(SimpleNamespace())
+        enabled_at = datetime(2026, 10, 1, 5, 0, tzinfo=timezone.utc)
+        service.setting_repo = SimpleNamespace(
+            get_record=AsyncMock(
+                return_value=SimpleNamespace(value="1", updated_at=enabled_at)
+            ),
+        )
+        before = await service.new_badge(
+            now=enabled_at + timedelta(days=2, hours=23, minutes=59)
+        )
+        expired = await service.new_badge(now=enabled_at + timedelta(days=3))
+        self.assertTrue(before["is_new"])
+        self.assertFalse(expired["is_new"])
+        self.assertEqual(
+            before["new_until"],
+            (enabled_at + timedelta(days=3)).isoformat(),
         )
 
 
