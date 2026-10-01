@@ -34,6 +34,8 @@ class AdCampaign(Base):
     rounds_sent: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     target_languages: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    target_track: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+    target_level: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
     include_active_subscribers: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
