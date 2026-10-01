@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 COURSE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+ONBOARDING = Path("app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
 DESKTOP = Path("app/static/course_v3_data/desktop-download.js").read_text(encoding="utf-8")
 ADS = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
 
@@ -75,6 +76,22 @@ class MiniAppRequestLoadTests(unittest.TestCase):
             "beginInternalNavigation();\n    setTimeout(function(){location.href=url},40)",
             COURSE,
         )
+
+    def test_hsk30_course_version_settings_confirm_before_switch(self):
+        self.assertIn("function courseVersionSettingsRowHtml()", COURSE)
+        self.assertIn("function confirmCourseTrackSwitch(target,status)", COURSE)
+        self.assertIn(
+            "pickCourseTrack:function(track){requestCourseTrackSwitch(track)}",
+            COURSE,
+        )
+        self.assertIn("switchConfirmBody", COURSE)
+        self.assertIn("switchConfirmAction", COURSE)
+
+    def test_hsk30_onboarding_keeps_hsk20_escape_path(self):
+        self.assertIn('id="later-cta"', ONBOARDING)
+        self.assertIn("function startWithHsk20()", ONBOARDING)
+        self.assertIn('nhsk1:"hsk2"', ONBOARDING)
+        self.assertIn("laterHsk20", ONBOARDING)
 
     def test_download_status_is_the_only_android_availability_request(self):
         self.assertNotIn('"/api/v3/apps/public-status"', DESKTOP)
