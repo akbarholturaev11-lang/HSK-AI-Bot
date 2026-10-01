@@ -19,6 +19,7 @@ data class AndroidHsk30OnboardingDto(
     @SerialName("paid_access") val paidAccess: Boolean = false,
     @SerialName("permanently_unlocked") val permanentlyUnlocked: Boolean = false,
     @SerialName("live_levels") val liveLevels: List<String> = listOf("nhsk1"),
+    @SerialName("new_badge") val newBadge: CourseHsk30NewBadgeDto = CourseHsk30NewBadgeDto(),
     @SerialName("payment_enabled") val paymentEnabled: Boolean = false,
     @SerialName("price_tjs") val priceTjs: Int = 0,
 )
