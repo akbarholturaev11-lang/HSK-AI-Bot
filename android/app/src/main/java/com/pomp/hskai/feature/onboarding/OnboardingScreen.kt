@@ -84,6 +84,7 @@ data class OnboardingUiState(
     val hsk30Enabled: Boolean = false,
     val hsk30Allowed: Boolean = false,
     val hsk30LiveLevels: List<String> = listOf("nhsk1"),
+    val hsk30IsNew: Boolean = false,
     val hsk30PaymentEnabled: Boolean = false,
     val hsk30PriceTjs: Int = 0,
     val submitting: Boolean = false,
