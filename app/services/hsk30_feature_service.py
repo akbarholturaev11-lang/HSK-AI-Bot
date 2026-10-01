@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import timezone
+
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_levels import hsk30_content_levels, level_spec
 
@@ -29,6 +31,15 @@ class Hsk30FeatureService:
             HSK30_ENABLED_SETTINGS_KEY,
             default=False,
         )
+
+    async def enabled_at(self):
+        row = await self.setting_repo.get_record(HSK30_ENABLED_SETTINGS_KEY)
+        if not row or str(row.value or "").strip().lower() not in {"1", "true", "yes", "on"}:
+            return None
+        value = row.updated_at
+        if value is not None and value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc) if value is not None else None
 
     async def set_enabled(self, enabled: bool):
         return await self.setting_repo.set_bool(
