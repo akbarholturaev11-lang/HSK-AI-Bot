@@ -184,13 +184,17 @@ class CourseTrackService:
         """
 
         current_track = self.track_for_level(getattr(user, "level", None))
+        requested_spec = level_spec(requested_level)
+        if (
+            requested_spec
+            and requested_spec.selectable
+            and requested_spec.track != current_track
+        ):
+            raise CourseTrackError("course_track_switch_required", status_code=409)
         target_level = self._validate_level_for_track(
             requested_level,
             current_track,
         )
-        target_track = self.track_for_level(target_level)
-        if target_track != current_track:
-            raise CourseTrackError("course_track_switch_required", status_code=409)
 
         if current_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
@@ -219,7 +223,7 @@ class CourseTrackService:
             )
 
         user.level = target_level
-        progress.level = target_level
+        progress.level = content_level(target_level)
         progress.completed_lessons_count = 0
         progress.current_lesson_id = None
         progress.current_step = "intro"
