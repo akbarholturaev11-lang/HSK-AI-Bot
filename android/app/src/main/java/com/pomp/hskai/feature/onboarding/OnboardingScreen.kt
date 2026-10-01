@@ -121,6 +121,7 @@ data class OnboardingCopy(
     val hsk30Disabled: String,
     val unlockHsk30: String,
     val getPro: String,
+    val laterHsk20: String,
     val notifyTitle: String,
     val notifyLessons: String,
     val notifyUpdates: String,
@@ -158,6 +159,7 @@ data class OnboardingCopy(
                 hsk30Disabled = "HSK 3.0 hozircha yopiq.",
                 unlockHsk30 = "HSK 3.0 ni ochish",
                 getPro = "HSK AI Pro olish",
+                laterHsk20 = "Keyinroq — HSK 2.0 da boshlash",
                 notifyTitle = "Bildirishnomalarni yoqing",
                 notifyLessons = "Kechqurun darsni eslatib turamiz",
                 notifyUpdates = "Yangi versiya chiqqanda bir marta xabar beramiz",
@@ -193,6 +195,7 @@ data class OnboardingCopy(
                 hsk30Disabled = "HSK 3.0 ҳоло баста аст.",
                 unlockHsk30 = "Кушодани HSK 3.0",
                 getPro = "HSK AI Pro гирифтан",
+                laterHsk20 = "Баъдтар — аз HSK 2.0 оғоз кардан",
                 notifyTitle = "Огоҳиномаҳоро фаъол кунед",
                 notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
                 notifyUpdates = "Вақте версияи нав барояд, як бор хабар медиҳем",
@@ -228,6 +231,7 @@ data class OnboardingCopy(
                 hsk30Disabled = "HSK 3.0 пока закрыт.",
                 unlockHsk30 = "Открыть HSK 3.0",
                 getPro = "Получить HSK AI Pro",
+                laterHsk20 = "Позже — начать с HSK 2.0",
                 notifyTitle = "Включите уведомления",
                 notifyLessons = "Вечером напомним про занятие",
                 notifyUpdates = "Один раз сообщим, когда выйдет новая версия",
@@ -293,6 +297,7 @@ fun OnboardingScreen(
     onBack: () -> Unit,
     onNext: () -> Unit,
     onUnlockHsk30: () -> Unit,
+    onLaterHsk20: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val copy = OnboardingCopy.forLanguage(language)
@@ -460,6 +465,7 @@ fun OnboardingScreen(
                     copy = copy,
                     state = state,
                     onNext = if (state.step >= 2 && state.needsHsk30Unlock) onUnlockHsk30 else onNext,
+                    onLaterHsk20 = onLaterHsk20,
                     motionEnabled = motionEnabled,
                     layoutSpec = layoutSpec,
                 )
@@ -999,6 +1005,7 @@ private fun OnboardingFooter(
     copy: OnboardingCopy,
     state: OnboardingUiState,
     onNext: () -> Unit,
+    onLaterHsk20: () -> Unit,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
 ) {
@@ -1108,6 +1115,23 @@ private fun OnboardingFooter(
                             )
                         }
                     }
+                }
+            }
+            if (state.step >= 2 && state.needsHsk30Unlock) {
+                Spacer(Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = onLaterHsk20,
+                    enabled = !state.submitting,
+                    shape = RoundedCornerShape(13.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth().height(46.dp),
+                ) {
+                    Text(
+                        copy.laterHsk20,
+                        color = PompColors.InkSecondary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
             }
         }
