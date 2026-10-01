@@ -8339,6 +8339,8 @@ Priority 3:
 - Mini App, Android Direct/Play va Desktop bir xil server track/access
   qoidasidan foydalanadi. Play build tashqi checkout'ni ilova ichida
   ko'rsatmaydi; Direct APK canonical receipt checkout'dan foydalanadi.
+- HSK 3.0 Android release identifikatori: `1.8.0` / `versionCode 35`; user-facing
+  Android o'zgarishlari shu yoki undan yangi build bilan tarqaladi.
 - HSK 3.0 onboarding, track switch, eski user promo (maksimum 2 marta,
   3 kun cooldown), dictionary filter, recognition/pronunciation/memorize,
   mistake/review isolation va AI curriculum context tayyor.
