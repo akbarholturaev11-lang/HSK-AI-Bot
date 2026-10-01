@@ -78,7 +78,7 @@ def route_static_files(page):
         lambda route: route.fulfill(status=200, content_type="text/css", body=""),
     )
     page.route(
-        "**/api/v3/desktop-download/status",
+        "**/api/v3/desktop-download/status*",
         lambda route: json_response(
             route,
             {
@@ -89,6 +89,16 @@ def route_static_files(page):
                 "promo": {"eligible": False, "placements": {}},
             },
         ),
+    )
+    page.route(
+        "**/api/v3/trial/status",
+        lambda route: json_response(
+            route, {"ok": True, "trial": {"eligible": False, "active": False}}
+        ),
+    )
+    page.route(
+        "**/api/v3/ad?*",
+        lambda route: json_response(route, {"ok": True, "ad": None}),
     )
     page.route(
         "**/api/admin-miniapp/desktop-stats",
@@ -214,7 +224,7 @@ def mock_desktop_release_status(page, payload=None):
             },
         }
     page.route(
-        "**/api/v3/desktop-download/status",
+        "**/api/v3/desktop-download/status*",
         lambda route: json_response(route, payload),
     )
 
@@ -1657,7 +1667,7 @@ def test_recognition_drill_uses_the_words_the_server_selected(page):
     assert state["reviews"] == 2
 
     # Takror so'zda belgi ko'rinadi — o'quvchi moslashuvni KO'RADI.
-    expect(page.locator(".lead .pill")).to_contain_text("takror")
+    expect(page.locator(".pcoach-bubble")).to_contain_text("takror")
 
 
 def test_recognition_drill_falls_back_when_the_server_cannot_choose(page):
@@ -2905,7 +2915,7 @@ def _open_course_profile_with_desktop_release(
     if status_handler is None:
         mock_desktop_release_status(page, status_payload)
     else:
-        page.route("**/api/v3/desktop-download/status", status_handler)
+        page.route("**/api/v3/desktop-download/status*", status_handler)
     page.route(
         "**/api/miniapp/event",
         lambda route: json_response(route, {"ok": True}),
@@ -3140,6 +3150,36 @@ def test_android_chip_sends_the_apk_to_the_chat_and_closes(page):
     assert asked[0]["source"] == "miniapp_profile"
     # The link the chip used to open is gone: nothing is opened for Android.
     assert page.evaluate("window.__openedLink") is None
+
+
+def test_profile_settings_icon_and_paid_renewal_are_available_from_profile(page):
+    mock_telegram_desktop_download(page, platform="android")
+    _open_course_profile_with_desktop_release(page)
+
+    expect(page.locator("#s-profile .profile-title")).to_have_text("Profil")
+    settings = page.locator("#s-profile .profile-settings")
+    expect(settings).to_have_attribute("aria-label", "Sozlamalar")
+    expect(page.locator('#s-profile .row-card').filter(has_text="Sozlamalar")).to_have_count(0)
+
+    settings.click()
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#sheet-body")).to_contain_text("Sozlamalar")
+
+    page.evaluate(
+        """() => {
+          App.closeSheet();
+          MAP.user.plan = "pro";
+          MAP.user.is_paid = true;
+          MAP.user.access_ends_at = "2030-01-01T00:00:00Z";
+          App.goPay = source => { window.__profileCheckoutSource = source; };
+          renderProfile();
+        }"""
+    )
+    renewal = page.locator("#s-profile .profile-renew")
+    expect(renewal).to_be_visible()
+    expect(renewal).to_contain_text("Obunani uzaytirish")
+    renewal.click()
+    assert page.evaluate("window.__profileCheckoutSource") == "profile_renewal"
 
 
 def test_desktop_profile_card_is_discoverable_and_reaches_every_client(page):

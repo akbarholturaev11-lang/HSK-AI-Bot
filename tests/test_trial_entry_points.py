@@ -95,7 +95,7 @@ class TrialEntryPointTests(unittest.TestCase):
         self.assertNotIn('<div class="pro"', body)
 
     def test_a_learner_who_used_the_trial_is_offered_only_the_purchase(self):
-        card = COURSE.split("function proProfileCard()")[1][:1400]
+        card = COURSE.split("function proProfileCard()")[1][:2400]
         self.assertIn("canTrial", card)
         self.assertIn("trialCta", card)
         self.assertIn("unlockBtn", card)

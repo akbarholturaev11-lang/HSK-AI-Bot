@@ -92,14 +92,16 @@ class AndroidBotUrlTests(unittest.TestCase):
 
 
 class AndroidCheckoutDisplayCurrencyTests(unittest.IsolatedAsyncioTestCase):
-    async def test_plan_cards_follow_the_account_language_without_changing_canonical_prices(self):
+    async def test_plan_cards_follow_selected_currency_without_changing_canonical_prices(self):
         cases = (
-            ("tj", "tj", "TJS"),
-            ("uz", "uz", "UZS"),
-            ("ru", "ru", "RUB"),
+            ("tj", "RUB"),
+            ("ru", "UZS"),
+            ("uz", "TJS"),
+            ("ru", "CNY"),
+            ("tj", "USD"),
         )
-        for language, country, currency in cases:
-            with self.subTest(language=language):
+        for language, currency in cases:
+            with self.subTest(language=language, currency=currency):
                 payload = {
                     "language": language,
                     "prices": {
@@ -113,21 +115,26 @@ class AndroidCheckoutDisplayCurrencyTests(unittest.IsolatedAsyncioTestCase):
                         }
                     },
                 }
-                converter = SimpleNamespace(
-                    quote_card_amounts=AsyncMock(
-                        return_value=[
-                            SimpleNamespace(amount="89", currency=currency),
-                            SimpleNamespace(amount="69", currency=currency),
-                        ]
-                    )
-                )
+                rates = ({}, "test")
                 with patch(
-                    "app.api.android_features.SubscriptionCurrencyService",
-                    return_value=converter,
-                ):
-                    result = await _localize_android_checkout_prices(object(), payload)
+                    "app.api.android_features.SubscriptionCurrencyService.quote_display_amounts",
+                    new=AsyncMock(return_value=[("89", currency), ("69", currency)]),
+                ) as convert, patch(
+                    "app.api.android_features.SubscriptionCurrencyService.effective_rates",
+                    new=AsyncMock(return_value=rates),
+                ) as fetch_rates:
+                    result = await _localize_android_checkout_prices(
+                        object(), payload, currency=currency
+                    )
 
-                converter.quote_card_amounts.assert_awaited_once_with([89, 69], country)
+                convert.assert_awaited_once_with(
+                    [89, 69], currency, source_currency="TJS",
+                    preloaded_rates=None if currency == "TJS" else rates,
+                )
+                if currency == "TJS":
+                    fetch_rates.assert_not_awaited()
+                else:
+                    fetch_rates.assert_awaited_once()
                 price = result["prices"]["visa"]["1_month"]
                 self.assertEqual(89, price["base_amount"])
                 self.assertEqual(69, price["final_amount"])
@@ -1522,6 +1529,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/profile"),
         ("PATCH", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
+        ("GET", "/api/v3/android/subscription/currency-preference"),
+        ("PUT", "/api/v3/android/subscription/currency-preference"),
         ("GET", "/api/v3/android/subscription/checkout/overview"),
         ("POST", "/api/v3/android/subscription/checkout/discount-start"),
         ("POST", "/api/v3/android/subscription/checkout/event"),
@@ -1602,6 +1611,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
+        ("GET", "/api/v3/android/subscription/currency-preference"),
         ("GET", "/api/v3/android/subscription/checkout/overview"),
         ("POST", "/api/v3/android/subscription/checkout/discount-start"),
         ("POST", "/api/v3/android/subscription/open"),

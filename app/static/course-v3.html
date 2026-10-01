@@ -47,6 +47,11 @@ button{cursor:pointer}
 .hint .hx{flex:0 0 auto;background:none;border:none;color:var(--ink3);font-size:15px;padding:2px 0 0 2px;line-height:1}
 /* top */
 .htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
+.htop.profile-head{justify-content:space-between;padding-bottom:8px}
+.profile-title{margin:0;color:var(--ink);font-size:20px;line-height:1.2;font-weight:700}
+.profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
+.profile-settings i{font-size:21px}
+.profile-settings:focus-visible{outline:2px solid var(--cin);outline-offset:2px}
 .lvpill{display:flex;align-items:center;gap:6px;background:var(--cin);color:#fff;font-size:13px;font-weight:500;padding:7px 13px;border-radius:20px;border:none;font-family:inherit}
 .chip{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:500}
 .langsw{margin-left:auto;display:flex;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
@@ -545,6 +550,7 @@ button{cursor:pointer}
 .pro .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
 .pro h3{margin:0 0 4px;font-size:16px;font-weight:500;color:#fff}.pro p{margin:0 0 13px;font-size:13px;color:rgba(255,255,255,.7)}
 .pro button{background:var(--gold);color:#3a2c08;border:none;border-radius:11px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:500}
+.pro button.profile-renew{display:flex;width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;margin-top:10px}
 .pro .prolink{display:inline-block;margin-left:12px;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer}
 .loading{padding:60px 20px;text-align:center;color:var(--ink3);font-size:14px}
 .writebtn{position:absolute;right:18px;bottom:152px;width:56px;height:56px;border-radius:50%;background:var(--gold);color:#3a2c08;border:none;box-shadow:0 4px 0 #9a7420;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:7}
@@ -5228,9 +5234,9 @@ function openInviteSheet(){
 }
 
 /* ---------- Profile ---------- */
-function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",goalTitle:"Цель",settings:"Настройки",settingsSub:"Язык, уведомления, цель, способы входа",signin:"Способы входа",signinSub:"Один аккаунт, несколько способов входа",connect:"Подключить",connected:"Подключено",disconnect:"Отключить",unlinkWarn:"После отключения вы выйдете из аккаунта на других устройствах.",linkWait:"Подтвердите вход в браузере…",linkFail:"Не удалось подключить. Попробуйте ещё раз.",linkDone:"Подключено",social:"HSK AI в соцсетях"},
-  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",goalTitle:"Maqsad",settings:"Sozlamalar",settingsSub:"Til, bildirishnoma, maqsad, kirish usullari",signin:"Kirish usullari",signinSub:"Bitta akkaunt, bir nechta kirish usuli",connect:"Ulash",connected:"Ulangan",disconnect:"Uzish",unlinkWarn:"Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",linkWait:"Brauzerda tasdiqlashni kuting…",linkFail:"Ulab bo'lmadi. Qayta urinib ko'ring.",linkDone:"Ulandi",social:"HSK AI ijtimoiy tarmoqlarda"},
-  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",goalTitle:"Ҳадаф",settings:"Танзимот",settingsSub:"Забон, огоҳиҳо, ҳадаф, усулҳои вуруд",signin:"Усулҳои вуруд",signinSub:"Як ҳисоб, якчанд усули вуруд",connect:"Пайваст кардан",connected:"Пайваст аст",disconnect:"Ҷудо кардан",unlinkWarn:"Пас аз ҷудо кардан дар дастгоҳҳои дигар аз ҳисоб мебароед.",linkWait:"Дар браузер тасдиқро интизор шавед…",linkFail:"Пайваст карда нашуд. Боз кӯшиш кунед.",linkDone:"Пайваст шуд",social:"HSK AI дар шабакаҳои иҷтимоӣ"}}[LANG]}
+function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",renew:"Продлить подписку",goalTitle:"Цель",settings:"Настройки",settingsSub:"Язык, уведомления, цель, способы входа",signin:"Способы входа",signinSub:"Один аккаунт, несколько способов входа",connect:"Подключить",connected:"Подключено",disconnect:"Отключить",unlinkWarn:"После отключения вы выйдете из аккаунта на других устройствах.",linkWait:"Подтвердите вход в браузере…",linkFail:"Не удалось подключить. Попробуйте ещё раз.",linkDone:"Подключено",social:"HSK AI в соцсетях"},
+  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",renew:"Obunani uzaytirish",goalTitle:"Maqsad",settings:"Sozlamalar",settingsSub:"Til, bildirishnoma, maqsad, kirish usullari",signin:"Kirish usullari",signinSub:"Bitta akkaunt, bir nechta kirish usuli",connect:"Ulash",connected:"Ulangan",disconnect:"Uzish",unlinkWarn:"Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",linkWait:"Brauzerda tasdiqlashni kuting…",linkFail:"Ulab bo'lmadi. Qayta urinib ko'ring.",linkDone:"Ulandi",social:"HSK AI ijtimoiy tarmoqlarda"},
+  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",renew:"Дароз кардани обуна",goalTitle:"Ҳадаф",settings:"Танзимот",settingsSub:"Забон, огоҳиҳо, ҳадаф, усулҳои вуруд",signin:"Усулҳои вуруд",signinSub:"Як ҳисоб, якчанд усули вуруд",connect:"Пайваст кардан",connected:"Пайваст аст",disconnect:"Ҷудо кардан",unlinkWarn:"Пас аз ҷудо кардан дар дастгоҳҳои дигар аз ҳисоб мебароед.",linkWait:"Дар браузер тасдиқро интизор шавед…",linkFail:"Пайваст карда нашуд. Боз кӯшиш кунед.",linkDone:"Пайваст шуд",social:"HSK AI дар шабакаҳои иҷтимоӣ"}}[LANG]}
 /* Maqsad kodini (onboardingdagi tanlov) o'qiladigan nomga aylantiradi.
    Nomlar `studySetupT().goals` da — onboarding bilan AYNI manba, shunda
    profildagi maqsad tanlov ekranidagidek yoziladi. */
@@ -5372,9 +5378,12 @@ function proProfileCard(){
   if(plan==="pro"||plan==="temp"){
     var title=plan==="pro"?p.statusPro:p.statusTemp;
     var until=ends?String(p.statusUntil).replace("{d}",fmtAccessDate(ends)):"";
+    var cta=plan==="pro"
+      ? '<button class="profile-renew" onclick="App.goPay(\'profile_renewal\')"><i class="ti ti-refresh"></i> '+esc(p.renew)+'</button>'
+      : '<button class="profile-renew" onclick="App.goPay(\'profile_subscription\')"><i class="ti ti-crown"></i> '+esc(t.unlockBtn||"")+'</button>';
     return '<div class="pro pro-on">'+head
       +'<h3><i class="ti ti-circle-check-filled" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(title)+'</h3>'
-      +(until?'<p>'+esc(until)+'</p>':'<p style="margin:0"></p>')+'</div>';
+      +(until?'<p>'+esc(until)+'</p>':'<p style="margin:0"></p>')+cta+'</div>';
   }
 
   if(plan==="trial"){
@@ -5532,7 +5541,7 @@ function renderProfile(){
   var firstDone=completedLessons>=1;
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
+  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(t.nav.profile)+'</h1><button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
     +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+Math.max(0,dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
     +'<div id="pomp-desktop-profile-root"></div>'
@@ -5544,10 +5553,6 @@ function renderProfile(){
     +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div>'
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
     +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")
-    /* Bitta «Sozlamalar» bo'limi: til, bildirishnoma, maqsad, kirish usullari
-       va yordam. Ilgari sarlavha `p.goalSet.split(" ")[0]` edi — u so'zning
-       faqat birinchi qismini ko'rsatib, «Ҳадафи» kabi chala matn chiqarardi. */
-    +rowCard("t-blue",'<i class="ti ti-settings"></i>',p.settings,p.settingsSub,"App.openSettings()")
     +socialLinksHtml()
     +'<div style="height:14px"></div>';
   if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();
