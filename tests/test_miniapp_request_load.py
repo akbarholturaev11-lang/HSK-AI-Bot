@@ -92,6 +92,8 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         self.assertIn("function startWithHsk20()", ONBOARDING)
         self.assertIn('nhsk1:"hsk2"', ONBOARDING)
         self.assertIn("laterHsk20", ONBOARDING)
+        self.assertIn("h30PriceLabel", ONBOARDING)
+        self.assertIn("hsk30Price()+\" TJS\"", ONBOARDING)
 
     def test_download_status_is_the_only_android_availability_request(self):
         self.assertNotIn('"/api/v3/apps/public-status"', DESKTOP)
