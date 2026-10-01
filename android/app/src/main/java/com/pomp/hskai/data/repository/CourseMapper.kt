@@ -7,6 +7,7 @@ import com.pomp.hskai.domain.model.CourseFoundation
 import com.pomp.hskai.domain.model.CourseHsk30
 import com.pomp.hskai.domain.model.CourseHsk30Access
 import com.pomp.hskai.domain.model.CourseHsk30Promo
+import com.pomp.hskai.domain.model.CourseHsk30NewBadge
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseLessonLimit
 import com.pomp.hskai.domain.model.CourseMap
@@ -131,6 +132,11 @@ object CourseMapper {
                         reason = hsk30.access.reason,
                     ),
                     liveLevels = hsk30.liveLevels,
+                    newBadge = CourseHsk30NewBadge(
+                        isNew = hsk30.newBadge.isNew,
+                        enabledAt = hsk30.newBadge.enabledAt,
+                        newUntil = hsk30.newBadge.newUntil,
+                    ),
                     paymentEnabled = hsk30.paymentEnabled,
                     priceTjs = hsk30.priceTjs,
                     promo = CourseHsk30Promo(
