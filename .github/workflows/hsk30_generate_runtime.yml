@@ -36,6 +36,8 @@ on:
       - "app/bot/handlers/admin_broadcast.py"
       - "app/services/admin_broadcast_service.py"
       - "app/bot/handlers/course.py"
+      - "app/bot/keyboards/onboarding.py"
+      - "app/bot/handlers/commands.py"
       - "app/static/course_v3_test.html"
       - "app/static/course_v3_memorize.html"
       - "tests/test_course_mistake_targets_flow.py"
@@ -124,6 +126,8 @@ jobs:
             app/services/hsk30_unlock_service.py \
             app/services/desktop_subscription_service.py \
             app/services/admin_miniapp_service.py \
+            app/bot/handlers/commands.py \
+            app/bot/keyboards/onboarding.py \
             app/services/voice_practice_service.py
 
       - name: Syntax-check Mini App JavaScript
