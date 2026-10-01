@@ -864,7 +864,12 @@ private fun AppRoot(
                     onNext = onboardingViewModel::next,
                     onUnlockHsk30 = {
                         if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
-                            checkoutOrigin = "hsk30_onboarding"
+                            checkoutOrigin =
+                                if (
+                                    onboardingState.ui.hsk30PaymentEnabled &&
+                                    onboardingState.ui.hsk30PriceTjs > 0
+                                ) "hsk30_onboarding"
+                                else "onboarding_plan"
                             checkoutVisible = true
                         } else {
                             scope.launch {
