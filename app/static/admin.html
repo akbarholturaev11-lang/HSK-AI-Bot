@@ -2102,6 +2102,8 @@
         form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
           <div class="frow"><label>Reklama matni</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
           <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row">${cmLangChips()}</div></div>
+          ${sel("cm_track","🧭 Kurs versiyasi",[["","Hammasi"],["hsk20","HSK 2.0"],["hsk30","HSK 3.0"]])}
+          ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"],["nhsk1","HSK 3.0 · N1"],["nhsk2","HSK 3.0 · N2"],["nhsk3","HSK 3.0 · N3"]])}
           <label class="ncsw"><input type="checkbox" id="cmActiveSubs"> Faol obunachilarga ham yuborilsin</label>
           <div class="frow"><label>📎 Foto/Video (ixtiyoriy)</label>
             <div class="row"><button class="btn sec" type="button" id="cmMediaBtn">Media tanlash</button>
@@ -2166,6 +2168,8 @@
       const p={kind,title:$("cmTitle").value.trim(),text:$("cmText").value.trim(),hours:$("cmHours").value};
       if(kind==="ad"){
         p.languages=[...document.querySelectorAll("[data-cmlang].active")].map(x=>x.dataset.cmlang);
+        p.track=$("cm_track").value;
+        p.level=$("cm_level").value;
         p.include_active_subscribers=$("cmActiveSubs").checked;
         p.content_type=state.cm.content_type; p.media_file_id=state.cm.media_file_id;
         const act=$("cmBtn").value; if(act){ const b={action:act}; const t=$("cmBtnText").value.trim(); if(t)b.text=t; const u=$("cmBtnUrl").value.trim(); if(u)b.url=u; p.button=b; }
