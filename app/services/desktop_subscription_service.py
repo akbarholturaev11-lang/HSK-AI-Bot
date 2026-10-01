@@ -64,7 +64,7 @@ class DesktopSubscriptionService:
     def _checkout_mode(*, entry_source: str | None = None, plan_type: str | None = None) -> str:
         if plan_type == HSK30_UNLOCK_PLAN_TYPE:
             return HSK30_UNLOCK_MODE
-        if str(entry_source or "").endswith("hsk30_onboarding"):
+        if str(entry_source or "").endswith(("hsk30_onboarding", "hsk30_settings")):
             return HSK30_UNLOCK_MODE
         return DESKTOP_SUBSCRIPTION_MODE
 
