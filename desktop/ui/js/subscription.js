@@ -1,4 +1,4 @@
-const PLAN_ORDER = ["1_month", "3_months", "10_days"];
+const PLAN_ORDER = ["hsk30_unlock", "1_month", "3_months", "10_days"];
 const METHOD_ORDER = ["visa", "alipay", "wechat"];
 const SCREENSHOT_TYPES = new Set([
   "image/jpeg",
@@ -80,6 +80,7 @@ export class DesktopSubscriptionController {
     this.onToast = onToast;
     this.user = null;
     this.overview = null;
+    this.mode = "subscription";
     this.plan = "1_month";
     this.method = "visa";
     this.country = "tj";
@@ -115,7 +116,14 @@ export class DesktopSubscriptionController {
     if (!plans.includes(this.plan)) this.plan = plans[0] || "1_month";
   }
 
-  async open({ refresh = false } = {}) {
+  async open({ refresh = false, mode = "subscription" } = {}) {
+    const nextMode = mode === "hsk30_unlock" ? "hsk30_unlock" : "subscription";
+    if (this.mode !== nextMode) {
+      this.mode = nextMode;
+      this.overview = null;
+      this.plan = nextMode === "hsk30_unlock" ? "hsk30_unlock" : "1_month";
+      this.resetCheckout();
+    }
     if (!this.overview || refresh) await this.refresh();
     else this.render();
   }
@@ -127,7 +135,7 @@ export class DesktopSubscriptionController {
     this.render();
     try {
       const previousPaid = Boolean(this.overview?.access?.is_paid);
-      const result = await this.bridge.subscriptionOverview();
+      const result = await this.bridge.subscriptionOverview(this.mode);
       if (!result || result.ok !== true || !result.access) {
         throw new Error("desktop_subscription_payload_invalid");
       }
@@ -348,10 +356,11 @@ export class DesktopSubscriptionController {
   renderCheckout() {
     const shell = node("div", "subscription-layout subWrap");
     const chooser = node("section", "subscription-chooser subHead card-panel card");
+    const hsk30Unlock = this.overview?.mode === "hsk30_unlock";
     chooser.append(
-      node("p", "eyebrow", this.t("subscriptionChoosePlan")),
-      node("h3", "", this.t("subscriptionUnlockTitle")),
-      node("p", "muted", this.t("subscriptionUnlockBody")),
+      node("p", "eyebrow", hsk30Unlock ? "HSK 3.0" : this.t("subscriptionChoosePlan")),
+      node("h3", "", this.t(hsk30Unlock ? "hsk30UnlockTitle" : "subscriptionUnlockTitle")),
+      node("p", "muted", this.t(hsk30Unlock ? "hsk30UnlockBody" : "subscriptionUnlockBody")),
     );
 
     const plans = node("div", "subscription-plans planGrid");
@@ -363,6 +372,7 @@ export class DesktopSubscriptionController {
       button.dataset.plan = plan;
       button.classList.toggle("is-active", plan === this.plan);
       button.classList.toggle("current", plan === this.plan);
+      if (plan === "hsk30_unlock") button.classList.add("featured");
       const price = node("div", "planPrice");
       price.append(
         node("b", "", info.final_amount ?? "—"),
