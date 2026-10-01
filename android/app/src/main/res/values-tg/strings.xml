@@ -469,4 +469,6 @@
     <string name="hsk30_promo_body">Стандарти нав ҳамчун курси алоҳида илова шуд. Пешрафти HSK 2.0 нигоҳ дошта мешавад ва ҳар вақт баргашта метавонед.</string>
     <string name="hsk30_promo_price">Дастрасии якдафъаина: %1$d TJS</string>
     <string name="hsk30_promo_switch">Гузаштан ба HSK 3.0</string>
+    <string name="hsk30_test_soon_title">Тестҳои HSK 3.0</string>
+    <string name="hsk30_test_soon_body">Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.</string>
 </resources>
