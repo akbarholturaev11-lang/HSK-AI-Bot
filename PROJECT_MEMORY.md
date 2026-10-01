@@ -8322,15 +8322,35 @@ Priority 2:
 Priority 3:
 - Public flaglarni faqat yuqoridagi tekshiruvlar o'tgach yoqish.
 
-### HSK 3.0 versiyasi — alohida kurs (reja tasdiqlangan, ish boshlanmagan)
+### HSK 3.0 versiyasi — alohida kurs (2026-10-01: implementation tayyor, rollout flag bilan)
 
-- To'liq reja va egasining 2026-09-29 qarorlari: `docs/HSK_3.0_VERSIYASI.md`.
-- Qisqasi: HSK 3.0 · 1–4 eski kursdan alohida trek (`nhsk1`–`nhsk4`
-  kalitlari), eski kurs qoladi, XP/reyting va lug'at umumiy (lug'atda filtr).
-  HSK 3.0 ni ochish — obunasizlar uchun bir martalik 10 somoni
-  (`plan_type="hsk30_unlock"`, admin tasdig'ida `activate_plan` CHAQIRILMAYDI);
-  obunachilar to'lamaydi. Ish egasi "boshla" deganda va rasmiy syllabus fayli
-  kelgach boshlanadi.
+- To'liq reja va egasining qarorlari: `docs/HSK_3.0_VERSIYASI.md`.
+- HSK 3.0 eski kursdan alohida trek: `nhsk1`–`nhsk4`; HSK 2.0 progressi
+  saqlanadi, track almashtirilganda ikkala progress alohida tiklanadi.
+- Runtime: N1 = 103, N2 = 73, N3 = 145 mini-lesson. N4 rasmiy source yo'q,
+  shuning uchun selectable/live emas.
+- Launch chegarasi serverda: `hsk30_enabled` global kill switch va
+  `hsk30_live_levels`. Missing live-level setting xavfsiz default sifatida
+  faqat `nhsk1` ni ochadi. N2/N3 runtime borligi ularni avtomatik live qilmaydi.
+- Access: faol HSK AI Pro HSK 3.0 ga qo'shimcha to'lovsiz kiradi. Pro bo'lmasa
+  bir martalik doimiy unlock ishlaydi (`plan_type="hsk30_unlock"`, joriy
+  default narx 10 TJS, admin paneldan o'zgaradi). Admin tasdig'ida
+  `activate_plan` CHAQIRILMAYDI; subscription muddati o'zgarmaydi.
+- Mini App, Android Direct/Play va Desktop bir xil server track/access
+  qoidasidan foydalanadi. Play build tashqi checkout'ni ilova ichida
+  ko'rsatmaydi; Direct APK canonical receipt checkout'dan foydalanadi.
+- HSK 3.0 onboarding, track switch, eski user promo (maksimum 2 marta,
+  3 kun cooldown), dictionary filter, recognition/pronunciation/memorize,
+  mistake/review isolation va AI curriculum context tayyor.
+- Test markazi ataylab `Tez orada`: yangi HSK 3.0 exam source/formati
+  tayyor bo'lmaguncha eski HSK 2.0 testlari yangi trackka aralashtirilmaydi.
+- Admin: HSK 3.0 enable, live N1/N2/N3, permanent-payment toggle, narx/QR,
+  alohida finance row, broadcast va reklama track/level targeting mavjud.
+- Release feedback draft: `RELEASE_FEEDBACK_HSK30.md`. Avtomatik
+  yuborilmaydi; deploy va admin tasdig'idan keyin ishlatiladi.
+- Rollout tartibi: production deploy → admin panelda `hsk30_enabled` ni
+  yoqish → `live_levels` faqat `nhsk1` ekanini tekshirish → kichik cohort
+  feedback → keyin N2/N3 ni alohida yoqish.
 
 ### Android klientini Mini App bilan tenglashtirish
 
