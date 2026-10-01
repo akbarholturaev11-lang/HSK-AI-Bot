@@ -77,6 +77,8 @@ from app.db.models.notification_template import NotificationTemplate  # noqa: F4
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_track_state import CourseTrackState
 from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
@@ -1050,6 +1052,62 @@ async def _admin_miniapp_management_payload(session) -> dict:
             )
         )
 
+    hsk30_active_users = int(
+        (
+            await session.execute(
+                select(func.count(User.id)).where(
+                    User.status != "blocked",
+                    User.level.like("nhsk%"),
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_track_users = int(
+        (
+            await session.execute(
+                select(func.count(func.distinct(CourseTrackState.user_id))).where(
+                    CourseTrackState.track == "hsk30"
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_unlocked_users = int(
+        (
+            await session.execute(
+                select(func.count(func.distinct(CourseTrackState.user_id))).where(
+                    CourseTrackState.track == "hsk30",
+                    CourseTrackState.unlocked_at.is_not(None),
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_promo_users = int(
+        (
+            await session.execute(
+                select(func.count(CourseMiniAppProfile.id)).where(
+                    CourseMiniAppProfile.hsk30_promo_shown_count > 0
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_promo_impressions = int(
+        (
+            await session.execute(
+                select(
+                    func.coalesce(
+                        func.sum(CourseMiniAppProfile.hsk30_promo_shown_count),
+                        0,
+                    )
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+
     price_items = []
     for price in prices:
         is_qr = PaymentQrCodeService.is_qr_method(price.payment_method)
@@ -1087,6 +1145,13 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "unlock_price_tjs": hsk30_unlock_price,
             "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
             "qr": hsk30_unlock_qr,
+            "stats": {
+                "active_users": hsk30_active_users,
+                "track_users": hsk30_track_users,
+                "permanent_unlock_users": hsk30_unlocked_users,
+                "promo_users": hsk30_promo_users,
+                "promo_impressions": hsk30_promo_impressions,
+            },
         },
         "gemini": {
             "configured": bool(settings.GEMINI_API_KEY),
