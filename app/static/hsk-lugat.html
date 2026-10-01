@@ -585,15 +585,15 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     });
   }
   function wordMatchesLevelKey(word, level){
-    var lv = String(word.lv || '').toLowerCase().replace(/\s/g, '');
+    var tags = String(word.lv || '').toLowerCase().split('|').map(function(v){return v.replace(/\s/g,'')}).filter(Boolean);
     if(level === 'all') return true;
-    if(level === 'hsk20') return lv.indexOf('hsk') === 0;
-    if(level === 'hsk30') return /^n[1-3]$/.test(lv);
-    if(level === 'hsk4') return lv.indexOf('hsk4') === 0;
-    if(level === 'hsk4a') return lv.indexOf('hsk4') === 0 && lv.indexOf('1-qism') !== -1;
-    if(level === 'hsk4b') return lv.indexOf('hsk4') === 0 && lv.indexOf('2-qism') !== -1;
-    if(/^nhsk[1-3]$/.test(level)) return lv === 'n' + level.slice(-1);
-    return lv.indexOf(level) === 0;
+    if(level === 'hsk20') return tags.some(function(v){return v.indexOf('hsk') === 0});
+    if(level === 'hsk30') return tags.some(function(v){return /^n[1-3]$/.test(v)});
+    if(level === 'hsk4') return tags.some(function(v){return v.indexOf('hsk4') === 0});
+    if(level === 'hsk4a') return tags.some(function(v){return v.indexOf('hsk4') === 0 && v.indexOf('1-qism') !== -1});
+    if(level === 'hsk4b') return tags.some(function(v){return v.indexOf('hsk4') === 0 && v.indexOf('2-qism') !== -1});
+    if(/^nhsk[1-3]$/.test(level)) return tags.indexOf('n' + level.slice(-1)) !== -1;
+    return tags.some(function(v){return v.indexOf(level) === 0});
   }
   function wordMatchesLevel(word){
     return wordMatchesLevelKey(word, currentLevel);
@@ -615,7 +615,25 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       HSK4_GRAMMAR.find(function(g){ return h.length === 1 && String(g.t || '') === h; });
   }
 
-  var DICTIONARY_WORDS=(typeof WORDS!=="undefined"?WORDS:[]).concat(window.HSK30_WORDS||[]);
+  var DICTIONARY_WORDS=(function(){
+    var merged=[],byHanzi={};
+    (typeof WORDS!=="undefined"?WORDS:[]).concat(window.HSK30_WORDS||[]).forEach(function(src){
+      var h=String(src&&src.h||'').trim();
+      if(!h)return;
+      var existing=byHanzi[h];
+      if(!existing){
+        existing=Object.assign({},src);
+        byHanzi[h]=existing;
+        merged.push(existing);
+      }else{
+        var tags=String(existing.lv||'').split('|').filter(Boolean);
+        var next=String(src.lv||'').trim();
+        if(next&&tags.indexOf(next)===-1)tags.push(next);
+        existing.lv=tags.join('|');
+      }
+    });
+    return merged;
+  })();
   DICTIONARY_WORDS.forEach(function(w,i){
     w.id = i;
     w._p = normPinyin(w.p);
