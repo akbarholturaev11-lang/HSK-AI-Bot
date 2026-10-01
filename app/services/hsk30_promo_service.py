@@ -54,6 +54,8 @@ class Hsk30PromoService:
         shown_count = max(0, int(getattr(profile, "hsk30_promo_shown_count", 0) or 0))
         last_shown = _utc(getattr(profile, "hsk30_promo_last_shown_at", None))
         feature_enabled = await self.feature.is_enabled()
+        release_at = await self.feature.enabled_at()
+        onboarded_at = _utc(getattr(profile, "onboarding_completed_at", None))
         active_track = CourseTrackService.track_for_level(
             getattr(user, "level", None)
         )
@@ -68,6 +70,12 @@ class Hsk30PromoService:
         elif permanently_unlocked:
             eligible = False
             reason = "already_unlocked"
+        elif onboarded_at is None:
+            eligible = False
+            reason = "onboarding_not_completed"
+        elif release_at is None or onboarded_at > release_at:
+            eligible = False
+            reason = "new_user_after_release"
         elif shown_count >= HSK30_PROMO_MAX_SHOWS:
             eligible = False
             reason = "show_cap_reached"
@@ -86,9 +94,19 @@ class Hsk30PromoService:
         ):
             next_eligible_at = last_shown + HSK30_PROMO_MIN_INTERVAL
 
+        legacy_level = str(getattr(user, "level", "") or "").strip().lower()
+        recommended_level = {
+            "beginner": "nhsk1",
+            "hsk1": "nhsk1",
+            "hsk2": "nhsk1",
+            "hsk3": "nhsk2",
+            "hsk4": "nhsk3",
+        }.get(legacy_level, "nhsk1")
+
         return {
             "eligible": eligible,
             "reason": reason,
+            "recommended_level": recommended_level,
             "shown_count": shown_count,
             "max_shows": HSK30_PROMO_MAX_SHOWS,
             "last_shown_at": last_shown.isoformat() if last_shown else None,
