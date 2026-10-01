@@ -61,6 +61,16 @@ on:
       - "tests/test_hsk30_promo_service.py"
       - "tests/test_hsk30_admin_payment_flow.py"
       - "tests/test_desktop_course_api.py"
+      - "tests/test_ad_campaign_hsk_target.py"
+      - "app/prompts/qa_system.txt"
+      - "app/services/course_tutor_service.py"
+      - "app/services/ai_service.py"
+      - "app/bot/keyboards/admin_ads.py"
+      - "app/bot/handlers/admin_ads.py"
+      - "app/services/ad_campaign_service.py"
+      - "app/repositories/ad_campaign_repo.py"
+      - "app/db/models/ad_campaign.py"
+      - "alembic/versions/0096_ad_campaign_course_target.py"
   workflow_dispatch:
 
 permissions:
@@ -128,7 +138,13 @@ jobs:
             app/services/hsk30_unlock_service.py \
             app/services/desktop_subscription_service.py \
             app/services/admin_miniapp_service.py \
+            app/services/ai_service.py \
+            app/services/course_tutor_service.py \
+            app/services/ad_campaign_service.py \
+            app/repositories/ad_campaign_repo.py \
             app/repositories/user_repo.py \
+            app/bot/handlers/admin_ads.py \
+            app/bot/keyboards/admin_ads.py \
             app/bot/handlers/commands.py \
             app/bot/keyboards/onboarding.py \
             app/services/voice_practice_service.py
@@ -251,7 +267,8 @@ jobs:
             tests.test_course_v3_dictionary \
             tests.test_course_mistake_service \
             tests.test_course_mistake_targets_flow \
-            tests.test_admin_broadcast_hsk_track
+            tests.test_admin_broadcast_hsk_track \
+            tests.test_ad_campaign_hsk_target
 
       - name: Check Alembic has exactly one head
         run: |
