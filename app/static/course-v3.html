@@ -5634,7 +5634,7 @@ var SETTINGS_SHEET=false;
 function courseVersionSettingsRowHtml(){
   var status=COURSE_TRACK_STATE;
   var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  if(!access||access.feature_enabled!==true)return "";
+  if((!access||access.feature_enabled!==true)&&currentCourseTrack()!=="hsk30")return "";
   var t=trackUi(),track=currentCourseTrack();
   return '<button class="srow" onclick="App.courseTrackPicker()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
     +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
