@@ -2030,7 +2030,12 @@ var App={
   tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
   tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
-  openDict:function(){beginInternalNavigation();location.href="/hsk-lugat.html?theme=light&lang="+LANG},
+  openDict:function(){
+    beginInternalNavigation();
+    var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
+    var q=new URLSearchParams({theme:"light",lang:LANG,level:level,filter:level});
+    location.href="/hsk-lugat.html?"+q.toString();
+  },
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
   openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
