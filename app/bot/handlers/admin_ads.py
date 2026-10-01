@@ -14,10 +14,12 @@ from app.bot.keyboards.admin_ads import (
     ad_confirm_keyboard,
     ad_duration_keyboard,
     ad_language_keyboard,
+    ad_level_keyboard,
     ad_list_keyboard,
     ad_panel_keyboard,
     ad_send_count_keyboard,
     ad_start_keyboard,
+    ad_track_keyboard,
 )
 from app.bot.keyboards.promo_button import (
     build_promo_button_markup,
@@ -99,6 +101,24 @@ def _fmt_interval(duration_hours: int | None, send_count: int | None) -> str:
     return f"Har {max(seconds // 60, 1)} daqiqada"
 
 
+def _fmt_track(value: str | None) -> str:
+    return {"hsk20": "HSK 2.0", "hsk30": "HSK 3.0"}.get(value or "", "Hammasi")
+
+
+def _fmt_level(value: str | None) -> str:
+    labels = {
+        "beginner": "Boshlang'ich",
+        "hsk1": "HSK1",
+        "hsk2": "HSK2",
+        "hsk3": "HSK3",
+        "hsk4": "HSK4",
+        "nhsk1": "HSK 3.0 · N1",
+        "nhsk2": "HSK 3.0 · N2",
+        "nhsk3": "HSK 3.0 · N3",
+    }
+    return labels.get(value or "", "Hammasi")
+
+
 def _fmt_active_policy(include_active: bool | None) -> str:
     if include_active:
         return "Ruxsat berilgan"
@@ -144,6 +164,8 @@ def _wizard_text(data: dict, prompt: str, error: str | None = None) -> str:
         f"Yuborish: <b>{send_count or '—'} marta</b>",
         f"Interval: <b>{_fmt_interval(duration_hours, send_count)}</b>",
         f"Til: <b>{_fmt_languages(languages)}</b>",
+        f"Kurs: <b>{_fmt_track(data.get('target_track'))}</b>",
+        f"Daraja: <b>{_fmt_level(data.get('target_level'))}</b>",
         f"Faol obuna: <b>{_fmt_active_policy(data.get('include_active_subscribers'))}</b>",
         f"Boshlanish: <b>{_fmt_time(starts_at)}</b>",
         f"Tugash: <b>{_fmt_time(ends_at)}</b>",
@@ -216,6 +238,8 @@ async def _delete_admin_input(message: Message) -> None:
 async def _target_count(session, data: dict) -> int:
     users = await UserRepository(session).get_ad_target_users(
         languages=_selected_languages(data),
+        course_track=data.get("target_track"),
+        level=data.get("target_level"),
         include_active_subscribers=bool(data.get("include_active_subscribers")),
     )
     admin_ids = _admin_ids()
@@ -225,6 +249,8 @@ async def _target_count(session, data: dict) -> int:
 async def _target_users(session, data: dict) -> list:
     users = await UserRepository(session).get_ad_target_users(
         languages=_selected_languages(data),
+        course_track=data.get("target_track"),
+        level=data.get("target_level"),
         include_active_subscribers=bool(data.get("include_active_subscribers")),
     )
     admin_ids = _admin_ids()
@@ -289,6 +315,7 @@ async def _confirm_text(session, data: dict) -> str:
         f"Muddat: <b>{_fmt_time(starts_at)}</b> dan <b>{_fmt_time(ends_at)}</b> gacha\n"
         f"Yuborish: <b>{data['send_count_total']} marta</b> · {_fmt_interval(data['duration_hours'], data['send_count_total'])}\n"
         f"Til: <b>{_fmt_languages(_selected_languages(data))}</b>\n"
+        f"Kurs: <b>{_fmt_track(data.get('target_track'))}</b> · Daraja: <b>{_fmt_level(data.get('target_level'))}</b>\n"
         f"Faol obuna: <b>{_fmt_active_policy(data.get('include_active_subscribers'))}</b>\n"
         f"Target: <b>{target_count} ta user</b>\n\n"
         "Ishga tushirilsa scheduler 1 daqiqa ichida due bo'lgan xabarlarni yuboradi."
@@ -758,6 +785,57 @@ async def ads_language_done(callback: CallbackQuery, state: FSMContext):
     await _edit_callback_panel(
         callback,
         state,
+        _wizard_text(data, "Qaysi kurs versiyasiga yuborilsin?"),
+        ad_track_keyboard(data.get("target_track")),
+    )
+
+
+@router.callback_query(F.data.startswith("ads:track:"))
+async def ads_track_filter(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    value = callback.data.split(":")[2]
+    track = None if value == "all" else value
+    if track not in {None, "hsk20", "hsk30"}:
+        await callback.answer("Noto'g'ri kurs", show_alert=True)
+        return
+    await state.update_data(target_track=track, target_level=None)
+    data = await state.get_data()
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
+        _wizard_text(data, "Qaysi darajaga yuborilsin? Tanlamasangiz hammasiga."),
+        ad_level_keyboard(track),
+    )
+
+
+@router.callback_query(F.data.startswith("ads:level:"))
+async def ads_level_filter(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    value = callback.data.split(":")[2]
+    level = None if value == "all" else value
+    valid = {"beginner", "hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
+    if level is not None and level not in valid:
+        await callback.answer("Noto'g'ri daraja", show_alert=True)
+        return
+    data = await state.get_data()
+    track = data.get("target_track")
+    if track == "hsk20" and level and level.startswith("nhsk"):
+        await callback.answer("HSK 2.0 uchun bu daraja mos emas", show_alert=True)
+        return
+    if track == "hsk30" and level and not level.startswith("nhsk"):
+        await callback.answer("HSK 3.0 uchun bu daraja mos emas", show_alert=True)
+        return
+    await state.update_data(target_level=level)
+    data = await state.get_data()
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
         _wizard_text(data, "Faol obunachilarga reklama borishiga ruxsat berasizmi?"),
         ad_active_policy_keyboard(),
     )
@@ -898,6 +976,8 @@ async def ads_confirm(callback: CallbackQuery, state: FSMContext, session):
         ends_at=ends_at,
         send_count_total=int(data["send_count_total"]),
         target_languages=_selected_languages(data),
+        target_track=data.get("target_track"),
+        target_level=data.get("target_level"),
         include_active_subscribers=bool(data.get("include_active_subscribers")),
         created_by_telegram_id=callback.from_user.id,
         button_config=encode_promo_button_config(data.get("promo_button_config")),
@@ -951,7 +1031,8 @@ async def ads_list(callback: CallbackQuery, session):
         lines.append(
             f"#{item.id} <b>{escape(item.title)}</b> — {status}\n"
             f"  {item.rounds_sent}/{item.send_count_total} raund · sent: {sent}, xato: {failed}\n"
-            f"  Til: {langs} · Faol obuna: {active}\n"
+            f"  Til: {langs} · Kurs: {_fmt_track(getattr(item, 'target_track', None))} · Daraja: {_fmt_level(getattr(item, 'target_level', None))}\n"
+            f"  Faol obuna: {active}\n"
             f"  Knopka: {escape(promo_button_summary(item.button_config))}\n"
             f"  Keyingi: {_fmt_time(item.next_send_at)}"
         )
