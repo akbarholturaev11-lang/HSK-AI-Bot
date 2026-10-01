@@ -13,6 +13,8 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "onboarding_started",
     "onboarding_completed",
     "level_selected",
+    "course_track_switched",
+    "hsk30_promo_shown",
     "goal_selected",
     "daily_time_selected",
     "start_point_selected",
