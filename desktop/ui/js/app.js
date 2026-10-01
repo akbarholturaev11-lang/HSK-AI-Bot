@@ -180,6 +180,10 @@ const state = {
   notificationLastSyncAt: 0,
   seenNotificationIds: new Set(),
   notificationPermission: "unsupported",
+  subscriptionMode: "subscription",
+  hsk30PromoMarked: false,
+  hsk30PromoDismissed: false,
+  hsk30Switching: false,
   ratingRequest: 0,
   ratingBoard: null,
   ratingError: "",
@@ -1680,9 +1684,35 @@ function toggleNotifications() {
 }
 
 function routeTo(view) {
+  if (view === "subscription") state.subscriptionMode = "subscription";
   state.view = view;
   renderActiveView();
   closeRail();
+}
+
+function openSubscriptionMode(mode) {
+  state.subscriptionMode = mode === "hsk30_unlock" ? "hsk30_unlock" : "subscription";
+  state.view = "subscription";
+  renderActiveView();
+  closeRail();
+}
+
+async function switchCourseTrack(targetTrack, level = null) {
+  if (state.hsk30Switching) return;
+  state.hsk30Switching = true;
+  try {
+    await desktopBridge.courseTrackSwitch(targetTrack, level);
+    state.hsk30PromoDismissed = true;
+    await loadCourseMap({ keepView: true });
+  } catch (error) {
+    if (isSessionError(error)) {
+      showAuth({ expired: true });
+      return;
+    }
+    showToast(t("requestFailed"));
+  } finally {
+    state.hsk30Switching = false;
+  }
 }
 
 function languageLocale() {
@@ -2035,6 +2065,79 @@ function lessonMatches(item, query) {
     .includes(query);
 }
 
+function renderCourseTrackControl(map) {
+  const hsk30 = map?.hsk30;
+  if (!hsk30?.access?.feature_enabled) return null;
+  const wrap = element("section", "card cardPad course-version-card");
+  const head = element("div", "sectionTitle");
+  head.append(
+    element("h3", "", t("hsk30TrackSwitch")),
+    element("span", "tag red", String(hsk30.active_track || "hsk20") === "hsk30" ? "HSK 3.0" : "HSK 2.0"),
+  );
+  wrap.append(head);
+  const row = element("div", "payment-methods");
+  [
+    ["hsk20", "HSK 2.0"],
+    ["hsk30", "HSK 3.0"],
+  ].forEach(([track, label]) => {
+    const button = element("button", "payment-method", label);
+    button.type = "button";
+    const selected = String(hsk30.active_track || "hsk20") === track;
+    button.classList.toggle("is-active", selected);
+    button.disabled = selected || state.hsk30Switching;
+    button.addEventListener("click", () => {
+      if (track === "hsk30" && !hsk30.access?.allowed) {
+        if (hsk30.payment_enabled) openSubscriptionMode("hsk30_unlock");
+        else routeTo("subscription");
+        return;
+      }
+      const level = track === "hsk30"
+        ? String(hsk30.live_levels?.[0] || "nhsk1")
+        : null;
+      void switchCourseTrack(track, level);
+    });
+    row.append(button);
+  });
+  wrap.append(row);
+  return wrap;
+}
+
+function renderHsk30Promo(map) {
+  const hsk30 = map?.hsk30;
+  if (!hsk30?.promo?.eligible || state.hsk30PromoDismissed) return null;
+  if (!state.hsk30PromoMarked) {
+    state.hsk30PromoMarked = true;
+    void desktopBridge.hsk30PromoShown().catch(() => {});
+  }
+  const card = element("section", "card cardPad course-version-promo");
+  card.append(
+    element("p", "eyebrow", "HSK 3.0"),
+    element("h3", "", t("hsk30PromoTitle")),
+    element("p", "muted small", t("hsk30PromoBody")),
+  );
+  const actions = element("div", "payment-methods");
+  const primary = element("button", "btn primary-button", t("hsk30PromoAction"));
+  primary.type = "button";
+  primary.addEventListener("click", () => {
+    if (hsk30.access?.allowed) {
+      void switchCourseTrack("hsk30", String(hsk30.promo?.recommended_level || hsk30.live_levels?.[0] || "nhsk1"));
+    } else if (hsk30.payment_enabled) {
+      openSubscriptionMode("hsk30_unlock");
+    } else {
+      routeTo("subscription");
+    }
+  });
+  const later = element("button", "secondary-button", t("onboardingLater"));
+  later.type = "button";
+  later.addEventListener("click", () => {
+    state.hsk30PromoDismissed = true;
+    renderCourseHome();
+  });
+  actions.append(primary, later);
+  card.append(actions);
+  return card;
+}
+
 function renderCourseHome() {
   const map = state.map;
   if (!map) return;
@@ -2055,6 +2158,11 @@ function renderCourseHome() {
       t("lessons", { done: completed, total: lessons.length }),
     ),
   );
+  const trackControl = renderCourseTrackControl(map);
+  const promo = renderHsk30Promo(map);
+  if (trackControl) dom.content.append(trackControl);
+  if (promo) dom.content.append(promo);
+
   const layout = element("div", "courseLayout course-layout");
   const units = element("div", "course-units");
   let renderedLessons = 0;
@@ -2741,13 +2849,14 @@ async function renderRating() {
 }
 
 function renderSubscription() {
-  dom.contentTitle.textContent = t("subscription");
-  dom.contentSubtitle.textContent = t("subscriptionSubtitle");
+  const hsk30Unlock = state.subscriptionMode === "hsk30_unlock";
+  dom.contentTitle.textContent = hsk30Unlock ? t("hsk30UnlockTitle") : t("subscription");
+  dom.contentSubtitle.textContent = hsk30Unlock ? t("hsk30UnlockBody") : t("subscriptionSubtitle");
   const host = element("div", "subscription-host");
   dom.content.replaceChildren(
     viewHeading(
-      t("subscriptionTitle"),
-      t("subscriptionSubtitle"),
+      hsk30Unlock ? t("hsk30UnlockTitle") : t("subscriptionTitle"),
+      hsk30Unlock ? t("hsk30UnlockBody") : t("subscriptionSubtitle"),
       t("securePayment"),
     ),
     host,
@@ -2758,7 +2867,7 @@ function renderSubscription() {
   }
   subscription.host = host;
   subscription.setUser(state.map?.user);
-  void subscription.open({ refresh: true });
+  void subscription.open({ refresh: true, mode: state.subscriptionMode });
 }
 
 /**
