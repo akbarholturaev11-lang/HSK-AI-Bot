@@ -49,7 +49,7 @@ const COMMANDS = Object.freeze({
 
 const ALLOWED_COMMANDS = new Set(Object.values(COMMANDS));
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
-const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months"]);
+const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months", "hsk30_unlock"]);
 const SUBSCRIPTION_METHODS = new Set(["visa", "alipay", "wechat"]);
 const CARD_COUNTRIES = new Set(["tj", "uz", "ru", "other"]);
 // Mirrors GOAL_KINDS in src-tauri/src/lib.rs. Onboarding is the only writer.
@@ -308,6 +308,14 @@ function normalizedSubscriptionValue(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function assertSubscriptionMode(value) {
+  const mode = String(value || "subscription").trim().toLowerCase();
+  if (!["subscription", "hsk30_unlock"].includes(mode)) {
+    throw new DesktopBridgeError("desktop_subscription_request_invalid");
+  }
+  return mode;
+}
+
 function assertSubscriptionSelection(plan, method, country) {
   const normalizedPlan = normalizedSubscriptionValue(plan);
   const normalizedMethod = normalizedSubscriptionValue(method);
@@ -379,7 +387,7 @@ function subscriptionPayload(value, kind) {
   if (
     value.ok !== true ||
     value.source !== "desktop_subscription" ||
-    value.mode !== "subscription"
+    !["subscription", "hsk30_unlock"].includes(value.mode)
   ) {
     throw new DesktopBridgeError("desktop_subscription_payload_invalid");
   }
@@ -772,9 +780,11 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.setNotifications, { enabled });
   },
 
-  async subscriptionOverview() {
+  async subscriptionOverview(mode = "subscription") {
     return subscriptionPayload(
-      await invokeCommand(COMMANDS.subscriptionOverview),
+      await invokeCommand(COMMANDS.subscriptionOverview, {
+        mode: assertSubscriptionMode(mode),
+      }),
       "overview",
     );
   },
