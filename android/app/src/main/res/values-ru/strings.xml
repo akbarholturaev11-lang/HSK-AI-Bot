@@ -464,4 +464,8 @@
     <string name="notify_payment_rejected_body">Откройте раздел подписки, проверьте платёж и отправьте его снова.</string>
     <string name="notify_payment_private_title">Сообщение о подписке HSK AI</string>
     <string name="notify_payment_private_body">Откройте приложение, чтобы узнать подробности.</string>
+    <string name="hsk30_promo_title">Новый HSK 3.0</string>
+    <string name="hsk30_promo_body">Новый стандарт добавлен как отдельный курс. Прогресс HSK 2.0 сохранится, и к нему можно вернуться в любое время.</string>
+    <string name="hsk30_promo_price">Разовый доступ: %1$d TJS</string>
+    <string name="hsk30_promo_switch">Перейти на HSK 3.0</string>
 </resources>
