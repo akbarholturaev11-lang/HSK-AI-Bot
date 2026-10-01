@@ -2520,6 +2520,7 @@ async function renderVocabulary() {
   );
   vocabulary.host = host;
   vocabulary.setLanguage(getLanguage());
+  vocabulary.setCourseLevel(state.map?.level || "hsk1");
   await vocabulary.load();
 }
 
@@ -4336,7 +4337,7 @@ function renderProfile() {
   );
 
   const hsk30Settings = map.hsk30;
-  if (hsk30Settings?.access?.feature_enabled) {
+  if (hsk30Settings && (hsk30Settings.access?.feature_enabled || hsk30Settings.active_track === "hsk30")) {
     const activeTrack = String(hsk30Settings.active_track || "hsk20");
     const versionSelect = selectControl(
       [
