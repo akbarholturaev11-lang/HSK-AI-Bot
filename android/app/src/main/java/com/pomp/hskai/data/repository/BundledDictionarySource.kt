@@ -40,7 +40,7 @@ class AssetBundledDictionarySource(
             }.getOrNull().orEmpty()
 
             digest.update(source.name.toByteArray(Charsets.UTF_8))
-            digest.update(0)
+            digest.update(0.toByte())
             digest.update(raw.toByteArray(Charsets.UTF_8))
 
             parsed.forEach { word ->
