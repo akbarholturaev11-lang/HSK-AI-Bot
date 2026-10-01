@@ -1,5 +1,8 @@
 # Android / Mini App qayta auditi — 2026-10-02
 
+> Quyidagi audit dastlabki checkoutlar holatini qayd etadi. Keyingi main
+> nusxasidagi tekshiruv va push doirasi fayl oxirida yozilgan.
+
 **Xulosa: barcha o'zgarishlar hali mos emas.** Profilning yangi Mini App
 ko'rinishi shu checkoutda ishlaydi, ammo `codex/local-ai`ga yetmagan.
 Voice audio oqimi, Mini App valyuta oqimi va bir nechta UI holati qolgan.
@@ -207,3 +210,23 @@ Keyin ikkala klientni bitta backendda test qilish va local-ai'da test/push.
 Jonli voice recording/TTS, payment submit → approval → access, migratsiya
 va backend deploy ushbu auditda bajarilmadi. Hamma mahsulot oqimlari to'liq
 tekshirildi yoki ish 100% tugadi deb xabar berish uchun hali asos yo'q.
+
+## Main uchun yakuniy tekshiruv — 2026-10-02
+
+- `origin/main` (`a348fb16`) asosidagi toza worktreega shu suhbatdagi
+  Android/backend tuzatishlari, feedback-draft qoidasini olib tashlash,
+  Mini App profil gear/renewal patchi va notification UI patchi ko'chirildi.
+- Lokal branchdagi boshqa HSK 3.0 commitlari va Android versiya oshirish
+  commiti olinmadi. Main versiyasi `1.7.3`, `versionCode=34`; Gradle va
+  release workflow fayllari oldingi main bilan bir xil.
+- Native Profildagi takroriy trial CTA olib tashlandi; testdan o'tgan
+  `d72144a7`dagi limit-flow qarori saqlandi. Auditdagi 4-banddagi Mini profil
+  patchi shu nusxaga o'tdi. Boshqa ochiq parity topilmalari tuzatilmadi.
+- 5 Android static check passed; direct 383 + play 354 unit test passed;
+  ikkala debug build va 6 notification Compose/emulator testi passed.
+- Backend focused suite: 141 passed, 112 subtests passed. Mini App focused
+  Playwright suite: 17 passed. 16 o'zgargan Python fayl syntax check passed.
+- Emulator testida o'rnatilgan debug app bilan moslashish uchun vaqtinchalik
+  Gradle init script versionCode 35 ishlatildi; repository versiyasi o'zgarmadi.
+- User faqat main'ga commit/push so'radi. Release tayyorlash, release build,
+  tag, workflow dispatch, APK publish yoki qo'lda deploy bajarilmadi.

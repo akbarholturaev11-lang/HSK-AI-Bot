@@ -1230,7 +1230,6 @@ private fun AppRoot(
                                     checkoutOrigin = if (renewal) "profile_renewal" else "profile_subscription"
                                     checkoutVisible = true
                                 },
-                                onStartTrial = profileViewModel::startTrial,
                                 subscriptionCheckoutAvailable = BuildConfig.FLAVOR == "direct",
                             )
                         }
