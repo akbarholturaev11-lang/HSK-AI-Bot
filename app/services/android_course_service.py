@@ -19,6 +19,7 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_track_service import CourseTrackService
+from app.services.hsk30_promo_service import Hsk30PromoService
 from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.course_miniapp_profile_service import (
     COURSE_FOUNDATION_ID,
@@ -78,6 +79,23 @@ class AndroidCourseService(DesktopCourseService):
         foundation = await self._foundation_status(context.user)
         result["foundation"] = foundation
 
+        track_status = await CourseTrackService(self.session).status(context.user)
+        hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
+        hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(
+            context.user
+        )
+        result["hsk30"] = {
+            "active_track": track_status.get("active_track") or "hsk20",
+            "active_level": track_status.get("active_level") or str(
+                getattr(context.user, "level", "") or ""
+            ),
+            "access": hsk30_track.get("access") or {},
+            "live_levels": list(hsk30_track.get("live_levels") or []),
+            "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
+            "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
+            "promo": await Hsk30PromoService(self.session).state(context.user),
+        }
+
         # Required Starter 0 is a real prerequisite, not merely a visual card.
         # Keep completed history visible, but make every unfinished path node
         # unreachable until the server records the shared foundation event.
@@ -95,6 +113,33 @@ class AndroidCourseService(DesktopCourseService):
                     lesson.pop("locked_premium", None)
         await self.session.commit()
         return result
+
+    async def switch_course_track(
+        self,
+        access_token: str,
+        *,
+        target_track: str,
+        level: str | None = None,
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        service = CourseTrackService(self.session)
+        current_track = service.track_for_level(getattr(context.user, "level", None))
+        if target_track == current_track and level:
+            status = await service.change_level(context.user, level)
+        else:
+            status = await service.switch(
+                context.user,
+                target_track=target_track,
+                requested_level=level,
+            )
+        await self.session.commit()
+        return {"ok": True, **status}
+
+    async def mark_hsk30_promo_shown(self, access_token: str) -> dict[str, Any]:
+        context = await self._context(access_token)
+        result = await Hsk30PromoService(self.session).mark_shown(context.user)
+        await self.session.commit()
+        return {"ok": True, **result}
 
     async def lesson(
         self,
