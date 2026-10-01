@@ -503,4 +503,8 @@
     <string name="notify_payment_rejected_body">Obuna bo‘limini ochib, to‘lovni tekshiring va qayta yuboring.</string>
     <string name="notify_payment_private_title">HSK AI obuna xabari</string>
     <string name="notify_payment_private_body">Tafsilotlarni ko‘rish uchun ilovani oching.</string>
+    <string name="hsk30_promo_title">Yangi HSK 3.0</string>
+    <string name="hsk30_promo_body">Yangi standart alohida kurs sifatida qo'shildi. HSK 2.0 progress'ingiz saqlanadi va istalgan payt qaytishingiz mumkin.</string>
+    <string name="hsk30_promo_price">Bir martalik access: %1$d TJS</string>
+    <string name="hsk30_promo_switch">HSK 3.0 ga o'tish</string>
 </resources>
