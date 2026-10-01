@@ -507,4 +507,6 @@
     <string name="hsk30_promo_body">Yangi standart alohida kurs sifatida qo‘shildi. HSK 2.0 progressingiz saqlanadi va istalgan payt qaytishingiz mumkin.</string>
     <string name="hsk30_promo_price">Bir martalik access: %1$d TJS</string>
     <string name="hsk30_promo_switch">HSK 3.0 ga o‘tish</string>
+    <string name="hsk30_test_soon_title">HSK 3.0 testlari</string>
+    <string name="hsk30_test_soon_body">Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.</string>
 </resources>
