@@ -759,6 +759,9 @@ private fun CourseVersionPickerSheet(
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var pendingTrack by remember(currentTrack) { mutableStateOf<String?>(null) }
+    var pendingLevel by remember(currentTrack) { mutableStateOf<String?>(null) }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -770,68 +773,123 @@ private fun CourseVersionPickerSheet(
                 .padding(horizontal = 18.dp)
                 .padding(bottom = 28.dp),
         ) {
-            Text(
-                stringResource(R.string.profile_course_version),
-                color = PompColors.Ink,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                stringResource(R.string.hsk30_promo_body),
-                color = PompColors.InkSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
-            )
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column {
-                    MiniSettingsRow(
-                        Icons.Filled.TrackChanges,
-                        "HSK 2.0",
-                        true,
-                        {
-                            if (currentTrack != "hsk20") onSwitch("hsk20", null)
+            val targetTrack = pendingTrack
+            if (targetTrack != null) {
+                val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
+                Text(
+                    stringResource(R.string.profile_course_version_confirm_title, targetLabel),
+                    color = PompColors.Ink,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    stringResource(R.string.profile_course_version_confirm_body),
+                    color = PompColors.InkSecondary,
+                    fontSize = 13.sp,
+                    lineHeight = 19.sp,
+                    modifier = Modifier.padding(top = 6.dp, bottom = 16.dp),
+                )
+                Surface(
+                    color = PompColors.Cinnabar,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp)
+                        .clickable {
+                            onSwitch(targetTrack, pendingLevel)
                             onDismiss()
                         },
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        if (currentTrack == "hsk20") {
-                            Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                        } else {
-                            SettingsChevron()
-                        }
+                        Text(
+                            stringResource(R.string.action_continue),
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                        )
                     }
-                    SettingsDivider()
-                    MiniSettingsRow(
-                        Icons.Filled.TrackChanges,
-                        "HSK 3.0",
-                        true,
-                        {
-                            when {
-                                currentTrack == "hsk30" -> onDismiss()
-                                hsk30Allowed -> {
-                                    onSwitch("hsk30", hsk30LiveLevels.firstOrNull() ?: "nhsk1")
+                }
+                Spacer(Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = {
+                        pendingTrack = null
+                        pendingLevel = null
+                    },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
+                }
+            } else {
+                Text(
+                    stringResource(R.string.profile_course_version),
+                    color = PompColors.Ink,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    stringResource(R.string.hsk30_promo_body),
+                    color = PompColors.InkSecondary,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
+                )
+                Surface(
+                    color = PompColors.PaperRaised,
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column {
+                        MiniSettingsRow(
+                            Icons.Filled.TrackChanges,
+                            "HSK 2.0",
+                            true,
+                            {
+                                if (currentTrack == "hsk20") {
                                     onDismiss()
+                                } else {
+                                    pendingTrack = "hsk20"
+                                    pendingLevel = null
                                 }
-                                else -> {
-                                    onDismiss()
-                                    onUnlockHsk30()
-                                }
+                            },
+                        ) {
+                            if (currentTrack == "hsk20") {
+                                Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
+                            } else {
+                                SettingsChevron()
                             }
-                        },
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            when {
-                                currentTrack == "hsk30" ->
-                                    Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                                !hsk30Allowed && hsk30PaymentEnabled && hsk30PriceTjs > 0 ->
-                                    Text("$hsk30PriceTjs TJS", color = PompColors.CinnabarDark, fontSize = 12.sp)
-                                !hsk30Allowed ->
-                                    Text("Pro", color = PompColors.CinnabarDark, fontSize = 12.sp)
-                                else -> SettingsChevron()
+                        }
+                        SettingsDivider()
+                        MiniSettingsRow(
+                            Icons.Filled.TrackChanges,
+                            "HSK 3.0",
+                            true,
+                            {
+                                when {
+                                    currentTrack == "hsk30" -> onDismiss()
+                                    hsk30Allowed -> {
+                                        pendingTrack = "hsk30"
+                                        pendingLevel = hsk30LiveLevels.firstOrNull() ?: "nhsk1"
+                                    }
+                                    else -> {
+                                        onDismiss()
+                                        onUnlockHsk30()
+                                    }
+                                }
+                            },
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                when {
+                                    currentTrack == "hsk30" ->
+                                        Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
+                                    !hsk30Allowed && hsk30PaymentEnabled && hsk30PriceTjs > 0 ->
+                                        Text("$hsk30PriceTjs TJS", color = PompColors.CinnabarDark, fontSize = 12.sp)
+                                    !hsk30Allowed ->
+                                        Text("Pro", color = PompColors.CinnabarDark, fontSize = 12.sp)
+                                    else -> SettingsChevron()
+                                }
                             }
                         }
                     }
