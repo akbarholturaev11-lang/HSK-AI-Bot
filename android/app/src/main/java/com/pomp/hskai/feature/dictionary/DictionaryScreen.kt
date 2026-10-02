@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,15 +36,20 @@ import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +61,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -65,6 +73,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.abs
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
@@ -91,6 +100,12 @@ data class DictionaryActions(
     val onPreviousCharacter: () -> Unit,
     val onNextCharacter: () -> Unit,
     val onPlayStrokeOrder: () -> Unit,
+    val onToggleStrokePlayback: () -> Unit,
+    val onPauseStrokePlayback: () -> Unit,
+    val onPreviousStroke: () -> Unit,
+    val onNextStroke: () -> Unit,
+    val onStrokeComplete: (Int) -> Unit,
+    val onStrokeAnimationFinished: () -> Unit,
     val onPlayAudio: () -> Unit,
     val onPreviousWord: () -> Unit,
     val onNextWord: () -> Unit,
@@ -341,6 +356,7 @@ private fun ListSectionTitle(text: String) {
 private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryActions) {
     val word = requireNotNull(state.selectedWord)
     val isPhrase = state.characters.size > 1
+    var strokeOrderOpen by remember(word.hanzi) { mutableStateOf(false) }
     // A new entry starts at the top, not where the previous one was left.
     val listState = remember(word.hanzi) { LazyListState() }
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
@@ -351,17 +367,6 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
             contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            item(key = "card") { CharacterCard(state) }
-            if (isPhrase) {
-                item(key = "switcher") {
-                    CharacterSwitcher(
-                        index = state.characterIndex,
-                        count = state.characters.size,
-                        onPrevious = actions.onPreviousCharacter,
-                        onNext = actions.onNextCharacter,
-                    )
-                }
-            }
             item(key = "word") { WordHeading(word, showHanzi = isPhrase) }
             item(key = "actions") {
                 ActionRow(
@@ -369,7 +374,10 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
                     canShowOrder = state.strokes.isNotEmpty(),
                     canWrite = state.canWrite,
                     onListen = actions.onPlayAudio,
-                    onOrder = actions.onPlayStrokeOrder,
+                    onOrder = {
+                        actions.onPlayStrokeOrder()
+                        strokeOrderOpen = true
+                    },
                     onWrite = actions.onStartWriting,
                 )
             }
@@ -392,6 +400,22 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
             onNext = actions.onNextWord,
         )
     }
+    if (strokeOrderOpen) {
+        StrokeOrderPlayer(
+            state = state,
+            onDismiss = {
+                actions.onPauseStrokePlayback()
+                strokeOrderOpen = false
+            },
+            onPreviousCharacter = actions.onPreviousCharacter,
+            onNextCharacter = actions.onNextCharacter,
+            onTogglePlayback = actions.onToggleStrokePlayback,
+            onPreviousStroke = actions.onPreviousStroke,
+            onNextStroke = actions.onNextStroke,
+            onStrokeComplete = actions.onStrokeComplete,
+            onAnimationFinished = actions.onStrokeAnimationFinished,
+        )
+    }
 }
 
 /** A useful recall action when this character has no authored component cue. */
@@ -409,59 +433,160 @@ private fun MemoryPromptSection(characters: List<String>) {
 }
 
 /** The character large, on the practice grid; the stroke order plays here. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CharacterCard(state: DictionaryUiState) {
-    HskGlassSurface(
-        modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 8.dp,
+private fun StrokeOrderPlayer(
+    state: DictionaryUiState,
+    onDismiss: () -> Unit,
+    onPreviousCharacter: () -> Unit,
+    onNextCharacter: () -> Unit,
+    onTogglePlayback: () -> Unit,
+    onPreviousStroke: () -> Unit,
+    onNextStroke: () -> Unit,
+    onStrokeComplete: (Int) -> Unit,
+    onAnimationFinished: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val swipeThreshold = with(LocalDensity.current) { 64.dp.toPx() }
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.Paper,
+        tonalElevation = 0.dp,
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
     ) {
-        Box(Modifier.fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
-            WriterGrid(Modifier.fillMaxSize())
-            when {
-                state.isStrokeLoading -> HskBrandLoader()
-                state.strokes.isNotEmpty() -> StrokeAnimation(
-                    strokes = state.strokes,
-                    replayKey = state.replayKey,
-                    visibleStrokeCount = state.visibleStrokeCount,
-                    modifier = Modifier.fillMaxSize(),
-                )
-                // Without stroke data the character is still shown whole.
-                else -> Text(
-                    text = state.currentCharacter.orEmpty(),
-                    style = PompTextStyles.hanziLarge.copy(fontSize = 150.sp),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 520.dp)
+                .navigationBarsPadding()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    state.currentCharacter.orEmpty(),
+                    style = PompTextStyles.hanziMedium.copy(fontSize = 38.sp),
                     color = PompColors.Ink,
+                    modifier = Modifier.align(Alignment.CenterStart),
+                )
+                Text(
+                    stringResource(R.string.dictionary_stroke_count, state.strokes.size),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = PompColors.InkSecondary,
+                )
+                Row(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (state.characters.size > 1) {
+                        Text(
+                            stringResource(R.string.dictionary_character_position, state.characterIndex + 1, state.characters.size),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = PompColors.InkSecondary,
+                        )
+                    }
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Filled.Close, stringResource(R.string.action_close), tint = PompColors.InkSecondary)
+                    }
+                }
+            }
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 14.dp)
+                    .pointerInput(state.currentCharacter, state.characterIndex, swipeThreshold) {
+                        var dragDistance = 0f
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { _, amount -> dragDistance += amount },
+                            onDragEnd = {
+                                if (abs(dragDistance) >= swipeThreshold) {
+                                    if (dragDistance < 0f) onNextCharacter() else onPreviousCharacter()
+                                }
+                                dragDistance = 0f
+                            },
+                            onDragCancel = { dragDistance = 0f },
+                        )
+                    },
+                shape = RoundedCornerShape(22.dp),
+                color = PompColors.PaperRaised,
+                border = BorderStroke(1.dp, PompColors.Divider),
+            ) {
+                Box(Modifier.fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
+                    WriterGrid(Modifier.fillMaxSize())
+                    when {
+                        state.isStrokeLoading -> HskBrandLoader()
+                        state.strokes.isNotEmpty() -> StrokeAnimation(
+                            strokes = state.strokes,
+                            replayKey = state.replayKey,
+                            visibleStrokeCount = state.visibleStrokeCount,
+                            isPlaying = state.isStrokePlaying,
+                            onStrokeComplete = onStrokeComplete,
+                            onAnimationFinished = onAnimationFinished,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                        else -> Text(
+                            text = state.currentCharacter.orEmpty(),
+                            style = PompTextStyles.hanziLarge.copy(fontSize = 150.sp),
+                            color = PompColors.Ink,
+                        )
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                StrokeControl(
+                    icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    description = stringResource(R.string.dictionary_stroke_previous),
+                    enabled = state.completedStrokeCount > 0,
+                    onClick = onPreviousStroke,
+                )
+                StrokeControl(
+                    icon = if (state.isStrokePlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    description = stringResource(
+                        if (state.isStrokePlaying) R.string.dictionary_stroke_pause else R.string.dictionary_stroke_play,
+                    ),
+                    enabled = state.strokes.isNotEmpty() && !state.isStrokeLoading,
+                    onClick = onTogglePlayback,
+                )
+                StrokeControl(
+                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    description = stringResource(R.string.dictionary_stroke_next),
+                    enabled = state.completedStrokeCount < state.strokes.size,
+                    onClick = onNextStroke,
                 )
             }
         }
     }
 }
 
-/** ‹ 1 / 2 › — which character of a phrase the card shows. */
 @Composable
-private fun CharacterSwitcher(index: Int, count: Int, onPrevious: () -> Unit, onNext: () -> Unit) {
-    Row(
-        modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+private fun StrokeControl(
+    icon: ImageVector,
+    description: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        shape = CircleShape,
+        color = if (enabled) PompColors.CinnabarSoft else PompColors.PaperRaised,
+        modifier = Modifier.size(68.dp),
     ) {
-        IconButton(onClick = onPrevious, enabled = index > 0) {
+        Box(contentAlignment = Alignment.Center) {
             Icon(
-                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                stringResource(R.string.lesson_writer_previous),
-                tint = if (index > 0) PompColors.CinnabarDark else PompColors.InkDisabled,
-            )
-        }
-        Text(
-            stringResource(R.string.dictionary_character_position, index + 1, count),
-            style = MaterialTheme.typography.labelLarge,
-            color = PompColors.InkSecondary,
-        )
-        IconButton(onClick = onNext, enabled = index < count - 1) {
-            Icon(
-                Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                stringResource(R.string.lesson_writer_next),
-                tint = if (index < count - 1) PompColors.CinnabarDark else PompColors.InkDisabled,
+                icon,
+                contentDescription = description,
+                tint = if (enabled) PompColors.CinnabarDark else PompColors.InkDisabled,
+                modifier = Modifier.size(28.dp),
             )
         }
     }
@@ -832,8 +957,20 @@ private fun DictionaryHeader(
 @Composable
 private fun LevelPill(level: String) {
     Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(999.dp)) {
-        Text(level, style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+        Text(
+            dictionaryLevelLabel(level),
+            style = MaterialTheme.typography.labelSmall,
+            color = PompColors.InkSecondary,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        )
     }
+}
+
+private fun dictionaryLevelLabel(level: String): String {
+    val labels = level.split('|').map(String::trim).filter(String::isNotEmpty)
+    val levelName = labels.firstOrNull().orEmpty()
+    val isNewHsk = labels.drop(1).any { it.matches(Regex("N\\d+", RegexOption.IGNORE_CASE)) }
+    return if (isNewHsk) "${levelName.uppercase()} · 3.0" else levelName
 }
 
 @Composable

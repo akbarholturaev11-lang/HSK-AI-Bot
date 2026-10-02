@@ -325,7 +325,12 @@
     <string name="dictionary_no_match">По запросу «%1$s» ничего не найдено</string>
     <string name="dictionary_unavailable">Не удалось загрузить словарь. Проверьте интернет и попробуйте снова.</string>
     <string name="dictionary_detail_title">Написание иероглифа</string>
-    <string name="dictionary_character_position">Иероглиф %1$d из %2$d</string>
+    <string name="dictionary_character_position">%1$d/%2$d</string>
+    <string name="dictionary_stroke_count">%1$d черт</string>
+    <string name="dictionary_stroke_previous">Предыдущая черта</string>
+    <string name="dictionary_stroke_play">Продолжить</string>
+    <string name="dictionary_stroke_pause">Пауза</string>
+    <string name="dictionary_stroke_next">Следующая черта</string>
     <string name="dictionary_listen">Послушать произношение</string>
     <string name="dictionary_previous_word">Предыдущее слово</string>
     <string name="dictionary_next_word">Следующее слово</string>

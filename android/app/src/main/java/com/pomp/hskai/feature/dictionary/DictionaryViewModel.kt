@@ -40,6 +40,8 @@ data class DictionaryUiState(
     /** Null means full autoplay; otherwise it is the number of visible strokes. */
     val visibleStrokeCount: Int? = null,
     val replayKey: Int = 0,
+    val isStrokePlaying: Boolean = false,
+    val completedStrokeCount: Int = 0,
     val isAudioLoading: Boolean = false,
     val audioError: ApiError? = null,
     /** Real sentences using the selected word. */
@@ -222,6 +224,8 @@ class DictionaryViewModel(
                 isInsightsLoading = insights != null,
                 writing = null,
                 isAudioLoading = false,
+                isStrokePlaying = false,
+                completedStrokeCount = 0,
             )
         }
         loadCurrentCharacter()
@@ -251,6 +255,8 @@ class DictionaryViewModel(
                 strokes = CharacterStrokes.EMPTY,
                 isStrokeLoading = false,
                 isAudioLoading = false,
+                isStrokePlaying = false,
+                completedStrokeCount = 0,
                 examples = emptyList(),
                 breakdowns = emptyList(),
                 isInsightsLoading = false,
@@ -266,14 +272,74 @@ class DictionaryViewModel(
         val current = _state.value
         val next = (current.characterIndex + offset).coerceIn(0, current.characters.lastIndex)
         if (next == current.characterIndex) return
-        _state.update { it.copy(characterIndex = next, visibleStrokeCount = null, writing = null) }
+        _state.update {
+            it.copy(
+                characterIndex = next,
+                visibleStrokeCount = null,
+                writing = null,
+                isStrokePlaying = true,
+                completedStrokeCount = 0,
+                replayKey = it.replayKey + 1,
+            )
+        }
         loadCurrentCharacter(thenWrite)
     }
 
     /** Writes the character stroke by stroke in the big card. */
     fun playStrokeOrder() {
         if (_state.value.strokes.isEmpty()) return
-        _state.update { it.copy(visibleStrokeCount = null, replayKey = it.replayKey + 1) }
+        _state.update {
+            it.copy(
+                visibleStrokeCount = null,
+                replayKey = it.replayKey + 1,
+                isStrokePlaying = true,
+                completedStrokeCount = 0,
+            )
+        }
+    }
+
+    fun toggleStrokePlayback() {
+        val current = _state.value
+        if (current.isStrokePlaying) {
+            pauseStrokePlayback()
+        } else if (current.strokes.isNotEmpty()) {
+            if (current.completedStrokeCount >= current.strokes.size) {
+                playStrokeOrder()
+            } else {
+                _state.update { it.copy(visibleStrokeCount = null, isStrokePlaying = true) }
+            }
+        }
+    }
+
+    fun pauseStrokePlayback() {
+        _state.update { it.copy(isStrokePlaying = false) }
+    }
+
+    fun previousStroke() = stepStroke(-1)
+
+    fun nextStroke() = stepStroke(1)
+
+    private fun stepStroke(offset: Int) {
+        val current = _state.value
+        if (current.strokes.isEmpty()) return
+        val next = (current.completedStrokeCount + offset).coerceIn(0, current.strokes.size)
+        _state.update {
+            it.copy(
+                visibleStrokeCount = next,
+                isStrokePlaying = false,
+                completedStrokeCount = next,
+            )
+        }
+    }
+
+    fun onStrokeComplete(count: Int) {
+        _state.update { current ->
+            if (current.isStrokePlaying) current.copy(completedStrokeCount = count) else current
+        }
+    }
+
+    fun onStrokeAnimationFinished() {
+        _state.update { it.copy(isStrokePlaying = false) }
     }
 
     private fun loadCurrentCharacter(thenWrite: Boolean = false) {
@@ -285,7 +351,7 @@ class DictionaryViewModel(
         strokeJob = viewModelScope.launch {
             when (val result = courseRepository.strokes(character)) {
                 is ApiResult.Failure -> _state.update {
-                    it.copy(isStrokeLoading = false, strokeError = result.error)
+                    it.copy(isStrokeLoading = false, strokeError = result.error, isStrokePlaying = false)
                 }
                 is ApiResult.Success -> {
                     _state.update {
@@ -294,7 +360,8 @@ class DictionaryViewModel(
                             strokes = result.value,
                             // The card shows the finished character; the
                             // stroke order plays when it is asked for.
-                            visibleStrokeCount = result.value.size,
+                            visibleStrokeCount = if (it.isStrokePlaying) null else result.value.size,
+                            completedStrokeCount = if (it.isStrokePlaying) 0 else result.value.size,
                         )
                     }
                     if (thenWrite) startWriting()

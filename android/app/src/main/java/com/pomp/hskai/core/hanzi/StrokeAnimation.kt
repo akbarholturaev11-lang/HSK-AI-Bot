@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
@@ -75,23 +78,35 @@ fun StrokeAnimation(
     replayKey: Int = 0,
     /** Null animates every stroke; a value shows exactly that many strokes. */
     visibleStrokeCount: Int? = null,
+    isPlaying: Boolean = true,
+    onStrokeComplete: (Int) -> Unit = {},
+    onAnimationFinished: () -> Unit = {},
 ) {
     val paths = remember(strokes) { strokes.outlines.mapNotNull(::parseStroke) }
     val medians = remember(strokes) { strokes.medians.map(::medianPath) }
     // How far into the character the brush is: 2.4 means stroke 3 is 40% done.
     val progress = remember(strokes) { Animatable(0f) }
+    var previousReplayKey by remember(strokes) { mutableStateOf(replayKey) }
 
-    LaunchedEffect(strokes, replayKey, visibleStrokeCount) {
+    LaunchedEffect(strokes, replayKey, visibleStrokeCount, isPlaying) {
+        if (previousReplayKey != replayKey) {
+            progress.snapTo(0f)
+            previousReplayKey = replayKey
+        }
         val manualCount = visibleStrokeCount
         if (manualCount != null) {
-            progress.snapTo(manualCount.coerceIn(0, paths.size).toFloat())
+            val count = manualCount.coerceIn(0, paths.size)
+            progress.snapTo(count.toFloat())
+            onStrokeComplete(count)
             return@LaunchedEffect
         }
-        progress.snapTo(0f)
+        if (!isPlaying) return@LaunchedEffect
         // One stroke at a time, each paced by its own length, with the Mini
         // App's pause in between. Animating the whole character as a single
         // linear sweep was what made it read as fast and mechanical.
-        strokes.medians.forEachIndexed { index, median ->
+        val nextStroke = progress.value.toInt().coerceAtLeast(0)
+        for (index in nextStroke until strokes.medians.size) {
+            val median = strokes.medians[index]
             progress.animateTo(
                 targetValue = index + 1f,
                 animationSpec = tween(
@@ -99,8 +114,10 @@ fun StrokeAnimation(
                     easing = FastOutSlowInEasing,
                 ),
             )
+            onStrokeComplete(index + 1)
             if (index < strokes.medians.lastIndex) delay(DELAY_BETWEEN_STROKES_MILLIS)
         }
+        onAnimationFinished()
     }
 
     Canvas(

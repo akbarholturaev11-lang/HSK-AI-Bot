@@ -326,7 +326,12 @@
     <string name="dictionary_no_match">Аз рӯи «%1$s» чизе ёфт нашуд</string>
     <string name="dictionary_unavailable">Луғатро бор кардан нашуд. Интернетро санҷед ва бори дигар кӯшиш кунед.</string>
     <string name="dictionary_detail_title">Навишти иероглиф</string>
-    <string name="dictionary_character_position">Иероглифи %1$d аз %2$d</string>
+    <string name="dictionary_character_position">%1$d/%2$d</string>
+    <string name="dictionary_stroke_count">%1$d хат</string>
+    <string name="dictionary_stroke_previous">Хати пешина</string>
+    <string name="dictionary_stroke_play">Идома додан</string>
+    <string name="dictionary_stroke_pause">Таваққуф</string>
+    <string name="dictionary_stroke_next">Хати навбатӣ</string>
     <string name="dictionary_listen">Талаффузро шунидан</string>
     <string name="dictionary_previous_word">Калимаи пешина</string>
     <string name="dictionary_next_word">Калимаи навбатӣ</string>

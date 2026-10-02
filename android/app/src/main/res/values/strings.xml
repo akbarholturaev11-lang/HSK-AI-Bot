@@ -362,7 +362,12 @@
     <string name="dictionary_no_match">«%1$s» bo‘yicha hech nima topilmadi</string>
     <string name="dictionary_unavailable">Lug‘atni yuklab bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
     <string name="dictionary_detail_title">Ieroglif yozilishi</string>
-    <string name="dictionary_character_position">%1$d / %2$d iyeroglif</string>
+    <string name="dictionary_character_position">%1$d/%2$d</string>
+    <string name="dictionary_stroke_count">%1$d ta chiziq</string>
+    <string name="dictionary_stroke_previous">Oldingi chiziq</string>
+    <string name="dictionary_stroke_play">Davom ettirish</string>
+    <string name="dictionary_stroke_pause">To‘xtatish</string>
+    <string name="dictionary_stroke_next">Keyingi chiziq</string>
     <string name="dictionary_listen">Talaffuzni eshitish</string>
     <string name="dictionary_previous_word">Oldingi so‘z</string>
     <string name="dictionary_next_word">Keyingi so‘z</string>

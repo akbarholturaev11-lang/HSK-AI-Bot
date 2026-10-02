@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
@@ -232,9 +233,29 @@ fun AssistantHost(app: HskAiApplication, onNavigate: (String) -> Unit, content: 
 @Composable
 private fun AssistantButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     val label = stringResource(R.string.assistant_open)
-    FloatingActionButton(onClick, modifier.size(56.dp).semantics { contentDescription = label },
-        shape = CircleShape, containerColor = PompColors.Cinnabar, contentColor = PompColors.Paper) {
-        Text("AI", style = MaterialTheme.typography.titleMedium)
+    Surface(
+        onClick = onClick,
+        modifier = modifier.size(56.dp).semantics { contentDescription = label },
+        shape = CircleShape,
+        color = PompColors.Cinnabar.copy(alpha = 0.5f),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.62f)),
+        tonalElevation = 0.dp,
+        shadowElevation = 8.dp,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        0f to Color.White.copy(alpha = 0.34f),
+                        0.38f to Color.White.copy(alpha = 0.08f),
+                        1f to Color.Transparent,
+                    ),
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text("AI", style = MaterialTheme.typography.titleMedium, color = PompColors.Paper)
+        }
     }
 }
 
