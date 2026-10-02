@@ -109,7 +109,7 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(state["eligible"])
             self.assertEqual(state["reason"], "show_cap_reached")
 
-    async def test_user_onboarded_after_hsk30_release_does_not_get_legacy_promo(self):
+    async def test_user_onboarded_after_hsk30_release_gets_promo(self):
         async with self.sessions() as session:
             release_at = await Hsk30FeatureService(session).enabled_at()
             profile = await CourseMiniAppProfileService(session).get_or_create(1)
@@ -119,8 +119,8 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             user = await session.get(User, 1)
             state = await Hsk30PromoService(session).state(user)
-            self.assertFalse(state["eligible"])
-            self.assertEqual(state["reason"], "new_user_after_release")
+            self.assertTrue(state["eligible"])
+            self.assertEqual(state["reason"], "eligible")
 
     async def test_feature_off_hides_promo(self):
         async with self.sessions() as session:

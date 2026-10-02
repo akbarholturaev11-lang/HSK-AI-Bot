@@ -300,6 +300,73 @@ def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
     expect(page.locator("#sheet")).to_contain_text("Yangi so'zlar")
 
 
+def test_hsk30_release_reminder_is_centered_and_precedes_app_open_ad(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.add_init_script("localStorage.setItem('hsk_v3_onb', '1');")
+
+    status = {
+        "ok": True,
+        "active_track": "hsk20",
+        "active_level": "hsk1",
+        "tracks": {
+            "hsk20": {"track": "hsk20", "level": "hsk1", "completed_lessons_count": 0},
+            "hsk30": {
+                "track": "hsk30",
+                "level": "nhsk1",
+                "completed_lessons_count": 0,
+                "access": {
+                    "feature_enabled": True,
+                    "paid_access": False,
+                    "permanently_unlocked": False,
+                    "allowed": False,
+                    "reason": "hsk30_unlock_required",
+                },
+                "live_levels": ["nhsk1"],
+            },
+        },
+        "hsk30_unlock": {"payment_enabled": False, "price_tjs": 0},
+        "hsk30_promo": {"eligible": True, "recommended_level": "nhsk1"},
+    }
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, status))
+    page.route(
+        "**/api/v3/course-tracks/promo-shown",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "hsk30_promo": {
+                    "recorded": True,
+                    "recommended_level": "nhsk1",
+                },
+            },
+        ),
+    )
+
+    app_open_ad_requests = []
+    page.on(
+        "request",
+        lambda request: app_open_ad_requests.append(request.url)
+        if "/api/v3/ad" in request.url
+        else None,
+    )
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    dialog = page.get_by_role("dialog", name="Yangi HSK 3.0")
+    expect(dialog).to_be_visible(timeout=6_000)
+    expect(dialog).to_contain_text("Yangi standart alohida kurs sifatida qo'shildi")
+    centered = page.locator("#sheet .si").evaluate(
+        "node => Math.abs((node.getBoundingClientRect().top + node.getBoundingClientRect().bottom) / 2 - innerHeight / 2)"
+    )
+    assert centered < 8
+    assert app_open_ad_requests == []
+
+    page.locator("#sheet .sec").click()
+    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+
+
 def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
     """Onboarding ikkita savol so'raydi: daraja va MAQSAD.
 

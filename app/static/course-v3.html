@@ -176,6 +176,9 @@ button{cursor:pointer}
 .sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:var(--read);margin:0 auto}
 .sheet.on{display:flex}
 .si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto}
+#sheet.hsk30-promo-center{align-items:center;padding:calc(14px + var(--safe-t)) 14px calc(14px + var(--safe-b))}
+#sheet.hsk30-promo-center .si{border-radius:24px;padding:36px 18px calc(22px + var(--safe-b));max-height:calc(100vh - 28px - var(--safe-t) - var(--safe-b));box-shadow:0 18px 50px rgba(20,17,13,.25)}
+#sheet.hsk30-promo-center .grip{display:none}
 .grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
 .sx{position:absolute;right:14px;top:14px;background:none;border:none;color:var(--ink2);font-size:22px}
 .shead{text-align:center;margin-bottom:14px}
@@ -1365,17 +1368,23 @@ function renderHsk30Promo(status,promo){
     +'<button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.promoLater)+'</button>');
 }
 function maybeShowHsk30Promo(){
-  if(HSK30_PROMO_CHECKED||currentCourseTrack()!=="hsk20")return;
+  if(HSK30_PROMO_CHECKED||currentCourseTrack()!=="hsk20")return Promise.resolve(false);
   HSK30_PROMO_CHECKED=true;
-  courseTrackStatus(false).then(function(status){
+  return courseTrackStatus(false).then(function(status){
     var promo=status&&status.hsk30_promo;
-    if(!promo||!promo.eligible)return null;
-    return _apiPost("/api/v3/course-tracks/hsk30/promo-shown",{}).then(function(r){
+    if(!promo||!promo.eligible)return false;
+    return _apiPost("/api/v3/course-tracks/promo-shown",{}).then(function(r){
       return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"promo_failed");return d});
     }).then(function(marked){
-      if(marked&&marked.recorded)renderHsk30Promo(status,marked);
+      var recordedPromo=marked&&marked.hsk30_promo;
+      if(recordedPromo&&recordedPromo.recorded){
+        renderHsk30Promo(status,recordedPromo);
+        var sheet=$("#sheet");sheet.classList.add("hsk30-promo-center");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.setAttribute("aria-label",trackUi().promoTitle);
+        return true;
+      }
+      return false;
     });
-  }).catch(function(){});
+  }).catch(function(){return false});
 }
 function confirmCourseTrackSwitch(target,status){
   target=target==="hsk30"?"hsk30":"hsk20";
@@ -1693,10 +1702,10 @@ var App={
     if(s==="profile"&&!SIGNIN_STATE.loaded)loadSignInMethods();
     if(s!=="profile")stopSignInPoll();
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");sheet.classList.remove("hsk30-promo-center");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");$("#sheet-body").innerHTML=html;sheet.classList.add("on");startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=false;
-    $("#sheet").classList.remove("on");stopSheetPromo();
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");stopSheetPromo();
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
@@ -7280,9 +7289,6 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
          trial holati faqat profil kartasini to'g'ri chizish uchun olinadi. */
       trialFetchStatus().then(function(){try{renderProfile()}catch(e){}});
     }
-    else if(!(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())){
-      setTimeout(maybeShowHsk30Promo,900);
-    }
     /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
@@ -7317,7 +7323,15 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
       openInitialLesson();
       if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
       if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
-      if(!skipAppOpenAd)maybeShowAppOpenAd({lesson:initialLesson,challenge:challengeId,tour:sp.get("tour")==="1"});
+      if(skipAppOpenAd)return;
+      var requestedTab=sp.get("tab"),tourRequested=sp.get("tour")==="1";
+      var hasBootIntent=initialLesson>0||challengeId>0||tourRequested||!!(requestedTab&&requestedTab!=="course");
+      var setupPending=!!(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending());
+      var adContext={lesson:initialLesson,challenge:challengeId,tour:tourRequested};
+      if(hasBootIntent||setupPending){maybeShowAppOpenAd(adContext);return}
+      /* Markaziy HSK 3.0 eslatmasi reklama bilan bir vaqtda ochilmasin.
+         Eslatma ko'rsatilsa app-open reklama shu ochilishda o'tkaziladi. */
+      maybeShowHsk30Promo().then(function(promoShown){if(!promoShown)maybeShowAppOpenAd(adContext)});
     }
     var fs=foundationMapState();
     var foundationRequired=normalizeLevel(MAP.level)==="hsk1"&&!foundationIsComplete()&&(sp.get("foundation")==="1"||fs.required===true||fs.foundation_required===true);

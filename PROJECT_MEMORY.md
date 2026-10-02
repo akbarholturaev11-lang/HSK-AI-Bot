@@ -10521,3 +10521,15 @@ Files touched:
   permanent checkout valyuta saqlangach aynan o'sha origin overview'ini qayta
   olishi shart; aks holda `hsk30_unlock` tarifi yo'qoladi. Refresh xatosida
   avvalgi mahsulot/narx saqlanadi, dialog qayta urinish uchun ochiq qoladi.
+
+### 2026-10-02 — HSK 3.0 eslatmasi Mini App'da markazda ko'rsatiladi
+
+- HSK 2.0'da qolgan, onboardingni tugatgan foydalanuvchilar promo ko'ra oladi;
+  2 marta ko'rsatish limiti va 3 kunlik tanaffus saqlanadi. Bu umumiy server
+  qoidasi Android va desktop klientlariga ham ta'sir qiladi.
+- Mini App `promo-shown` javobi `hsk30_promo` ichida keladi. Klient o'sha
+  ichma-ich `recorded` qiymatini o'qiydi, markaziy oynani ochadi va shu sessiya
+  uchun app-open reklamani undan keyinga qoldiradi (promo ko'rsatilsa reklama
+  o'tkaziladi).
+- Tekshiruv uchun: `tests/test_hsk30_promo_service.py` va
+  `tests/e2e/test_miniapp_smoke.py`.
